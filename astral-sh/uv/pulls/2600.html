@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enable PEP 517 builds for unnamed requirements - astral-sh/uv #2600</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Enable PEP 517 builds for unnamed requirements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2600">#2600</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-21 22:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-21 22:16</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR enables the source distribution database to be used with unnamed requirements (i.e., URLs without a package name). The (significant) upside here is that we can now use PEP 517 hooks to resolve unnamed requirement metadata <em>and</em> reuse any computation in the cache.</p>
+<p>The changes to <code>crates/uv-distribution/src/source/mod.rs</code> are quite extensive, but mostly mechanical. The core idea is that we introduce a new <code>BuildableSource</code> abstraction, which can either be a distribution, or an unnamed URL:</p>
+<pre><code class="language-rust">/// A reference to a source that can be built into a built distribution.
+///
+/// This can either be a distribution (e.g., a package on a registry) or a direct URL.
+///
+/// Distributions can _also_ point to URLs in lieu of a registry; however, the primary distinction
+/// here is that a distribution will always include a package name, while a URL will not.
+#[derive(Debug, Clone, Copy)]
+pub enum BuildableSource&lt;'a&gt; {
+    Dist(&amp;'a SourceDist),
+    Url(SourceUrl&lt;'a&gt;),
+}
+</code></pre>
+<p>All the methods on the source distribution database now accept <code>BuildableSource</code>. <code>BuildableSource</code> has a <code>name()</code> method, but it returns <code>Option&lt;&amp;PackageName&gt;</code>, and everything is required to work with and without a package name.</p>
+<p>The main drawback of this approach (which isn't a terrible one) is that we can no longer include the package name in the cache. (We do continue to use the package name for registry-based distributions, since those always have a name.). The package name was included in the cache route for two reasons: (1) it's nice for debugging; and (2) we use it to power <code>uv cache clean flask</code>, to identify the entries that are relevant for Flask.</p>
+<p>To solve this, I changed the <code>uv cache clean</code> code to look one level deeper. So, when we want to determine whether to remove the cache entry for a given URL, we now look into the directory to see if there are any wheels that match the package name. This isn't as nice, but it does work (and we have test coverage for it -- all passing).</p>
+<p>I also considered removing the package name from the cache routes for non-registry <em>wheels</em>, for consistency... But, it would require a cache bump, and it didn't feel important enough to merit that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-03-21 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-03-21 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-03-21 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-03-21 22:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-21 22:21</div>
+            <div class="timeline-body"><p>This doesn't actually leverage these improvements anywhere, it just enables them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-dispatch/src/lib.rs</code>:289 on 2024-03-21 22:48</div>
+            <div class="timeline-body"><p>Hm.. this is an interesting caveat. We should probably mention this in the <code>--only-binary</code> docs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-21 22:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-21 23:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-dispatch/src/lib.rs</code>:289 on 2024-03-21 23:10</div>
+            <div class="timeline-body"><p>Yeah I don’t really see any way around it. It was also already true for editables, interestingly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-21 23:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-dispatch/src/lib.rs</code>:289 on 2024-03-21 23:11</div>
+            <div class="timeline-body"><p>We could default to “false” here instead of true. That might be safer? At least for non-editables.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-21 23:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-dispatch/src/lib.rs</code>:289 on 2024-03-21 23:11</div>
+            <div class="timeline-body"><p>That actually seems better since you can always add a package name to fix it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-21 23:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-dispatch/src/lib.rs</code>:289 on 2024-03-21 23:29</div>
+            <div class="timeline-body"><p>TIL that pip install does not enforce <code>--no-binary</code> for direct URL requirements. For example, <code>pip install &quot;anyio @ https://files.pythonhosted.org/packages/db/4d/3970183622f0330d3c23d9b8a5f52e365e50381fd484d08e3285104333d3/anyio-4.3.0.tar.gz&quot; --only-binary anyio --no-cache --force-reinstall</code> works fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-22 02:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-22 02:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-22 02:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:26 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for unnamed Git and HTTP requirements - astral-sh/uv #2578</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for unnamed Git and HTTP requirements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2578">#2578</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-20 22:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-20 22:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Enables, e.g., <code>uv pip install git+https://github.com/pallets/flask.git</code>.</p>
+<p>Part of: https://github.com/astral-sh/uv/issues/313.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-03-20 23:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-03-20 23:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-21 02:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/requirements.rs</code>:589 on 2024-03-21 02:09</div>
+            <div class="timeline-body"><p>Should we just be extracting the files of interest here? Or is that not worthwhile because we extract the whole thing later for installation and we're caching extracting for the duration of this process?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-21 02:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/requirements.rs</code>:589 on 2024-03-21 02:11</div>
+            <div class="timeline-body"><p>Yeah, this is very wasteful (we don't cache this, we have to re-extract later, but this is only for HTTPS requirements that don't reference a specific built file, I don't know that this really even happens in practice). I could change it to only extract the files of interest. The downside is that if we <em>do</em> want to use PEP 517 hooks (which we're &quot;supposed to&quot;), then we need to do the full extraction anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-21 02:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution/src/source/mod.rs</code>:1247 on 2024-03-21 02:12</div>
+            <div class="timeline-body"><p>Does it feel worth clarifying that extraction occurs in the name here? It was not obvious until I pulled up an IDE to look at the type signature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-21 02:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/requirements.rs</code>:589 on 2024-03-21 02:14</div>
+            <div class="timeline-body"><p>(Aside) It's just really hard to cache here in a way that can be reused later because we don't have a <code>Dist</code>, and all the caching layers require <code>Dist</code>. Like, ideally, we could just use the <code>DistributionDatabase</code> for this, but that requires <code>Dist</code> everywhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-21 02:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/requirements.rs</code>:589 on 2024-03-21 02:22</div>
+            <div class="timeline-body"><p>I'd be okay with only extracting a subset of files in a future optimization. I think regardless we'd only want to use a PEP 517 hook <em>after</em> our fast heuristics are exhausted, right?</p>
+<p>What are we missing from a <code>Dist</code>? Just the name? Can we put it in the cache after we've acquired the name?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-21 02:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/requirements.rs</code>:589 on 2024-03-21 02:29</div>
+            <div class="timeline-body"><p>In theory yes but executing on that is pretty tricky given the way the code is structured. I plan to try it...</p>
+<p>The other option is that we could <em>remove</em> the package name from the cache, and just use the URL as a key. This would make things much easier. (And it would mean we could <em>read</em> from the cache here, not just write.) The main downside (AFAICT) is that it would (1) break the cache so we'd need to bump version, and (2) break <code>uv cache clean flask</code> so we'd need to figure out how to support that (it's possible).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-21 02:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/requirements.rs</code>:589 on 2024-03-21 02:37</div>
+            <div class="timeline-body"><p>I think it's doable but it's <em>much</em> easier if we remove the package name from the cache entries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-21 02:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/requirements.rs</code>:589 on 2024-03-21 02:45</div>
+            <div class="timeline-body"><p>Ok, first I'm gonna make it so we don't unnecessarily extract... Then I will look into caching these...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-21 04:32</div>
+            <div class="timeline-body"><p>I'm comfortable merging this as-is, but the next step I'm working on is to (1) use PEP 517 builds for this, and (2) ensure that the built artifacts are cached.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-03-21 04:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/requirements.rs</code>:536 on 2024-03-21 10:04</div>
+            <div class="timeline-body"><p>Do we need to sort those? iirc the order here determines the prioritization in pubgrub.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-03-21 10:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/requirements.rs</code>:536 on 2024-03-21 13:28</div>
+            <div class="timeline-body"><p>Good call...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-21 13:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-21 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-21 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-21 13:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:26 UTC
+    </footer>
+</body>
+</html>

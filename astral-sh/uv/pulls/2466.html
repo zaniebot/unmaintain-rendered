@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add empty gitignore during source distribution builds - astral-sh/uv #2466</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add empty gitignore during source distribution builds</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2466">#2466</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-14 19:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-14 19:50</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>It's not clear <em>why</em> it matters in this case, but Hatchling respecting the <code>.gitignore</code> in our cache is causing certain builds to fail. This PR adds an empty <code>.gitignore</code> to the <code>built-wheels-v0</code> bucket and ensures that all unzipped distributions are stored in temporary folders within that bucket.</p>
+<h2>Test Plan</h2>
+<p>Run <code>cargo run pip install &quot;local_not_used_with_sdist_a @ file:///Users/crmarsh/Downloads/local_not_used_with_sdist_a-1.2.3&quot; --reinstall --verbose --verbose -n</code>.</p>
+<p>Then:</p>
+<pre><code>❯ ls .venv/lib/python3.12/site-packages/
+__pycache__                                 _virtualenv.pth                             _virtualenv.py                              local_not_used_with_sdist_a                 local_not_used_with_sdist_a-1.2.3.dist-info
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-14 19:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-14 19:54</div>
+            <div class="timeline-body"><p>See https://github.com/pypa/hatch/issues/1273 for details on the upstream issue — tldr if a source distribution does not have a <code>.gitignore</code> file hatchling will traverse upward until it finds one — which in our case is our cache's <code>.gitignore</code> file which has a <code>*</code> in it.</p>
+<p>We previously added a <code>.git</code> directory to prevent upward traversal, but <code>hatch</code> does yet support stopping traversal at git project boundaries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-14 19:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cache/src/lib.rs</code>:262 on 2024-03-14 19:55</div>
+            <div class="timeline-body"><p>I'd rephrase as &quot;Build backends (like hatchling) may traverse upwards...&quot; but no strong feelings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-03-14 19:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-14 20:04</div>
+            <div class="timeline-body"><p>Hah, that test now <em>correctly</em> fails.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-14 20:04</div>
+            <div class="timeline-body"><p>Need https://github.com/astral-sh/uv/pull/2462 to merge first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-14 20:19</div>
+            <div class="timeline-body"><p>Ah shoot, this was accidentally merged as part of https://github.com/astral-sh/uv/pull/2462.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-14 20:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:26 UTC
+    </footer>
+</body>
+</html>

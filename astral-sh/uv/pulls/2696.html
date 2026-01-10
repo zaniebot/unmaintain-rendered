@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use `Resolver` in `pip sync` - astral-sh/uv #2696</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use <code>Resolver</code> in <code>pip sync</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2696">#2696</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-27 17:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-27 17:22</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR removes the custom <code>DistFinder</code> that we use in <code>pip sync</code>. This originally existed because <code>VersionMap</code> wasn't lazy, and so we saved a lot of time in <code>DistFinder</code> by reading distribution data lazily. But now, AFAICT, there's really no benefit. Maintaining <code>DistFinder</code> means we effectively have to maintain two resolvers, and end up fixing bugs in <code>DistFinder</code> that don't exist in the <code>Resolver</code> (like #2688.</p>
+<p>Closes #2694.</p>
+<p>Closes #2443.</p>
+<h2>Test Plan</h2>
+<p>I ran this benchmark a bunch. It's basically a wash. Sometimes one is faster than the other.</p>
+<pre><code>❯ python -m scripts.bench \
+        --uv-path ./target/release/main \
+        --uv-path ./target/release/uv \
+        scripts/requirements/compiled/trio.txt --min-runs 50 --benchmark install-warm --warmup 25
+Benchmark 1: ./target/release/main (install-warm)
+  Time (mean ± σ):      54.0 ms ±  10.6 ms    [User: 8.7 ms, System: 98.1 ms]
+  Range (min … max):    45.5 ms …  94.3 ms    50 runs
+
+  Warning: Statistical outliers were detected. Consider re-running this benchmark on a quiet PC without any interferences from other programs. It might help to use the '--warmup' or '--prepare' options.
+
+Benchmark 2: ./target/release/uv (install-warm)
+  Time (mean ± σ):      50.7 ms ±   9.2 ms    [User: 8.7 ms, System: 98.6 ms]
+  Range (min … max):    44.0 ms …  98.6 ms    50 runs
+
+  Warning: The first benchmarking run for this command was significantly slower than the rest (77.6 ms). This could be caused by (filesystem) caches that were not filled until after the first run. You should consider using the '--warmup' option to fill those caches before the actual benchmark. Alternatively, use the '--prepare' option to clear the caches before each timing run.
+
+Summary
+  './target/release/uv (install-warm)' ran
+    1.06 ± 0.29 times faster than './target/release/main (install-warm)'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-03-27 17:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-03-27 17:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-27 17:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-dev/src/main.rs</code>:69 on 2024-03-27 17:23</div>
+            <div class="timeline-body"><p>Does anyone care about preserving this? I can migrate it but I wasn't sure if it was worth it. \cc @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-03-27 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-27 17:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/pip_sync.rs</code>:2593 on 2024-03-27 17:25</div>
+            <div class="timeline-body"><p>This is an improvement, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-27 17:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/pip_sync.rs</code>:901 on 2024-03-27 17:25</div>
+            <div class="timeline-body"><p>This is an improvement, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-27 17:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/pip_sync.rs</code>:587 on 2024-03-27 17:25</div>
+            <div class="timeline-body"><p>This is an improvement, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-27 17:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/pip_sync.rs</code>:1806 on 2024-03-27 17:27</div>
+            <div class="timeline-body"><p>I don't know why this changed. Will look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-27 17:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/pip_sync.rs</code>:2988 on 2024-03-27 17:27</div>
+            <div class="timeline-body"><p>This was https://github.com/astral-sh/uv/issues/2443.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 17:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-dev/src/main.rs</code>:69 on 2024-03-27 17:32</div>
+            <div class="timeline-body"><p>I've been annoyed maintaining it since I don't use it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-03-27 17:33</div>
+            <div class="timeline-body"><p>This makes sense to me. Will have conflicts with #2596, we'll need to add support for local site packages to <code>pip sync</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-27 17:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-dev/src/main.rs</code>:69 on 2024-03-27 17:50</div>
+            <div class="timeline-body"><p>It was nice to have but honestly not if its effort to maintain, i don't run it anymore</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-03-27 18:15</div>
+            <div class="timeline-body"><p>Wow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-27 20:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-dev/src/main.rs</code>:69 on 2024-03-27 20:41</div>
+            <div class="timeline-body"><p>Haha. If I had my way I would remove them all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-27 20:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/pip_sync.rs</code>:1806 on 2024-03-27 20:53</div>
+            <div class="timeline-body"><p>We have an additional <code>.msgpack</code> file from the cache, because we fetch the <code>Requires-Python</code> for the URL.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-27 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-27 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-27 21:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:26 UTC
+    </footer>
+</body>
+</html>

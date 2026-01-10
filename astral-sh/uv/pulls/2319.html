@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Address #2220 (slow download perf against PyPi mirror) - astral-sh/uv #2319</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Address #2220 (slow download perf against PyPi mirror)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2319">#2319</a>
+        opened by <a href="https://github.com/thundergolfer">@thundergolfer</a>
+        on 2024-03-10 00:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/thundergolfer">@thundergolfer</a> on 2024-03-10 00:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Addressing the extremely slow performance detailed in https://github.com/astral-sh/uv/issues/2220. There are two changes to increase download performance:</p>
+<ol>
+<li>setting <code>accept-encoding: identity</code>, in the spirit of https://github.com/pypa/pip/pull/1688</li>
+<li>increasing buffer from 8KiB to 128KiB.</li>
+</ol>
+<h3>1. accept-encoding: identity</h3>
+<p>I think this related <code>pip</code> PR has a good explanation of what's going on: https://github.com/pypa/pip/pull/1688</p>
+<pre><code>  # We use Accept-Encoding: identity here because requests
+  # defaults to accepting compressed responses. This breaks in
+  # a variety of ways depending on how the server is configured.
+  # - Some servers will notice that the file isn't a compressible
+  #   file and will leave the file alone and with an empty
+  #   Content-Encoding
+  # - Some servers will notice that the file is already
+  #   compressed and will leave the file alone and will add a
+  #   Content-Encoding: gzip header
+  # - Some servers won't notice anything at all and will take
+  #   a file that's already been compressed and compress it again
+  #   and set the Content-Encoding: gzip header
+</code></pre>
+<p>The <code>files.pythonhosted.org</code> server is the 1st kind. Example debug log I added in <code>uv</code> when installing against PyPI:</p>
+<img width="1459" alt="image" src="https://github.com/astral-sh/uv/assets/12058921/ef10d758-46aa-4c8e-9dba-47f33437401b">
+
+<p>(there is no <code>content-encoding</code> header in this response, the <code>whl</code> hasn't been compressed, and there is a content-length header)</p>
+<p>Our internal mirror is the third case. It does seem sensible that our mirror should be modified to act like the 1st kind. But <code>uv</code> should handle all three cases like <code>pip</code> does.</p>
+<h3>2. buffer increase</h3>
+<p>In https://github.com/astral-sh/uv/issues/2220 I observed that <code>pip</code>'s downloading was causing up-to 128KiB flushes in our mirror.</p>
+<p>After fix 1, <code>uv</code> was still only causing up-to 8KiB flushes, and was slower to download than <code>pip</code>. Increasing this buffer from the default 8KiB led to a download performance improvement against our mirror and the expected observed 128KiB flushes.</p>
+<h2>Test Plan</h2>
+<p>Ran benchmarking as instructed by @charliermarsh</p>
+<img width="1447" alt="image" src="https://github.com/astral-sh/uv/assets/12058921/840d9c8d-4b98-4bfa-89f3-073a2dec1f23">
+
+<p>No performance improvement or regression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2024-03-10 00:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-10 00:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-10 00:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 00:50</div>
+            <div class="timeline-body"><p>Thanks! I read through the linked <code>pip</code> PR. This makes sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-10 01:06</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:26 UTC
+    </footer>
+</body>
+</html>

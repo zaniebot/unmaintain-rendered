@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: report line and column on requirements parser errors - astral-sh/uv #2100</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: report line and column on requirements parser errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2100">#2100</a>
+        opened by <a href="https://github.com/samypr100">@samypr100</a>
+        on 2024-03-01 03:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/samypr100">@samypr100</a> on 2024-03-01 03:32</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes #2012</p>
+<p>This changes <code>RequirementsTxtParserError::Parser</code> to take a line, column instead of cursor location to improve reporting of parser errors. A new function was added to compute the line and column based on the content and cursor location when a parser error occurs for simplicity.</p>
+<p>Given <code>uv pip compile .\requirements.txt</code> of below</p>
+<pre><code>numpy&gt;=1,&lt;2
+  --borken
+tqdm
+</code></pre>
+<p>Before:</p>
+<pre><code>error: Unexpected '-', expected '-c', '-e', '-r' or the start of a requirement in `.\requirements.txt` at position 14
+</code></pre>
+<p>After:</p>
+<pre><code>error: Unexpected '-', expected '-c', '-e', '-r' or the start of a requirement in `.\requirements.txt` at position 2:3
+</code></pre>
+<p>Open Question: Do we want to support <code>line:column</code> for other types of errors? I didn't look dig other potential error types where this might be desired.</p>
+<h2>Test Plan</h2>
+<p>New test was added to <code>requirements-txt</code> crate with this example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @samypr100 on 2024-03-01 03:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-01 03:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/requirements-txt/src/lib.rs</code>:330 on 2024-03-01 03:43</div>
+            <div class="timeline-body"><p>So here, if we see <code>\r\n</code>, I think we technically want to avoid incrementing <code>column</code> after we see the <code>\r</code>. I can't see how this would matter in practice for <em>this</em> use-case, but e.g., you can see an example of how that's done here in Ruff: https://github.com/astral-sh/ruff/blob/c9931a548ff07c031130571f3664343bea224026/crates/ruff_source_file/src/line_index.rs#L29</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-03-01 03:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/requirements-txt/src/lib.rs</code>:330 on 2024-03-01 03:48</div>
+            <div class="timeline-body"><blockquote>
+<p>I think we technically want to avoid incrementing column after we see the \r</p>
+</blockquote>
+<p>Agreed, I left this as-is on purpose but I really debated to either keep this for simplicity or track the prev_char reference for these types of checks. Luckily it can be changed easily whichever route we want to go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-01 03:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/requirements-txt/src/lib.rs</code>:330 on 2024-03-01 03:51</div>
+            <div class="timeline-body"><p>I'd prefer to change it just for completeness, in case this gets reused elsewhere. Are you ok to modify it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-03-01 03:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/requirements-txt/src/lib.rs</code>:330 on 2024-03-01 03:56</div>
+            <div class="timeline-body"><p>Let me know if this is what you had in mind d0f7161f1c4b2e903f73256b51368d32dbb34cc5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-01 05:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/requirements-txt/src/lib.rs</code>:330 on 2024-03-01 05:40</div>
+            <div class="timeline-body"><p>I was aiming for something more like: if we see <code>\r</code>, check if the next character is <code>\n</code>; if so, skip it. (That would correctly handle <code>\r</code>, <code>\n</code>, and <code>\r\n</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/requirements-txt/src/lib.rs</code>:955 on 2024-03-01 10:43</div>
+            <div class="timeline-body"><p>Could you make that format <code>at &lt;REQUIREMENTS_TXT&gt;:&lt;line&gt;:&lt;col&gt;</code>? This format is support by many IDEs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/requirements-txt/src/lib.rs</code>:325 on 2024-03-01 10:46</div>
+            <div class="timeline-body"><p>I think we want byte indices rather than char indices here? CC @BurntSushi</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-03-01 10:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/requirements-txt/src/lib.rs</code>:325 on 2024-03-01 11:32</div>
+            <div class="timeline-body"><p><code>char_indices</code> does actually return byte offsets. The <code>index</code> is referring to the index in <code>content</code> of where <code>char</code> starts. For example, this code:</p>
+<pre><code class="language-rust">let content = &quot;a💩b&quot;;
+for (i, ch) in content.char_indices() {
+    eprintln!(&quot;{}:{}&quot;, i, ch);
+}
+</code></pre>
+<p>Has this output:</p>
+<pre><code>0:a
+1:💩
+5:b
+</code></pre>
+<p>Since <code>💩</code> has a UTF-8 encoding that uses 4 bytes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/requirements-txt/src/lib.rs</code>:334 on 2024-03-01 11:38</div>
+            <div class="timeline-body"><p>I would suggest using the <a href="https://docs.rs/unicode-width/latest/unicode_width/"><code>unicode-width</code></a> crate to compute the visual width of the codepoint via <a href="https://docs.rs/unicode-width/latest/unicode_width/trait.UnicodeWidthChar.html#tymethod.width"><code>UnicodeWidthChar::width</code></a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/requirements-txt/src/lib.rs</code>:320 on 2024-03-01 11:39</div>
+            <div class="timeline-body"><p>Assuming you use <code>unicode-width</code> per my suggestion below, can you just add a quick note here documenting that we define column in this context as the, &quot;offset according to the visual width of each codepoint.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/requirements-txt/src/lib.rs</code>:1377 on 2024-03-01 11:40</div>
+            <div class="timeline-body"><p>Could you add a couple of tests that include non-ASCII codepoints. More concretely, one test with a non-ASCII codepoint like, say, <code>💩</code>. And then another test with grapheme cluster made up of more than one codepoint like <code>à̖</code> (that's <code>a\u{0300}\u{0316}</code> as a string literal in Rust).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-03-01 11:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-01 11:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/requirements-txt/src/lib.rs</code>:334 on 2024-03-01 11:43</div>
+            <div class="timeline-body"><p>I don't think we should be using <code>width</code> here. I would need to check again but what I remember is that editors use character offsets for column indices and not their width. Ruff also uses character offsets and not the width for diagnostics. What <code>uv</code> output should match editors or shortcuts like <em>go to position</em> won't work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-03-01 11:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/requirements-txt/src/lib.rs</code>:334 on 2024-03-01 11:53</div>
+            <div class="timeline-body"><p>Yeah I agree that we should do whatever editors are likely to use here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-03-01 11:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/requirements-txt/src/lib.rs</code>:320 on 2024-03-01 11:53</div>
+            <div class="timeline-body"><p>If <code>unicode-width</code> is not the right thing to use, then just adding, &quot;offset according to the number of Unicode codepoints.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-01 14:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/requirements-txt/src/lib.rs</code>:334 on 2024-03-01 14:38</div>
+            <div class="timeline-body"><p>Yeah, I think char_indices is okay here, but I would like to tweak the newline handling slightly in line with the Ruff reference above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-03-01 18:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/requirements-txt/src/lib.rs</code>:330 on 2024-03-01 18:45</div>
+            <div class="timeline-body"><p>Sorry for the delay (work 😆), hopefully this is closer 223fd99ac1b44e0557227d1c461a20bf1a9d85f2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-03-01 18:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/requirements-txt/src/lib.rs</code>:955 on 2024-03-01 18:45</div>
+            <div class="timeline-body"><p>Changed in 223fd99ac1b44e0557227d1c461a20bf1a9d85f2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-03-01 18:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/requirements-txt/src/lib.rs</code>:320 on 2024-03-01 18:46</div>
+            <div class="timeline-body"><p>I left it as a comment in 223fd99ac1b44e0557227d1c461a20bf1a9d85f2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-03-01 18:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/requirements-txt/src/lib.rs</code>:1377 on 2024-03-01 18:46</div>
+            <div class="timeline-body"><p>Done in 223fd99ac1b44e0557227d1c461a20bf1a9d85f2, included one with two codepoints and your example one with three.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-03-01 19:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/requirements-txt/src/lib.rs</code>:955 on 2024-03-01 19:10</div>
+            <div class="timeline-body"><p>Note, mileage may vary, I noticed that for full-paths it does highlight on my IDE, but not relative paths like <code>./requirements.txt</code>. We could try to canonicalize always?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-01 19:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/requirements-txt/src/lib.rs</code>:955 on 2024-03-01 19:29</div>
+            <div class="timeline-body"><p>I think using <code>current_dir()</code> and joining the path on top of it is the best way, canonicalize could be a path outside the apparent project root (we used to canonicalize everything but rolled that back since it caused problems where software expected the &quot;virtual&quot; name of the link).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-03-01 21:40</div>
+            <div class="timeline-body"><p>Awesome, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-01 21:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/requirements-txt/src/lib.rs</code>:988 on 2024-03-01 21:40</div>
+            <div class="timeline-body"><p>Tweaked this a little because <code>\r</code> on its own <em>should</em> be considered a newline (it's not used on (m)any modern platforms, but older macOS did use it).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2024-03-01 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-01 21:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-01 21:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-03-01 22:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/requirements-txt/src/lib.rs</code>:988 on 2024-03-01 22:13</div>
+            <div class="timeline-body"><p>Np, I went a bit back and forth on that. Glad it's settled</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-01 22:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/requirements-txt/src/lib.rs</code>:988 on 2024-03-01 22:53</div>
+            <div class="timeline-body"><p>Sorry for all the back-and-forth, I just have scars from Ruff where we didn't handle all the newline kinds and eventually hit panics in certain projects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-03-01 23:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/requirements-txt/src/lib.rs</code>:988 on 2024-03-01 23:43</div>
+            <div class="timeline-body"><p>no worries, makes sense, and feedback is always welcomed 💯</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-11 22:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:26 UTC
+    </footer>
+</body>
+</html>

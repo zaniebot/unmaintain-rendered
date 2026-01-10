@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a garbage collection mechanism to the CLI - astral-sh/uv #1217</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a garbage collection mechanism to the CLI</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1217">#1217</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-02-01 04:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-01 04:29</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Detects unused cache entries, which can come in a few forms:</p>
+<ol>
+<li>Directories that are out-dated via our versioning scheme.</li>
+<li>Old source distribution builds (i.e., we have a more recent version).</li>
+<li>Old wheels (stored in <code>archive-v0</code>, but not symlinked-to from anywhere in the cache).</li>
+</ol>
+<p>Closes https://github.com/astral-sh/puffin/issues/1059.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-02-01 04:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-01 04:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cache/src/lib.rs</code>:323 on 2024-02-01 04:30</div>
+            <div class="timeline-body"><p>This phase is pretty bad (tightly coupled to the cache, but awkwardly so in that it doesn't <em>read</em> the manifest files that point to the latest entry, it just looks for the most recent directory and deletes all the others).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-02-01 04:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-01 04:49</div>
+            <div class="timeline-body"><p>I'll also add some tests for this. Parts of it are really tedious to test, but it's probably important.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-cache/src/lib.rs</code>:297 on 2024-02-01 13:07</div>
+            <div class="timeline-body"><p>I'd personally write this loop body like so:</p>
+<pre><code class="language-rust">if !entry.file_type().is_dir() {
+    continue;
+}
+if !entry.path().join(&quot;manifest.msgpack&quot;).exists() {
+    continue;
+}
+let Some(created) = fs::reader_dir(entry.path())?.filter(...).max() else { continue };
+// then do the actual deletion
+</code></pre>
+<p>This avoids extra indentation and gives the code a bit more of a linear flow and is easier to read IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-cache/src/lib.rs</code>:323 on 2024-02-01 13:09</div>
+            <div class="timeline-body"><p>Is there a reason to not read the manifest files?</p>
+<p>I think being tightly coupled here is okay, since this is the <code>puffin-cache</code> crate after-all. :)</p>
+<p>(I do think our cache representation is a little leaky, but that's a problem for another day.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-cache/src/lib.rs</code>:330 on 2024-02-01 13:10</div>
+            <div class="timeline-body"><p>Does this need to have <code>contents_first(true)</code> enabled? I don't <em>think</em> so?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-cache/src/lib.rs</code>:326 on 2024-02-01 13:11</div>
+            <div class="timeline-body"><p>Out of curiosity, why do you use <code>FxHashSet</code> here? (My default is <code>HashSet</code> from the standard library.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin/src/commands/clean.rs</code>:179 on 2024-02-01 13:12</div>
+            <div class="timeline-body"><p>This is nice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-02-01 13:13</div>
+            <div class="timeline-body"><p>Nice!</p>
+<p>I can see how testing this would be annoying. Maybe one way is to just explicitly build cache directories and then run <code>prune</code> and assert the expected result. But then your tests are tightly coupled with the cache representation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-01 13:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cache/src/lib.rs</code>:323 on 2024-02-01 13:15</div>
+            <div class="timeline-body"><p>One reason is that the manifest files and readers are all in <code>puffin-distribution</code> (which depends on cache crate), but this code is in the cache crate itself :(</p>
+<p>It might be necessary though. Removing the &quot;wrong&quot; directories here will break the cache, which is really bad.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-21 18:03</div>
+            <div class="timeline-body"><p>I'm merging this for now without &quot;Old source distribution builds (i.e., we have a more recent version).&quot; That's more complex, and was delaying it, but this is already useful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2024-03-21 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-21 18:07</div>
+            <div class="timeline-body"><p>I'm not sure why <code>CI / check system | python3.13 on windows (pull_request)</code> is now failing, but it shouldn't be related to this PR. I'll follow-up separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-21 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-21 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-21 18:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:25 UTC
+    </footer>
+</body>
+</html>

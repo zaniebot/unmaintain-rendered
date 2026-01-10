@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Initialize client lazily for remote requirements files - astral-sh/uv #2350</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Initialize client lazily for remote requirements files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2350">#2350</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-11 00:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-11 00:29</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>We now initialize an HTTP client in advance for remote requirements files. It turns out this adds a significant overhead, even for operations like auditing the environment (at least on macOS).</p>
+<p>This PR makes initialization lazy. After a lot of evaluation, I took the easiest route, which is: we just pass in <code>Connectivity</code>, and then use the default HTTP client. So we won't respect netrc files and anything else that we get from our registry client. If we want to keep using the registry client, we <em>can</em>, it's just way more ceremony to pass down a closure.</p>
+<p>See: https://github.com/astral-sh/uv/issues/2346.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Verified that <code>cargo run pip compile https://raw.githubusercontent.com/ansible/ansible/f1ded0f41759235eb15a7d13dbc3c95dce5d5acd/requirements.txt</code> completed without error.</li>
+<li>Verified that <code>cargo run pip compile https://raw.githubusercontent.com/ansible/ansible/f1ded0f41759235eb15a7d13dbc3c95dce5d5acd/requirements.txt --offline</code> failed with an error.</li>
+<li>Verified that <code>./target/release/uv pip install requests</code> completed in 0-2ms, rather than hundreds.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2024-03-11 00:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-11 00:34</div>
+            <div class="timeline-body"><p>I'll look at re-adding the middleware in a future PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-11 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-11 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-11 00:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:26 UTC
+    </footer>
+</body>
+</html>

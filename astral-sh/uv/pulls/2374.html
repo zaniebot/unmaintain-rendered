@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wait for request stream to flush before returning resolution - astral-sh/uv #2374</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Wait for request stream to flush before returning resolution</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2374">#2374</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-12 04:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-12 04:04</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is a more robust fix for https://github.com/astral-sh/uv/issues/2300.</p>
+<p>The basic issue is:</p>
+<ul>
+<li>When we resolve, we attempt to pre-fetch the distribution metadata for candidate packages.</li>
+<li>It's possible that the resolution completes <em>without</em> those pre-fetch responses. (In the linked issue, this was mainly because we were running with <code>--no-deps</code>, but the pre-fetch was causing us to attempt to build a package to get its dependencies. The resolution would then finish before the build completed.)</li>
+<li>In that case, the <code>Index</code> will be marked as &quot;waiting&quot; for that response -- but it'll never come through.</li>
+<li>If there's a subsequent call to the <code>Index</code>, to see if we should fetch or are waiting for that response, we'll end up waiting for it forever, since it <em>looks</em> like it's in-flight (but isn't). (In the linked issue, we had to build the source distribution for the install phase of <code>pip install</code>, but <code>setuptools</code> was in this bad state from the <em>resolve</em> phase.)</li>
+</ul>
+<p>This PR modifies the resolver to ensure that we flush the stream of requests before returning. Specifically, we now <code>join</code> rather than <code>select</code> between the resolution and request-handling futures.</p>
+<p>This <em>could</em> be wasteful, since we don't <em>need</em> those requests, but it at least ensures that every <code>.wait</code> is followed by <code> .done</code>. In practice, I expect this not to have any significant effect on performance, since we end up using the pre-fetched distributions almost every time.</p>
+<h2>Test Plan</h2>
+<p>I ran through the test plan from https://github.com/astral-sh/uv/pull/2373, but ran the build 10 times and ensured it never crashed. (I reverted https://github.com/astral-sh/uv/pull/2373, since that <em>also</em> fixes the issue in the proximate case, by never fetching <code>setuptools</code> during the resolve phase.)</p>
+<p>I also added logging to verify that requests are being handled <em>after</em> the resolution completes, as expected.</p>
+<p>I also introduced an arbitrary error in <code>fetch</code> to ensure that the error was immediately propagated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-12 04:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-03-12 04:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-03-12 04:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-03-12 04:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-12 04:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:199 on 2024-03-12 04:04</div>
+            <div class="timeline-body"><p>Taking ownership means that <code>request_sink</code> is dropped as soon as the future completes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-12 04:12</div>
+            <div class="timeline-body"><p>No meaningful change, as expected:</p>
+<pre><code>❯ python -m scripts.bench \
+        --uv-path ./target/release/uv-main \
+        --uv-path ./target/release/uv \
+        scripts/requirements/trio.in --benchmark resolve-cold --min-runs 50
+Benchmark 1: ./target/release/uv-main (resolve-cold)
+  Time (mean ± σ):     245.7 ms ±  48.9 ms    [User: 64.4 ms, System: 62.9 ms]
+  Range (min … max):   183.6 ms … 322.8 ms    50 runs
+
+Benchmark 2: ./target/release/uv (resolve-cold)
+  Time (mean ± σ):     244.8 ms ±  50.2 ms    [User: 64.5 ms, System: 61.7 ms]
+  Range (min … max):   179.9 ms … 326.9 ms    50 runs
+
+Summary
+  './target/release/uv (resolve-cold)' ran
+    1.00 ± 0.29 times faster than './target/release/uv-main (resolve-cold)'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-03-12 05:25</div>
+            <div class="timeline-body"><p>Nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/error.rs</code>:30 on 2024-03-12 09:36</div>
+            <div class="timeline-body"><p>I added the panic message to all the broken channel cases because in my experience this error happens when there was a panic in another thread, so the error message you get is ~irrelevant, while scrolling up another thread spilled a first panic to stderr that has the actually relevant failure</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-03-12 09:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-03-12 11:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-12 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-12 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-12 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-12 14:14</div>
+            <div class="timeline-body"><p>I also benchmarked on home-assistant to be safe (this branch is &quot;faster&quot; but I think it's just noise):</p>
+<pre><code>❯ python -m scripts.bench \
+        --uv-path ./target/release/uv-main \
+        --uv-path ./target/release/uv \
+        scripts/requirements/home-assistant.in --benchmark resolve-cold
+Benchmark 1: ./target/release/uv-main (resolve-cold)
+  Time (mean ± σ):     14.211 s ±  0.316 s    [User: 66.686 s, System: 29.350 s]
+  Range (min … max):   13.691 s … 14.771 s    10 runs
+
+Benchmark 2: ./target/release/uv (resolve-cold)
+  Time (mean ± σ):     13.791 s ±  0.291 s    [User: 66.304 s, System: 28.658 s]
+  Range (min … max):   13.290 s … 14.202 s    10 runs
+
+Summary
+  './target/release/uv (resolve-cold)' ran
+    1.03 ± 0.03 times faster than './target/release/uv-main (resolve-cold)'
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:26 UTC
+    </footer>
+</body>
+</html>

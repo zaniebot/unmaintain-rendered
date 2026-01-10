@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for PyTorch-style local version semantics - astral-sh/uv #2430</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for PyTorch-style local version semantics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2430">#2430</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-13 20:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-13 20:58</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds limited support for PEP 440-compatible local version testing. Our behavior is <em>not</em> comprehensively in-line with the spec. However, it does fix by <em>far</em> the biggest practical limitation, and resolves all the issues that've been raised on uv related to local versions without introducing much complexity into the resolver, so it feels like a good tradeoff for me.</p>
+<p>I'll summarize the change here, but for more context, see <a href="https://github.com/astral-sh/uv/issues/1855#issuecomment-1967024866">Andrew's write-up</a> in the linked issue.</p>
+<p>Local version identifiers are really tricky because of asymmetry. <code>==1.2.3</code> should allow <code>1.2.3+foo</code>, but <code>==1.2.3+foo</code> should not allow <code>1.2.3</code>. It's very hard to map them to PubGrub, because PubGrub doesn't think of things in terms of individual specifiers (unlike the PEP 440 spec) -- it only thinks in terms of ranges.</p>
+<p>Right now, resolving PyTorch and friends fails, because...</p>
+<ul>
+<li>The user provides requirements like <code>torch==2.0.0+cu118</code> and <code>torchvision==0.15.1+cu118</code>.</li>
+<li>We then match those exact versions.</li>
+<li>We then look at the requirements of <code>torchvision==0.15.1+cu118</code>, which includes <code>torch==2.0.0</code>.</li>
+<li>Under PEP 440, this is fine, because <code>torch @ 2.0.0+cu118</code> should be compatible with <code>torch==2.0.0</code>.</li>
+<li>In our model, though, it's not, because these are different versions. If we change our comparison logic in various places to allow this, we risk breaking some fundamental assumptions of PubGrub around version continuity.</li>
+<li>Thus, we fail to resolve, because we can't accept both <code>torch @ 2.0.0</code> and <code>torch @ 2.0.0+cu118</code>.</li>
+</ul>
+<p>As compared to the solutions we explored in https://github.com/astral-sh/uv/issues/1855#issuecomment-1967024866, at a high level, this approach differs in that we lie about the <em>dependencies</em> of packages that rely on our local-version-using package, rather than lying about the versions that exist, or the version we're returning, etc.</p>
+<p>In short:</p>
+<ul>
+<li>When users specify local versions upfront, we keep track of them. So, above, we'd take note of <code>torch</code> and <code>torchvision</code>.</li>
+<li>When we convert the dependencies of a package to PubGrub ranges, we check if the requirement matches <code>torch</code> or <code>torchvision</code>. If it's an<code>==</code>, we check if it matches (in the above example) for <code>torch==2.0.0</code>. If so, we <em>change</em> the requirement to <code>torch==2.0.0+cu118</code>. (If it's <code>==</code> some other version, we return an incompatibility.)</li>
+</ul>
+<p>In other words, we selectively override the declared dependencies by making them <em>more specific</em> if a compatible local version was specified upfront.</p>
+<p>The net effect here is that the motivating PyTorch resolutions all work. And, in general, transitive local versions work as expected.</p>
+<p>The thing that still <em>doesn't</em> work is: imagine if there were <em>only</em> local versions of <code>torch</code> available. Like, <code>torch @ 2.0.0</code> didn't exist, but <code>torch @ 2.0.0+cpu</code> did, and <code>torch @ 2.0.0+gpu</code> did, and so on. <code>pip install torch==2.0.0</code> would arbitrarily choose one one <code>2.0.0+cpu</code> or <code>2.0.0+gpu</code>, and that's correct as per PEP 440 (local version segments should be completely ignored on <code>torch==2.0.0</code>). However, uv would fail to identify a compatible version. I'd <em>probably</em> prefer to fix this, although candidly I think our behavior is <em>ok</em> in practice, and it's never been reported as an issue.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/1855.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/2080.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/2328.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-03-13 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-03-13 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-13 21:09</div>
+            <div class="timeline-body"><p>No need to review yet. I need to work on the tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-13 21:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/pip_install_scenarios.rs</code>:1533 on 2024-03-13 21:19</div>
+            <div class="timeline-body"><p>Okay, not that impressive, but this is the critical test that changes. (This is the PyTorch resolution case.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>scripts/scenarios/generate.py</code>:153 on 2024-03-14 01:07</div>
+            <div class="timeline-body"><p>I think this one is fixable with tricks similar to what we do for prereleases with &quot;min version&quot; thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-14 01:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-14 01:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-03-14 01:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> removed by @charliermarsh on 2024-03-14 01:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-03-14 01:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-03-14 01:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-14 01:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/pubgrub/dependencies.rs</code>:146 on 2024-03-14 01:14</div>
+            <div class="timeline-body"><p><code>locals.get</code> should be free (the hash map short-circuits if it's empty) unless local dependencies were declared.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-14 01:25</div>
+            <div class="timeline-body"><p>What's the right order of operations for packse? These tests all pass locally, but I need to publish the updated index for them to pass on CI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/pubgrub/dependencies.rs</code>:22 on 2024-03-15 03:25</div>
+            <div class="timeline-body"><p>Why do we have this lint on? I feel like we just ignore it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-15 03:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-15 03:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/pubgrub/dependencies.rs</code>:22 on 2024-03-15 03:30</div>
+            <div class="timeline-body"><p>We should probably have fewer arguments 😂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-15 03:47</div>
+            <div class="timeline-body"><p>Wow this is pretty epic. I'll defer to Andrew for the approval, but this <em>feels</em> reasonable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep440-rs/src/version_specifier.rs</code>:348 on 2024-03-15 13:49</div>
+            <div class="timeline-body"><p>What about having this return a <code>Result</code> so that callers can choose whether to allow invalid combinations or not?</p>
+<p>Or is it intended that this specifically allows combinations of operator and version that are specifically invalid? If so, I think the docs could probably clarify this a bit more.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/locals.rs</code>:173 on 2024-03-15 14:36</div>
+            <div class="timeline-body"><p>What do you think about adding some units tests for the routines in this module?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep440-rs/src/version_specifier.rs</code>:348 on 2024-03-15 14:38</div>
+            <div class="timeline-body"><p>I see, reading the code below, this does seem to actually be used to build a <code>VersionSpecifier</code> that is otherwise considered invalid.</p>
+<p>I find this to be somewhat odd and an unfortunate breakage in encapsulation. But I think I see why you're doing it. As a mitigation, what do you think about changing <code>from_pattern</code> back to <code>new</code>, and renaming your <code>new</code> routine something like, <code>from_possibly_invalid_parts</code> or something similarish in name? I would also add to the <code>VersionSpecifier</code> docs that callers cannot necessarily rely on the operator/version combination to be valid. That is, it is an intended and supported use case that a <code>VersionSpecifier</code> is a <em>superset</em> of what's in PEP 440.</p>
+<p>Also, are we sure that things that were previously not allowed but now are (like <code>VersionSpecifier::new(Operator::LessThanEqual, version_with_local)</code>) have expected behavior in the various routines on <code>VersionSpecifier</code>? Previously, the implementation could assume that the invalid combinations never exist, but that assumption no longer holds. (It's possible everything is fine as-is, but maybe some increased test coverage would be helpful here.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-03-15 14:48</div>
+            <div class="timeline-body"><p>This is really clever. I don't think I would have thought of changing the dependency specifications themselves. Nice work.</p>
+<blockquote>
+<p>The thing that still doesn't work is: imagine if there were only local versions of torch available. Like, torch @ 2.0.0 didn't exist, but torch @ 2.0.0+cpu did, and torch @ 2.0.0+gpu did, and so on. pip install torch==2.0.0 would arbitrarily choose one one 2.0.0+cpu or 2.0.0+gpu, and that's correct as per PEP 440 (local version segments should be completely ignored on torch==2.0.0). However, uv would fail to identify a compatible version. I'd probably prefer to fix this, although candidly I think our behavior is ok in practice, and it's never been reported as an issue.</p>
+</blockquote>
+<p>I <em>think</em> this is what #1497 is. Although the issue starts with <code>uv pip install torch==2.1.0+cpu --find-links https://download.pytorch.org/whl/torch_stable.html</code> (which I think is fixed by this PR), they also list <code>uv pip install torch==2.1.0 --index-url https://download.pytorch.org/whl/cpu</code> (which I think is <em>not</em> fixed by this PR). It's not clear to me whether the latter is something they specifically want to do or not though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-15 16:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep440-rs/src/version_specifier.rs</code>:348 on 2024-03-15 16:03</div>
+            <div class="timeline-body"><p>I'll do all these things.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-15 16:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep440-rs/src/version_specifier.rs</code>:348 on 2024-03-15 16:04</div>
+            <div class="timeline-body"><p>It's also possible that I can remove the actual invalid ones.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep440-rs/src/version_specifier.rs</code>:348 on 2024-03-16 00:38</div>
+            <div class="timeline-body"><p>Okay, I removed all the invalid versions, re-added the validation, and threaded through the errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-16 00:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/locals.rs</code>:173 on 2024-03-16 14:15</div>
+            <div class="timeline-body"><p>Good call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-16 14:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-16 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-16 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-16 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-16 14:25</div>
+            <div class="timeline-body"><p>BTW <code>pip install torch==2.1.0 --index-url https://download.pytorch.org/whl/cpu</code> <em>does</em> work, because there's a version in there without a local tag!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-03-18 12:15</div>
+            <div class="timeline-body"><blockquote>
+<p>BTW <code>pip install torch==2.1.0 --index-url https://download.pytorch.org/whl/cpu</code> <em>does</em> work, because there's a version in there without a local tag!</p>
+</blockquote>
+<p>Interesting. It doesn't work for me:</p>
+<pre><code>$ uv pip install torch==2.1.0 --index-url https://download.pytorch.org/whl/cpu
+  x No solution found when resolving dependencies:
+  `-&gt; Because torch==2.1.0 is unusable because no wheels are available with a matching Python ABI and you require torch==2.1.0, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>IIRC, it's because there aren't any wheels for x86-64 Linux without local version segments. But there are wheels without local version segments for aarch64 Linux (and macOS IIRC).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:26 UTC
+    </footer>
+</body>
+</html>

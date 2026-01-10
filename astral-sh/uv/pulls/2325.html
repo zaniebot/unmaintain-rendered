@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid duplicating authorization header with netrc - astral-sh/uv #2325</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid duplicating authorization header with netrc</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2325">#2325</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-10 04:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 04:16</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The netrc middleware we added in https://github.com/astral-sh/uv/pull/2241 has a slight problem. If you include credentials in your index URL, <em>and</em> in the netrc file, the crate blindly adds the netrc credentials as a header. And given the <code>ReqwestBuilder</code> API, this means you end up with <em>two</em> <code>Authorization</code> headers, which always leads to an invalid request, though the exact failure can take different forms.</p>
+<p>This PR removes the middleware crate in favor of our own middleware. Instead of using the <code>RequestInitialiser</code> API, we have to use the <code>Middleware</code> API, so that we can remove the header on the request itself.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/2323.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Verified that running against a private index with credentials in the URL (but no netrc file) worked without error.</li>
+<li>Verified that running against a private index with credentials in the netrc file (but not the URL) worked without error.</li>
+<li>Verified that running against a private index with a mix of credentials in  both <em>also</em> worked without error.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-03-10 04:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-10 04:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-10 14:50</div>
+            <div class="timeline-body"><p>This is going to conflict with #2254</p>
+<p>cc @BakerNet okay if we land this then you can rebase on top of it (or merge, whatever makes you comfortable)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 14:52</div>
+            <div class="timeline-body"><p>I think we should merge and ship this in the soonest release, since it was a regression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-10 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/middleware.rs</code>:79 on 2024-03-10 14:54</div>
+            <div class="timeline-body"><p>Does this mean for a URL with explicit auth attached we will replace it with what's in the netrc file? That seems wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-10 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/middleware.rs</code>:79 on 2024-03-10 14:54</div>
+            <div class="timeline-body"><p>Yes. I believe this is correct actually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-10 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/middleware.rs</code>:79 on 2024-03-10 14:54</div>
+            <div class="timeline-body"><p><code>pip</code> changed this in https://github.com/pypa/pip/pull/10998. It was then reverted in https://github.com/pypa/pip/pull/11134.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-10 14:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/middleware.rs</code>:79 on 2024-03-10 14:55</div>
+            <div class="timeline-body"><p>Why? Wouldn't it be very confusing if you passed authentication via the CLI and we overwrote it with something from a configuration file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-10 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/middleware.rs</code>:79 on 2024-03-10 14:56</div>
+            <div class="timeline-body"><p>Or maybe not? I honestly can't tell: https://github.com/pypa/pip/blob/a33caa26f2bf525eafb4ec004f9c1bd18d238a31/src/pip/_internal/network/auth.py#L347. Anyway, I can switch the precedence if you prefer. Doesn't matter to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/middleware.rs</code>:79 on 2024-03-10 14:57</div>
+            <div class="timeline-body"><p>pip's behavior is more complicated because they only attach auth after seeing a 401 — it looks like they changed that for netrc? I'm not sure I didn't give it a close read yet.</p>
+<p>I think it's important to respect <em>directly</em> passed credentials over the persistent configuration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-10 14:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-10 14:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/middleware.rs</code>:79 on 2024-03-10 14:58</div>
+            <div class="timeline-body"><p>I changed it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-10 14:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/middleware.rs</code>:79 on 2024-03-10 14:58</div>
+            <div class="timeline-body"><p>I wish there was more context on that revert pull request...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/middleware.rs</code>:79 on 2024-03-10 14:58</div>
+            <div class="timeline-body"><p>but the issue it closes is https://github.com/pypa/pip/issues/11113 which doesn't affect us</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-10 14:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 14:58</div>
+            <div class="timeline-body"><p>We should be really careful in that PR that (1) we have clear order of precedence for credentials, and (2) we never introduce duplicate credentials.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-10 14:59</div>
+            <div class="timeline-body"><p>I think introducing a dedicated authentication store abstraction is intended to solve those problems</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-03-10 14:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-10 15:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/middleware.rs</code>:79 on 2024-03-10 15:01</div>
+            <div class="timeline-body"><p>Yeah it seems like pip's <em>current</em> intent is to prioritize the URL over the netrc. This does make sense to me, I was just trying to follow pip and misread the chain of reverts. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-10 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-10 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-10 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 15:03</div>
+            <div class="timeline-body"><p>Sounds good. Feel free to ping me there when the time is right if you want my input.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:26 UTC
+    </footer>
+</body>
+</html>

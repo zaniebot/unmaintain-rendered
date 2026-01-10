@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bring harmony to the test snapshot filtering situation - astral-sh/uv #2678</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bring harmony to the test snapshot filtering situation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2678">#2678</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-03-26 22:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-26 22:41</div>
+            <div class="timeline-body"><p>The snapshot filtering situation has gotten way out of hand, with each test hand-rolling it's own filters on top of copied cruft from previous tests.</p>
+<p>I've attempted to address this holistically:</p>
+<ul>
+<li><code>TestContext.filters()</code> has everything you should need<ul>
+<li>This was introduced a while ago, but needed a few more filters for it to be generalized everywhere</li>
+<li>Using <code>INSTA_FILTERS</code> is <strong>not recommended</strong> unless you do not want the context filters</li>
+<li>It is okay to extend these filters for things unrelated to paths</li>
+<li>If you have to write a custom path filter, please highlight it in review so we can address it in the common module</li>
+</ul>
+</li>
+<li><code>TestContext.site_packages()</code> gives cross-platform access to the site-packages directory<ul>
+<li>Do not manually construct the path to site-packages from the venv</li>
+<li>Do not turn off tests on Windows because you manually constructed a Unix path to site-packages</li>
+</ul>
+</li>
+<li><code>TestContext.workspace_root</code> gives access to uv's repository directory<ul>
+<li>Use this for installing from <code>scripts/packages/</code></li>
+<li>If you need coverage for relative paths, copy the test package into the <code>temp_dir</code> don't change the working directory of the test fixture</li>
+</ul>
+</li>
+</ul>
+<p>There is additional work that can be done here, such as:</p>
+<ul>
+<li>Auditing and removing additional uses of <code>INSTA_FILTERS</code></li>
+<li>Updating manual construction of <code>Command</code> instances to use a utility</li>
+<li>The <code>venv</code> tests are particularly frightening in their lack of a test context and could use some love</li>
+<li>Improving the developer experience i.e. apply context filters to snapshots by default</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2024-03-26 22:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @zanieb on 2024-03-26 22:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 05:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-fs/src/path.rs</code>:46 on 2024-03-27 05:15</div>
+            <div class="timeline-body"><p>This fixes a bug where sometimes the path was not properly relativized. This is the only user-facing change here and could be split into a separate pull request. It's needed for consistent cross-platform snapshot replacements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 05:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/cache_prune.rs</code>:107 on 2024-03-27 05:16</div>
+            <div class="timeline-body"><p>This is a great example of a non-standard filter resulting in an incorrect snapshot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 05:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/cache_prune.rs</code>:142 on 2024-03-27 05:17</div>
+            <div class="timeline-body"><p>This is one of the two recommended ways to extend the standard filters. I'd generally recommend this. Alternatively, you may want to perform filtering <em>before</em> the context filters in which case you'd just swap the chain.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 05:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/common/mod.rs</code>:81 on 2024-03-27 05:18</div>
+            <div class="timeline-body"><p>Added a <code>SITE_PACKAGES</code> filter which is helpful for cross-platform tests with package install paths in them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 05:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/common/mod.rs</code>:91 on 2024-03-27 05:18</div>
+            <div class="timeline-body"><p>Moved the <code>TEMP_DIR</code> filter down — we want to apply this <em>after</em> all of its subdirectories.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 05:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/common/mod.rs</code>:96 on 2024-03-27 05:19</div>
+            <div class="timeline-body"><p>Added a filter for the repository workspace — useful for our test packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/common/mod.rs</code>:113 on 2024-03-27 05:20</div>
+            <div class="timeline-body"><p>These new filters account for the changes in #2559 — the test commands should always be run with <code>temp_dir</code> as the current directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 05:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 05:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/common/mod.rs</code>:117 on 2024-03-27 05:21</div>
+            <div class="timeline-body"><p>This addresses cases where a temporary directory with a non-deterministic name is created inside another directory e.g. for package builds we create a temporary directory in our cache.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/common/mod.rs</code>:192 on 2024-03-27 05:21</div>
+            <div class="timeline-body"><p>This needs to be conditional because sometimes the site packages directory does not exist.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 05:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 05:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/common/mod.rs</code>:313 on 2024-03-27 05:22</div>
+            <div class="timeline-body"><p>This is generic because some tests use a child directory to create a second virtual environment. I'm not excited about the approach in those tests, but we can address that later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 05:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_compile.rs</code>:636 on 2024-03-27 05:23</div>
+            <div class="timeline-body"><p>Filters like these are entirely unnecessary and were handled by <code>context.filters()</code> before any changes here, but I believe it wasn't clear that <code>context.filters()</code> existed and this pattern was copied from historical test cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 05:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_compile.rs</code>:2231 on 2024-03-27 05:24</div>
+            <div class="timeline-body"><p>When using the standard filters, we don't replace the entire path anymore, just the non-deterministic part. This should generally improve test coverage and clarity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 05:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_compile.rs</code>:5363 on 2024-03-27 05:28</div>
+            <div class="timeline-body"><p>Don't create new temporary directories outside of the context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 05:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_freeze.rs</code>:121 on 2024-03-27 05:29</div>
+            <div class="timeline-body"><p>Here the non-standard filters clobbered the leading white space.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 05:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_install.rs</code>:599 on 2024-03-27 05:29</div>
+            <div class="timeline-body"><p>This test was disabled on Windows because the site-packages path was manually constructed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 05:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_install.rs</code>:737 on 2024-03-27 05:31</div>
+            <div class="timeline-body"><p>There are various instances where the <code>command</code> utility was not being used — I'm not sure why but where I see it I've addressed it. Another pass will probably be needed to fix remaining cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 05:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_install.rs</code>:866 on 2024-03-27 05:32</div>
+            <div class="timeline-body"><p>Lots of tests set the <code>CARGO_TARGET_DIR</code>, presumably for editables that used to use Maturin? I'm actually quite confused but I've removed it from many test cases as it appears to be superfluous.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 05:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_install_scenarios.rs</code>:2677 on 2024-03-27 05:34</div>
+            <div class="timeline-body"><p>This change doesn't really matter in the scenario files, but for consistency I've updated the templates.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 05:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_show.rs</code>:92 on 2024-03-27 05:34</div>
+            <div class="timeline-body"><p>We should avoid filtering paths based on other context in the output (i.e. &quot;Location: &quot;) unless absolutely necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 05:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_list.rs</code>:163 on 2024-03-27 05:37</div>
+            <div class="timeline-body"><p>This was just way too complicated and brittle for me. I dropped all of this in favor of some filters that do not preserve the aligned snapshot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 05:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_list.rs</code>:335 on 2024-03-27 05:38</div>
+            <div class="timeline-body"><p>e.g. this is a worse snapshot, but it's only one line of filters to maintain and I'm not sure if the old snapshot really tested for alignment when it was doing all those manipulations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-03-27 05:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-03-27 05:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2024-03-27 05:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/common/mod.rs</code>:63 on 2024-03-27 08:35</div>
+            <div class="timeline-body"><p>nit: <code>.parent().unwrap()</code> so they fail early</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/common/mod.rs</code>:192 on 2024-03-27 08:49</div>
+            <div class="timeline-body"><p>Redundant simplify</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/common/mod.rs</code>:235 on 2024-03-27 08:52</div>
+            <div class="timeline-body"><p>Can be non-pub, maybe inline?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-03-27 09:10</div>
+            <div class="timeline-body"><p>:pray:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-03-27 14:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-03-27 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-03-27 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-27 14:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:26 UTC
+    </footer>
+</body>
+</html>

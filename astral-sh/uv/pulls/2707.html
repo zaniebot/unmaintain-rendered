@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fixed uv can't create .venv for cpython-x86 on Windows  - astral-sh/uv #2707</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fixed uv can't create .venv for cpython-x86 on Windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2707">#2707</a>
+        opened by <a href="https://github.com/Zander-1024">@Zander-1024</a>
+        on 2024-03-28 07:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Zander-1024">@Zander-1024</a> on 2024-03-28 07:28</div>
+            <div class="timeline-body"><p>Adaptation to the win32 platform is added.</p>
+<p>https://docs.python.org/3/library/sysconfig.html#sysconfig.get_platform</p>
+<h2>Summary</h2>
+<p>fixed uv can't create .venv for cpython-x86 on Windows</p>
+<p><a href="https://github.com/astral-sh/rye/issues/952">uv can't create .venv for cpython-x86 on Windows </a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-03-28 09:03</div>
+            <div class="timeline-body"><p>Related to astral-sh/rye/issues/952</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/python/get_interpreter_info.py</code>:423 on 2024-03-28 09:16</div>
+            <div class="timeline-body"><p>We use <code>&quot;result&quot;: &quot;error&quot;</code> and handle the error in rust code instead of raising exceptions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/python/get_interpreter_info.py</code>:422 on 2024-03-28 09:16</div>
+            <div class="timeline-body"><p>Do you have some context on why 32-bit windows is the only platform where that happens, and can you add a comment above the line explaining the special case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-28 09:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Zander-1024">@Zander-1024</a> reviewed on 2024-03-28 09:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Zander-1024">@Zander-1024</a> on <code>crates/uv-interpreter/python/get_interpreter_info.py</code>:423 on 2024-03-28 09:35</div>
+            <div class="timeline-body"><p>I know, but this is python code, and this function is just to get platform information. For unsupported platforms, you should also exit here. I've thought of two solutions. One is to just exit and add exception printing, and the other is to raise an exception. I think using an exception here might be appropriate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Zander-1024">@Zander-1024</a> reviewed on 2024-03-28 09:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Zander-1024">@Zander-1024</a> on <code>crates/uv-interpreter/python/get_interpreter_info.py</code>:422 on 2024-03-28 09:40</div>
+            <div class="timeline-body"><p>https://docs.python.org/3/library/sysconfig.html#sysconfig.get_platform
+According to the documentation, sysconfig.get_platform () returns &quot;win32&quot; when using the x86 version of Windows. This is a known issue. I'll add the documentation to the notes later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-28 09:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/python/get_interpreter_info.py</code>:423 on 2024-03-28 09:50</div>
+            <div class="timeline-body"><p>If the python code raises an exception, the rust caller doesn't know what went wrong: Is the platform not supported? Is the version not supported? Is this <code>python</code> not a python? Is it a permission error? In rust we get an exit status, stdout and stderr, we can't even tell if we started an actual python interpreter.</p>
+<p>Showing a python stacktrace is verbose and not helpful to the user. A user only needs one line (platform not supported) and does not need to see implementation details of our interpreter checking code. Instead, we return that the script ran successfully but the platform was not supported <a href="https://github.com/astral-sh/uv/blob/c180fedbce60d8c58611d18cf351ef904fa2280d/crates/uv-interpreter/python/get_interpreter_info.py#L488-L497">here</a> and transform it into a rust error <a href="https://github.com/astral-sh/uv/blob/7d285148b26550842ba7bb574fa7187faab183f9/crates/uv-interpreter/src/interpreter.rs#L346-L347">here</a>. This way we get a clear, concise error message:</p>
+<pre><code>$ uv venv
+  × Can't use Python at `/home/konsti/projects/uv/.venv/bin/python3`
+  ╰─▶ Unknown operation system: `wedontknowthisos`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Zander-1024">@Zander-1024</a> reviewed on 2024-03-28 10:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Zander-1024">@Zander-1024</a> on <code>crates/uv-interpreter/python/get_interpreter_info.py</code>:423 on 2024-03-28 10:29</div>
+            <div class="timeline-body"><p>Ok, thanks for your answer</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-03-28 14:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @Zander-1024 on 2024-03-31 11:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> approved on 2024-04-01 17:03</div>
+            <div class="timeline-body"><p>Thanks, this just happened to me today. We could also have CI for Windows 32bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-01 21:37</div>
+            <div class="timeline-body"><p>A &quot;check system&quot; CI job would make sense for that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-04-02 09:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-04-02 09:18</div>
+            <div class="timeline-body"><p>@Zander-1024 Do you want to add a check system check or should we merge without?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Zander-1024">@Zander-1024</a> on 2024-04-02 15:54</div>
+            <div class="timeline-body"><p>Sorry, I don't know where the problem with this ci build lies. Looking at the print, I should have installed pylint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-02 16:35</div>
+            <div class="timeline-body"><p>The system check tests require the Python you are testing with to be the default on the system e.g. <code>python3</code>. e.g. you're spawning with a <code>py -3.10</code> invocation but it needs to be <code>python3</code> and presumably there will be some futzing to make x86 Python the default?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-04-03 01:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-03 01:45</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-04-03 01:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-04-03 01:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:26 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recursively resolve direct URL references upfront - astral-sh/uv #2684</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Recursively resolve direct URL references upfront</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2684">#2684</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-27 03:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-27 03:02</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR would enable us to support transitive URL requirements. The key idea is to leverage the fact that...</p>
+<ul>
+<li>URL requirements can only come from URL requirements.</li>
+<li>URL requirements identify a <em>specific</em> version, and so don't require backtracking.</li>
+</ul>
+<p>Prior to running the &quot;real&quot; resolver, we recursively resolve any URL requirements, and collect all the known URLs upfront, then pass those to the resolver as &quot;lookahead&quot; requirements. This means the resolver knows upfront that if a given package is included, it <em>must</em> use the provided URL.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/1808.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-27 04:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/prerelease_mode.rs</code>:64 on 2024-03-27 04:03</div>
+            <div class="timeline-body"><p>Genuinely not sure how constraints and overrides should work in all these different TODOs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-27 04:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/lookahead.rs</code>:96 on 2024-03-27 04:03</div>
+            <div class="timeline-body"><p>This can be extended to support wheels -- not hard.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/lookahead.rs</code>:57 on 2024-03-27 04:07</div>
+            <div class="timeline-body"><p>Uncertain how to handle these... I don't think we want to blindly resolve them recursively, because we can't <em>know</em> that a given constraint or override will <em>actually</em> be applied, and so we might end up incorporating requirements that won't end up being correct here.</p>
+<p>E.g., consider package <code>foo @ bar</code>, which has a URL requirement of <code>baz @ bop</code>. Assume <code>foo @ bar</code> is a constraint. If we include it here, then we'll also include <code>baz @ bop</code> as a required URL. But what if no one ever requests <code>foo</code>, and so the constraint should have no effect? Now we've added a <code>baz @ bop</code> requirement that shouldn't be enforced...</p>
+<p>I think the best we can do (under this paradigm) is enforce overrides and constraints for the dependencies we see during <em>this</em> resolution pass.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-27 04:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-28 21:22</div>
+            <div class="timeline-body"><p>Sweet! I tested this on an old version of packse which has git dependencies.</p>
+<pre><code>❯ cargo run -- pip install git+https://github.com/zanieb/packse@14c55ed460d24cc3e247dd3e09506a8e75e35adcpackse@14c55ed460d24cc3e247dd3e09506a8e75e35adc
+ Updated https://github.com/zanieb/packse (14c55ed)                                                                           
+ Updated https://github.com/zanieb/devpi (22f71ac)
+ Updated https://github.com/zanieb/waitress (d6d764b)                                                                        
+Resolved 80 packages in 10.49s
+   Built pyramid-chameleon==0.3
+   Built waitress @ git+https://github.com/zanieb/waitress@d6d764bcc970e1e50486153588eda8a92cf5b5e4
+   Built packse @ git+https://github.com/zanieb/packse@14c55ed460d24cc3e247dd3e09506a8e75e35adc
+   Built devpi-server @ git+https://github.com/zanieb/devpi@22f71acb8f08a59a098e7ad434cf388a1193fc24#subdirectory=server
+   Built devpi==2.2.0                                                                                                        Downloaded 79 packages in 4.48s
+Installed 80 packages in 87ms
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-04-01 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-04-01 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-01 15:37</div>
+            <div class="timeline-body"><p>This PR lifts a significant limitation (transitive URL dependencies) at the cost of some parallelism (we have to build and resolve them all upfront).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-04-01 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-01 16:23</div>
+            <div class="timeline-body"><p>It's only going to be a performance degradation for cases where the user previously had to enumerate all the URLs, correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-04-01 16:27</div>
+            <div class="timeline-body"><p>Sweet</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-01 16:29</div>
+            <div class="timeline-body"><p>That seems fair, yes. There are two issues:</p>
+<ol>
+<li>In general, the use of the lookahead resolver is slower than the theoretically-optimal&quot; behavior of resolving as we go within the resolver, because (e.g.) we're spending time resolving source distributions when we could (in parallel) be fetching metadata from PyPI for other dependencies... So we're probably not saturating the network. By doing more work in the lookahead resolver, we make that a bit worse.</li>
+<li>Now, we're resolving at multiple levels rather than requiring users to enumerate all the URL requirements upfront, so what was previously parallel is now sequential (which is more directly-related to your comment).</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-01 16:30</div>
+            <div class="timeline-body"><p>Did you do any benches? Worth it? The behavior seems worth enabling regardless.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-01 16:31</div>
+            <div class="timeline-body"><p>Yeah my guess is that it's pretty rare to have nested URL dependencies anyway, and in the cases that you <em>do</em>, users would definitely prefer that they work even if there's a performance hit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-01 16:36</div>
+            <div class="timeline-body"><p>I think I need to update docs before merging though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-04-01 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-01 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-01 21:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:26 UTC
+    </footer>
+</body>
+</html>

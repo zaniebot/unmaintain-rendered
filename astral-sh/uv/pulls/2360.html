@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignore inverse dependencies when building graph - astral-sh/uv #2360</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ignore inverse dependencies when building graph</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2360">#2360</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-11 17:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-11 17:18</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>It turns out that when we iterate over the incompatibilities of a package, PubGrub will <em>also</em> show us the inverse dependencies. I suspect this was rare, because we have a version check at the bottom... So, this specifically required that you had some dependency that didn't end up appearing in the output resolution, but that matched the version constraints of the package you care about.</p>
+<p>In this case, <code>langchain-community</code> depends on <code>langchain-core</code>. So we were seeing an incompatibility like:</p>
+<pre><code class="language-rust">FromDependencyOf(Package(PackageName(&quot;langchain-community&quot;), None, None), Range { segments: [(Included(&quot;0.0.10&quot;), Included(&quot;0.0.10&quot;)), (Included(&quot;0.0.11&quot;), Included(&quot;0.0.11&quot;))] }, Package(PackageName(&quot;langchain-core&quot;), None, None), Range { segments: [(Included(&quot;0.1.8&quot;), Excluded(&quot;0.2&quot;))] })
+</code></pre>
+<p>Where we were iterating over <code>langchain-core</code>, and looking for version <code>0.0.11</code>... which happens to match <code>langchain-community</code>. (`langchain-community was omitted from the resolution; hence, it didn't exist in the map.)</p>
+<p>Closes https://github.com/astral-sh/uv/issues/2358.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-11 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-03-11 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-03-11 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-11 17:19</div>
+            <div class="timeline-body"><p>This is pretty hard to reproduce.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-11 17:24</div>
+            <div class="timeline-body"><p>I can reproduce with just:</p>
+<pre><code>b2sdk==1.32.0
+llama-index==0.4.40
+</code></pre>
+<p>But it's an expensive test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-03-11 17:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-11 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-11 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-11 17:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:26 UTC
+    </footer>
+</body>
+</html>

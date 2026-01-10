@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow prereleases, locals, and URLs in non-editable path requirements - astral-sh/uv #2671</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow prereleases, locals, and URLs in non-editable path requirements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2671">#2671</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-26 16:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-26 16:03</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR enables the resolver to &quot;accept&quot; URLs, prereleases, and local version specifiers for direct dependencies of path dependencies. As a result, <code>uv pip install .</code> and <code>uv pip install -e .</code> now behave identically, in that neither has a restriction on URL dependencies and the like.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/2643.
+Closes https://github.com/astral-sh/uv/issues/1853.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-03-26 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-03-26 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-26 18:01</div>
+            <div class="timeline-body"><p>We could in theory use the same technique to resolve these recursively, upfront, for all direct URL distributions...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @zanieb on 2024-03-26 18:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-26 18:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/locals.rs</code>:43 on 2024-03-26 18:09</div>
+            <div class="timeline-body"><p>Going to DRY this up in a separate PR (it's already repeated excessively on <code>main</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-26 18:17</div>
+            <div class="timeline-body"><p>A slightly different way to solve this would be to pass these paths to <code>SourceTreeResolver</code>, and then include the requirements as first-party requirements <em>directly</em>. This would be ok but I was worried about how it might impact error messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-26 18:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/lookahead.rs</code>:23 on 2024-03-26 18:32</div>
+            <div class="timeline-body"><p>The alternative solution would be to pass any source trees to <code>SourceTreeResolver</code> (so, e.g., if the user does <code>foo @ ./bar/baz</code>, we'd pass <code>./bar/baz</code> to <code>SourceTreeResolver</code> alongside any <code>pyproject.toml</code> or <code>setup.py</code> files that were passed in). Then, we'd treat the requirements as part of the <code>requirements</code> input to the resolution.</p>
+<p>That approach would require some refactoring of <code>SourceTreeResolver</code> (since it uses <code>ExtrasSpecification</code>, which isn't a generic concept for requirements). It would also mean that the actual <code>Resolver</code> wouldn't be able to distinguish between these &quot;lookahead&quot; requirements and actual first-party requirements, and there may not be any indication in the error messages that they came from the local directory requirement, but that might be ok. I'm open to either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-26 18:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/lookahead.rs</code>:23 on 2024-03-26 18:32</div>
+            <div class="timeline-body"><p>\cc @zanieb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-26 22:28</div>
+            <div class="timeline-body"><p>Also, I think this should be recursive… so that local deps can define local deps at any level.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-26 22:35</div>
+            <div class="timeline-body"><p>Thinking about it... we could actually extend this approach to enable support for transitive URL dependencies (as long as we don't allow URL dependencies to come from registry dependencies, which is fine)... The basic idea would be: recursively resolve all direct URL references, then the requirements of all direct URL references, etc. So we'd collect all possible direct URL references upfront.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-03-27 03:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-requirements/src/lookahead.rs</code>:57 on 2024-03-27 11:49</div>
+            <div class="timeline-body"><p>Do we want to put that value in a global constant?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-03-27 11:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-27 16:11</div>
+            <div class="timeline-body"><p>I wonder if we should start by allowing this to be recursive for <em>local</em> requirements (for editables too).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-27 16:12</div>
+            <div class="timeline-body"><p>(But it's fine to merge as-is. That would be an extension of this work.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-requirements/src/lookahead.rs</code>:23 on 2024-03-27 20:51</div>
+            <div class="timeline-body"><p>This seems okay, but the whole <code>SourceTree</code> and <code>SourceTreeResolver</code> concept is so new that I don't have strong feelings.</p>
+<p>I like the idea of them being included in the resolver manifest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/pip_install.rs</code>:525 on 2024-03-27 20:53</div>
+            <div class="timeline-body"><p>This is going to conflict with #2596 which refactors this already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_compile.rs</code>:6299 on 2024-03-27 20:55</div>
+            <div class="timeline-body"><p>Can you use a child of the context temporary directory instead? per #2678</p>
+<p>You won't need custom filters then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_compile.rs</code>:6358 on 2024-03-27 20:55</div>
+            <div class="timeline-body"><p>Same comment regarding temporary directories and filters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/requirements.rs</code>:10 on 2024-03-27 20:57</div>
+            <div class="timeline-body"><p>Why here instead of <code>uv-requirements</code> or <code>uv-types</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-03-27 20:57</div>
+            <div class="timeline-body"><p>I do have some requested changes, but overall this makes sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-27 21:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/requirements.rs</code>:10 on 2024-03-27 21:42</div>
+            <div class="timeline-body"><p><code>uv-types</code> could make sense. <code>uv-requirements</code> is a heavy dependency for (e.g.) the resolver to pull in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-27 22:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/pip_install.rs</code>:525 on 2024-03-27 22:01</div>
+            <div class="timeline-body"><p>Reverting since it's not required for the PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-27 22:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-27 22:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-27 22:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:26 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run interpreter discovery under `-I` mode - astral-sh/uv #2552</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Run interpreter discovery under <code>-I</code> mode</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2552">#2552</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-19 19:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-19 19:53</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>If you have a file <code>typing.py</code> in the current working directory, <code>python -m</code> doesn't work in some Python versions:</p>
+<pre><code class="language-sh">❯ python -m foo
+Could not import runpy module
+Traceback (most recent call last):
+  File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.9.18/lib/python3.9/runpy.py&quot;, line 15, in &lt;module&gt;
+    import importlib.util
+  File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.9.18/lib/python3.9/importlib/util.py&quot;, line 2, in &lt;module&gt;
+    from . import abc
+  File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.9.18/lib/python3.9/importlib/abc.py&quot;, line 17, in &lt;module&gt;
+    from typing import Protocol, runtime_checkable
+ImportError: cannot import name 'Protocol' from 'typing' (/Users/crmarsh/workspace/uv/typing.py)
+</code></pre>
+<p>This did <em>not</em> cause problems for us on Python 3.11 or later, because we set <code>PYTHONSAFEPATH</code>, which avoids adding the current working directory to <code>sys.path</code>. However, on earlier versions, we <em>were</em> failing with the above. (It's important that we run interpreter discovery in the current working directory, since doing otherwise breaks pyenv shims.)</p>
+<p>The fix implemented here uses <code>-I</code> to run Python in isolated mode, which is even stricter. The downside of isolated mode is that we currently rely on setting <code>PYTHONPATH</code> to find the &quot;fake module&quot; that we create on disk, and <code>-I</code> means <code>PYTHONPATH</code> is totally ignored. So, instead, we run a script directly, and that <em>script</em> injects the path we care about into <code>PYTHONSAFEPATH</code>.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/2547.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-03-19 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-03-19 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @charliermarsh on 2024-03-19 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-19 19:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-19 21:30</div>
+            <div class="timeline-body"><p>I don't understand why this broke the Windows shims.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-19 21:58</div>
+            <div class="timeline-body"><p>I guess the <code>bat</code> doesn't like a multi-line script argument... Very weird.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Run interpreter discovery under -I mode" to "Run interpreter discovery under `-I` mode" by @charliermarsh on 2024-03-19 22:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-19 22:01</div>
+            <div class="timeline-body"><p>I also manually verified that the Pyenv shims continue to work:</p>
+<pre><code>DEBUG Starting interpreter discovery for default Python
+DEBUG Probing interpreter info for: /Users/crmarsh/.pyenv/shims/python3
+DEBUG Found Python 3.10.2 for: /Users/crmarsh/.pyenv/shims/python3
+Using Python 3.10.2 interpreter at: /Users/crmarsh/.pyenv/versions/3.10.2/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-03-20 00:15</div>
+            <div class="timeline-body"><p>Interesting. Why <code>-c</code> (and previously <code>-m</code>) instead of just <code>python &lt;path&gt;</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-20 00:18</div>
+            <div class="timeline-body"><p>We need to be able to resolve relative imports (so we can't use <code>python &lt;path&gt;</code>), but we can't use <code>-m</code> because the module we want to run isn't in <code>sys.path</code> until we modify it. So complicated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-20 00:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-20 00:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-20 00:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:26 UTC
+    </footer>
+</body>
+</html>

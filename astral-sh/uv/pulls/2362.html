@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enable TLS native root toggling at runtime - astral-sh/uv #2362</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Enable TLS native root toggling at runtime</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2362">#2362</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-11 19:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-11 19:31</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>It turns out that on macOS, reading the native certificates can add hundreds of milliseconds to client initialization. This PR makes <code>--native-tls</code> a command-line flag, to toggle (at runtime) the choice of the <code>webpki</code> roots or the native system roots.</p>
+<p>You can't accomplish this kind of configuration with the <code>reqwest</code> builder API, so instead, I pulled out the heart of that logic from the crate (https://github.com/seanmonstar/reqwest/blob/e3192638518d577759dd89da489175b8f992b12f/src/async_impl/client.rs#L498), and modified it to allow toggling a choice of root.</p>
+<p>Note that there's an open PR for this in reqwest (https://github.com/seanmonstar/reqwest/pull/1848), along with an issue (https://github.com/seanmonstar/reqwest/issues/1843), which I may ping, but it's been around for a while and I believe reqwest is focused on its next major release.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/2346.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-03-11 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-03-11 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-11 23:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/main.rs</code>:94 on 2024-03-11 23:08</div>
+            <div class="timeline-body"><p>Should we say a little more about why the system store would be used?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-11 23:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>README.md</code>:426 on 2024-03-11 23:09</div>
+            <div class="timeline-body"><p>I guess I would rephrase since this isn't quite &quot;out of the box&quot; anymore?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-11 23:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>README.md</code>:426 on 2024-03-11 23:09</div>
+            <div class="timeline-body"><p>I'd say... &quot;By default, we use Mozilla's....&quot; as you do in the docstring as well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-03-11 23:09</div>
+            <div class="timeline-body"><p>Great work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-11 23:10</div>
+            <div class="timeline-body"><p>Technically this is a breaking change, should we create a label for that and highlight accordingly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @charliermarsh on 2024-03-11 23:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2024-03-11 23:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-12 04:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-12 04:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-12 04:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-03-13 01:41</div>
+            <div class="timeline-body"><p>@charliermarsh Is it worth checking if <code>SSL_CERT_FILE</code> is set and make it behave as-if <code>--native-tls</code> was used?
+I think that would keep this change backwards compatible with users leveraging <code>SSL_CERT_FILE</code></p>
+<p>e.g. something like</p>
+<pre><code class="language-diff">-let tls = tls::load(if self.native_tls {
++let tls = tls::load(if self.native_tls || env::var(&quot;SSL_CERT_FILE&quot;).is_ok() {
+    Roots::Native
+} else {
+    Roots::Webpki
+})
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-13 01:43</div>
+            <div class="timeline-body"><p>We can support <code>SSL_CERT_FILE</code> even without <code>--native-tls</code>, I think. I'm happy to add that. It would effectively be this PR: https://github.com/astral-sh/uv/pull/2351.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-03-13 01:55</div>
+            <div class="timeline-body"><p>Per this updated statement in the docs</p>
+<blockquote>
+<p>If a direct path to the certificate is required (e.g., in CI), set the <code>SSL_CERT_FILE</code> environment
+variable to the path of the certificate bundle (alongside the <code>--native-tls</code> flag), to instruct uv
+to use that file instead of the system's trust store.</p>
+</blockquote>
+<p>It sounds like reqwest will honor still <code>SSL_CERT_FILE</code> (if it's set), even if the loading is happening via on uv's end via <code>tls::load/use_preconfigured_tls</code>.
+Assuming this, the suggested code snippet above would work to keep this change backwards compatible.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:26 UTC
+    </footer>
+</body>
+</html>

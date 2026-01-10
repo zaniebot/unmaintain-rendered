@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider installed packages during resolution - astral-sh/uv #2596</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider installed packages during resolution</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2596">#2596</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-03-21 18:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-21 18:47</div>
+            <div class="timeline-body"><p>Previously, we did not consider installed distributions as candidates while performing resolution. Here, we update the resolver to use installed distributions that satisfy requirements instead of pulling new distributions from the registry.</p>
+<p>The implementation details are as follows:</p>
+<ul>
+<li>We now provide <code>SitePackages</code> to the <code>CandidateSelector</code></li>
+<li>If an installed distribution satisfies the requirement, we prefer it over remote distributions</li>
+<li>We do not want to allow installed distributions in some cases, i.e., upgrade and reinstall<ul>
+<li>We address this by introducing an <code>Exclusions</code> type which tracks installed packages to ignore during selection</li>
+</ul>
+</li>
+<li>There's a new <code>ResolvedDist</code> wrapper with <code>Installed(InstalledDist)</code> and <code>Installable(Dist)</code> variants<ul>
+<li>This lets us pass already installed distributions throughout the resolver</li>
+</ul>
+</li>
+</ul>
+<p>The user-facing behavior is thoroughly covered in the tests, but briefly:</p>
+<ul>
+<li>Installing a package that depends on an already-installed package prefers the local version over the index</li>
+<li>Installing a package with a name that matches an already-installed URL package does not reinstall from the index</li>
+<li>Reinstalling (--reinstall) a package by name <em>will</em> pull from the index even if an already-installed URL package is present<ul>
+<li>To reinstall the URL package, you must specify the URL in the request</li>
+</ul>
+</li>
+</ul>
+<p>Closes https://github.com/astral-sh/uv/issues/1661</p>
+<p>Addresses:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/1476</li>
+<li>https://github.com/astral-sh/uv/issues/1856</li>
+<li>https://github.com/astral-sh/uv/issues/2093</li>
+<li>https://github.com/astral-sh/uv/issues/2282</li>
+<li>https://github.com/astral-sh/uv/issues/2383</li>
+<li>https://github.com/astral-sh/uv/issues/2560</li>
+</ul>
+<h2>Test plan</h2>
+<ul>
+<li>[x] Reproduction at <code>charlesnicholson/uv-pep420-bug</code> passes</li>
+<li>[x] Unit test for editable package (<a href="https://github.com/astral-sh/uv/issues/1476">#1476</a>)</li>
+<li>[x] Unit test for previously installed package with empty registry</li>
+<li>[x] Unit test for local non-editable package</li>
+<li>[x] Unit test for new version available locally but not in registry (<a href="https://github.com/astral-sh/uv/issues/2093">#2093</a>)</li>
+<li>~[ ] Unit test for wheel not available in registry but already installed locally (<a href="https://github.com/astral-sh/uv/issues/2282">#2282</a>)~ (seems complicated and not worthwhile)</li>
+<li>[x] Unit test for install from URL dependency then with matching version (<a href="https://github.com/astral-sh/uv/issues/2383">#2383</a>)</li>
+<li>[x] Unit test for install of new package that depends on installed package does not change version (<a href="https://github.com/astral-sh/uv/issues/2560">#2560</a>)</li>
+<li>[x] Unit test that <code>pip compile</code> does <em>not</em> consider installed packages</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-21 18:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/candidate_selector.rs</code>:87 on 2024-03-21 18:48</div>
+            <div class="timeline-body"><p>@charliermarsh is it obvious to you how to do this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-21 18:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/candidate_selector.rs</code>:84 on 2024-03-21 18:48</div>
+            <div class="timeline-body"><p>I feel like doing this <em>before</em> the <code>VersionMap</code> may be incorrect. I'll need to understand the goal here better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-21 18:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/candidate_selector.rs</code>:84 on 2024-03-21 18:51</div>
+            <div class="timeline-body"><p>I think doing it before the version map is right, but it also needs to work with <code>preferences</code> above, since these will <em>always</em> be in preferences. Maybe you can leverage that? Maybe this should <em>only</em> be in the <code>if</code> block above?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-21 18:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/candidate_selector.rs</code>:84 on 2024-03-21 18:52</div>
+            <div class="timeline-body"><p>👍 I can do that, although I'm not sure why that's helpful to combine except perhaps performance?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-21 19:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/candidate_selector.rs</code>:87 on 2024-03-21 19:12</div>
+            <div class="timeline-body"><p>Technically I just need a <code>Dist</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-21 19:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/candidate_selector.rs</code>:87 on 2024-03-21 19:13</div>
+            <div class="timeline-body"><p>Not exactly, no... It's possible that we want an <code>enum</code> for <code>Candidate</code>, to represent an already-installed dist?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-21 19:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/candidate_selector.rs</code>:87 on 2024-03-21 19:13</div>
+            <div class="timeline-body"><p>Like am I supposed to <em>just</em> turn <code>InstalledDirectUrlDist</code> into <code>DirectUrlSourceDist</code> or something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-21 19:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/candidate_selector.rs</code>:87 on 2024-03-21 19:14</div>
+            <div class="timeline-body"><p>Hm I didn't consider that... I'll explore that idea</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-21 19:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/candidate_selector.rs</code>:84 on 2024-03-21 19:15</div>
+            <div class="timeline-body"><p>We sometimes intentionally omit <code>preferences</code> right so wouldn't these sometimes <em>not</em> be present there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-21 19:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/candidate_selector.rs</code>:84 on 2024-03-21 19:19</div>
+            <div class="timeline-body"><p>Yeah I guess that’s true.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-21 22:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/candidate_selector.rs</code>:84 on 2024-03-21 22:00</div>
+            <div class="timeline-body"><p>This is complicated... editables are not present in preferences. We'll need to be careful with this, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-21 22:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:28 on 2024-03-21 22:03</div>
+            <div class="timeline-body"><p>Clippy is upset about the size of this variant and it would make sense for it to be borrowed like the rest, but I'm not sure how to create a borrowed distribution in <code>CandidateSelector</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-21 22:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1002 on 2024-03-21 22:04</div>
+            <div class="timeline-body"><p>There is a sprinkling of this... perhaps suggesting the wrong abstraction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-22 17:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/lib.rs</code>:122 on 2024-03-22 17:10</div>
+            <div class="timeline-body"><p>I think adding this to <code>Dist</code> is not quite right... I feel like we need some other enum on top of this, like <code>ResolvedDist</code> that can either be a remote distribution (<code>Dist</code>) or an installed distribution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-22 17:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/distribution_database.rs</code>:327 on 2024-03-22 17:11</div>
+            <div class="timeline-body"><p>E.g., I think this should probably happen at a level above? Passing an installed distribution to this remote fetcher feels off.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-22 18:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/lib.rs</code>:122 on 2024-03-22 18:40</div>
+            <div class="timeline-body"><p>Yeah I think I share your feeling. Bigger change but might be a better level...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-25 21:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/resolved.rs</code>:42 on 2024-03-25 21:08</div>
+            <div class="timeline-body"><p>Is there a canonical name for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-25 21:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:290 on 2024-03-25 21:09</div>
+            <div class="timeline-body"><p>This is basically the whole reason <code>ResolvedDistRef</code> exists. Maybe we should just clone here? We clone <code>Dist</code> all over the place already...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-25 22:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/resolved.rs</code>:42 on 2024-03-25 22:06</div>
+            <div class="timeline-body"><p>Perhaps <code>cloned()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_install.rs</code>:3229 on 2024-03-25 22:45</div>
+            <div class="timeline-body"><p>These filters need clean-up, copied from Charlie's test case but it's not a temporary directory it's the workspace</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-25 22:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-25 22:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_install.rs</code>:3131 on 2024-03-25 22:46</div>
+            <div class="timeline-body"><p>I'm not sure we actually need this test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-25 22:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_install.rs</code>:3214 on 2024-03-25 22:46</div>
+            <div class="timeline-body"><p>You'll notice all the reinstalls panic... this needs to be addressed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/resolution.rs</code>:151 on 2024-03-26 01:00</div>
+            <div class="timeline-body"><p>Does this need <code>clone()</code>? It looks like it already takes an owned value?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/resolved.rs</code>:42 on 2024-03-26 01:02</div>
+            <div class="timeline-body"><p>In the <code>Cow</code> impl it's called <code>into_owned</code> but <code>into</code> usually consumes the value. I'd say <code>to_owned</code>: https://rust-lang.github.io/api-guidelines/naming.html#ad-hoc-conversions-follow-as_-to_-into_-conventions-c-conv</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:95 on 2024-03-26 01:07</div>
+            <div class="timeline-body"><p>I wonder about the value of making this generic. It means we need separate implementations for each concrete type when compiling. I know it's used for the empty package, but could that just be represented by an empty <code>SitePackages</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-26 01:10</div>
+            <div class="timeline-body"><p>I think this generally looks good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-26 01:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/resolved.rs</code>:42 on 2024-03-26 01:40</div>
+            <div class="timeline-body"><p>Hm I initially did <code>to_owned</code> but got confused about how that interacts with the <code>ToOwned</code> trait, maybe I'll try to figure that out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-26 01:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:95 on 2024-03-26 01:42</div>
+            <div class="timeline-body"><p>I think it needs to be generic because of the crate dependencies, I didn't do it to have an empty one. If it's not generic, then <code>uv-resolver</code> has a dependency on <code>uv-installer</code> which afaik is a no-no and the purpose of the <code>uv-traits</code> crate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-26 01:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/resolution.rs</code>:151 on 2024-03-26 01:42</div>
+            <div class="timeline-body"><p>Yeah definitely not, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-26 01:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/resolved.rs</code>:42 on 2024-03-26 01:45</div>
+            <div class="timeline-body"><p>e.g.</p>
+<pre><code class="language-diff">diff --git a/crates/distribution-types/src/resolved.rs b/crates/distribution-types/src/resolved.rs
+index fda37bc4..bf7d897d 100644
+--- a/crates/distribution-types/src/resolved.rs
++++ b/crates/distribution-types/src/resolved.rs
+@@ -33,8 +33,10 @@ impl ResolvedDist {
+     }
+ }
+ 
+-impl ResolvedDistRef&lt;'_&gt; {
+-    pub fn as_owned(&amp;self) -&gt; ResolvedDist {
++impl ToOwned for ResolvedDistRef&lt;'_&gt; {
++    type Owned = ResolvedDist;
++
++    fn to_owned(&amp;self) -&gt; Self::Owned {
+         match self {
+             Self::Installable(dist) =&gt; ResolvedDist::Installable((*dist).clone()),
+             Self::Installed(dist) =&gt; ResolvedDist::Installed((*dist).clone()),
+</code></pre>
+<pre><code>    Checking distribution-types v0.0.1 (/Users/mz/workspace/uv/crates/distribution-types)
+error[E0119]: conflicting implementations of trait `ToOwned` for type `resolved::ResolvedDistRef&lt;'_&gt;`
+  --&gt; crates/distribution-types/src/resolved.rs:36:1
+   |
+36 | impl ToOwned for ResolvedDistRef&lt;'_&gt; {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: conflicting implementation in crate `alloc`:
+           - impl&lt;T&gt; ToOwned for T
+             where T: Clone;
+
+For more information about this error, try `rustc --explain E0119`.
+error: could not compile `distribution-types` (lib) due to 1 previous error
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-26 01:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/resolved.rs</code>:42 on 2024-03-26 01:52</div>
+            <div class="timeline-body"><p>(just writing <code>to_owned</code> without implementing the trait is weird too...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-26 02:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:95 on 2024-03-26 02:14</div>
+            <div class="timeline-body"><p>Ahh okay, I see. That makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-26 02:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:290 on 2024-03-26 02:14</div>
+            <div class="timeline-body"><p>I honestly think <code>ResolvedDistRef</code> is ok.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-26 02:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/resolved.rs</code>:42 on 2024-03-26 02:15</div>
+            <div class="timeline-body"><p>Yeah <code>to_owned</code> may not be quite right... I've honestly never implemented the trait so I'm not sure. I do think it should be <code>to_</code> something though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-26 03:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/resolved.rs</code>:42 on 2024-03-26 03:46</div>
+            <div class="timeline-body"><p>Yeah :/ I was pursuing it based on that concept you linked. Unfortunately there isn't a great <code>to_&lt;...&gt;</code> subject other than &quot;owned&quot;. I'm leaning towards just <code>cloned()</code>.</p>
+<p>Calling in @BurntSushi to tell me what to do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-26 03:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:290 on 2024-03-26 03:47</div>
+            <div class="timeline-body"><p>It started to feel a little silly once I saw how much we clone <code>Dist</code>, but I'm okay with having it for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-26 03:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/resolved.rs</code>:42 on 2024-03-26 03:56</div>
+            <div class="timeline-body"><p>Some interesting context in https://stackoverflow.com/questions/72105604/implement-toowned-for-user-defined-types</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-03-26 14:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/distribution-types/src/resolved.rs</code>:42 on 2024-03-26 14:49</div>
+            <div class="timeline-body"><p>Yeah it's uncommon to impl <code>ToOwned</code> directly. I don't think there's any issue with a concrete <code>to_owned()</code> method though. <code>as_owned()</code> is definitely not in keeping with convention.</p>
+<p>You could also go the more concrete direction and name this <code>to_resolved_dist</code>. That's probably what I would do here I think. But <code>to_owned()</code> is also okay IMO.</p>
+<p><code>cloned()</code> doesn't feel quite right to me here, since this isn't just a clone, but a conversion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-26 14:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/resolved.rs</code>:42 on 2024-03-26 14:53</div>
+            <div class="timeline-body"><p>When I did a concrete <code>to_owned</code> method it wasn't called — the trait one was called instead. Seems problematic to need to specify the type to lookup the method on?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-03-26 14:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/distribution-types/src/resolved.rs</code>:42 on 2024-03-26 14:57</div>
+            <div class="timeline-body"><p>Ahhhhh right okay. Yeah, I'd go with <code>to_resolved_dist</code> then personally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-26 15:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/resolved.rs</code>:42 on 2024-03-26 15:24</div>
+            <div class="timeline-body"><p>I think this might be because the method wasn't public 😬</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-03-27 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 16:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/installed.rs</code>:119 on 2024-03-27 16:39</div>
+            <div class="timeline-body"><p>How likely is this to fail?</p>
+<p>I'd rather not push more into this pull request but we panic on this later because we don't have the metadata error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 16:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-dispatch/src/lib.rs</code>:192 on 2024-03-27 16:42</div>
+            <div class="timeline-body"><p>I currently don't do any reporting on these yet, which matches our already-satisfied installation behavior in general.</p>
+<p>I'd like to explore adding output in a follow-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 16:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1015 on 2024-03-27 16:47</div>
+            <div class="timeline-body"><p>This could block this pull request. We could add a new error variant here until <code>dist.metadata()</code> is refactored.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 16:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:618 on 2024-03-27 16:56</div>
+            <div class="timeline-body"><p>We don't short circuit anymore because it might be available in the installed packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 16:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:637 on 2024-03-27 16:57</div>
+            <div class="timeline-body"><p>We need to initialize this for lifetimes since <code>version_map</code> is a reference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-03-27 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 21:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:637 on 2024-03-27 21:08</div>
+            <div class="timeline-body"><p>Alternatively we could have <code>CandidateSelector.select</code> take an <code>Option&lt;&amp;VersionMap&gt;</code> but I opted for an empty iterable to avoid nesting in <code>select</code> instead. I'd consider revisiting this in the future as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-dispatch/src/lib.rs</code>:192 on 2024-03-27 21:09</div>
+            <div class="timeline-body"><p>In theory, these should always be empty...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-installer/src/plan.rs</code>:404 on 2024-03-27 21:10</div>
+            <div class="timeline-body"><p>Perhaps we should rename this to <code>installed</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/candidate_selector.rs</code>:86 on 2024-03-27 21:10</div>
+            <div class="timeline-body"><p>And prefer them over non-local packages, is my read. (But not over &quot;preferences&quot;.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/exclusions.rs</code>:37 on 2024-03-27 21:12</div>
+            <div class="timeline-body"><p>This might be slightly easier to write/read as a <code>match (upgrade, reinstall)</code>? But not strong feedback.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/version_map.rs</code>:202 on 2024-03-27 21:14</div>
+            <div class="timeline-body"><p>I think this would more commonly be done by implementing the <code>Default</code> trait.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/venv.rs</code>:219 on 2024-03-27 21:15</div>
+            <div class="timeline-body"><p>Hopefully never happens...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/pip_sync.rs</code>:319 on 2024-03-27 21:15</div>
+            <div class="timeline-body"><p>Nice, and these just get left as-is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/pip_sync.rs</code>:319 on 2024-03-27 21:17</div>
+            <div class="timeline-body"><p>I'm trying to think through how this intersects with <code>reinstalls</code> though... Like, what happens if we end up having to use a different version than one of the installed versions? How will the existing version be uninstalled? Would it already have been included in reinstalls somehow...?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/pip_sync.rs</code>:319 on 2024-03-27 21:21</div>
+            <div class="timeline-body"><p>Yeah, I think they would in theory already be included in <code>reinstalls</code>... Does that rely on the assumption that we pass exact-equality requirements into the <code>Planner</code>? We might already rely on this today in <code>pip install</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:618 on 2024-03-27 21:22</div>
+            <div class="timeline-body"><p>Does that come at a cost? I assume it's negligible?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1015 on 2024-03-27 21:23</div>
+            <div class="timeline-body"><p>What's the blocker? E.g., why does it need to be refactored?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/pip_sync.rs</code>:319 on 2024-03-27 21:26</div>
+            <div class="timeline-body"><p>Like the problem I'm imagining is something like... We have <code>foo==2.0.0</code> installed. The user requests <code>foo</code>. <code>foo==2.0.0</code> satisfies <code>foo</code>, but then we go to resolve, and we find that we need <code>foo==3.0.0</code>. But we'd only learn that when resolving, not when creating the install plan...</p>
+<p>It shouldn't matter here since it's not a &quot;real&quot; resolution, we're just looking for a distribution for each version. It could matter for <code>pip install</code>, but in that case we resolve first, then use the <code>requirements</code> from the resolution as the inputs to the plan, which are pinned to exact versions. Anyway, there's probably some (existing) implicit coupling there that we should consider making explicit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:637 on 2024-03-27 21:27</div>
+            <div class="timeline-body"><p>I <em>think</em> you can do <code>let empty_version_map;</code> here and then <code>empty_version_map = VersionMap::default()</code> in each branch if you want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:862 on 2024-03-27 21:31</div>
+            <div class="timeline-body"><p>I believe so but want to confirm: do you have any tests in which a package is already installed, but doesn't exist on the registry? I.e., exercising true for <code>self.unavailable_packages.get(package_name).is_some()</code> and false for the latter condition.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:866 on 2024-03-27 21:31</div>
+            <div class="timeline-body"><p>How do we even get here btw?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-03-27 21:32</div>
+            <div class="timeline-body"><p>This generally looks great to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 23:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:618 on 2024-03-27 23:48</div>
+            <div class="timeline-body"><p>I think it's a small cost, but I think this wasn't an optimization really it was just a &quot;we don't have a version map so we can't call select&quot;. We still short circuit if no versions are found locally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 23:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:637 on 2024-03-27 23:48</div>
+            <div class="timeline-body"><p>Oh that could be nicer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 23:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-dispatch/src/lib.rs</code>:192 on 2024-03-27 23:50</div>
+            <div class="timeline-body"><p>Do you mean just in dispatch or..?</p>
+<p>I populate <code>local</code> at https://github.com/astral-sh/uv/blob/5a363fc2d4bccd2e049acc1fcfa18ed24fbd6e4a/crates/uv-installer/src/plan.rs#L177</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 23:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-installer/src/plan.rs</code>:404 on 2024-03-27 23:53</div>
+            <div class="timeline-body"><p>I think I had that initially and changed to <code>local</code> to opposed <code>remote</code>. I don't really like <code>remote</code> either since they could be on the user's machine just not in the environment... hm.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-27 23:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/pip_sync.rs</code>:319 on 2024-03-27 23:57</div>
+            <div class="timeline-body"><p>Since #2696 was merged I'm just telling the resolver that there are no installed packages available for <code>pip sync</code>. We can consider how we want to handle that separately?</p>
+<p>Do your comments apply outside of this command?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-27 23:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-dispatch/src/lib.rs</code>:192 on 2024-03-27 23:58</div>
+            <div class="timeline-body"><p>I just mean in <code>dispatch</code>, since it's a fresh virtual environment IIUC.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-28 00:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:866 on 2024-03-28 00:00</div>
+            <div class="timeline-body"><p>Maybe a dumb question since there's a <code>debug_assert!</code> here anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-28 00:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/pip_sync.rs</code>:319 on 2024-03-28 00:01</div>
+            <div class="timeline-body"><p>I don't think my comments merit any changes to the PR. I'm more commenting on the fact that we pass <code>requirements</code> to <code>Plan</code> to tell it what versions we're going to need, but a <code>Requirement</code> is actually pretty loose.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-28 00:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1015 on 2024-03-28 00:10</div>
+            <div class="timeline-body"><p>Unblocked in https://github.com/astral-sh/uv/pull/2596/commits/a8ba64f0d4a650ec7c9cc6bc1331f014103da3a4 which should clarify</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-28 00:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:637 on 2024-03-28 00:12</div>
+            <div class="timeline-body"><p>Actually idk if that makes sense we're trying to return <code>&amp;VersionMap::default()</code> in the match which is the problem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-28 00:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:866 on 2024-03-28 00:48</div>
+            <div class="timeline-body"><p>Ah if a version map cannot be retrieved for a package we track the package in <code>unavailable_packages</code> but that's no longer the sole way to have a candidate for a package so this is kind of a lazy way of allowing installed packages dependencies to be retrieved even if they were not available in the index.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-28 00:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:862 on 2024-03-28 00:49</div>
+            <div class="timeline-body"><p>Yes definitely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-28 00:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/candidate_selector.rs</code>:86 on 2024-03-28 00:50</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/2596/commits/76fe2f43d5380e84a119af45df4dc6ba706cc500</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-28 03:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-dispatch/src/lib.rs</code>:192 on 2024-03-28 03:21</div>
+            <div class="timeline-body"><p>Ah okay yeah that makes sense. I commented on an arbitrary line here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-28 14:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-installer/src/plan.rs</code>:404 on 2024-03-28 14:29</div>
+            <div class="timeline-body"><p>This was for a bad reason, it collided with an <code>installed</code> variable in <code>Planner::build</code>. Resolved now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-28 14:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/exclusions.rs</code>:37 on 2024-03-28 14:31</div>
+            <div class="timeline-body"><p>Going to stick with the existing style since it is a copy of what we were doing before this pull request. I wouldn't be upset about a follow-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-28 14:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/pip_sync.rs</code>:319 on 2024-03-28 14:32</div>
+            <div class="timeline-body"><p>Yeah I noticed that too, like I kind of wanted the <code>ResolvedDist</code> here since the resolver <em>knows</em> an installed version should be used already. I think there's probably room for future clean-up here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-28 17:10</div>
+            <div class="timeline-body"><p>I've addressed all the feedback from the review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-03-28 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-03-28 18:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-03-28 18:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-28 18:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:26 UTC
+    </footer>
+</body>
+</html>

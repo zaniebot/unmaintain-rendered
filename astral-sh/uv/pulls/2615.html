@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid ignore crate finding cache gitignore - astral-sh/uv #2615</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid ignore crate finding cache gitignore</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2615">#2615</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-03-22 15:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-03-22 15:42</div>
+            <div class="timeline-body"><p>We put a <code>.gitignore</code> with <code>*</code> at the top of our cache. When maturin was building a source distribution inside the cache, it would walk up the tree to find a gitignore, see that and ignore all python files. We now add an (empty) <code>.git</code> directory one directory below, in the root of built-wheels cache. This prevents ignore walking further up (it marks the top level a git repository).</p>
+<p>Deptry (from #2490) is a mid sized rust package with additional python packages, so instead of using it in the test i've replaced it with a small (44KB total) reproducer that uses cffi for faster building, the entire test taking &lt;2s on my machine.</p>
+<p>Fixes #2490</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-03-22 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2024-03-22 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2024-03-22 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-03-22 15:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-22 15:57</div>
+            <div class="timeline-body"><p>:D this is an endless source of trouble</p>
+<p>Related:</p>
+<ul>
+<li>#2466</li>
+<li>https://github.com/pypa/hatch/issues/1273</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-22 15:58</div>
+            <div class="timeline-body"><p>Why doesn't #2466 address this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-22 16:03</div>
+            <div class="timeline-body"><p>As i understand it, ignore walks up until it finds a git repository root, since gitignores extend each other (cc @BurntSushi)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-03-22 16:34</div>
+            <div class="timeline-body"><blockquote>
+<p>As i understand it, ignore walks up until it finds a git repository root, since gitignores extend each other (cc @BurntSushi)</p>
+</blockquote>
+<p>Yeah, although you can opt out of <code>.git</code> detection with <a href="https://docs.rs/ignore/latest/ignore/struct.WalkBuilder.html#method.require_git"><code>WalkBuilder::require_git</code></a>.</p>
+<p>You can also explicitly opt out of the &quot;ascend the directory tree&quot; behavior with <a href="https://docs.rs/ignore/latest/ignore/struct.WalkBuilder.html#method.parents"><code>WalkBuilder::parents</code></a>. (@konstin I forgot to ask whether using this would be appropriate in this context.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-03-22 17:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-22 17:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>scripts/packages/deptry_reproducer/Cargo.toml</code>:2 on 2024-03-22 17:17</div>
+            <div class="timeline-body"><p>Can we put this in <code>editable-installs</code>, just because that's where all our other local packages are?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-22 18:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>scripts/packages/deptry_reproducer/Cargo.toml</code>:2 on 2024-03-22 18:02</div>
+            <div class="timeline-body"><p>Do you mind if i rename editable installs to <code>packages</code> first in a separate PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-22 18:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>scripts/packages/deptry_reproducer/Cargo.toml</code>:2 on 2024-03-22 18:08</div>
+            <div class="timeline-body"><p>Yeah, that’s fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-22 19:20</div>
+            <div class="timeline-body"><p>@charliermarsh should I release this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-22 19:33</div>
+            <div class="timeline-body"><p>@zanieb - Yeah, let's include it. @konstin can rename the directory as a follow-up instead of a precursor PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-03-22 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-03-22 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-22 19:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:26 UTC
+    </footer>
+</body>
+</html>

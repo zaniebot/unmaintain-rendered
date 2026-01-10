@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv: add hidden --emit-marker-expression flag - astral-sh/uv #2651</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv: add hidden --emit-marker-expression flag</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2651">#2651</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-03-25 16:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-03-25 16:07</div>
+            <div class="timeline-body"><p>This PR adds a new flag, <code>--emit-marker-expression</code>, to <code>uv pip compile</code>. The flag is hidden and not considered part of the stable API.</p>
+<p>When given, this flag adjusts the output of <code>uv pip compile</code> to include
+a comment that contains a marker expression. The guarantee provided
+by this expression is that if it's true, then the pinned requirements
+are guaranteed to be valid. (But there may be cases where the pinned
+requirements are valid and the marker expression evaluates to false.)</p>
+<p>This marker expression is meant to be one small piece of <a href="https://discuss.python.org/t/lock-files-again-but-this-time-w-sdists/46593">Brett
+Canon's lock file proposal</a>. Specifically, the <code>lock.markers</code> fields.
+I implemented this to get an idea of what it would look like in the
+context of <code>uv</code>.</p>
+<p>The idea behind writing this into a comment is principally to make
+this functionality easily testable via the CLI. It's not clear whether
+this is something we'll want to make part of our stable CLI, but the
+functionality it provides is likely something we will need in some form
+eventually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-03-25 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-03-25 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2024-03-25 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolution.rs</code>:336 on 2024-03-26 16:36</div>
+            <div class="timeline-body"><p>So what we do is collect all marker keys that are used and add them with the current platform, which is stricter than necessary (unlike add <code>sys_platform != &quot;macos&quot;</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-26 16:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/pip_compile.rs</code>:6250 on 2024-03-26 16:43</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// This tests the marker expressions emitted when depending on a package with 
+a
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/pip_compile.rs</code>:6257 on 2024-03-26 16:47</div>
+            <div class="timeline-body"><p>Do you have reproduction instructions for this? That looks like a bug (https://inspector.pypi.io/project/pendulum/3.0.0/packages/67/5e/e646afbd1632bfbacdae79289d7d5879efdeeb5f5e58327bc5c698731107/pendulum-3.0.0-cp310-none-win_amd64.whl/pendulum-3.0.0.dist-info/METADATA#line.12)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-03-26 16:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-26 18:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolution.rs</code>:336 on 2024-03-26 18:11</div>
+            <div class="timeline-body"><p>That's correct. This is necessary since the proposal only allows you to provide a dictionary of required markers, so we can't express <code>sys_platform != &quot;macos&quot;</code> -- only <code>sys_platform == &quot;whatever_we_have&quot;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-26 18:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/pip_compile.rs</code>:453 on 2024-03-26 18:13</div>
+            <div class="timeline-body"><p>I think this should be immediately after the <code>include_header</code>, and should also be green, since it's a comment. Some of the entries above this are <em>not</em> comments and are actual content.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-03-26 18:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-03-27 14:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/pip_compile.rs</code>:6257 on 2024-03-27 14:49</div>
+            <div class="timeline-body"><p>I think it is just <code>echo pendulum | uv pip compile .</code> on Windows. I only observed it on CI through this test though. I'll put up another PR with a regression test and see what happens.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-03-27 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-03-27 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-27 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-03-27 15:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/pip_compile.rs</code>:6257 on 2024-03-27 15:59</div>
+            <div class="timeline-body"><p>ref https://github.com/astral-sh/uv/pull/2693</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:26 UTC
+    </footer>
+</body>
+</html>

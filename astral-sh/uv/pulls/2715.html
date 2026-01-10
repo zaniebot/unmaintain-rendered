@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv-cache: bump built-wheels cache version - astral-sh/uv #2715</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv-cache: bump built-wheels cache version</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2715">#2715</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-03-28 18:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-03-28 18:14</div>
+            <div class="timeline-body"><p>It turns out that #2712 did <em>not</em> fix #2711. After I put up #2712, I
+started trying to track down the specific change that caused the
+failure. I had assumed at first that it was related to one of our <code>rkyv</code>
+types, but it actually ended up being one of our msgpack caches. I think
+the failure mode is still fundamentally the same idea: the cached data
+changed in a way that is still valid msgpack, but got interpreted
+differently after deserializing.</p>
+<p>The specific change that caused this was the <a href="https://github.com/astral-sh/uv/commit/365c2925250351e666edad68199ef06a3d83584c#diff-e42586829f9c2cdbb909bedc5cf95691cc415247f2cbc2ebeb80d887020457bbL29">removal of a field</a> from our
+metadata type.</p>
+<p>Ideally we would just undo the change and add the field back. But that
+change has already been shipped out to users. So I believe the only
+plausible choice at this point is to bump the <code>built-wheels</code> cache. This
+will unfortunately mean that <code>uv</code> will need to re-build wheels.</p>
+<p>Fixes #2711</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-03-28 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @BurntSushi on 2024-03-28 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-03-28 18:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-03-28 18:16</div>
+            <div class="timeline-body"><p>Here is my test protocol. First, the failure:</p>
+<pre><code>$ rm -rf ~/.cache/uv &amp;&amp; rm -rf .venv &amp;&amp; uv-0.1.24 venv &amp;&amp; uv-0.1.24 pip install -q homeassistant
+Using Python 3.12.0 interpreter at: /home/andrew/.pyenv/versions/3.12.0/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+$ uv-0.1.25 pip install -q homeassistant --reinstall-package homeassistant
+error: Failed to download and build: pyric==0.1.6.3
+  Caused by: Failed to deserialize cache entry
+  Caused by: expected version to start with a number, but no leading ASCII digits were found
+$
+</code></pre>
+<p>And now a demonstration that this PR doesn't have the issue:</p>
+<pre><code>$ rm -rf ~/.cache/uv &amp;&amp; rm -rf .venv &amp;&amp; uv-0.1.24 venv &amp;&amp; uv-0.1.24 pip install -q homeassistant
+Using Python 3.12.0 interpreter at: /home/andrew/.pyenv/versions/3.12.0/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+$ uv-this-pr pip install -q homeassistant --reinstall-package homeassistant
+$
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-03-28 18:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-28 18:23</div>
+            <div class="timeline-body"><p>You should also be able to un-bump the simple cache version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-28 18:23</div>
+            <div class="timeline-body"><p>But... I don't feel strongly. Let's just leave it bumped actually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-03-28 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-03-28 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-28 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-03-28 18:26</div>
+            <div class="timeline-body"><p>Yeah I thought about that, but didn't want to get too cute since that bump already landed on <code>main</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:26 UTC
+    </footer>
+</body>
+</html>

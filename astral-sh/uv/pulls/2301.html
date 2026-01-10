@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a `-vv` log level and make `-v` more readable - astral-sh/uv #2301</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a <code>-vv</code> log level and make <code>-v</code> more readable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2301">#2301</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-03-08 15:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-03-08 15:33</div>
+            <div class="timeline-body"><p>Behind error messages, the debug log is the second most important resource to finding out what and why went wrong when there was a problem with uv. It is important to see which paths it has found and how the decisions in the resolver were made. I'm trying to improve the experience interacting with the debug log.</p>
+<p>The hierarchical layer is verbose and hard to follow, so it's moved to the <code>-vv</code> extra verbose setting, while <code>-v</code> works like <code>RUST_LOG=uv=debug</code>.</p>
+<p>For installing jupyter with a warm cache:</p>
+<ul>
+<li>Default: https://gist.github.com/konstin/4de6e466127311c5a5fc2f99c56a8e11</li>
+<li><code>-v</code>: https://gist.github.com/konstin/e7bafe0ec7d07e47ba98a3865ae2ef3e</li>
+<li><code>-vv</code>: https://gist.github.com/konstin/3ee1aaff37f91cceb6275dd5525f180e
+Ideally, we would have <code>-v</code>, <code>-vv</code> and <code>-vvv</code>, but we're lacking the the <code>info!</code> layer for <code>-v</code>, so there's only two layers for now.</li>
+</ul>
+<p>The <code>tracing_subcriber</code> formatter always print the current span, so i replaced it with a custom formatter.</p>
+<p><img src="https://github.com/astral-sh/uv/assets/6826232/75f5cfd1-da7b-432e-b090-2f3916930dd1" alt="image" /></p>
+<p>Best read commit-by-commit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-08 15:38</div>
+            <div class="timeline-body"><p>Without reading through everything here.. my initial thoughts about logging are:</p>
+<ul>
+<li><code>-v</code> should include some additional tracing messages. It should not be for debugging. It should be for users who want to understand <em>what</em> <code>uv</code> is doing. We definitely need to show less messages than our current verbose output. A flat format makes a lot of sense.</li>
+<li><code>-vv</code> should include debug level messages. It should be used for debugging. I think using a flat format is fine here too. This should be our recommended level when reporting bugs.</li>
+<li><code>-vvv</code> should include trace level messages. It should be used for advanced debugging. Using the nested format makes sense here.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-08 15:51</div>
+            <div class="timeline-body"><p>My thought was to not have too many flags but have users quickly switch to <code>RUST_LOG=debug</code> or <code>RUST_LOG=&lt;module&gt;=trace</code>, the filtering feature is something a counted cli flag can't compete with.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-08 16:01</div>
+            <div class="timeline-body"><p>I don't think <code>RUST_LOG</code> levels are a reasonable thing to expect from users. It seems like a power-user feature. I agree filtering seems nice but it's not like a counted flag will prevent power users from using it? We don't have to override <code>RUST_LOG</code> if it is set.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-08 16:31</div>
+            <div class="timeline-body"><blockquote>
+<p>We definitely need to show less messages than our current verbose output</p>
+</blockquote>
+<p>Where would you source those messages, from what we currently show as reporter spinner status message?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-03-08 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @konstin on 2024-03-08 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-08 16:59</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>We definitely need to show less messages than our current verbose output</p>
+</blockquote>
+<p>Where would you source those messages, from what we currently show as reporter spinner status message?</p>
+</blockquote>
+<p>I'm not sure! I'm not super familiar with our logging setup. I presume we'd use <code>info!</code> level logs for things that should be shown with <code>-v</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-10 15:33</div>
+            <div class="timeline-body"><p>I agree, but we're currently lacking an <code>info!</code> layer, we effectively don't use it at all but only <code>debug!</code> and <code>trace!</code>. I don't want to extend the scope here even more to recategorizing all our <code>debug!</code> into <code>info!</code> and <code>debug!</code>. Instead, i'd like to go ahead with the <code>-v</code>/<code>-vv</code> split now, we can split them into three levels later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2024-03-10 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @konstin on 2024-03-10 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-03-11 04:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Improve debug logging" to "Add a `-vv` log level and make `-v` more readable" by @konstin on 2024-03-11 07:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">tracing</span> added by @konstin on 2024-03-11 07:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-03-11 07:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-03-11 07:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-11 07:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:26 UTC
+    </footer>
+</body>
+</html>

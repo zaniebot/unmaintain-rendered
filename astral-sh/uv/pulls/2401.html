@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: keep backwards compatibility with `SSL_CERT_FILE` without requiring `--native-tls` - astral-sh/uv #2401</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: keep backwards compatibility with <code>SSL_CERT_FILE</code> without requiring <code>--native-tls</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2401">#2401</a>
+        opened by <a href="https://github.com/samypr100">@samypr100</a>
+        on 2024-03-13 02:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/samypr100">@samypr100</a> on 2024-03-13 02:02</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Small follow up to https://github.com/astral-sh/uv/pull/2362 to check if <code>SSL_CERT_FILE</code> is set to enable <code>--native-tls</code> functionality. This maintains backwards compatibility with <code>0.1.17</code> and below users leveraging only <code>SSL_CERT_FILE</code>.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/2400</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>Assuming <code>SSL_CERT_FILE</code> is already working via <code>--native-tls</code>, this is simply a shortcut to enable <code>--native-tls</code> functionality implicitly while still being able to let <code>rustls-native-certs</code> handle the loading of <code>SSL_CERT_FILE</code> instead of ourselves.</p>
+<p>Edit: Manually tested by setting up own self-signed CA certificate bundle and set <code>SSL_CERT_FILE</code> to this and confirmed the loading happens without having to specify <code>--native-tls</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "feat: keep backwards compatibility with `SSL_CERT_FILE` without requiring --native-tls" to "feat: keep backwards compatibility with `SSL_CERT_FILE` without requiring `--native-tls`" by @samypr100 on 2024-03-13 02:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @samypr100 on 2024-03-13 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/registry_client.rs</code>:123 on 2024-03-13 02:15</div>
+            <div class="timeline-body"><p>Should we instead change <code>tls::load</code> to add a certificate based on <code>SSL_CERT_FILE</code>? I think we would just call <code>root_cert_store.add</code> with the result of this: https://github.com/astral-sh/uv/pull/2351/files#diff-dcc1f69d132524500a0dcf217aa6db521517536daaf9364f3085961626fe722cR120</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-13 02:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-03-13 02:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/src/registry_client.rs</code>:123 on 2024-03-13 02:38</div>
+            <div class="timeline-body"><p>I was thinking more towards delegating the parsing of <code>SSL_CERT_FILE</code> to <a href="https://github.com/rustls/rustls-native-certs/blob/main/src/lib.rs#L73">rustls-native-certs</a> as we already do when we combine (<code>--native-tls</code> with <code>SSL_CERT_FILE</code>).</p>
+<p>The <code>SSL_CERT_FILE</code> is actually a CA bundle, meaning it can contain more than one cert. I believe we'd have to load each entry, get a vector of Certificates, and them add them to the builder one by one and handle potential incompatible cert errors along the way (we get this for free with rustls-native-certs).
+I did see an API reqwest to <a href="https://docs.rs/reqwest/latest/reqwest/tls/struct.Certificate.html#method.from_pem_bundle">load a pem bundle</a>, but didn't see one to add them all at once, so we'd need to call <code>add_root_certificate</code> for each one in a loop as we build client.</p>
+<p>Sidenote, I've just tested this current PR with creating my own self-signed CA's and set <code>SSL_CERT_FILE</code> to this and can confirm this solution would effectively delegate the parsing of <code>SSL_CERT_FILE</code> to <code>rustls-native-certs</code> properly (as we already do with the combination of <code>--native-tls</code> with <code>SSL_CERT_FILE</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-03-13 02:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/src/registry_client.rs</code>:123 on 2024-03-13 02:53</div>
+            <div class="timeline-body"><p>If we're concerned with a user providing an invalid <code>SSL_CERT_FILE</code> path, how about a nice warning?</p>
+<pre><code class="language-rust">            let ssl_cert_file_exists = env::var_os(&quot;SSL_CERT_FILE&quot;)
+                .map_or(false, |path| {
+                    let path_exists = Path::new(&amp;path).exists();
+                    if !path_exists {
+                        warn_user_once!(&quot;Ignoring invalid value from environment for SSL_CERT_FILE. File path {} does not exists.&quot;, path.to_string_lossy());
+                    }
+                    path_exists
+                });
+
+            let tls = tls::load(if self.native_tls || ssl_cert_file_exists {
+                Roots::Native
+            } else {
+                Roots::Webpki
+            })
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-13 02:53</div>
+            <div class="timeline-body"><p>Thanks! I was going to flag this too when looking at the changelog — I think this is a very reasonable behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-03-13 02:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-13 02:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/registry_client.rs</code>:123 on 2024-03-13 02:55</div>
+            <div class="timeline-body"><p>I think that seems reasonable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-03-13 03:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/src/registry_client.rs</code>:123 on 2024-03-13 03:05</div>
+            <div class="timeline-body"><p>Added in 85d92e8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-13 03:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/registry_client.rs</code>:124 on 2024-03-13 03:13</div>
+            <div class="timeline-body"><p>Nit: <code>is_some_and</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-13 03:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/registry_client.rs</code>:127 on 2024-03-13 03:14</div>
+            <div class="timeline-body"><p>Nit: <code>path.simplified_display()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-03-13 04:22</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-13 04:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-13 04:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-13 12:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:26 UTC
+    </footer>
+</body>
+</html>

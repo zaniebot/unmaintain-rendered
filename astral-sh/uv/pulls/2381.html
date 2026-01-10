@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move architecture and operating system probing to Python - astral-sh/uv #2381</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Move architecture and operating system probing to Python</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2381">#2381</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-03-12 12:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-03-12 12:47</div>
+            <div class="timeline-body"><p>The architecture of uv does not necessarily match that of the python interpreter (#2326). In cross compiling/testing scenarios the operating system can also mismatch. To solve this, we move arch and os detection to python, vendoring the relevant pypa/packaging code, preventing mismatches between what the python interpreter was compiled for and what uv was compiled for.</p>
+<p>To make the scripts more manageable, they are now a directory in a tempdir and we run them with <code>python -m</code> . I've simplified the pypa/packaging code since we're still building the tags in rust. A <code>Platform</code> is now instantiated by querying the python interpreter for its platform. The pypa/packaging files are copied verbatim for easier updates except a <code>lru_cache()</code> python 3.7 backport.</p>
+<p>Error handling is done by a <code>&quot;result&quot;: &quot;success|error&quot;</code> field that allow passing error details to rust:</p>
+<pre><code class="language-console">$ uv venv --no-cache
+  × Can't use Python at `/home/konsti/projects/uv/.venv/bin/python3`
+  ╰─▶ Unknown operation system `linux`
+</code></pre>
+<p>I've used the <a href="https://github.com/PyO3/maturin/tree/855f6d2cb1fb8fb43c2bb9e500ab0e5e84bd3140/sysconfig">maturin sysconfig collection</a> as reference. I'm unsure how to test these changes across the wide variety of platforms.</p>
+<p>Fixes #2326</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2024-03-12 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2024-03-12 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-12 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/interpreter.rs</code>:364 on 2024-03-12 14:54</div>
+            <div class="timeline-body"><p>Not to be annoying here, but are we going to say we're okay with temporary directories outside of scopes we control? I understand the system cleanup argument but perhaps we should be garbage collecting them ourselves from a dedicated cache directory?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-12 14:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/interpreter.rs</code>:449 on 2024-03-12 14:59</div>
+            <div class="timeline-body"><p>I'm 100% serious, should we consider concatenating these into a single Python file for simplicity?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/interpreter.rs</code>:449 on 2024-03-12 15:28</div>
+            <div class="timeline-body"><p>This was my first idea, i like the current one for manageable file sizes and because we can easily update from pypa/packaging upstream</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-12 15:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-12 15:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/interpreter.rs</code>:364 on 2024-03-12 15:31</div>
+            <div class="timeline-body"><p>Unless there is a specific problem with the system directories, i believe we should follow system conventions and user's settings over rolling our own. For our own garbage collection, we'd also have to implement our own synchronization when there are multiple uv instances running in parallel.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/interpreter.rs</code>:364 on 2024-03-12 16:06</div>
+            <div class="timeline-body"><p>I'd say let's just put it in the cache for consistency. It shouldn't be too hard here, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-12 16:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-12 16:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/interpreter.rs</code>:449 on 2024-03-12 16:07</div>
+            <div class="timeline-body"><p>What about a processing script that merges them?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-12 16:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/interpreter.rs</code>:449 on 2024-03-12 16:10</div>
+            <div class="timeline-body"><p>I guess this is PyInstaller?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-12 16:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/interpreter.rs</code>:449 on 2024-03-12 16:14</div>
+            <div class="timeline-body"><p>If we can script it i'm in favor. Maybe https://docs.python.org/3/library/zipimport.html is for that case? I haven't used it myself but i know people use it for bundling use cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-12 16:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/interpreter.rs</code>:364 on 2024-03-12 16:56</div>
+            <div class="timeline-body"><p>What synchronization would we need? I would just delete old temporary directories (i.e. 24 hours) similar to how <code>/tmp</code> can be cleaned at arbitrary times.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-12 16:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/interpreter.rs</code>:364 on 2024-03-12 16:59</div>
+            <div class="timeline-body"><p>We can do that. What does it give us over the system temp?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-12 20:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/interpreter.rs</code>:364 on 2024-03-12 20:21</div>
+            <div class="timeline-body"><p>I also don't follow the motivation yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-12 21:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/interpreter.rs</code>:364 on 2024-03-12 21:06</div>
+            <div class="timeline-body"><p>I've heard of problems being caused by the system cleaning up temporary directories at arbitrary times which can break your program. Notably though we've already had problems with the system temporary directory (as discussed in the copy-on-write issue) and it seems safer to just use a directory we control. I'm totally fine with us deciding we want to use the system temporary directory, but I want us to be consistent if feasible or be clear about <em>when</em> we should use one vs another.</p>
+<p>@charliermarsh previously @konstin said that using the system temporary directory was preferred for automated cleanup if we fail to clean up the directory i.e. if we crash.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-13 00:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/tests/resolver.rs</code>:123 on 2024-03-13 00:15</div>
+            <div class="timeline-body"><p>What's going on here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-13 00:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/python/get_interpreter_info.py</code>:477 on 2024-03-13 00:20</div>
+            <div class="timeline-body"><p>I think this is a typo, should be <code>&quot;name&quot; :operating_system</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-03-13 04:19</div>
+            <div class="timeline-body"><p>Looks good to me! Nice work. I just made a few small tweaks and fixed what I think is one bug in the BSD path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from " Move arch and os probing to python" to "Move architecture and operating system probing to Python" by @charliermarsh on 2024-03-13 04:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-13 04:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-13 04:39</div>
+            <div class="timeline-body"><p>@konstin - I tried to merge this but <code>windows_shims</code> was failing after merging in <code>main</code>, I have no idea why.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-13 09:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/interpreter.rs</code>:364 on 2024-03-13 09:58</div>
+            <div class="timeline-body"><blockquote>
+<p>I've heard of problems being caused by the system cleaning up temporary directories at arbitrary times which can break your program.</p>
+</blockquote>
+<p>If we can get a reproduction for that i'm all for switching to never using system temp again.</p>
+<blockquote>
+<p>Notably though we've already had problems with the system temporary directory (as discussed in the copy-on-write issue) and it seems safer to just use a directory we control.</p>
+</blockquote>
+<p>That is a very specific problem: Operating system don't offer atomic write operations, so e.g. two installer threads writing the same file could produce something broken/crash. Renames are (assumed to be) atomic and replace the existing file. Renames don't work across device boundaries (it would need a copy), so we need to create a named tempfile/tempdir in the same location as the final file, write to it and persist it. Some people e.g. put a ramdisk as their <code>/tmp</code> or the target fs is part of an overlayfs while tmp isn't, or the project lies on a different partition or drive than the system.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-13 10:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/tests/resolver.rs</code>:123 on 2024-03-13 10:04</div>
+            <div class="timeline-body"><p>The fake interpreter needs to know it's platform to compute the tags we need for resolution. Previously, we could ask in rust, now we need an actual python interpreter. Assuming the dev has any python 3 with the right os + arch installed seemed like an ok assumption here, but i can pull in our bootstrapped python finding for a correct works-independent-of-outside-project-environment solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-13 11:38</div>
+            <div class="timeline-body"><p>It was the usual suspect again: bat files don't support UNC paths so the shim was skipped.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-13 11:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-13 11:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-13 11:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:49:26 UTC
+    </footer>
+</body>
+</html>
