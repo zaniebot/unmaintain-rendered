@@ -1,0 +1,534 @@
+```yaml
+number: 22005
+title: "[ty] Improve highlighting of special type syntax in hovers"
+type: pull_request
+state: merged
+author: Gankra
+labels:
+  - server
+  - ty
+assignees: []
+merged: true
+base: main
+head: gankra/typerender
+created_at: 2025-12-16T13:41:12Z
+updated_at: 2025-12-16T14:20:36Z
+url: https://github.com/astral-sh/ruff/pull/22005
+synced_at: 2026-01-10T16:42:11Z
+```
+
+# [ty] Improve highlighting of special type syntax in hovers
+
+---
+
+_Pull request opened by @Gankra on 2025-12-16 13:41_
+
+## Summary
+
+These types look better rendered as XML than python
+
+## Test Plan
+
+<img width="532" height="299" alt="Screenshot 2025-12-16 at 8 40 56 AM" src="https://github.com/user-attachments/assets/42d9abfa-3f4a-44ba-b6b4-6700ab06832d" />
+
+
+---
+
+_Review requested from @carljm by @Gankra on 2025-12-16 13:41_
+
+---
+
+_Label `server` added by @Gankra on 2025-12-16 13:41_
+
+---
+
+_Review requested from @AlexWaygood by @Gankra on 2025-12-16 13:41_
+
+---
+
+_Review requested from @sharkdp by @Gankra on 2025-12-16 13:41_
+
+---
+
+_Label `ty` added by @Gankra on 2025-12-16 13:41_
+
+---
+
+_Review requested from @dcreager by @Gankra on 2025-12-16 13:41_
+
+---
+
+_Review requested from @MichaReiser by @Gankra on 2025-12-16 13:41_
+
+---
+
+_Renamed from "[ty] treat special type syntax as xml" to "[ty] highlight special type syntax in hovers as xml" by @Gankra on 2025-12-16 13:41_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-16 13:43_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-12-16 14:00:38.385044660 +0000
++++ new-output.txt	2025-12-16 14:00:41.872037090 +0000
+@@ -513,29 +513,29 @@
+ generics_scoping.py:75:11: error[invalid-generic-class] Generic class `Bad` must not reference type variables bound in an enclosing scope: `T` referenced in class definition here
+ generics_self_advanced.py:11:24: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@prop1`
+ generics_self_advanced.py:28:25: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@method1`
+-generics_self_advanced.py:36:9: error[type-assertion-failure] Type `list[Self@method2]` does not match asserted type `list[<special form 'typing.Self'>]`
+-generics_self_advanced.py:37:9: error[type-assertion-failure] Type `Self@method2` does not match asserted type `<special form 'typing.Self'>`
+-generics_self_advanced.py:43:9: error[type-assertion-failure] Type `list[Self@method3]` does not match asserted type `list[<special form 'typing.Self'>]`
+-generics_self_advanced.py:44:9: error[type-assertion-failure] Type `Self@method3` does not match asserted type `<special form 'typing.Self'>`
+-generics_self_attributes.py:26:33: error[invalid-argument-type] Argument is incorrect: Expected `<special form 'typing.Self'> | None`, found `LinkedList[int]`
+-generics_self_attributes.py:29:5: error[invalid-assignment] Object of type `OrdinalLinkedList` is not assignable to attribute `next` of type `<special form 'typing.Self'> | None`
+-generics_self_attributes.py:32:5: error[invalid-assignment] Object of type `LinkedList[int]` is not assignable to attribute `next` of type `<special form 'typing.Self'> | None`
++generics_self_advanced.py:36:9: error[type-assertion-failure] Type `list[Self@method2]` does not match asserted type `list[<special-form 'typing.Self'>]`
++generics_self_advanced.py:37:9: error[type-assertion-failure] Type `Self@method2` does not match asserted type `<special-form 'typing.Self'>`
++generics_self_advanced.py:43:9: error[type-assertion-failure] Type `list[Self@method3]` does not match asserted type `list[<special-form 'typing.Self'>]`
++generics_self_advanced.py:44:9: error[type-assertion-failure] Type `Self@method3` does not match asserted type `<special-form 'typing.Self'>`
++generics_self_attributes.py:26:33: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'> | None`, found `LinkedList[int]`
++generics_self_attributes.py:29:5: error[invalid-assignment] Object of type `OrdinalLinkedList` is not assignable to attribute `next` of type `<special-form 'typing.Self'> | None`
++generics_self_attributes.py:32:5: error[invalid-assignment] Object of type `LinkedList[int]` is not assignable to attribute `next` of type `<special-form 'typing.Self'> | None`
+ generics_self_basic.py:20:16: error[invalid-return-type] Return type does not match returned value: expected `Self@method2`, found `Shape`
+ generics_self_basic.py:33:16: error[invalid-return-type] Return type does not match returned value: expected `Self@cls_method2`, found `Shape`
+ generics_self_basic.py:64:38: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@set_value`
+ generics_self_basic.py:67:26: error[invalid-type-form] Special form `typing.Self` expected no type parameter
+ generics_self_protocols.py:61:19: error[invalid-argument-type] Argument to function `accepts_shape` is incorrect: Expected `ShapeProtocol`, found `BadReturnType`
+ generics_self_protocols.py:64:19: error[invalid-argument-type] Argument to function `accepts_shape` is incorrect: Expected `ShapeProtocol`, found `ReturnDifferentClass`
+-generics_self_usage.py:50:34: error[invalid-assignment] Object of type `def foo(self) -> int` is not assignable to `(<special form 'typing.Self'>, /) -> int`
+-generics_self_usage.py:73:14: error[invalid-type-form] Variable of type `<special form 'typing.Self'>` is not allowed in a type expression
+-generics_self_usage.py:73:23: error[invalid-type-form] Variable of type `<special form 'typing.Self'>` is not allowed in a type expression
+-generics_self_usage.py:76:6: error[invalid-type-form] Variable of type `<special form 'typing.Self'>` is not allowed in a type expression
++generics_self_usage.py:50:34: error[invalid-assignment] Object of type `def foo(self) -> int` is not assignable to `(<special-form 'typing.Self'>, /) -> int`
++generics_self_usage.py:73:14: error[invalid-type-form] Variable of type `<special-form 'typing.Self'>` is not allowed in a type expression
++generics_self_usage.py:73:23: error[invalid-type-form] Variable of type `<special-form 'typing.Self'>` is not allowed in a type expression
++generics_self_usage.py:76:6: error[invalid-type-form] Variable of type `<special-form 'typing.Self'>` is not allowed in a type expression
+ generics_self_usage.py:82:54: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@has_existing_self_annotation`
+ generics_self_usage.py:86:16: error[invalid-return-type] Return type does not match returned value: expected `Self@return_concrete_type`, found `Foo3`
+ generics_self_usage.py:98:22: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `T@Bar`
+-generics_self_usage.py:101:15: error[invalid-type-form] Variable of type `<special form 'typing.Self'>` is not allowed in a type expression
+-generics_self_usage.py:103:12: error[invalid-base] Invalid class base with type `<special form 'typing.Self'>`
+-generics_self_usage.py:106:30: error[invalid-type-form] Variable of type `<special form 'typing.Self'>` is not allowed in a type expression
++generics_self_usage.py:101:15: error[invalid-type-form] Variable of type `<special-form 'typing.Self'>` is not allowed in a type expression
++generics_self_usage.py:103:12: error[invalid-base] Invalid class base with type `<special-form 'typing.Self'>`
++generics_self_usage.py:106:30: error[invalid-type-form] Variable of type `<special-form 'typing.Self'>` is not allowed in a type expression
+ generics_self_usage.py:111:19: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@make`
+ generics_self_usage.py:116:40: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@return_parameter`
+ generics_self_usage.py:121:37: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@__new__`
+@@ -867,11 +867,11 @@
+ qualifiers_annotated.py:48:18: error[invalid-type-form] Boolean operations are not allowed in type expressions
+ qualifiers_annotated.py:49:18: error[fstring-type-annotation] Type expressions cannot use f-strings
+ qualifiers_annotated.py:59:8: error[invalid-type-form] Special form `typing.Annotated` expected at least 2 arguments (one type and at least one metadata element)
+-qualifiers_annotated.py:71:24: error[invalid-assignment] Object of type `<special form 'typing.Annotated[int, <metadata>]'>` is not assignable to `type[Any]`
+-qualifiers_annotated.py:72:24: error[invalid-assignment] Object of type `<special form 'typing.Annotated[int, <metadata>]'>` is not assignable to `type[Any]`
+-qualifiers_annotated.py:79:7: error[invalid-argument-type] Argument to function `func4` is incorrect: Expected `type[Unknown]`, found `<special form 'typing.Annotated[str, <metadata>]'>`
+-qualifiers_annotated.py:80:7: error[invalid-argument-type] Argument to function `func4` is incorrect: Expected `type[Unknown]`, found `<special form 'typing.Annotated[int, <metadata>]'>`
+-qualifiers_annotated.py:86:1: error[call-non-callable] Object of type `<special form 'typing.Annotated'>` is not callable
++qualifiers_annotated.py:71:24: error[invalid-assignment] Object of type `<special-form 'typing.Annotated[int, <metadata>]'>` is not assignable to `type[Any]`
++qualifiers_annotated.py:72:24: error[invalid-assignment] Object of type `<special-form 'typing.Annotated[int, <metadata>]'>` is not assignable to `type[Any]`
++qualifiers_annotated.py:79:7: error[invalid-argument-type] Argument to function `func4` is incorrect: Expected `type[Unknown]`, found `<special-form 'typing.Annotated[str, <metadata>]'>`
++qualifiers_annotated.py:80:7: error[invalid-argument-type] Argument to function `func4` is incorrect: Expected `type[Unknown]`, found `<special-form 'typing.Annotated[int, <metadata>]'>`
++qualifiers_annotated.py:86:1: error[call-non-callable] Object of type `<special-form 'typing.Annotated'>` is not callable
+ qualifiers_annotated.py:87:1: error[call-non-callable] Object of type `GenericAlias` is not callable
+ qualifiers_annotated.py:88:1: error[call-non-callable] Object of type `GenericAlias` is not callable
+ qualifiers_final_annotation.py:18:7: error[invalid-type-form] Type qualifier `typing.Final` expected exactly 1 argument, got 2
+@@ -908,7 +908,7 @@
+ specialtypes_none.py:32:1: error[missing-argument] No argument provided for required parameter `value` of function `__eq__`
+ specialtypes_promotions.py:13:5: warning[possibly-missing-attribute] Attribute `numerator` may be missing on object of type `int | float`
+ specialtypes_type.py:56:7: error[invalid-argument-type] Argument to function `func4` is incorrect: Expected `type[BasicUser] | type[ProUser]`, found `<class 'TeamUser'>`
+-specialtypes_type.py:70:7: error[invalid-argument-type] Argument to function `func5` is incorrect: Expected `type[Unknown]`, found `<special form 'typing.Callable'>`
++specialtypes_type.py:70:7: error[invalid-argument-type] Argument to function `func5` is incorrect: Expected `type[Unknown]`, found `<special-form 'typing.Callable'>`
+ specialtypes_type.py:76:17: error[invalid-type-form] type[...] must have exactly one type argument
+ specialtypes_type.py:84:5: error[type-assertion-failure] Type `type[Any]` does not match asserted type `type`
+ specialtypes_type.py:99:17: error[unresolved-attribute] Object of type `type` has no attribute `unknown`
+
+```
+
+</details>
+
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-16 13:45_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+more-itertools (https://github.com/more-itertools/more-itertools)
+- more_itertools/more.pyi:166:1: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `_SizedIterable` with bases list `[<special form 'typing.Protocol[_T_co]'>, <class 'Sized'>, <class 'Iterable[_T_co@_SizedIterable]'>]`
++ more_itertools/more.pyi:166:1: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `_SizedIterable` with bases list `[<special-form 'typing.Protocol[_T_co]'>, <class 'Sized'>, <class 'Iterable[_T_co@_SizedIterable]'>]`
+- more_itertools/more.pyi:169:1: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `_SizedReversible` with bases list `[<special form 'typing.Protocol[_T_co]'>, <class 'Sized'>, <class 'Reversible[_T_co@_SizedReversible]'>]`
++ more_itertools/more.pyi:169:1: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `_SizedReversible` with bases list `[<special-form 'typing.Protocol[_T_co]'>, <class 'Sized'>, <class 'Reversible[_T_co@_SizedReversible]'>]`
+
+anyio (https://github.com/agronholm/anyio)
+- src/anyio/from_thread.py:123:1: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `_BlockingAsyncContextManager` with bases list `[<special form 'typing.Generic[T_co]'>, <class 'AbstractContextManager'>]`
++ src/anyio/from_thread.py:123:1: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `_BlockingAsyncContextManager` with bases list `[<special-form 'typing.Generic[T_co]'>, <class 'AbstractContextManager'>]`
+
+spack (https://github.com/spack/spack)
+- lib/spack/spack/vendor/distro/distro.py:56:17: error[invalid-assignment] Object of type `<class 'dict'>` is not assignable to `<special form 'typing.TypedDict'>`
++ lib/spack/spack/vendor/distro/distro.py:56:17: error[invalid-assignment] Object of type `<class 'dict'>` is not assignable to `<special-form 'typing.TypedDict'>`
+- lib/spack/spack/vendor/pyrsistent/typing.py:46:5: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `CheckedPSet` with bases list `[<special form 'typing.Generic[T]'>, <class 'Hashable'>]`
++ lib/spack/spack/vendor/pyrsistent/typing.py:46:5: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `CheckedPSet` with bases list `[<special-form 'typing.Generic[T]'>, <class 'Hashable'>]`
+- lib/spack/spack/vendor/pyrsistent/typing.py:65:5: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `PSet` with bases list `[<special form 'typing.Generic[T]'>, <class 'Hashable'>]`
++ lib/spack/spack/vendor/pyrsistent/typing.py:65:5: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `PSet` with bases list `[<special-form 'typing.Generic[T]'>, <class 'Hashable'>]`
+- lib/spack/spack/vendor/pyrsistent/typing.pyi:118:1: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `PSetEvolver` with bases list `[<special form 'typing.Generic[T]'>, <class 'Sized'>]`
++ lib/spack/spack/vendor/pyrsistent/typing.pyi:118:1: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `PSetEvolver` with bases list `[<special-form 'typing.Generic[T]'>, <class 'Sized'>]`
+- lib/spack/spack/vendor/pyrsistent/typing.pyi:126:1: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `PBag` with bases list `[<special form 'typing.Generic[T]'>, <class 'Sized'>, <class 'Hashable'>]`
++ lib/spack/spack/vendor/pyrsistent/typing.pyi:126:1: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `PBag` with bases list `[<special-form 'typing.Generic[T]'>, <class 'Sized'>, <class 'Hashable'>]`
+- lib/spack/spack/vendor/typing_extensions.py:1037:25: warning[unsupported-base] Unsupported class base with type `<special form 'typing.Protocol'> | <class 'Protocol'>`
++ lib/spack/spack/vendor/typing_extensions.py:1037:25: warning[unsupported-base] Unsupported class base with type `<special-form 'typing.Protocol'> | <class 'Protocol'>`
+
+pip (https://github.com/pypa/pip)
+- src/pip/_vendor/distro/distro.py:56:17: error[invalid-assignment] Object of type `<class 'dict'>` is not assignable to `<special form 'typing.TypedDict'>`
++ src/pip/_vendor/distro/distro.py:56:17: error[invalid-assignment] Object of type `<class 'dict'>` is not assignable to `<special-form 'typing.TypedDict'>`
+
+werkzeug (https://github.com/pallets/werkzeug)
+- src/werkzeug/datastructures/mixins.py:238:28: error[invalid-argument-type] Argument is incorrect: Expected `<special form 'typing.Self'>`, found `UpdateDictMixin[Any, Any]`
++ src/werkzeug/datastructures/mixins.py:238:28: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `UpdateDictMixin[Any, Any]`
+- src/werkzeug/datastructures/mixins.py:262:28: error[invalid-argument-type] Argument is incorrect: Expected `<special form 'typing.Self'>`, found `Self@setdefault`
++ src/werkzeug/datastructures/mixins.py:262:28: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `Self@setdefault`
+- src/werkzeug/datastructures/mixins.py:282:28: error[invalid-argument-type] Argument is incorrect: Expected `<special form 'typing.Self'>`, found `Self@pop`
++ src/werkzeug/datastructures/mixins.py:282:28: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `Self@pop`
+- src/werkzeug/datastructures/structures.py:1053:9: error[invalid-assignment] Object of type `((Self@__init__, /) -> None) | None` is not assignable to attribute `on_update` of type `((<special form 'typing.Self'>, /) -> None) | None`
++ src/werkzeug/datastructures/structures.py:1053:9: error[invalid-assignment] Object of type `((Self@__init__, /) -> None) | None` is not assignable to attribute `on_update` of type `((<special-form 'typing.Self'>, /) -> None) | None`
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- examples/contrib/ntlm_upstream_proxy.py:38:13: error[invalid-argument-type] Argument to bound method `add_option` is incorrect: Expected `type`, found `<types.UnionType special form 'str | None'>`
++ examples/contrib/ntlm_upstream_proxy.py:38:13: error[invalid-argument-type] Argument to bound method `add_option` is incorrect: Expected `type`, found `<types.UnionType special-form 'str | None'>`
+- examples/contrib/ntlm_upstream_proxy.py:47:13: error[invalid-argument-type] Argument to bound method `add_option` is incorrect: Expected `type`, found `<types.UnionType special form 'str | None'>`
++ examples/contrib/ntlm_upstream_proxy.py:47:13: error[invalid-argument-type] Argument to bound method `add_option` is incorrect: Expected `type`, found `<types.UnionType special-form 'str | None'>`
+- examples/contrib/ntlm_upstream_proxy.py:55:13: error[invalid-argument-type] Argument to bound method `add_option` is incorrect: Expected `type`, found `<types.UnionType special form 'str | None'>`
++ examples/contrib/ntlm_upstream_proxy.py:55:13: error[invalid-argument-type] Argument to bound method `add_option` is incorrect: Expected `type`, found `<types.UnionType special-form 'str | None'>`
+- test/mitmproxy/proxy/layers/http/test_http3.py:89:41: error[invalid-type-form] Invalid subscript of object of type `def Placeholder[T](cls: type[T@Placeholder] = <special form 'typing.Any'>) -> T@Placeholder | _Placeholder[T@Placeholder]` in type expression
++ test/mitmproxy/proxy/layers/http/test_http3.py:89:41: error[invalid-type-form] Invalid subscript of object of type `def Placeholder[T](cls: type[T@Placeholder] = <special-form 'typing.Any'>) -> T@Placeholder | _Placeholder[T@Placeholder]` in type expression
+- test/mitmproxy/proxy/layers/http/test_http3.py:91:35: error[invalid-type-form] Invalid subscript of object of type `def Placeholder[T](cls: type[T@Placeholder] = <special form 'typing.Any'>) -> T@Placeholder | _Placeholder[T@Placeholder]` in type expression
++ test/mitmproxy/proxy/layers/http/test_http3.py:91:35: error[invalid-type-form] Invalid subscript of object of type `def Placeholder[T](cls: type[T@Placeholder] = <special-form 'typing.Any'>) -> T@Placeholder | _Placeholder[T@Placeholder]` in type expression
+- test/mitmproxy/proxy/tutils.py:405:17: error[invalid-parameter-default] Default value of type `<special form 'typing.Any'>` is not assignable to annotated parameter type `type[T@Placeholder]`
++ test/mitmproxy/proxy/tutils.py:405:17: error[invalid-parameter-default] Default value of type `<special-form 'typing.Any'>` is not assignable to annotated parameter type `type[T@Placeholder]`
+
+mypy (https://github.com/python/mypy)
+- mypy/typeshed/stdlib/typing.pyi:408:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Any | None`, found `<special form 'type[object]'>`
++ mypy/typeshed/stdlib/typing.pyi:408:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Any | None`, found `<special-form 'type[object]'>`
+
+Tanjun (https://github.com/FasterSpeeding/Tanjun)
+- tanjun/annotations.py:1601:12: error[invalid-return-type] Return type does not match returned value: expected `type[_T@_annotated]`, found `<special form 'typing.Annotated[Unknown, <metadata>]'>`
++ tanjun/annotations.py:1601:12: error[invalid-return-type] Return type does not match returned value: expected `type[_T@_annotated]`, found `<special-form 'typing.Annotated[Unknown, <metadata>]'>`
+- tanjun/annotations.py:1855:16: error[invalid-return-type] Return type does not match returned value: expected `type[str]`, found `<special form 'typing.Annotated[str, <metadata>]'>`
++ tanjun/annotations.py:1855:16: error[invalid-return-type] Return type does not match returned value: expected `type[str]`, found `<special-form 'typing.Annotated[str, <metadata>]'>`
+- tanjun/annotations.py:2268:16: error[invalid-return-type] Return type does not match returned value: expected `type[PartialChannel]`, found `<special form 'typing.Annotated[PartialChannel, <metadata>]'>`
++ tanjun/annotations.py:2268:16: error[invalid-return-type] Return type does not match returned value: expected `type[PartialChannel]`, found `<special-form 'typing.Annotated[PartialChannel, <metadata>]'>`
+- tanjun/annotations.py:2520:30: error[invalid-argument-type] Argument is incorrect: Expected `<special form 'typing.Self'>`, found `Self@add_to_slash_cmds`
++ tanjun/annotations.py:2520:30: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `Self@add_to_slash_cmds`
+
+discord.py (https://github.com/Rapptz/discord.py)
+- discord/ext/commands/cog.py:288:36: error[invalid-type-arguments] Type `<special form 'typing.Self'>` is not assignable to upper bound `Cog | None` of type variable `CogT@Command`
++ discord/ext/commands/cog.py:288:36: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `Cog | None` of type variable `CogT@Command`
+- discord/ext/commands/cog.py:289:79: error[invalid-type-arguments] Type `<special form 'typing.Self'>` is not assignable to upper bound `Group | Cog` of type variable `GroupT@Command`
++ discord/ext/commands/cog.py:289:79: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `Group | Cog` of type variable `GroupT@Command`
+- discord/ui/action_row.py:122:67: error[invalid-type-arguments] Type `<special form 'typing.Self'>` is not assignable to upper bound `BaseView | ActionRow[Unknown] | Container[Unknown]` of type variable `C@ContainedItemCallbackType`
++ discord/ui/action_row.py:122:67: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `BaseView | ActionRow[Unknown] | Container[Unknown]` of type variable `C@ContainedItemCallbackType`
+- discord/ui/container.py:109:77: error[invalid-type-arguments] Type `<special form 'typing.Self'>` is not assignable to upper bound `BaseView | ActionRow[Unknown] | Container[Unknown]` of type variable `C@ContainedItemCallbackType`
++ discord/ui/container.py:109:77: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `BaseView | ActionRow[Unknown] | Container[Unknown]` of type variable `C@ContainedItemCallbackType`
+- discord/ui/modal.py:109:55: error[invalid-type-arguments] Type `<special form 'typing.Self'>` is not assignable to upper bound `BaseView` of type variable `V@Item`
++ discord/ui/modal.py:109:55: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `BaseView` of type variable `V@Item`
+
+meson (https://github.com/mesonbuild/meson)
+- mesonbuild/_typing.py:27:1: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `SizedStringProtocol` with bases list `[<special form 'typing.Protocol'>, <class 'StringProtocol'>, <class 'Sized'>]`
++ mesonbuild/_typing.py:27:1: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `SizedStringProtocol` with bases list `[<special-form 'typing.Protocol'>, <class 'StringProtocol'>, <class 'Sized'>]`
+
+xarray (https://github.com/pydata/xarray)
+- xarray/core/treenode.py:88:16: error[invalid-return-type] Return type does not match returned value: expected `Self@parent | None`, found `<special form 'typing.Self'> | None`
++ xarray/core/treenode.py:88:16: error[invalid-return-type] Return type does not match returned value: expected `Self@parent | None`, found `<special-form 'typing.Self'> | None`
+- xarray/core/treenode.py:133:13: error[invalid-assignment] Object of type `dict[str | Unknown, Self@_detach | Unknown]` is not assignable to attribute `_children` of type `dict[str, <special form 'typing.Self'>]`
++ xarray/core/treenode.py:133:13: error[invalid-assignment] Object of type `dict[str | Unknown, Self@_detach | Unknown]` is not assignable to attribute `_children` of type `dict[str, <special-form 'typing.Self'>]`
+- xarray/core/treenode.py:153:13: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `Self@_attach` on object of type `dict[str, <special form 'typing.Self'>]`
++ xarray/core/treenode.py:153:13: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `Self@_attach` on object of type `dict[str, <special-form 'typing.Self'>]`
+- xarray/core/treenode.py:154:13: error[invalid-assignment] Object of type `Self@_attach` is not assignable to attribute `_parent` of type `<special form 'typing.Self'> | None`
++ xarray/core/treenode.py:154:13: error[invalid-assignment] Object of type `Self@_attach` is not assignable to attribute `_parent` of type `<special-form 'typing.Self'> | None`
+- xarray/core/treenode.py:166:16: error[invalid-return-type] Return type does not match returned value: expected `Mapping[str, Self@children]`, found `Frozen[str, <special form 'typing.Self'>]`
++ xarray/core/treenode.py:166:16: error[invalid-return-type] Return type does not match returned value: expected `Mapping[str, Self@children]`, found `Frozen[str, <special-form 'typing.Self'>]`
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/prefect/_internal/concurrency/services.py:313:17: error[invalid-assignment] Invalid subscript assignment with key of type `int` and value of type `Self@instance` on object of type `dict[int, <special form 'typing.Self'>]`
++ src/prefect/_internal/concurrency/services.py:313:17: error[invalid-assignment] Invalid subscript assignment with key of type `int` and value of type `Self@instance` on object of type `dict[int, <special-form 'typing.Self'>]`
+- src/prefect/_internal/concurrency/services.py:315:20: error[invalid-return-type] Return type does not match returned value: expected `Self@instance`, found `<special form 'typing.Self'>`
++ src/prefect/_internal/concurrency/services.py:315:20: error[invalid-return-type] Return type does not match returned value: expected `Self@instance`, found `<special-form 'typing.Self'>`
+- src/prefect/_waiters.py:243:20: error[invalid-return-type] Return type does not match returned value: expected `Self@instance`, found `<special form 'typing.Self'> | Unknown`
++ src/prefect/_waiters.py:243:20: error[invalid-return-type] Return type does not match returned value: expected `Self@instance`, found `<special-form 'typing.Self'> | Unknown`
+- src/prefect/cli/transfer/_migratable_resources/automations.py:52:20: error[invalid-return-type] Return type does not match returned value: expected `Self@construct`, found `<special form 'typing.Self'>`
++ src/prefect/cli/transfer/_migratable_resources/automations.py:52:20: error[invalid-return-type] Return type does not match returned value: expected `Self@construct`, found `<special-form 'typing.Self'>`
+- src/prefect/cli/transfer/_migratable_resources/automations.py:54:9: error[invalid-assignment] Invalid subscript assignment with key of type `UUID` and value of type `Self@construct` on object of type `dict[UUID, <special form 'typing.Self'>]`
++ src/prefect/cli/transfer/_migratable_resources/automations.py:54:9: error[invalid-assignment] Invalid subscript assignment with key of type `UUID` and value of type `Self@construct` on object of type `dict[UUID, <special-form 'typing.Self'>]`
+- src/prefect/cli/transfer/_migratable_resources/automations.py:62:20: error[invalid-return-type] Return type does not match returned value: expected `MigratableResource[Automation] | None`, found `<special form 'typing.Self'>`
++ src/prefect/cli/transfer/_migratable_resources/automations.py:62:20: error[invalid-return-type] Return type does not match returned value: expected `MigratableResource[Automation] | None`, found `<special-form 'typing.Self'>`
+- src/prefect/cli/transfer/_migratable_resources/blocks.py:48:20: error[invalid-return-type] Return type does not match returned value: expected `Self@construct`, found `<special form 'typing.Self'>`
++ src/prefect/cli/transfer/_migratable_resources/blocks.py:48:20: error[invalid-return-type] Return type does not match returned value: expected `Self@construct`, found `<special-form 'typing.Self'>`
+- src/prefect/cli/transfer/_migratable_resources/blocks.py:50:9: error[invalid-assignment] Invalid subscript assignment with key of type `UUID` and value of type `Self@construct` on object of type `dict[UUID, <special form 'typing.Self'>]`
++ src/prefect/cli/transfer/_migratable_resources/blocks.py:50:9: error[invalid-assignment] Invalid subscript assignment with key of type `UUID` and value of type `Self@construct` on object of type `dict[UUID, <special-form 'typing.Self'>]`
+- src/prefect/cli/transfer/_migratable_resources/blocks.py:58:20: error[invalid-return-type] Return type does not match returned value: expected `MigratableResource[BlockType] | None`, found `<special form 'typing.Self'>`
++ src/prefect/cli/transfer/_migratable_resources/blocks.py:58:20: error[invalid-return-type] Return type does not match returned value: expected `MigratableResource[BlockType] | None`, found `<special-form 'typing.Self'>`
+- src/prefect/cli/transfer/_migratable_resources/blocks.py:102:20: error[invalid-return-type] Return type does not match returned value: expected `Self@construct`, found `<special form 'typing.Self'>`
++ src/prefect/cli/transfer/_migratable_resources/blocks.py:102:20: error[invalid-return-type] Return type does not match returned value: expected `Self@construct`, found `<special-form 'typing.Self'>`
+- src/prefect/cli/transfer/_migratable_resources/blocks.py:104:9: error[invalid-assignment] Invalid subscript assignment with key of type `UUID` and value of type `Self@construct` on object of type `dict[UUID, <special form 'typing.Self'>]`
++ src/prefect/cli/transfer/_migratable_resources/blocks.py:104:9: error[invalid-assignment] Invalid subscript assignment with key of type `UUID` and value of type `Self@construct` on object of type `dict[UUID, <special-form 'typing.Self'>]`
+- src/prefect/cli/transfer/_migratable_resources/blocks.py:112:20: error[invalid-return-type] Return type does not match returned value: expected `MigratableResource[BlockSchema] | None`, found `<special form 'typing.Self'>`
++ src/prefect/cli/transfer/_migratable_resources/blocks.py:112:20: error[invalid-return-type] Return type does not match returned value: expected `MigratableResource[BlockSchema] | None`, found `<special-form 'typing.Self'>`
+- src/prefect/cli/transfer/_migratable_resources/blocks.py:242:20: error[invalid-return-type] Return type does not match returned value: expected `Self@construct`, found `<special form 'typing.Self'>`
++ src/prefect/cli/transfer/_migratable_resources/blocks.py:242:20: error[invalid-return-type] Return type does not match returned value: expected `Self@construct`, found `<special-form 'typing.Self'>`
+- src/prefect/cli/transfer/_migratable_resources/blocks.py:244:9: error[invalid-assignment] Invalid subscript assignment with key of type `UUID` and value of type `Self@construct` on object of type `dict[UUID, <special form 'typing.Self'>]`
++ src/prefect/cli/transfer/_migratable_resources/blocks.py:244:9: error[invalid-assignment] Invalid subscript assignment with key of type `UUID` and value of type `Self@construct` on object of type `dict[UUID, <special-form 'typing.Self'>]`
+- src/prefect/cli/transfer/_migratable_resources/blocks.py:252:20: error[invalid-return-type] Return type does not match returned value: expected `MigratableResource[BlockDocument] | None`, found `<special form 'typing.Self'>`
++ src/prefect/cli/transfer/_migratable_resources/blocks.py:252:20: error[invalid-return-type] Return type does not match returned value: expected `MigratableResource[BlockDocument] | None`, found `<special-form 'typing.Self'>`
+- src/prefect/cli/transfer/_migratable_resources/concurrency_limits.py:50:20: error[invalid-return-type] Return type does not match returned value: expected `Self@construct`, found `<special form 'typing.Self'>`
++ src/prefect/cli/transfer/_migratable_resources/concurrency_limits.py:50:20: error[invalid-return-type] Return type does not match returned value: expected `Self@construct`, found `<special-form 'typing.Self'>`
+- src/prefect/cli/transfer/_migratable_resources/concurrency_limits.py:52:9: error[invalid-assignment] Invalid subscript assignment with key of type `UUID` and value of type `Self@construct` on object of type `dict[UUID, <special form 'typing.Self'>]`
++ src/prefect/cli/transfer/_migratable_resources/concurrency_limits.py:52:9: error[invalid-assignment] Invalid subscript assignment with key of type `UUID` and value of type `Self@construct` on object of type `dict[UUID, <special-form 'typing.Self'>]`
+- src/prefect/cli/transfer/_migratable_resources/concurrency_limits.py:60:20: error[invalid-return-type] Return type does not match returned value: expected `MigratableResource[GlobalConcurrencyLimitResponse] | None`, found `<special form 'typing.Self'>`
++ src/prefect/cli/transfer/_migratable_resources/concurrency_limits.py:60:20: error[invalid-return-type] Return type does not match returned value: expected `MigratableResource[GlobalConcurrencyLimitResponse] | None`, found `<special-form 'typing.Self'>`
+- src/prefect/cli/transfer/_migratable_resources/deployments.py:45:20: error[invalid-return-type] Return type does not match returned value: expected `Self@construct`, found `<special form 'typing.Self'>`
++ src/prefect/cli/transfer/_migratable_resources/deployments.py:45:20: error[invalid-return-type] Return type does not match returned value: expected `Self@construct`, found `<special-form 'typing.Self'>`
+- src/prefect/cli/transfer/_migratable_resources/deployments.py:47:9: error[invalid-assignment] Invalid subscript assignment with key of type `UUID` and value of type `Self@construct` on object of type `dict[UUID, <special form 'typing.Self'>]`
++ src/prefect/cli/transfer/_migratable_resources/deployments.py:47:9: error[invalid-assignment] Invalid subscript assignment with key of type `UUID` and value of type `Self@construct` on object of type `dict[UUID, <special-form 'typing.Self'>]`
+- src/prefect/cli/transfer/_migratable_resources/deployments.py:55:20: error[invalid-return-type] Return type does not match returned value: expected `MigratableResource[DeploymentResponse] | None`, found `<special form 'typing.Self'>`
++ src/prefect/cli/transfer/_migratable_resources/deployments.py:55:20: error[invalid-return-type] Return type does not match returned value: expected `MigratableResource[DeploymentResponse] | None`, found `<special-form 'typing.Self'>`
+- src/prefect/cli/transfer/_migratable_resources/flows.py:39:20: error[invalid-return-type] Return type does not match returned value: expected `Self@construct`, found `<special form 'typing.Self'>`
++ src/prefect/cli/transfer/_migratable_resources/flows.py:39:20: error[invalid-return-type] Return type does not match returned value: expected `Self@construct`, found `<special-form 'typing.Self'>`
+- src/prefect/cli/transfer/_migratable_resources/flows.py:41:9: error[invalid-assignment] Invalid subscript assignment with key of type `UUID` and value of type `Self@construct` on object of type `dict[UUID, <special form 'typing.Self'>]`
++ src/prefect/cli/transfer/_migratable_resources/flows.py:41:9: error[invalid-assignment] Invalid subscript assignment with key of type `UUID` and value of type `Self@construct` on object of type `dict[UUID, <special-form 'typing.Self'>]`
+- src/prefect/cli/transfer/_migratable_resources/flows.py:47:20: error[invalid-return-type] Return type does not match returned value: expected `MigratableResource[Flow] | None`, found `<special form 'typing.Self'>`
++ src/prefect/cli/transfer/_migratable_resources/flows.py:47:20: error[invalid-return-type] Return type does not match returned value: expected `MigratableResource[Flow] | None`, found `<special-form 'typing.Self'>`
+- src/prefect/cli/transfer/_migratable_resources/variables.py:42:20: error[invalid-return-type] Return type does not match returned value: expected `Self@construct`, found `<special form 'typing.Self'>`
++ src/prefect/cli/transfer/_migratable_resources/variables.py:42:20: error[invalid-return-type] Return type does not match returned value: expected `Self@construct`, found `<special-form 'typing.Self'>`
+- src/prefect/cli/transfer/_migratable_resources/variables.py:44:9: error[invalid-assignment] Invalid subscript assignment with key of type `UUID` and value of type `Self@construct` on object of type `dict[UUID, <special form 'typing.Self'>]`
++ src/prefect/cli/transfer/_migratable_resources/variables.py:44:9: error[invalid-assignment] Invalid subscript assignment with key of type `UUID` and value of type `Self@construct` on object of type `dict[UUID, <special-form 'typing.Self'>]`
+- src/prefect/cli/transfer/_migratable_resources/variables.py:50:20: error[invalid-return-type] Return type does not match returned value: expected `MigratableResource[Variable] | None`, found `<special form 'typing.Self'>`
++ src/prefect/cli/transfer/_migratable_resources/variables.py:50:20: error[invalid-return-type] Return type does not match returned value: expected `MigratableResource[Variable] | None`, found `<special-form 'typing.Self'>`
+- src/prefect/cli/transfer/_migratable_resources/work_pools.py:48:20: error[invalid-return-type] Return type does not match returned value: expected `Self@construct`, found `<special form 'typing.Self'>`
++ src/prefect/cli/transfer/_migratable_resources/work_pools.py:48:20: error[invalid-return-type] Return type does not match returned value: expected `Self@construct`, found `<special-form 'typing.Self'>`
+- src/prefect/cli/transfer/_migratable_resources/work_pools.py:52:13: error[invalid-assignment] Invalid subscript assignment with key of type `UUID` and value of type `Self@construct` on object of type `dict[UUID, <special form 'typing.Self'>]`
++ src/prefect/cli/transfer/_migratable_resources/work_pools.py:52:13: error[invalid-assignment] Invalid subscript assignment with key of type `UUID` and value of type `Self@construct` on object of type `dict[UUID, <special-form 'typing.Self'>]`
+- src/prefect/cli/transfer/_migratable_resources/work_pools.py:58:20: error[invalid-return-type] Return type does not match returned value: expected `MigratableResource[WorkPool] | None`, found `<special form 'typing.Self'>`
++ src/prefect/cli/transfer/_migratable_resources/work_pools.py:58:20: error[invalid-return-type] Return type does not match returned value: expected `MigratableResource[WorkPool] | None`, found `<special-form 'typing.Self'>`
+- src/prefect/cli/transfer/_migratable_resources/work_pools.py:67:24: error[invalid-return-type] Return type does not match returned value: expected `MigratableResource[WorkPool] | None`, found `<special form 'typing.Self'>`
++ src/prefect/cli/transfer/_migratable_resources/work_pools.py:67:24: error[invalid-return-type] Return type does not match returned value: expected `MigratableResource[WorkPool] | None`, found `<special-form 'typing.Self'>`
+- src/prefect/cli/transfer/_migratable_resources/work_queues.py:43:20: error[invalid-return-type] Return type does not match returned value: expected `Self@construct`, found `<special form 'typing.Self'>`
++ src/prefect/cli/transfer/_migratable_resources/work_queues.py:43:20: error[invalid-return-type] Return type does not match returned value: expected `Self@construct`, found `<special-form 'typing.Self'>`
+- src/prefect/cli/transfer/_migratable_resources/work_queues.py:45:9: error[invalid-assignment] Invalid subscript assignment with key of type `UUID` and value of type `Self@construct` on object of type `dict[UUID, <special form 'typing.Self'>]`
++ src/prefect/cli/transfer/_migratable_resources/work_queues.py:45:9: error[invalid-assignment] Invalid subscript assignment with key of type `UUID` and value of type `Self@construct` on object of type `dict[UUID, <special-form 'typing.Self'>]`
+- src/prefect/cli/transfer/_migratable_resources/work_queues.py:53:20: error[invalid-return-type] Return type does not match returned value: expected `MigratableResource[WorkQueue] | None`, found `<special form 'typing.Self'>`
++ src/prefect/cli/transfer/_migratable_resources/work_queues.py:53:20: error[invalid-return-type] Return type does not match returned value: expected `MigratableResource[WorkQueue] | None`, found `<special-form 'typing.Self'>`
+- src/prefect/context.py:725:16: error[invalid-return-type] Return type does not match returned value: expected `Self@get`, found `Self@get | <special form 'typing.Self'>`
++ src/prefect/context.py:725:16: error[invalid-return-type] Return type does not match returned value: expected `Self@get`, found `Self@get | <special-form 'typing.Self'>`
+- src/prefect/server/task_queue.py:52:13: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `Self@for_key` on object of type `dict[str, <special form 'typing.Self'>]`
++ src/prefect/server/task_queue.py:52:13: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `Self@for_key` on object of type `dict[str, <special-form 'typing.Self'>]`
+- src/prefect/server/task_queue.py:53:16: error[invalid-return-type] Return type does not match returned value: expected `Self@for_key`, found `<special form 'typing.Self'>`
++ src/prefect/server/task_queue.py:53:16: error[invalid-return-type] Return type does not match returned value: expected `Self@for_key`, found `<special-form 'typing.Self'>`
+- src/prefect/task_runs.py:258:20: error[invalid-return-type] Return type does not match returned value: expected `Self@instance`, found `<special form 'typing.Self'> | Unknown`
++ src/prefect/task_runs.py:258:20: error[invalid-return-type] Return type does not match returned value: expected `Self@instance`, found `<special-form 'typing.Self'> | Unknown`
+- src/prefect/transactions.py:218:30: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `<special form 'typing.Self'>`, found `Self@add_child`
++ src/prefect/transactions.py:218:30: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `<special-form 'typing.Self'>`, found `Self@add_child`
+- src/prefect/transactions.py:251:16: error[invalid-return-type] Return type does not match returned value: expected `Self@get_active | None`, found `None | Self@get_active | <special form 'typing.Self'>`
++ src/prefect/transactions.py:251:16: error[invalid-return-type] Return type does not match returned value: expected `Self@get_active | None`, found `None | Self@get_active | <special-form 'typing.Self'>`
+- src/prefect/transactions.py:267:40: error[invalid-argument-type] Argument to bound method `set` is incorrect: Expected `<special form 'typing.Self'>`, found `Self@__enter__`
++ src/prefect/transactions.py:267:40: error[invalid-argument-type] Argument to bound method `set` is incorrect: Expected `<special-form 'typing.Self'>`, found `Self@__enter__`
+- src/prefect/transactions.py:614:40: error[invalid-argument-type] Argument to bound method `set` is incorrect: Expected `<special form 'typing.Self'>`, found `Self@__aenter__`
++ src/prefect/transactions.py:614:40: error[invalid-argument-type] Argument to bound method `set` is incorrect: Expected `<special-form 'typing.Self'>`, found `Self@__aenter__`
+
+setuptools (https://github.com/pypa/setuptools)
+- setuptools/_vendor/more_itertools/more.pyi:38:1: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `_SizedIterable` with bases list `[<special form 'typing.Protocol[_T_co]'>, <class 'Sized'>, <class 'Iterable[_T_co@_SizedIterable]'>]`
++ setuptools/_vendor/more_itertools/more.pyi:38:1: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `_SizedIterable` with bases list `[<special-form 'typing.Protocol[_T_co]'>, <class 'Sized'>, <class 'Iterable[_T_co@_SizedIterable]'>]`
+- setuptools/_vendor/more_itertools/more.pyi:41:1: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `_SizedReversible` with bases list `[<special form 'typing.Protocol[_T_co]'>, <class 'Sized'>, <class 'Reversible[_T_co@_SizedReversible]'>]`
++ setuptools/_vendor/more_itertools/more.pyi:41:1: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `_SizedReversible` with bases list `[<special-form 'typing.Protocol[_T_co]'>, <class 'Sized'>, <class 'Reversible[_T_co@_SizedReversible]'>]`
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- strawberry/utils/typing.py:339:12: error[invalid-return-type] Return type does not match returned value: expected `type`, found `@Todo | <special form 'typing.Union'>`
++ strawberry/utils/typing.py:339:12: error[invalid-return-type] Return type does not match returned value: expected `type`, found `@Todo | <special-form 'typing.Union'>`
+
+pwndbg (https://github.com/pwndbg/pwndbg)
+- pwndbg/lib/regs.py:58:22: error[call-non-callable] Object of type `<special form 'typing.OrderedDict'>` is not callable
++ pwndbg/lib/regs.py:58:22: error[call-non-callable] Object of type `<special-form 'typing.OrderedDict'>` is not callable
+
+pywin32 (https://github.com/mhammond/pywin32)
+- win32/Lib/win32timezone.py:845:13: error[invalid-assignment] Object of type `Self@utc` is not assignable to attribute `_tzutc` of type `<special form 'typing.Self'> | None`
++ win32/Lib/win32timezone.py:845:13: error[invalid-assignment] Object of type `Self@utc` is not assignable to attribute `_tzutc` of type `<special-form 'typing.Self'> | None`
+- win32/Lib/win32timezone.py:846:16: error[invalid-return-type] Return type does not match returned value: expected `Self@utc`, found `<special form 'typing.Self'> | None`
++ win32/Lib/win32timezone.py:846:16: error[invalid-return-type] Return type does not match returned value: expected `Self@utc`, found `<special-form 'typing.Self'> | None`
+
+django-stubs (https://github.com/typeddjango/django-stubs)
+- django-stubs/contrib/admin/options.pyi:175:39: error[invalid-type-arguments] Type `<special form 'typing.Self'>` is not assignable to upper bound `ModelAdmin[Any]` of type variable `_ModelAdmin`
++ django-stubs/contrib/admin/options.pyi:175:39: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `ModelAdmin[Any]` of type variable `_ModelAdmin`
+- django-stubs/contrib/auth/models.pyi:106:35: error[invalid-type-arguments] Type `<special form 'typing.Self'>` is not assignable to upper bound `AbstractBaseUser` of type variable `_UserType@UserManager`
++ django-stubs/contrib/auth/models.pyi:106:35: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `AbstractBaseUser` of type variable `_UserType@UserManager`
+- django-stubs/contrib/gis/db/backends/oracle/models.pyi:12:31: error[invalid-type-arguments] Type `<special form 'typing.Self'>` is not assignable to upper bound `Model` of type variable `_T@Manager`
++ django-stubs/contrib/gis/db/backends/oracle/models.pyi:12:31: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `Model` of type variable `_T@Manager`
+- django-stubs/contrib/gis/db/backends/oracle/models.pyi:26:31: error[invalid-type-arguments] Type `<special form 'typing.Self'>` is not assignable to upper bound `Model` of type variable `_T@Manager`
++ django-stubs/contrib/gis/db/backends/oracle/models.pyi:26:31: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `Model` of type variable `_T@Manager`
+- django-stubs/contrib/gis/db/backends/postgis/models.pyi:15:38: error[invalid-type-arguments] Type `<special form 'typing.Self'>` is not assignable to upper bound `Model` of type variable `_T@Manager`
++ django-stubs/contrib/gis/db/backends/postgis/models.pyi:15:38: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `Model` of type variable `_T@Manager`
+- django-stubs/contrib/gis/db/backends/postgis/models.pyi:28:38: error[invalid-type-arguments] Type `<special form 'typing.Self'>` is not assignable to upper bound `Model` of type variable `_T@Manager`
++ django-stubs/contrib/gis/db/backends/postgis/models.pyi:28:38: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `Model` of type variable `_T@Manager`
+- django-stubs/contrib/gis/db/backends/spatialite/models.pyi:14:38: error[invalid-type-arguments] Type `<special form 'typing.Self'>` is not assignable to upper bound `Model` of type variable `_T@Manager`
++ django-stubs/contrib/gis/db/backends/spatialite/models.pyi:14:38: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `Model` of type variable `_T@Manager`
+- django-stubs/contrib/gis/db/backends/spatialite/models.pyi:28:38: error[invalid-type-arguments] Type `<special form 'typing.Self'>` is not assignable to upper bound `Model` of type variable `_T@Manager`
++ django-stubs/contrib/gis/db/backends/spatialite/models.pyi:28:38: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `Model` of type variable `_T@Manager`
+- django-stubs/contrib/sessions/base_session.pyi:18:42: error[invalid-type-arguments] Type `<special form 'typing.Self'>` is not assignable to upper bound `AbstractBaseSession` of type variable `_T@BaseSessionManager`
++ django-stubs/contrib/sessions/base_session.pyi:18:42: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `AbstractBaseSession` of type variable `_T@BaseSessionManager`
+- django-stubs/core/paginator.pyi:14:1: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `_SupportsPagination` with bases list `[<special form 'typing.Protocol[_T]'>, <class 'Sized'>, <class 'Iterable'>]`
++ django-stubs/core/paginator.pyi:14:1: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `_SupportsPagination` with bases list `[<special-form 'typing.Protocol[_T]'>, <class 'Sized'>, <class 'Iterable'>]`
+- django-stubs/db/migrations/recorder.pyi:14:35: error[invalid-type-arguments] Type `<special form 'typing.Self'>` is not assignable to upper bound `Model` of type variable `_T@Manager`
++ django-stubs/db/migrations/recorder.pyi:14:35: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `Model` of type variable `_T@Manager`
+- django-stubs/db/models/base.pyi:46:31: error[invalid-type-arguments] Type `<special form 'typing.Self'>` is not assignable to upper bound `Model` of type variable `_T@Manager`
++ django-stubs/db/models/base.pyi:46:31: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `Model` of type variable `_T@Manager`
+- django-stubs/db/models/base.pyi:48:29: error[invalid-type-arguments] Type `<special form 'typing.Self'>` is not assignable to upper bound `Model` of type variable `_M@Options`
++ django-stubs/db/models/base.pyi:48:29: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `Model` of type variable `_M@Options`
+- django-stubs/utils/datastructures.pyi:39:1: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `_IndexableCollection` with bases list `[<special form 'typing.Protocol[_I]'>, <class 'Collection[_I@_IndexableCollection]'>]`
++ django-stubs/utils/datastructures.pyi:39:1: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `_IndexableCollection` with bases list `[<special-form 'typing.Protocol[_I]'>, <class 'Collection[_I@_IndexableCollection]'>]`
+
+bokeh (https://github.com/bokeh/bokeh)
+- src/bokeh/_specs.pyi:72:49: error[non-subscriptable] Cannot subscript non-generic type: `<types.UnionType special form 'ValueDict | FieldDict | ExprDict'>` is already specialized
++ src/bokeh/_specs.pyi:72:49: error[non-subscriptable] Cannot subscript non-generic type: `<types.UnionType special-form 'ValueDict | FieldDict | ExprDict'>` is already specialized
+
+ibis (https://github.com/ibis-project/ibis)
+- ibis/backends/impala/tests/test_udf.py:388:28: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Divergent, ...]`, found `<special form 'typing.Literal'>`
++ ibis/backends/impala/tests/test_udf.py:388:28: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Divergent, ...]`, found `<special-form 'typing.Literal'>`
+- ibis/common/bases.py:107:20: error[invalid-return-type] Return type does not match returned value: expected `Self@__create__`, found `<special form 'typing.Self'>`
++ ibis/common/bases.py:107:20: error[invalid-return-type] Return type does not match returned value: expected `Self@__create__`, found `<special-form 'typing.Self'>`
+- ibis/common/bases.py:110:13: error[invalid-assignment] Cannot assign to a subscript on an object of type `Mapping[Any, <special form 'typing.Self'>]`
++ ibis/common/bases.py:110:13: error[invalid-assignment] Cannot assign to a subscript on an object of type `Mapping[Any, <special-form 'typing.Self'>]`
+- ibis/common/patterns.py:165:35: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `type | tuple[type, ...]`, found `<special form 'typing.Callable'>`
++ ibis/common/patterns.py:165:35: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `type | tuple[type, ...]`, found `<special-form 'typing.Callable'>`
+- ibis/common/tests/test_grounds.py:332:26: error[invalid-argument-type] Argument is incorrect: Expected `<special form 'typing.Self'> | None`, found `RecursiveNode`
++ ibis/common/tests/test_grounds.py:332:26: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'> | None`, found `RecursiveNode`
+- ibis/common/tests/test_grounds.py:332:40: error[invalid-argument-type] Argument is incorrect: Expected `<special form 'typing.Self'> | None`, found `RecursiveNode`
++ ibis/common/tests/test_grounds.py:332:40: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'> | None`, found `RecursiveNode`
+- ibis/common/tests/test_grounds.py:751:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `type | tuple[type, ...]`, found `<special form 'typing.Callable'>`
++ ibis/common/tests/test_grounds.py:751:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `type | tuple[type, ...]`, found `<special-form 'typing.Callable'>`
+- ibis/common/tests/test_patterns.py:731:31: error[invalid-argument-type] Argument to bound method `from_typehint` is incorrect: Expected `type`, found `<typing.Callable special form '(int, str, /) -> int'>`
++ ibis/common/tests/test_patterns.py:731:31: error[invalid-argument-type] Argument to bound method `from_typehint` is incorrect: Expected `type`, found `<typing.Callable special-form '(int, str, /) -> int'>`
+- ibis/common/tests/test_patterns.py:1125:31: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `type | tuple[type, ...]`, found `<special form 'typing.Callable'>`
++ ibis/common/tests/test_patterns.py:1125:31: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `type | tuple[type, ...]`, found `<special-form 'typing.Callable'>`
+- ibis/expr/datatypes/tests/test_core.py:719:31: error[invalid-argument-type] Argument to bound method `from_typehint` is incorrect: Expected `type`, found `<special form 'typing.Annotated[Interval, <metadata>]'>`
++ ibis/expr/datatypes/tests/test_core.py:719:31: error[invalid-argument-type] Argument to bound method `from_typehint` is incorrect: Expected `type`, found `<special-form 'typing.Annotated[Interval, <metadata>]'>`
+- ibis/expr/types/logical.py:333:18: error[call-non-callable] Object of type `<special form 'typing.Any'>` is not callable
++ ibis/expr/types/logical.py:333:18: error[call-non-callable] Object of type `<special-form 'typing.Any'>` is not callable
+- ibis/expr/types/relations.py:2100:38: error[invalid-argument-type] Argument to bound method `_assemble_set_op` is incorrect: Expected `type[Set]`, found `<special form 'typing.Union'>`
++ ibis/expr/types/relations.py:2100:38: error[invalid-argument-type] Argument to bound method `_assemble_set_op` is incorrect: Expected `type[Set]`, found `<special-form 'typing.Union'>`
+- ibis/tests/expr/test_table.py:1360:36: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Divergent, ...]`, found `<special form 'typing.Union'>`
++ ibis/tests/expr/test_table.py:1360:36: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Divergent, ...]`, found `<special-form 'typing.Union'>`
+- ibis/tests/expr/test_window_frames.py:540:18: error[call-non-callable] Object of type `<special form 'typing.Any'>` is not callable
++ ibis/tests/expr/test_window_frames.py:540:18: error[call-non-callable] Object of type `<special-form 'typing.Any'>` is not callable
+
+sympy (https://github.com/sympy/sympy)
+- sympy/polys/domains/gaussiandomains.py:33:29: error[invalid-type-arguments] Type `<special form 'typing.Self'>` is not assignable to upper bound `GaussianElement[Unknown]` of type variable `Telem@GaussianDomain`
++ sympy/polys/domains/gaussiandomains.py:33:29: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `GaussianElement[Unknown]` of type variable `Telem@GaussianDomain`
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
++ pandas-stubs/_typing.pyi:1218:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5123 diagnostics
++ Found 5124 diagnostics
+
+core (https://github.com/home-assistant/core)
+- homeassistant/components/ring/switch.py:103:38: error[invalid-argument-type] Argument is incorrect: Expected `<special form 'typing.Self'>`, found `RingSwitchEntityDescription[Any]`
++ homeassistant/components/ring/switch.py:103:38: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `RingSwitchEntityDescription[Any]`
+- homeassistant/components/ring/switch.py:124:57: error[invalid-argument-type] Argument is incorrect: Expected `<special form 'typing.Self'>`, found `RingSwitchEntityDescription[RingDeviceT@RingSwitch]`
++ homeassistant/components/ring/switch.py:124:57: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `RingSwitchEntityDescription[RingDeviceT@RingSwitch]`
+- homeassistant/components/yeelight/scanner.py:55:13: error[invalid-assignment] Object of type `Self@async_get` is not assignable to attribute `_scanner` of type `<special form 'typing.Self'> | None`
++ homeassistant/components/yeelight/scanner.py:55:13: error[invalid-assignment] Object of type `Self@async_get` is not assignable to attribute `_scanner` of type `<special-form 'typing.Self'> | None`
+- homeassistant/components/yeelight/scanner.py:56:16: error[invalid-return-type] Return type does not match returned value: expected `Self@async_get`, found `<special form 'typing.Self'> | None`
++ homeassistant/components/yeelight/scanner.py:56:16: error[invalid-return-type] Return type does not match returned value: expected `Self@async_get`, found `<special-form 'typing.Self'> | None`
+
+scipy (https://github.com/scipy/scipy)
+- scipy/_lib/_array_api.py:66:19: error[invalid-assignment] Object of type `<types.UnionType special form 'Any | Buffer | _SupportsArray[dtype[Any]] | ... omitted 6 union elements'>` is not assignable to `type`
++ scipy/_lib/_array_api.py:66:19: error[invalid-assignment] Object of type `<types.UnionType special-form 'An
+
+... (truncated 49 lines) ...
+```
+
+</details>
+
+
+No memory usage changes detected ✅
+
+
+
+---
+
+_@AlexWaygood approved on 2025-12-16 13:46_
+
+You need to revert the changes to the generated data in `scripts/ty_benchmark/snapshots/`, but LGTM otherwise, thank you!
+
+---
+
+_Comment by @Gankra on 2025-12-16 13:54_
+
+Is there any harm in changing those? Are they not effectively snapshots?
+
+---
+
+_Comment by @AlexWaygood on 2025-12-16 13:56_
+
+some of them are snapshots of mypy's diagnostics :P
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-16 13:59_
+
+
+<!-- generated-comment ecosystem -->
+
+
+## `ruff-ecosystem` results
+
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+### Formatter (stable)
+✅ ecosystem check detected no format changes.
+
+### Formatter (preview)
+✅ ecosystem check detected no format changes.
+
+
+
+
+
+---
+
+_Renamed from "[ty] highlight special type syntax in hovers as xml" to "[ty] Improve highlighting of special type syntax in hovers" by @Gankra on 2025-12-16 14:19_
+
+---
+
+_Merged by @Gankra on 2025-12-16 14:20_
+
+---
+
+_Closed by @Gankra on 2025-12-16 14:20_
+
+---
+
+_Branch deleted on 2025-12-16 14:20_
+
+---

@@ -1,0 +1,510 @@
+```yaml
+number: 21947
+title: "[ty] Improve diagnostics for unsupported binary operations and unsupported augmented assignments"
+type: pull_request
+state: merged
+author: AlexWaygood
+labels:
+  - ty
+  - diagnostics
+assignees: []
+merged: true
+base: main
+head: alex/unsupported-operator-error
+created_at: 2025-12-12T13:40:17Z
+updated_at: 2025-12-12T21:53:31Z
+url: https://github.com/astral-sh/ruff/pull/21947
+synced_at: 2026-01-10T16:42:11Z
+```
+
+# [ty] Improve diagnostics for unsupported binary operations and unsupported augmented assignments
+
+---
+
+_Pull request opened by @AlexWaygood on 2025-12-12 13:40_
+
+## Summary
+
+This PR takes the improvements we made to unsupported-comparison diagnostics in https://github.com/astral-sh/ruff/pull/21737, and extends them to other `unsupported-operator` diagnostics.
+
+## Test Plan
+
+Mdtests and snapshots
+
+
+---
+
+_Review requested from @carljm by @AlexWaygood on 2025-12-12 13:40_
+
+---
+
+_Review requested from @sharkdp by @AlexWaygood on 2025-12-12 13:40_
+
+---
+
+_Review requested from @dcreager by @AlexWaygood on 2025-12-12 13:40_
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-12-12 13:40_
+
+---
+
+_Label `diagnostics` added by @AlexWaygood on 2025-12-12 13:40_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-12 13:42_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-12-12 13:51:29.268726169 +0000
++++ new-output.txt	2025-12-12 13:51:32.922752699 +0000
+@@ -425,7 +425,7 @@
+ generics_base_class.py:45:5: error[type-assertion-failure] Type `Iterator[int]` does not match asserted type `Unknown`
+ generics_base_class.py:49:38: error[invalid-type-arguments] Too many type arguments to class `LinkedList`: expected 1, got 2
+ generics_base_class.py:61:30: error[invalid-type-arguments] Too many type arguments to class `MyDict`: expected 1, got 2
+-generics_basic.py:34:12: error[unsupported-operator] Operator `+` is not supported between objects of type `AnyStr@concat` and `AnyStr@concat`
++generics_basic.py:34:12: error[unsupported-operator] Operator `+` is not supported between two objects of type `AnyStr@concat`
+ generics_basic.py:49:44: error[invalid-legacy-type-variable] A `TypeVar` cannot have exactly one constraint
+ generics_basic.py:139:5: error[type-assertion-failure] Type `int` does not match asserted type `Unknown`
+ generics_basic.py:140:5: error[type-assertion-failure] Type `int` does not match asserted type `Unknown`
+
+```
+
+</details>
+
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-12 13:44_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/cli/cmds/get_image_version.py:98:21: error[unsupported-operator] Operator `-` is not supported between objects of type `datetime | None` and `datetime | None`
++ paasta_tools/cli/cmds/get_image_version.py:98:21: error[unsupported-operator] Operator `-` is not supported between two objects of type `datetime | None`
+
+aiortc (https://github.com/aiortc/aiortc)
+- src/aiortc/rate.py:226:25: error[unsupported-operator] Unary operator `-` is not supported for type `Unknown | int | None`
++ src/aiortc/rate.py:226:25: error[unsupported-operator] Unary operator `-` is not supported for object of type `Unknown | int | None`
+- src/aiortc/rate.py:229:25: error[unsupported-operator] Operator `-` is not supported between objects of type `int | None` and `int | None`
++ src/aiortc/rate.py:229:25: error[unsupported-operator] Operator `-` is not supported between two objects of type `int | None`
+- src/aiortc/rate.py:247:49: error[unsupported-operator] Unary operator `-` is not supported for type `Unknown | int | None`
++ src/aiortc/rate.py:247:49: error[unsupported-operator] Unary operator `-` is not supported for object of type `Unknown | int | None`
+- src/aiortc/rate.py:259:53: error[unsupported-operator] Unary operator `-` is not supported for type `Unknown | int | None`
++ src/aiortc/rate.py:259:53: error[unsupported-operator] Unary operator `-` is not supported for object of type `Unknown | int | None`
+- src/aiortc/rate.py:263:49: error[unsupported-operator] Unary operator `-` is not supported for type `Unknown | int | None`
++ src/aiortc/rate.py:263:49: error[unsupported-operator] Unary operator `-` is not supported for object of type `Unknown | int | None`
+
+pytest (https://github.com/pytest-dev/pytest)
+- src/_pytest/capture.py:948:13: error[unsupported-operator] Operator `+=` is not supported between objects of type `AnyStr@CaptureFixture` and `AnyStr@CaptureFixture`
++ src/_pytest/capture.py:948:13: error[unsupported-operator] Operator `+=` is not supported between two objects of type `AnyStr@CaptureFixture`
+- src/_pytest/capture.py:949:13: error[unsupported-operator] Operator `+=` is not supported between objects of type `AnyStr@CaptureFixture` and `AnyStr@CaptureFixture`
++ src/_pytest/capture.py:949:13: error[unsupported-operator] Operator `+=` is not supported between two objects of type `AnyStr@CaptureFixture`
+- src/_pytest/capture.py:964:13: error[unsupported-operator] Operator `+=` is not supported between objects of type `AnyStr@CaptureFixture` and `AnyStr@CaptureFixture`
++ src/_pytest/capture.py:964:13: error[unsupported-operator] Operator `+=` is not supported between two objects of type `AnyStr@CaptureFixture`
+- src/_pytest/capture.py:965:13: error[unsupported-operator] Operator `+=` is not supported between objects of type `AnyStr@CaptureFixture` and `AnyStr@CaptureFixture`
++ src/_pytest/capture.py:965:13: error[unsupported-operator] Operator `+=` is not supported between two objects of type `AnyStr@CaptureFixture`
+
+ignite (https://github.com/pytorch/ignite)
+- tests/ignite/metrics/test_mean_absolute_error.py:90:36: error[unsupported-operator] Operator `-` is not supported between objects of type `Unknown | int | float | ... omitted 3 union elements` and `Unknown | int | float | ... omitted 3 union elements`
++ tests/ignite/metrics/test_mean_absolute_error.py:90:36: error[unsupported-operator] Operator `-` is not supported between two objects of type `Unknown | int | float | ... omitted 3 union elements`
+- tests/ignite/metrics/test_mean_squared_error.py:89:38: error[unsupported-operator] Operator `-` is not supported between objects of type `Unknown | int | float | ... omitted 3 union elements` and `Unknown | int | float | ... omitted 3 union elements`
++ tests/ignite/metrics/test_mean_squared_error.py:89:38: error[unsupported-operator] Operator `-` is not supported between two objects of type `Unknown | int | float | ... omitted 3 union elements`
+- tests/ignite/metrics/test_root_mean_squared_error.py:87:47: error[unsupported-operator] Operator `-` is not supported between objects of type `Unknown | int | float | ... omitted 3 union elements` and `Unknown | int | float | ... omitted 3 union elements`
++ tests/ignite/metrics/test_root_mean_squared_error.py:87:47: error[unsupported-operator] Operator `-` is not supported between two objects of type `Unknown | int | float | ... omitted 3 union elements`
+
+vision (https://github.com/pytorch/vision)
+- test/test_datasets.py:3194:65: error[unsupported-operator] Operator `/` is not supported between objects of type `str` and `str`
++ test/test_datasets.py:3194:65: error[unsupported-operator] Operator `/` is not supported between two objects of type `str`
+- test/test_datasets.py:3396:25: error[unsupported-operator] Operator `/` is not supported between objects of type `str` and `str`
++ test/test_datasets.py:3396:25: error[unsupported-operator] Operator `/` is not supported between two objects of type `str`
+- test/test_datasets.py:3410:25: error[unsupported-operator] Operator `/` is not supported between objects of type `str` and `str`
++ test/test_datasets.py:3410:25: error[unsupported-operator] Operator `/` is not supported between two objects of type `str`
+- test/test_datasets.py:3466:25: error[unsupported-operator] Operator `/` is not supported between objects of type `str` and `str`
++ test/test_datasets.py:3466:25: error[unsupported-operator] Operator `/` is not supported between two objects of type `str`
+
+mypy (https://github.com/python/mypy)
+- mypy/test/testfinegrained.py:318:55: error[unsupported-operator] Operator `+` is not supported between objects of type `object` and `object`
++ mypy/test/testfinegrained.py:318:55: error[unsupported-operator] Operator `+` is not supported between two objects of type `object`
+- mypy/test/testfinegrained.py:356:55: error[unsupported-operator] Operator `+` is not supported between objects of type `object` and `object`
++ mypy/test/testfinegrained.py:356:55: error[unsupported-operator] Operator `+` is not supported between two objects of type `object`
+
+freqtrade (https://github.com/freqtrade/freqtrade)
+- freqtrade/data/converter/orderflow.py:175:21: error[unsupported-operator] Operator `-` is not supported between objects of type `str | bytes | date | ... omitted 9 union elements` and `str | bytes | date | ... omitted 9 union elements`
++ freqtrade/data/converter/orderflow.py:175:21: error[unsupported-operator] Operator `-` is not supported between two objects of type `str | bytes | date | ... omitted 9 union elements`
+- freqtrade/optimize/analysis/lookahead.py:85:51: error[unsupported-operator] Operator `+` is not supported between objects of type `int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[bool[bool]]]` and `Literal[1]`
++ freqtrade/optimize/analysis/lookahead.py:85:51: error[unsupported-operator] Operator `+` is not supported between objects of type `int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[numpy.bool[builtins.bool]]]` and `Literal[1]`
+
+Tanjun (https://github.com/FasterSpeeding/Tanjun)
+- tanjun/conversion.py:194:47: error[unsupported-operator] Unary operator `~` is not supported for type `(Cache & ~AlwaysTruthy & ~AlwaysFalsy) | (CacheComponents & ~AlwaysFalsy) | Literal[CacheComponents.NONE]`
++ tanjun/conversion.py:194:47: error[unsupported-operator] Unary operator `~` is not supported for object of type `(Cache & ~AlwaysTruthy & ~AlwaysFalsy) | (CacheComponents & ~AlwaysFalsy) | Literal[CacheComponents.NONE]`
+
+apprise (https://github.com/caronc/apprise)
+- apprise/plugins/nextcloud.py:570:48: error[unsupported-operator] Operator `+` is not supported between objects of type `Unknown | str | int` and `Unknown | str | int`
++ apprise/plugins/nextcloud.py:570:48: error[unsupported-operator] Operator `+` is not supported between two objects of type `Unknown | str | int`
+
+pwndbg (https://github.com/pwndbg/pwndbg)
+- pwndbg/commands/ptmalloc2.py:865:27: error[unsupported-operator] Unary operator `~` is not supported for type `object`
++ pwndbg/commands/ptmalloc2.py:865:27: error[unsupported-operator] Unary operator `~` is not supported for object of type `object`
+- pwndbg/commands/ptmalloc2.py:914:27: error[unsupported-operator] Unary operator `~` is not supported for type `object`
++ pwndbg/commands/ptmalloc2.py:914:27: error[unsupported-operator] Unary operator `~` is not supported for object of type `object`
+- pwndbg/dbg/gdb/__init__.py:1616:21: error[unsupported-operator] Operator `-` is not supported between objects of type `None | Unknown` and `None | Unknown`
++ pwndbg/dbg/gdb/__init__.py:1616:21: error[unsupported-operator] Operator `-` is not supported between two objects of type `None | Unknown`
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- ddtrace/appsec/ai_guard/_api_client.py:123:29: error[unsupported-operator] Unary operator `-` is not supported for type `Unknown | EnvVariable[int]`
++ ddtrace/appsec/ai_guard/_api_client.py:123:29: error[unsupported-operator] Unary operator `-` is not supported for object of type `Unknown | EnvVariable[int]`
+- ddtrace/vendor/packaging/version.py:411:15: error[unsupported-operator] Unary operator `-` is not supported for type `<class 'Infinity'>`
++ ddtrace/vendor/packaging/version.py:411:15: error[unsupported-operator] Unary operator `-` is not supported for object of type `<class 'Infinity'>`
+- ddtrace/vendor/packaging/version.py:419:16: error[unsupported-operator] Unary operator `-` is not supported for type `<class 'Infinity'>`
++ ddtrace/vendor/packaging/version.py:419:16: error[unsupported-operator] Unary operator `-` is not supported for object of type `<class 'Infinity'>`
+- ddtrace/vendor/packaging/version.py:427:17: error[unsupported-operator] Unary operator `-` is not supported for type `<class 'Infinity'>`
++ ddtrace/vendor/packaging/version.py:427:17: error[unsupported-operator] Unary operator `-` is not supported for object of type `<class 'Infinity'>`
+- ddtrace/vendor/packaging/version.py:437:49: error[unsupported-operator] Unary operator `-` is not supported for type `<class 'Infinity'>`
++ ddtrace/vendor/packaging/version.py:437:49: error[unsupported-operator] Unary operator `-` is not supported for object of type `<class 'Infinity'>`
+
+pywin32 (https://github.com/mhammond/pywin32)
+- Pythonwin/pywin/framework/interact.py:173:30: error[unsupported-operator] Operator `+` is not supported between objects of type `object` and `object`
++ Pythonwin/pywin/framework/interact.py:173:30: error[unsupported-operator] Operator `+` is not supported between two objects of type `object`
+
+bokeh (https://github.com/bokeh/bokeh)
+- src/bokeh/models/plots.py:238:18: error[unsupported-operator] Operator `+` is not supported between objects of type `Unknown | List[Any]` and `Unknown | List[Any]`
++ src/bokeh/models/plots.py:238:18: error[unsupported-operator] Operator `+` is not supported between two objects of type `Unknown | List[Any]`
+
+ibis (https://github.com/ibis-project/ibis)
+- ibis/backends/polars/rewrites.py:51:16: error[unsupported-operator] Operator `|` is not supported between objects of type `Schema` and `Schema`
++ ibis/backends/polars/rewrites.py:51:16: error[unsupported-operator] Operator `|` is not supported between two objects of type `Schema`
+- ibis/common/tests/test_collections.py:353:9: error[unsupported-operator] Operator `&` is not supported between objects of type `MySchema` and `MySchema`
++ ibis/common/tests/test_collections.py:353:9: error[unsupported-operator] Operator `&` is not supported between two objects of type `MySchema`
+- ibis/common/tests/test_collections.py:357:9: error[unsupported-operator] Operator `&` is not supported between objects of type `MySchema` and `MySchema`
++ ibis/common/tests/test_collections.py:357:9: error[unsupported-operator] Operator `&` is not supported between two objects of type `MySchema`
+- ibis/common/tests/test_collections.py:360:13: error[unsupported-operator] Operator `&` is not supported between objects of type `MySchema` and `MySchema`
++ ibis/common/tests/test_collections.py:360:13: error[unsupported-operator] Operator `&` is not supported between two objects of type `MySchema`
+- ibis/common/tests/test_collections.py:362:13: error[unsupported-operator] Operator `&` is not supported between objects of type `MySchema` and `MySchema`
++ ibis/common/tests/test_collections.py:362:13: error[unsupported-operator] Operator `&` is not supported between two objects of type `MySchema`
+- ibis/common/tests/test_collections.py:368:13: error[unsupported-operator] Operator `|` is not supported between objects of type `MySchema` and `MySchema`
++ ibis/common/tests/test_collections.py:368:13: error[unsupported-operator] Operator `|` is not supported between two objects of type `MySchema`
+- ibis/common/tests/test_collections.py:370:13: error[unsupported-operator] Operator `|` is not supported between objects of type `MySchema` and `MySchema`
++ ibis/common/tests/test_collections.py:370:13: error[unsupported-operator] Operator `|` is not supported between two objects of type `MySchema`
+- ibis/common/tests/test_collections.py:371:13: error[unsupported-operator] Operator `|` is not supported between objects of type `MySchema` and `MySchema`
++ ibis/common/tests/test_collections.py:371:13: error[unsupported-operator] Operator `|` is not supported between two objects of type `MySchema`
+- ibis/common/tests/test_collections.py:373:9: error[unsupported-operator] Operator `|` is not supported between objects of type `MySchema` and `MySchema`
++ ibis/common/tests/test_collections.py:373:9: error[unsupported-operator] Operator `|` is not supported between two objects of type `MySchema`
+- ibis/common/tests/test_collections.py:381:9: error[unsupported-operator] Operator `-` is not supported between objects of type `MySchema` and `MySchema`
++ ibis/common/tests/test_collections.py:381:9: error[unsupported-operator] Operator `-` is not supported between two objects of type `MySchema`
+- ibis/common/tests/test_collections.py:384:13: error[unsupported-operator] Operator `-` is not supported between objects of type `MySchema` and `MySchema`
++ ibis/common/tests/test_collections.py:384:13: error[unsupported-operator] Operator `-` is not supported between two objects of type `MySchema`
+- ibis/common/tests/test_collections.py:386:13: error[unsupported-operator] Operator `-` is not supported between objects of type `MySchema` and `MySchema`
++ ibis/common/tests/test_collections.py:386:13: error[unsupported-operator] Operator `-` is not supported between two objects of type `MySchema`
+- ibis/common/tests/test_collections.py:388:13: error[unsupported-operator] Operator `-` is not supported between objects of type `MySchema` and `MySchema`
++ ibis/common/tests/test_collections.py:388:13: error[unsupported-operator] Operator `-` is not supported between two objects of type `MySchema`
+- ibis/common/tests/test_collections.py:390:13: error[unsupported-operator] Operator `-` is not supported between objects of type `MySchema` and `MySchema`
++ ibis/common/tests/test_collections.py:390:13: error[unsupported-operator] Operator `-` is not supported between two objects of type `MySchema`
+- ibis/common/tests/test_collections.py:396:9: error[unsupported-operator] Operator `^` is not supported between objects of type `MySchema` and `MySchema`
++ ibis/common/tests/test_collections.py:396:9: error[unsupported-operator] Operator `^` is not supported between two objects of type `MySchema`
+- ibis/common/tests/test_collections.py:400:13: error[unsupported-operator] Operator `^` is not supported between objects of type `MySchema` and `MySchema`
++ ibis/common/tests/test_collections.py:400:13: error[unsupported-operator] Operator `^` is not supported between two objects of type `MySchema`
+- ibis/common/tests/test_collections.py:402:13: error[unsupported-operator] Operator `^` is not supported between objects of type `MySchema` and `MySchema`
++ ibis/common/tests/test_collections.py:402:13: error[unsupported-operator] Operator `^` is not supported between two objects of type `MySchema`
+- ibis/common/tests/test_collections.py:403:13: error[unsupported-operator] Operator `^` is not supported between objects of type `MySchema` and `MySchema`
++ ibis/common/tests/test_collections.py:403:13: error[unsupported-operator] Operator `^` is not supported between two objects of type `MySchema`
+- ibis/common/tests/test_collections.py:404:13: error[unsupported-operator] Operator `^` is not supported between objects of type `MySchema` and `MySchema`
++ ibis/common/tests/test_collections.py:404:13: error[unsupported-operator] Operator `^` is not supported between two objects of type `MySchema`
+- ibis/expr/datatypes/tests/test_core.py:431:12: error[unsupported-operator] Operator `&` is not supported between objects of type `Struct` and `Struct`
++ ibis/expr/datatypes/tests/test_core.py:431:12: error[unsupported-operator] Operator `&` is not supported between two objects of type `Struct`
+- ibis/expr/datatypes/tests/test_core.py:432:12: error[unsupported-operator] Operator `|` is not supported between objects of type `Struct` and `Struct`
++ ibis/expr/datatypes/tests/test_core.py:432:12: error[unsupported-operator] Operator `|` is not supported between two objects of type `Struct`
+- ibis/expr/datatypes/tests/test_core.py:435:12: error[unsupported-operator] Operator `-` is not supported between objects of type `Struct` and `Struct`
++ ibis/expr/datatypes/tests/test_core.py:435:12: error[unsupported-operator] Operator `-` is not supported between two objects of type `Struct`
+- ibis/expr/datatypes/tests/test_core.py:436:12: error[unsupported-operator] Operator `-` is not supported between objects of type `Struct` and `Struct`
++ ibis/expr/datatypes/tests/test_core.py:436:12: error[unsupported-operator] Operator `-` is not supported between two objects of type `Struct`
+- ibis/expr/datatypes/tests/test_core.py:437:12: error[unsupported-operator] Operator `^` is not supported between objects of type `Struct` and `Struct`
++ ibis/expr/datatypes/tests/test_core.py:437:12: error[unsupported-operator] Operator `^` is not supported between two objects of type `Struct`
+- ibis/expr/operations/tests/test_rewrites.py:69:32: error[unsupported-operator] Operator `+` is not supported between objects of type `Scalar` and `Scalar`
++ ibis/expr/operations/tests/test_rewrites.py:69:32: error[unsupported-operator] Operator `+` is not supported between two objects of type `Scalar`
+- ibis/expr/operations/tests/test_rewrites.py:77:12: error[unsupported-operator] Operator `+` is not supported between objects of type `Scalar` and `Scalar`
++ ibis/expr/operations/tests/test_rewrites.py:77:12: error[unsupported-operator] Operator `+` is not supported between two objects of type `Scalar`
+- ibis/expr/tests/test_schema.py:330:12: error[unsupported-operator] Operator `&` is not supported between objects of type `Schema` and `Schema`
++ ibis/expr/tests/test_schema.py:330:12: error[unsupported-operator] Operator `&` is not supported between two objects of type `Schema`
+- ibis/expr/tests/test_schema.py:331:12: error[unsupported-operator] Operator `|` is not supported between objects of type `Schema` and `Schema`
++ ibis/expr/tests/test_schema.py:331:12: error[unsupported-operator] Operator `|` is not supported between two objects of type `Schema`
+- ibis/expr/tests/test_schema.py:334:12: error[unsupported-operator] Operator `-` is not supported between objects of type `Schema` and `Schema`
++ ibis/expr/tests/test_schema.py:334:12: error[unsupported-operator] Operator `-` is not supported between two objects of type `Schema`
+- ibis/expr/tests/test_schema.py:335:12: error[unsupported-operator] Operator `-` is not supported between objects of type `Schema` and `Schema`
++ ibis/expr/tests/test_schema.py:335:12: error[unsupported-operator] Operator `-` is not supported between two objects of type `Schema`
+- ibis/expr/tests/test_schema.py:336:12: error[unsupported-operator] Operator `^` is not supported between objects of type `Schema` and `Schema`
++ ibis/expr/tests/test_schema.py:336:12: error[unsupported-operator] Operator `^` is not supported between two objects of type `Schema`
+
+jax (https://github.com/google/jax)
+- jax/_src/pallas/fuser/block_spec.py:1708:24: error[unsupported-operator] Operator `*` is not supported between objects of type `int | None` and `int | None`
++ jax/_src/pallas/fuser/block_spec.py:1708:24: error[unsupported-operator] Operator `*` is not supported between two objects of type `int | None`
+- jax/_src/pallas/helpers.py:110:23: error[unsupported-operator] Operator `-` is not supported between objects of type `Array | ndarray[tuple[Any, ...], dtype[Any]] | bool[bool] | ... omitted 6 union elements` and `Array | ndarray[tuple[Any, ...], dtype[Any]] | bool[bool] | ... omitted 6 union elements`
++ jax/_src/pallas/helpers.py:110:23: error[unsupported-operator] Operator `-` is not supported between two objects of type `Array | ndarray[tuple[Any, ...], dtype[Any]] | numpy.bool[builtins.bool] | ... omitted 6 union elements`
+
+pandas (https://github.com/pandas-dev/pandas)
+- pandas/core/indexes/interval.py:1440:32: error[unsupported-operator] Operator `-` is not supported between objects of type `str | bytes | date | ... omitted 10 union elements` and `str | bytes | date | ... omitted 10 union elements`
++ pandas/core/indexes/interval.py:1440:32: error[unsupported-operator] Operator `-` is not supported between two objects of type `str | bytes | date | ... omitted 10 union elements`
+- pandas/tests/arithmetic/test_numeric.py:1416:26: error[unsupported-operator] Operator `*` is not supported between objects of type `ExtensionArray | ndarray[tuple[Any, ...], dtype[Any]]` and `ExtensionArray | ndarray[tuple[Any, ...], dtype[Any]]`
++ pandas/tests/arithmetic/test_numeric.py:1416:26: error[unsupported-operator] Operator `*` is not supported between two objects of type `ExtensionArray | ndarray[tuple[Any, ...], dtype[Any]]`
+- pandas/tests/scalar/interval/test_arithmetic.py:31:13: error[unsupported-operator] Operator `+` is not supported between objects of type `Interval[int]` and `Interval[int]`
++ pandas/tests/scalar/interval/test_arithmetic.py:31:13: error[unsupported-operator] Operator `+` is not supported between two objects of type `Interval[int]`
+- pandas/tests/scalar/interval/test_arithmetic.py:49:13: error[unsupported-operator] Operator `-` is not supported between objects of type `Interval[int]` and `Interval[int]`
++ pandas/tests/scalar/interval/test_arithmetic.py:49:13: error[unsupported-operator] Operator `-` is not supported between two objects of type `Interval[int]`
+- pandas/tests/scalar/interval/test_arithmetic.py:70:13: error[unsupported-operator] Operator `*` is not supported between objects of type `Interval[int]` and `Interval[int]`
++ pandas/tests/scalar/interval/test_arithmetic.py:70:13: error[unsupported-operator] Operator `*` is not supported between two objects of type `Interval[int]`
+- pandas/tests/scalar/interval/test_arithmetic.py:89:13: error[unsupported-operator] Operator `/` is not supported between objects of type `Interval[int]` and `Interval[int]`
++ pandas/tests/scalar/interval/test_arithmetic.py:89:13: error[unsupported-operator] Operator `/` is not supported between two objects of type `Interval[int]`
+- pandas/tests/scalar/interval/test_arithmetic.py:107:13: error[unsupported-operator] Operator `//` is not supported between objects of type `Interval[int]` and `Interval[int]`
++ pandas/tests/scalar/interval/test_arithmetic.py:107:13: error[unsupported-operator] Operator `//` is not supported between two objects of type `Interval[int]`
+- pandas/tests/scalar/test_na_scalar.py:157:12: error[unsupported-operator] Unary operator `+` is not supported for type `NAType`
++ pandas/tests/scalar/test_na_scalar.py:157:12: error[unsupported-operator] Unary operator `+` is not supported for object of type `NAType`
+- pandas/tests/scalar/test_na_scalar.py:158:12: error[unsupported-operator] Unary operator `-` is not supported for type `NAType`
++ pandas/tests/scalar/test_na_scalar.py:158:12: error[unsupported-operator] Unary operator `-` is not supported for object of type `NAType`
+- pandas/tests/scalar/test_na_scalar.py:160:12: error[unsupported-operator] Unary operator `~` is not supported for type `NAType`
++ pandas/tests/scalar/test_na_scalar.py:160:12: error[unsupported-operator] Unary operator `~` is not supported for object of type `NAType`
+- pandas/tests/scalar/test_na_scalar.py:168:12: error[unsupported-operator] Operator `&` is not supported between objects of type `NAType` and `NAType`
++ pandas/tests/scalar/test_na_scalar.py:168:12: error[unsupported-operator] Operator `&` is not supported between two objects of type `NAType`
+- pandas/tests/scalar/test_na_scalar.py:171:12: error[unsupported-operator] Operator `&` is not supported between objects of type `NAType` and `bool[bool]`
++ pandas/tests/scalar/test_na_scalar.py:171:12: error[unsupported-operator] Operator `&` is not supported between objects of type `NAType` and `numpy.bool[builtins.bool]`
+- pandas/tests/scalar/test_na_scalar.py:172:12: error[unsupported-operator] Operator `&` is not supported between objects of type `bool[bool]` and `NAType`
++ pandas/tests/scalar/test_na_scalar.py:172:12: error[unsupported-operator] Operator `&` is not supported between objects of type `numpy.bool[builtins.bool]` and `NAType`
+- pandas/tests/scalar/test_na_scalar.py:173:12: error[unsupported-operator] Operator `&` is not supported between objects of type `NAType` and `bool[bool]`
++ pandas/tests/scalar/test_na_scalar.py:173:12: error[unsupported-operator] Operator `&` is not supported between objects of type `NAType` and `numpy.bool[builtins.bool]`
+- pandas/tests/scalar/test_na_scalar.py:174:12: error[unsupported-operator] Operator `&` is not supported between objects of type `bool[bool]` and `NAType`
++ pandas/tests/scalar/test_na_scalar.py:174:12: error[unsupported-operator] Operator `&` is not supported between objects of type `numpy.bool[builtins.bool]` and `NAType`
+- pandas/tests/scalar/test_na_scalar.py:186:12: error[unsupported-operator] Operator `|` is not supported between objects of type `NAType` and `NAType`
++ pandas/tests/scalar/test_na_scalar.py:186:12: error[unsupported-operator] Operator `|` is not supported between two objects of type `NAType`
+- pandas/tests/scalar/test_na_scalar.py:189:12: error[unsupported-operator] Operator `|` is not supported between objects of type `NAType` and `bool[bool]`
++ pandas/tests/scalar/test_na_scalar.py:189:12: error[unsupported-operator] Operator `|` is not supported between objects of type `NAType` and `numpy.bool[builtins.bool]`
+- pandas/tests/scalar/test_na_scalar.py:190:12: error[unsupported-operator] Operator `|` is not supported between objects of type `bool[bool]` and `NAType`
++ pandas/tests/scalar/test_na_scalar.py:190:12: error[unsupported-operator] Operator `|` is not supported between objects of type `numpy.bool[builtins.bool]` and `NAType`
+- pandas/tests/scalar/test_na_scalar.py:191:12: error[unsupported-operator] Operator `|` is not supported between objects of type `NAType` and `bool[bool]`
++ pandas/tests/scalar/test_na_scalar.py:191:12: error[unsupported-operator] Operator `|` is not supported between objects of type `NAType` and `numpy.bool[builtins.bool]`
+- pandas/tests/scalar/test_na_scalar.py:192:12: error[unsupported-operator] Operator `|` is not supported between objects of type `bool[bool]` and `NAType`
++ pandas/tests/scalar/test_na_scalar.py:192:12: error[unsupported-operator] Operator `|` is not supported between objects of type `numpy.bool[builtins.bool]` and `NAType`
+- pandas/tests/scalar/test_na_scalar.py:204:12: error[unsupported-operator] Operator `^` is not supported between objects of type `NAType` and `NAType`
++ pandas/tests/scalar/test_na_scalar.py:204:12: error[unsupported-operator] Operator `^` is not supported between two objects of type `NAType`
+- pandas/tests/scalar/test_na_scalar.py:207:12: error[unsupported-operator] Operator `^` is not supported between objects of type `NAType` and `bool[bool]`
++ pandas/tests/scalar/test_na_scalar.py:207:12: error[unsupported-operator] Operator `^` is not supported between objects of type `NAType` and `numpy.bool[builtins.bool]`
+- pandas/tests/scalar/test_na_scalar.py:208:12: error[unsupported-operator] Operator `^` is not supported between objects of type `bool[bool]` and `NAType`
++ pandas/tests/scalar/test_na_scalar.py:208:12: error[unsupported-operator] Operator `^` is not supported between objects of type `numpy.bool[builtins.bool]` and `NAType`
+- pandas/tests/scalar/test_na_scalar.py:209:12: error[unsupported-operator] Operator `^` is not supported between objects of type `NAType` and `bool[bool]`
++ pandas/tests/scalar/test_na_scalar.py:209:12: error[unsupported-operator] Operator `^` is not supported between objects of type `NAType` and `numpy.bool[builtins.bool]`
+- pandas/tests/scalar/test_na_scalar.py:210:12: error[unsupported-operator] Operator `^` is not supported between objects of type `bool[bool]` and `NAType`
++ pandas/tests/scalar/test_na_scalar.py:210:12: error[unsupported-operator] Operator `^` is not supported between objects of type `numpy.bool[builtins.bool]` and `NAType`
+- pandas/tests/scalar/test_na_scalar.py:218:12: error[unsupported-operator] Unary operator `~` is not supported for type `NAType`
++ pandas/tests/scalar/test_na_scalar.py:218:12: error[unsupported-operator] Unary operator `~` is not supported for object of type `NAType`
+- pandas/tests/scalar/timedelta/test_timedelta.py:290:13: error[unsupported-operator] Unary operator `~` is not supported for type `Timedelta`
++ pandas/tests/scalar/timedelta/test_timedelta.py:290:13: error[unsupported-operator] Unary operator `~` is not supported for object of type `Timedelta`
+- pandas/tests/scalar/timedelta/test_timedelta.py:294:13: error[unsupported-operator] Unary operator `~` is not supported for type `timedelta`
++ pandas/tests/scalar/timedelta/test_timedelta.py:294:13: error[unsupported-operator] Unary operator `~` is not supported for object of type `timedelta`
+- pandas/tests/scalar/timedelta/test_timedelta.py:298:13: error[unsupported-operator] Unary operator `~` is not supported for type `timedelta64[timedelta | int | None]`
++ pandas/tests/scalar/timedelta/test_timedelta.py:298:13: error[unsupported-operator] Unary operator `~` is not supported for object of type `timedelta64[timedelta | int | None]`
+
+manticore (https://github.com/trailofbits/manticore)
+- manticore/core/smtlib/visitors.py:641:58: error[unsupported-operator] Operator `-` is not supported between objects of type `None | Unknown` and `None | Unknown`
++ manticore/core/smtlib/visitors.py:641:58: error[unsupported-operator] Operator `-` is not supported between two objects of type `None | Unknown`
+- manticore/platforms/linux.py:420:20: error[unsupported-operator] Unary operator `-` is not supported for type `int | None`
++ manticore/platforms/linux.py:420:20: error[unsupported-operator] Unary operator `-` is not supported for object of type `int | None`
+- manticore/platforms/linux.py:525:20: error[unsupported-operator] Unary operator `-` is not supported for type `int | None`
++ manticore/platforms/linux.py:525:20: error[unsupported-operator] Unary operator `-` is not supported for object of type `int | None`
+- manticore/platforms/linux.py:1767:20: error[unsupported-operator] Unary operator `-` is not supported for type `int | None`
++ manticore/platforms/linux.py:1767:20: error[unsupported-operator] Unary operator `-` is not supported for object of type `int | None`
+- manticore/platforms/linux.py:1780:20: error[unsupported-operator] Unary operator `-` is not supported for type `int | None`
++ manticore/platforms/linux.py:1780:20: error[unsupported-operator] Unary operator `-` is not supported for object of type `int | None`
+- manticore/platforms/linux.py:1810:20: error[unsupported-operator] Unary operator `-` is not supported for type `int | None`
++ manticore/platforms/linux.py:1810:20: error[unsupported-operator] Unary operator `-` is not supported for object of type `int | None`
+- manticore/platforms/linux.py:2340:20: error[unsupported-operator] Unary operator `-` is not supported for type `int | None`
++ manticore/platforms/linux.py:2340:20: error[unsupported-operator] Unary operator `-` is not supported for object of type `int | None`
+- manticore/platforms/linux.py:3295:20: error[unsupported-operator] Unary operator `-` is not supported for type `int | None`
++ manticore/platforms/linux.py:3295:20: error[unsupported-operator] Unary operator `-` is not supported for object of type `int | None`
+- manticore/platforms/linux.py:3512:20: error[unsupported-operator] Unary operator `-` is not supported for type `int | None`
++ manticore/platforms/linux.py:3512:20: error[unsupported-operator] Unary operator `-` is not supported for object of type `int | None`
+- manticore/platforms/linux.py:3525:20: error[unsupported-operator] Unary operator `-` is not supported for type `int | None`
++ manticore/platforms/linux.py:3525:20: error[unsupported-operator] Unary operator `-` is not supported for object of type `int | None`
+- manticore/platforms/linux.py:3560:20: error[unsupported-operator] Unary operator `-` is not supported for type `int | None`
++ manticore/platforms/linux.py:3560:20: error[unsupported-operator] Unary operator `-` is not supported for object of type `int | None`
+- manticore/platforms/linux.py:3578:20: error[unsupported-operator] Unary operator `-` is not supported for type `int | None`
++ manticore/platforms/linux.py:3578:20: error[unsupported-operator] Unary operator `-` is not supported for object of type `int | None`
+- manticore/platforms/linux.py:3590:20: error[unsupported-operator] Unary operator `-` is not supported for type `int | None`
++ manticore/platforms/linux.py:3590:20: error[unsupported-operator] Unary operator `-` is not supported for object of type `int | None`
+- manticore/platforms/linux.py:3668:20: error[unsupported-operator] Unary operator `-` is not supported for type `int | None`
++ manticore/platforms/linux.py:3668:20: error[unsupported-operator] Unary operator `-` is not supported for object of type `int | None`
+- manticore/platforms/linux.py:3681:20: error[unsupported-operator] Unary operator `-` is not supported for type `int | None`
++ manticore/platforms/linux.py:3681:20: error[unsupported-operator] Unary operator `-` is not supported for object of type `int | None`
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/test/unit/test_index.py:525:26: error[unsupported-operator] Operator `@` is not supported between objects of type `Index[Any]` and `Index[Any]`
++ static_frame/test/unit/test_index.py:525:26: error[unsupported-operator] Operator `@` is not supported between two objects of type `Index[Any]`
+
+scikit-learn (https://github.com/scikit-learn/scikit-learn)
+- sklearn/ensemble/_hist_gradient_boosting/grower.py:585:24: error[unsupported-operator] Operator `+` is not supported between objects of type `Unknown | None` and `Unknown | None`
++ sklearn/ensemble/_hist_gradient_boosting/grower.py:585:24: error[unsupported-operator] Operator `+` is not supported between two objects of type `Unknown | None`
+- sklearn/linear_model/_ridge.py:192:26: error[unsupported-operator] Operator `/` is not supported between objects of type `Unknown | None` and `Unknown | None`
++ sklearn/linear_model/_ridge.py:192:26: error[unsupported-operator] Operator `/` is not supported between two objects of type `Unknown | None`
+
+sympy (https://github.com/sympy/sympy)
+- sympy/codegen/numpy_nodes.py:57:35: error[unsupported-operator] Operator `-` is not supported between objects of type `Basic` and `Basic`
++ sympy/codegen/numpy_nodes.py:57:35: error[unsupported-operator] Operator `-` is not supported between two objects of type `Basic`
+- sympy/codegen/numpy_nodes.py:99:37: error[unsupported-operator] Operator `-` is not supported between objects of type `Basic` and `Basic`
++ sympy/codegen/numpy_nodes.py:99:37: error[unsupported-operator] Operator `-` is not supported between two objects of type `Basic`
+- sympy/core/expr.py:3321:24: error[unsupported-operator] Operator `-` is not supported between objects of type `Basic` and `Basic`
++ sympy/core/expr.py:3321:24: error[unsupported-operator] Operator `-` is not supported between two objects of type `Basic`
+- sympy/core/exprtools.py:390:37: error[unsupported-operator] Unary operator `-` is not supported for type `Basic | Unknown`
++ sympy/core/exprtools.py:390:37: error[unsupported-operator] Unary operator `-` is not supported for object of type `Basic | Unknown`
+- sympy/core/power.py:1103:34: error[unsupported-operator] Operator `*` is not supported between objects of type `Basic` and `Basic`
++ sympy/core/power.py:1103:34: error[unsupported-operator] Operator `*` is not supported between two objects of type `Basic`
+- sympy/core/relational.py:247:70: error[unsupported-operator] Unary operator `-` is not supported for type `Basic & ~BooleanAtom`
++ sympy/core/relational.py:247:70: error[unsupported-operator] Unary operator `-` is not supported for object of type `Basic & ~BooleanAtom`
+- sympy/core/relational.py:247:74: error[unsupported-operator] Unary operator `-` is not supported for type `Basic & ~BooleanAtom`
++ sympy/core/relational.py:247:74: error[unsupported-operator] Unary operator `-` is not supported for object of type `Basic & ~BooleanAtom`
+- sympy/core/relational.py:374:40: error[unsupported-operator] Unary operator `-` is not supported for type `(Unknown & ~BooleanAtom) | (Basic & ~BooleanAtom)`
++ sympy/core/relational.py:374:40: error[unsupported-operator] Unary operator `-` is not supported for object of type `(Unknown & ~BooleanAtom) | (Basic & ~BooleanAtom)`
+- sympy/core/relational.py:754:17: error[unsupported-operator] Operator `-` is not supported between objects of type `Basic` and `Basic`
++ sympy/core/relational.py:754:17: error[unsupported-operator] Operator `-` is not supported between two objects of type `Basic`
+- sympy/core/tests/test_arit.py:1924:17: error[unsupported-operator] Operator `-` is not supported between objects of type `Basic` and `Basic`
++ sympy/core/tests/test_arit.py:1924:17: error[unsupported-operator] Operator `-` is not supported between two objects of type `Basic`
+- sympy/core/tests/test_arit.py:1925:17: error[unsupported-operator] Operator `-` is not supported between objects of type `Basic` and `Basic`
++ sympy/core/tests/test_arit.py:1925:17: error[unsupported-operator] Operator `-` is not supported between two objects of type `Basic`
+- sympy/core/tests/test_evalf.py:697:23: error[unsupported-operator] Unary operator `-` is not supported for type `Unknown | int | None`
++ sympy/core/tests/test_evalf.py:697:23: error[unsupported-operator] Unary operator `-` is not supported for object of type `Unknown | int | None`
+- sympy/core/tests/test_numbers.py:1284:17: error[unsupported-operator] Operator `**` is not supported between objects of type `Basic` and `Basic`
++ sympy/core/tests/test_numbers.py:1284:17: error[unsupported-operator] Operator `**` is not supported between two objects of type `Basic`
+- sympy/core/tests/test_relational.py:693:18: error[unsupported-operator] Unary operator `-` is not supported for type `Basic`
++ sympy/core/tests/test_relational.py:693:18: error[unsupported-operator] Unary operator `-` is not supported for object of type `Basic`
+- sympy/core/tests/test_relational.py:693:41: error[unsupported-operator] Unary operator `-` is not supported for type `Basic`
++ sympy/core/tests/test_relational.py:693:41: error[unsupported-operator] Unary operator `-` is not supported for object of type `Basic`
+- sympy/functions/combinatorial/factorials.py:924:30: error[unsupported-operator] Operator `-` is not supported between objects of type `Basic` and `Basic`
++ sympy/functions/combinatorial/factorials.py:924:30: error[unsupported-operator] Operator `-` is not supported between two objects of type `Basic`
+- sympy/functions/combinatorial/factorials.py:928:49: error[unsupported-operator] Operator `-` is not supported between objects of type `Basic` and `Basic`
++ sympy/functions/combinatorial/factorials.py:928:49: error[unsupported-operator] Operator `-` is not supported between two objects of type `Basic`
+- sympy/functions/combinatorial/factorials.py:1082:13: error[unsupported-operator] Operator `-` is not supported between objects of type `Basic` and `Basic`
++ sympy/functions/combinatorial/factorials.py:1082:13: error[unsupported-operator] Operator `-` is not supported between two objects of type `Basic`
+- sympy/functions/combinatorial/factorials.py:1083:17: error[unsupported-operator] Operator `-` is not supported between objects of type `Basic` and `Basic`
++ sympy/functions/combinatorial/factorials.py:1083:17: error[unsupported-operator] Operator `-` is not supported between two objects of type `Basic`
+- sympy/functions/combinatorial/numbers.py:966:24: error[unsupported-operator] Operator `-` is not supported between objects of type `Basic` and `Basic`
++ sympy/functions/combinatorial/numbers.py:966:24: error[unsupported-operator] Operator `-` is not supported between two objects of type `Basic`
+- sympy/functions/elementary/exponential.py:835:35: error[unsupported-operator] Unary operator `-` is not supported for type `Basic`
++ sympy/functions/elementary/exponential.py:835:35: error[unsupported-operator] Unary operator `-` is not supported for object of type `Basic`
+- sympy/functions/elementary/integers.py:669:25: error[unsupported-operator] Operator `-` is not supported between objects of type `Basic` and `Basic`
++ sympy/functions/elementary/integers.py:669:25: error[unsupported-operator] Operator `-` is not supported between two objects of type `Basic`
+- sympy/functions/elementary/integers.py:687:20: error[unsupported-operator] Operator `-` is not supported between objects of type `Basic` and `Basic`
++ sympy/functions/elementary/integers.py:687:20: error[unsupported-operator] Operator `-` is not supported between two objects of type `Basic`
+- sympy/functions/elementary/trigonometric.py:3318:51: error[unsupported-operator] Unary operator `-` is not supported for type `Basic`
++ sympy/functions/elementary/trigonometric.py:3318:51: error[unsupported-operator] Unary operator `-` is not supported for object of type `Basic`
+- sympy/functions/elementary/trigonometric.py:3737:20: error[unsupported-operator] Unary operator `-` is not supported for type `Basic`
++ sympy/functions/elementary/trigonometric.py:3737:20: error[unsupported-operator] Unary operator `-` is not supported for object of type `Basic`
+- sympy/functions/special/bessel.py:368:33: error[unsupported-operator] Unary operator `-` is not supported for type `Basic`
++ sympy/functions/special/bessel.py:368:33: error[unsupported-operator] Unary operator `-` is not supported for object of type `Basic`
+- sympy/functions/special/bessel.py:414:28: error[unsupported-operator] Unary operator `-` is not supported for type `Basic`
++ sympy/functions/special/bessel.py:414:28: error[unsupported-operator] Unary operator `-` is not supported for object of type `Basic`
+- sympy/functions/special/bessel.py:731:34: error[unsupported-operator] Unary operator `-` is not supported for type `Basic`
++ sympy/functions/special/bessel.py:731:34: error[unsupported-operator] Unary operator `-` is not supported for object of type `Basic`
+- sympy/functions/special/bessel.py:731:41: error[unsupported-operator] Operator `**` is not supported between objects of type `Basic` and `Basic`
++ sympy/functions/special/bessel.py:731:41: error[unsupported-operator] Operator `**` is not supported between two objects of type `Basic`
+- sympy/functions/special/bessel.py:744:32: error[unsupported-operator] Unary operator `-` is not supported for type `Basic`
++ sympy/functions/special/bessel.py:744:32: error[unsupported-operator] Unary operator `-` is not supported for object of type `Basic`
+- sympy/functions/special/bessel.py:778:34: error[unsupported-operator] Unary operator `-` is not supported for type `Basic`
++ sympy/functions/special/bessel.py:778:34: error[unsupported-operator] Unary operator `-` is not supported for object of type `Basic`
+- sympy/functions/special/bessel.py:795:25: error[unsupported-operator] Unary operator `-` is not supported for type `Basic`
++ sympy/functions/special/bessel.py:795:25: error[unsupported-operator] Unary operator `-` is not supported for object of type `Basic`
+- sympy/functions/special/bessel.py:2120:22: error[unsupported-operator] Operator `**` is not supported between objects of type `Basic` and `Basic`
++ sympy/functions/special/bessel.py:2120:22: error[unsupported-operator] Operator `**` is not supported between two objects of type `Basic`
+- sympy/functions/special/bessel.py:2120:78: error[unsupported-operator] Operator `*` is not supported between objects of type `Basic` and `Basic`
++ sympy/functions/special/bessel.py:2120:78: error[unsupported-operator] Operator `*` is not supported between two objects of type `Basic`
+- sympy/functions/special/beta_functions.py:113:53: error[unsupported-operator] Operator `+` is not supported between objects of type `Basic` and `Basic`
++ sympy/functions/special/beta_functions.py:113:53: error[unsupported-operator] Operator `+` is not supported between two objects of type `Basic`
+- sympy/functions/special/beta_functions.py:116:53: error[unsupported-operator] Operator `+` is not supported between objects of type `Basic` and `Basic`
++ sympy/functions/special/beta_functions.py:116:53: error[unsupported-operator] Operator `+` is not supported between two objects of type `Basic`
+- sympy/functions/special/beta_functions.py:142:23: error[unsupported-operator] Operator `*` is not supported between objects of type `Basic | Unknown` and `Basic | Unknown`
++ sympy/functions/special/beta_functions.py:142:23: error[unsupported-operator] Operator `*` is not supported between two objects of type `Basic | Unknown`
+- sympy/functions/special/beta_functions.py:143:13: error[unsupported-operator] Operator `+` is not supported between objects of type `Basic | Unknown` and `Basic | Unknown`
++ sympy/functions/special/beta_functions.py:143:13: error[unsupported-operator] Operator `+` is not supported between two objects of type `Basic | Unknown`
+- sympy/functions/special/beta_functions.py:153:42: error[unsupported-operator] Operator `+` is not supported between objects of type `Basic` and `Basic`
++ sympy/functions/special/beta_functions.py:153:42: error[unsupported-operator] Operator `+` is not supported between two objects of type `Basic`
+- sympy/functions/special/elliptic_integrals.py:420:45: error[unsupported-operator] Operator `-` is not supported between objects of type `Basic` and `Basic`
++ sympy/functions/special/elliptic_integrals.py:420:45: error[unsupported-operator] Operator `-` is not supported between two objects of type `Basic`
+- sympy/functions/special/elliptic_integrals.py:422:51: error[unsupported-operator] Operator `-` is not supported between objects of type `Basic` and `Basic`
++ sympy/functions/special/elliptic_integrals.py:422:51: error[unsupported-operator] Operator `-` is not supported between two objects of type `Basic`
+- sympy/functions/special/elliptic_integrals.py:428:56: error[unsupported-operator] Operator `-` is not supported between objects of type `Basic` and `Basic`
++ sympy/functions/special/elliptic_integrals.py:428:56: error[unsupported-operator] Operator `-` is not supported between two objects of type `Basic`
+- sympy/functions/special/elliptic_integrals.py:432:42: error[unsupported-operator] Operator `-` is not supported between objects of type `Basic` and `Basic`
++ sympy/functions/special/elliptic_integrals.py:432:42: error[unsupported-operator] Operator `-` is not supported between two objects of type `Basic`
+- sympy/functions/special/elliptic_integrals.py:433:61: error[unsupported-operator] Operator `-` is not supported between objects of type `Basic` and `Basic`
++ sympy/functions/special/elliptic_integrals.py:433:61: error[unsupported-operator] Operator `-` is not supported between two objects of type `Basic`
+- sympy/functions/special/elliptic_integrals.py:435:72: error[unsupported-operator] Operator `-` is not supported between objects of type `Basic` and `Basic`
++ sympy/functions/special/elliptic_integrals.py:435:72: error[unsupported-operator] Operator `-` is not supported between two objects of type `Basic`
+- sympy/functions/special/error_functions.py:1459:25: error[unsupported-operator] Unary operator `-` is not supported for type `Basic`
++ sympy/functions/special/error_functions.py:1459:25: error[unsupported-operator] Unary operator `-` is not supported for object of type `Basic`
+- sympy/functions/special/error_functions.py:1467:28: error[unsupported-operator] Unary operator `-` is not supported for type `Basic`
++ sympy/functions/special/error_functions.py:1467:28: error[unsupported-operator] Unary operator `-` is not supported for object of type `Basic`
+- sympy/functions/special/gamma_functions.py:210:17: error[unsupported-operator] Unary operator `-` is not supported for type `Basic`
++ sympy/functions/special/gamma_functions.py:210:17: error[unsupported-operator] Unary operator `-` is not supported for object of type `Basic`
+- sympy/functions/special/gamma_functions.py:377:21: error[unsupported-operator] Operator `**` is not supported between objects of type `Basic` and `Basic`
++ sympy/functions/special/gamma_functions.py:377:21: error[unsupported-operator] Operator `**` is not supported between two objects of type `Basic`
+- sympy/functions/special/gamma_functions.py:377:30: error[unsupported-operator] Unary operator `-` is not supported for type `Basic`
++ sympy/functions/special/gamma_functions.py:377:30: error[unsupported-operator] Unary operator `-` is not supported for object of type `Basic`
+- sympy/functions/special/gamma_functions.py:379:19: error[unsupported-operator] 
+
+... (truncated 548 lines) ...
+```
+
+</details>
+
+
+No memory usage changes detected ✅
+
+
+
+---
+
+_Comment by @AlexWaygood on 2025-12-12 13:50_
+
+> ```diff
+> - pandas/tests/scalar/test_na_scalar.py:207:12: error[unsupported-operator] Operator `^` is not supported between objects of type `NAType` and `bool[bool]`
+> + pandas/tests/scalar/test_na_scalar.py:207:12: error[unsupported-operator] Operator `^` is not supported between objects of type `NAType` and `numpy.bool[builtins.bool]`
+> ```
+
+😁 that's better
+
+---
+
+_@carljm approved on 2025-12-12 21:32_
+
+Very nice!
+
+---
+
+_Merged by @AlexWaygood on 2025-12-12 21:53_
+
+---
+
+_Closed by @AlexWaygood on 2025-12-12 21:53_
+
+---
+
+_Branch deleted on 2025-12-12 21:53_
+
+---

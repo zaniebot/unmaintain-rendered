@@ -1,0 +1,678 @@
+```yaml
+number: 21771
+title: "[ty] Support implicit type of `cls` in signatures"
+type: pull_request
+state: merged
+author: ibraheemdev
+labels:
+  - ty
+  - ecosystem-analyzer
+assignees: []
+merged: true
+base: main
+head: ibraheem/implicit-cls-signature
+created_at: 2025-12-03T06:25:43Z
+updated_at: 2025-12-10T21:56:22Z
+url: https://github.com/astral-sh/ruff/pull/21771
+synced_at: 2026-01-10T16:42:11Z
+```
+
+# [ty] Support implicit type of `cls` in signatures
+
+---
+
+_Pull request opened by @ibraheemdev on 2025-12-03 06:25_
+
+## Summary
+
+Extends https://github.com/astral-sh/ruff/pull/20517 to support the implicit type of `cls` in `@classmethod` signatures. Part of https://github.com/astral-sh/ty/issues/159.
+
+This PR is stacked on https://github.com/astral-sh/ruff/pull/21770.
+
+---
+
+_Renamed from "Support implicit type of `cls` in signatures" to "[ty] Support implicit type of `cls` in signatures" by @ibraheemdev on 2025-12-03 06:25_
+
+---
+
+_Label `ty` added by @ibraheemdev on 2025-12-03 06:25_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-03 06:27_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-12-10 20:28:22.520858317 +0000
++++ new-output.txt	2025-12-10 20:28:26.248881010 +0000
+@@ -511,17 +511,13 @@
+ generics_self_advanced.py:28:25: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@method1`
+ generics_self_advanced.py:36:9: error[type-assertion-failure] Type `list[Self@method2]` does not match asserted type `list[<special form 'typing.Self'>]`
+ generics_self_advanced.py:37:9: error[type-assertion-failure] Type `Self@method2` does not match asserted type `<special form 'typing.Self'>`
+-generics_self_advanced.py:38:9: error[type-assertion-failure] Type `Self@method2` does not match asserted type `Unknown`
+ generics_self_advanced.py:43:9: error[type-assertion-failure] Type `list[Self@method3]` does not match asserted type `list[<special form 'typing.Self'>]`
+ generics_self_advanced.py:44:9: error[type-assertion-failure] Type `Self@method3` does not match asserted type `<special form 'typing.Self'>`
+-generics_self_advanced.py:45:9: error[type-assertion-failure] Type `Self@method3` does not match asserted type `Unknown`
+ generics_self_attributes.py:26:33: error[invalid-argument-type] Argument is incorrect: Expected `<special form 'typing.Self'> | None`, found `LinkedList[int]`
+ generics_self_attributes.py:29:5: error[invalid-assignment] Object of type `OrdinalLinkedList` is not assignable to attribute `next` of type `<special form 'typing.Self'> | None`
+ generics_self_attributes.py:32:5: error[invalid-assignment] Object of type `LinkedList[int]` is not assignable to attribute `next` of type `<special form 'typing.Self'> | None`
+ generics_self_basic.py:20:16: error[invalid-return-type] Return type does not match returned value: expected `Self@method2`, found `Shape`
+ generics_self_basic.py:33:16: error[invalid-return-type] Return type does not match returned value: expected `Self@cls_method2`, found `Shape`
+-generics_self_basic.py:54:1: error[type-assertion-failure] Type `Shape` does not match asserted type `Unknown`
+-generics_self_basic.py:55:1: error[type-assertion-failure] Type `Circle` does not match asserted type `Unknown`
+ generics_self_basic.py:64:38: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@set_value`
+ generics_self_basic.py:67:26: error[invalid-type-form] Special form `typing.Self` expected no type parameter
+ generics_self_protocols.py:61:19: error[invalid-argument-type] Argument to function `accepts_shape` is incorrect: Expected `ShapeProtocol`, found `BadReturnType`
+@@ -1025,4 +1021,4 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Unknown key "title" for TypedDict `Movie`: Unknown key "title"
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions
+-Found 1027 diagnostics
++Found 1023 diagnostics
+
+```
+
+</details>
+
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-03 06:29_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+spack (https://github.com/spack/spack)
++ lib/spack/spack/util/archive.py:269:24: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `IO[bytes] | None`
++ lib/spack/spack/util/archive.py:277:25: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `IO[bytes] | None`
+- Found 7975 diagnostics
++ Found 7977 diagnostics
+
+DateType (https://github.com/glyph/DateType)
+- src/datetype/__init__.py:485:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/datetype/__init__.py:497:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/datetype/__init__.py:524:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 11 diagnostics
++ Found 8 diagnostics
+
+pip (https://github.com/pypa/pip)
+- src/pip/_vendor/distlib/util.py:1283:9: error[invalid-assignment] Object of type `def extraction_filter(member, path) -> Unknown` is not assignable to attribute `extraction_filter` on type `ZipFile | ZipFile | Unknown`
++ src/pip/_vendor/distlib/util.py:1283:9: error[invalid-assignment] Object of type `def extraction_filter(member, path) -> Unknown` is not assignable to attribute `extraction_filter` on type `ZipFile | ZipFile | TarFile`
+
+beartype (https://github.com/beartype/beartype)
++ beartype/_util/py/utilpyweakref.py:76:27: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `type[ReferenceType[_T@ReferenceType]]`, found `<class 'ReferenceType[~None]'>`
+- beartype/claw/_package/clawpkgtrie.py:66:29: warning[unsupported-base] Unsupported class base with type `<class 'dict[str, PackagesTrieBlacklist]'> | <class 'dict[str, Divergent]'>`
+- beartype/claw/_package/clawpkgtrie.py:247:29: warning[unsupported-base] Unsupported class base with type `<class 'dict[str, PackagesTrieWhitelist]'> | <class 'dict[str, Divergent]'>`
+- Found 491 diagnostics
++ Found 490 diagnostics
+
+yarl (https://github.com/aio-libs/yarl)
++ tests/test_pickle.py:21:20: error[invalid-argument-type] Argument to bound method `__setstate__` is incorrect: Expected `tuple[tuple[str, str, str, str, str]] | tuple[None, _InternalURLCache]`, found `tuple[None, dict[Unknown | str, Unknown | tuple[str, str, str, str, str]]]`
+- Found 38 diagnostics
++ Found 39 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- src/werkzeug/sansio/response.py:597:9: error[invalid-assignment] Object of type `def on_update(value: WWWAuthenticate) -> None` is not assignable to attribute `_on_update` on type `(Unknown & ~None) | WWWAuthenticate`
++ src/werkzeug/sansio/response.py:597:9: error[unresolved-attribute] Cannot assign object of type `def on_update(value: WWWAuthenticate) -> None` to attribute `_on_update` on type `WWWAuthenticate` with custom `__setattr__` method.
+- tests/test_http.py:159:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None`
++ tests/test_http.py:159:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Authorization | None`
+- tests/test_http.py:160:16: warning[possibly-missing-attribute] Attribute `username` may be missing on object of type `Unknown | None`
++ tests/test_http.py:160:16: warning[possibly-missing-attribute] Attribute `username` may be missing on object of type `Authorization | None`
+- tests/test_http.py:161:16: warning[possibly-missing-attribute] Attribute `password` may be missing on object of type `Unknown | None`
++ tests/test_http.py:161:16: warning[possibly-missing-attribute] Attribute `password` may be missing on object of type `Authorization | None`
+- tests/test_http.py:164:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None`
++ tests/test_http.py:164:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Authorization | None`
+- tests/test_http.py:165:16: warning[possibly-missing-attribute] Attribute `username` may be missing on object of type `Unknown | None`
++ tests/test_http.py:165:16: warning[possibly-missing-attribute] Attribute `username` may be missing on object of type `Authorization | None`
+- tests/test_http.py:166:16: warning[possibly-missing-attribute] Attribute `password` may be missing on object of type `Unknown | None`
++ tests/test_http.py:166:16: warning[possibly-missing-attribute] Attribute `password` may be missing on object of type `Authorization | None`
+- tests/test_http.py:169:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None`
++ tests/test_http.py:169:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Authorization | None`
+- tests/test_http.py:170:16: warning[possibly-missing-attribute] Attribute `username` may be missing on object of type `Unknown | None`
++ tests/test_http.py:170:16: warning[possibly-missing-attribute] Attribute `username` may be missing on object of type `Authorization | None`
+- tests/test_http.py:171:16: warning[possibly-missing-attribute] Attribute `password` may be missing on object of type `Unknown | None`
++ tests/test_http.py:171:16: warning[possibly-missing-attribute] Attribute `password` may be missing on object of type `Authorization | None`
+- tests/test_http.py:183:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None`
++ tests/test_http.py:183:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Authorization | None`
+- tests/test_http.py:184:16: warning[possibly-missing-attribute] Attribute `username` may be missing on object of type `Unknown | None`
++ tests/test_http.py:184:16: warning[possibly-missing-attribute] Attribute `username` may be missing on object of type `Authorization | None`
+- tests/test_http.py:185:16: warning[possibly-missing-attribute] Attribute `realm` may be missing on object of type `Unknown | None`
++ tests/test_http.py:185:16: warning[possibly-missing-attribute] Attribute `realm` may be missing on object of type `Authorization | None`
+- tests/test_http.py:186:16: warning[possibly-missing-attribute] Attribute `nonce` may be missing on object of type `Unknown | None`
++ tests/test_http.py:186:16: warning[possibly-missing-attribute] Attribute `nonce` may be missing on object of type `Authorization | None`
+- tests/test_http.py:187:16: warning[possibly-missing-attribute] Attribute `uri` may be missing on object of type `Unknown | None`
++ tests/test_http.py:187:16: warning[possibly-missing-attribute] Attribute `uri` may be missing on object of type `Authorization | None`
+- tests/test_http.py:188:16: warning[possibly-missing-attribute] Attribute `qop` may be missing on object of type `Unknown | None`
++ tests/test_http.py:188:16: warning[possibly-missing-attribute] Attribute `qop` may be missing on object of type `Authorization | None`
+- tests/test_http.py:189:16: warning[possibly-missing-attribute] Attribute `nc` may be missing on object of type `Unknown | None`
++ tests/test_http.py:189:16: warning[possibly-missing-attribute] Attribute `nc` may be missing on object of type `Authorization | None`
+- tests/test_http.py:190:16: warning[possibly-missing-attribute] Attribute `cnonce` may be missing on object of type `Unknown | None`
++ tests/test_http.py:190:16: warning[possibly-missing-attribute] Attribute `cnonce` may be missing on object of type `Authorization | None`
+- tests/test_http.py:191:16: warning[possibly-missing-attribute] Attribute `response` may be missing on object of type `Unknown | None`
++ tests/test_http.py:191:16: warning[possibly-missing-attribute] Attribute `response` may be missing on object of type `Authorization | None`
+- tests/test_http.py:192:16: warning[possibly-missing-attribute] Attribute `opaque` may be missing on object of type `Unknown | None`
++ tests/test_http.py:192:16: warning[possibly-missing-attribute] Attribute `opaque` may be missing on object of type `Authorization | None`
+- tests/test_http.py:202:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None`
++ tests/test_http.py:202:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Authorization | None`
+- tests/test_http.py:203:16: warning[possibly-missing-attribute] Attribute `username` may be missing on object of type `Unknown | None`
++ tests/test_http.py:203:16: warning[possibly-missing-attribute] Attribute `username` may be missing on object of type `Authorization | None`
+- tests/test_http.py:204:16: warning[possibly-missing-attribute] Attribute `realm` may be missing on object of type `Unknown | None`
++ tests/test_http.py:204:16: warning[possibly-missing-attribute] Attribute `realm` may be missing on object of type `Authorization | None`
+- tests/test_http.py:205:16: warning[possibly-missing-attribute] Attribute `nonce` may be missing on object of type `Unknown | None`
++ tests/test_http.py:205:16: warning[possibly-missing-attribute] Attribute `nonce` may be missing on object of type `Authorization | None`
+- tests/test_http.py:206:16: warning[possibly-missing-attribute] Attribute `uri` may be missing on object of type `Unknown | None`
++ tests/test_http.py:206:16: warning[possibly-missing-attribute] Attribute `uri` may be missing on object of type `Authorization | None`
+- tests/test_http.py:207:16: warning[possibly-missing-attribute] Attribute `response` may be missing on object of type `Unknown | None`
++ tests/test_http.py:207:16: warning[possibly-missing-attribute] Attribute `response` may be missing on object of type `Authorization | None`
+- tests/test_http.py:208:16: warning[possibly-missing-attribute] Attribute `opaque` may be missing on object of type `Unknown | None`
++ tests/test_http.py:208:16: warning[possibly-missing-attribute] Attribute `opaque` may be missing on object of type `Authorization | None`
+- tests/test_http.py:212:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None`
++ tests/test_http.py:212:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Authorization | None`
+- tests/test_http.py:216:16: warning[possibly-missing-attribute] Attribute `to_header` may be missing on object of type `Unknown | None`
++ tests/test_http.py:216:16: warning[possibly-missing-attribute] Attribute `to_header` may be missing on object of type `Authorization | None`
+- tests/test_http.py:222:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None`
++ tests/test_http.py:222:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Authorization | None`
+- tests/test_http.py:223:16: warning[possibly-missing-attribute] Attribute `token` may be missing on object of type `Unknown | None`
++ tests/test_http.py:223:16: warning[possibly-missing-attribute] Attribute `token` may be missing on object of type `Authorization | None`
+- tests/test_http.py:228:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None`
++ tests/test_http.py:228:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Authorization | None`
+- tests/test_http.py:229:16: warning[possibly-missing-attribute] Attribute `token` may be missing on object of type `Unknown | None`
++ tests/test_http.py:229:16: warning[possibly-missing-attribute] Attribute `token` may be missing on object of type `Authorization | None`
+- tests/test_http.py:253:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None`
++ tests/test_http.py:253:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `WWWAuthenticate | None`
+- tests/test_http.py:254:16: warning[possibly-missing-attribute] Attribute `realm` may be missing on object of type `Unknown | None`
++ tests/test_http.py:254:16: warning[possibly-missing-attribute] Attribute `realm` may be missing on object of type `WWWAuthenticate | None`
+- tests/test_http.py:255:9: error[invalid-assignment] Object of type `Literal["Foo Bar"]` is not assignable to attribute `realm` on type `Unknown | None`
++ tests/test_http.py:255:9: error[invalid-assignment] Object of type `Literal["Foo Bar"]` is not assignable to attribute `realm` on type `WWWAuthenticate | None`
+- tests/test_http.py:256:16: warning[possibly-missing-attribute] Attribute `to_header` may be missing on object of type `Unknown | None`
++ tests/test_http.py:256:16: warning[possibly-missing-attribute] Attribute `to_header` may be missing on object of type `WWWAuthenticate | None`
+- tests/test_http.py:264:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None`
++ tests/test_http.py:264:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `WWWAuthenticate | None`
+- tests/test_http.py:265:16: warning[possibly-missing-attribute] Attribute `realm` may be missing on object of type `Unknown | None`
++ tests/test_http.py:265:16: warning[possibly-missing-attribute] Attribute `realm` may be missing on object of type `WWWAuthenticate | None`
+- tests/test_http.py:266:16: warning[possibly-missing-attribute] Attribute `parameters` may be missing on object of type `Unknown | None`
++ tests/test_http.py:266:16: warning[possibly-missing-attribute] Attribute `parameters` may be missing on object of type `WWWAuthenticate | None`
+- tests/test_http.py:267:16: warning[possibly-missing-attribute] Attribute `nonce` may be missing on object of type `Unknown | None`
++ tests/test_http.py:267:16: warning[possibly-missing-attribute] Attribute `nonce` may be missing on object of type `WWWAuthenticate | None`
+- tests/test_http.py:268:16: warning[possibly-missing-attribute] Attribute `opaque` may be missing on object of type `Unknown | None`
++ tests/test_http.py:268:16: warning[possibly-missing-attribute] Attribute `opaque` may be missing on object of type `WWWAuthenticate | None`
+- tests/test_http.py:270:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None`
++ tests/test_http.py:270:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `WWWAuthenticate | None`
+- tests/test_http.py:277:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None`
++ tests/test_http.py:277:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `WWWAuthenticate | None`
+- tests/test_http.py:278:16: warning[possibly-missing-attribute] Attribute `token` may be missing on object of type `Unknown | None`
++ tests/test_http.py:278:16: warning[possibly-missing-attribute] Attribute `token` may be missing on object of type `WWWAuthenticate | None`
+- tests/test_http.py:283:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Unknown | None`
++ tests/test_http.py:283:16: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `WWWAuthenticate | None`
+- tests/test_http.py:284:16: warning[possibly-missing-attribute] Attribute `token` may be missing on object of type `Unknown | None`
++ tests/test_http.py:284:16: warning[possibly-missing-attribute] Attribute `token` may be missing on object of type `WWWAuthenticate | None`
+
+alerta (https://github.com/alerta/alerta)
+- alerta/commands.py:74:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `datetime`, found `Unknown | None`
++ alerta/commands.py:74:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `datetime`, found `datetime | None`
+- alerta/views/alerts.py:332:26: error[invalid-argument-type] Argument to function `max` is incorrect: Argument type `Unknown | None` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ alerta/views/alerts.py:332:26: error[invalid-argument-type] Argument to function `max` is incorrect: Argument type `Unknown | None | datetime` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+
+paasta (https://github.com/yelp/paasta)
++ paasta_tools/kubernetes_tools.py:3904:20: error[unsupported-operator] Operator `>` is not supported between objects of type `int | float | None` and `int | float`
+- Found 1104 diagnostics
++ Found 1105 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
++ scrapy/spiders/crawl.py:219:16: error[invalid-return-type] Return type does not match returned value: expected `Self@from_crawler`, found `CrawlSpider`
++ scrapy/spiders/sitemap.py:45:16: error[invalid-return-type] Return type does not match returned value: expected `Self@from_crawler`, found `SitemapSpider`
++ tests/test_downloadermiddleware_ajaxcrawlable.py:51:42: error[invalid-argument-type] Argument to bound method `process_response` is incorrect: Expected `Request`, found `Unknown | Request | Response`
++ tests/test_downloadermiddleware_ajaxcrawlable.py:54:16: warning[possibly-missing-attribute] Attribute `url` may be missing on object of type `Request | None`
++ tests/test_downloadermiddleware_redirect.py:1058:9: error[invalid-assignment] Object of type `list[Unknown | int]` is not assignable to attribute `handle_httpstatus_list` on type `Unknown | Spider | None`
++ tests/test_dupefilters.py:33:9: error[unresolved-attribute] Unresolved attribute `method` on type `FromCrawlerRFPDupeFilter`.
++ tests/test_dupefilters.py:49:16: error[unresolved-attribute] Object of type `BaseDupeFilter` has no attribute `debug`
++ tests/test_dupefilters.py:50:16: error[unresolved-attribute] Object of type `BaseDupeFilter` has no attribute `method`
++ tests/test_dupefilters.py:58:16: error[unresolved-attribute] Object of type `BaseDupeFilter` has no attribute `method`
++ tests/test_pipeline_files.py:133:17: error[invalid-argument-type] Argument to bound method `file_path` is incorrect: Expected `SpiderInfo | None`, found `object`
++ tests/test_pipeline_files.py:286:52: error[invalid-argument-type] Argument to bound method `get_media_requests` is incorrect: Expected `SpiderInfo`, found `None`
++ tests/test_pipeline_files.py:301:59: error[invalid-argument-type] Argument to bound method `get_media_requests` is incorrect: Expected `SpiderInfo`, found `None`
++ tests/test_pipeline_files.py:304:40: error[invalid-argument-type] Argument to bound method `item_completed` is incorrect: Expected `list[tuple[Literal[True], FileInfo] | tuple[Literal[False], Unknown]]`, found `list[Unknown | tuple[bool, dict[Unknown | str, Unknown | str]]]`
++ tests/test_pipeline_files.py:304:55: error[invalid-argument-type] Argument to bound method `item_completed` is incorrect: Expected `SpiderInfo`, found `None`
++ tests/test_pipeline_files.py:322:59: error[invalid-argument-type] Argument to bound method `get_media_requests` is incorrect: Expected `SpiderInfo`, found `None`
++ tests/test_pipeline_files.py:325:40: error[invalid-argument-type] Argument to bound method `item_completed` is incorrect: Expected `list[tuple[Literal[True], FileInfo] | tuple[Literal[False], Unknown]]`, found `list[Unknown | tuple[bool, dict[Unknown | str, Unknown | str]]]`
++ tests/test_pipeline_files.py:325:55: error[invalid-argument-type] Argument to bound method `item_completed` is incorrect: Expected `SpiderInfo`, found `None`
++ tests/test_pipeline_images.py:250:52: error[invalid-argument-type] Argument to bound method `get_media_requests` is incorrect: Expected `SpiderInfo`, found `None`
++ tests/test_pipeline_images.py:265:59: error[invalid-argument-type] Argument to bound method `get_media_requests` is incorrect: Expected `SpiderInfo`, found `None`
++ tests/test_pipeline_images.py:268:40: error[invalid-argument-type] Argument to bound method `item_completed` is incorrect: Expected `list[tuple[Literal[True], FileInfo] | tuple[Literal[False], Unknown]]`, found `list[Unknown | tuple[bool, dict[Unknown | str, Unknown | str]]]`
++ tests/test_pipeline_images.py:268:55: error[invalid-argument-type] Argument to bound method `item_completed` is incorrect: Expected `SpiderInfo`, found `None`
++ tests/test_pipeline_images.py:286:59: error[invalid-argument-type] Argument to bound method `get_media_requests` is incorrect: Expected `SpiderInfo`, found `None`
++ tests/test_pipeline_images.py:289:40: error[invalid-argument-type] Argument to bound method `item_completed` is incorrect: Expected `list[tuple[Literal[True], FileInfo] | tuple[Literal[False], Unknown]]`, found `list[Unknown | tuple[bool, dict[Unknown | str, Unknown | str]]]`
++ tests/test_pipeline_images.py:289:55: error[invalid-argument-type] Argument to bound method `item_completed` is incorrect: Expected `SpiderInfo`, found `None`
++ tests/test_pipeline_media.py:132:16: warning[possibly-missing-attribute] Attribute `value` may be missing on object of type `Unknown | FileInfo`
++ tests/test_pipeline_media.py:134:27: warning[possibly-missing-attribute] Attribute `value` may be missing on object of type `Unknown | FileInfo`
++ tests/test_pipeline_media.py:146:49: error[invalid-argument-type] Argument to bound method `item_completed` is incorrect: Expected `list[tuple[Literal[True], FileInfo] | tuple[Literal[False], Unknown]]`, found `list[Unknown | tuple[bool, int] | tuple[bool, Unknown]]`
++ tests/test_pipeline_media.py:157:49: error[invalid-argument-type] Argument to bound method `item_completed` is incorrect: Expected `list[tuple[Literal[True], FileInfo] | tuple[Literal[False], Unknown]]`, found `list[Unknown | tuple[bool, int] | tuple[bool, Unknown]]`
++ tests/test_pipeline_media.py:206:9: warning[possibly-missing-attribute] Attribute `_mockcalled` may be missing on object of type `Unknown | UserDefinedPipeline`
++ tests/test_pipeline_media.py:220:16: warning[possibly-missing-attribute] Attribute `_mockcalled` may be missing on object of type `Unknown | UserDefinedPipeline`
++ tests/test_pipeline_media.py:243:16: warning[possibly-missing-attribute] Attribute `_mockcalled` may be missing on object of type `Unknown | UserDefinedPipeline`
++ tests/test_pipeline_media.py:266:13: warning[possibly-missing-attribute] Attribute `_mockcalled` may be missing on object of type `Unknown | UserDefinedPipeline`
++ tests/test_pipeline_media.py:359:16: warning[possibly-missing-attribute] Attribute `_mockcalled` may be missing on object of type `Unknown | UserDefinedPipeline`
++ tests/test_pipeline_media.py:454:17: error[unresolved-attribute] Unresolved attribute `store_uri` on type `Pipeline`.
++ tests/test_pqueues.py:32:16: warning[possibly-missing-attribute] Attribute `url` may be missing on object of type `Request | None`
++ tests/test_pqueues.py:33:16: warning[possibly-missing-attribute] Attribute `priority` may be missing on object of type `Request | None`
++ tests/test_pqueues.py:67:16: warning[possibly-missing-attribute] Attribute `url` may be missing on object of type `Request | None`
++ tests/test_pqueues.py:68:16: warning[possibly-missing-attribute] Attribute `url` may be missing on object of type `Request | None`
++ tests/test_pqueues.py:70:16: warning[possibly-missing-attribute] Attribute `url` may be missing on object of type `Request | None`
++ tests/test_pqueues.py:71:16: warning[possibly-missing-attribute] Attribute `url` may be missing on object of type `Request | None`
++ tests/test_pqueues.py:73:16: warning[possibly-missing-attribute] Attribute `url` may be missing on object of type `Request | None`
++ tests/test_pqueues.py:74:16: warning[possibly-missing-attribute] Attribute `url` may be missing on object of type `Request | None`
++ tests/test_pqueues.py:93:16: warning[possibly-missing-attribute] Attribute `url` may be missing on object of type `Request | None`
++ tests/test_pqueues.py:94:16: warning[possibly-missing-attribute] Attribute `priority` may be missing on object of type `Request | None`
++ tests/test_pqueues.py:121:16: warning[possibly-missing-attribute] Attribute `url` may be missing on object of type `Unknown | Request | None`
++ tests/test_pqueues.py:123:16: warning[possibly-missing-attribute] Attribute `url` may be missing on object of type `Unknown | Request | None`
++ tests/test_pqueues.py:125:16: warning[possibly-missing-attribute] Attribute `url` may be missing on object of type `Unknown | Request | None`
++ tests/test_pqueues.py:150:16: warning[possibly-missing-attribute] Attribute `url` may be missing on object of type `Unknown | Request | None`
++ tests/test_pqueues.py:151:16: warning[possibly-missing-attribute] Attribute `url` may be missing on object of type `Unknown | Request | None`
++ tests/test_pqueues.py:153:16: warning[possibly-missing-attribute] Attribute `url` may be missing on object of type `Unknown | Request | None`
++ tests/test_pqueues.py:154:16: warning[possibly-missing-attribute] Attribute `url` may be missing on object of type `Unknown | Request | None`
++ tests/test_pqueues.py:156:16: warning[possibly-missing-attribute] Attribute `url` may be missing on object of type `Unknown | Request | None`
++ tests/test_pqueues.py:157:16: warning[possibly-missing-attribute] Attribute `url` may be missing on object of type `Unknown | Request | None`
++ tests/test_scheduler.py:157:22: warning[possibly-missing-attribute] Attribute `url` may be missing on object of type `Unknown | Request | None`
++ tests/test_scheduler.py:167:31: warning[possibly-missing-attribute] Attribute `priority` may be missing on object of type `Unknown | Request | None`
++ tests/test_scheduler.py:205:22: warning[possibly-missing-attribute] Attribute `url` may be missing on object of type `Unknown | Request | None`
++ tests/test_scheduler.py:218:31: warning[possibly-missing-attribute] Attribute `priority` may be missing on object of type `Unknown | Request | None`
+- tests/test_spidermiddleware_base.py:32:64: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_spidermiddleware_base.py:55:64: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_spidermiddleware_base.py:79:64: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_spidermiddleware_base.py:116:64: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 1739 diagnostics
++ Found 1792 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
++ src/_pytest/doctest.py:282:16: error[invalid-return-type] Return type does not match returned value: expected `Self@from_parent`, found `DoctestItem`
++ src/_pytest/main.py:549:16: error[invalid-return-type] Return type does not match returned value: expected `Self@from_parent`, found `Dir`
++ src/_pytest/nodes.py:627:16: error[invalid-return-type] Return type does not match returned value: expected `Self@from_parent`, found `FSCollector`
++ src/_pytest/python.py:752:16: error[invalid-return-type] Return type does not match returned value: expected `Self@from_parent`, found `Class`
++ src/_pytest/python.py:1639:16: error[invalid-return-type] Return type does not match returned value: expected `Self@from_parent`, found `Function`
++ src/_pytest/subtests.py:125:16: error[invalid-return-type] Return type does not match returned value: expected `Self@_new`, found `SubtestReport`
+- Found 442 diagnostics
++ Found 448 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
++ test/mitmproxy/proxy/test_mode_servers.py:65:29: error[unresolved-attribute] Object of type `ServerInstance[Unknown]` has no attribute `_servers`
++ web/gen/state_js.py:30:5: error[unresolved-attribute] Unresolved attribute `_servers` on type `ServerInstance[Unknown]`.
++ web/gen/state_js.py:35:5: error[unresolved-attribute] Unresolved attribute `_server` on type `ServerInstance[Unknown]`.
++ web/gen/state_js.py:36:5: error[unresolved-attribute] Object of type `ServerInstance[Unknown]` has no attribute `_server`
+- Found 2138 diagnostics
++ Found 2142 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
++ cki_lib/inttests/mariadb.py:29:32: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@k8s_namespace]`, found `Literal["mariadb"]`
++ cki_lib/inttests/minio.py:29:32: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@k8s_namespace]`, found `Literal["minio"]`
++ cki_lib/inttests/rabbitmq.py:43:32: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@k8s_namespace]`, found `Literal["rabbitmq"]`
++ cki_lib/inttests/remote_responses.py:135:32: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@k8s_namespace]`, found `Literal["remote-responses"]`
++ cki_lib/inttests/sqs.py:37:32: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@k8s_namespace]`, found `Literal["sqs"]`
++ cki_lib/inttests/vault.py:29:32: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@k8s_namespace]`, found `Literal["vault"]`
+- Found 271 diagnostics
++ Found 277 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
++ test/with_dummyserver/test_chunked_transfer.py:299:36: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@mark]`, found `MonkeyPatch`
++ test/with_dummyserver/test_chunked_transfer.py:327:36: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@mark]`, found `MonkeyPatch`
+- Found 273 diagnostics
++ Found 275 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
++ tests/typing_example.py:100:13: error[invalid-assignment] Object of type `Connection[int] | Connection[tuple[Any, ...]]` is not assignable to `Connection[int]`
++ tests/typing_example.py:110:13: error[invalid-assignment] Object of type `Connection[Person] | Connection[tuple[Any, ...]]` is not assignable to `Connection[Person]`
++ tests/typing_example.py:134:13: error[invalid-assignment] Object of type `AsyncConnection[tuple[Any, ...]]` is not assignable to `AsyncConnection[int]`
++ tests/typing_example.py:144:13: error[invalid-assignment] Object of type `AsyncConnection[tuple[Any, ...]]` is not assignable to `AsyncConnection[Person]`
++ tests/typing_example.py:166:26: error[invalid-assignment] Object of type `tuple[Any, ...]` is not assignable to `dict[str, Any]`
++ tests/typing_example.py:169:18: error[invalid-assignment] Object of type `tuple[Any, ...]` is not assignable to `Person`
++ tests/typing_example.py:172:17: error[invalid-assignment] Object of type `tuple[Any, ...]` is not assignable to `int | float`
++ tests/typing_example.py:175:15: error[invalid-assignment] Object of type `tuple[Any, ...]` is not assignable to `int`
+- Found 674 diagnostics
++ Found 682 diagnostics
+
+freqtrade (https://github.com/freqtrade/freqtrade)
++ freqtrade/optimize/backtesting.py:1803:42: error[unsupported-operator] Operator `>` is not supported between objects of type `Unknown | datetime | None` and `datetime`
++ freqtrade/rpc/telegram.py:1161:49: error[invalid-argument-type] Argument to bound method `_rpc_trade_statistics` is incorrect: Expected `str`, found `Unknown | datetime`
++ freqtrade/rpc/telegram.py:1161:49: error[invalid-argument-type] Argument to bound method `_rpc_trade_statistics` is incorrect: Expected `str`, found `Unknown | datetime`
++ freqtrade/rpc/telegram.py:1161:49: error[invalid-argument-type] Argument to bound method `_rpc_trade_statistics` is incorrect: Expected `str | None`, found `Unknown | datetime`
+- Found 683 diagnostics
++ Found 687 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- bson/code.py:78:46: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 445 diagnostics
++ Found 444 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
++ unittests/cargotests.py:498:26: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Library | None`
++ unittests/cargotests.py:499:26: warning[possibly-missing-attribute] Attribute `crate_type` may be missing on object of type `Library | None`
++ unittests/cargotests.py:500:26: warning[possibly-missing-attribute] Attribute `path` may be missing on object of type `Library | None`
++ unittests/cargotests.py:504:26: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Library | None`
++ unittests/cargotests.py:505:26: warning[possibly-missing-attribute] Attribute `crate_type` may be missing on object of type `Library | None`
++ unittests/cargotests.py:506:26: warning[possibly-missing-attribute] Attribute `path` may be missing on object of type `Library | None`
++ unittests/cargotests.py:516:26: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Library | None`
++ unittests/cargotests.py:517:26: warning[possibly-missing-attribute] Attribute `crate_type` may be missing on object of type `Library | None`
++ unittests/cargotests.py:518:26: warning[possibly-missing-attribute] Attribute `path` may be missing on object of type `Library | None`
++ unittests/cargotests.py:519:26: warning[possibly-missing-attribute] Attribute `test` may be missing on object of type `Library | None`
++ unittests/cargotests.py:520:26: warning[possibly-missing-attribute] Attribute `doctest` may be missing on object of type `Library | None`
++ unittests/cargotests.py:521:26: warning[possibly-missing-attribute] Attribute `bench` may be missing on object of type `Library | None`
++ unittests/cargotests.py:522:26: warning[possibly-missing-attribute] Attribute `doc` may be missing on object of type `Library | None`
++ unittests/cargotests.py:523:26: warning[possibly-missing-attribute] Attribute `harness` may be missing on object of type `Library | None`
++ unittests/cargotests.py:524:26: warning[possibly-missing-attribute] Attribute `edition` may be missing on object of type `Library | None`
++ unittests/cargotests.py:525:26: warning[possibly-missing-attribute] Attribute `required_features` may be missing on object of type `Library | None`
++ unittests/cargotests.py:526:26: warning[possibly-missing-attribute] Attribute `plugin` may be missing on object of type `Library | None`
++ unittests/cargotests.py:532:26: warning[possibly-missing-attribute] Attribute `path` may be missing on object of type `Library | None`
+- Found 1935 diagnostics
++ Found 1953 diagnostics
+
+vision (https://github.com/pytorch/vision)
++ test/builtin_dataset_mocks.py:1245:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `type[dict[_KT@dict, _VT@dict]]`, found `Literal["Abyssinian"]`
++ test/builtin_dataset_mocks.py:1246:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `type[dict[_KT@dict, _VT@dict]]`, found `Literal["Keeshond"]`
++ test/builtin_dataset_mocks.py:1247:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `type[dict[_KT@dict, _VT@dict]]`, found `Literal["Yorkshire Terrier"]`
++ test/test_datasets.py:2693:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `type[dict[_KT@dict, _VT@dict]]`, found `Literal["Abyssinian"]`
++ test/test_datasets.py:2694:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `type[dict[_KT@dict, _VT@dict]]`, found `Literal["Keeshond"]`
++ test/test_datasets.py:2695:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `type[dict[_KT@dict, _VT@dict]]`, found `Literal["Yorkshire Terrier"]`
+- Found 1475 diagnostics
++ Found 1481 diagnostics
+
+discord.py (https://github.com/Rapptz/discord.py)
+- discord/app_commands/models.py:482:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- discord/channel.py:3256:31: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- discord/state.py:551:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[VoiceChannel | StageChannel | ForumChannel | ... omitted 5 union elements, Guild | None]`, found `tuple[(Unknown & ~AlwaysFalsy) | (Guild & ~AlwaysTruthy & ~AlwaysFalsy) | (VoiceChannel & ~AlwaysFalsy) | ... omitted 6 union elements, Guild | None]`
++ discord/state.py:551:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[VoiceChannel | StageChannel | ForumChannel | ... omitted 5 union elements, Guild | None]`, found `tuple[(DMChannel & ~AlwaysFalsy) | (Guild & ~AlwaysTruthy & ~AlwaysFalsy) | (VoiceChannel & ~AlwaysFalsy) | ... omitted 6 union elements, Guild | None]`
+- Found 554 diagnostics
++ Found 552 diagnostics
+
+pandera (https://github.com/pandera-dev/pandera)
++ pandera/engines/pandas_engine.py:1267:52: warning[deprecated] The function `dict` is deprecated: The `dict` method is deprecated; use `model_dump` instead.
++ pandera/engines/pandas_engine.py:1271:24: error[invalid-argument-type] Method `__getitem__` of type `bound method dict[str, Any].__getitem__(key: str, /) -> Any` cannot be called with key of type `int | str` on object of type `dict[str, Any]`
+- Found 1612 diagnostics
++ Found 1614 diagnostics
+
+apprise (https://github.com/caronc/apprise)
++ apprise/persistent_store.py:1426:19: error[invalid-assignment] Object of type `datetime | Unknown | Literal[2678400]` is not assignable to `int | float | None`
++ apprise/persistent_store.py:1525:20: error[unsupported-operator] Operator `<` is not supported between objects of type `int | float | None` and `datetime`
+- Found 2645 diagnostics
++ Found 2647 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
+- tests/unittests/cmd/devel/test_logs.py:149:55: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 1179 diagnostics
++ Found 1178 diagnostics
+
+xarray (https://github.com/pydata/xarray)
++ xarray/core/dataset.py:7446:16: error[invalid-return-type] Return type does not match returned value: expected `Self@from_dataframe`, found `DataArray | Self@from_dataframe`
+- xarray/tests/test_combine.py:777:51: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- xarray/tests/test_combine.py:1237:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- xarray/tests/test_dataarray.py:2311:81: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- xarray/tests/test_dataarray.py:2342:81: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 1754 diagnostics
++ Found 1751 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
++ src/integrations/prefect-azure/tests/test_aci_worker.py:111:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[Unknown | str, Unknown | dict[str, Any]]`
++ src/integrations/prefect-gcp/tests/test_cloud_run_worker.py:421:75: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-gcp/tests/test_cloud_run_worker.py:442:75: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-gcp/tests/test_cloud_run_worker.py:475:75: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-gcp/tests/test_vertex_worker.py:67:17: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-gcp/tests/test_vertex_worker.py:95:17: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1295:17: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1317:17: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1354:17: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1388:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1436:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1490:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1614:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1641:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1695:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1763:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1815:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1867:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1910:21: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1950:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1993:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2040:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2081:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2107:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2150:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2173:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2209:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2256:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2315:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2361:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2394:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2469:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2523:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2546:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2590:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2614:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2638:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2656:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-snowflake/tests/experimental/test_spcs_worker.py:143:9: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[Unknown | str, Unknown | dict[str, Any]]`
++ src/integrations/prefect-snowflake/tests/experimental/test_spcs_worker.py:927:69: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/prefect/_internal/concurrency/services.py:313:17: error[invalid-assignment] Invalid subscript assignment with key of type `int` and value of type `Self@instance` on object of type `dict[int, <special form 'typing.Self'>]`
++ src/prefect/_vendor/croniter/croniter.py:359:63: error[invalid-argument-type] Argument to bound method `astimezone` is incorrect: Expected `tzinfo | None`, found `~AlwaysFalsy`
++ src/prefect/artifacts.py:233:51: error[invalid-argument-type] Argument is incorrect: Expected `type[Artifact]`, found `str | None`
++ src/prefect/blocks/core.py:1261:69: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@_get_block_document_by_id]`, found `str | UUID`
++ src/prefect/blocks/core.py:1641:16: error[invalid-return-type] Return type does not match returned value: expected `Self@model_validate`, found `Block`
++ src/prefect/cli/deploy/_actions.py:65:32: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@aload]`, found `str`
++ src/prefect/deployments/steps/pull.py:265:35: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@aload]`, found `str`
++ src/prefect/events/worker.py:130:16: error[invalid-return-type] Return type does not match returned value: expected `Self@instance`, found `EventsWorker`
++ src/prefect/flows.py:2815:15: error[unresolved-attribute] Object of type `Block` has no attribute `get_directory`
++ src/prefect/logging/handlers.py:92:16: error[invalid-return-type] Return type does not match returned value: expected `Self@instance`, found `APILogWorker`
++ src/prefect/results.py:144:35: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@aload]`, found `str`
++ src/prefect/server/api/block_types.py:125:13: error[invalid-argument-type] Argument to function `_should_update_block_type` is incorrect: Expected `BlockType`, found `BlockType | BlockType`
++ src/prefect/server/events/schemas/automations.py:623:16: error[invalid-return-type] Return type does not match returned value: expected `Self@model_validate`, found `Automation`
++ src/prefect/server/schemas/core.py:1162:16: error[invalid-return-type] Return type does not match returned value: expected `Self@model_validate`, found `WorkPool`
++ src/prefect/server/schemas/responses.py:330:16: error[invalid-return-type] Return type does not match returned value: expected `Self@model_validate`, found `FlowRunResponse`
++ src/prefect/server/schemas/responses.py:532:16: error[invalid-return-type] Return type does not match returned value: expected `Self@model_validate`, found `DeploymentResponse`
++ src/prefect/server/schemas/responses.py:561:16: error[invalid-return-type] Return type does not match returned value: expected `Self@model_validate`, found `WorkQueueResponse`
++ src/prefect/server/schemas/responses.py:601:16: error[unsupported-operator] Operator `>` is not supported between objects of type `datetime | None` and `datetime`
++ src/prefect/server/schemas/responses.py:606:16: error[invalid-return-type] Return type does not match returned value: expected `Self@model_validate`, found `WorkerResponse`
++ src/prefect/testing/utilities.py:240:30: error[invalid-argument-type] Argument is incorrect: Expected `WritableFileSystem | None`, found `Block | Unknown`
++ src/prefect/testing/utilities.py:263:40: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@aload]`, found `str`
++ src/prefect/testing/utilities.py:274:40: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@aload]`, found `str`
+- Found 5536 diagnostics
++ Found 5598 diagnostics
+
+setuptools (https://github.com/pypa/setuptools)
++ setuptools/tests/test_build_meta.py:513:28: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `IO[bytes] | None`
+- Found 1288 diagnostics
++ Found 1289 diagnostics
+
+
+... (truncated 427 lines) ...
+```
+
+</details>
+
+
+
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+```diff
+prefect (https://github.com/PrefectHQ/prefect)
+-     struct fields = ~54MB
++     struct fields = ~57MB
+
+
+```
+
+</details>
+
+
+
+
+---
+
+_Comment by @codspeed-hq[bot] on 2025-12-03 06:44_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/ibraheem%2Fimplicit-cls-signature?utm_source=github&utm_medium=comment&utm_content=header)
+
+### Merging #21771 will **degrade performances by 5.94%**
+
+<sub>Comparing <code>ibraheem/implicit-cls-signature</code> (db3eb6b) with <code>main</code> (a2fb2ee)</sub>
+
+
+
+### Summary
+
+`❌ 1` regression  
+`✅ 21` untouched  
+`⏩ 30` skipped[^skipped]  
+
+
+> :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/ibraheem%2Fimplicit-cls-signature?utm_source=github&utm_medium=comment&utm_content=acknowledge)._
+
+### Benchmarks breakdown
+
+|     | Mode | Benchmark | `BASE` | `HEAD` | Change |
+| --- | ---- | --------- | ------ | ------ | ------ |
+| ❌ | WallTime | [`` medium[static-frame] ``](https://codspeed.io/astral-sh/ruff/branches/ibraheem%2Fimplicit-cls-signature?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Amedium%5Bstatic-frame%5D&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 20.8 s | 22.2 s | -5.94% |
+[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/ibraheem%2Fimplicit-cls-signature?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment&utm_content=archive).
+
+
+---
+
+_Marked ready for review by @ibraheemdev on 2025-12-03 20:53_
+
+---
+
+_Review requested from @carljm by @ibraheemdev on 2025-12-03 20:53_
+
+---
+
+_Review requested from @AlexWaygood by @ibraheemdev on 2025-12-03 20:53_
+
+---
+
+_Review requested from @sharkdp by @ibraheemdev on 2025-12-03 20:53_
+
+---
+
+_Review requested from @dcreager by @ibraheemdev on 2025-12-03 20:53_
+
+---
+
+_Label `ecosystem-analyzer` added by @carljm on 2025-12-10 01:05_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-10 01:14_
+
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `invalid-argument-type` | 160 | 2 | 3 |
+| `type-assertion-failure` | 2 | 137 | 7 |
+| `possibly-missing-attribute` | 75 | 0 | 46 |
+| `unresolved-attribute` | 55 | 0 | 0 |
+| `unused-ignore-comment` | 0 | 49 | 0 |
+| `invalid-return-type` | 29 | 0 | 1 |
+| `invalid-assignment` | 8 | 1 | 2 |
+| `unsupported-operator` | 5 | 0 | 0 |
+| `not-iterable` | 2 | 0 | 0 |
+| `deprecated` | 1 | 0 | 0 |
+| `no-matching-overload` | 1 | 0 | 0 |
+| `non-subscriptable` | 1 | 0 | 0 |
+| `unsupported-base` | 0 | 1 | 0 |
+| **Total** | **339** | **190** | **59** |
+
+**[Full report with detailed diff](https://ibraheem-implicit-cls-signat.ecosystem-663.pages.dev/diff)** ([timing results](https://ibraheem-implicit-cls-signat.ecosystem-663.pages.dev/timing))
+
+
+
+
+---
+
+_@carljm approved on 2025-12-10 02:11_
+
+Code changes look fine here, conformance suite changes look good.
+
+Ecosystem report reveals a problem that looks widespread enough that I think we probably need to fix it before shipping this. For a final generic class with a classmethod, when the classmethod is accessed off the class with no explicit specialization, we expect the default specialization of the class as `cls` parameter, but we receive the unspecialized ClassLiteral instead. Repro example:
+
+```py
+from typing import final
+
+@final
+class P[T]:
+    x: T
+
+    @classmethod
+    def method(cls):
+        pass
+
+# this works fine due to the explicit specialization: we expect `P[int]` and receive `P[int]`
+P[int].method()
+
+# this breaks: we expect `P[Unknown]` but we receive the class-literal `P`
+P.method()
+```
+
+This also repros on main (in a desugared version). I filed https://github.com/astral-sh/ty/issues/1832 and put up https://github.com/astral-sh/ruff/pull/21883 to fix. I expect that if this PR is rebased on that, these ecosystem false positives should go away.
+
+---
+
+_Comment by @sharkdp on 2025-12-10 16:26_
+
+I wanted to rebase this, but I guess we should fix and merge #21770 first
+
+---
+
+_Label `ecosystem-analyzer` removed by @ibraheemdev on 2025-12-10 20:38_
+
+---
+
+_Label `ecosystem-analyzer` added by @ibraheemdev on 2025-12-10 20:38_
+
+---
+
+_Comment by @ibraheemdev on 2025-12-10 21:29_
+
+It looks like the `invalid-argument-type` diagnostics on cki-lib, hydpy, and prefect are https://github.com/astral-sh/ty/issues/1787.
+
+---
+
+_Comment by @ibraheemdev on 2025-12-10 21:56_
+
+The rest of the ecosystem report looks correct, and the typing conformance changes are all good.
+
+---
+
+_Merged by @ibraheemdev on 2025-12-10 21:56_
+
+---
+
+_Closed by @ibraheemdev on 2025-12-10 21:56_
+
+---
+
+_Branch deleted on 2025-12-10 21:56_
+
+---

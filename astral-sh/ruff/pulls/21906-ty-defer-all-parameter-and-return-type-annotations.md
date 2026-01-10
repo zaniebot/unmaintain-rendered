@@ -1,0 +1,729 @@
+```yaml
+number: 21906
+title: "[ty] Defer all parameter and return type annotations"
+type: pull_request
+state: merged
+author: dcreager
+labels:
+  - ty
+  - ecosystem-analyzer
+assignees: []
+merged: true
+base: main
+head: dcreager/breakest-the-cycle
+created_at: 2025-12-10T21:26:02Z
+updated_at: 2025-12-11T20:01:51Z
+url: https://github.com/astral-sh/ruff/pull/21906
+synced_at: 2026-01-10T16:42:11Z
+```
+
+# [ty] Defer all parameter and return type annotations
+
+---
+
+_Pull request opened by @dcreager on 2025-12-10 21:26_
+
+As described in astral-sh/ty#1729, we previously had a salsa cycle when inferring the signature of many function definitions.
+
+The most obvious case happened when (a) the function was decorated, (b) it had no PEP-695 type params, and (c) annotations were not always deferred (e.g. in a stub file). We currently evaluate and apply function decorators eagerly, as part of `infer_function_definition`. Applying a decorator requires knowing the signature of the function being decorated. There were two places where signature construction called `infer_definition_types` cyclically.
+
+The simpler case was that we were looking up the generic context and decorator list of the function to determine whether it has an implicit `self` parameter. Before, we used `infer_definition_types` to determine that information. But since we're in the middle of signature construction for the function, we can just thread the information through directly.
+
+The harder case is that signature construction requires knowing the inferred parameter and return type annotations. When (b) and (c) hold, those type annotations are inferred in `infer_function_definition`! (In theory, we've already finished that by the time we start applying decorators, but signature construction doesn't know that.)
+
+If annotations are deferred, the params/return annotations are inferred in `infer_deferred_types`; if there are PEP-695 type params, they're inferred in `infer_function_type_params`. Both of those are different salsa queries, and don't induce this cycle.
+
+So the quick fix here is to always defer inference of the function params/return, so that they are always inferred under a different salsa query.
+
+A more principled fix would be to apply decorators lazily, just like we construct signatures lazily. But that is a more invasive fix.
+
+Fixes astral-sh/ty#1729
+
+---
+
+_Label `ty` added by @dcreager on 2025-12-10 21:26_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-10 21:28_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-12-11 19:38:32.777561529 +0000
++++ new-output.txt	2025-12-11 19:38:36.517590503 +0000
+@@ -150,7 +150,7 @@
+ callables_protocol.py:169:7: error[invalid-assignment] Object of type `def cb8_bad1(x: int) -> Any` is not assignable to `Proto8`
+ callables_protocol.py:186:5: error[invalid-assignment] Object of type `Literal["str"]` is not assignable to attribute `other_attribute` of type `int`
+ callables_protocol.py:187:5: error[unresolved-attribute] Unresolved attribute `xxx` on type `Proto9[P@decorator1, R@decorator1]`.
+-callables_protocol.py:197:7: error[unresolved-attribute] Object of type `Proto9[(x: int), Unknown] | Proto9[Divergent, Unknown]` has no attribute `other_attribute2`
++callables_protocol.py:197:7: error[unresolved-attribute] Object of type `Proto9[(x: int), Unknown]` has no attribute `other_attribute2`
+ callables_protocol.py:238:8: error[invalid-assignment] Object of type `def cb11_bad1(x: int, y: str, /) -> Any` is not assignable to `Proto11`
+ callables_protocol.py:260:8: error[invalid-assignment] Object of type `def cb12_bad1(*args: Any, *, kwarg0: Any) -> None` is not assignable to `Proto12`
+ callables_protocol.py:284:27: error[invalid-assignment] Object of type `def cb13_no_default(path: str) -> str` is not assignable to `Proto13_Default`
+
+```
+
+</details>
+
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-10 21:29_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+beartype (https://github.com/beartype/beartype)
+- beartype/_util/py/utilpyweakref.py:76:27: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `type[ReferenceType[_T@ReferenceType]]`, found `<class 'ReferenceType[~None]'>`
+- Found 492 diagnostics
++ Found 491 diagnostics
+
+yarl (https://github.com/aio-libs/yarl)
+- tests/test_pickle.py:21:20: error[invalid-argument-type] Argument to bound method `__setstate__` is incorrect: Expected `tuple[tuple[str, str, str, str, str]] | tuple[None, _InternalURLCache]`, found `tuple[None, dict[Unknown | str, Unknown | tuple[str, str, str, str, str]]]`
+- Found 39 diagnostics
++ Found 38 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- src/_pytest/unittest.py:583:14: error[missing-argument] No argument provided for required parameter `cls`
+- testing/test_config.py:1441:14: error[missing-argument] No argument provided for required parameter `cls`
+- testing/test_config.py:1763:10: error[missing-argument] No argument provided for required parameter `cls`
++ testing/test_config.py:2511:18: warning[possibly-missing-attribute] Submodule `config` may not be available as an attribute on module `_pytest`
+- testing/test_faulthandler.py:216:10: error[missing-argument] No argument provided for required parameter `cls`
+- testing/test_monkeypatch.py:426:10: error[missing-argument] No argument provided for required parameter `cls`
+- Found 448 diagnostics
++ Found 444 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
+- test/with_dummyserver/test_chunked_transfer.py:299:14: error[missing-argument] No argument provided for required parameter `monkeypatch`
+- test/with_dummyserver/test_chunked_transfer.py:299:36: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@mark]`, found `MonkeyPatch`
++ test/with_dummyserver/test_chunked_transfer.py:299:36: error[invalid-argument-type] Argument is incorrect: Expected `type[ConnectionMarker]`, found `MonkeyPatch`
+- test/with_dummyserver/test_chunked_transfer.py:299:36: error[invalid-argument-type] Argument is incorrect: Expected `Self@mark`, found `MonkeyPatch`
+- test/with_dummyserver/test_chunked_transfer.py:327:14: error[missing-argument] No argument provided for required parameter `monkeypatch`
+- test/with_dummyserver/test_chunked_transfer.py:327:36: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@mark]`, found `MonkeyPatch`
++ test/with_dummyserver/test_chunked_transfer.py:327:36: error[invalid-argument-type] Argument is incorrect: Expected `type[ConnectionMarker]`, found `MonkeyPatch`
+- test/with_dummyserver/test_chunked_transfer.py:327:36: error[invalid-argument-type] Argument is incorrect: Expected `Self@mark`, found `MonkeyPatch`
+- Found 276 diagnostics
++ Found 272 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+- cki_lib/inttests/cluster.py:78:31: error[missing-argument] No argument provided for required parameter `cls`
+- cki_lib/inttests/mariadb.py:22:31: error[missing-argument] No argument provided for required parameter `cls`
+- cki_lib/inttests/mariadb.py:29:14: error[missing-argument] No argument provided for required parameter `namespace`
+- cki_lib/inttests/mariadb.py:29:32: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@k8s_namespace]`, found `Literal["mariadb"]`
++ cki_lib/inttests/mariadb.py:29:32: error[invalid-argument-type] Argument is incorrect: Expected `type[KubernetesCluster]`, found `Literal["mariadb"]`
+- cki_lib/inttests/mariadb.py:29:32: error[invalid-argument-type] Argument is incorrect: Expected `Self@k8s_namespace`, found `Literal["mariadb"]`
+- cki_lib/inttests/minio.py:22:31: error[missing-argument] No argument provided for required parameter `cls`
+- cki_lib/inttests/minio.py:29:14: error[missing-argument] No argument provided for required parameter `namespace`
+- cki_lib/inttests/minio.py:29:32: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@k8s_namespace]`, found `Literal["minio"]`
++ cki_lib/inttests/minio.py:29:32: error[invalid-argument-type] Argument is incorrect: Expected `type[KubernetesCluster]`, found `Literal["minio"]`
+- cki_lib/inttests/minio.py:29:32: error[invalid-argument-type] Argument is incorrect: Expected `Self@k8s_namespace`, found `Literal["minio"]`
+- cki_lib/inttests/rabbitmq.py:36:31: error[missing-argument] No argument provided for required parameter `cls`
+- cki_lib/inttests/rabbitmq.py:43:14: error[missing-argument] No argument provided for required parameter `namespace`
+- cki_lib/inttests/rabbitmq.py:43:32: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@k8s_namespace]`, found `Literal["rabbitmq"]`
++ cki_lib/inttests/rabbitmq.py:43:32: error[invalid-argument-type] Argument is incorrect: Expected `type[KubernetesCluster]`, found `Literal["rabbitmq"]`
+- cki_lib/inttests/rabbitmq.py:43:32: error[invalid-argument-type] Argument is incorrect: Expected `Self@k8s_namespace`, found `Literal["rabbitmq"]`
+- cki_lib/inttests/remote_responses.py:123:31: error[missing-argument] No argument provided for required parameter `cls`
+- cki_lib/inttests/remote_responses.py:135:14: error[missing-argument] No argument provided for required parameter `namespace`
+- cki_lib/inttests/remote_responses.py:135:32: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@k8s_namespace]`, found `Literal["remote-responses"]`
++ cki_lib/inttests/remote_responses.py:135:32: error[invalid-argument-type] Argument is incorrect: Expected `type[KubernetesCluster]`, found `Literal["remote-responses"]`
+- cki_lib/inttests/remote_responses.py:135:32: error[invalid-argument-type] Argument is incorrect: Expected `Self@k8s_namespace`, found `Literal["remote-responses"]`
+- cki_lib/inttests/sqs.py:29:31: error[missing-argument] No argument provided for required parameter `cls`
+- cki_lib/inttests/sqs.py:37:14: error[missing-argument] No argument provided for required parameter `namespace`
+- cki_lib/inttests/sqs.py:37:32: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@k8s_namespace]`, found `Literal["sqs"]`
++ cki_lib/inttests/sqs.py:37:32: error[invalid-argument-type] Argument is incorrect: Expected `type[KubernetesCluster]`, found `Literal["sqs"]`
+- cki_lib/inttests/sqs.py:37:32: error[invalid-argument-type] Argument is incorrect: Expected `Self@k8s_namespace`, found `Literal["sqs"]`
+- cki_lib/inttests/vault.py:22:31: error[missing-argument] No argument provided for required parameter `cls`
+- cki_lib/inttests/vault.py:29:14: error[missing-argument] No argument provided for required parameter `namespace`
+- cki_lib/inttests/vault.py:29:32: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@k8s_namespace]`, found `Literal["vault"]`
++ cki_lib/inttests/vault.py:29:32: error[invalid-argument-type] Argument is incorrect: Expected `type[KubernetesCluster]`, found `Literal["vault"]`
+- cki_lib/inttests/vault.py:29:32: error[invalid-argument-type] Argument is incorrect: Expected `Self@k8s_namespace`, found `Literal["vault"]`
+- tests/kcidb/test_kcidb_file.py:83:14: error[missing-argument] No argument provided for required parameter `kcidb_data`
+- Found 277 diagnostics
++ Found 257 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- test/builtin_dataset_mocks.py:1245:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `type[dict[_KT@dict, _VT@dict]]`, found `Literal["Abyssinian"]`
+- test/builtin_dataset_mocks.py:1246:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `type[dict[_KT@dict, _VT@dict]]`, found `Literal["Keeshond"]`
+- test/builtin_dataset_mocks.py:1247:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `type[dict[_KT@dict, _VT@dict]]`, found `Literal["Yorkshire Terrier"]`
+- test/test_datasets.py:2693:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `type[dict[_KT@dict, _VT@dict]]`, found `Literal["Abyssinian"]`
+- test/test_datasets.py:2694:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `type[dict[_KT@dict, _VT@dict]]`, found `Literal["Keeshond"]`
+- test/test_datasets.py:2695:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `type[dict[_KT@dict, _VT@dict]]`, found `Literal["Yorkshire Terrier"]`
+- Found 1481 diagnostics
++ Found 1475 diagnostics
+
+discord.py (https://github.com/Rapptz/discord.py)
++ discord/app_commands/models.py:482:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ discord/channel.py:3256:31: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 552 diagnostics
++ Found 554 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
++ bson/code.py:78:46: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 444 diagnostics
++ Found 445 diagnostics
+
+trio (https://github.com/python-trio/trio)
+- src/trio/_channel.py:610:12: error[invalid-return-type] Return type does not match returned value: expected `(**P@as_safe_channel) -> AbstractAsyncContextManager[ReceiveChannel[T@as_safe_channel], bool | None]`, found `((self, *args: P@as_safe_channel.args, **kwargs: P@as_safe_channel.kwargs) -> _AsyncGeneratorContextManager[Unknown, None]) | Unknown`
++ src/trio/_channel.py:610:12: error[invalid-return-type] Return type does not match returned value: expected `(**P@as_safe_channel) -> AbstractAsyncContextManager[ReceiveChannel[T@as_safe_channel], bool | None]`, found `(self, *args: P@as_safe_channel.args, **kwargs: P@as_safe_channel.kwargs) -> _AsyncGeneratorContextManager[Unknown, None]`
+
+setuptools (https://github.com/pypa/setuptools)
+- setuptools/build_meta.py:300:18: error[missing-argument] No argument provided for required parameter `cls`
+- Found 1289 diagnostics
++ Found 1288 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- strawberry/types/object_type.py:137:13: error[invalid-argument-type] Argument to function `__new__` is incorrect: Argument type `T'instance@_process_type` does not satisfy upper bound `BaseException` of type variable `Self`
+- strawberry/types/object_type.py:137:13: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `type[InvalidSuperclassInterfaceError]`, found `T@_process_type`
+- Found 401 diagnostics
++ Found 399 diagnostics
+
+openlibrary (https://github.com/internetarchive/openlibrary)
+- openlibrary/plugins/worksearch/code.py:1208:9: error[invalid-argument-type] Argument to function `run_solr_query` is incorrect: Expected `Literal["UNLABELLED", "BOOK_SEARCH", "BOOK_SEARCH_API", "BOOK_SEARCH_FACETS", "BOOK_CAROUSEL", ... omitted 12 literals]`, found `str`
+- Found 1138 diagnostics
++ Found 1137 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
++ src/integrations/prefect-aws/prefect_aws/experimental/bundles/execute.py:48:27: error[missing-argument] No argument provided for required parameter `name`
++ src/integrations/prefect-aws/prefect_aws/experimental/bundles/execute.py:48:47: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@aload]`, found `str`
++ src/integrations/prefect-aws/prefect_aws/experimental/bundles/upload.py:64:27: error[missing-argument] No argument provided for required parameter `name`
++ src/integrations/prefect-aws/tests/test_s3.py:1140:18: error[missing-argument] No argument provided for required parameter `name`
++ src/integrations/prefect-aws/tests/test_s3.py:1140:32: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@aload]`, found `Literal["round-tripper"]`
+- src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:225:27: error[missing-argument] No argument provided for required parameter `cls`
+- src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:250:15: error[missing-argument] No argument provided for required parameter `cls`
++ src/integrations/prefect-azure/prefect_azure/experimental/bundles/execute.py:28:19: error[missing-argument] No argument provided for required parameter `name`
++ src/integrations/prefect-azure/prefect_azure/experimental/bundles/execute.py:30:17: error[unknown-argument] Argument `_sync` does not match any known parameter
++ src/integrations/prefect-azure/prefect_azure/experimental/bundles/upload.py:38:19: error[missing-argument] No argument provided for required parameter `name`
++ src/integrations/prefect-azure/prefect_azure/experimental/bundles/upload.py:40:17: error[unknown-argument] Argument `_sync` does not match any known parameter
+- src/integrations/prefect-azure/tests/test_aci_worker.py:110:15: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-azure/tests/test_aci_worker.py:111:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[Unknown | str, Unknown | dict[str, Any]]`
++ src/integrations/prefect-azure/tests/test_aci_worker.py:111:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[Unknown | str, Unknown | dict[str, Any]]`
+- src/integrations/prefect-azure/tests/test_aci_worker.py:111:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[Unknown | str, Unknown | dict[str, Any]]`
+- src/integrations/prefect-azure/tests/test_aci_worker.py:1021:20: error[missing-argument] No argument provided for required parameter `cls`
+- src/integrations/prefect-dbt/prefect_dbt/cloud/jobs.py:1123:22: error[unresolved-attribute] Object of type `((trigger_job_run_options: TriggerJobRunOptions | None = None) -> Unknown | Coroutine[Any, Any, Unknown]) | ((trigger_job_run_options: Divergent = Divergent) -> Unknown | Coroutine[Any, Any, Unknown])` has no attribute `aio`
++ src/integrations/prefect-dbt/prefect_dbt/cloud/jobs.py:1123:22: error[unresolved-attribute] Object of type `(trigger_job_run_options: TriggerJobRunOptions | None = None) -> Unknown | Coroutine[Any, Any, Unknown]` has no attribute `aio`
++ src/integrations/prefect-dbt/tests/cli/test_credentials.py:75:36: error[missing-argument] No argument provided for required parameter `name`
++ src/integrations/prefect-dbt/tests/cli/test_credentials.py:75:55: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@aload]`, found `str`
+- src/integrations/prefect-docker/prefect_docker/worker.py:559:31: error[missing-argument] No argument provided for required parameter `cls`
++ src/integrations/prefect-email/tests/test_credentials.py:90:19: error[missing-argument] No argument provided for required parameter `name`
++ src/integrations/prefect-email/tests/test_credentials.py:90:47: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@aload]`, found `Literal["email-credentials"]`
++ src/integrations/prefect-email/tests/test_credentials.py:107:19: error[missing-argument] No argument provided for required parameter `name`
++ src/integrations/prefect-email/tests/test_credentials.py:107:47: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@aload]`, found `Literal["email-credentials"]`
++ src/integrations/prefect-gcp/prefect_gcp/experimental/bundles/execute.py:28:13: error[missing-argument] No argument provided for required parameter `name`
++ src/integrations/prefect-gcp/prefect_gcp/experimental/bundles/execute.py:29:17: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@aload]`, found `str`
++ src/integrations/prefect-gcp/prefect_gcp/experimental/bundles/execute.py:30:17: error[unknown-argument] Argument `_sync` does not match any known parameter
++ src/integrations/prefect-gcp/prefect_gcp/experimental/bundles/upload.py:52:13: error[missing-argument] No argument provided for required parameter `name`
++ src/integrations/prefect-gcp/prefect_gcp/experimental/bundles/upload.py:54:17: error[unknown-argument] Argument `_sync` does not match any known parameter
+- src/integrations/prefect-gcp/tests/test_cloud_run_worker.py:421:19: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-gcp/tests/test_cloud_run_worker.py:421:75: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-gcp/tests/test_cloud_run_worker.py:421:75: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-gcp/tests/test_cloud_run_worker.py:421:75: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-gcp/tests/test_cloud_run_worker.py:442:19: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-gcp/tests/test_cloud_run_worker.py:442:75: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-gcp/tests/test_cloud_run_worker.py:442:75: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-gcp/tests/test_cloud_run_worker.py:442:75: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-gcp/tests/test_cloud_run_worker.py:475:19: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-gcp/tests/test_cloud_run_worker.py:475:75: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-gcp/tests/test_cloud_run_worker.py:475:75: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-gcp/tests/test_cloud_run_worker.py:475:75: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-gcp/tests/test_vertex_worker.py:66:19: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-gcp/tests/test_vertex_worker.py:67:17: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-gcp/tests/test_vertex_worker.py:67:17: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-gcp/tests/test_vertex_worker.py:67:17: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-gcp/tests/test_vertex_worker.py:94:19: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-gcp/tests/test_vertex_worker.py:95:17: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-gcp/tests/test_vertex_worker.py:95:17: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-gcp/tests/test_vertex_worker.py:95:17: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1261:24: error[missing-argument] No argument provided for required parameter `cls`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1294:19: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1295:17: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1295:17: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1295:17: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1316:19: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1317:17: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1317:17: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1317:17: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1353:19: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1354:17: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1354:17: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1354:17: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1387:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1388:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1388:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1388:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1435:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1436:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1436:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1436:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1489:22: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1490:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1490:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1490:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1613:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1614:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1614:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1614:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1640:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1641:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1641:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1641:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1694:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1695:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1695:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1695:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1762:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1763:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1763:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1763:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1814:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1815:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1815:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1815:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1866:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1867:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1867:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1867:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1909:23: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1910:21: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1910:21: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1910:21: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1949:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1950:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1950:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1950:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1992:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1993:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:1993:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:1993:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2039:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2040:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2040:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2040:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2080:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2081:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2081:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2081:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2106:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2107:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2107:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2107:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2149:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2150:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2150:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2150:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2172:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2173:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2173:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2173:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2208:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2209:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2209:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2209:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2255:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2256:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2256:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2256:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2314:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2315:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2315:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2315:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2360:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2361:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2361:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2361:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2393:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2394:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2394:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2394:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2468:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2469:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2469:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2469:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2522:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2523:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2523:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2523:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2545:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2546:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2546:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2546:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2589:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2590:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2590:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2590:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2613:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2614:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2614:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2614:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2637:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2638:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2638:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2638:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2655:31: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2656:13: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
+- src/integrations/prefect-kubernetes/tests/test_worker.py:2656:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-kubernetes/tests/test_worker.py:2656:13: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-snowflake/tests/experimental/test_spcs_worker.py:142:39: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-snowflake/tests/experimental/test_spcs_worker.py:143:9: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[Unknown | str, Unknown | dict[str, Any]]`
++ src/integrations/prefect-snowflake/tests/experimental/test_spcs_worker.py:143:9: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[Unknown | str, Unknown | dict[str, Any]]`
+- src/integrations/prefect-snowflake/tests/experimental/test_spcs_worker.py:143:9: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[Unknown | str, Unknown | dict[str, Any]]`
+- src/integrations/prefect-snowflake/tests/experimental/test_spcs_worker.py:266:20: error[missing-argument] No argument provided for required parameter `cls`
+- src/integrations/prefect-snowflake/tests/experimental/test_spcs_worker.py:927:20: error[missing-argument] No argument provided for required parameter `values`
+- src/integrations/prefect-snowflake/tests/experimental/test_spcs_worker.py:927:69: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@from_template_and_values]`, found `dict[str, Any]`
++ src/integrations/prefect-snowflake/tests/experimental/test_spcs_worker.py:927:69: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseJobConfiguration]`, found `dict[str, Any]`
+- src/integrations/prefect-snowflake/tests/experimental/test_spcs_worker.py:927:69: error[invalid-argument-type] Argument is incorrect: Expected `Self@from_template_and_values`, found `dict[str, Any]`
++ src/integrations/prefect-sqlalchemy/tests/test_database.py:447:18: error[missing-argument] No argument provided for required parameter `name`
++ src/integrations/prefect-sqlalchemy/tests/test_database.py:447:43: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@aload]`, found `str`
++ src/integrations/prefect-sqlalchemy/tests/test_database.py:466:18: error[missing-argument] No argument provided for required parameter `name`
++ src/integrations/prefect-sqlalchemy/tests/test_database.py:466:43: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@aload]`, found `str`
+- src/integrations/prefect-sqlalchemy/tests/test_database.py:488:16: error[no-matching-overload] No overload matches arguments
+- src/prefect/blocks/core.py:1261:39: error[missing-argument] No argument provided for required parameter `block_document_id`
+- src/prefect/blocks/core.py:1261:69: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@_get_block_document_by_id]`, found `str | UUID`
++ src/prefect/blocks/core.py:1261:69: error[invalid-argument-type] Argument is incorrect: Expected `type[Block]`, found `str | UUID`
+- src/prefect/blocks/core.py:1261:69: error[invalid-argument-type] Argument is incorrect: Expected `Self@_get_block_document_by_id`, found `str | UUID`
+- src/prefect/blocks/core.py:1264:43: error[missing-argument] No argument provided for required parameter `block_document_id`
+- src/prefect/cli/deploy/_actions.py:65:19: error[missing-argument] No argument provided for required parameter `name`
+- src/prefect/cli/deploy/_actions.py:65:32: error[invalid-argument-type] Argument is incorrect: Expected `Self@aload`, found `str`
+- src/prefect/cli/deployment.py:288:20: error[missing-argument] No argument provided for required parameter `ref`
+- src/prefect/cli/deployment.py:288:40: error[invalid-argument-type] Argument is incorrect: Expected `Self@load_from_ref`, found `UUID & ~AlwaysFalsy`
+- src/prefect/deployments/steps/pull.py:265:23: error[missing-argument] No argument provided for required parameter `name`
+- src/prefect/deployments/steps/pull.py:265:35: error[invalid-argument-type] Argument is incorrect: Expected `Self@aload`, found `str`
+- src/prefect/flow_engine.py:319:36: error[unknown-argument] Argument `_sync` does not match any known parameter
+- src/prefect/flow_engine.py:623:36: error[unknown-argument] Argument `_sync` does not match any known parameter
+- src/prefect/flow_engine.py:695:18: error[missing-argument] No argument provided for required parameter `cls`
+- src/prefect/flow_engine.py:906:36: error[unknown-argument] Argument `_sync` does not match any known parameter
+- src/prefect/flow_engine.py:1207:36: error[unknown-argument] Argument `_sync` does not match any known parameter
+- src/prefect/flows.py:593:24: error[missing-argument] No argument provided for required parameter `ref`
+- src/prefect/flows.py:593:58: error[unknown-argument] Argument `_sync` does not match any known parameter
+- src/prefect/results.py:144:23: error[missing-argument] No argument provided for required parameter `name`
+- src/prefect/results.py:144:35: error[invalid-argument-type] Argument is incorrect: Expected `Self@aload`, found `str`
+- src/prefect/results.py:224:23: error[missing-argument] No argument provided for required parameter `name`
++ src/prefect/results.py:181:17: error[missing-argument] No argument provided for required parameter `name`
++ src/prefect/results.py:181:28: error[invalid-argument-type] Argument is incorrect: Expected `type[Self@aload]`, found `str`
++ src/prefect/results.py:181:44: error[unknown-argument] Argument `_sync` does not match any known parameter
+- src/prefect/results.py:524:38: error[unknown-argument] Argument `_sync` does not match any known parameter
+- src/prefect/results.py:536:44: error[unknown-argument] Argument `_sync` does not match any known parameter
+- src/prefect/results.py:629:51: error[unknown-argument] Argument `_sync` does not match any known parameter
+- src/prefect/results.py:647:57: error[unknown-argument] Argument `_sync` does not match any known parameter
+- src/prefect/results.py:812:57: error[unknown-argument] Argument `_sync` does not match any known parameter
+- src/prefect/results.py:826:57: error[unknown-argument] Argument `_sync` does not match any known parameter
+- src/prefect/server/models/flow_runs.py:582:15: error[missing-argument] No argument provided for required parameter `db`
+- src/prefect/server/models/task_runs.py:556:15: error[missing-argument] No argument provided for required parameter `db`
+- src/prefect/task_engine.py:777:36: error[unknown-argument] Argument `_sync` does not match any known parameter
+- src/prefect/task_engine.py:820:18: error[missing-argument] No argument provided for required parameter `cls`
+- src/prefect/task_engine.py:1383:36: error[unknown-argument] Argument `_sync` does not match any known parameter
++ src/prefect/tasks.py:1814:21: error[invalid-argument-type] Argument is incorrect: Expected `Task[P@serve, R@serve]`, found `Self@serve`
+- src/prefect/testing/utilities.py:263:28: error[missing-argument] No argument provided for required parameter `name`
+- src/prefect/testing/utilities.py:263:40: error[invalid-argument-type] Argument is incorrect: Expected `Self@aload`, found `str`
+- src/prefect/testing/utilities.py:274:28: error[missing-argument] No argument provided for required parameter `name`
+- src/prefect/testing/utilities.py:274:40: error[invalid-argument-type] Argument is incorrect: Expected `Self@aload`, found `str`
+- src/prefect/workers/base.py:895:31: error[missing-argument] No argument provided for required parameter `cls`
+- src/prefect/workers/base.py:1417:31: error[missing-argument] No argument provided for required parameter `cls`
+- Found 5625 diagnostics
++ Found 5530 diagnostics
+
+xarray (https://github.com/pydata/xarray)
+- xarray/tests/test_backends.py:2580:13: error[invalid-argument-type] Argument is incorrect: Expected `Self@roundtrip`, found `Self@roundtrip`
+- xarray/tests/test_backends.py:5267:13: error[invalid-argument-t
+
+... (truncated 172 lines) ...
+```
+
+</details>
+
+
+
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+```diff
+prefect (https://github.com/PrefectHQ/prefect)
+- TOTAL MEMORY USAGE: ~725MB
++ TOTAL MEMORY USAGE: ~690MB
+-     struct metadata = ~52MB
++     struct metadata = ~49MB
+
+
+```
+
+</details>
+
+
+
+
+---
+
+_@carljm reviewed on 2025-12-10 21:31_
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer/builder.rs`:2958 on 2025-12-10 21:31_
+
+This is where you're getting the additional (wrong) meaning of "deferred" by accident.
+
+---
+
+_@dcreager reviewed on 2025-12-10 21:42_
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/src/types/infer/builder.rs`:2958 on 2025-12-10 21:42_
+
+:+1: Thank you, fixed!
+
+---
+
+_Comment by @codspeed-hq[bot] on 2025-12-10 21:42_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fbreakest-the-cycle?utm_source=github&utm_medium=comment&utm_content=header)
+
+### Merging #21906 will **improve performances by 5.61%**
+
+<sub>Comparing <code>dcreager/breakest-the-cycle</code> (5d905fa) with <code>main</code> (d442433)</sub>
+
+
+
+### Summary
+
+`⚡ 3` improvements  
+`✅ 19` untouched  
+`⏩ 30` skipped[^skipped]  
+
+
+
+### Benchmarks breakdown
+
+|     | Mode | Benchmark | `BASE` | `HEAD` | Change |
+| --- | ---- | --------- | ------ | ------ | ------ |
+| ⚡ | WallTime | [`` small[tanjun] ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fbreakest-the-cycle?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Asmall%5Btanjun%5D&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 2.8 s | 2.7 s | +4.39% |
+| ⚡ | Simulation | [`` ty_check_file[incremental] ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fbreakest-the-cycle?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Acheck_file%3A%3Abenchmark_incremental%3A%3Aty_check_file%5Bincremental%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 7.1 ms | 6.7 ms | +5.27% |
+| ⚡ | Simulation | [`` hydra-zen ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fbreakest-the-cycle?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Ahydra%3A%3Aproject%3A%3Ahydra-zen&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 1.4 s | 1.3 s | +5.61% |
+[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fbreakest-the-cycle?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment&utm_content=archive).
+
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/src/types/signatures.rs`:72 on 2025-12-10 21:45_
+
+All of this stuff is moved over to `function.rs` to avoid this cyclic call to `infer_definition_types`
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/src/types/function.rs`:518 on 2025-12-10 21:45_
+
+...and over here, where it's moved, we don't need to call `infer_definition_types` on the function definition, because we can grab its generic context and decorator list directly.
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/src/types/function.rs`:524 on 2025-12-10 21:46_
+
+This `infer_definition_types` is okay to keep, since it's referring to the containing class definition, not to the function we're in the middle of inferring a signature for
+
+---
+
+_@dcreager reviewed on 2025-12-10 21:46_
+
+---
+
+_Label `ecosystem-analyzer` added by @dcreager on 2025-12-10 22:12_
+
+---
+
+_Marked ready for review by @dcreager on 2025-12-10 22:12_
+
+---
+
+_Review requested from @AlexWaygood by @dcreager on 2025-12-10 22:12_
+
+---
+
+_Review requested from @sharkdp by @dcreager on 2025-12-10 22:12_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-10 22:21_
+
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `invalid-argument-type` | 9 | 84 | 61 |
+| `unresolved-attribute` | 1 | 31 | 1 |
+| `missing-argument` | 13 | 0 | 0 |
+| `unknown-argument` | 5 | 0 | 0 |
+| `unused-ignore-comment` | 4 | 1 | 0 |
+| `no-matching-overload` | 0 | 3 | 0 |
+| `type-assertion-failure` | 0 | 2 | 1 |
+| `invalid-assignment` | 0 | 2 | 0 |
+| `invalid-return-type` | 0 | 1 | 1 |
+| **Total** | **32** | **124** | **64** |
+
+**[Full report with detailed diff](https://dcreager-breakest-the-cycle.ecosystem-663.pages.dev/diff)** ([timing results](https://dcreager-breakest-the-cycle.ecosystem-663.pages.dev/timing))
+
+
+
+
+---
+
+_Comment by @carljm on 2025-12-10 22:29_
+
+This is looking pretty good!
+
+The macos test failure looks like something fluky and unrelated to this PR?
+
+The ecosystem suggests we are not binding `type[Self]` on classmethods in the same way we did prior to this PR...
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/resources/mdtest/annotations/self.md`:355 on 2025-12-11 14:45_
+
+This call (and the analogous one below) mimic the `type[Self]` errors we were seeing in the ecosystem report.
+
+---
+
+_@dcreager reviewed on 2025-12-11 14:45_
+
+Latest patch should fix the `type[Self]` issue. Added some regression mdtests for it too
+
+---
+
+_Label `ecosystem-analyzer` removed by @dcreager on 2025-12-11 14:50_
+
+---
+
+_Label `ecosystem-analyzer` added by @dcreager on 2025-12-11 14:50_
+
+---
+
+_Comment by @dcreager on 2025-12-11 15:01_
+
+> Latest patch should fix the `type[Self]` issue.
+
+~32~ 200 changes on the ecosystem report instead of 1500...much better :relieved: 
+
+---
+
+_Comment by @carljm on 2025-12-11 18:01_
+
+A lot of the new diagnostics in the ecosystem report look like cases of https://github.com/astral-sh/ty/issues/1787 that are just being revealed now that we are better able to infer the signature type at all.
+
+---
+
+_Comment by @AlexWaygood on 2025-12-11 18:15_
+
+Merged in `main` to see if that'll fix the persistent API failures on the benchmark jobs. The jobs are now finishing on other PRs, but still weren't on this PR...
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/function.rs`:519 on 2025-12-11 18:24_
+
+It's not clear to me why we are checking whether `Self` is in the type context in order to determine whether `method_may_be_generic`? Maybe this is just a problem with the variable name?
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/function.rs`:532 on 2025-12-11 18:37_
+
+I guess this case makes sense in principle, but I'm curious how it could ever occur. How could a class def node evaluate to a `GenericAlias` type?
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/function.rs`:564 on 2025-12-11 18:39_
+
+It doesn't seem like this matches what we check above, which is actually just that an explicit `Self` is in the type parameters -- we don't seem to care whether there are other type parameters. (That logic seems fine to me, it just doesn't match the text here, or the `method_may_be_generic` variable name.)
+
+---
+
+_@carljm approved on 2025-12-11 18:41_
+
+Awesome, thank you!
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/src/types/function.rs`:519 on 2025-12-11 19:19_
+
+tbh I hadn't looked at this logic, just moved it from one file to the other! 😄 
+
+I'll update the variable name and comment below.
+
+There's one thing that I thought we would want to ensure, which I'm not no longer sure about — that we should always treat an implicit `Self` parameter annotation the same as we would an explicit `Self`. The logic here (the actual logic, not the variable name/comment) breaks that [[playground](https://play.ty.dev/8e7f7c5e-a92a-4f53-b902-3ecf231c48b7)]:
+
+```py
+class Implicit:
+    def method(self): ...
+
+class Explicit:
+    def method(self: Self): ...
+
+reveal_type(generic_context(Implicit().method))  # None
+reveal_type(generic_context(Explicit().method))  # [Self@method]
+```
+
+The `else` branch engages for implicit `Self`, since the method is not generic / `Self` does not appear explicitly in the parameter list. So we give the `self` param an implicit annotation of `Implicit`, not `Self@Implicit`.
+
+For the explicit case, in theory we could perform the same check: realize that there are no _other_ references to `Self`, and treat that annotation as `Implicit`, without creating a typevar for it. But we don't do that right now: you typed `Self`, and so we turn that into a typevar.
+
+Anyway, I'm not suggesting we should jump through hoops to make the same simplification in the explicit case. It would be only be an optimization anyway, since it shouldn't™ be a problem to have the `Self` typevar in either case.
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/src/types/function.rs`:532 on 2025-12-11 19:20_
+
+Good catch. I'll remove it and see if anything barfs.
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/src/types/function.rs`:564 on 2025-12-11 19:20_
+
+see above
+
+---
+
+_@dcreager reviewed on 2025-12-11 19:36_
+
+---
+
+_Merged by @dcreager on 2025-12-11 20:00_
+
+---
+
+_Closed by @dcreager on 2025-12-11 20:00_
+
+---
+
+_Branch deleted on 2025-12-11 20:00_
+
+---
+
+_@carljm reviewed on 2025-12-11 20:01_
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/function.rs`:519 on 2025-12-11 20:01_
+
+Makes sense! And sorry, didn't realize when I was initially reviewing this code that it had just been moved unchanged.
+
+---
