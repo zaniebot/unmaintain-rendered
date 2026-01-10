@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve error messaging when a dependency is not found - astral-sh/uv #1241</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve error messaging when a dependency is not found</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1241">#1241</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-02-03 16:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-03 16:18</div>
+            <div class="timeline-body"><p>Previously, whenever we encountered a missing package we would throw an error without information about why the package was requested. This meant that if a transitive dependency required a missing package, the user would have no idea why it was even selected. Here, we track <code>NotFound</code> and <code>NoIndex</code> errors as <code>NoVersions</code> incompatibilities with an attached reason. Improves our test coverage for <code>--no-index</code> without <code>--find-links</code>.</p>
+<p>The <a href="https://github.com/astral-sh/puffin/pull/1241/files#diff-3eea1658f165476252f1f061d0aa9f915aabdceafac21611cdf45019447f60ec">snapshots</a> show a nice improvement.</p>
+<p>I think this will also enable backtracking to another version if some version of transitive dependency has a missing dependency. I'll write a scenario for that next.</p>
+<p>Requires https://github.com/zanieb/pubgrub/pull/22</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-02-03 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2024-02-03 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-03 23:17</div>
+            <div class="timeline-body"><p>I expect this to require some refactoring and polish, but it's ready for review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-02-03 23:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-04 23:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/pubgrub/report.rs</code>:79 on 2024-02-04 23:55</div>
+            <div class="timeline-body"><p>Nit: always be available? (I think)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:86 on 2024-02-05 00:00</div>
+            <div class="timeline-body"><p>Should we differentiate here that this is for a single <em>package version</em> (like you did for the enums)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-05 00:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-05 00:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:68 on 2024-02-05 00:01</div>
+            <div class="timeline-body"><p>I tend to make all structs <code>#[derive(Debug)]</code> so that I don't have to modify them later when debugging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:68 on 2024-02-05 00:01</div>
+            <div class="timeline-body"><p>This one could also be <code>Clone</code> and <code>Copy</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-05 00:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-05 00:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:353 on 2024-02-05 00:02</div>
+            <div class="timeline-body"><p>Could <em>perhaps</em> be put in a standalone function so that you can use early returns (like <code>let entry = self.unavailable.get(package_name)?</code> instead of another level of nesting). But totally up to you, it might end up being more awkward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-05 00:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:734 on 2024-02-05 00:02</div>
+            <div class="timeline-body"><p>This should never happen, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-02-05 00:03</div>
+            <div class="timeline-body"><p>I think this looks great.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-05 00:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:734 on 2024-02-05 00:04</div>
+            <div class="timeline-body"><p>(Wondering if the whole thing should be a debug assert so that we don't have to do this extra hash lookup in release, but what you have here is probably better, it's negligible.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-05 14:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:734 on 2024-02-05 14:15</div>
+            <div class="timeline-body"><p>Yeah this should never happen. I am just hesitant to panic in production.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-02-05 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-02-05 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-05 14:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:33:42 UTC
+    </footer>
+</body>
+</html>

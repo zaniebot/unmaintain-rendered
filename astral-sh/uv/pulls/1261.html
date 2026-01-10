@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reduce stack sizes further and ignore remaining tests - astral-sh/uv #1261</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Reduce stack sizes further and ignore remaining tests</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1261">#1261</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-02-06 21:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-02-06 21:39</div>
+            <div class="timeline-body"><p>This PR reduces the stack sizes a windows a little further using the stack traces from stack overflows combined with looking at the type sizes. Ultimately, it ignore the three remaining tests failing in debug on windows due to stack overflows to unblock <code>cargo test</code> for windows on CI.</p>
+<p>444 tests run: 444 passed (39 slow), 1 skipped</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2024-02-06 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2024-02-06 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @konstin on 2024-02-06 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @konstin on 2024-02-06 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-06 21:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-build/src/lib.rs</code>:413 on 2024-02-06 21:42</div>
+            <div class="timeline-body"><p>This is unchanged, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-06 21:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-build/src/lib.rs</code>:365 on 2024-02-06 21:42</div>
+            <div class="timeline-body"><p>What's the motivation for splitting these up?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-build/src/lib.rs</code>:413 on 2024-02-06 21:42</div>
+            <div class="timeline-body"><p>Yes, this is the rustrover extract refactoring with the function signature fixed up</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-02-06 21:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-02-06 21:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-build/src/lib.rs</code>:365 on 2024-02-06 21:44</div>
+            <div class="timeline-body"><p>This function showed up as being large with many locals, so i tried to split it up into functions which isolate the locals.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-build/src/lib.rs</code>:365 on 2024-02-06 21:48</div>
+            <div class="timeline-body"><p>Do you need <code>#[inline(never)]</code> to avoid them getting smushed back together? (Although if the stack size really becomes that large, probably the inliner won't inline them?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-02-06 21:50</div>
+            <div class="timeline-body"><p>One concern I have is that these <code>Box</code>/<code>boxed</code> things might be easy to get rid of in future refactorings, but I don't see an easy way around that. And I suppose if they are a real problem, then Windows CI should fail?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-02-06 22:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-build/src/lib.rs</code>:365 on 2024-02-06 22:05</div>
+            <div class="timeline-body"><p>I'd hope that in debug mode it doesn't get inlined, which is where we have the stack overflows. In release mode i'm happy if it gets inlined.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-02-06 22:07</div>
+            <div class="timeline-body"><blockquote>
+<p>One concern I have is that these Box/boxed things might be easy to get rid of in future refactorings, but I don't see an easy way around that. And I suppose if they are a real problem, then Windows CI should fail?</p>
+</blockquote>
+<p>We could consider adding CI with an artificially smaller stack size to ensure the maximum stack sizes don't grow, but since this is a problem that exclusively affects debug mode i'm fine just gating this on <code>cargo test</code> on windows passing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-02-06 22:08</div>
+            <div class="timeline-body"><p>I'll do a follow up PR once windows CI has <code>cargo test</code> integration to try to reactivate those tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-02-06 22:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-02-06 22:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-06 22:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:33:42 UTC
+    </footer>
+</body>
+</html>

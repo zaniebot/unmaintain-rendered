@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>make version map construction lazy - astral-sh/uv #1301</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>make version map construction lazy</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1301">#1301</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-02-14 19:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-14 19:53</div>
+            <div class="timeline-body"><p>This PR refactors <code>VersionMap</code> to be inherently lazy in its
+conversion of <code>VersionFiles</code> (part of <code>SimpleMetadata</code>) to
+<code>PrioritizedDistribution</code>. The motivation for doing this arose out of
+the zero-copy deserialization work on <code>SimpleMetadata</code>. Namely, before
+this PR, <code>VersionMap::from_metadata</code> would immediately and eagerly
+deserialize a full <code>SimpleMetadata</code> into memory. This negated many of
+the benefits of zero-copy deserialization in the first place.</p>
+<p>In this PR, we do a lot less work in <code>VersionMap::from_metadata</code>.
+Namely, we pre-populate a map with all of the versions eagerly
+deserialized, but otherwise only leave a stub for where the
+distribution was previously stored. When the distribution for a version
+number is requested, we check if the corresponding distribution has
+already been created (via a <code>OnceLock</code>) and use it if so. Otherwise, we
+construct it then and there on demand.</p>
+<p>There is some complexity here where we need to deal with
+<code>FlatDistribution</code> and its merging into <code>VersionFiles</code> to create a
+<code>PrioritizedDistribution</code>. There is also still some filtering logic
+(that perhaps @zanieb will fully excise soon) that we retain as well.</p>
+<p>In general, this is good for about a 1.3x speed-up:</p>
+<pre><code>$ hyperfine -w10 --runs 50 &quot;puffin-main pip compile --cache-dir ~/astral/tmp/cache-main ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null&quot; &quot;puffin-test pip compile --cache-dir ~/astral/tmp/cache-test ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null&quot; ; A bart
+Benchmark 1: puffin-main pip compile --cache-dir ~/astral/tmp/cache-main ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null
+  Time (mean ± σ):     148.0 ms ±   5.2 ms    [User: 354.8 ms, System: 312.1 ms]
+  Range (min … max):   140.3 ms … 172.2 ms    50 runs
+
+Benchmark 2: puffin-test pip compile --cache-dir ~/astral/tmp/cache-test ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null
+  Time (mean ± σ):     110.6 ms ±   3.4 ms    [User: 138.2 ms, System: 216.1 ms]
+  Range (min … max):   104.2 ms … 118.5 ms    50 runs
+
+Summary
+  puffin-test pip compile --cache-dir ~/astral/tmp/cache-test ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null ran
+    1.34 ± 0.06 times faster than puffin-main pip compile --cache-dir ~/astral/tmp/cache-main ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null
+</code></pre>
+<p>Profiling seems to suggest that <code>VersionMap</code> construction is no longer
+using a significant chunk of time. This is important because there are
+in theory things we can do to make resolution even lazier. For example,
+we don't necessarily need to deserialize an entire <code>VersionFiles</code>
+for each version requested. We could only deserialize the <code>File</code>s we
+actually need. But this would require more refactoring and it isn't
+clear that it's worth doing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-02-14 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @charliermarsh removed by @BurntSushi on 2024-02-14 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-02-14 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @konstin removed by @BurntSushi on 2024-02-14 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-02-14 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @BurntSushi on 2024-02-14 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-02-14 19:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @zanieb on 2024-02-14 21:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-14 22:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-resolver/src/candidate_selector.rs</code>:193 on 2024-02-14 22:00</div>
+            <div class="timeline-body"><p>What's this new filtering for?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-14 22:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-resolver/src/version_map.rs</code>:422 on 2024-02-14 22:07</div>
+            <div class="timeline-body"><p>I'm not entirely sure what our write patterns look like, but is this safe in our asynchronous contexts? i.e. could this be called from an asynchronous context and cause a synchronous block?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-02-14 22:08</div>
+            <div class="timeline-body"><p>Makes sense!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/version_map.rs</code>:200 on 2024-02-15 00:42</div>
+            <div class="timeline-body"><p>What's an example?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/version_map.rs</code>:231 on 2024-02-15 00:42</div>
+            <div class="timeline-body"><p>Why use a named field here but not below?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/version_map.rs</code>:251 on 2024-02-15 00:53</div>
+            <div class="timeline-body"><p><code>version</code> repeated here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/candidate_selector.rs</code>:193 on 2024-02-15 00:55</div>
+            <div class="timeline-body"><p>My guess (to confirm my understanding): the map has a key for every <em>version</em>, but it's possible that we can't actually find a matching distribution for that version once we've lazily materialized the options. For example, maybe you have a version that was uploaded after <code>exclude_newer</code> -- so the version exists in the map, but once you try to materialize it, you find that there aren't any matching distributions, and so this returns <code>None</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-02-15 00:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-15 01:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-resolver/src/candidate_selector.rs</code>:193 on 2024-02-15 01:47</div>
+            <div class="timeline-body"><p>That makes sense to me. This should disappear with my work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-02-15 12:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-resolver/src/candidate_selector.rs</code>:193 on 2024-02-15 12:26</div>
+            <div class="timeline-body"><p>Yeah that's right @charliermarsh. This also accounts for cases where a <code>PrioritizedDistribution</code> can't be converted into a <code>ResolvableDist</code>. (I'm unsure if those happen in practice, but the types permit it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-02-15 12:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-resolver/src/version_map.rs</code>:422 on 2024-02-15 12:48</div>
+            <div class="timeline-body"><p>Good question.</p>
+<p>It should be fine. Tokio does provide a <a href="https://docs.rs/tokio/1.5.0/tokio/sync/struct.OnceCell.html">async-ified version of <code>OnceCell</code>/<code>OnceLock</code></a>, but that's more for cases where your initialization function itself wants to be <code>async</code>. Otherwise, it is <a href="https://docs.rs/tokio/1.5.0/tokio/sync/struct.Mutex.html#which-kind-of-mutex-should-you-use">generally okay to use blocking synchronization primitives within async code</a>. The important caveat here is to make sure you aren't trying to hold locks across await points. But the use of &quot;blocking&quot; synchronization primitives themselves is okay. (tokio's mutex for example, <a href="https://github.com/tokio-rs/tokio/blob/b32826bc937a34e4d871c89bb2c3711ed3e20cdc/tokio/src/loom/std/mutex.rs#L3-L6">uses a <code>std::sync::Mutex</code> internally</a>.) We don't need any async stuff here. The lazy construction is just pure data transformation.</p>
+<p>More broadly, lots of libraries (including some of my own) uses synchronization primitives like this internally. If this were a problem, I think the <code>regex</code> crate would be blowing up Rust servers everywhere haha.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-02-15 12:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-resolver/src/version_map.rs</code>:200 on 2024-02-15 12:52</div>
+            <div class="timeline-body"><p>I was trying not to write examples here haha because I knew Zanie was going to be touching this code and potentially moving some of the filtering logic out of a <code>VersionMap</code>. But I can add one concrete thing here at least: <a href="https://github.com/astral-sh/puffin/blob/a0d12d1a9e92fa1f5d11a973a2d7b79d17e63dc5/crates/distribution-types/src/prioritized_distribution.rs#L157-L179">converting a <code>PrioritizedDistribution</code> into a <code>ResolvableDist</code></a> might fail if there are no compatible wheels or source dists.</p>
+<p>At time of writing, it might also fail because of <code>exclude_newer</code> or <code>no_binary</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-02-15 12:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-resolver/src/version_map.rs</code>:200 on 2024-02-15 12:53</div>
+            <div class="timeline-body"><p>To be clear, there shouldn't be any change here from the status quo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-02-15 12:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-resolver/src/version_map.rs</code>:231 on 2024-02-15 12:56</div>
+            <div class="timeline-body"><p>No huge reason. I suppose it is an odd asymmetry. I'll drop the named field here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-02-15 13:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-02-15 13:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-15 13:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:33:43 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>combine dependency clauses with same root - astral-sh/uv #1673</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>combine dependency clauses with same root</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1673">#1673</a>
+        opened by <a href="https://github.com/dwreeves">@dwreeves</a>
+        on 2024-02-19 01:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dwreeves">@dwreeves</a> on 2024-02-19 01:23</div>
+            <div class="timeline-body"><p>Resolves #1009</p>
+<h2>Summary</h2>
+<p>Combines clauses with the same root.</p>
+<ul>
+<li><strong>Before:</strong> And because you require albatross and you require bluebird</li>
+<li><strong>After:</strong> And because you require both albatross and bluebird</li>
+<li><strong>Difference:</strong> And because you require <strong>both</strong> albatross and ~you require~ bluebird</li>
+</ul>
+<p>I'm still a Rust beginner, please let me know if this is not an appropriate implementation of this requirement and I'll try to adjust it.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-02-19 02:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-19 02:15</div>
+            <div class="timeline-body"><p>Hi! Thanks for taking this on — it's actually a pretty big task.</p>
+<p>In this pull request, it looks like you're taking the string representations and combining them if they both start with the &quot;you require&quot; root. I haven't looked into solving this issue yet, but my intuition is that we'll want to take a more robust approach. For example, we may want to &quot;walk&quot; the derivation tree and transform it into a new tree with combined clauses (you can see this in concept in action in PubGrub's <a href="https://github.com/pubgrub-rs/pubgrub/blob/717289be5722dd5caaa0d1f4ed13047d11a7f7fd/src/report.rs#L75-L101"><code>collapse_no_versions</code></a>). If we do this <em>before</em> formatting, we can check if clauses are the same kind of <a href="https://github.com/pubgrub-rs/pubgrub/blob/717289be5722dd5caaa0d1f4ed13047d11a7f7fd/src/report.rs#L38-L47">incompatibility</a> which would let us collapse more things in a type-safe manner rather than relying on string comparisons. This might require significant changes to the design of the report formatter or our own representation of the derivation tree. Does that make sense? It's kind of open-ended still and there's going to be a significant amount of design involved in solving this issue. I was imagining tackling this in the future as part of a larger effort to make the error message reporting system more powerful.</p>
+<p>Note: I've linked to the upstream PubGrub repository above but our <a href="https://github.com/zanieb/pubgrub">fork</a> has diverged a bit and is the relevant repository if you need to make PubGrub changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2024-02-19 02:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dwreeves">@dwreeves</a> on 2024-02-19 02:20</div>
+            <div class="timeline-body"><p>That makes sense, and yes the string modification did not feel very robust. I did check to see if there was a relevant abstraction in the implementation and did not see one and did see that PubGrub was not being actively maintained; however I did not realize you were maintaining a fork. I will look into it from that perspective. Thanks! I will close this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dwreeves on 2024-02-19 02:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-19 02:21</div>
+            <div class="timeline-body"><p>PubGrub is being maintained it's just on a <a href="https://github.com/pubgrub-rs/pubgrub/tree/dev">dev</a> branch.</p>
+<p>Happy to chat more in the issue about possible designs!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dwreeves">@dwreeves</a> on 2024-02-19 02:24</div>
+            <div class="timeline-body"><p>Ah! 💡</p>
+<p>@zanieb Thanks for being so helpful, it's really appreciated. I need to look more into PubGrub first but I think the idea of enuming issue types and combining that way makes perfect sense.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:33:43 UTC
+    </footer>
+</body>
+</html>

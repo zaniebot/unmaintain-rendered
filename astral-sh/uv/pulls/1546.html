@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid attempting rename in copy fallback path - astral-sh/uv #1546</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid attempting rename in copy fallback path</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1546">#1546</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-02-16 22:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-16 22:02</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This <em>could</em> fix https://github.com/astral-sh/uv/issues/1454, but I'm not sure. I was able to replicate by forcing a bunch of error states. But, in short, if we fail to hardlink on the initial copy due to a file existing, and then fail <em>again</em>, we fallback to copying. But if we copy, then the tempfile doesn't exist, and so the <code>fs_err::rename(&amp;tempfile, &amp;out_path)?;</code> will fail with &quot;File not found&quot;.</p>
+<p>This PR just ensures that the cases are explicitly mutually exclusive: we only attempt to rename if the hardlink succeeded.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-16 22:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-02-16 22:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-16 22:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-16 22:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2024-02-16 23:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/install-wheel-rs/src/linker.rs</code>:423 on 2024-02-16 23:12</div>
+            <div class="timeline-body"><p>Is this really changed behavior than it was before?
+IMO you could handle <code>fs_err::rename</code> error instead:</p>
+<pre><code class="language-rs">                        if fs::hard_link(path, &amp;tempfile).is_err() {
+                            fs::copy(path, &amp;out_path)?;
+                            attempt = Attempt::UseCopyFallback;
+                        }
+                        if fs_err::rename(&amp;tempfile, &amp;out_path).is_err() {
+                            fs::copy(path, &amp;out_path)?;
+                            attempt = Attempt::UseCopyFallback;
+                        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-16 23:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/install-wheel-rs/src/linker.rs</code>:423 on 2024-02-16 23:17</div>
+            <div class="timeline-body"><p>Yeah, it's a change, right? Before, we did <code>fs_err::rename(&amp;tempfile, &amp;out_path)?;</code> unequivocally. Now, we only do it in the event that the hard link fails.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2024-02-16 23:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/install-wheel-rs/src/linker.rs</code>:423 on 2024-02-16 23:28</div>
+            <div class="timeline-body"><blockquote>
+<p>we did <code>fs_err::rename(&amp;tempfile, &amp;out_path)?;</code> unequivocally</p>
+</blockquote>
+<p>Sorry, my bad.
+I thought it will send return from if-block (at python we do mostly if-return instead of if-else 😄).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:33:43 UTC
+    </footer>
+</body>
+</html>

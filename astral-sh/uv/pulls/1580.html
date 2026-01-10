@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print activation instructions for a venv after one has been created - astral-sh/uv #1580</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Print activation instructions for a venv after one has been created</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1580">#1580</a>
+        opened by <a href="https://github.com/0v00">@0v00</a>
+        on 2024-02-17 10:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/0v00">@0v00</a> on 2024-02-17 10:03</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<ul>
+<li>Add prompts for users to activate the <code>.venv</code> after it has been created.</li>
+<li>Closes <a href="https://github.com/astral-sh/uv/issues/1326">https://github.com/astral-sh/uv/issues/1326</a></li>
+</ul>
+<p>If the platform os matches <code>Os::Windows</code> then we provide the following prompt:</p>
+<pre><code class="language-rust">writeln!(
+   printer,
+   &quot;Activate with .\\{}\\Scripts\\activate.ps1&quot;,
+   path.normalized_display().cyan()
+)
+</code></pre>
+<p>Otherwise we provide the following prompt:</p>
+<pre><code class="language-rust">writeln!(
+  printer,
+  &quot;Activate with source {}/bin/activate&quot;,
+  path.normalized_display().cyan()
+)
+</code></pre>
+<p>I've added additional filters in <code>crates/uv/tests/venv.rs</code> so there shouldn't be issues on any of the CI runs (not sure what some of the Windows paths could look like, so these filters might need to be changed):</p>
+<pre><code class="language-rust">        (
+            r&quot;.*?\\\.venv\\Scripts\\activate\.ps1&quot;, 
+            &quot;Activate with source /home/ferris/project/.venv/bin/activate&quot;
+        )
+</code></pre>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<ul>
+<li>Ran tests in <code>crates/uv/tests/venv.rs</code> and updated snapshots.</li>
+<li>Ran <code>uv venv</code> in a Docker container to test that the output is correct (running Ubuntu)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/uv/src/commands/venv.rs</code>:193 on 2024-02-17 10:29</div>
+            <div class="timeline-body"><p>what about cmd users?</p>
+<ul>
+<li>https://github.com/astral-sh/uv/pull/1523</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/uv/src/commands/venv.rs</code>:203 on 2024-02-17 10:29</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                &quot;Activate with: source {}/bin/activate&quot;,
+</code></pre>
+<p>or put command in quotations for improve readability.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2024-02-17 10:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-17 16:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/venv.rs</code>:193 on 2024-02-17 16:54</div>
+            <div class="timeline-body"><p>Note we usually use a <code>cfg</code> for this, e.g. (from elsewhere)</p>
+<pre><code class="language-rust">    let bin_name = if cfg!(unix) {
+        &quot;bin&quot;
+    } else if cfg!(windows) {
+        &quot;Scripts&quot;
+    } else {
+        unimplemented!(&quot;Only Windows and Unix are supported&quot;)
+    };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-17 16:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/venv.rs</code>:193 on 2024-02-17 16:54</div>
+            <div class="timeline-body"><p>I wonder if we can detect the current terminal type in Windows...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-17 16:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/venv.rs</code>:193 on 2024-02-17 16:54</div>
+            <div class="timeline-body"><p>(or if we should just show both?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/0v00">@0v00</a> reviewed on 2024-02-18 02:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/0v00">@0v00</a> on <code>crates/uv/src/commands/venv.rs</code>:193 on 2024-02-18 02:43</div>
+            <div class="timeline-body"><p>I'm also not sure if we can correctly/reliably detect the current terminal type in Windows, I've added in the below prompt:</p>
+<pre><code class="language-bash">Activate with:
+- Powershell: .\.venv\Scripts\activate.ps1
+- CMD: .\.venv\Scripts\activate.bat
+</code></pre>
+<p>and updated filters and snapshots</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/0v00">@0v00</a> reviewed on 2024-02-18 18:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/0v00">@0v00</a> on <code>crates/uv/src/commands/venv.rs</code>:203 on 2024-02-18 18:48</div>
+            <div class="timeline-body"><p>Good suggestion, have added this in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2024-02-18 18:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/uv/src/commands/venv.rs</code>:196 on 2024-02-18 18:55</div>
+            <div class="timeline-body"><p>I usually don't write <code>.\</code> when I'm in CMD environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/0v00">@0v00</a> reviewed on 2024-02-18 19:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/0v00">@0v00</a> on <code>crates/uv/src/commands/venv.rs</code>:196 on 2024-02-18 19:27</div>
+            <div class="timeline-body"><p>removed <code>.\</code> from the prompt</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> approved on 2024-02-18 19:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @0v00 on 2024-02-19 01:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-19 17:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/venv.rs</code>:193 on 2024-02-19 17:24</div>
+            <div class="timeline-body"><p>@AlexWaygood / @MichaReiser can you take over review of this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-02-19 17:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/uv/src/commands/venv.rs</code>:193 on 2024-02-19 17:29</div>
+            <div class="timeline-body"><p>I believe typing <code>.venv\Scripts\activate</code> (omitting the file extension) <em>should</em> actually work on both PowerShell and CMD. (It does on my Windows machine!) If we just suggested doing that, it woudl avoid us having to figure out how to detect which Windows shell the user is using (and it's also fewer characters to have to type out ;).</p>
+<p>If you're on CMD, it'll naturally pick up the <code>.bat</code> file; if you're on PowerShell, it'll naturally pick up the <code>.ps1</code> file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/0v00">@0v00</a> reviewed on 2024-02-20 03:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/0v00">@0v00</a> on <code>crates/uv/src/commands/venv.rs</code>:193 on 2024-02-20 03:38</div>
+            <div class="timeline-body"><p>Thank you, that definitely helps make the prompt a lot cleaner/simpler. Have updated it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/uv/src/commands/venv.rs</code>:200 on 2024-02-20 08:18</div>
+            <div class="timeline-body"><p>Possibly a comment here wouldn't go amiss:</p>
+<pre><code class="language-suggestion">            printer,
+            // This should work whether the user is on CMD or PowerShell:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-02-20 08:19</div>
+            <div class="timeline-body"><p>LGTM, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/0v00">@0v00</a> reviewed on 2024-02-20 08:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/0v00">@0v00</a> on <code>crates/uv/src/commands/venv.rs</code>:200 on 2024-02-20 08:44</div>
+            <div class="timeline-body"><p>Good idea, added this in</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-20 12:39</div>
+            <div class="timeline-body"><p>I tested locally with zsh on my mac, CMD on my Windows PC, and PowerShell on my Windows PC. All looked good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Prompt activation after uv venv has successfully run" to "Print activation instructions for a venv after one has been created" by @AlexWaygood on 2024-02-20 12:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-02-20 12:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-02-20 12:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:33:43 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>only parse /bin/sh (not /bin/ls) - astral-sh/uv #1493</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>only parse /bin/sh (not /bin/ls)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1493">#1493</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-02-16 14:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-16 14:32</div>
+            <div class="timeline-body"><p>It turns out that /bin/ls can sometimes be plain text file. For
+example, in Rocky Linux 9:</p>
+<pre><code>$ cat /bin/ls
+#!/usr/bin/coreutils --coreutils-prog-shebang=ls
+</code></pre>
+<p>However, <code>/bin/sh</code> is an ELF binary:</p>
+<pre><code>$ file /bin/sh
+/bin/sh: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=7acbb41bf6f1b7d977f1b44675bf3ed213776835, for GNU/Linux 3.2.0, stripped
+</code></pre>
+<p>In a related issue (#1433), @zanieb fixed #1395 where, on NixOS,
+<code>/bin/ls</code> doesn't exist but <code>/bin/sh</code> does. However, the fix attempts
+<code>/bin/ls</code> first and only tries <code>/bin/sh</code> if <code>/bin/ls</code> doesn't exist. If
+<code>/bin/ls</code> exists but isn't a valid ELF file, then the entire enterprise
+gives up and <code>uv</code> fails to detect the version of <code>libc</code> that is
+installed.</p>
+<p>Instead of tweaking the logic to keep trying <code>/bin/ls</code> and then
+<code>/bin/sh</code> after even if parsing <code>/bin/ls</code> fails, we just switch over to
+reading <code>/bin/sh</code> only. It seems like a more fundamental thing to sniff
+and likely less error prone.</p>
+<p>We can adjust this heuristic as needed if it provdes to be problematic.</p>
+<p>I tested this fix manually on Rocky Linux 9 via Docker:</p>
+<pre><code>$ cross b -r -p uv --target x86_64-unknown-linux-musl
+$ cp target/x86_64-unknown-linux-musl/release/uv ~/astral/issues/uv/i1486/uv
+$ docker run --rm -it --mount type=bind,src=/home/andrew/astral/issues/uv/i1486,dst=/host rockylinux:9 bash
+[root@df2baa65d2f8 /]# /host/uv venv
+Using Python 3.9.18 interpreter at /usr/bin/python3.9
+Creating virtualenv at: .venv
+[root@df2baa65d2f8 /]#
+</code></pre>
+<p>Fixes #1486, Ref #1433</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @BurntSushi on 2024-02-16 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-02-16 14:36</div>
+            <div class="timeline-body"><p>Thanks! I wasn't sure about this in the first place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-02-16 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-02-16 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-02-16 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-16 14:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:33:43 UTC
+    </footer>
+</body>
+</html>

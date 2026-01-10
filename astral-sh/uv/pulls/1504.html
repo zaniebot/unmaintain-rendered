@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automatically detect virtual environments when used via `python -m uv` - astral-sh/uv #1504</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Automatically detect virtual environments when used via <code>python -m uv</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1504">#1504</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-02-16 15:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 15:48</div>
+            <div class="timeline-body"><p>Closes https://github.com/astral-sh/uv/issues/1501</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 16:05</div>
+            <div class="timeline-body"><p>cc @altendky :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/henryiii">@henryiii</a> reviewed on 2024-02-16 16:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/henryiii">@henryiii</a> on <code>python/uv/__main__.py</code>:17 on 2024-02-16 16:10</div>
+            <div class="timeline-body"><p>Shouldn't this be something like <code>(Path(sys.prefix) / &quot;pyvenv.cfg&quot;).exists()</code> (probably without the pathlib for speed, but I'm lazy here)? This assumes that there is exactly one level between the <code>bin</code> or <code>Scripts</code> dir and the base prefix, which I don't think is guaranteed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-16 16:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>python/uv/__main__.py</code>:17 on 2024-02-16 16:11</div>
+            <div class="timeline-body"><p>Thanks! I thought what I was doing might be brittle.. let me look into that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/altendky">@altendky</a> on 2024-02-16 16:13</div>
+            <div class="timeline-body"><p>Thanks!</p>
+<pre><code class="language-console">$ python3.11 -m venv venv
+</code></pre>
+<pre><code class="language-console">$ venv/bin/python -m pip install 'uv @ git+https://github.com/astral-sh/uv@1ed6ba0ba0d3756312085ec21c90469985b5bbb6'
+Collecting uv@ git+https://github.com/astral-sh/uv@1ed6ba0ba0d3756312085ec21c90469985b5bbb6
+  Using cached uv-0.1.2-py3-none-linux_x86_64.whl
+Installing collected packages: uv
+Successfully installed uv-0.1.2
+
+[notice] A new release of pip is available: 23.2.1 -&gt; 24.0
+[notice] To update, run: /home/altendky/tmp/venv/bin/python -m pip install --upgrade pip
+</code></pre>
+<p>Installed <code>main</code> above and see it failing below.</p>
+<pre><code class="language-console">$ venv/bin/python -m uv pip install attrs
+error: Failed to locate a virtualenv or Conda environment (checked: `VIRTUAL_ENV`, `CONDA_PREFIX`, and `.venv`). Run `uv venv` to create a virtualenv.
+</code></pre>
+<pre><code class="language-console">$ venv/bin/python -m pip install 'uv @ git+https://github.com/astral-sh/uv@967188a914df3461b92de27e9b9234fd8c22be85'
+Collecting uv@ git+https://github.com/astral-sh/uv@967188a914df3461b92de27e9b9234fd8c22be85
+  Using cached uv-0.1.1-py3-none-linux_x86_64.whl
+Installing collected packages: uv
+  Attempting uninstall: uv
+    Found existing installation: uv 0.1.2
+    Uninstalling uv-0.1.2:
+      Successfully uninstalled uv-0.1.2
+Successfully installed uv-0.1.1
+
+[notice] A new release of pip is available: 23.2.1 -&gt; 24.0
+[notice] To update, run: /home/altendky/tmp/venv/bin/python -m pip install --upgrade pip
+</code></pre>
+<p>Installed this PR above and see it succeeding below.</p>
+<pre><code class="language-console">$ venv/bin/python -m uv pip install attrs
+Resolved 1 package in 107ms
+Installed 1 package in 9ms
+ + attrs==23.2.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/altendky">@altendky</a> reviewed on 2024-02-16 16:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/altendky">@altendky</a> on <code>python/uv/__main__.py</code>:17 on 2024-02-16 16:16</div>
+            <div class="timeline-body"><p>https://docs.python.org/3/library/sysconfig.html#installation-paths Looks like you can sometimes get a <code>posix_prefix</code>.  Might lead to more details about 'correctness' as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-02-16 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-02-16 18:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-02-16 18:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-16 18:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:33:43 UTC
+    </footer>
+</body>
+</html>

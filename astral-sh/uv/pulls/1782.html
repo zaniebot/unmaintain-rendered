@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ensure that builds within the cache aren't considered Git repositories - astral-sh/uv #1782</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ensure that builds within the cache aren't considered Git repositories</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1782">#1782</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-02-20 20:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-20 20:16</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Some packages encode logic to embed the current commit SHA in the version tag, when built within a Git repo. This typically results in an invalid (non-compliant) version. Here's an example from <code>pylzma</code>: https://github.com/fancycode/pylzma/blob/ccb0e7cff3f6ecd5d38e73e9ca35502d7d670176/version.py#L45.</p>
+<p>This PR adds a phony, empty <code>.git</code> to the cache root, to ensure that any <code>git</code> commands fail.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/1768.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Create a tag on the current commit, like <code>v0.5.0</code>.</li>
+<li>Build <code>pylzma</code>, using a cache <em>within</em> the repo:</li>
+</ul>
+<pre><code>rm -rf foo
+cargo run venv
+cargo run pip install &quot;pylzma @ https://files.pythonhosted.org/packages/03/d8/10ef072c3cd4301a65a1b762b09eefa02baf8da23b9ea77ebe9546499975/pylzma-0.5.0.tar.gz&quot; --verbose  --cache-dir bar
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-02-20 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-02-20 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-02-20 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-02-20 20:18</div>
+            <div class="timeline-body"><p>Nice.</p>
+<p>Relatedly, should we include an empty <code>.gitignore</code> in the checkouts bucket?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-20 20:22</div>
+            <div class="timeline-body"><p>Yeah, that seems wise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-02-20 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-20 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-20 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-20 20:44</div>
+            <div class="timeline-body"><p>Perhaps worth mentioning that this does mean people can’t version the cache and check it into Git (I don’t think?).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-20 20:55</div>
+            <div class="timeline-body"><p>I guess the “best” version of this would be to put the .git in the temporary directory when building, but then omit it when we persist the build to the cache.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:33:43 UTC
+    </footer>
+</body>
+</html>

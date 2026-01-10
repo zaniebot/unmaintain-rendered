@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report incompatible distributions to users - astral-sh/uv #1293</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Report incompatible distributions to users</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1293">#1293</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-02-13 03:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-13 03:12</div>
+            <div class="timeline-body"><p>Instead of dropping versions without a compatible distribution, we track them as incompatibilities in the solver. This implementation follows patterns established in https://github.com/astral-sh/puffin/pull/1290.</p>
+<p>This required some significant refactoring of how we track incompatible distributions. Notably:</p>
+<ul>
+<li><code>Option&lt;TagPriority&gt;</code> is now <code>WheelCompatibility</code> which allows us to track the reason a wheel is incompatible instead of just <code>None</code>.</li>
+<li><code>Candidate</code> now has a <code>CandidateDist</code> with <code>Compatible</code> and <code>Incompatibile</code> variants instead of just <code>ResolvableDist</code>; candidates are not strictly compatible anymore</li>
+<li><code>ResolvableDist</code> was renamed to <code>CompatibleDist</code></li>
+<li><code>IncompatibleWheel</code> was given an ordering implementation so we can track the &quot;most compatible&quot; (but still incompatible) wheel. This allows us to collapse the reason a version cannot be used to a single incompatibility.</li>
+<li>The filtering in the <code>VersionMap</code> is retained, we still only store one incompatible wheel per version. This is sufficient for error reporting.</li>
+<li>A <code>TagCompatibility</code> type was added for tracking which part of a wheel tag is incompatible</li>
+<li><code>Candidate::validate_python</code> moved to <code>PythonRequirement::validate_dist</code></li>
+</ul>
+<p>I am doing more refactoring in #1298 — I think a couple passes will be necessary to clarify the relationships of these types.</p>
+<p>Includes improved error message snapshots for multiple incompatible Python tag types from #1285 — we should add more scenarios for coverage of behavior when multiple tags with different levels are present.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "zb/no wheel platform" to "Report incompatible distributions to users" by @zanieb on 2024-02-13 03:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2024-02-13 20:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-13 20:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin/tests/pip_install.rs</code>:77 on 2024-02-13 20:18</div>
+            <div class="timeline-body"><p>This conclusion is incorrect and kind of wild. Need to debug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-13 20:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin/tests/pip_install.rs</code>:77 on 2024-02-13 20:30</div>
+            <div class="timeline-body"><p>Ah this is because of <code>exclude_newer</code>... will fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-02-14 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-14 16:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin/tests/pip_install.rs</code>:77 on 2024-02-14 16:09</div>
+            <div class="timeline-body"><p>We might want to ship this as-is — exclude-newer is internal and the only way these are broken. I'm fixing in a new branch because there's a lot to do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-14 22:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin/tests/pip_install.rs</code>:77 on 2024-02-14 22:25</div>
+            <div class="timeline-body"><p>Small patch merged from #1299 — larger refactor in progress at #1298</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @zanieb on 2024-02-14 23:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-02-14 23:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-15 15:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:17 on 2024-02-15 15:39</div>
+            <div class="timeline-body"><p>Moved down; will be removed entirely in #1298</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:254 on 2024-02-15 16:24</div>
+            <div class="timeline-body"><p>I might accept a <code>yes: bool</code> parameter here. Or rename to <code>enable_exclude_newer</code>. (I usually like the former since it's a little more flexible.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/platform-tags/src/lib.rs</code>:44 on 2024-02-15 16:30</div>
+            <div class="timeline-body"><p>Nice. I looked at this a bit to see if I could find a way that it breaks the <a href="https://doc.rust-lang.org/std/cmp/trait.Ord.html">contract for <code>Ord</code></a>, but nothing came to mind. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-02-15 16:32</div>
+            <div class="timeline-body"><p>This is such an amazing improvement to the error messages. What a win!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-15 16:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:254 on 2024-02-15 16:35</div>
+            <div class="timeline-body"><p>👍 it's going away in the next pull request and seems fine so I'll leave it for now but keep in mind for the future</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-02-15 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-02-15 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-15 16:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:33:43 UTC
+    </footer>
+</body>
+</html>

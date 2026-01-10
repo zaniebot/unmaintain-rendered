@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Initial windows support - astral-sh/uv #940</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Initial windows support</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/940">#940</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-01-16 15:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-01-16 15:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>First batch of changes for windows support. Notable changes:</p>
+<ul>
+<li>Fixes all compile errors and added windows specific paths.</li>
+<li>Working venv creation on windows, both from a base interpreter and from a venv. This requires querying <code>stdlib</code> from the sysconfig paths to find the launcher.</li>
+<li>Basic url/path conversion handling for windows.</li>
+<li><code>if cfg!(...)</code> instead of <code>#[cfg()]</code>. This should make it easier to keep everything compiling across platforms.</li>
+</ul>
+<h2>Outlook</h2>
+<p>Test summary: 402 tests run: 299 passed (15 slow), 103 failed, 1 skipped</p>
+<p>There are various reason for the remaining test failure:</p>
+<ul>
+<li>Windows-specific colorama and tzdata dependencies that change the snapshot slightly. This is by far the biggest batch.</li>
+<li>Some url-path handling issues. I fixed some in the PR, some remain.</li>
+<li>Lack of the latest python patch versions for older pythons on my machine, since there are no builds for windows and we need to register them in the registry for them to be picked up for <code>py --list-paths</code> (CC @zanieb RE #1070).</li>
+<li>Lack of entrypoint launchers.</li>
+<li>... likely more</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-01-18 16:40</div>
+            <div class="timeline-body"><p>I'll split this into a PR that adds <code>puffin venv -p 3.x</code> support and one that does the initial windows support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @konstin on 2024-01-18 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-24 14:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/lib.rs</code>:743 on 2024-01-24 14:29</div>
+            <div class="timeline-body"><p>This is only expanding on the hack, but <code>Url::to_file_path</code> lowercases everything, which breaks our env var handling (unless we want to make the case insenstive).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-24 14:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/lib.rs</code>:1031 on 2024-01-24 14:29</div>
+            <div class="timeline-body"><p>I've split this out from a panicking intergration test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-24 14:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-interpreter/src/python_query.rs</code>:62 on 2024-01-24 14:31</div>
+            <div class="timeline-body"><p>That might be user feedback dependent, i don't know how people set up their path on windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2024-01-24 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @konstin on 2024-01-24 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/lib.rs</code>:867 on 2024-01-24 15:07</div>
+            <div class="timeline-body"><p>Given this, should we just <code>cfg</code> these tests for each platform? It seems more robust and self-documenting/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/gourgeist/src/bare.rs</code>:136 on 2024-01-24 15:07</div>
+            <div class="timeline-body"><p>Can you say a bit more here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-interpreter/src/python_query.rs</code>:62 on 2024-01-24 15:08</div>
+            <div class="timeline-body"><p>Some overlap here with @zanieb's PR, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin/tests/pip_sync.rs</code>:3192 on 2024-01-24 15:11</div>
+            <div class="timeline-body"><p>I feel like all the changes to the test files could be a separate PR that we could commit independently of the Windows support, but not a big deal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/requirements-txt/src/lib.rs</code>:748 on 2024-01-24 15:12</div>
+            <div class="timeline-body"><p>Is there a generic solution to this problem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep508-rs/src/lib.rs</code>:739 on 2024-01-24 15:12</div>
+            <div class="timeline-body"><p>Nit: use <code>Cow</code> for this? We shouldn't need to clone here, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep508-rs/src/lib.rs</code>:737 on 2024-01-24 15:13</div>
+            <div class="timeline-body"><p>Is there a generic solution for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-01-24 15:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-24 15:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/gourgeist/src/bare.rs</code>:136 on 2024-01-24 15:15</div>
+            <div class="timeline-body"><p>The <code>RELATIVE_SITE_PACKAGES</code> have the unix value; We probably want to do a pass over the activate scripts at some point. I use the bash activator on linux and the powershell activator on windows and they both work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-24 15:48</div>
+            <div class="timeline-body"><p>Running on my Windows box, I currently get:</p>
+<pre><code>  x failed to canonicalize path `C:\Users\crmar\AppData\Local\Microsoft\WindowsApps\python.exe`
+  `-&gt; The file cannot be accessed by the system. (os error 1920)
+error: process didn't exit successfully: `target\debug\puffin.exe venv` (exit code: 1)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-24 15:50</div>
+            <div class="timeline-body"><p>Is that expected? Is there something I need to do?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-24 15:53</div>
+            <div class="timeline-body"><p>@BurntSushi - Do you mind reviewing this as well given your Windows / pathing experience?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/distribution-types/src/lib.rs</code>:867 on 2024-01-24 15:58</div>
+            <div class="timeline-body"><p>I'm okay with just picking an upper bound personally. The main idea of these tests I think is that the types don't get a lot bigger without us knowing about it. But like if Unix increased by 8 bytes and thus still fell within this upper bound, I think that'd be fine. As long as it's close.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-interpreter/src/interpreter.rs</code>:352 on 2024-01-24 16:05</div>
+            <div class="timeline-body"><p>Does it make sense to just put <code>#[cfg(unix)]</code> on the <code>mod tests</code> itself? Then you can remove it from the <code>use</code> and the test below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-01-24 16:19</div>
+            <div class="timeline-body"><p>Overall LGTM. The conditional compilation that's spread out in places is a little worrying, but I think it's fine to move forward.</p>
+<p>Does it make sense to enable Windows in CI in this PR? Or maybe that's for a follow-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-24 16:29</div>
+            <div class="timeline-body"><p>Yeah we should def enable Windows CI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-24 17:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-interpreter/src/python_query.rs</code>:62 on 2024-01-24 17:05</div>
+            <div class="timeline-body"><p>yep, also with the bootstrapped python versions PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-24 17:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/requirements-txt/src/lib.rs</code>:748 on 2024-01-24 17:09</div>
+            <div class="timeline-body"><p>Not that i'm aware of, i only affect this one test case</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-24 17:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/lib.rs</code>:737 on 2024-01-24 17:11</div>
+            <div class="timeline-body"><p><code>Url::to_file_path</code>, but it lower cases the env vars too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-01-24 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-01-24 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-24 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-02-16 17:34</div>
+            <div class="timeline-body"><p>What was the rationale for using the <code>py</code> launcher? You won't have that on servers and the average user on a desktop is not guaranteed to have that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 17:47</div>
+            <div class="timeline-body"><p>We're going to use the registry eventually, it's just a bigger task.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-02-16 17:56</div>
+            <div class="timeline-body"><p>Hmm, what do you mean by using the registry?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 18:12</div>
+            <div class="timeline-body"><p>https://peps.python.org/pep-0514/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-02-16 18:22</div>
+            <div class="timeline-body"><p>Yes but when the time comes please consider PATH in the resolution, otherwise it's very unexpected. For example, right now if you unpack a build from https://github.com/indygreg/python-build-standalone on Windows there is literally no way to use it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 18:29</div>
+            <div class="timeline-body"><p>We should consider PATH, we search for <code>python.exe</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-02-16 18:32</div>
+            <div class="timeline-body"><p><img src="https://github.com/astral-sh/uv/assets/9677399/fe6a474d-3dc4-4296-88ca-0b2d7bd63666" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-16 18:32</div>
+            <div class="timeline-body"><p>Considering path might also solve the issues with pyenv-win</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 18:39</div>
+            <div class="timeline-body"><p>@ofek are you using an old version? I fixed searching for <code>python.exe</code> in #1381</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-02-16 18:59</div>
+            <div class="timeline-body"><p><img src="https://github.com/astral-sh/uv/assets/9677399/9d5197b4-2784-483f-8e2a-5199c26b01d4" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-16 19:16</div>
+            <div class="timeline-body"><p>I'm sorry you're still running into this. Let's track this in https://github.com/astral-sh/uv/issues/1310</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:33:42 UTC
+    </footer>
+</body>
+</html>

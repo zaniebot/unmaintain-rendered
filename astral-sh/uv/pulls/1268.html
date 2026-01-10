@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement pip compatible `--no-binary` and `--only-binary` options - astral-sh/uv #1268</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement pip compatible <code>--no-binary</code> and <code>--only-binary</code> options</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1268">#1268</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-02-08 20:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-08 20:31</div>
+            <div class="timeline-body"><p>Updates our <code>--no-binary</code> option and adds a <code>--only-binary</code> option for compatibility with <code>pip</code> which uses <code>:all:</code>, <code>:none:</code> and <code>&lt;name&gt;</code> for specifying packages.</p>
+<p>This required adding support for <code>--only-binary &lt;name&gt;</code> into our resolver, previously it was only a boolean toggle.</p>
+<p>Retains<code>--no-build</code> which is equivalent to <code>--only-binary :all:</code>. This is common enough for safety that I would prefer it is available without pip's awkward <code>:all:</code> syntax.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2024-02-08 20:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-08 20:35</div>
+            <div class="timeline-body"><p>I'd like to improve test coverage here (particularly in unsat cases) but I'll need to add support for no-binary / only-binary to packse and iterate from that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-dispatch/src/lib.rs</code>:261 on 2024-02-08 20:38</div>
+            <div class="timeline-body"><p>We should keep the version information so the user can look into the index what failed, something like &quot;{dist} is only available as source distribution, but building {} is disabled&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-dispatch/src/lib.rs</code>:268 on 2024-02-08 20:38</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                        &quot;Only editable builds are exempt from 'no build' checks&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-traits/src/lib.rs</code>:203 on 2024-02-08 20:39</div>
+            <div class="timeline-body"><p>Do we intentionally allow combining them?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin/src/main.rs</code>:274 on 2024-02-08 20:42</div>
+            <div class="timeline-body"><p>What's the use case for this behavior? This seems prone to accidents</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin/src/main.rs</code>:373 on 2024-02-08 20:43</div>
+            <div class="timeline-body"><p>I'd prefer removing it instead of keeping it as a hidden opt, same for <code>no_build</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin/tests/pip_install.rs</code>:707 on 2024-02-08 20:44</div>
+            <div class="timeline-body"><p>Could we pick an example with less deps to speed up the test suite a bit? Maybe one of the dependencies of flask instead of flask itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-02-08 20:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-08 20:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-dispatch/src/lib.rs</code>:261 on 2024-02-08 20:49</div>
+            <div class="timeline-body"><p>I thought the user should never see this and this was just a guard?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-08 20:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin/src/main.rs</code>:274 on 2024-02-08 20:49</div>
+            <div class="timeline-body"><p>This is <code>pip</code>'s interface we're just providing a compatible interface here. I don't think we should do this in our own interface.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-traits/src/lib.rs</code>:203 on 2024-02-08 20:50</div>
+            <div class="timeline-body"><p>Same as https://github.com/astral-sh/puffin/pull/1268#discussion_r1483574874</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-08 20:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-08 20:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin/src/main.rs</code>:373 on 2024-02-08 20:51</div>
+            <div class="timeline-body"><p>Did you mean something else here? This is <code>no_build</code>. We could remove it or show it. I think it's a more sensible flag than pip's frankly so maybe we should just keep it and have it be visible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-02-08 20:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-dispatch/src/lib.rs</code>:261 on 2024-02-08 20:54</div>
+            <div class="timeline-body"><p>Oh right that's true</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-02-08 20:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin/src/main.rs</code>:373 on 2024-02-08 20:55</div>
+            <div class="timeline-body"><p>I'm fine with either, i'd only like to avoid having used-but-undocumented interfaces.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-02-10 20:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin/tests/pip_install.rs</code>:728 on 2024-02-10 20:20</div>
+            <div class="timeline-body"><p>If that still stack overflows, it should use the <code>PUFFIN_STACK_SIZE</code> workaround.</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-02-12 01:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-02-12 01:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-12 01:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:33:43 UTC
+    </footer>
+</body>
+</html>

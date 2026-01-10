@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>initial implementation of zero-copy deserialization for SimpleMetadata - astral-sh/uv #1249</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>initial implementation of zero-copy deserialization for SimpleMetadata</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1249">#1249</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-02-05 02:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-05 02:36</div>
+            <div class="timeline-body"><p>(Please review this PR commit by commit.)</p>
+<p>This PR closes an initial loop on zero-copy deserialization. That
+is, provides a way to get a <code>Archived&lt;SimpleMetadata&gt;</code> (spelled
+<code>OwnedArchive&lt;SimpleMetadata&gt;</code> in the code) from a <code>CachedClient</code>. The
+main benefit of zero-copy deserialization is that we can read bytes
+from a file, cast those bytes to a structured representation without
+cost, and then start using that type as any other Rust type. The
+&quot;catch&quot; is that the structured representation is not the actual type
+you started with, but the &quot;archived&quot; version of it.</p>
+<p>In order to make all this work, we ended up needing to shave a rather
+large yak: we had to re-implement HTTP cache semantics. Previously,
+we were using the <code>http-cache-semantics</code> crate. While it does support
+Serde, it doesn't support <code>rkyv</code>. Moreover, even simple support for
+<code>rkyv</code> wouldn't be enough. What we actually want is for the HTTP cache
+semantics to be implemented on the <em>archived</em> type so that we can
+decide whether our cached response is stale or not without needing to
+do a full deserialization into the unarchived type. This is why, in
+this PR, you'll see <code>impl ArchivedCachePolicy { ... }</code> instead of
+<code>impl CachePolicy { ... }</code>. (The <code>derive(rkyv::Archive)</code> macro
+automatically introduces the <code>ArchivedCachePolicy</code> type into the
+current namespace.)</p>
+<p>Unfortunately, this PR does not fully realize the dream that is
+zero-copy deserialization. Namely, while a <code>CachedClient</code> can now
+provide an <code>OwnedArchive&lt;SimpleMetadata&gt;</code>, the rest of our code
+doesn't really make use of it. Indeed, as soon as we go to build a
+<code>VersionMap</code>, we eagerly convert our archived metadata into an owned
+<code>SimpleMetadata</code> via deserialization (that <em>isn't</em> zero-copy). After
+this change, a lot of the work now shifts to <code>rkyv</code> deserialization
+and <code>VersionMap</code> construction. More precisely, the main thing we drop
+here is <code>CachePolicy</code> deserialization (which is now truly zero-copy)
+and the parsing of the MessagePack format for <code>SimpleMetadata</code>. But we
+are still paying for deserialization. We're just paying for it in a
+different place.</p>
+<p>This PR does seem to bring a speed-up, but it is somewhat underwhelming.
+My measurements have been pretty noisy, but I get a 1.1x speedup fairly
+often:</p>
+<pre><code>$ hyperfine -w5 &quot;puffin-main pip compile --cache-dir ~/astral/tmp/cache-main ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null&quot; &quot;puffin-test pip compile --cache-dir ~/astral/tmp/cache-test ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null&quot; ; A kang
+Benchmark 1: puffin-main pip compile --cache-dir ~/astral/tmp/cache-main ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null
+  Time (mean ± σ):     164.4 ms ±  18.8 ms    [User: 427.1 ms, System: 348.6 ms]
+  Range (min … max):   131.1 ms … 190.5 ms    18 runs
+
+Benchmark 2: puffin-test pip compile --cache-dir ~/astral/tmp/cache-test ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null
+  Time (mean ± σ):     148.3 ms ±  10.2 ms    [User: 357.1 ms, System: 319.4 ms]
+  Range (min … max):   136.8 ms … 184.4 ms    19 runs
+
+Summary
+  puffin-test pip compile --cache-dir ~/astral/tmp/cache-test ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null ran
+    1.11 ± 0.15 times faster than puffin-main pip compile --cache-dir ~/astral/tmp/cache-main ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null
+</code></pre>
+<p>One downside is that this does increase cache size (<code>rkyv</code>'s
+serialization format is not as compact as MessagePack). On disk size
+increases by about 1.8x for our <code>simple-v0</code> cache.</p>
+<pre><code>$ sort-filesize cache-main
+4.0K    cache-main/CACHEDIR.TAG
+4.0K    cache-main/.gitignore
+8.0K    cache-main/interpreter-v0
+8.7M    cache-main/wheels-v0
+18M     cache-main/archive-v0
+59M     cache-main/simple-v0
+109M    cache-main/built-wheels-v0
+193M    cache-main
+193M    total
+
+$ sort-filesize cache-test
+4.0K    cache-test/CACHEDIR.TAG
+4.0K    cache-test/.gitignore
+8.0K    cache-test/interpreter-v0
+8.7M    cache-test/wheels-v0
+18M     cache-test/archive-v0
+107M    cache-test/simple-v0
+109M    cache-test/built-wheels-v0
+242M    cache-test
+242M    total
+</code></pre>
+<p>Also, while I initially intended to do a simplistic implementation of HTTP cache semantics, I found that everything was somewhat inter-connected. I could have wrote code that <em>specifically</em> only worked with the present behavior of PyPI, but then it would need to be special cased and everything else would need to continue to use <code>http-cache-sematics</code>. By implementing what we need based on what Puffin actually is (which is still less than what <code>http-cache-semantics</code> does), we can avoid special casing and use zero-copy deserialization for our cache policy in <em>all</em> cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-02-05 02:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-02-05 02:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @BurntSushi on 2024-02-05 02:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @BurntSushi on 2024-02-05 02:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-client/src/cached_client.rs</code>:219 on 2024-02-05 15:15</div>
+            <div class="timeline-body"><p>Is it still the case that we avoid sending revalidation requests for wheels? PyPI will return a 200 (not a 304) if you send a revalidation request for an immutable resource.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-05 15:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-05 15:21</div>
+            <div class="timeline-body"><p>Do you expect some performance improvement by simply switching the caching implementation, or does switching the caching layer help reduce binary size, compile times, or cache size?</p>
+<p>I'm asking because I wonder if we should look at changing the caching separately from enabling zero copy deserialization for it as it in itself might already be a win (or it's slower than what we had before and could be the culprit why we don't see a bigger performance win)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-05 15:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-client/src/cached_client.rs</code>:219 on 2024-02-05 15:22</div>
+            <div class="timeline-body"><p>This was previously a problem with <code>--refresh</code>, since setting <code>max-age=0</code> meant we sent revalidation requests and therefore <em>always</em> re-downloaded wheels.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-05 15:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-client/src/cached_client.rs</code>:463 on 2024-02-05 15:23</div>
+            <div class="timeline-body"><p>Is this comment still true?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-05 15:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-client/src/httpcache/mod.rs</code>:7 on 2024-02-05 15:25</div>
+            <div class="timeline-body"><p>How closely does the actual code and implementation match <code>http-cache-semantics</code>? My guess is that it's actually quite different.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-05 15:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-client/src/httpcache/mod.rs</code>:896 on 2024-02-05 15:26</div>
+            <div class="timeline-body"><p>Nit: &quot;no indicators&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-02-05 15:27</div>
+            <div class="timeline-body"><p>I generally view this as an improvement even ignoring the zero-copy stuff since (1) we may want fine-grained control over the cache anyway, and (2) we now have actual tests for the caching semantics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-client/src/cached_client.rs</code>:219 on 2024-02-05 21:13</div>
+            <div class="timeline-body"><p>Oof, good catch. You're right. PyPI returns a non-304 response. Good catch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-client/src/cached_client.rs</code>:219 on 2024-02-05 21:22</div>
+            <div class="timeline-body"><p>I've fixed this in the HTTP cache semantics layer by making the existence of an <code>immutable</code> directive on the response result in completing ignoring any cache-control directives on the incoming request that would otherwise force a revalidation request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-02-05 21:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-client/src/cached_client.rs</code>:463 on 2024-02-05 21:27</div>
+            <div class="timeline-body"><p>The gist of it is (it's 352 bytes now), but it's in the wrong place. Good catch. I've moved it and improved the docs. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-02-05 21:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-client/src/httpcache/mod.rs</code>:7 on 2024-02-05 21:29</div>
+            <div class="timeline-body"><p>The API is pretty similar, but the implementation is pretty different in a number of respects. But it was still a source of inspiration. I updated the comment to say this:</p>
+<pre><code>* The `http-cache-semantics` crate. (The implementation here is completely
+different, but the source of `http-cache-semantics` helped guide the
+implementation here and understanding of HTTP caching.)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-05 21:40</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you expect some performance improvement by simply switching the caching
+implementation, or does switching the caching layer help reduce binary size,
+compile times, or cache size?</p>
+</blockquote>
+<p>Nah. I didn't see one either in my testing. Perf remained the same.</p>
+<p>The only real point of the custom caching semantics implementation (at least currently) is to facilitate zero-copy.</p>
+<blockquote>
+<p>I'm asking because I wonder if we should look at changing the caching
+separately from enabling zero copy deserialization for it as it in itself
+might already be a win (or it's slower than what we had before and could be
+the culprit why we don't see a bigger performance win)</p>
+</blockquote>
+<p>The commits are structured such that we can pretty easily measure this. <code>puffin-main</code> is current main, <code>puffin-newcache</code> is <code>main</code> with the new caching implementation and <code>puffin-zero</code> is the new caching implementation with zero-copy deserialization:</p>
+<pre><code>$ hyperfine -w5 --runs 30 \
+    &quot;puffin-main pip compile --cache-dir ~/astral/tmp/cache-main ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null&quot; \
+    &quot;puffin-newcache pip compile --cache-dir ~/astral/tmp/cache-newcache ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null&quot; \
+    &quot;puffin-zero pip compile --cache-dir ~/astral/tmp/cache-zero ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null&quot;
+Benchmark 1: puffin-main pip compile --cache-dir ~/astral/tmp/cache-main ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null
+  Time (mean ± σ):     166.6 ms ±  16.5 ms    [User: 426.8 ms, System: 340.2 ms]
+  Range (min … max):   137.2 ms … 204.2 ms    30 runs
+
+Benchmark 2: puffin-newcache pip compile --cache-dir ~/astral/tmp/cache-newcache ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null
+  Time (mean ± σ):     162.9 ms ±  21.3 ms    [User: 394.4 ms, System: 379.9 ms]
+  Range (min … max):   125.5 ms … 191.1 ms    30 runs
+
+Benchmark 3: puffin-zero pip compile --cache-dir ~/astral/tmp/cache-zero ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null
+  Time (mean ± σ):     146.7 ms ±   4.8 ms    [User: 357.9 ms, System: 308.6 ms]
+  Range (min … max):   137.0 ms … 157.5 ms    30 runs
+
+Summary
+  puffin-zero pip compile --cache-dir ~/astral/tmp/cache-zero ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null ran
+    1.11 ± 0.15 times faster than puffin-newcache pip compile --cache-dir ~/astral/tmp/cache-newcache ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null
+    1.14 ± 0.12 times faster than puffin-main pip compile --cache-dir ~/astral/tmp/cache-main ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null
+</code></pre>
+<p>There isn't much of a difference between <code>puffin-main</code> and <code>puffin-newcache</code> (I don't expect there to be), but <code>puffin-zero</code> is a bit faster.</p>
+<p>I don't expect the new caching semantics to make a difference because I didn't identify any obvious bugs in how <code>http-cache-semantics</code> worked for our specific use case. Like, there wasn't a case where we weren't using a cached response when we should have been.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-02-05 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-02-05 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-05 21:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:33:42 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track yanked versions as incompatibilities - astral-sh/uv #1290</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Track yanked versions as incompatibilities</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1290">#1290</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-02-12 21:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-12 21:49</div>
+            <div class="timeline-body"><p>Moves yanked version filtering from <code>VersionMap::from_metadata</code> to the resolver and tracks it as a PubGrub unavailable incompatibility so yanked versions are reflected in error messages.</p>
+<p>e.g. before</p>
+<pre><code>╰─▶ Because only albatross&lt;=0.1.0 is available and you require albatross&gt;0.1.0, 
+       we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>after</p>
+<pre><code>╰─▶ Because only the following versions of albatross are available:
+            albatross&lt;=0.1.0
+            albatross==1.0.0
+      and albatross==1.0.0 is unusable because it was yanked, we can conclude that albatross&gt;0.1.0 cannot be used.
+      And because you require albatross&gt;0.1.0, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-12 23:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-resolver/src/pubgrub/package.rs</code>:110 on 2024-02-12 23:23</div>
+            <div class="timeline-body"><p>I think this is basically wrong e.g. if we have a package with a URL it would not have this format.</p>
+<p>It's hard to index into a map with the package id consistently in the resolver. We probably should address it there somehow instead of doing this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-12 23:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:230 on 2024-02-12 23:30</div>
+            <div class="timeline-body"><p>I want to refactor this <code>DistRequiresPython</code> thing but will probably try to do so in a separate pull request</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-12 23:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:216 on 2024-02-12 23:31</div>
+            <div class="timeline-body"><p>We probably want a container type for <code>Yanked</code> but perhaps that should be a follow-up refactor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-12 23:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-client/src/flat_index.rs</code>:254 on 2024-02-12 23:32</div>
+            <div class="timeline-body"><p>Now that there's a default implementation for <code>Yanked</code> I should probably use that instead here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-12 23:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:388 on 2024-02-12 23:32</div>
+            <div class="timeline-body"><p>This is <em>only</em> used for safeguards in the <code>get_dependencies</code> method now. Perhaps we should remove it entirely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-12 23:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:421 on 2024-02-12 23:34</div>
+            <div class="timeline-body"><p>This is a little awkward, this is a combination of the special <code>get_dependencies</code> implementation and the partial solution upkeep below. I think we can do better but this is tough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-12 23:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:545 on 2024-02-12 23:35</div>
+            <div class="timeline-body"><p>This allows us to return the incompatible version directly instead of putting it in a map then immediately pulling it from the map in <code>solve</code>. It's hard to pull from the map in <code>solve</code> because we do not have a <code>candidate</code> to get package ids from. Lots of ways to solve that, but this seemed reasonable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-12 23:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/version_map.rs</code>:83 on 2024-02-12 23:45</div>
+            <div class="timeline-body"><p>Is it true that this allowed per the spec, or does the data model just suggest that it's possible?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-12 23:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/pubgrub/package.rs</code>:110 on 2024-02-12 23:46</div>
+            <div class="timeline-body"><p>Where is this being used?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-13 00:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-resolver/src/pubgrub/package.rs</code>:110 on 2024-02-13 00:41</div>
+            <div class="timeline-body"><p>In <code>solve</code> when we insert items into the <code>unavailable_versions</code> mapping.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-resolver/src/version_map.rs</code>:83 on 2024-02-13 00:44</div>
+            <div class="timeline-body"><p>Uhh it's an implementation detail</p>
+<p>https://peps.python.org/pep-0592/#warehouse-pypi-implementation-notes</p>
+<blockquote>
+<p>While this PEP implements yanking at the file level, that is largely due to the shape the simple repository API takes, not a specific decision made by this PEP.</p>
+<p>In Warehouse, the user experience will be implemented in terms of yanking or unyanking an entire release, rather than as an operation on individual files, which will then be exposed via the API as individual files being yanked.</p>
+<p>Other repository implementations may choose to expose this capability in a different way, or not expose it at all.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-13 00:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-13 00:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-resolver/src/version_map.rs</code>:83 on 2024-02-13 00:44</div>
+            <div class="timeline-body"><p>Should we implement it per-file? I think it's doable that way too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-13 00:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:388 on 2024-02-13 00:58</div>
+            <div class="timeline-body"><p>I would probably vote to remove since it's also creating that oddity with the <code>package_id</code> API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-13 01:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:388 on 2024-02-13 01:20</div>
+            <div class="timeline-body"><p>I'm worried we'll need these for error message tips, but I can probably find a way around that if so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-13 01:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:421 on 2024-02-13 01:38</div>
+            <div class="timeline-body"><p>Cleaned up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-13 02:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-resolver/src/version_map.rs</code>:83 on 2024-02-13 02:12</div>
+            <div class="timeline-body"><p>I'm going to tackle this as part of the refactor of <code>DistRequiresPython</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-02-13 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-13 02:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:216 on 2024-02-13 02:16</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/puffin/pull/1291</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-13 02:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-resolver/src/version_map.rs</code>:83 on 2024-02-13 02:16</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/puffin/pull/1291</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-13 02:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:230 on 2024-02-13 02:16</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/puffin/pull/1291</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:27 on 2024-02-13 02:36</div>
+            <div class="timeline-body"><p><code>?</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-02-13 02:36</div>
+            <div class="timeline-body"><p>Excellent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-13 02:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/version_map.rs</code>:83 on 2024-02-13 02:37</div>
+            <div class="timeline-body"><p>(FWIW I'm fine with it being tracked at a version level given the above, but I also assumed it would add a lot of complexity to track it at a file level.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2024-02-13 03:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-13 03:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-resolver/src/version_map.rs</code>:83 on 2024-02-13 03:10</div>
+            <div class="timeline-body"><p>👍 it ended up being cleaner at a file level anyway so I'm just going to go with that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-02-13 04:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-02-13 04:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-13 04:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-13 04:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:27 on 2024-02-13 04:02</div>
+            <div class="timeline-body"><p>Resolved in #1291 already</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:33:43 UTC
+    </footer>
+</body>
+</html>

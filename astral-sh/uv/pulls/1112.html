@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add assertions that `pip compile` scenario test matches expected outcome - astral-sh/uv #1112</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add assertions that <code>pip compile</code> scenario test matches expected outcome</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1112">#1112</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-01-25 23:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-25 23:56</div>
+            <div class="timeline-body"><p>This was kind of a pain, but basically we could not make assertions about the <code>pip compile</code> results (beyond the snapshot) since the standard output is hidden inside <code>assert_cmd_snapshot</code>. We want to make sure we're actually conforming to the scenario's expectations, so we now have an extra assertion on whether resolution failed or succeeded as well as that it includes the given packages.</p>
+<p>Closes https://github.com/astral-sh/puffin/issues/1030</p>
+<p>I also tried piping standard output into a file then reading from that, but this ends up being a little simpler.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-25 23:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin/tests/pip_compile_scenarios.rs</code>:110 on 2024-01-25 23:58</div>
+            <div class="timeline-body"><p>But like.. does this spawn the command a second time?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @zanieb on 2024-01-26 00:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-26 01:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin/tests/pip_compile_scenarios.rs</code>:110 on 2024-01-26 01:57</div>
+            <div class="timeline-body"><p>I think yes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-26 01:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin/tests/pip_compile_scenarios.rs</code>:251 on 2024-01-26 01:58</div>
+            <div class="timeline-body"><p>Aren't these covered by the <code>success:</code> code in the snapshot though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin/tests/pip_compile_scenarios.rs</code>:110 on 2024-01-26 05:04</div>
+            <div class="timeline-body"><p>Annoying, but I don't really see what else to do. The piped stdout was no good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-26 05:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin/tests/pip_compile_scenarios.rs</code>:251 on 2024-01-26 05:05</div>
+            <div class="timeline-body"><p>Yes, but</p>
+<ul>
+<li>Since we update these in bulk it is easy to miss that a snapshot changed to have a different expected outcome</li>
+<li>The expected outcome is encoded in the scenario, but isn't otherwise enforced in the test which means incorrect behavior can slip in</li>
+<li>The &quot;on success stdout contains expected package versions&quot; assertions further ensure we are resolving as the scenario expects</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-26 05:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-28 14:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin/tests/pip_compile_scenarios.rs</code>:110 on 2024-01-28 14:42</div>
+            <div class="timeline-body"><p>I really think we should find another solution here. It strikes me as a bad tradeoff to run every test twice to assert something that's already in the snapshot. It's <em>already</em> true that the snapshots need to be manually reviewed and aren't auto-generated, right?</p>
+<p>Here's an alternative: instead of writing <code>@r###&quot;&lt;snapshot&gt;&quot;###</code> as the placeholder in the generation script, can you generate the correct <em>header</em> in <code>update.py</code>? That way, it will part of the diff.</p>
+<p>E.g., could the initial snapshot be:</p>
+<p><code>@r###&quot; success: true exit_code: 0 ---- stdout ---- &lt;snapshot&gt; &quot;### </code></p>
+<p>or something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-28 15:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin/tests/pip_compile_scenarios.rs</code>:110 on 2024-01-28 15:38</div>
+            <div class="timeline-body"><blockquote>
+<p>It strikes me as a bad tradeoff to run every test twice to assert something that's already in the snapshot.</p>
+</blockquote>
+<p>I agree generally, but:</p>
+<ul>
+<li>This is <em>only</em> in the <code>pip_compile_scenarios</code> which only has a few tests</li>
+<li>The scenarios have a limited number of packages and are fast to resolve</li>
+<li>The cache is reused and it's very fast</li>
+</ul>
+<blockquote>
+<p>Can you generate the correct header in update.py? That way, it will part of the diff.</p>
+</blockquote>
+<p>Snapshots are currently automatically accepted because we always replace the previous snapshot with the <code>&lt;snapshot&gt;</code> placeholder. I'm not sure how we could meaningfully make it a part of the diff?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-28 15:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin/tests/pip_compile_scenarios.rs</code>:110 on 2024-01-28 15:41</div>
+            <div class="timeline-body"><p>I see this as a short-term solution that we can replace with better assertion infrastructure as discussed at https://github.com/astral-sh/puffin/pull/1122#discussion_r1468584952</p>
+<p>The goal here is to prevent regressions in the generated tests, which have already made it into <code>main</code> several times now. I do not like this approach either, but I cannot justify spending more time on the test infrastructure right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin/tests/pip_compile_scenarios.rs</code>:110 on 2024-01-28 15:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Snapshots are currently automatically accepted because we always replace the previous snapshot with the <snapshot> placeholder. I'm not sure how we could meaningfully make it a part of the diff?</p>
+</blockquote>
+<p>Ah ok, I didn't realize we were running with <code>--accept</code>. I assumed the snapshots were manually accepted. If they were manually accepted, then what I'm suggesting would attempt to highlight any mismatches in the status vs. expectation for the operator.</p>
+<blockquote>
+<p>The cache is reused and it's very fast</p>
+</blockquote>
+<p>I really don't mean to be annoying but for me this is actually another good argument for <em>not</em> doing this. The two commands aren't actually doing the same thing, since the second is operating on cached state. If we introduced bugs around caching, these tests could erroneously pass!</p>
+<p>Anyway, I'm not in favor of the change but I feel heard and I defer to you as the owner of the code. (To be clear: you should merge it if you aren't convinced by my concerns and feel it's the right tradeoff.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-28 15:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-28 16:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin/tests/pip_compile_scenarios.rs</code>:110 on 2024-01-28 16:20</div>
+            <div class="timeline-body"><p>I'm mostly willing to take a subpar approach because I've already merged incorrect snapshots, but let's wait and see if Konsti takes on implementing a better approach for Windows snapshotting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-02-02 02:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:33:42 UTC
+    </footer>
+</body>
+</html>

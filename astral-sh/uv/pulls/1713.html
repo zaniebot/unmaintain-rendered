@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>is_http_range_requests_unsupported should return true on Method Not Allowed - astral-sh/uv #1713</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>is_http_range_requests_unsupported should return true on Method Not Allowed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1713">#1713</a>
+        opened by <a href="https://github.com/olivierlefloch">@olivierlefloch</a>
+        on 2024-02-19 19:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/olivierlefloch">@olivierlefloch</a> on 2024-02-19 19:09</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Azure Artifacts does not allow HEAD requests when attempting to download packages. This expands error handling in <code>is_http_range_requests_unsupported</code> to identify HTTP 405 (Method Not Allowed) error codes, and return <code>true</code> (i.e. Range requests will not be supported). This partially addresses #1458 – after this change, Azure Artifacts downloads still fail, but due to 401 Not Authorized instead of 405 Method Not Allowed.</p>
+<h2>Test Plan</h2>
+<p>I ran something akin to</p>
+<pre><code>RUST_LOG=trace cargo run -- pip install --index-url=https://REDACTED:REDACTED@pkgs.dev.azure.com/REDACTED/_packaging/REDACTED/pypi/simple/ --upgrade --verbose private-package
+</code></pre>
+<p>without this code, and got a 405 failure:</p>
+<pre><code>error: Failed to download: private-package==1.2.3
+  Caused by: HTTP status client error (405 Method Not Allowed) for url (https://pkgs.dev.azure.com/REDACTED/_packaging/REDACTED/pypi/download/private-package/1.2.3/private_package-1.2.3-py3-none-any.whl#sha256=REDACTED)
+</code></pre>
+<p>with this code, I get a 401 failure:</p>
+<pre><code>error: Failed to download: private-package==1.2.3
+  Caused by: HTTP status client error (401 Unauthorized) for url (https://pkgs.dev.azure.com/REDACTED/_packaging/REDACTED/pypi/download/private-package/1.2.3/private_package-1.2.3-py3-none-any.whl#sha256=REDACTED)
+</code></pre>
+<h2>Caveats</h2>
+<p>I'm not seeing a non HEAD request being reported as being fired, so I'm not sure I'm doing this correctly!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-02-19 19:10</div>
+            <div class="timeline-body"><p>Thanks, this does look right to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-19 19:13</div>
+            <div class="timeline-body"><p>I suspect the 401 is related to us somehow not preserving the credentials in the URL.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-02-19 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-19 20:12</div>
+            <div class="timeline-body"><p>@olivierlefloch - Okay from your perspective if I merge?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olivierlefloch">@olivierlefloch</a> on 2024-02-19 20:40</div>
+            <div class="timeline-body"><p>Absolutely! I was unsure if this needed tests, etc., but I think it solves part of the issue!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-02-19 20:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-19 20:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-19 20:40</div>
+            <div class="timeline-body"><p>We're still figuring out our testing infra for private registries, so it's &quot;testing live&quot; for now :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-19 21:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:33:43 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add CMD support - astral-sh/uv #1523</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add CMD support</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1523">#1523</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-02-16 18:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-16 18:40</div>
+            <div class="timeline-body"><h2>Sumamry</h2>
+<p>This PR adds the <code>activation.bat</code>, <code>deactivation.bat</code> and <code>pyenv.bat</code> files to add support for using uv from CMD.</p>
+<p>This PR further fixes an issue with our trampoline implementation where calling an executable like <code>black</code> failed:</p>
+<pre><code>(venv) C:\Users\Micha\astral\test&gt;where black
+C:\Users\Micha\astral\test\.venv\Scripts\black.exe
+
+(venv) C:\Users\Micha\astral\test&gt;black
+C:\Users\Micha\AppData\Local\Programs\Python\Python312\python.exe: can't open file 'C:\\Users\\Micha\\astral\\test\\black': [Errno 2] No such file or directory
+</code></pre>
+<p>The issue was that CMD doesn't extend <code>black</code> to its full path before passing it to the trampoline and our trampoline generated the command <code>&lt;python&gt; black</code> instead of <code>&lt;python&gt; .venv/Scripts/black</code>, and Python can't find <code>black</code> in the project directory.</p>
+<p>This PR fixes this by using the full executable name (that we already parsed out to discover the Python version). This adds one complication, we need to preserve the arguments without repeating the executable name that is the first argument.
+One option is to use <a href="https://learn.microsoft.com/de-de/windows/win32/api/shellapi/nf-shellapi-commandlinetoargvw"><code>CommandLineToArgvW</code></a> and then serialize the arguments 1.. to a string again. I decided against that. Win32 API calls are easy to get wrong. That's why I implemented the parsing rules specified in <a href="https://learn.microsoft.com/de-de/windows/win32/api/shellapi/nf-shellapi-commandlinetoargvw"><code>CommandLineToArgvW</code></a> to skip the first argument.</p>
+<p>Fixes https://github.com/astral-sh/uv/issues/1471</p>
+<h2>Test Plan</h2>
+<p>https://github.com/astral-sh/uv/assets/1203881/bdb537b6-97c8-4f7e-bb4a-3a614eb5e0f6</p>
+<p>Powershell continues to work</p>
+<p>https://github.com/astral-sh/uv/assets/1203881/6c806477-a7c6-4047-9ffc-5ed91c6f1c84</p>
+<p>I haven't been able to test the aarch binaries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @MichaReiser on 2024-02-16 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @MichaReiser on 2024-02-16 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @zanieb on 2024-02-16 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:7 on 2024-02-16 19:17</div>
+            <div class="timeline-body"><p>Out of curiosity, how come you moved this? I'd group it with <code>core</code> above since it's part of the standard library.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:61 on 2024-02-16 19:31</div>
+            <div class="timeline-body"><p>I don't think we need to use unchecked conversion here? The cost of UTF-8 validation on short strings is likely insignificant compared to starting a process.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:61 on 2024-02-16 19:31</div>
+            <div class="timeline-body"><p>(I think this was one of my main complaints with <code>uv-trampoline</code>. Very excessive use of <code>unsafe</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:61 on 2024-02-16 19:33</div>
+            <div class="timeline-body"><p>I'm also not even sure that these unchecked conversions are correct. The child path in particular is coming from a <code>&amp;CStr</code>, and that is guaranteed to be valid UTF-8. Something higher level <em>might</em> be guaranteeing it, but it is tricky for me to reason about in this context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:133 on 2024-02-16 19:34</div>
+            <div class="timeline-body"><p>Bah. I assume we need to do this because <code>uv-trampoline</code> doesn't have <code>std</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:144 on 2024-02-16 19:37</div>
+            <div class="timeline-body"><p>I'd drop the <code>unsafe</code> here too. (Although I do believe it is correct.) And replace it with <a href="https://doc.rust-lang.org/std/ffi/struct.CString.html#method.new"><code>CString::new(buffer).expect(&quot;no interior NUL bytes&quot;)</code></a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:144 on 2024-02-16 19:39</div>
+            <div class="timeline-body"><p>I'd write a safety comment here. I think something like this:</p>
+<pre><code>// SAFETY: We rely on `GetCommandLineA()` to return a valid
+// pointer to a NUL terminated string.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-02-16 19:41</div>
+            <div class="timeline-body"><p>Nice! I left a few comments where I think <code>unsafe</code> can be removed, but some do appear necessary. With that said, this seems somewhat more brutal than we probably really need. If the trampoline could use <code>std</code>, then I don't think we'd need to re-roll arg parsing/quoting ourselves. But that's a bigger issue and we shouldn't block fixing this issue on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-17 17:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:7 on 2024-02-17 17:33</div>
+            <div class="timeline-body"><p>I hit organize imports in RustRover and I guess, that's what came out. I don't mind reverting</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-17 17:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:61 on 2024-02-17 17:33</div>
+            <div class="timeline-body"><p>These are debug statements, they'll go away ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-17 17:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:133 on 2024-02-17 17:34</div>
+            <div class="timeline-body"><p>Probably, but I don't know. I only moved this line (I'm trying to keep my changes minimal)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-17 17:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:144 on 2024-02-17 17:36</div>
+            <div class="timeline-body"><p>The null terminator on line 138 should guarantee the null termination ;)</p>
+<p>I tried to keep the implementation consistent with the existing code that exclusively use the unchecked variation because of what's mentioned here</p>
+<p>https://github.com/astral-sh/uv/blob/2586f655bbf650a9797c8f88b6d9066eefe7a3dc/crates/uv-trampoline/README.md#L75-L86</p>
+<p>I don't mind reconsidering the decision to prefer checked versions over unchecked ones but we might want to do this separately because we should look at the generated artifact size etc.</p>
+<p>For example, I changed the <code>unchecked</code> call in <code>find_python_exe</code> to <code> CString::from_vec_with_nul(buffer).expect(&quot;String to be correctly null terminated&quot;)</code> and it increases the binary size from  16896 to 23040. From what I understand, the size of the executables is a primary concern of this library.</p>
+<p>The size is slightly smaller for <code>CString::new(buffer).expect(&quot;String to be correctly null terminated&quot;)</code> but it still increases to 22528. That's why I think this must be a more holistic decision where we decide to favor safety over binary size (it's still tiny)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-02-17 18:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:144 on 2024-02-17 18:12</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't mind reconsidering the decision to prefer checked versions over unchecked ones but we might want to do this separately because we should look at the generated artifact size etc.</p>
+</blockquote>
+<p>I reluctantly agree that this is probably the wise course of action for now.</p>
+<p>Yeah, binary size is a primary concern for this particular library but I would like to eventually litigate whether it's a primary concern for us.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-17 18:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:159 on 2024-02-17 18:51</div>
+            <div class="timeline-body"><p>I tried to write tests for this function but failed to get this crate to compile with <code>cargo test</code>.... I ended up coping the implementation into another crate and do some smoke testing (and I found and fixed a bug in the implementation)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-02-17 19:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-02-17 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-17 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-17 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-17 21:48</div>
+            <div class="timeline-body"><p>(Gonna merge this based on comments + responses so it can be part of v0.1.4.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-02-17 23:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/gourgeist/src/activator/activate.bat</code>:24 on 2024-02-17 23:11</div>
+            <div class="timeline-body"><p>I think this might mean that the prompt in a cmd shell always has <code>(venv)</code> prepended to it when the virtual environment is activated, even when the virtual environment is in a directory with a different name:</p>
+<p><img src="https://github.com/astral-sh/uv/assets/66076021/c875bdc2-16ca-44bb-848c-2c69922e62dd" alt="image" /></p>
+<p>It <em>looks</em> like the CPython <code>activate.bat</code> script has some more complex logic around this (but I know nothing about <code>.bat</code> files)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-18 07:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/gourgeist/src/activator/activate.bat</code>:24 on 2024-02-18 07:11</div>
+            <div class="timeline-body"><p>Perhaps #1570 addresses this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-02-18 11:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/gourgeist/src/activator/activate.bat</code>:24 on 2024-02-18 11:04</div>
+            <div class="timeline-body"><p>Right, thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:33:43 UTC
+    </footer>
+</body>
+</html>

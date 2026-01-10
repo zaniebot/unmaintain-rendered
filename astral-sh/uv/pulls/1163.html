@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yield after channel send and move cpu tasks to thread - astral-sh/uv #1163</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Yield after channel send and move cpu tasks to thread</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1163">#1163</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-01-29 10:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-01-29 10:37</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Previously, we were blocking operations that could run in parallel. We would send request through our main requests channel, but not yield so that the receiver could only start processing requests much later than necessary. We solve this by switching to the async <code>tokio::sync::mpsc::channel</code>, where send is an async functions that yields.</p>
+<p>Due to the increased parallelism cache deserialization and the conversion from simple api request to version map became bottlenecks, so i moved them to <code>spawn_blocking</code>. Together these result in a 30-60% speedup for larger warm cache resolution. Small cases such as black already resolve in 5.7 ms on my machine so there's no speedup to be gained, refresh and no cache were to noisy to get signal from.</p>
+<p>Note for the future: Revisit the bounded channel if we want to produce requests from <code>process_request</code>, too, (this would be good for prefetching) to avoid deadlocks.</p>
+<h2>Details</h2>
+<p>We can look at the behavior change through the spans:</p>
+<pre><code>RUST_LOG=puffin=info TRACING_DURATIONS_FILE=target/traces/jupyter-warm-branch.ndjson cargo run --features tracing-durations-export --bin puffin-dev --profile profiling -- resolve jupyter 2&gt; /dev/null
+</code></pre>
+<p>Below, you can see how on main, we have discrete phases: All (cached) simple api requests in parallel, then all (cached) metadata requests in parallel, repeat until done. The solver is mostly waiting until it has it's version map from the simple API query to be able to choose a version. The main thread is blocked by process requests.</p>
+<p>In the PR branch, the simple api requests succeeds much earlier, allowing the solver to advance and also to schedule more prefetching. Due to that <code>parse_cache</code> and <code>from_metadata</code> became bottlenecks, so i moved them off the main thread (green color, and their spans can now overlap because they can run on multiple threads in parallel). The main thread isn't blocked on <code>process_request</code> anymore, instead it has frequent idle times. The spans are all much shorter, which indicates that on main they could have finished much earlier, but a task didn't yield so they weren't scheduled to finish (though i haven't dug deep enough to understand the exact scheduling between the process request stream and the solver here).</p>
+<p><strong>main</strong></p>
+<p><img src="https://github.com/astral-sh/puffin/assets/6826232/693c53cc-1090-41b7-b02a-a607fcd2cd99" alt="jupyter-warm-main" /></p>
+<p><strong>PR</strong></p>
+<p><img src="https://github.com/astral-sh/puffin/assets/6826232/33435f34-b39b-4b0a-a9d7-4bfc22f55f05" alt="jupyter-warm-branch" /></p>
+<h2>Benchmarks</h2>
+<pre><code>$ hyperfine --warmup 3 &quot;target/profiling/main-dev resolve jupyter&quot; &quot;target/profiling/branch-dev resolve jupyter&quot;
+Benchmark 1: target/profiling/main-dev resolve jupyter
+  Time (mean ± σ):      29.1 ms ±   0.7 ms    [User: 22.9 ms, System: 11.1 ms]
+  Range (min … max):    27.7 ms …  32.2 ms    103 runs
+ 
+Benchmark 2: target/profiling/branch-dev resolve jupyter
+  Time (mean ± σ):      18.8 ms ±   1.1 ms    [User: 37.0 ms, System: 22.7 ms]
+  Range (min … max):    16.5 ms …  21.9 ms    154 runs
+ 
+Summary
+  target/profiling/branch-dev resolve jupyter ran
+    1.55 ± 0.10 times faster than target/profiling/main-dev resolve jupyter
+
+$ hyperfine --warmup 3 &quot;target/profiling/main-dev resolve meine_stadt_transparent&quot; &quot;target/profiling/branch-dev resolve meine_stadt_transparent&quot;
+Benchmark 1: target/profiling/main-dev resolve meine_stadt_transparent
+  Time (mean ± σ):      37.8 ms ±   0.9 ms    [User: 30.7 ms, System: 14.1 ms]
+  Range (min … max):    36.6 ms …  41.5 ms    79 runs
+ 
+Benchmark 2: target/profiling/branch-dev resolve meine_stadt_transparent
+  Time (mean ± σ):      24.7 ms ±   1.5 ms    [User: 47.0 ms, System: 39.3 ms]
+  Range (min … max):    21.5 ms …  28.7 ms    113 runs
+ 
+Summary
+  target/profiling/branch-dev resolve meine_stadt_transparent ran
+    1.53 ± 0.10 times faster than target/profiling/main-dev resolve meine_stadt_transparent
+
+$ hyperfine --warmup 3 &quot;target/profiling/main pip compile scripts/requirements/home-assistant.in&quot; &quot;target/profiling/branch pip compile scripts/requirements/home-assistant.in&quot;
+Benchmark 1: target/profiling/main pip compile scripts/requirements/home-assistant.in
+  Time (mean ± σ):     229.0 ms ±   2.8 ms    [User: 197.3 ms, System: 63.7 ms]
+  Range (min … max):   225.8 ms … 234.0 ms    13 runs
+ 
+Benchmark 2: target/profiling/branch pip compile scripts/requirements/home-assistant.in
+  Time (mean ± σ):      91.4 ms ±   5.3 ms    [User: 289.2 ms, System: 176.9 ms]
+  Range (min … max):    81.0 ms … 104.7 ms    32 runs
+ 
+Summary
+  target/profiling/branch pip compile scripts/requirements/home-assistant.in ran
+    2.50 ± 0.15 times faster than target/profiling/main pip compile scripts/requirements/home-assistant.in
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-29 12:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:420 on 2024-01-29 12:47</div>
+            <div class="timeline-body"><p>Are you able to explain what this is doing / why it works?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-29 13:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:420 on 2024-01-29 13:14</div>
+            <div class="timeline-body"><p>The channel sending is sync, so my theory is that the task doesn't yield until all the work for a certain section (e.g. (pre-)fetch all version maps) is done and thereby blocks the receiving end from taking over (the requests and the solver are both on the main thread as far as i can tell). I've confirmed that there is a gap between e.g. a prefetch request being sent and it being received/executed.</p>
+<p>You can see this in the span blocks for warm cache jupyter on main:</p>
+<p><img src="https://github.com/astral-sh/puffin/assets/6826232/c1a734fa-bee7-4459-84e9-880251848fb6" alt="main" /></p>
+<p>We shouldn't have to wait till all the simple api requests are done to start the metadata requests.</p>
+<p>In comparison, on this branch everything happens concurrently:</p>
+<p><img src="https://github.com/astral-sh/puffin/assets/6826232/a9a86084-ac75-4cf0-9da7-c2989c2c5026" alt="Screenshot_from_2024-01-29_00-08-49.png" /></p>
+<p>The spans are also shorter, which makes sense when they were previously only missing the chance to complete because another task was blocking the thread.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-29 13:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:420 on 2024-01-29 13:20</div>
+            <div class="timeline-body"><p>Great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-29 18:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:420 on 2024-01-29 18:33</div>
+            <div class="timeline-body"><p>I've updated the OP with better plots and a proper description how to read them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-01-30 11:38</div>
+            <div class="timeline-body"><blockquote>
+<p>[!WARNING]
+<b>This pull request is not mergeable via GitHub because a downstack PR is open. Once all requirements are satisfied, merge this PR as a stack <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/1163?utm_source=stack-comment-downstack-mergeability-warning" >on Graphite</a>.</b>
+<a href="https://graphite.dev/docs/merge-pull-requests">Learn more</a></p>
+</blockquote>
+<p>Current dependencies on/for this PR:</p>
+<ul>
+<li><code>main</code><ul>
+<li><strong>PR #1183</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/1183?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #1163</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/1163?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This <a href="https://stacking.dev/?utm_source=stack-comment">stack of pull requests</a> is managed by <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/1163?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2024-01-30 12:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2024-01-30 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2024-01-30 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from " Yield after channel send, causing waitmap deadlock" to "Yield after channel send and move cpu tasks to thread" by @konstin on 2024-01-30 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:420 on 2024-01-30 14:35</div>
+            <div class="timeline-body"><p>@konstin Can you move your lovely comment into the source here? Obviously the images won't be able to make it in, but even just the text would be very helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:420 on 2024-01-30 14:42</div>
+            <div class="timeline-body"><p>It is still quite weird to me that you need an explicit <code>yield_now()</code> here. Basically, it should be just like a <code>std::thread::yield_now()</code>, which means it should be incredibly rare to use it.</p>
+<p>Have you tried using tokio's bounded channels instead? Its <code>send</code> operation is async: https://docs.rs/tokio/latest/tokio/sync/mpsc/struct.Sender.html#method.send</p>
+<p>(I would generally rather we use bounded channels with some kind of reasonable capacity everywhere, since they provide back-pressure. But it's hard to point to concrete specifics here, and is kind of hand-wavy.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-30 14:43</div>
+            <div class="timeline-body"><p>The <code>home-assistant</code> improvement is epic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-30 15:16</div>
+            <div class="timeline-body"><p>Woah, 2.5x? That's insane. I didn't even notice that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-30 15:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:420 on 2024-01-30 15:16</div>
+            <div class="timeline-body"><p>We can try with bounded channels, seems straightforward?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-30 20:26</div>
+            <div class="timeline-body"><p>@konstin - I see a 1.5x speedup for me, how is your warm <code>home-assistant</code> so fast?</p>
+<pre><code class="language-text">❯ python -m scripts.bench --puffin-path ./target/release/puffin --puffin-path ./target/release/main --benchmark resolve-warm scripts/requirements/home-assistant.in --min-runs 25
+Benchmark 1: ./target/release/puffin (resolve-warm)
+  Time (mean ± σ):     170.2 ms ±  11.3 ms    [User: 272.1 ms, System: 606.6 ms]
+  Range (min … max):   148.5 ms … 195.1 ms    25 runs
+
+Benchmark 2: ./target/release/main (resolve-warm)
+  Time (mean ± σ):     243.4 ms ±   4.8 ms    [User: 210.9 ms, System: 206.4 ms]
+  Range (min … max):   237.7 ms … 255.0 ms    25 runs
+
+Summary
+  './target/release/puffin (resolve-warm)' ran
+    1.43 ± 0.10 times faster than './target/release/main (resolve-warm)'
+</code></pre>
+<p>Surprisingly, I don't really see any speedup for the cold benchmarks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-30 20:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:420 on 2024-01-30 20:26</div>
+            <div class="timeline-body"><p>@konstin - I defer to you to try this out, but seems like it could be a good solution if it also lets us remove the yields.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-01-30 21:36</div>
+            <div class="timeline-body"><p>No idea, but the difference remains after rebase with more runs. Could this be an os scheduler or fs performance thing?</p>
+<pre><code class="language-console"># From konsti/yield-after-send with unambiguous `gt up`
+$ gt down &amp;&amp; cargo build --profile profiling &amp;&amp; mv target/profiling/puffin-dev target/profiling/main-dev &amp;&amp; mv target/profiling/puffin target/profiling/main &amp;&amp; gt up &amp;&amp; cargo build --profile profiling &amp;&amp; mv target/profiling/puffin-dev target/profiling/branch-dev &amp;&amp; mv target/profiling/puffin target/profiling/branch
+$ hyperfine --warmup 3 --runs 100 &quot;target/profiling/main pip compile scripts/requirements/home-assistant.in&quot; &quot;target/profiling/branch pip compile scripts/requirements/home-assistant.in&quot;
+Benchmark 1: target/profiling/main pip compile scripts/requirements/home-assistant.in
+  Time (mean ± σ):     225.0 ms ±   2.0 ms    [User: 195.7 ms, System: 61.5 ms]
+  Range (min … max):   222.6 ms … 238.0 ms    100 runs
+ 
+Benchmark 2: target/profiling/branch pip compile scripts/requirements/home-assistant.in
+  Time (mean ± σ):      92.7 ms ±   5.6 ms    [User: 302.4 ms, System: 174.8 ms]
+  Range (min … max):    80.7 ms … 110.9 ms    100 runs
+ 
+Summary
+  target/profiling/branch pip compile scripts/requirements/home-assistant.in ran
+    2.43 ± 0.15 times faster than target/profiling/main pip compile scripts/requirements/home-assistant.in
+</code></pre>
+<p>I'd be interested how the differences between main and this PR look for other people!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-01-30 21:36</div>
+            <div class="timeline-body"><p>Cold runs fluctuate between 1000ms and 2000ms, they are far too volatile for me to do any comparative benchmarking. The span structure looks very similar main and this PR, so i expect no change. You can see that we often have to wait for fetching the metadata of a specific version to start prefetches, the network idling in between. While the request parallelism seems to be well used in general (This is good!), i also see room for improvement, for lower gains though than the original.</p>
+<p>Proposal: We try to speculate about the versions we would pick for other packages and prefetch as if we the solver was deciding on whichever package arrived first (instead of in a deterministic order, as we actually do), speculating that the resolution in arbitrary order is the same as the one in deterministic order. The solver itself remains deterministic, if the guess was wrong we only made an unnecessary request; we could consider cancelling them if they turned out to be wrong. The are different designs, such as sharing the partial solution or forking the pubgrub state with non-deterministic decision and rebasing them whenever deterministic decisions are made.</p>
+<p>An interesting property would be to prefetch packages deep in the dependency tree: Let us define jupyter as a dependency of order 0, and jupyter requiring notebook makes notebook an order 1 dependency, then (given i did the graph traversal right) pycparser is a order 6 dep and types-python-dateutil (elsewhere in the tree) an order 7 dep (Fig. 4). The branch and main examples both have to wait on pycparser as last and second to last choose version case, in the right side end of the plot where we're not doing much except waiting for those packages (Fig. 1 and 2). If we could prefetch in a way that those deps can get fetch earlier, we could avoid this nearly-idle tail. This becomes even more apparent with <code>--refresh</code>, where the last two, almost isolated requests are pycparser and types-python-dateutil (Fig. 3).</p>
+<p>I find it surprising that we spend way more time waiting for metadata than for versions, even though the average duration of simple api and metadata requests would have expect it the other way round. I guess this is because there are more version maps already present when we need them?</p>
+<p>For <code>--refresh</code> specifically, we can avoid the slow start (Fig. 3, left side) by loading the (possibly stale), using it to start prefetches and then discarding it.</p>
+<p>An easy option is to review the size of the <code>buffer_unordered</code>, there might be easy wins in there, at least as long as we ask the pypi people before making a 100 parallel request by default.</p>
+<p><strong>Fig 1: Cold main</strong></p>
+<p><img src="https://github.com/astral-sh/puffin/assets/6826232/7a659523-1c88-4201-856e-b9b5356fd1c4" alt="image" /></p>
+<p><strong>Fig 2: Cold branch</strong></p>
+<p><img src="https://github.com/astral-sh/puffin/assets/6826232/04804758-d152-4b0f-877d-95a8b304bc98" alt="image" /></p>
+<p><strong>Fig 3: Refresh branch</strong></p>
+<p><img src="https://github.com/astral-sh/puffin/assets/6826232/f466b7f5-b19a-45c8-827f-6ef50ac93758" alt="image" /></p>
+<p><strong>Fig 4: Dependency graph</strong></p>
+<p><img src="https://github.com/astral-sh/puffin/assets/6826232/d2be6a62-1a51-47c4-b255-4132a83144ec" alt="jupyter_graphviz" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:9 on 2024-01-30 21:39</div>
+            <div class="timeline-body"><p>Could we remove this rename? Either use the names directly, or the fully-qualified names? I just find this a little more confusing as a reader.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-30 21:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-30 21:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:9 on 2024-01-30 21:40</div>
+            <div class="timeline-body"><p>I'll make them consistently fully qualified (there's too many slightly different channels)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-01-30 22:01</div>
+            <div class="timeline-body"><p>I'm seeing a 1.5x improvement:</p>
+<pre><code>$ hyperfine -w5 --cleanup 'rm -rf /home/andrew/.cache/puffin' &quot;puffin-main pip compile ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null&quot; &quot;puffin-test pip compile ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null&quot; ; A kang
+Benchmark 1: puffin-main pip compile ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null
+ ⠏ Performing warmup runs         ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ ETA 00:00:00 ^C
+(.venv) [andrew@duff puffin]$ rm -rf ~/.cache/puffin/
+(.venv) [andrew@duff puffin]$ hyperfine -w5 --cleanup 'rm -rf /home/andrew/.cache/puffin' &quot;puffin-main pip compile ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null&quot; &quot;puffin-test pip compile ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null&quot; ; A kang
+Benchmark 1: puffin-main pip compile ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null
+  Time (mean ± σ):     243.7 ms ±   2.0 ms    [User: 227.1 ms, System: 81.9 ms]
+  Range (min … max):   240.2 ms … 246.7 ms    12 runs
+
+Benchmark 2: puffin-test pip compile ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null
+  Time (mean ± σ):     158.4 ms ±  22.0 ms    [User: 407.0 ms, System: 335.3 ms]
+  Range (min … max):   127.0 ms … 199.2 ms    18 runs
+
+Summary
+  puffin-test pip compile ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null ran
+    1.54 ± 0.21 times faster than puffin-main pip compile ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null
+</code></pre>
+<p>Pretty awesome!</p>
+<p>I don't have any hypotheses for the discrepancy. @konstin How many CPU cores do you have? If you have a lot, and since this PR is improving parallelism efficiency, that might explain why you're seeing a greater improvement. (Although I kind of have a lot of cores too. I have 16 physical cores and 24 logical cores (i.e., 8 of my physical cores are hyper-threaded.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-30 22:02</div>
+            <div class="timeline-body"><p>The actual raw numbers are kind of crazy to me though, like Konsti's is 92.7ms!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-01-30 22:10</div>
+            <div class="timeline-body"><p>Thank you @BurntSushi, that's the answer! I'm using an i9-13900K with 8 performance cores, 16 efficiency cores and 32 threads. Limiting the number of cores reduces the speedup (output cropped for readability):</p>
+<pre><code class="language-console">$ taskset -c 0-3 hyperfine --warmup 3 &quot;target/profiling/main pip compile scripts/requirements/home-assistant.in&quot; &quot;target/profiling/branch pip compile scripts/requirements/home-assistant.in&quot;
+1: Time (mean ± σ):     229.8 ms ±   1.4 ms    [User: 198.1 ms, System: 60.4 ms]
+2: Time (mean ± σ):     170.9 ms ±   6.1 ms    [User: 335.1 ms, System: 127.7 ms]
+target/profiling/branch pip compile scripts/requirements/home-assistant.in ran
+  1.34 ± 0.05 times faster than target/profiling/main pip compile scripts/requirements/home-assistant.in
+$ taskset -c 0-7 hyperfine --warmup 3 &quot;target/profiling/main pip compile scripts/requirements/home-assistant.in&quot; &quot;target/profiling/branch pip compile scripts/requirements/home-assistant.in&quot;
+1: Time (mean ± σ):     224.4 ms ±   1.3 ms    [User: 194.0 ms, System: 56.6 ms]
+2: Time (mean ± σ):     112.6 ms ±   5.7 ms    [User: 301.4 ms, System: 140.0 ms]
+target/profiling/branch pip compile scripts/requirements/home-assistant.in ran
+  1.99 ± 0.10 times faster than target/profiling/main pip compile scripts/requirements/home-assistant.in
+$ taskset -c 0-15 hyperfine --warmup 3 &quot;target/profiling/main pip compile scripts/requirements/home-assistant.in&quot; &quot;target/profiling/branch pip compile scripts/requirements/home-assistant.in&quot;
+1: Time (mean ± σ):     222.4 ms ±   1.5 ms    [User: 191.7 ms, System: 56.8 ms]
+2: Time (mean ± σ):      88.6 ms ±   1.9 ms    [User: 276.0 ms, System: 137.6 ms]
+target/profiling/branch pip compile scripts/requirements/home-assistant.in ran
+  2.51 ± 0.06 times faster than target/profiling/main pip compile scripts/requirements/home-assistant.in
+$ taskset -c 0-31 hyperfine --warmup 3 &quot;target/profiling/main pip compile scripts/requirements/home-assistant.in&quot; &quot;target/profiling/branch pip compile scripts/requirements/home-assistant.in&quot;
+1: Time (mean ± σ):     226.3 ms ±   1.8 ms    [User: 197.7 ms, System: 59.3 ms]
+2: Time (mean ± σ):      90.4 ms ±   5.4 ms    [User: 294.2 ms, System: 174.1 ms]
+target/profiling/branch pip compile scripts/requirements/home-assistant.in ran
+  2.50 ± 0.15 times faster than target/profiling/main pip compile scripts/requirements/home-assistant.in
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-31 16:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:420 on 2024-01-31 16:12</div>
+            <div class="timeline-body"><p>@BurntSushi Why is a bounded channel better, and what would a reasonable channel size be? Put differently, what the advantage stopping the producer, given that we know our problem is finite and reasonably sized?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-31 16:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:420 on 2024-01-31 16:55</div>
+            <div class="timeline-body"><p>I don't have anything concrete to say in the context of puffin other than the hand-wavy &quot;it provides back-pressure.&quot; As for why back-pressure is important, I'll point to the following:</p>
+<ul>
+<li>https://lucumr.pocoo.org/2020/1/1/async-pressure/</li>
+<li>https://medium.com/@jayphelps/backpressure-explained-the-flow-of-data-through-software-2350b3e77ce7</li>
+<li>https://ferd.ca/handling-overload.html</li>
+</ul>
+<p>That is, the point of bounded channels isn't really that they &quot;stop,&quot; but rather, that they react to things downstream that have gotten clogged. Namely, if a bounded channel stops, that's usually only a symptom of either a capacity that is too small or something downstream that has gotten overloaded. In the former case, we fix it by tuning the capacity. In the latter case, well, <a href="https://www.youtube.com/watch?v=K3axU2b0dDk">it's a feature and not a bug that the bounded channel has stopped sending more input</a> into something that is already overloaded.</p>
+<p>As for what a reasonable capacity would be... I'm not sure. It's not that dissimilar from <code>Vec::with_capacity</code>. Usually starting with a small (or even zero) capacity is good enough. But one can experimentally arrive at a different figure. Maybe start with the number of cores? (Or just hard-code 16, since that's probably only a little more than what most folks have, and a number smaller than the number of cores doesn't mean that not all cores will be used.) Just a guess.</p>
+<p>Basically, my position is the bounded channels should be the default, because they---hand-wavily---lead to overall better holistic properties of the system. The provide a means for back-pressure. Unbounded channels have no mechanism for back-pressure, and I think they are generally an anti-pattern unless there is some specific motivation for them.</p>
+<p>Also, <a href="http://web.archive.org/web/20160811222801/http://www.eros-os.org/pipermail/e-lang/2003-January/008183.html">a nice historical anecdote.</a> (&quot;async&quot; channels are unbounded and &quot;sync&quot; channels are bounded.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @zanieb on 2024-02-02 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-02-02 17:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:420 on 2024-02-02 17:17</div>
+            <div class="timeline-body"><p>Switched to <code>tokio::sync::mpsc::channel</code> with a bound size of 50.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-02-02 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-02-02 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-02 17:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:33:42 UTC
+    </footer>
+</body>
+</html>

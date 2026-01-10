@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consistent use of `BIN_NAME` in activation scripts - astral-sh/uv #1577</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consistent use of <code>BIN_NAME</code> in activation scripts</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1577">#1577</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-02-17 06:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-17 06:26</div>
+            <div class="timeline-body"><p>This PR fixes the bug where the <code>BIN_NAME</code> replacement field wasn't being used in the activator scripts.</p>
+<p>fixes: #1518</p>
+<h2>Test plan</h2>
+<p>As I don't have a Windows machine, I switched the <code>bin_name</code> value here to point to <code>Scripts</code> on <code>unix</code> platform:</p>
+<p>https://github.com/astral-sh/uv/blob/2a76c5908416b1e4c565349c86bc41a01515c8bf/crates/gourgeist/src/bare.rs#L99-L105</p>
+<details><summary>Code diff</summary>
+<p>
+
+<pre><code class="language-diff">```diff
+diff --git a/crates/gourgeist/src/bare.rs b/crates/gourgeist/src/bare.rs
+index 4c7808d3..0e0b41cf 100644
+--- a/crates/gourgeist/src/bare.rs
++++ b/crates/gourgeist/src/bare.rs
+@@ -97,9 +97,9 @@ pub fn create_bare_venv(location: &amp;Utf8Path, interpreter: &amp;Interpreter) -&gt; io::R
+     // TODO(konstin): I bet on windows we'll have to strip the prefix again
+     let location = location.canonicalize_utf8()?;
+     let bin_name = if cfg!(unix) {
+-        &quot;bin&quot;
+-    } else if cfg!(windows) {
+         &quot;Scripts&quot;
++    } else if cfg!(windows) {
++        &quot;bin&quot;
+     } else {
+         unimplemented!(&quot;Only Windows and Unix are supported&quot;)
+     };
+</code></pre>
+</p>
+</details> 
+
+<p>I then created the virtual environment as usual and tested out that the path modifications were correct:</p>
+<pre><code class="language-console">$ cargo run --bin uv -- venv
+    Finished dev [unoptimized + debuginfo] target(s) in 0.13s
+     Running `target/debug/uv venv`
+Using Python 3.12.1 interpreter at /Users/dhruv/.pyenv/versions/3.12.1/bin/python3.12
+Creating virtualenv at: .venv
+
+$ source .venv/Scripts/activate
+
+$ echo $PATH
+/Users/dhruv/work/astral/uv/.venv/Scripts:[...]
+
+$ which python
+/Users/dhruv/work/astral/uv/.venv/Scripts/python
+</code></pre>
+<p>I'm not sure how else to test this without having access to a Windows machine</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-02-17 06:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @dhruvmanila on 2024-02-17 06:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-17 10:02</div>
+            <div class="timeline-body"><p>Could you expand the summary with a test plan?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-02-17 10:55</div>
+            <div class="timeline-body"><p>Is this also fixes #1251?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-17 16:03</div>
+            <div class="timeline-body"><p>@MichaReiser I updated the PR description with a test plan but, as I don't have a windows machine, it's a bit of a workaround which should test it in a way as expected on a windows machine.</p>
+<blockquote>
+<p>Is this also fixes #1251?</p>
+</blockquote>
+<p>Probably not, \cc @konstin who can confirm once he's back from his PTO on Monday.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-02-17 16:23</div>
+            <div class="timeline-body"><p>Is this how these look in the upstream activation scripts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-17 16:38</div>
+            <div class="timeline-body"><blockquote>
+<p>Is this how these look in the upstream activation scripts?</p>
+</blockquote>
+<p>Yes, I basically copied from there. Sorry, I should've mentioned it in the PR description but here's an example from one of the activator script:</p>
+<p>https://github.com/pypa/virtualenv/blob/fa283474fd199e3836f8b2c99510190c6b77e2bc/src/virtualenv/activation/bash/activate.sh#L55</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-02-17 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-02-17 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-17 16:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:33:43 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control pip timeout duration via environment variable - astral-sh/uv #1694</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Control pip timeout duration via environment variable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1694">#1694</a>
+        opened by <a href="https://github.com/Di-Is">@Di-Is</a>
+        on 2024-02-19 14:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Di-Is">@Di-Is</a> on 2024-02-19 14:23</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Add the environment variable <code>UV_REQUEST_TIMEOUT</code> to allow control over pip timeouts.</p>
+<p>Closes #1549</p>
+<h2>Test Plan</h2>
+<p>I built uv in the repository top Dockerfile, set the timeout to 3 seconds, and ran <code>uv pip install torch</code>.
+I measured the execution time with the time command and confirmed that the process finished at a value close to the timeout we set.</p>
+<pre><code class="language-bash">root@037c69228cdc:~# time UV_REQUEST_TIMEOUT=3 /uv pip install torch
+Resolved 22 packages in 25ms
+error: Failed to download distributions
+  Caused by: Failed to fetch wheel: nvidia-cusolver-cu12==11.4.5.107
+  Caused by: Failed to extract source distribution
+  Caused by: request or response body error: operation timed out
+  Caused by: operation timed out
+
+real    0m3.064s
+user    0m0.225s
+sys     0m0.240s
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-19 15:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/registry_client.rs</code>:85 on 2024-02-19 15:39</div>
+            <div class="timeline-body"><p>Will we silently ignore invalid values here? Should we warn if it can't be parsed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-19 15:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/registry_client.rs</code>:85 on 2024-02-19 15:39</div>
+            <div class="timeline-body"><p>Can we log the timeout we're going to use e.g. with <code>debug!</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-19 15:40</div>
+            <div class="timeline-body"><p>Thanks for contributing! I have a couple minor questions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @zanieb on 2024-02-19 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Di-Is">@Di-Is</a> on <code>crates/uv-client/src/registry_client.rs</code>:85 on 2024-02-19 22:19</div>
+            <div class="timeline-body"><blockquote>
+<p>Will we silently ignore invalid values here? Should we warn if it can't be parsed?
+Can we log the timeout we're going to use e.g. with <code>debug!</code>?</p>
+</blockquote>
+<p>@zanieb
+Thanks for your review.
+Yes, I think it would be more user-friendly if you suggested it.
+I have fixed the implementation and would appreciate a check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Di-Is">@Di-Is</a> reviewed on 2024-02-19 22:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-20 00:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/registry_client.rs</code>:89 on 2024-02-20 00:15</div>
+            <div class="timeline-body"><p>We have a <code>warn_user_once!</code> macro that we should use instead here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-20 00:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/registry_client.rs</code>:89 on 2024-02-20 00:16</div>
+            <div class="timeline-body"><p>Would it make sense to use <code>.map_err</code> instead of a <code>match</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-20 00:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/registry_client.rs</code>:89 on 2024-02-20 00:19</div>
+            <div class="timeline-body"><p>I'd also probably be a little clearer here, maybe:</p>
+<blockquote>
+<p>Ignoring invalid value for UV_REQUEST_TIMEOUT. Expected integer number of seconds, got &quot;{value}&quot;.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/registry_client.rs</code>:96 on 2024-02-20 02:00</div>
+            <div class="timeline-body"><p>We should probably not say &quot;Pip&quot; this is our general registry client</p>
+<pre><code class="language-suggestion">            debug!(&quot;Using registry request timeout of {}s&quot;, timeout);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-20 02:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Di-Is">@Di-Is</a> on 2024-02-20 02:22</div>
+            <div class="timeline-body"><p>@zanieb
+Sorry, I deleted some commits because I had the wrong user to push.
+I have re-committed it and would appreciate it if you could check it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-02-20 04:37</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-02-20 04:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-02-20 04:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:33:43 UTC
+    </footer>
+</body>
+</html>
