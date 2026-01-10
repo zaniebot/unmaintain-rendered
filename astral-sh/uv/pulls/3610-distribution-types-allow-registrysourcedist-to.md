@@ -1,0 +1,131 @@
+```yaml
+number: 3610
+title: "distribution-types: allow RegistrySourceDist to have wheels attached to it"
+type: pull_request
+state: merged
+author: BurntSushi
+labels: []
+assignees: []
+merged: true
+base: main
+head: ag/sdist-wheel-propgation
+created_at: 2024-05-15T16:29:27Z
+updated_at: 2024-05-15T19:16:01Z
+url: https://github.com/astral-sh/uv/pull/3610
+synced_at: 2026-01-10T14:32:20Z
+```
+
+# distribution-types: allow RegistrySourceDist to have wheels attached to it
+
+---
+
+_Pull request opened by @BurntSushi on 2024-05-15 16:29_
+
+Following from #3595, we'd like wheels to make their way into the lock
+file even if the current environment selects an sdist. With #3595, this
+didn't happen:
+
+    $ cargo run -p uv -- pip compile -p3.10 <(echo psycopg2) --unstable-uv-lock-file
+    $ cat uv.lock
+    version = 1
+
+    [[distribution]]
+    name = "psycopg2"
+    version = "2.9.9"
+    source = "registry+https://pypi.org/simple"
+
+    [distribution.sdist]
+    url = "https://files.pythonhosted.org/packages/c9/5e/dc6acaf46d78979d6b03458b7a1618a68e152a6776fce95daac5e0f0301b/psycopg2-2.9.9.tar.gz"
+    hash = "sha256:d1454bde93fb1e224166811694d600e746430c006fbb031ea06ecc2ea41bf156"
+
+The above example uses `psycopg2`, which has an sdist and wheels only on
+Windows. Since I ran the above on Linux, an sdist was selected. But no
+wheels appeared in the lock file.
+
+With this PR, wheels are now correctly plumbed through:
+
+    $ cargo run -p uv -- pip compile -p3.10 <(echo psycopg2) --unstable-uv-lock-file
+    $ cat uv.lock
+    version = 1
+
+    [[distribution]]
+    name = "psycopg2"
+    version = "2.9.9"
+    source = "registry+https://pypi.org/simple"
+
+    [distribution.sdist]
+    url = "https://files.pythonhosted.org/packages/c9/5e/dc6acaf46d78979d6b03458b7a1618a68e152a6776fce95daac5e0f0301b/psycopg2-2.9.9.tar.gz"
+    hash = "sha256:d1454bde93fb1e224166811694d600e746430c006fbb031ea06ecc2ea41bf156"
+
+    [[distribution.wheel]]
+    url = "https://files.pythonhosted.org/packages/a2/14/2767d963915f957c07f5d4c3d9c5c9a407415289f5cde90b82cb3e8c2a12/psycopg2-2.9.9-cp310-cp310-win32.whl"
+    hash = "sha256:38a8dcc6856f569068b47de286b472b7c473ac7977243593a288ebce0dc89516"
+
+    [[distribution.wheel]]
+    url = "https://files.pythonhosted.org/packages/bc/bc/6572dec6834e779668421e25f8812a872d978e241f85491a5e4dda606a98/psycopg2-2.9.9-cp310-cp310-win_amd64.whl"
+    hash = "sha256:426f9f29bde126913a20a96ff8ce7d73fd8a216cfb323b1f04da402d452853c3"
+
+    [[distribution.wheel]]
+    url = "https://files.pythonhosted.org/packages/91/2c/1fc5b9d33cd248c548ba19f2cef8e89cabaafab9858a602868a592cdc1b0/psycopg2-2.9.9-cp311-cp311-win32.whl"
+    hash = "sha256:ade01303ccf7ae12c356a5e10911c9e1c51136003a9a1d92f7aa9d010fb98372"
+
+    [[distribution.wheel]]
+    url = "https://files.pythonhosted.org/packages/37/2c/5133dd3183a3bd82371569f0dd783e6927672de7e671b278ce248810b7f7/psycopg2-2.9.9-cp311-cp311-win_amd64.whl"
+    hash = "sha256:121081ea2e76729acfb0673ff33755e8703d45e926e416cb59bae3a86c6a4981"
+
+    [[distribution.wheel]]
+    url = "https://files.pythonhosted.org/packages/13/13/f74ffe6b6f58822e807c70391dc5679a53feb92ce119ccb8a6546c3fb893/psycopg2-2.9.9-cp312-cp312-win32.whl"
+    hash = "sha256:d735786acc7dd25815e89cc4ad529a43af779db2e25aa7c626de864127e5a024"
+
+    [[distribution.wheel]]
+    url = "https://files.pythonhosted.org/packages/58/4b/c4a26e191882b60150bfcb639e416524ae7f8249ab7ee854fb5247f16c40/psycopg2-2.9.9-cp312-cp312-win_amd64.whl"
+    hash = "sha256:a7653d00b732afb6fc597e29c50ad28087dcb4fbfb28e86092277a559ae4e693"
+
+    [[distribution.wheel]]
+    url = "https://files.pythonhosted.org/packages/2b/77/ffeb9ac356b3d99d97ca681bf0d0aa74f6d1d8c2ce0d6c4f2f34e396dbc0/psycopg2-2.9.9-cp37-cp37m-win32.whl"
+    hash = "sha256:5e0d98cade4f0e0304d7d6f25bbfbc5bd186e07b38eac65379309c4ca3193efa"
+
+    [[distribution.wheel]]
+    url = "https://files.pythonhosted.org/packages/be/a7/0a39176d369a8289191f3d327139cfb4923dcedcfd7105774e57996f63cd/psycopg2-2.9.9-cp37-cp37m-win_amd64.whl"
+    hash = "sha256:7e2dacf8b009a1c1e843b5213a87f7c544b2b042476ed7755be813eaf4e8347a"
+
+    [[distribution.wheel]]
+    url = "https://files.pythonhosted.org/packages/1f/78/86b90d30c4e02e88379184ade34c2fd4883a4d3e420cc3c0f6da2b8f3a9a/psycopg2-2.9.9-cp38-cp38-win32.whl"
+    hash = "sha256:ff432630e510709564c01dafdbe996cb552e0b9f3f065eb89bdce5bd31fabf4c"
+
+    [[distribution.wheel]]
+    url = "https://files.pythonhosted.org/packages/8e/e8/c439b378efc9f2d0fd1fd5f66b03cb9ed41423f179997a935f10374f3c0d/psycopg2-2.9.9-cp38-cp38-win_amd64.whl"
+    hash = "sha256:bac58c024c9922c23550af2a581998624d6e02350f4ae9c5f0bc642c633a2d5e"
+
+    [[distribution.wheel]]
+    url = "https://files.pythonhosted.org/packages/6b/a8/5080c0e61a3b393a379ea2fa93402135c73baffcd5f08b9503e508aac116/psycopg2-2.9.9-cp39-cp39-win32.whl"
+    hash = "sha256:c92811b2d4c9b6ea0285942b2e7cac98a59e166d59c588fe5cfe1eda58e72d59"
+
+    [[distribution.wheel]]
+    url = "https://files.pythonhosted.org/packages/f8/ec/ec73fe66d4317db006a38ebafbde02cb7e1d727ed65f5bbe54efb191d9e6/psycopg2-2.9.9-cp39-cp39-win_amd64.whl"
+    hash = "sha256:de80739447af31525feddeb8effd640782cf5998e1a4e9192ebdf829717e3913"
+
+Ref #3351
+
+
+---
+
+_Review requested from @charliermarsh by @BurntSushi on 2024-05-15 16:29_
+
+---
+
+_@charliermarsh approved on 2024-05-15 18:02_
+
+---
+
+_Merged by @BurntSushi on 2024-05-15 19:16_
+
+---
+
+_Closed by @BurntSushi on 2024-05-15 19:16_
+
+---
+
+_Branch deleted on 2024-05-15 19:16_
+
+---
