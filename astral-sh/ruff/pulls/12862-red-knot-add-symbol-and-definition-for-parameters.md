@@ -1,0 +1,696 @@
+```yaml
+number: 12862
+title: "[red-knot] Add symbol and definition for parameters"
+type: pull_request
+state: merged
+author: dhruvmanila
+labels:
+  - ty
+assignees: []
+merged: true
+base: main
+head: dhruv/parameters
+created_at: 2024-08-13T13:32:53Z
+updated_at: 2024-08-16T05:30:00Z
+url: https://github.com/astral-sh/ruff/pull/12862
+synced_at: 2026-01-10T21:38:32Z
+```
+
+# [red-knot] Add symbol and definition for parameters
+
+---
+
+_Pull request opened by @dhruvmanila on 2024-08-13 13:32_
+
+## Summary
+
+This PR adds support for adding symbols and definitions for function and lambda parameters to the semantic index.
+
+### Notes
+
+* The default expression of a parameter is evaluated in the enclosing scope (not the type parameter or function scope).
+* The annotation expression of a parameter is evaluated in the type parameter scope if they're present other in the enclosing scope.
+* The symbols and definitions are added in the function parameter scope.
+
+### Type Inference
+
+There are two definitions `Parameter` and `ParameterWithDefault` and their respective `*_definition` methods on the type inference builder. These methods are preferred and are re-used when checking from a different region.
+
+## Test Plan
+
+Add test case for validating that the parameters are defined in the function / lambda scope.
+
+### Benchmark update
+
+Validated the difference in diagnostics for benchmark code between `main` and this branch. All of them are either directly or indirectly referencing one of the function parameters. The diff is below:
+
+<details><summary>Details</summary>
+<p>
+
+```diff
+  __init__.py:7:45: Unresolved import 'loads'
+  _parser.py:102:49: Name 'header' used when not defined.
+  _parser.py:13:5: Unresolved import 'RE_DATETIME'
+- _parser.py:145:9: Name 'self' used when not defined.
+  _parser.py:146:40: Name 'Key' used when not defined.
+- _parser.py:146:9: Name 'self' used when not defined.
+  _parser.py:148:32: Name 'Key' used when not defined.
+- _parser.py:149:34: Name 'key' used when not defined.
+- _parser.py:149:39: Name 'flag' used when not defined.
+- _parser.py:149:9: Name 'self' used when not defined.
+  _parser.py:14:5: Unresolved import 'RE_LOCALTIME'
+- _parser.py:152:26: Name 'self' used when not defined.
+- _parser.py:153:13: Name 'self' used when not defined.
+  _parser.py:153:22: Name 'key' used when not defined.
+  _parser.py:153:27: Name 'flag' used when not defined.
+- _parser.py:154:9: Name 'self' used when not defined.
+  _parser.py:156:30: Name 'Key' used when not defined.
+- _parser.py:157:16: Name 'self' used when not defined.
+- _parser.py:158:18: Name 'key' used when not defined.
+  _parser.py:159:16: Name 'k' used when not defined.
+- _parser.py:159:25: Name 'cont' used when not defined.
+  _parser.py:15:5: Unresolved import 'RE_NUMBER'
+- _parser.py:161:20: Name 'cont' used when not defined.
+  _parser.py:161:25: Name 'k' used when not defined.
+- _parser.py:162:18: Name 'key' used when not defined.
+  _parser.py:164:24: Name 'Key' used when not defined.
+- _parser.py:165:16: Name 'self' used when not defined.
+- _parser.py:166:32: Name 'key' used when not defined.
+- _parser.py:166:42: Name 'key' used when not defined.
+  _parser.py:168:16: Name 'k' used when not defined.
+- _parser.py:168:25: Name 'cont' used when not defined.
+- _parser.py:169:17: Name 'cont' used when not defined.
+  _parser.py:169:22: Name 'k' used when not defined.
+  _parser.py:16:5: Unresolved import 'match_to_datetime'
+- _parser.py:170:20: Name 'cont' used when not defined.
+  _parser.py:170:25: Name 'k' used when not defined.
+- _parser.py:173:45: Name 'recursive' used when not defined.
+- _parser.py:173:73: Name 'flag' used when not defined.
+  _parser.py:175:24: Name 'Key' used when not defined.
+- _parser.py:176:16: Name 'key' used when not defined.
+- _parser.py:178:16: Name 'self' used when not defined.
+- _parser.py:179:18: Name 'key' used when not defined.
+  _parser.py:17:5: Unresolved import 'match_to_localtime'
+  _parser.py:180:16: Name 'k' used when not defined.
+- _parser.py:180:25: Name 'cont' used when not defined.
+- _parser.py:182:26: Name 'cont' used when not defined.
+  _parser.py:182:31: Name 'k' used when not defined.
+- _parser.py:183:16: Name 'flag' used when not defined.
+- _parser.py:186:20: Name 'key' used when not defined.
+- _parser.py:189:20: Name 'flag' used when not defined.
+- _parser.py:189:45: Name 'flag' used when not defined.
+  _parser.py:18:5: Unresolved import 'match_to_number'
+- _parser.py:196:9: Name 'self' used when not defined.
+  _parser.py:200:14: Name 'Key' used when not defined.
+- _parser.py:204:21: Name 'self' used when not defined.
+- _parser.py:205:18: Name 'key' used when not defined.
+  _parser.py:206:16: Name 'k' used when not defined.
+  _parser.py:207:22: Name 'k' used when not defined.
+  _parser.py:208:25: Name 'k' used when not defined.
+- _parser.py:209:16: Name 'access_lists' used when not defined.
+  _parser.py:20:21: Unresolved import 'Key'
+  _parser.py:20:26: Unresolved import 'ParseFloat'
+  _parser.py:20:38: Unresolved import 'Pos'
+  _parser.py:215:40: Name 'Key' used when not defined.
+- _parser.py:216:16: Name 'self' used when not defined.
+- _parser.py:216:40: Name 'key' used when not defined.
+- _parser.py:217:20: Name 'key' used when not defined.
+  _parser.py:232:31: Name 'Pos' used when not defined.
+  _parser.py:232:43: Name 'Iterable' used when not defined.
+  _parser.py:232:61: Name 'Pos' used when not defined.
+- _parser.py:234:15: Name 'src' used when not defined.
+- _parser.py:234:19: Name 'pos' used when not defined.
+- _parser.py:234:27: Name 'chars' used when not defined.
+- _parser.py:238:12: Name 'pos' used when not defined.
+  _parser.py:243:10: Name 'Pos' used when not defined.
+  _parser.py:248:6: Name 'Pos' used when not defined.
+- _parser.py:250:19: Name 'src' used when not defined.
+- _parser.py:250:29: Name 'expect' used when not defined.
+- _parser.py:250:37: Name 'pos' used when not defined.
+- _parser.py:252:23: Name 'src' used when not defined.
+- _parser.py:253:12: Name 'error_on_eof' used when not defined.
+- _parser.py:254:32: Name 'src' used when not defined.
+- _parser.py:254:58: Name 'expect' used when not defined.
+- _parser.py:256:12: Name 'error_on' used when not defined.
+- _parser.py:256:32: Name 'src' used when not defined.
+- _parser.py:256:36: Name 'pos' used when not defined.
+- _parser.py:257:15: Name 'src' used when not defined.
+- _parser.py:257:19: Name 'pos' used when not defined.
+- _parser.py:257:31: Name 'error_on' used when not defined.
+- _parser.py:259:28: Name 'src' used when not defined.
+- _parser.py:259:33: Name 'pos' used when not defined.
+- _parser.py:259:65: Name 'src' used when not defined.
+- _parser.py:259:69: Name 'pos' used when not defined.
+  _parser.py:263:33: Name 'Pos' used when not defined.
+  _parser.py:263:41: Name 'Pos' used when not defined.
+- _parser.py:265:28: Name 'src' used when not defined.
+- _parser.py:265:32: Name 'pos' used when not defined.
+- _parser.py:270:13: Name 'src' used when not defined.
+- _parser.py:270:18: Name 'pos' used when not defined.
+- _parser.py:272:12: Name 'pos' used when not defined.
+  _parser.py:275:47: Name 'Pos' used when not defined.
+  _parser.py:275:55: Name 'Pos' used when not defined.
+- _parser.py:277:27: Name 'pos' used when not defined.
+- _parser.py:278:26: Name 'src' used when not defined.
+- _parser.py:278:31: Name 'pos' used when not defined.
+- _parser.py:279:28: Name 'src' used when not defined.
+- _parser.py:280:19: Name 'pos_before_skip' used when not defined.
+  _parser.py:284:37: Name 'Pos' used when not defined.
+  _parser.py:284:64: Name 'Pos' used when not defined.
+  _parser.py:284:69: Name 'Key' used when not defined.
+- _parser.py:286:22: Name 'src' used when not defined.
+- _parser.py:286:27: Name 'pos' used when not defined.
+- _parser.py:287:26: Name 'src' used when not defined.
+- _parser.py:289:51: Name 'out' used when not defined.
+- _parser.py:289:8: Name 'out' used when not defined.
+- _parser.py:290:28: Name 'src' used when not defined.
+- _parser.py:291:5: Name 'out' used when not defined.
+- _parser.py:293:9: Name 'out' used when not defined.
+- _parser.py:295:28: Name 'src' used when not defined.
+- _parser.py:297:12: Name 'src' used when not defined.
+- _parser.py:298:28: Name 'src' used when not defined.
+  _parser.py:302:37: Name 'Pos' used when not defined.
+  _parser.py:302:64: Name 'Pos' used when not defined.
+  _parser.py:302:69: Name 'Key' used when not defined.
+- _parser.py:304:22: Name 'src' used when not defined.
+- _parser.py:304:27: Name 'pos' used when not defined.
+- _parser.py:305:26: Name 'src' used when not defined.
+- _parser.py:307:8: Name 'out' used when not defined.
+- _parser.py:308:28: Name 'src' used when not defined.
+- _parser.py:310:5: Name 'out' used when not defined.
+- _parser.py:312:5: Name 'out' used when not defined.
+- _parser.py:314:9: Name 'out' used when not defined.
+- _parser.py:316:28: Name 'src' used when not defined.
+- _parser.py:318:12: Name 'src' used when not defined.
+- _parser.py:319:28: Name 'src' used when not defined.
+  _parser.py:324:20: Name 'Pos' used when not defined.
+  _parser.py:324:46: Name 'Key' used when not defined.
+  _parser.py:324:64: Name 'ParseFloat' used when not defined.
+  _parser.py:325:6: Name 'Pos' used when not defined.
+- _parser.py:326:44: Name 'src' used when not defined.
+- _parser.py:326:49: Name 'pos' used when not defined.
+- _parser.py:326:54: Name 'parse_float' used when not defined.
+- _parser.py:328:22: Name 'header' used when not defined.
+  _parser.py:330:32: Name 'header' used when not defined.
+  _parser.py:330:41: Name 'key' used when not defined.
+- _parser.py:333:12: Name 'out' used when not defined.
+  _parser.py:333:26: Name 'cont_key' used when not defined.
+- _parser.py:334:32: Name 'src' used when not defined.
+  _parser.py:334:71: Name 'cont_key' used when not defined.
+  _parser.py:337:31: Name 'cont_key' used when not defined.
+- _parser.py:337:9: Name 'out' used when not defined.
+- _parser.py:339:8: Name 'out' used when not defined.
+- _parser.py:341:13: Name 'src' used when not defined.
+- _parser.py:345:16: Name 'out' used when not defined.
+- _parser.py:347:28: Name 'src' used when not defined.
+- _parser.py:349:28: Name 'src' used when not defined.
+- _parser.py:352:23: Name 'header' used when not defined.
+- _parser.py:352:9: Name 'out' used when not defined.
+  _parser.py:358:20: Name 'Pos' used when not defined.
+  _parser.py:358:38: Name 'ParseFloat' used when not defined.
+  _parser.py:359:12: Name 'Pos' used when not defined.
+  _parser.py:359:17: Name 'Key' used when not defined.
+- _parser.py:360:26: Name 'src' used when not defined.
+- _parser.py:360:31: Name 'pos' used when not defined.
+- _parser.py:362:28: Name 'src' used when not defined.
+- _parser.py:366:28: Name 'src' used when not defined.
+- _parser.py:368:22: Name 'src' used when not defined.
+- _parser.py:369:30: Name 'src' used when not defined.
+- _parser.py:369:40: Name 'parse_float' used when not defined.
+  _parser.py:373:30: Name 'Pos' used when not defined.
+  _parser.py:373:44: Name 'Pos' used when not defined.
+  _parser.py:373:49: Name 'Key' used when not defined.
+- _parser.py:374:36: Name 'src' used when not defined.
+- _parser.py:374:41: Name 'pos' used when not defined.
+  _parser.py:375:10: Name 'Key' used when not defined.
+- _parser.py:376:22: Name 'src' used when not defined.
+- _parser.py:379:32: Name 'src' used when not defined.
+  _parser.py:383:25: Name 'key' used when not defined.
+- _parser.py:385:26: Name 'src' used when not defined.
+- _parser.py:386:40: Name 'src' used when not defined.
+- _parser.py:388:26: Name 'src' used when not defined.
+  _parser.py:391:35: Name 'Pos' used when not defined.
+  _parser.py:391:49: Name 'Pos' used when not defined.
+- _parser.py:393:28: Name 'src' used when not defined.
+- _parser.py:393:32: Name 'pos' used when not defined.
+- _parser.py:397:21: Name 'pos' used when not defined.
+- _parser.py:398:26: Name 'src' used when not defined.
+- _parser.py:398:31: Name 'pos' used when not defined.
+- _parser.py:399:21: Name 'src' used when not defined.
+- _parser.py:399:25: Name 'start_pos' used when not defined.
+- _parser.py:401:34: Name 'src' used when not defined.
+- _parser.py:401:39: Name 'pos' used when possibly not defined.
+- _parser.py:403:41: Name 'src' used when not defined.
+- _parser.py:403:46: Name 'pos' used when possibly not defined.
+- _parser.py:404:24: Name 'src' used when not defined.
+- _parser.py:404:29: Name 'pos' used when possibly not defined.
+  _parser.py:407:45: Name 'Pos' used when not defined.
+  _parser.py:407:59: Name 'Pos' used when not defined.
+- _parser.py:409:28: Name 'src' used when not defined.
+- _parser.py:409:33: Name 'pos' used when not defined.
+  _parser.py:412:32: Name 'Pos' used when not defined.
+  _parser.py:412:50: Name 'ParseFloat' used when not defined.
+  _parser.py:412:71: Name 'Pos' used when not defined.
+- _parser.py:416:38: Name 'src' used when not defined.
+- _parser.py:416:43: Name 'pos' used when not defined.
+- _parser.py:417:8: Name 'src' used when not defined.
+- _parser.py:420:32: Name 'src' used when not defined.
+- _parser.py:420:42: Name 'parse_float' used when not defined.
+- _parser.py:422:42: Name 'src' used when not defined.
+- _parser.py:424:13: Name 'src' used when not defined.
+- _parser.py:428:32: Name 'src' used when not defined.
+- _parser.py:431:42: Name 'src' used when not defined.
+- _parser.py:432:12: Name 'src' used when not defined.
+  _parser.py:436:39: Name 'Pos' used when not defined.
+  _parser.py:436:57: Name 'ParseFloat' used when not defined.
+  _parser.py:436:78: Name 'Pos' used when not defined.
+- _parser.py:441:22: Name 'src' used when not defined.
+- _parser.py:441:27: Name 'pos' used when not defined.
+- _parser.py:442:8: Name 'src' used when not defined.
+- _parser.py:445:48: Name 'src' used when not defined.
+- _parser.py:445:58: Name 'parse_float' used when not defined.
+- _parser.py:448:32: Name 'src' used when not defined.
+- _parser.py:452:32: Name 'src' used when not defined.
+- _parser.py:454:32: Name 'src' used when not defined.
+- _parser.py:456:26: Name 'src' used when not defined.
+- _parser.py:457:13: Name 'src' used when not defined.
+- _parser.py:461:32: Name 'src' used when not defined.
+- _parser.py:465:26: Name 'src' used when not defined.
+  _parser.py:469:20: Name 'Pos' used when not defined.
+  _parser.py:470:12: Name 'Pos' used when not defined.
+- _parser.py:471:17: Name 'src' used when not defined.
+- _parser.py:471:21: Name 'pos' used when not defined.
+- _parser.py:471:27: Name 'pos' used when not defined.
+- _parser.py:473:8: Name 'multiline' used when not defined.
+- _parser.py:477:30: Name 'src' used when not defined.
+- _parser.py:477:35: Name 'pos' used when not defined.
+- _parser.py:479:24: Name 'src' used when not defined.
+- _parser.py:483:36: Name 'src' used when not defined.
+- _parser.py:485:26: Name 'src' used when not defined.
+- _parser.py:485:31: Name 'pos' used when possibly not defined.
+- _parser.py:488:31: Name 'src' used when not defined.
+- _parser.py:488:36: Name 'pos' used when possibly not defined.
+- _parser.py:490:31: Name 'src' used when not defined.
+- _parser.py:490:36: Name 'pos' used when possibly not defined.
+- _parser.py:492:16: Name 'pos' used when possibly not defined.
+- _parser.py:494:28: Name 'src' used when not defined.
+- _parser.py:494:33: Name 'pos' used when possibly not defined.
+  _parser.py:497:53: Name 'Pos' used when not defined.
+  _parser.py:497:67: Name 'Pos' used when not defined.
+- _parser.py:498:35: Name 'src' used when not defined.
+- _parser.py:498:40: Name 'pos' used when not defined.
+  _parser.py:501:35: Name 'Pos' used when not defined.
+  _parser.py:501:63: Name 'Pos' used when not defined.
+- _parser.py:502:15: Name 'src' used when not defined.
+- _parser.py:502:19: Name 'pos' used when not defined.
+- _parser.py:502:25: Name 'pos' used when not defined.
+- _parser.py:502:31: Name 'hex_len' used when not defined.
+- _parser.py:503:24: Name 'hex_len' used when not defined.
+- _parser.py:504:28: Name 'src' used when not defined.
+- _parser.py:504:33: Name 'pos' used when not defined.
+- _parser.py:505:12: Name 'hex_len' used when not defined.
+- _parser.py:508:28: Name 'src' used when not defined.
+- _parser.py:508:33: Name 'pos' used when not defined.
+- _parser.py:509:12: Name 'pos' used when not defined.
+  _parser.py:512:38: Name 'Pos' used when not defined.
+  _parser.py:512:52: Name 'Pos' used when not defined.
+- _parser.py:514:17: Name 'pos' used when not defined.
+- _parser.py:516:14: Name 'pos' used when not defined.
+- _parser.py:516:9: Name 'src' used when not defined.
+- _parser.py:518:21: Name 'src' used when not defined.
+- _parser.py:518:25: Name 'start_pos' used when not defined.
+  _parser.py:521:40: Name 'Pos' used when not defined.
+  _parser.py:521:72: Name 'Pos' used when not defined.
+- _parser.py:523:29: Name 'pos' used when not defined.
+- _parser.py:523:8: Name 'src' used when not defined.
+- _parser.py:526:8: Name 'literal' used when not defined.
+- _parser.py:529:13: Name 'src' used when not defined.
+- _parser.py:530:13: Name 'pos' used when not defined.
+- _parser.py:535:18: Name 'src' used when not defined.
+- _parser.py:535:22: Name 'pos' used when not defined.
+- _parser.py:539:39: Name 'src' used when not defined.
+- _parser.py:539:44: Name 'pos' used when not defined.
+- _parser.py:543:12: Name 'src' used when not defined.
+- _parser.py:546:12: Name 'src' used when not defined.
+  _parser.py:552:36: Name 'Pos' used when not defined.
+  _parser.py:552:70: Name 'Pos' used when not defined.
+- _parser.py:553:8: Name 'multiline' used when not defined.
+- _parser.py:560:17: Name 'pos' used when not defined.
+- _parser.py:563:20: Name 'src' used when not defined.
+- _parser.py:563:24: Name 'pos' used when not defined.
+- _parser.py:565:32: Name 'src' used when not defined.
+- _parser.py:565:37: Name 'pos' used when not defined.
+- _parser.py:567:20: Name 'multiline' used when not defined.
+- _parser.py:568:24: Name 'pos' used when not defined.
+- _parser.py:568:42: Name 'src' used when not defined.
+- _parser.py:568:46: Name 'start_pos' used when not defined.
+- _parser.py:568:56: Name 'pos' used when not defined.
+- _parser.py:569:16: Name 'src' used when not defined.
+- _parser.py:569:38: Name 'pos' used when not defined.
+- _parser.py:570:24: Name 'pos' used when not defined.
+- _parser.py:570:42: Name 'src' used when not defined.
+- _parser.py:570:46: Name 'start_pos' used when not defined.
+- _parser.py:570:56: Name 'pos' used when not defined.
+- _parser.py:574:23: Name 'src' used when not defined.
+- _parser.py:574:27: Name 'start_pos' used when not defined.
+- _parser.py:574:37: Name 'pos' used when not defined.
+- _parser.py:575:48: Name 'src' used when not defined.
+- _parser.py:575:53: Name 'pos' used when not defined.
+  _parser.py:57:43: Name 'ParseFloat' used when not defined.
+- _parser.py:580:32: Name 'src' used when not defined.
+- _parser.py:580:37: Name 'pos' used when possibly not defined.
+  _parser.py:585:20: Name 'Pos' used when not defined.
+  _parser.py:585:38: Name 'ParseFloat' used when not defined.
+  _parser.py:586:12: Name 'Pos' used when not defined.
+- _parser.py:588:28: Name 'src' used when not defined.
+- _parser.py:588:32: Name 'pos' used when not defined.
+- _parser.py:596:12: Name 'src' used when not defined.
+- _parser.py:596:34: Name 'pos' used when not defined.
+- _parser.py:597:40: Name 'src' used when not defined.
+- _parser.py:597:45: Name 'pos' used when not defined.
+- _parser.py:598:41: Name 'src' used when not defined.
+- _parser.py:598:46: Name 'pos' used when not defined.
+- _parser.py:59:9: Name 'fp' used when not defined.
+- _parser.py:602:12: Name 'src' used when not defined.
+- _parser.py:602:34: Name 'pos' used when not defined.
+- _parser.py:603:40: Name 'src' used when not defined.
+- _parser.py:603:45: Name 'pos' used when not defined.
+- _parser.py:604:34: Name 'src' used when not defined.
+- _parser.py:604:39: Name 'pos' used when not defined.
+- _parser.py:608:12: Name 'src' used when not defined.
+- _parser.py:608:35: Name 'pos' used when not defined.
+- _parser.py:609:20: Name 'pos' used when not defined.
+- _parser.py:611:12: Name 'src' used when not defined.
+- _parser.py:611:36: Name 'pos' used when not defined.
+- _parser.py:612:20: Name 'pos' used when not defined.
+- _parser.py:616:28: Name 'src' used when not defined.
+- _parser.py:616:33: Name 'pos' used when not defined.
+- _parser.py:616:38: Name 'parse_float' used when not defined.
+- _parser.py:620:35: Name 'src' used when not defined.
+- _parser.py:620:40: Name 'pos' used when not defined.
+- _parser.py:620:45: Name 'parse_float' used when not defined.
+  _parser.py:623:22: Name 'RE_DATETIME' used when not defined.
+- _parser.py:623:40: Name 'src' used when not defined.
+- _parser.py:623:45: Name 'pos' used when not defined.
+  _parser.py:626:28: Name 'match_to_datetime' used when not defined.
+- _parser.py:628:32: Name 'src' used when not defined.
+- _parser.py:628:37: Name 'pos' used when not defined.
+  _parser.py:628:75: Name 'e' used when not defined.
+  _parser.py:630:23: Name 'RE_LOCALTIME' used when not defined.
+- _parser.py:630:42: Name 'src' used when not defined.
+- _parser.py:630:47: Name 'pos' used when not defined.
+  _parser.py:632:39: Name 'match_to_localtime' used when not defined.
+  _parser.py:637:20: Name 'RE_NUMBER' used when not defined.
+- _parser.py:637:36: Name 'src' used when not defined.
+- _parser.py:637:41: Name 'pos' used when not defined.
+  _parser.py:639:36: Name 'match_to_number' used when not defined.
+- _parser.py:639:66: Name 'parse_float' used when not defined.
+- _parser.py:642:19: Name 'src' used when not defined.
+- _parser.py:642:23: Name 'pos' used when not defined.
+- _parser.py:642:29: Name 'pos' used when not defined.
+- _parser.py:644:16: Name 'pos' used when not defined.
+- _parser.py:644:25: Name 'parse_float' used when not defined.
+- _parser.py:645:18: Name 'src' used when not defined.
+- _parser.py:645:22: Name 'pos' used when not defined.
+- _parser.py:645:28: Name 'pos' used when not defined.
+- _parser.py:647:16: Name 'pos' used when not defined.
+- _parser.py:647:25: Name 'parse_float' used when not defined.
+- _parser.py:649:24: Name 'src' used when not defined.
+- _parser.py:649:29: Name 'pos' used when not defined.
+  _parser.py:652:33: Name 'Pos' used when not defined.
+  _parser.py:656:35: Name 'Pos' used when not defined.
+- _parser.py:657:12: Name 'pos' used when not defined.
+- _parser.py:657:23: Name 'src' used when not defined.
+- _parser.py:659:16: Name 'src' used when not defined.
+- _parser.py:659:35: Name 'pos' used when not defined.
+- _parser.py:661:22: Name 'pos' used when not defined.
+- _parser.py:663:22: Name 'pos' used when not defined.
+- _parser.py:663:28: Name 'src' used when not defined.
+- _parser.py:663:48: Name 'pos' used when not defined.
+- _parser.py:666:31: Name 'msg' used when not defined.
+- _parser.py:666:52: Name 'src' used when not defined.
+- _parser.py:666:57: Name 'pos' used when not defined.
+- _parser.py:66:33: Name 'parse_float' used when not defined.
+- _parser.py:670:18: Name 'codepoint' used when not defined.
+- _parser.py:670:51: Name 'codepoint' used when not defined.
+  _parser.py:673:40: Name 'ParseFloat' used when not defined.
+  _parser.py:673:55: Name 'ParseFloat' used when not defined.
+- _parser.py:682:8: Name 'parse_float' used when not defined.
+  _parser.py:686:23: Name 'parse_float' used when not defined.
+- _parser.py:686:35: Name 'float_str' used when not defined.
+  _parser.py:69:38: Name 'ParseFloat' used when not defined.
+- _parser.py:74:11: Name 's' used when not defined.
+  _parser.py:77:13: Name 'Key' used when not defined.
+- _parser.py:78:41: Name 'parse_float' used when not defined.
+  _parser.py:7:29: Unresolved import 'Iterable'
+  _re.py:104:51: Name 'ParseFloat' used when not defined.
+- _re.py:105:8: Name 'match' used when not defined.
+- _re.py:106:16: Name 'parse_float' used when not defined.
+- _re.py:106:28: Name 'match' used when not defined.
+- _re.py:107:16: Name 'match' used when not defined.
+  _re.py:12:21: Unresolved import 'ParseFloat'
+- _re.py:70:9: Name 'match' used when not defined.
+- _re.py:89:17: Name 'sign_str' used when not defined.
+- _re.py:92:30: Name 'hour_str' used when not defined.
+- _re.py:93:32: Name 'minute_str' used when not defined.
+- _re.py:99:49: Name 'match' used when not defined.
+```
+
+</p>
+</details> 
+
+
+---
+
+_Label `red-knot` added by @dhruvmanila on 2024-08-13 13:32_
+
+---
+
+_Comment by @github-actions[bot] on 2024-08-13 16:51_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
+---
+
+_Marked ready for review by @dhruvmanila on 2024-08-14 11:06_
+
+---
+
+_Review requested from @carljm by @dhruvmanila on 2024-08-14 11:06_
+
+---
+
+_Review requested from @MichaReiser by @dhruvmanila on 2024-08-14 11:06_
+
+---
+
+_Review requested from @AlexWaygood by @dhruvmanila on 2024-08-14 11:06_
+
+---
+
+_Renamed from "Add symbol and definition for parameters" to "[red-knot] Add symbol and definition for parameters" by @dhruvmanila on 2024-08-14 11:10_
+
+---
+
+_Comment by @codspeed-hq[bot] on 2024-08-14 11:10_
+
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/dhruv/parameters)
+
+### Merging #12862 will **degrade performances by 17.64%**
+
+<sub>Comparing <code>dhruv/parameters</code> (c47b7f6) with <code>main</code> (f121f8b)</sub>
+
+
+
+### Summary
+
+`❌ 2 (👁 2)` regressions
+`✅ 30` untouched benchmarks
+
+
+
+
+### Benchmarks breakdown
+
+|     | Benchmark | `main` | `dhruv/parameters` | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| 👁 | `red_knot_check_file[cold]` | 39.2 ms | 43.4 ms | -9.81% |
+| 👁 | `red_knot_check_file[incremental]` | 1.6 ms | 1.9 ms | -17.64% |
+
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/src/semantic_index/builder.rs`:379 on 2024-08-14 11:11_
+
+nit: you could also do this like this, which feels slightly nicer to me (but no strong opinion):
+
+```suggestion
+                for default in function_def
+                    .parameters
+                    .iter()
+                    .filter_map(ast::AnyParameterRef::default)
+                {
+                    self.visit_expr(default);
+                }
+```
+
+The same applies to the `Expr::Lambda` branch below as well
+
+---
+
+_Comment by @dhruvmanila on 2024-08-14 11:26_
+
+I need to look at the regression.
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/src/semantic_index/builder.rs`:605 on 2024-08-14 11:30_
+
+This `visit_parameters()` call here is confusing me.
+- Why do we call `self.visit_parameters()` for a `Lambda` expression, but not for a `FunctionDef` statement?
+- Is it correct for the `visit_parameters()` call to take place before the `self.push_scope()` call? Exactly which scope annotations should be evaluated in is a complicated question because it's affected by `from __future__ import annotations` or whether it's a stub file, so this might be correct. But if it is correct, then why can't the default values just be visited as part of the `visit_parameters()` call?
+- If we keep visiting the default values outside the `visit_parameters()` call, what would `visit_parameters()` do for a lambda function anyway? Lambda functions can't have annotations on their parameters, so for lambdas the only things we need to analyse are the binding the parameter creates and the parameter's default value (if it has one). Both the binding and the default value seem to be taken care of outside the `visit_parameters()` call
+
+---
+
+_@AlexWaygood reviewed on 2024-08-14 11:32_
+
+Mostly this looks great to me. I have a style nit (feel free to ignore if you disagree!) and a question:
+
+---
+
+_Comment by @AlexWaygood on 2024-08-14 11:36_
+
+> I need to look at the regression.
+
+It might be just because there's now lots more symbols in the benchmark that we need to try to infer types for
+
+---
+
+_Review request for @MichaReiser removed by @MichaReiser on 2024-08-14 11:41_
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/semantic_index/builder.rs`:605 on 2024-08-15 00:54_
+
+I think you are right that this call _could_ be removed for lambda, because we already visited the defaults and won't visit them again here, and there can't be annotations, so there is nothing else left to visit. However, it still seems marginally clearer and more robust to me to have the call here. In a hypothetical future where lambdas gain argument annotations (or something else *waves hands wildly* is added to parameters), we would just naturally do the right thing, instead of subtly missing a visit to part of the AST.
+
+I don't think `from __future__ import annotations` or stub-file-ness impact which _scope_ annotations should be evaluated in, just whether they are evaluated immediately or deferred. If a lambda could have annotations, the outer scope would be the correct one to evaluate them in (since lambdas can't have a type params scope.) So I think this call is located in the correct place.
+
+> why can't the default values just be visited as part of the visit_parameters() call?
+
+For lambdas, they could. I think an alternate approach here would be to add `visit_parameters_without_defaults` and use that in the `FunctionDef` case (rather than overriding `visit_parameters`), and then remove the special code to visit defaults from the lambda case and just rely on `visit_parameters` here. I don't have a strong feeling that this is better, though -- the current approach more closely mirrors how type inference handles it. I do think it's nice to keep a parallel between the handling of lambda and FunctionDef, which the current code in the PR does.
+
+For `FunctionDef` the call looks like `builder.visit_parameters(...)`, and is inside the type params scope (if any), which is the correct place for it.
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/semantic_index/builder.rs`:703 on 2024-08-15 00:57_
+
+Does any test fail without this override?
+
+(To be clear, I think this is correct, just want to be sure we have test coverage for this subtlety.)
+
+---
+
+_@carljm approved on 2024-08-15 01:10_
+
+Looks excellent, thank you!
+
+---
+
+_@dhruvmanila reviewed on 2024-08-16 04:33_
+
+---
+
+_Review comment by @dhruvmanila on `crates/red_knot_python_semantic/src/semantic_index/builder.rs`:379 on 2024-08-16 04:33_
+
+Thanks for the suggestion. I choose `iter_non_variadic_params` because it makes it explicitly clear that we will never iterate over parameters that can't have default values (also mentioned in the function docs).
+
+---
+
+_@dhruvmanila reviewed on 2024-08-16 04:33_
+
+---
+
+_Review comment by @dhruvmanila on `crates/red_knot_python_semantic/src/semantic_index/builder.rs`:605 on 2024-08-16 04:33_
+
+I think @carljm answered to most of @AlexWaygood questions (thanks Carl).
+
+> * If we keep visiting the default values outside the `visit_parameters()` call, what would `visit_parameters()` do for a lambda function anyway? Lambda functions can't have annotations on their parameters, so for lambdas the only things we need to analyse are the binding the parameter creates and the parameter's default value (if it has one). Both the binding and the default value seem to be taken care of outside the `visit_parameters()` call
+
+Yes, technically there's no benefit of calling `visit_parameters` for lambdas here. I think it does make sense to keep it for consistency and in case the `Parameters` node is changed in the future by either us or CPython this will provide us some kind of failure (I think).
+
+> For lambdas, they could. I think an alternate approach here would be to add `visit_parameters_without_defaults` and use that in the `FunctionDef` case (rather than overriding `visit_parameters`), and then remove the special code to visit defaults from the lambda case and just rely on `visit_parameters` here. I don't have a strong feeling that this is better, though -- the current approach more closely mirrors how type inference handles it. I do think it's nice to keep a parallel between the handling of lambda and FunctionDef, which the current code in the PR does.
+
+I like the idea although I think I'd prefer consistency here.
+
+---
+
+_@dhruvmanila reviewed on 2024-08-16 04:36_
+
+---
+
+_Review comment by @dhruvmanila on `crates/red_knot_python_semantic/src/semantic_index/builder.rs`:703 on 2024-08-16 04:36_
+
+Good point. I'll annotate the function definition in the test case for the coverage.
+
+---
+
+_Comment by @dhruvmanila on 2024-08-16 05:27_
+
+> > I need to look at the regression.
+> 
+> It might be just because there's now lots more symbols in the benchmark that we need to try to infer types for
+
+Yeah, this is correct. The definition counts are doubled because we now have definition for each parameters in all the functions.
+
+On `main`:
+```
+1   0.247277s TRACE red_knot Counts for entire CLI run:
+1red_knot_python_semantic::semantic_index::definition::Definition         3_059        3_059        3_059
+1red_knot_python_semantic::semantic_index::expression::Expression           312          312          312
+1red_knot_python_semantic::semantic_index::symbol::ScopeId                2_063        2_063        2_063
+1ruff_db::files::File                                                        57           57           57
+1ruff_db::source::SourceText                                                 16           16           16
+1                                                                         total     max_live         live
+```
+
+On `dhruv/parameters`:
+```
+1   0.261077s TRACE red_knot Counts for entire CLI run:
+1red_knot_python_semantic::semantic_index::definition::Definition         6_877        6_877        6_877
+1red_knot_python_semantic::semantic_index::expression::Expression           312          312          312
+1red_knot_python_semantic::semantic_index::symbol::ScopeId                2_063        2_063        2_063
+1ruff_db::files::File                                                        57           57           57
+1ruff_db::source::SourceText                                                 16           16           16
+1                                                                         total     max_live         live
+```
+
+And, the flamegraph shows that the time spent in `infer_definition_types` has increased because of that:
+<img width="1728" alt="Screenshot 2024-08-16 at 10 54 10" src="https://github.com/user-attachments/assets/b661692a-dbad-4f2f-8c41-759ce9930c60">
+
+Acknowledging the regression based on the above findings.
+
+---
+
+_Merged by @dhruvmanila on 2024-08-16 05:29_
+
+---
+
+_Closed by @dhruvmanila on 2024-08-16 05:29_
+
+---
+
+_Branch deleted on 2024-08-16 05:30_
+
+---

@@ -1,0 +1,278 @@
+```yaml
+number: 12840
+title: "Stabilize fixes for `RET50{5-8}`"
+type: pull_request
+state: merged
+author: MichaReiser
+labels:
+  - fixes
+assignees: []
+merged: true
+base: ruff-0.6
+head: stabilize-ret501-fixes
+created_at: 2024-08-12T10:39:21Z
+updated_at: 2024-08-14T04:06:35Z
+url: https://github.com/astral-sh/ruff/pull/12840
+synced_at: 2026-01-10T21:38:32Z
+```
+
+# Stabilize fixes for `RET50{5-8}`
+
+---
+
+_Pull request opened by @MichaReiser on 2024-08-12 10:39_
+
+## Summary
+
+This PR stabilizes the fixes introduced in https://github.com/astral-sh/ruff/pull/9595
+
+Fixes #10099
+
+
+---
+
+_Label `fixes` added by @MichaReiser on 2024-08-12 10:39_
+
+---
+
+_Comment by @github-actions[bot] on 2024-08-12 10:52_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+ℹ️ ecosystem check **detected linter changes**. (+0 -0 violations, +2006 -0 fixes in 4 projects; 50 projects unchanged)
+
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -0 violations, +1220 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/__init__.py#L108'>airflow/__init__.py:108:5:</a> RET506 Unnecessary `elif` after `raise` statement
++ <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/__init__.py#L108'>airflow/__init__.py:108:5:</a> RET506 [*] Unnecessary `elif` after `raise` statement
+- <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/api/auth/backend/kerberos_auth.py#L128'>airflow/api/auth/backend/kerberos_auth.py:128:9:</a> RET505 Unnecessary `elif` after `return` statement
++ <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/api/auth/backend/kerberos_auth.py#L128'>airflow/api/auth/backend/kerberos_auth.py:128:9:</a> RET505 [*] Unnecessary `elif` after `return` statement
+- <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/api/auth/backend/kerberos_auth.py#L165'>airflow/api/auth/backend/kerberos_auth.py:165:13:</a> RET505 Unnecessary `elif` after `return` statement
++ <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/api/auth/backend/kerberos_auth.py#L165'>airflow/api/auth/backend/kerberos_auth.py:165:13:</a> RET505 [*] Unnecessary `elif` after `return` statement
+- <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/api_connexion/endpoints/config_endpoint.py#L119'>airflow/api_connexion/endpoints/config_endpoint.py:119:5:</a> RET505 Unnecessary `elif` after `return` statement
++ <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/api_connexion/endpoints/config_endpoint.py#L119'>airflow/api_connexion/endpoints/config_endpoint.py:119:5:</a> RET505 [*] Unnecessary `elif` after `return` statement
+- <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/api_connexion/endpoints/config_endpoint.py#L85'>airflow/api_connexion/endpoints/config_endpoint.py:85:5:</a> RET505 Unnecessary `elif` after `return` statement
++ <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/api_connexion/endpoints/config_endpoint.py#L85'>airflow/api_connexion/endpoints/config_endpoint.py:85:5:</a> RET505 [*] Unnecessary `elif` after `return` statement
+... 921 additional changes omitted for rule RET505
+- <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/api_connexion/endpoints/forward_to_fab_endpoint.py#L47'>airflow/api_connexion/endpoints/forward_to_fab_endpoint.py:47:9:</a> RET506 Unnecessary `else` after `raise` statement
++ <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/api_connexion/endpoints/forward_to_fab_endpoint.py#L47'>airflow/api_connexion/endpoints/forward_to_fab_endpoint.py:47:9:</a> RET506 [*] Unnecessary `else` after `raise` statement
+- <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/cli/commands/dag_command.py#L281'>airflow/cli/commands/dag_command.py:281:5:</a> RET506 Unnecessary `elif` after `raise` statement
++ <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/cli/commands/dag_command.py#L281'>airflow/cli/commands/dag_command.py:281:5:</a> RET506 [*] Unnecessary `elif` after `raise` statement
+- <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/cli/commands/dag_command.py#L302'>airflow/cli/commands/dag_command.py:302:5:</a> RET506 Unnecessary `elif` after `raise` statement
++ <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/cli/commands/dag_command.py#L302'>airflow/cli/commands/dag_command.py:302:5:</a> RET506 [*] Unnecessary `elif` after `raise` statement
+... 253 additional changes omitted for rule RET506
+- <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/dag_processing/manager.py#L586'>airflow/dag_processing/manager.py:586:21:</a> RET508 Unnecessary `elif` after `break` statement
++ <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/dag_processing/manager.py#L586'>airflow/dag_processing/manager.py:586:21:</a> RET508 [*] Unnecessary `elif` after `break` statement
+- <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/jobs/scheduler_job_runner.py#L585'>airflow/jobs/scheduler_job_runner.py:585:21:</a> RET507 Unnecessary `else` after `continue` statement
++ <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/jobs/scheduler_job_runner.py#L585'>airflow/jobs/scheduler_job_runner.py:585:21:</a> RET507 [*] Unnecessary `else` after `continue` statement
+- <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/models/xcom_arg.py#L655'>airflow/models/xcom_arg.py:655:13:</a> RET508 Unnecessary `elif` after `break` statement
++ <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/models/xcom_arg.py#L655'>airflow/models/xcom_arg.py:655:13:</a> RET508 [*] Unnecessary `elif` after `break` statement
+- <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/providers/amazon/aws/hooks/sagemaker.py#L1207'>airflow/providers/amazon/aws/hooks/sagemaker.py:1207:21:</a> RET508 Unnecessary `else` after `break` statement
++ <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/providers/amazon/aws/hooks/sagemaker.py#L1207'>airflow/providers/amazon/aws/hooks/sagemaker.py:1207:21:</a> RET508 [*] Unnecessary `else` after `break` statement
+- <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/providers/amazon/aws/secrets/secrets_manager.py#L233'>airflow/providers/amazon/aws/secrets/secrets_manager.py:233:13:</a> RET507 Unnecessary `elif` after `continue` statement
++ <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/providers/amazon/aws/secrets/secrets_manager.py#L233'>airflow/providers/amazon/aws/secrets/secrets_manager.py:233:13:</a> RET507 [*] Unnecessary `elif` after `continue` statement
+- <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/providers/cncf/kubernetes/executors/kubernetes_executor.py#L627'>airflow/providers/cncf/kubernetes/executors/kubernetes_executor.py:627:13:</a> RET507 Unnecessary `elif` after `continue` statement
++ <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/providers/cncf/kubernetes/executors/kubernetes_executor.py#L627'>airflow/providers/cncf/kubernetes/executors/kubernetes_executor.py:627:13:</a> RET507 [*] Unnecessary `elif` after `continue` statement
+- <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/providers/snowflake/operators/snowflake.py#L525'>airflow/providers/snowflake/operators/snowflake.py:525:13:</a> RET508 Unnecessary `elif` after `break` statement
++ <a href='https://github.com/apache/airflow/blob/b7fc211a693e4d13ff16a81efb0b83206df2df28/airflow/providers/snowflake/operators/snowflake.py#L525'>airflow/providers/snowflake/operators/snowflake.py:525:13:</a> RET508 [*] Unnecessary `elif` after `break` statement
+... 3 additional changes omitted for rule RET508
+... 1190 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+0 -0 violations, +24 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/superset/blob/57a4199f527c6bf197245f313ee28e0734c60368/RELEASING/verify_release.py#L52'>RELEASING/verify_release.py:52:5:</a> RET505 Unnecessary `else` after `return` statement
++ <a href='https://github.com/apache/superset/blob/57a4199f527c6bf197245f313ee28e0734c60368/RELEASING/verify_release.py#L52'>RELEASING/verify_release.py:52:5:</a> RET505 [*] Unnecessary `else` after `return` statement
+- <a href='https://github.com/apache/superset/blob/57a4199f527c6bf197245f313ee28e0734c60368/RELEASING/verify_release.py#L93'>RELEASING/verify_release.py:93:9:</a> RET505 Unnecessary `elif` after `return` statement
++ <a href='https://github.com/apache/superset/blob/57a4199f527c6bf197245f313ee28e0734c60368/RELEASING/verify_release.py#L93'>RELEASING/verify_release.py:93:9:</a> RET505 [*] Unnecessary `elif` after `return` statement
+- <a href='https://github.com/apache/superset/blob/57a4199f527c6bf197245f313ee28e0734c60368/scripts/build_docker.py#L67'>scripts/build_docker.py:67:5:</a> RET505 Unnecessary `elif` after `return` statement
++ <a href='https://github.com/apache/superset/blob/57a4199f527c6bf197245f313ee28e0734c60368/scripts/build_docker.py#L67'>scripts/build_docker.py:67:5:</a> RET505 [*] Unnecessary `elif` after `return` statement
+... 11 additional changes omitted for rule RET505
+- <a href='https://github.com/apache/superset/blob/57a4199f527c6bf197245f313ee28e0734c60368/superset/migrations/versions/2018-07-05_15-19_3dda56f1c4c6_migrate_num_period_compare_and_period_.py#L92'>superset/migrations/versions/2018-07-05_15-19_3dda56f1c4c6_migrate_num_period_compare_and_period_.py:92:5:</a> RET506 Unnecessary `elif` after `raise` statement
++ <a href='https://github.com/apache/superset/blob/57a4199f527c6bf197245f313ee28e0734c60368/superset/migrations/versions/2018-07-05_15-19_3dda56f1c4c6_migrate_num_period_compare_and_period_.py#L92'>superset/migrations/versions/2018-07-05_15-19_3dda56f1c4c6_migrate_num_period_compare_and_period_.py:92:5:</a> RET506 [*] Unnecessary `elif` after `raise` statement
+- <a href='https://github.com/apache/superset/blob/57a4199f527c6bf197245f313ee28e0734c60368/superset/migrations/versions/2018-07-22_11-59_bebcf3fed1fe_convert_dashboard_v1_positions.py#L334'>superset/migrations/versions/2018-07-22_11-59_bebcf3fed1fe_convert_dashboard_v1_positions.py:334:13:</a> RET507 Unnecessary `elif` after `continue` statement
++ <a href='https://github.com/apache/superset/blob/57a4199f527c6bf197245f313ee28e0734c60368/superset/migrations/versions/2018-07-22_11-59_bebcf3fed1fe_convert_dashboard_v1_positions.py#L334'>superset/migrations/versions/2018-07-22_11-59_bebcf3fed1fe_convert_dashboard_v1_positions.py:334:13:</a> RET507 [*] Unnecessary `elif` after `continue` statement
+... 14 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+0 -0 violations, +306 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/app/clustering/main.py#L88'>examples/server/app/clustering/main.py:88:5:</a> RET505 Unnecessary `elif` after `return` statement
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/app/clustering/main.py#L88'>examples/server/app/clustering/main.py:88:5:</a> RET505 [*] Unnecessary `elif` after `return` statement
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/checks.py#L105'>release/checks.py:105:9:</a> RET505 Unnecessary `else` after `return` statement
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/checks.py#L105'>release/checks.py:105:9:</a> RET505 [*] Unnecessary `else` after `return` statement
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/checks.py#L119'>release/checks.py:119:9:</a> RET505 Unnecessary `else` after `return` statement
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/checks.py#L119'>release/checks.py:119:9:</a> RET505 [*] Unnecessary `else` after `return` statement
+... 239 additional changes omitted for rule RET505
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/application.py#L169'>src/bokeh/application/application.py:169:9:</a> RET506 Unnecessary `elif` after `raise` statement
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/application.py#L169'>src/bokeh/application/application.py:169:9:</a> RET506 [*] Unnecessary `elif` after `raise` statement
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/handlers/directory.py#L154'>src/bokeh/application/handlers/directory.py:154:9:</a> RET506 Unnecessary `elif` after `raise` statement
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/handlers/directory.py#L154'>src/bokeh/application/handlers/directory.py:154:9:</a> RET506 [*] Unnecessary `elif` after `raise` statement
+... 296 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -0 violations, +456 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/zulip/zulip/blob/40f59a05c55e0e4f26ca87d2bca646770e94bff0/analytics/views/stats.py#L499'>analytics/views/stats.py:499:5:</a> RET505 Unnecessary `elif` after `return` statement
++ <a href='https://github.com/zulip/zulip/blob/40f59a05c55e0e4f26ca87d2bca646770e94bff0/analytics/views/stats.py#L499'>analytics/views/stats.py:499:5:</a> RET505 [*] Unnecessary `elif` after `return` statement
+- <a href='https://github.com/zulip/zulip/blob/40f59a05c55e0e4f26ca87d2bca646770e94bff0/corporate/lib/activity.py#L111'>corporate/lib/activity.py:111:5:</a> RET505 Unnecessary `else` after `return` statement
++ <a href='https://github.com/zulip/zulip/blob/40f59a05c55e0e4f26ca87d2bca646770e94bff0/corporate/lib/activity.py#L111'>corporate/lib/activity.py:111:5:</a> RET505 [*] Unnecessary `else` after `return` statement
+- <a href='https://github.com/zulip/zulip/blob/40f59a05c55e0e4f26ca87d2bca646770e94bff0/corporate/lib/activity.py#L98'>corporate/lib/activity.py:98:5:</a> RET505 Unnecessary `elif` after `return` statement
++ <a href='https://github.com/zulip/zulip/blob/40f59a05c55e0e4f26ca87d2bca646770e94bff0/corporate/lib/activity.py#L98'>corporate/lib/activity.py:98:5:</a> RET505 [*] Unnecessary `elif` after `return` statement
+... 389 additional changes omitted for rule RET505
+- <a href='https://github.com/zulip/zulip/blob/40f59a05c55e0e4f26ca87d2bca646770e94bff0/corporate/lib/stripe.py#L1202'>corporate/lib/stripe.py:1202:13:</a> RET506 Unnecessary `else` after `raise` statement
++ <a href='https://github.com/zulip/zulip/blob/40f59a05c55e0e4f26ca87d2bca646770e94bff0/corporate/lib/stripe.py#L1202'>corporate/lib/stripe.py:1202:13:</a> RET506 [*] Unnecessary `else` after `raise` statement
+- <a href='https://github.com/zulip/zulip/blob/40f59a05c55e0e4f26ca87d2bca646770e94bff0/corporate/lib/stripe.py#L2932'>corporate/lib/stripe.py:2932:21:</a> RET506 Unnecessary `else` after `raise` statement
++ <a href='https://github.com/zulip/zulip/blob/40f59a05c55e0e4f26ca87d2bca646770e94bff0/corporate/lib/stripe.py#L2932'>corporate/lib/stripe.py:2932:21:</a> RET506 [*] Unnecessary `else` after `raise` statement
+- <a href='https://github.com/zulip/zulip/blob/40f59a05c55e0e4f26ca87d2bca646770e94bff0/corporate/lib/stripe.py#L5032'>corporate/lib/stripe.py:5032:9:</a> RET506 Unnecessary `else` after `raise` statement
+... 445 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (4 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RET505 | 1582 | 0 | 0 | 1582 | 0 |
+| RET506 | 372 | 0 | 0 | 372 | 0 |
+| RET507 | 36 | 0 | 0 | 36 | 0 |
+| RET508 | 16 | 0 | 0 | 16 | 0 |
+
+</p>
+</details>
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+### Formatter (stable)
+ℹ️ ecosystem check **encountered format errors**. (no format changes; 1 project error)
+
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+```
+warning: Detected debug build without --no-cache.
+error: Failed to parse examples/Chat_finetuning_data_prep.ipynb:6:18:25: Unparenthesized generator expression cannot be used here
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_box.ipynb:13:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_confluence.ipynb:15:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_gmail.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_jira.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_notion.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_doc.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_text.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sql_database.ipynb:2:2:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_middleware_azure_function.ipynb:37:1:13: Simple statements must be separated by newlines or semicolons
+```
+
+</p>
+</details>
+
+### Formatter (preview)
+ℹ️ ecosystem check **encountered format errors**. (no format changes; 1 project error)
+
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+```
+warning: Detected debug build without --no-cache.
+error: Failed to parse examples/Chat_finetuning_data_prep.ipynb:6:18:25: Unparenthesized generator expression cannot be used here
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_box.ipynb:13:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_confluence.ipynb:15:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_gmail.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_jira.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_notion.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_doc.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_text.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sql_database.ipynb:2:2:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_middleware_azure_function.ipynb:37:1:13: Simple statements must be separated by newlines or semicolons
+```
+
+</p>
+</details>
+
+
+
+
+---
+
+_Comment by @AlexWaygood on 2024-08-12 11:30_
+
+We have an open issue about a panic for the `RET505` autofix:
+- https://github.com/astral-sh/ruff/issues/10099
+
+Does it still reproduce on `main`?
+
+---
+
+_Comment by @AlexWaygood on 2024-08-12 11:39_
+
+> We have an open issue about a panic for the `RET505` autofix:
+> 
+>     * [Rule RET505 cause panic #10099](https://github.com/astral-sh/ruff/issues/10099)
+> 
+> 
+> Does it still reproduce on `main`?
+
+Answering my own question: yes, it still repros on `main`. It's somewhat unusual code causing the panic, though, so maybe it's still okay to stabilise?
+
+---
+
+_Comment by @MichaReiser on 2024-08-12 11:44_
+
+Yeah, the problem is with `adjust_indent` rather than the rule itself. I'll push a fix that fixes `adjust_indent` from panicking in these cases.
+
+---
+
+_@AlexWaygood approved on 2024-08-12 11:55_
+
+---
+
+_Merged by @MichaReiser on 2024-08-12 14:14_
+
+---
+
+_Closed by @MichaReiser on 2024-08-12 14:14_
+
+---
+
+_Branch deleted on 2024-08-12 14:14_
+
+---
+
+_Comment by @diceroll123 on 2024-08-14 04:06_
+
+Nice work with that fix 😄👍 
+
+---

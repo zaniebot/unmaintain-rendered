@@ -1,0 +1,345 @@
+```yaml
+number: 10111
+title: "COM812: Allow \"single line\" arguments without trailing comma"
+type: pull_request
+state: closed
+author: MichaReiser
+labels:
+  - rule
+  - breaking
+  - needs-decision
+assignees: []
+base: main
+head: com812-formatter-compat
+created_at: 2024-02-24T13:41:31Z
+updated_at: 2024-08-16T08:09:27Z
+url: https://github.com/astral-sh/ruff/pull/10111
+synced_at: 2026-01-10T21:38:31Z
+```
+
+# COM812: Allow "single line" arguments without trailing comma
+
+---
+
+_Pull request opened by @MichaReiser on 2024-02-24 13:41_
+
+## Summary
+
+Fixes https://github.com/astral-sh/ruff/issues/9216
+
+This PR makes trailing commas after "single-line-arguments" optional so that the rule is compatible with the formatter:
+
+```python
+def test(
+	a, b, c # no trailing comma required but permitted
+): pass
+
+def test(
+	a, # requires a trailing comma
+): pass
+
+def test(
+	a = [
+		b, c # no trailing comma required
+	], # trailing comma required
+): pass
+```
+
+This is a breaking change because it makes the rule less strict. 
+
+## Recommendation for not merging
+
+The motivation of this change is to make COM812 compatible with the formatter (see https://github.com/astral-sh/ruff/issues/9216). There has been more discussion in that thread since I started implementing the change and I think we **should not** ship it. But I want to get more feedback before deciding. 
+
+When I started working on the change, I assumed that the way the arguments would be expanded across multiple lines always is:
+
+```python
+def test(
+	a, b, c
+): ...
+
+# After adding more arguments so that it now needs to be broken
+def test(
+	a,
+	b,
+	c,
+): ...
+```
+
+For this formatting, adding a trailing comma after `a, b, c` doesn't help reduce the diff lines because every line is changed, so making the trailing comma optional is in the spirit of the lint rule. 
+
+However, there are alternative formattings that I didn't consider: 
+
+```python
+def test(
+	a, b, c,
+	d): pass
+
+def test(
+	a, b, c,
+	d,
+): pass
+```
+
+In both cases, requiring a trailing comma after `c` is desired to minimize the diff. With this change, COM812 would no longer enforce the trailing comma after `c`. 
+
+That means whether it is correct to enforce a trailing comma depends on the desired formatting, but this requires parametrizing the lint rule.
+
+I'm **not** in favor of adding a new option for this because:
+
+* If you use the formatter, the recommended solution is to disable `COM812` because the formatter properly formats the arguments.
+* You can use the formatter and the linter together if you disagree with the formatter's single-line argument formatting and use the lint rule to catch and "fix" the formatting. However, it means that you're using an unsupported setup and you have to expect rough edges (warning) and that it won't be supported in the future. For example, ruff might automatically disable `COM812` in the future when it discovers that a project uses the formatter and linter together.
+* The last option is to add a configuration option to COM812. I consider this a bad trade because it increases our configuration surface without solving the formatter incompatibility. `COM812`  remains incompatible, it's just that it now depends on the configuration setting. It also has the downside that we would need to change the setting's default, forcing everyone relying on today's COM812 behavior to change their configuration. 
+
+
+
+## Test Plan
+
+Added tests
+
+
+---
+
+_Comment by @github-actions[bot] on 2024-02-24 13:53_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+ℹ️ ecosystem check **detected linter changes**. (+0 -10617 violations, +0 -0 fixes in 2 projects; 41 projects unchanged)
+
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -5561 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api/client/local_client.py#L32'>airflow/api/client/local_client.py:32:93:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api/client/local_client.py#L82'>airflow/api/client/local_client.py:82:95:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api/common/experimental/get_lineage.py#L37'>airflow/api/common/experimental/get_lineage.py:37:86:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api/common/mark_tasks.py#L298'>airflow/api/common/mark_tasks.py:298:102:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api/common/trigger_dag.py#L76'>airflow/api/common/trigger_dag.py:76:91:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/config_endpoint.py#L122'>airflow/api_connexion/endpoints/config_endpoint.py:122:103:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/config_endpoint.py#L37'>airflow/api_connexion/endpoints/config_endpoint.py:37:109:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/dag_endpoint.py#L56'>airflow/api_connexion/endpoints/dag_endpoint.py:56:90:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/dag_endpoint.py#L74'>airflow/api_connexion/endpoints/dag_endpoint.py:74:90:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/dag_run_endpoint.py#L120'>airflow/api_connexion/endpoints/dag_run_endpoint.py:120:68:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/dag_run_endpoint.py#L98'>airflow/api_connexion/endpoints/dag_run_endpoint.py:98:107:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/dataset_endpoint.py#L189'>airflow/api_connexion/endpoints/dataset_endpoint.py:189:88:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/dataset_endpoint.py#L211'>airflow/api_connexion/endpoints/dataset_endpoint.py:211:88:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/dataset_endpoint.py#L231'>airflow/api_connexion/endpoints/dataset_endpoint.py:231:78:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/dataset_endpoint.py#L259'>airflow/api_connexion/endpoints/dataset_endpoint.py:259:78:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/dataset_endpoint.py#L277'>airflow/api_connexion/endpoints/dataset_endpoint.py:277:75:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/dataset_endpoint.py#L282'>airflow/api_connexion/endpoints/dataset_endpoint.py:282:68:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/dataset_endpoint.py#L308'>airflow/api_connexion/endpoints/dataset_endpoint.py:308:75:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/dataset_endpoint.py#L313'>airflow/api_connexion/endpoints/dataset_endpoint.py:313:68:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/task_instance_endpoint.py#L103'>airflow/api_connexion/endpoints/task_instance_endpoint.py:103:108:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/task_instance_endpoint.py#L213'>airflow/api_connexion/endpoints/task_instance_endpoint.py:213:84:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/task_instance_endpoint.py#L218'>airflow/api_connexion/endpoints/task_instance_endpoint.py:218:84:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/task_instance_endpoint.py#L335'>airflow/api_connexion/endpoints/task_instance_endpoint.py:335:84:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/task_instance_endpoint.py#L340'>airflow/api_connexion/endpoints/task_instance_endpoint.py:340:84:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/task_instance_endpoint.py#L411'>airflow/api_connexion/endpoints/task_instance_endpoint.py:411:94:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/task_instance_endpoint.py#L414'>airflow/api_connexion/endpoints/task_instance_endpoint.py:414:94:</a> COM812 [*] Trailing comma missing
+... 5535 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -5056 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L120'>analytics/lib/counts.py:120:75:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L139'>analytics/lib/counts.py:139:84:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L158'>analytics/lib/counts.py:158:97:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L184'>analytics/lib/counts.py:184:71:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L213'>analytics/lib/counts.py:213:71:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L318'>analytics/lib/counts.py:318:97:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L423'>analytics/lib/counts.py:423:95:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L437'>analytics/lib/counts.py:437:91:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L756'>analytics/lib/counts.py:756:87:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L768'>analytics/lib/counts.py:768:94:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L775'>analytics/lib/counts.py:775:91:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L787'>analytics/lib/counts.py:787:93:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L808'>analytics/lib/counts.py:808:86:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L843'>analytics/lib/counts.py:843:99:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/time_utils.py#L13'>analytics/lib/time_utils.py:13:78:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/management/commands/populate_analytics_db.py#L118'>analytics/management/commands/populate_analytics_db.py:118:80:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/management/commands/populate_analytics_db.py#L161'>analytics/management/commands/populate_analytics_db.py:161:101:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/management/commands/populate_analytics_db.py#L195'>analytics/management/commands/populate_analytics_db.py:195:81:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/management/commands/populate_analytics_db.py#L208'>analytics/management/commands/populate_analytics_db.py:208:81:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/management/commands/populate_analytics_db.py#L221'>analytics/management/commands/populate_analytics_db.py:221:81:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/management/commands/populate_analytics_db.py#L236'>analytics/management/commands/populate_analytics_db.py:236:81:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/management/commands/populate_analytics_db.py#L255'>analytics/management/commands/populate_analytics_db.py:255:81:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/management/commands/populate_analytics_db.py#L280'>analytics/management/commands/populate_analytics_db.py:280:81:</a> COM812 [*] Trailing comma missing
+... 5033 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| COM812 | 10617 | 0 | 10617 | 0 | 0 |
+
+</p>
+</details>
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+0 -10617 violations, +0 -0 fixes in 2 projects; 41 projects unchanged)
+
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -5561 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api/client/local_client.py#L32'>airflow/api/client/local_client.py:32:93:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api/client/local_client.py#L82'>airflow/api/client/local_client.py:82:95:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api/common/experimental/get_lineage.py#L37'>airflow/api/common/experimental/get_lineage.py:37:86:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api/common/mark_tasks.py#L298'>airflow/api/common/mark_tasks.py:298:102:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api/common/trigger_dag.py#L76'>airflow/api/common/trigger_dag.py:76:91:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/config_endpoint.py#L122'>airflow/api_connexion/endpoints/config_endpoint.py:122:103:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/config_endpoint.py#L37'>airflow/api_connexion/endpoints/config_endpoint.py:37:109:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/dag_endpoint.py#L56'>airflow/api_connexion/endpoints/dag_endpoint.py:56:90:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/dag_endpoint.py#L74'>airflow/api_connexion/endpoints/dag_endpoint.py:74:90:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/dag_run_endpoint.py#L120'>airflow/api_connexion/endpoints/dag_run_endpoint.py:120:68:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/dag_run_endpoint.py#L98'>airflow/api_connexion/endpoints/dag_run_endpoint.py:98:107:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/dataset_endpoint.py#L189'>airflow/api_connexion/endpoints/dataset_endpoint.py:189:88:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/dataset_endpoint.py#L211'>airflow/api_connexion/endpoints/dataset_endpoint.py:211:88:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/dataset_endpoint.py#L231'>airflow/api_connexion/endpoints/dataset_endpoint.py:231:78:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/dataset_endpoint.py#L259'>airflow/api_connexion/endpoints/dataset_endpoint.py:259:78:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/dataset_endpoint.py#L277'>airflow/api_connexion/endpoints/dataset_endpoint.py:277:75:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/dataset_endpoint.py#L282'>airflow/api_connexion/endpoints/dataset_endpoint.py:282:68:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/dataset_endpoint.py#L308'>airflow/api_connexion/endpoints/dataset_endpoint.py:308:75:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/dataset_endpoint.py#L313'>airflow/api_connexion/endpoints/dataset_endpoint.py:313:68:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/task_instance_endpoint.py#L103'>airflow/api_connexion/endpoints/task_instance_endpoint.py:103:108:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/task_instance_endpoint.py#L213'>airflow/api_connexion/endpoints/task_instance_endpoint.py:213:84:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/task_instance_endpoint.py#L218'>airflow/api_connexion/endpoints/task_instance_endpoint.py:218:84:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/task_instance_endpoint.py#L335'>airflow/api_connexion/endpoints/task_instance_endpoint.py:335:84:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/task_instance_endpoint.py#L340'>airflow/api_connexion/endpoints/task_instance_endpoint.py:340:84:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/task_instance_endpoint.py#L411'>airflow/api_connexion/endpoints/task_instance_endpoint.py:411:94:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/apache/airflow/blob/84a8f7ecc122e9b63d4d2834ee8994587c467eb2/airflow/api_connexion/endpoints/task_instance_endpoint.py#L414'>airflow/api_connexion/endpoints/task_instance_endpoint.py:414:94:</a> COM812 [*] Trailing comma missing
+... 5535 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -5056 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L120'>analytics/lib/counts.py:120:75:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L139'>analytics/lib/counts.py:139:84:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L158'>analytics/lib/counts.py:158:97:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L184'>analytics/lib/counts.py:184:71:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L213'>analytics/lib/counts.py:213:71:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L318'>analytics/lib/counts.py:318:97:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L423'>analytics/lib/counts.py:423:95:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L437'>analytics/lib/counts.py:437:91:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L756'>analytics/lib/counts.py:756:87:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L768'>analytics/lib/counts.py:768:94:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L775'>analytics/lib/counts.py:775:91:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L787'>analytics/lib/counts.py:787:93:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L808'>analytics/lib/counts.py:808:86:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/counts.py#L843'>analytics/lib/counts.py:843:99:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/lib/time_utils.py#L13'>analytics/lib/time_utils.py:13:78:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/management/commands/populate_analytics_db.py#L118'>analytics/management/commands/populate_analytics_db.py:118:80:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/management/commands/populate_analytics_db.py#L161'>analytics/management/commands/populate_analytics_db.py:161:101:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/management/commands/populate_analytics_db.py#L195'>analytics/management/commands/populate_analytics_db.py:195:81:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/management/commands/populate_analytics_db.py#L208'>analytics/management/commands/populate_analytics_db.py:208:81:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/management/commands/populate_analytics_db.py#L221'>analytics/management/commands/populate_analytics_db.py:221:81:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/management/commands/populate_analytics_db.py#L236'>analytics/management/commands/populate_analytics_db.py:236:81:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/management/commands/populate_analytics_db.py#L255'>analytics/management/commands/populate_analytics_db.py:255:81:</a> COM812 [*] Trailing comma missing
+- <a href='https://github.com/zulip/zulip/blob/3a03e149381ddc89b2856df49c741d51c142c04e/analytics/management/commands/populate_analytics_db.py#L280'>analytics/management/commands/populate_analytics_db.py:280:81:</a> COM812 [*] Trailing comma missing
+... 5033 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| COM812 | 10617 | 0 | 10617 | 0 | 0 |
+
+</p>
+</details>
+
+
+
+
+---
+
+_Added to milestone `v0.3.0` by @MichaReiser on 2024-02-26 13:57_
+
+---
+
+_Label `rule` added by @MichaReiser on 2024-02-26 13:57_
+
+---
+
+_Label `breaking` added by @MichaReiser on 2024-02-26 13:57_
+
+---
+
+_Comment by @codspeed-hq[bot] on 2024-02-26 14:53_
+
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/com812-formatter-compat)
+
+### Merging #10111 will **not alter performance**
+
+<sub>Comparing <code>com812-formatter-compat</code> (e0910f7) with <code>main</code> (ab4bd71)</sub>
+
+
+
+### Summary
+
+`✅ 30` untouched benchmarks
+
+
+
+
+
+
+---
+
+_Marked ready for review by @MichaReiser on 2024-02-26 15:10_
+
+---
+
+_Label `needs-decision` added by @MichaReiser on 2024-02-26 15:16_
+
+---
+
+_Review requested from @charliermarsh by @MichaReiser on 2024-02-26 15:35_
+
+---
+
+_Removed from milestone `v0.3.0` by @MichaReiser on 2024-02-29 13:27_
+
+---
+
+_Closed by @MichaReiser on 2024-03-01 07:52_
+
+---
+
+_Branch deleted on 2024-05-08 12:41_
+
+---
+
+_Comment by @danpascu on 2024-08-16 08:09_
+
+Would it be possible to include this only for the case where arguments are all on one single line (in which case the comma is optional and not flagged by the linter) and consider all other cases where is more than one line to be equivalent with the one-argument-per-line case in which case it requires a comma. This way you do not need to worry about all the alternative formattings, which let's be frank can be many and unpredictable, and lump everything that is not a single line into the one-argument-per-line case. IMO this solves the most common use case where the formatter and the linter are fighting with each other and would cover the needs of most of the users. I believe this is a case where practicality trumps absolute correctness.
+
+---
