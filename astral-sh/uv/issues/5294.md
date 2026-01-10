@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-22T17:17:32Z
 updated_at: 2024-07-22T22:41:04Z
 url: https://github.com/astral-sh/uv/issues/5294
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `Resolution` types drop urls under specific circumstances
@@ -123,22 +123,10 @@ _Label `preview` added by @konstin on 2024-07-22 17:29_
 
 ---
 
-_Referenced in [astral-sh/uv#5301](../../astral-sh/uv/pulls/5301.md) on 2024-07-22 18:03_
-
----
-
-_Referenced in [astral-sh/uv#5312](../../astral-sh/uv/pulls/5312.md) on 2024-07-22 21:12_
-
----
-
 _Closed by @charliermarsh on 2024-07-22 22:41_
 
 ---
 
 _Closed by @charliermarsh on 2024-07-22 22:41_
-
----
-
-_Referenced in [astral-sh/uv#5253](../../astral-sh/uv/issues/5253.md) on 2024-07-29 00:54_
 
 ---

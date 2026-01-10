@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-18T18:22:00Z
 updated_at: 2024-08-20T13:28:05Z
 url: https://github.com/astral-sh/uv/issues/6184
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Allow users to constrain universal locks to specific markers
@@ -49,10 +49,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-18 22:06_
 _Comment by @BurntSushi on 2024-08-19 14:03_
 
 I like this a lot. I feel like it's a good release valve.
-
----
-
-_Referenced in [astral-sh/uv#6210](../../astral-sh/uv/pulls/6210.md) on 2024-08-19 16:31_
 
 ---
 

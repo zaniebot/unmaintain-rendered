@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-07T15:10:07Z
 updated_at: 2024-08-07T15:50:38Z
 url: https://github.com/astral-sh/uv/issues/5866
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Allow omission of `git+` for `.git` URLs in `uv add`
@@ -33,10 +33,6 @@ _Label `cli` added by @charliermarsh on 2024-08-07 15:10_
 ---
 
 _Label `preview` added by @charliermarsh on 2024-08-07 15:10_
-
----
-
-_Referenced in [astral-sh/uv#5868](../../astral-sh/uv/pulls/5868.md) on 2024-08-07 15:20_
 
 ---
 

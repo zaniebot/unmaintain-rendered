@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-20T01:06:04Z
 updated_at: 2024-07-22T17:15:12Z
 url: https://github.com/astral-sh/uv/issues/5234
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Favicon has white space around it
@@ -32,10 +32,6 @@ _Label `documentation` added by @zanieb on 2024-07-20 01:06_
 _Comment by @charliermarsh on 2024-07-20 01:06_
 
 Awful
-
----
-
-_Referenced in [astral-sh/uv#5239](../../astral-sh/uv/pulls/5239.md) on 2024-07-21 17:07_
 
 ---
 

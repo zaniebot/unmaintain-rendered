@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-23T15:55:00Z
 updated_at: 2024-07-24T20:33:29Z
 url: https://github.com/astral-sh/uv/issues/5340
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Should `uv init` write an empty `dev-dependencies` section?
@@ -63,10 +63,6 @@ It seems weird to write a non-standard entry by default if it's empty. I'd prefe
 ---
 
 _Label `good first issue` added by @zanieb on 2024-07-23 17:09_
-
----
-
-_Referenced in [astral-sh/uv#5406](../../astral-sh/uv/pulls/5406.md) on 2024-07-24 12:50_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-06T22:22:26Z
 updated_at: 2024-08-07T03:03:23Z
 url: https://github.com/astral-sh/uv/issues/5838
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Invoking `python` can fail if the interpreter is named `python3`
@@ -150,10 +150,6 @@ I'm going to change our installer to add it
 
 ---
 
-_Referenced in [astral-sh/uv#5849](../../astral-sh/uv/pulls/5849.md) on 2024-08-07 02:49_
-
----
-
 _Label `preview` added by @charliermarsh on 2024-08-07 02:50_
 
 ---
@@ -163,9 +159,5 @@ _Closed by @charliermarsh on 2024-08-07 03:03_
 ---
 
 _Closed by @charliermarsh on 2024-08-07 03:03_
-
----
-
-_Referenced in [astral-sh/uv#6348](../../astral-sh/uv/issues/6348.md) on 2024-08-21 16:33_
 
 ---

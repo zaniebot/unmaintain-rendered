@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-16T22:28:00Z
 updated_at: 2024-08-20T20:05:35Z
 url: https://github.com/astral-sh/uv/issues/6164
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Support `pyproject.toml` et al in `uv add`
@@ -37,13 +37,5 @@ _Label `preview` removed by @zanieb on 2024-08-20 18:21_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-20 20:05_
-
----
-
-_Referenced in [astral-sh/uv#6277](../../astral-sh/uv/issues/6277.md) on 2024-08-20 23:24_
-
----
-
-_Referenced in [astral-sh/uv#6520](../../astral-sh/uv/issues/6520.md) on 2024-08-23 14:54_
 
 ---

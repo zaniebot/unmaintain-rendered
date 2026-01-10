@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-09T17:13:56Z
 updated_at: 2024-08-16T13:25:01Z
 url: https://github.com/astral-sh/uv/issues/5966
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Add an "Environments" concept documentation
@@ -34,18 +34,6 @@ _Assigned to @zanieb by @zanieb on 2024-08-09 17:14_
 ---
 
 _Label `documentation` added by @zanieb on 2024-08-09 17:14_
-
----
-
-_Referenced in [astral-sh/uv#5965](../../astral-sh/uv/pulls/5965.md) on 2024-08-09 17:14_
-
----
-
-_Referenced in [astral-sh/uv#5975](../../astral-sh/uv/issues/5975.md) on 2024-08-09 19:56_
-
----
-
-_Referenced in [astral-sh/uv#6058](../../astral-sh/uv/pulls/6058.md) on 2024-08-13 16:30_
 
 ---
 

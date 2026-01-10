@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-13T17:06:04Z
 updated_at: 2024-08-14T13:55:41Z
 url: https://github.com/astral-sh/uv/issues/6062
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Extras are sometimes not collapsed properly
@@ -99,10 +99,6 @@ That actually doesn't _quite_ repro as-is, I had a change on my branch. Let me f
 _Comment by @charliermarsh on 2024-08-13 17:51_
 
 Edited to include a real repro.
-
----
-
-_Referenced in [astral-sh/uv#6065](../../astral-sh/uv/pulls/6065.md) on 2024-08-13 18:01_
 
 ---
 

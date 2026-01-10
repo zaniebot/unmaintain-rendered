@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-16T18:10:59Z
 updated_at: 2024-08-06T02:54:19Z
 url: https://github.com/astral-sh/uv/issues/5119
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # uv lock should redact username and password from  source
@@ -288,10 +288,6 @@ display = "echo {env:FOO:{env:BAR:{home}}}"
 
 ---
 
-_Referenced in [astral-sh/uv#5734](../../astral-sh/uv/issues/5734.md) on 2024-08-03 17:38_
-
----
-
 _Comment by @paveldikov on 2024-08-03 23:03_
 
 I think (1) should be the default behaviour -- it is secure by default, and makes no assumptions as to the way the credentials were fed in (env var interpolation by shell, env var interpolation by uv, `uv.toml`, CLI arg, ...)
@@ -307,14 +303,6 @@ _Comment by @charliermarsh on 2024-08-03 23:05_
 _Comment by @charliermarsh on 2024-08-03 23:28_
 
 I'll be giving this some thought this week.
-
----
-
-_Referenced in [astral-sh/uv#4893](../../astral-sh/uv/issues/4893.md) on 2024-08-05 14:28_
-
----
-
-_Referenced in [astral-sh/uv#5803](../../astral-sh/uv/pulls/5803.md) on 2024-08-05 23:29_
 
 ---
 

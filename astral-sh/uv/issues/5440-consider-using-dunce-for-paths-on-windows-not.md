@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-25T10:56:31Z
 updated_at: 2024-07-26T14:39:28Z
 url: https://github.com/astral-sh/uv/issues/5440
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Consider using `dunce` for paths on Windows (not just for display)
@@ -106,10 +106,6 @@ Happy to test.
 
 Yeah, and I wonder if this will actually make the code _simpler_? (assuming that this is going to be a near-total revert of #1086. If so, win-win!)
 
-
----
-
-_Referenced in [astral-sh/uv#5446](../../astral-sh/uv/pulls/5446.md) on 2024-07-25 15:00_
 
 ---
 

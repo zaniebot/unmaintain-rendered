@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-01T12:53:16Z
 updated_at: 2024-08-03T12:18:30Z
 url: https://github.com/astral-sh/uv/issues/5683
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Consider stripping `uv` release binaries
@@ -143,17 +143,9 @@ I just checked one of our Rust project's cross-compiled binaries (`aarch64-unkno
 
 ---
 
-_Referenced in [rust-lang/cargo#14346](../../rust-lang/cargo/issues/14346.md) on 2024-08-03 10:34_
-
----
-
 _Comment by @konstin on 2024-08-03 10:35_
 
 Reported upstream: https://github.com/rust-lang/cargo/issues/14346
-
----
-
-_Referenced in [astral-sh/uv#5745](../../astral-sh/uv/pulls/5745.md) on 2024-08-03 10:39_
 
 ---
 

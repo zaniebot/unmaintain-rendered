@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-18T04:01:24Z
 updated_at: 2024-08-01T17:42:12Z
 url: https://github.com/astral-sh/uv/issues/5178
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Should `uv add` set lower version bounds?
@@ -118,10 +118,6 @@ I will try to do this tomorrow.
 
 ---
 
-_Referenced in [astral-sh/uv#5688](../../astral-sh/uv/pulls/5688.md) on 2024-08-01 14:58_
-
----
-
 _Closed by @charliermarsh on 2024-08-01 17:06_
 
 ---
@@ -131,9 +127,5 @@ _Comment by @notatallshaw on 2024-08-01 17:42_
 I'm a bit late to the conversation, but one heuristic you might find as a helpful fallback if users of projects have not setup or do not use pytest, is if the dependency provides wheels, what's the earliest version of the dependency that has compatible wheels with some version of Python that matches those wheels. 
 
 E.g. For numpy if your project is `Python-Requires >= 3.9`  you might be able to determine that `numpy >= 1.19.3`
-
----
-
-_Referenced in [astral-sh/uv#6783](../../astral-sh/uv/issues/6783.md) on 2024-08-29 03:33_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-09T12:34:10Z
 updated_at: 2024-07-31T15:05:14Z
 url: https://github.com/astral-sh/uv/issues/4926
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Prioritize forks 
@@ -57,27 +57,11 @@ Agree with this. I actually think that (if done right) this would've prevented t
 
 ---
 
-_Referenced in [astral-sh/uv#5161](../../astral-sh/uv/issues/5161.md) on 2024-07-18 08:30_
-
----
-
-_Referenced in [astral-sh/uv#5180](../../astral-sh/uv/issues/5180.md) on 2024-07-18 09:53_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-30 12:59_
 
 ---
 
 _Label `enhancement` added by @charliermarsh on 2024-07-30 12:59_
-
----
-
-_Referenced in [astral-sh/uv#5642](../../astral-sh/uv/pulls/5642.md) on 2024-07-30 23:24_
-
----
-
-_Referenced in [astral-sh/uv#5643](../../astral-sh/uv/pulls/5643.md) on 2024-07-30 23:37_
 
 ---
 

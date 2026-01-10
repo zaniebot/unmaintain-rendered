@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-20T02:33:01Z
 updated_at: 2024-08-03T13:47:13Z
 url: https://github.com/astral-sh/uv/issues/5237
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Universal resolution needs documentation
@@ -56,10 +56,6 @@ _Assigned to @konstin by @konstin on 2024-07-28 11:55_
 ---
 
 _Unassigned @charliermarsh by @konstin on 2024-07-28 11:55_
-
----
-
-_Referenced in [astral-sh/uv#5723](../../astral-sh/uv/pulls/5723.md) on 2024-08-02 13:40_
 
 ---
 

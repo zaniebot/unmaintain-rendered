@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-09T00:37:14Z
 updated_at: 2024-08-11T00:24:50Z
 url: https://github.com/astral-sh/uv/issues/5949
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv tool upgrade` should use the lockfile update output
@@ -49,10 +49,6 @@ Is there appetite for this? E.g., the format like:
 ```
 Upgraded X to Y
 ```
-
----
-
-_Referenced in [astral-sh/uv#5997](../../astral-sh/uv/pulls/5997.md) on 2024-08-10 17:30_
 
 ---
 

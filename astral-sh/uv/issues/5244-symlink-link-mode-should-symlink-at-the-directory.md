@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-20T11:15:38Z
 updated_at: 2024-07-29T01:09:00Z
 url: https://github.com/astral-sh/uv/issues/5244
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Symlink link mode should symlink at the directory level
@@ -27,10 +27,6 @@ See: https://github.com/astral-sh/uv/issues/5147#issuecomment-2240922522
 ---
 
 _Label `enhancement` added by @charliermarsh on 2024-07-20 11:15_
-
----
-
-_Referenced in [astral-sh/uv#5147](../../astral-sh/uv/issues/5147.md) on 2024-07-20 11:15_
 
 ---
 

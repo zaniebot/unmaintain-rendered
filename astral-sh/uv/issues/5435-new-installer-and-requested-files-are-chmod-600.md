@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-25T07:10:17Z
 updated_at: 2024-07-25T20:50:32Z
 url: https://github.com/astral-sh/uv/issues/5435
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # new INSTALLER and REQUESTED files are chmod 600
@@ -79,10 +79,6 @@ And I think what I'm doing should not happen often since reading all the files i
 _Comment by @charliermarsh on 2024-07-25 17:48_
 
 No worries. You're right that the permissions should be changed.
-
----
-
-_Referenced in [astral-sh/uv#5457](../../astral-sh/uv/pulls/5457.md) on 2024-07-25 18:24_
 
 ---
 

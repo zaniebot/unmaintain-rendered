@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-17T18:39:01Z
 updated_at: 2024-08-16T14:52:46Z
 url: https://github.com/astral-sh/uv/issues/3644
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `pip compile --upgrade` behavior with yanked packages
@@ -45,10 +45,6 @@ If the user wants to pin their package to a yanked version, I think it makes sen
 _Comment by @zanieb on 2024-05-17 21:11_
 
 Yeah that's my feeling as well. I would find it weird that `--upgrade` downgrades a package but 🤷‍♀️ yanks are rare.
-
----
-
-_Referenced in [astral-sh/uv#3602](../../astral-sh/uv/issues/3602.md) on 2024-05-17 21:20_
 
 ---
 

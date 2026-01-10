@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-02T03:07:24Z
 updated_at: 2024-08-13T14:14:16Z
 url: https://github.com/astral-sh/uv/issues/284
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Throw an error if a requirement exists with conflicting URLs
@@ -35,15 +35,7 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-11-02 12:56_
 
 ---
 
-_Referenced in [astral-sh/uv#319](../../astral-sh/uv/pulls/319.md) on 2023-11-04 19:31_
-
----
-
 _Closed by @charliermarsh on 2023-11-05 17:10_
-
----
-
-_Referenced in [astral-sh/uv#424](../../astral-sh/uv/pulls/424.md) on 2023-11-14 16:52_
 
 ---
 

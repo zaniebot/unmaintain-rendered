@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-19T03:25:27Z
 updated_at: 2024-07-28T00:49:30Z
 url: https://github.com/astral-sh/uv/issues/2538
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # "No solution found when resolving dependencies", but pip installs readily
@@ -429,24 +429,12 @@ It looks like it _is_ standardized so I'll create a separate issue for it: https
 
 ---
 
-_Referenced in [astral-sh/uv#3779](../../astral-sh/uv/issues/3779.md) on 2024-05-23 00:09_
-
----
-
 _Comment by @charliermarsh on 2024-05-23 00:52_
 
 Fixed in https://github.com/astral-sh/uv/pull/3781, thanks.
 
 ---
 
-_Referenced in [astral-sh/uv#5351](../../astral-sh/uv/issues/5351.md) on 2024-07-23 17:15_
-
----
-
 _Closed by @charliermarsh on 2024-07-28 00:49_
-
----
-
-_Referenced in [astral-sh/uv#9923](../../astral-sh/uv/issues/9923.md) on 2025-01-01 01:10_
 
 ---

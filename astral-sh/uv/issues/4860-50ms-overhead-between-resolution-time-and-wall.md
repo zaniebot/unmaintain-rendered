@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-07T18:37:32Z
 updated_at: 2024-07-30T15:29:38Z
 url: https://github.com/astral-sh/uv/issues/4860
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # 50ms overhead between resolution time and wall time in `uv lock`
@@ -113,18 +113,6 @@ Summary
 _Comment by @ibraheemdev on 2024-07-09 17:32_
 
 It looks like there's ~20-30ms of overhead before starting resolution in `read_lockfile`, and ~20-30ms after in `Lock::from_resolution_graph` and `Lock::to_toml` + dropping. I expect there's some low hanging fruit there.
-
----
-
-_Referenced in [astral-sh/uv#4945](../../astral-sh/uv/pulls/4945.md) on 2024-07-09 20:51_
-
----
-
-_Referenced in [astral-sh/uv#4947](../../astral-sh/uv/pulls/4947.md) on 2024-07-09 22:07_
-
----
-
-_Referenced in [astral-sh/uv#5064](../../astral-sh/uv/issues/5064.md) on 2024-07-15 08:21_
 
 ---
 

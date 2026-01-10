@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-03T12:40:36Z
 updated_at: 2024-08-16T13:13:41Z
 url: https://github.com/astral-sh/uv/issues/5746
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `Environment variables` doc should mention XDG_* variables
@@ -53,18 +53,10 @@ _Label `good first issue` added by @zanieb on 2024-08-06 18:48_
 
 ---
 
-_Referenced in [astral-sh/uv#5994](../../astral-sh/uv/pulls/5994.md) on 2024-08-10 13:45_
-
----
-
 _Closed by @zanieb on 2024-08-16 13:13_
 
 ---
 
 _Closed by @zanieb on 2024-08-16 13:13_
-
----
-
-_Referenced in [astral-sh/uv#13307](../../astral-sh/uv/issues/13307.md) on 2025-05-06 00:14_
 
 ---

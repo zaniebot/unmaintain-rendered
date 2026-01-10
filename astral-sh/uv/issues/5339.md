@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-07-23T15:50:33Z
 updated_at: 2024-07-23T20:48:42Z
 url: https://github.com/astral-sh/uv/issues/5339
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv add` should not remove version specifiers when adding source
@@ -73,18 +73,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-07-23 20:21_
 
 ---
 
-_Referenced in [astral-sh/uv#5370](../../astral-sh/uv/pulls/5370.md) on 2024-07-23 20:38_
-
----
-
 _Closed by @charliermarsh on 2024-07-23 20:48_
-
----
-
-_Referenced in [astral-sh/uv#5383](../../astral-sh/uv/issues/5383.md) on 2024-07-26 00:50_
-
----
-
-_Referenced in [astral-sh/uv#5505](../../astral-sh/uv/issues/5505.md) on 2024-07-27 03:00_
 
 ---

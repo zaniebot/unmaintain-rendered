@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-14T20:29:47Z
 updated_at: 2024-08-14T22:51:10Z
 url: https://github.com/astral-sh/uv/issues/6093
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Unable to install subdirectory using `uv pip install` with a git tag
@@ -292,10 +292,6 @@ Be sure to review https://github.com/astral-sh/uv/pull/5944 if you haven't alrea
 
 ---
 
-_Referenced in [astral-sh/uv#6094](../../astral-sh/uv/pulls/6094.md) on 2024-08-14 21:14_
-
----
-
 _Comment by @zanieb on 2024-08-14 21:17_
 
 I've got a fix up at #6094. Thanks!
@@ -317,9 +313,5 @@ Thank you @zanieb ! 🎉
 _Comment by @zanieb on 2024-08-14 22:51_
 
 Thanks for confirming!
-
----
-
-_Referenced in [astral-sh/uv#10728](../../astral-sh/uv/issues/10728.md) on 2025-09-25 10:37_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-25T15:03:39Z
 updated_at: 2024-07-25T17:29:32Z
 url: https://github.com/astral-sh/uv/issues/5447
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Add support for `install_only_stripped` variants
@@ -66,10 +66,6 @@ I'll swap over now.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-25 17:18_
-
----
-
-_Referenced in [astral-sh/uv#5451](../../astral-sh/uv/pulls/5451.md) on 2024-07-25 17:20_
 
 ---
 

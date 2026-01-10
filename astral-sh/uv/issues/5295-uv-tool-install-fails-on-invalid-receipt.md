@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-22T17:49:27Z
 updated_at: 2024-07-22T18:46:58Z
 url: https://github.com/astral-sh/uv/issues/5295
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv tool install` fails on invalid receipt
@@ -46,10 +46,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-07-22 17:50_
 ---
 
 _Label `preview` added by @charliermarsh on 2024-07-22 17:50_
-
----
-
-_Referenced in [astral-sh/uv#5305](../../astral-sh/uv/pulls/5305.md) on 2024-07-22 18:38_
 
 ---
 

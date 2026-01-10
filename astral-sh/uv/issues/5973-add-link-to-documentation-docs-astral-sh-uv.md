@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-09T18:19:19Z
 updated_at: 2024-08-09T18:31:40Z
 url: https://github.com/astral-sh/uv/issues/5973
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Add link to documentation (docs.astral.sh/uv)
@@ -72,9 +72,5 @@ If you have feedback though, please feel free to comment at #5605 — I'd love t
 _Comment by @nikhilweee on 2024-08-09 18:31_
 
 Apologies for not searching enough, I remember searching the issues for any links to documentation a few days ago but those issues you refer to were opened last week. Eagerly waiting for the docs! Thank you for all the hard work!
-
----
-
-_Referenced in [astral-sh/uv#6198](../../astral-sh/uv/issues/6198.md) on 2024-08-19 16:20_
 
 ---

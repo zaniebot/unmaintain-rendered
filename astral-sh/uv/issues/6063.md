@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-13T17:24:04Z
 updated_at: 2024-08-15T00:00:16Z
 url: https://github.com/astral-sh/uv/issues/6063
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv lock` sometimes changes the lock file when run for a second time
@@ -255,14 +255,6 @@ Then, when we resolve, don't seed the forks. Just proceed with with a "normal" r
 
 ---
 
-_Referenced in [astral-sh/uv#6091](../../astral-sh/uv/pulls/6091.md) on 2024-08-14 21:30_
-
----
-
 _Closed by @charliermarsh on 2024-08-15 00:00_
-
----
-
-_Referenced in [astral-sh/uv#6158](../../astral-sh/uv/issues/6158.md) on 2024-08-16 17:35_
 
 ---

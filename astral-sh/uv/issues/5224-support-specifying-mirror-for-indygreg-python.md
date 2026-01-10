@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-19T15:29:19Z
 updated_at: 2024-08-08T01:34:20Z
 url: https://github.com/astral-sh/uv/issues/5224
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Support specifying mirror for `indygreg/python-build-standalone` in `uv python` 
@@ -61,14 +61,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-02 02:25_
 
 ---
 
-_Referenced in [astral-sh/uv#5719](../../astral-sh/uv/pulls/5719.md) on 2024-08-02 02:37_
-
----
-
 _Closed by @charliermarsh on 2024-08-08 01:34_
-
----
-
-_Referenced in [pypa/hatch#1885](../../pypa/hatch/issues/1885.md) on 2025-01-13 17:13_
 
 ---

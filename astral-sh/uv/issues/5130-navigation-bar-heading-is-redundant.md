@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-16T21:00:23Z
 updated_at: 2024-07-31T15:08:23Z
 url: https://github.com/astral-sh/uv/issues/5130
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Navigation bar heading is redundant
@@ -27,14 +27,6 @@ There's a "uv" title at the top of the page, we don't need one at the top of the
 ---
 
 _Label `documentation` added by @zanieb on 2024-07-16 21:00_
-
----
-
-_Referenced in [astral-sh/uv#5310](../../astral-sh/uv/pulls/5310.md) on 2024-07-22 20:58_
-
----
-
-_Referenced in [astral-sh/uv#5316](../../astral-sh/uv/pulls/5316.md) on 2024-07-22 22:47_
 
 ---
 

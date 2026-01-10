@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-25T18:33:04Z
 updated_at: 2024-07-25T23:32:45Z
 url: https://github.com/astral-sh/uv/issues/5459
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Python environment "layering" Rye vs Uv
@@ -160,10 +160,6 @@ _Label `enhancement` added by @charliermarsh on 2024-07-25 21:47_
 
 ---
 
-_Referenced in [astral-sh/uv#5462](../../astral-sh/uv/pulls/5462.md) on 2024-07-25 23:19_
-
----
-
 _Comment by @carljm on 2024-07-25 23:30_
 
 To be clear, the reason for `sitecustomize.py` over a pth file is to get processing of pth files in the added directory, so editable installs in the base environment are still importable. 
@@ -175,9 +171,5 @@ _Closed by @charliermarsh on 2024-07-25 23:32_
 ---
 
 _Closed by @charliermarsh on 2024-07-25 23:32_
-
----
-
-_Referenced in [astral-sh/uv#7699](../../astral-sh/uv/pulls/7699.md) on 2024-09-26 16:16_
 
 ---

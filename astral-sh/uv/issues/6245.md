@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-20T06:55:27Z
 updated_at: 2024-08-20T15:03:34Z
 url: https://github.com/astral-sh/uv/issues/6245
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv pip` inconsistencies with win32 platform
@@ -28,10 +28,6 @@ Generally, I wonder why win32 isn't an officially supported platform as it is in
 
 ---
 
-_Referenced in [astral-sh/uv#6198](../../astral-sh/uv/issues/6198.md) on 2024-08-20 07:00_
-
----
-
 _Comment by @charliermarsh on 2024-08-20 13:45_
 
 We can add this!
@@ -39,10 +35,6 @@ We can add this!
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-20 13:45_
-
----
-
-_Referenced in [astral-sh/uv#6252](../../astral-sh/uv/pulls/6252.md) on 2024-08-20 13:52_
 
 ---
 

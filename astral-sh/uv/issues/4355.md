@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-06-17T10:05:41Z
 updated_at: 2024-08-09T21:57:17Z
 url: https://github.com/astral-sh/uv/issues/4355
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Support relative path wheel dependencies
@@ -102,10 +102,6 @@ _Assigned to @konstin by @charliermarsh on 2024-08-09 14:14_
 ---
 
 _Unassigned @charliermarsh by @charliermarsh on 2024-08-09 14:14_
-
----
-
-_Referenced in [astral-sh/uv#5969](../../astral-sh/uv/pulls/5969.md) on 2024-08-09 17:37_
 
 ---
 

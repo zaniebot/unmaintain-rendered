@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-08T20:23:14Z
 updated_at: 2024-08-08T21:05:03Z
 url: https://github.com/astral-sh/uv/issues/5929
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Parent uv.toml configuration not used when pyproject.toml present
@@ -73,10 +73,6 @@ _Label `bug` added by @charliermarsh on 2024-08-08 20:30_
 ---
 
 _Label `configuration` added by @charliermarsh on 2024-08-08 20:30_
-
----
-
-_Referenced in [astral-sh/uv#5931](../../astral-sh/uv/pulls/5931.md) on 2024-08-08 20:49_
 
 ---
 

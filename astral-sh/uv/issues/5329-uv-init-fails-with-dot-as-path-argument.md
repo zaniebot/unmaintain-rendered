@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-23T06:04:42Z
 updated_at: 2024-07-23T12:20:15Z
 url: https://github.com/astral-sh/uv/issues/5329
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv init` fails with dot as path argument
@@ -33,10 +33,6 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ```
 
 Since this is a fairly common valid init argument, I believe it should not panic due to an `Invalid package name` error.
-
----
-
-_Referenced in [astral-sh/uv#5330](../../astral-sh/uv/pulls/5330.md) on 2024-07-23 06:08_
 
 ---
 

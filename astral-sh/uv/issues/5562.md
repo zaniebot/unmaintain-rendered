@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-29T14:49:22Z
 updated_at: 2024-08-16T17:29:05Z
 url: https://github.com/astral-sh/uv/issues/5562
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # audit universal resolver's robustness with respect to false positives/negatives with routines like "are these two marker expressions disjoint"
@@ -47,10 +47,6 @@ _Comment by @ibraheemdev on 2024-07-29 20:43_
 I believe we are going to end up in a place where marker satisfiability can have false positives but never false negatives, i.e. we might think a marker tree is satisfiable when it is actually not, but we never claim a marker tree is not satisfiable when it actually is. This is mostly due to the `in` operator on strings which can have interactions that are difficult to model (for example, `key > 'z' and key in 'linux'` is not satisfiable, but that is not easy to see), but there may be other places this is possible that we have not accounted for yet so it probably a good idea to remain pessimistic.
 
 Similarly, the disjointness of two markers is equivalent to asking whether their conjunction is not satisfiable, so we should account for false negatives but not false positives. i.e. it is possible that we think two markers are not disjoint when they actually are (such as `key > 'z'` and `key in 'linux'`), but we should never claim that two markers are disjoint when there is a potential intersection.
-
----
-
-_Referenced in [astral-sh/uv#5978](../../astral-sh/uv/pulls/5978.md) on 2024-08-09 20:31_
 
 ---
 

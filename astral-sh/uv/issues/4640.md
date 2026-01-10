@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-06-28T23:14:30Z
 updated_at: 2024-08-13T15:35:48Z
 url: https://github.com/astral-sh/uv/issues/4640
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Universal resolver fails when multiple divergent constraints are provided
@@ -154,10 +154,6 @@ My guess is that the issue in your case is that `numpy >=1.26` doesn't support P
 
 ---
 
-_Referenced in [astral-sh/uv#4669](../../astral-sh/uv/issues/4669.md) on 2024-06-30 21:30_
-
----
-
 _Comment by @charliermarsh on 2024-07-01 22:08_
 
 Conceptually, could we model this as:
@@ -190,35 +186,7 @@ Another option, perhaps, is to improve the error message and require the user to
 
 ---
 
-_Referenced in [astral-sh/uv#4732](../../astral-sh/uv/issues/4732.md) on 2024-07-02 16:58_
-
----
-
 _Assigned to @BurntSushi by @BurntSushi on 2024-07-08 13:54_
-
----
-
-_Referenced in [astral-sh/uv#4996](../../astral-sh/uv/pulls/4996.md) on 2024-07-11 18:07_
-
----
-
-_Referenced in [astral-sh/uv#5344](../../astral-sh/uv/issues/5344.md) on 2024-07-23 16:52_
-
----
-
-_Referenced in [astral-sh/uv#5488](../../astral-sh/uv/pulls/5488.md) on 2024-07-26 18:43_
-
----
-
-_Referenced in [astral-sh/uv#5597](../../astral-sh/uv/pulls/5597.md) on 2024-07-30 12:42_
-
----
-
-_Referenced in [astral-sh/uv#5733](../../astral-sh/uv/pulls/5733.md) on 2024-08-02 18:30_
-
----
-
-_Referenced in [astral-sh/uv#5887](../../astral-sh/uv/pulls/5887.md) on 2024-08-07 18:51_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-19T19:19:06Z
 updated_at: 2024-07-19T19:22:08Z
 url: https://github.com/astral-sh/uv/issues/5228
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Python version pins need to be combined with `Requires-Python`
@@ -40,13 +40,5 @@ _Label `bug` added by @zanieb on 2024-07-19 19:19_
 _Comment by @zanieb on 2024-07-19 19:22_
 
 This could get pretty complicated. We may want to think about the problem space a bit before implementing the suggestion.
-
----
-
-_Referenced in [astral-sh/uv#5592](../../astral-sh/uv/pulls/5592.md) on 2024-07-30 14:17_
-
----
-
-_Referenced in [astral-sh/uv#6372](../../astral-sh/uv/pulls/6372.md) on 2024-09-26 01:23_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T06:16:55Z
 updated_at: 2024-08-14T08:33:19Z
 url: https://github.com/astral-sh/uv/issues/1442
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Implement `--report` for `uv pip install`
@@ -43,10 +43,6 @@ _Label `enhancement` added by @charliermarsh on 2024-02-16 06:18_
 _Comment by @T-256 on 2024-02-17 11:36_
 
 related https://github.com/astral-sh/uv/issues/411
-
----
-
-_Referenced in [astral-sh/uv#3199](../../astral-sh/uv/issues/3199.md) on 2024-04-25 12:37_
 
 ---
 
@@ -123,22 +119,10 @@ _Comment by @charliermarsh on 2024-06-26 11:59_
 
 ---
 
-_Referenced in [conda-incubator/conda-pypi#14](../../conda-incubator/conda-pypi/issues/14.md) on 2024-07-23 13:21_
-
----
-
 _Comment by @yorickvP on 2024-08-14 08:33_
 
 @yajo I implemented a uv solver with dream2nix at https://github.com/datakami/cognix/blob/main/modules/pip-uv/default.nix, but it requires a [patched uv](https://github.com/astral-sh/uv/compare/7dfb562585e75137226fa5e4dbcf248c816925c3...yorickvP:uv:yorickvp/dream2nix-resolver-2)
 
 My patch isn't really upstreamable, but it would be great to instead have `--report` upstream.
-
----
-
-_Referenced in [moreati/ansible-uv#2](../../moreati/ansible-uv/issues/2.md) on 2024-11-29 22:09_
-
----
-
-_Referenced in [astral-sh/uv#411](../../astral-sh/uv/issues/411.md) on 2025-02-21 17:52_
 
 ---

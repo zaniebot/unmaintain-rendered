@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-12T00:16:27Z
 updated_at: 2024-08-12T02:02:41Z
 url: https://github.com/astral-sh/uv/issues/6014
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv sync` rejects source distributions from `--find-links`
@@ -39,10 +39,6 @@ _Label `preview` added by @charliermarsh on 2024-08-12 00:16_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-12 00:16_
-
----
-
-_Referenced in [astral-sh/uv#6016](../../astral-sh/uv/pulls/6016.md) on 2024-08-12 01:12_
 
 ---
 

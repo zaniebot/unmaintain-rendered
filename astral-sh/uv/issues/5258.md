@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-07-21T14:13:00Z
 updated_at: 2024-07-31T13:54:18Z
 url: https://github.com/astral-sh/uv/issues/5258
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Expose more fine-grained control for `uv sync` command
@@ -54,22 +54,10 @@ To respond in part: I think, in the future, `uv venv` will respect the `pyprojec
 
 ---
 
-_Referenced in [astral-sh/uv#5552](../../astral-sh/uv/issues/5552.md) on 2024-07-29 06:26_
-
----
-
-_Referenced in [astral-sh/uv#5592](../../astral-sh/uv/pulls/5592.md) on 2024-07-30 09:47_
-
----
-
 _Closed by @zanieb on 2024-07-31 13:54_
 
 ---
 
 _Closed by @zanieb on 2024-07-31 13:54_
-
----
-
-_Referenced in [dh-tech/undate-python#118](../../dh-tech/undate-python/pulls/118.md) on 2025-04-11 14:55_
 
 ---

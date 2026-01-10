@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-23T20:20:21Z
 updated_at: 2024-07-23T20:51:31Z
 url: https://github.com/astral-sh/uv/issues/5368
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv init` fails in an unmanaged project
@@ -51,10 +51,6 @@ Bug
 ---
 
 _Label `bug` added by @charliermarsh on 2024-07-23 20:40_
-
----
-
-_Referenced in [astral-sh/uv#5372](../../astral-sh/uv/pulls/5372.md) on 2024-07-23 20:42_
 
 ---
 

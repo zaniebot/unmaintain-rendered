@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-20T16:06:05Z
 updated_at: 2024-07-22T23:48:41Z
 url: https://github.com/astral-sh/uv/issues/5251
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Should `uv init` create nested workspaces?
@@ -86,14 +86,6 @@ _Label `preview` added by @konstin on 2024-07-22 11:41_
 
 ---
 
-_Referenced in [astral-sh/uv#5293](../../astral-sh/uv/pulls/5293.md) on 2024-07-22 16:15_
-
----
-
 _Closed by @charliermarsh on 2024-07-22 23:48_
-
----
-
-_Referenced in [astral-sh/uv#16640](../../astral-sh/uv/issues/16640.md) on 2025-11-08 06:53_
 
 ---

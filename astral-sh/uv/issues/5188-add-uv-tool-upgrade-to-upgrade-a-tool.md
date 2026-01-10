@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-18T14:24:06Z
 updated_at: 2024-08-08T20:48:16Z
 url: https://github.com/astral-sh/uv/issues/5188
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Add `uv tool upgrade` to upgrade a tool
@@ -43,10 +43,6 @@ Otherwise I think this is equivalent to `uv tool install <name> --upgrade`?
 _Comment by @blueraft on 2024-07-18 17:23_
 
 I can do this one
-
----
-
-_Referenced in [astral-sh/uv#5197](../../astral-sh/uv/pulls/5197.md) on 2024-07-18 18:58_
 
 ---
 

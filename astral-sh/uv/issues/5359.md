@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-23T18:07:37Z
 updated_at: 2024-07-24T14:21:42Z
 url: https://github.com/astral-sh/uv/issues/5359
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `--link-mode=symlink` fails with scripts
@@ -36,15 +36,7 @@ _Label `bug` added by @charliermarsh on 2024-07-23 18:07_
 
 ---
 
-_Referenced in [dagger/dagger#8020](../../dagger/dagger/pulls/8020.md) on 2024-07-23 18:32_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-23 21:55_
-
----
-
-_Referenced in [astral-sh/uv#5380](../../astral-sh/uv/pulls/5380.md) on 2024-07-23 22:11_
 
 ---
 
@@ -89,9 +81,5 @@ This change hasn't been released yet.
 _Comment by @hutch3232 on 2024-07-24 14:21_
 
 So sorry - I got confused!
-
----
-
-_Referenced in [prefix-dev/pixi#1650](../../prefix-dev/pixi/issues/1650.md) on 2024-07-25 08:51_
 
 ---

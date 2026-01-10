@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-19T13:38:59Z
 updated_at: 2024-07-20T18:31:18Z
 url: https://github.com/astral-sh/uv/issues/5217
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv pip tree` should show version specifiers for dependencies.
@@ -70,10 +70,6 @@ Yeah opt-in is cool with me. That makes sense.
 _Comment by @ChannyClaus on 2024-07-19 14:31_
 
 i can do this sometime this weekend 🌵 
-
----
-
-_Referenced in [astral-sh/uv#5240](../../astral-sh/uv/pulls/5240.md) on 2024-07-20 06:43_
 
 ---
 

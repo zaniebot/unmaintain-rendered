@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-21T04:44:52Z
 updated_at: 2024-08-13T13:52:51Z
 url: https://github.com/astral-sh/uv/issues/1794
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Support ` --prefer-binary` in `requirements.txt` files
@@ -48,10 +48,6 @@ error: Unexpected '-', expected '-c', '-e', '-r' or the start of a requirement i
 This is on version `0.1.6`.
 
 It would be nice if this syntax could be supported!
-
----
-
-_Referenced in [pola-rs/polars#14618](../../pola-rs/polars/pulls/14618.md) on 2024-02-21 04:56_
 
 ---
 
@@ -137,14 +133,6 @@ Ideally I would use `--only-binary` but there are a handful of packages where th
 
 ---
 
-_Referenced in [astral-sh/uv#4063](../../astral-sh/uv/issues/4063.md) on 2024-06-05 19:14_
-
----
-
-_Referenced in [deepmodeling/deepmd-kit#3864](../../deepmodeling/deepmd-kit/issues/3864.md) on 2024-06-11 04:45_
-
----
-
 _Comment by @notatallshaw-gts on 2024-06-12 20:54_
 
 May be helpful for other users, my use case is now solved by https://github.com/astral-sh/uv/issues/4063 / https://github.com/astral-sh/uv/pull/4067.
@@ -180,25 +168,5 @@ _Comment by @notatallshaw-gts on 2024-08-04 20:21_
 It would be good if it was in the pip the compatibility document: https://github.com/astral-sh/uv/blob/main/PIP_COMPATIBILITY.md
 
 I guess anyone could submit a PR for that?
-
----
-
-_Referenced in [glass-dev/glass#323](../../glass-dev/glass/issues/323.md) on 2024-10-04 10:22_
-
----
-
-_Referenced in [CodSpeedHQ/pytest-codspeed#60](../../CodSpeedHQ/pytest-codspeed/issues/60.md) on 2025-01-07 13:39_
-
----
-
-_Referenced in [glass-dev/glass#471](../../glass-dev/glass/pulls/471.md) on 2025-01-17 11:41_
-
----
-
-_Referenced in [pola-rs/polars#20589](../../pola-rs/polars/pulls/20589.md) on 2025-01-18 16:28_
-
----
-
-_Referenced in [apache/superset#34274](../../apache/superset/pulls/34274.md) on 2025-07-23 08:27_
 
 ---

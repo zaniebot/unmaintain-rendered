@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-07-30T01:57:24Z
 updated_at: 2024-07-30T02:15:49Z
 url: https://github.com/astral-sh/uv/issues/5584
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Missing license text for crates/uv-extract/src/vendor/cloneable_seekable_reader.rs
@@ -39,14 +39,6 @@ Perhaps copying https://github.com/google/ripunzip/raw/v0.4.0/LICENSE into `crat
 
 ---
 
-_Referenced in [astral-sh/uv#5585](../../astral-sh/uv/pulls/5585.md) on 2024-07-30 02:03_
-
----
-
 _Closed by @charliermarsh on 2024-07-30 02:15_
-
----
-
-_Referenced in [astral-sh/uv#5586](../../astral-sh/uv/issues/5586.md) on 2024-07-30 04:30_
 
 ---

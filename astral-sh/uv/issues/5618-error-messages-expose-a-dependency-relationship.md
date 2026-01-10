@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-30T17:43:33Z
 updated_at: 2024-08-02T21:27:09Z
 url: https://github.com/astral-sh/uv/issues/5618
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # error messages expose a dependency relationship between `a` and `a{marker}`
@@ -51,14 +51,6 @@ _Label `error messages` added by @BurntSushi on 2024-07-30 17:43_
 ---
 
 _Label `resolver` added by @BurntSushi on 2024-07-30 17:43_
-
----
-
-_Referenced in [astral-sh/uv#4922](../../astral-sh/uv/issues/4922.md) on 2024-07-30 17:43_
-
----
-
-_Referenced in [astral-sh/uv#5612](../../astral-sh/uv/issues/5612.md) on 2024-07-30 17:45_
 
 ---
 
@@ -108,10 +100,6 @@ Awesome thank you :) I was having trouble getting this exact form to appear.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-02 21:13_
-
----
-
-_Referenced in [astral-sh/uv#5738](../../astral-sh/uv/pulls/5738.md) on 2024-08-02 21:13_
 
 ---
 

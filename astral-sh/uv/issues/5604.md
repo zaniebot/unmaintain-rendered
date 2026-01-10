@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-30T15:37:09Z
 updated_at: 2024-08-03T13:49:10Z
 url: https://github.com/astral-sh/uv/issues/5604
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Improve documentation for workspaces
@@ -28,10 +28,6 @@ _Assigned to @konstin by @konstin on 2024-07-30 15:37_
 ---
 
 _Label `documentation` added by @charliermarsh on 2024-07-30 16:01_
-
----
-
-_Referenced in [astral-sh/uv#5728](../../astral-sh/uv/pulls/5728.md) on 2024-08-02 14:58_
 
 ---
 

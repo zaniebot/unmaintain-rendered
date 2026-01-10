@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-30T18:07:21Z
 updated_at: 2024-07-31T17:27:35Z
 url: https://github.com/astral-sh/uv/issues/5622
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # If resolution fails after `uv add`, should we remove the dependency?
@@ -51,10 +51,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-07-31 00:28_
 _Comment by @charliermarsh on 2024-07-31 02:39_
 
 I will try to do this tomorrow.
-
----
-
-_Referenced in [astral-sh/uv#5664](../../astral-sh/uv/pulls/5664.md) on 2024-07-31 17:14_
 
 ---
 

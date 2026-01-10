@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-30T19:11:49Z
 updated_at: 2024-08-01T20:56:30Z
 url: https://github.com/astral-sh/uv/issues/5630
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Consistent usage of "pre-release" vs. "prerelease"
@@ -82,10 +82,6 @@ I will fix it up now.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-01 17:22_
-
----
-
-_Referenced in [astral-sh/uv#5697](../../astral-sh/uv/pulls/5697.md) on 2024-08-01 17:25_
 
 ---
 

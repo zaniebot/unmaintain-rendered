@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-18T15:55:56Z
 updated_at: 2024-07-22T17:15:13Z
 url: https://github.com/astral-sh/uv/issues/5191
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Provide footer to navigate between previous and next pages
@@ -46,10 +46,6 @@ _Label `good first issue` added by @zanieb on 2024-07-18 16:12_
 ---
 
 _Assigned to @zanieb by @zanieb on 2024-07-20 01:41_
-
----
-
-_Referenced in [astral-sh/uv#5239](../../astral-sh/uv/pulls/5239.md) on 2024-07-21 17:07_
 
 ---
 

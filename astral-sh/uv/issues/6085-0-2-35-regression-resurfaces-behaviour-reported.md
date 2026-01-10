@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-14T14:44:27Z
 updated_at: 2024-08-20T20:06:18Z
 url: https://github.com/astral-sh/uv/issues/6085
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # 0.2.35 - regression. Resurfaces behaviour reported in #3675
@@ -72,9 +72,5 @@ I believe this is now fixed (in v0.3.0).
 ---
 
 _Closed by @charliermarsh on 2024-08-20 20:06_
-
----
-
-_Referenced in [astral-sh/uv#6279](../../astral-sh/uv/issues/6279.md) on 2024-08-22 00:14_
 
 ---

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-06-30T21:30:07Z
 updated_at: 2024-07-30T15:35:00Z
 url: https://github.com/astral-sh/uv/issues/4669
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Narrow `requires-python` in forks
@@ -74,10 +74,6 @@ My guess is that `numpy >=1.26` doesn't support Python 3.8, and we're still tryi
 
 ---
 
-_Referenced in [astral-sh/uv#4668](../../astral-sh/uv/issues/4668.md) on 2024-06-30 21:36_
-
----
-
 _Comment by @charliermarsh on 2024-06-30 21:36_
 
 See also https://github.com/astral-sh/uv/issues/4668 for another variant of this issue.
@@ -121,18 +117,6 @@ However, `echo 'uv;python_version>="3.8"' | uv pip compile -p 3.7 --universal -`
 
 ---
 
-_Referenced in [astral-sh/uv#4701](../../astral-sh/uv/pulls/4701.md) on 2024-07-01 18:33_
-
----
-
-_Referenced in [astral-sh/uv#4705](../../astral-sh/uv/pulls/4705.md) on 2024-07-01 20:22_
-
----
-
-_Referenced in [astral-sh/uv#4707](../../astral-sh/uv/pulls/4707.md) on 2024-07-01 20:43_
-
----
-
 _Closed by @charliermarsh on 2024-07-02 12:23_
 
 ---
@@ -151,26 +135,6 @@ _Reopened by @BurntSushi on 2024-07-08 16:57_
 
 ---
 
-_Referenced in [astral-sh/uv#5045](../../astral-sh/uv/issues/5045.md) on 2024-07-14 14:23_
-
----
-
-_Referenced in [astral-sh/uv#5134](../../astral-sh/uv/issues/5134.md) on 2024-07-17 01:18_
-
----
-
-_Referenced in [astral-sh/uv#5583](../../astral-sh/uv/pulls/5583.md) on 2024-07-30 01:30_
-
----
-
 _Closed by @charliermarsh on 2024-07-30 15:35_
-
----
-
-_Referenced in [astral-sh/uv#7821](../../astral-sh/uv/issues/7821.md) on 2024-09-30 22:30_
-
----
-
-_Referenced in [astral-sh/uv#8628](../../astral-sh/uv/pulls/8628.md) on 2024-10-28 01:49_
 
 ---

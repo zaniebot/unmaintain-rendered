@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-06T22:10:08Z
 updated_at: 2024-08-07T08:11:28Z
 url: https://github.com/astral-sh/uv/issues/5836
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv sync` reports selecting incorrect arch for numpy wheel
@@ -354,10 +354,6 @@ I'm actively working on this, thank you.
 ---
 
 _Label `bug` added by @charliermarsh on 2024-08-07 00:41_
-
----
-
-_Referenced in [astral-sh/uv#5845](../../astral-sh/uv/pulls/5845.md) on 2024-08-07 00:42_
 
 ---
 

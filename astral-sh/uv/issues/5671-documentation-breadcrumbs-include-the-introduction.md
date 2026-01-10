@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-31T20:35:16Z
 updated_at: 2024-07-31T22:10:33Z
 url: https://github.com/astral-sh/uv/issues/5671
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Documentation breadcrumbs include the introduction
@@ -31,14 +31,6 @@ _Label `bug` added by @zanieb on 2024-07-31 20:35_
 ---
 
 _Label `documentation` added by @zanieb on 2024-07-31 20:35_
-
----
-
-_Referenced in [astral-sh/uv#5672](../../astral-sh/uv/pulls/5672.md) on 2024-07-31 20:39_
-
----
-
-_Referenced in [astral-sh/uv#5676](../../astral-sh/uv/pulls/5676.md) on 2024-07-31 22:10_
 
 ---
 

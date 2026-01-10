@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-08T20:21:18Z
 updated_at: 2024-08-19T17:52:53Z
 url: https://github.com/astral-sh/uv/issues/5928
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Resolve from lockfile cannot detect yanked versions
@@ -45,10 +45,6 @@ I will document this caveat, it's probably infeasible to support warning here at
 _Comment by @zanieb on 2024-08-09 17:15_
 
 Is this relevant for `uv run` and `uv sync` or more?
-
----
-
-_Referenced in [astral-sh/uv#6219](../../astral-sh/uv/pulls/6219.md) on 2024-08-19 17:44_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-02T16:58:52Z
 updated_at: 2024-08-13T15:35:48Z
 url: https://github.com/astral-sh/uv/issues/4732
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Handle overlapping and incomplete markers when forking
@@ -161,46 +161,6 @@ _Label `preview` added by @konstin on 2024-07-02 16:58_
 ---
 
 _Assigned to @BurntSushi by @konstin on 2024-07-08 11:51_
-
----
-
-_Referenced in [astral-sh/packse#200](../../astral-sh/packse/pulls/200.md) on 2024-07-09 18:20_
-
----
-
-_Referenced in [astral-sh/uv#4959](../../astral-sh/uv/issues/4959.md) on 2024-07-10 14:27_
-
----
-
-_Referenced in [astral-sh/uv#4992](../../astral-sh/uv/issues/4992.md) on 2024-07-11 15:00_
-
----
-
-_Referenced in [astral-sh/uv#4996](../../astral-sh/uv/pulls/4996.md) on 2024-07-11 18:07_
-
----
-
-_Referenced in [astral-sh/uv#5074](../../astral-sh/uv/pulls/5074.md) on 2024-07-15 14:49_
-
----
-
-_Referenced in [astral-sh/uv#5163](../../astral-sh/uv/pulls/5163.md) on 2024-07-25 14:14_
-
----
-
-_Referenced in [astral-sh/uv#5488](../../astral-sh/uv/pulls/5488.md) on 2024-07-26 18:43_
-
----
-
-_Referenced in [astral-sh/uv#5562](../../astral-sh/uv/issues/5562.md) on 2024-07-29 14:49_
-
----
-
-_Referenced in [astral-sh/uv#5733](../../astral-sh/uv/pulls/5733.md) on 2024-08-02 18:30_
-
----
-
-_Referenced in [astral-sh/uv#5887](../../astral-sh/uv/pulls/5887.md) on 2024-08-07 18:51_
 
 ---
 

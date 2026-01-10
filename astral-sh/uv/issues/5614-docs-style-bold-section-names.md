@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-30T17:24:41Z
 updated_at: 2024-07-30T18:00:16Z
 url: https://github.com/astral-sh/uv/issues/5614
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # docs(style): Bold section names
@@ -45,13 +45,5 @@ Would you like me to help?
 _Comment by @zanieb on 2024-07-30 18:00_
 
 Feel free!
-
----
-
-_Referenced in [astral-sh/uv#5628](../../astral-sh/uv/pulls/5628.md) on 2024-07-30 18:55_
-
----
-
-_Referenced in [astral-sh/uv#5674](../../astral-sh/uv/pulls/5674.md) on 2024-07-31 20:53_
 
 ---

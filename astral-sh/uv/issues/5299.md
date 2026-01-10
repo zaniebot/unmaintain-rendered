@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-22T17:59:36Z
 updated_at: 2024-07-23T16:02:41Z
 url: https://github.com/astral-sh/uv/issues/5299
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv init` creates project with warning about `Requires-Python`
@@ -74,10 +74,6 @@ Probably. Or our "default" (the latest) Python version if that's not present?
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-22 21:23_
-
----
-
-_Referenced in [astral-sh/uv#5322](../../astral-sh/uv/pulls/5322.md) on 2024-07-23 01:03_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-21T03:00:25Z
 updated_at: 2024-07-23T00:15:19Z
 url: https://github.com/astral-sh/uv/issues/5254
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv init` should respect `workspace.exclude`
@@ -80,10 +80,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-07-22 23:58_
 _Comment by @charliermarsh on 2024-07-22 23:59_
 
 I'm here anyway so will fix.
-
----
-
-_Referenced in [astral-sh/uv#5318](../../astral-sh/uv/pulls/5318.md) on 2024-07-23 00:06_
 
 ---
 

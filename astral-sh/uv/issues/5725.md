@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-02T12:40:25Z
 updated_at: 2024-08-02T19:44:45Z
 url: https://github.com/astral-sh/uv/issues/5725
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Workspace wildcard member should only match directory
@@ -86,10 +86,6 @@ I can see it both ways..
 _Comment by @charliermarsh on 2024-08-02 13:49_
 
 Yeah, Cargo rejects directories that are listed as members but aren't valid packages, so I think we followed that precedent.
-
----
-
-_Referenced in [astral-sh/uv#5735](../../astral-sh/uv/pulls/5735.md) on 2024-08-02 19:35_
 
 ---
 

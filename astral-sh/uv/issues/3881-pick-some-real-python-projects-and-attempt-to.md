@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-28T13:40:57Z
 updated_at: 2024-07-30T15:35:16Z
 url: https://github.com/astral-sh/uv/issues/3881
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # pick some real Python projects and attempt to port them to `uv` with universal locking
@@ -30,10 +30,6 @@ Ref #3347
 ---
 
 _Label `internal` added by @BurntSushi on 2024-05-28 13:40_
-
----
-
-_Referenced in [astral-sh/uv#3347](../../astral-sh/uv/issues/3347.md) on 2024-05-28 13:41_
 
 ---
 

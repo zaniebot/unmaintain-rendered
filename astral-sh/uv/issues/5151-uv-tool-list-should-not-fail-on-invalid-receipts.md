@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-17T17:28:48Z
 updated_at: 2024-07-18T17:56:42Z
 url: https://github.com/astral-sh/uv/issues/5151
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv tool list` should not fail on invalid receipts
@@ -74,10 +74,6 @@ I'm sure you'll make it up to me :D
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-17 17:45_
-
----
-
-_Referenced in [astral-sh/uv#5156](../../astral-sh/uv/pulls/5156.md) on 2024-07-17 17:55_
 
 ---
 

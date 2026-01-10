@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-08T08:57:08Z
 updated_at: 2024-08-12T14:31:09Z
 url: https://github.com/astral-sh/uv/issues/5902
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv lock --locked` false positive
@@ -148,10 +148,6 @@ I think this may need one of Andrew’s changes…? Is that plausible?
 _Comment by @ibraheemdev on 2024-08-12 13:35_
 
 I think there's a simpler issue here.
-
----
-
-_Referenced in [astral-sh/uv#6035](../../astral-sh/uv/pulls/6035.md) on 2024-08-12 13:53_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-30T18:09:59Z
 updated_at: 2024-07-31T22:27:42Z
 url: https://github.com/astral-sh/uv/issues/5623
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uvx` should note if no executables are provided by a package
@@ -40,10 +40,6 @@ I'm left guessing if `requests` happens to provide another executable.
 ---
 
 _Label `error messages` added by @zanieb on 2024-07-30 18:10_
-
----
-
-_Referenced in [astral-sh/uv#5675](../../astral-sh/uv/pulls/5675.md) on 2024-07-31 21:32_
 
 ---
 

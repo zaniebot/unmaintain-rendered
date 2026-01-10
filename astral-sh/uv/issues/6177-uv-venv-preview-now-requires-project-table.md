@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-17T23:43:34Z
 updated_at: 2024-08-18T18:50:47Z
 url: https://github.com/astral-sh/uv/issues/6177
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv venv --preview` now requires `[project]` table
@@ -46,10 +46,6 @@ Of course, projects may have a `pyproject.toml` without having yet adopted PEP 6
 
 ---
 
-_Referenced in [astral-sh/uv#6178](../../astral-sh/uv/pulls/6178.md) on 2024-08-17 23:47_
-
----
-
 _Comment by @zanieb on 2024-08-17 23:58_
 
 Thanks for the report! We definitely shouldn't fail here.
@@ -71,9 +67,5 @@ _Closed by @charliermarsh on 2024-08-18 18:50_
 ---
 
 _Closed by @charliermarsh on 2024-08-18 18:50_
-
----
-
-_Referenced in [astral-sh/uv#6550](../../astral-sh/uv/issues/6550.md) on 2024-08-23 22:15_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-29T22:52:45Z
 updated_at: 2024-07-31T16:08:54Z
 url: https://github.com/astral-sh/uv/issues/5578
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Requires-python conflicts inside a workspace
@@ -72,10 +72,6 @@ Thinking on this more, I think intersection is probably right here (as long as w
 
 ---
 
-_Referenced in [astral-sh/uv#5594](../../astral-sh/uv/issues/5594.md) on 2024-07-30 11:16_
-
----
-
 _Label `needs-decision` added by @charliermarsh on 2024-07-30 12:25_
 
 ---
@@ -85,10 +81,6 @@ _Label `preview` added by @charliermarsh on 2024-07-30 12:25_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-30 16:07_
-
----
-
-_Referenced in [astral-sh/uv#5644](../../astral-sh/uv/pulls/5644.md) on 2024-07-31 00:10_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-23T19:12:46Z
 updated_at: 2024-07-23T20:33:54Z
 url: https://github.com/astral-sh/uv/issues/5366
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv` project and tool APIs are missing index credential extraction
@@ -43,10 +43,6 @@ _Label `preview` added by @charliermarsh on 2024-07-23 19:12_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-23 20:01_
-
----
-
-_Referenced in [astral-sh/uv#5367](../../astral-sh/uv/pulls/5367.md) on 2024-07-23 20:18_
 
 ---
 

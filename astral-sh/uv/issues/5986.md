@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-09T23:58:58Z
 updated_at: 2024-08-11T14:45:52Z
 url: https://github.com/astral-sh/uv/issues/5986
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Revisit LTO for ppc64le binaries
@@ -37,10 +37,6 @@ I'm not anywhere near an expert at Rust compilation options. Someone else should
 ---
 
 _Label `release` added by @zanieb on 2024-08-09 23:59_
-
----
-
-_Referenced in [astral-sh/uv#5984](../../astral-sh/uv/pulls/5984.md) on 2024-08-10 00:21_
 
 ---
 
@@ -91,9 +87,5 @@ I'll keep investigating. Getting the docker image to run locally is being quite 
 _Comment by @zanieb on 2024-08-11 14:45_
 
 Might be easiest to run the action in a fork and just comment out the rest of the jobs.
-
----
-
-_Referenced in [element-hq/synapse#18240](../../element-hq/synapse/issues/18240.md) on 2025-07-28 23:43_
 
 ---

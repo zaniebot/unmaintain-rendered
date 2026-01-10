@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-26T20:58:08Z
 updated_at: 2024-07-27T01:36:59Z
 url: https://github.com/astral-sh/uv/issues/5493
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Force reinstall wheel in uvx --with
@@ -60,10 +60,6 @@ Yeah I consider that a bug.
 _Comment by @charliermarsh on 2024-07-26 22:28_
 
 There's actually a TODO for this hah.
-
----
-
-_Referenced in [astral-sh/uv#5499](../../astral-sh/uv/pulls/5499.md) on 2024-07-27 00:09_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-09T21:57:49Z
 updated_at: 2024-07-24T20:45:00Z
 url: https://github.com/astral-sh/uv/issues/4946
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Avoid re-sync in `uv run` with dynamic metadata
@@ -33,10 +33,6 @@ _Label `preview` added by @charliermarsh on 2024-07-09 21:57_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-18 00:57_
-
----
-
-_Referenced in [astral-sh/uv#5206](../../astral-sh/uv/pulls/5206.md) on 2024-07-19 01:21_
 
 ---
 
@@ -118,10 +114,6 @@ Yes
 _Comment by @charliermarsh on 2024-07-24 20:02_
 
 Ok thank you.
-
----
-
-_Referenced in [astral-sh/uv#5420](../../astral-sh/uv/issues/5420.md) on 2024-07-24 20:07_
 
 ---
 

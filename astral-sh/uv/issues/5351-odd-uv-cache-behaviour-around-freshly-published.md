@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-07-23T17:05:45Z
 updated_at: 2024-07-31T15:12:13Z
 url: https://github.com/astral-sh/uv/issues/5351
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Odd UV Cache behaviour around freshly published package
@@ -1055,10 +1055,6 @@ Thanks @jbw-vtl. Clearly something off here so appreciate any info you can provi
 
 ---
 
-_Referenced in [astral-sh/uv#5409](../../astral-sh/uv/issues/5409.md) on 2024-07-29 08:04_
-
----
-
 _Comment by @jbw-vtl on 2024-07-31 13:55_
 
 This has popped up again just now in our CI, however was not able to reproduce locally i'm afraid.
@@ -1114,14 +1110,6 @@ Thanks for exploring this @jbw-vtl. We will change to 600 for now and consider m
 
 ---
 
-_Referenced in [astral-sh/uv#5654](../../astral-sh/uv/pulls/5654.md) on 2024-07-31 14:23_
-
----
-
 _Closed by @BurntSushi on 2024-07-31 15:12_
-
----
-
-_Referenced in [simple-repository/simple-repository-server#12](../../simple-repository/simple-repository-server/issues/12.md) on 2024-09-09 14:34_
 
 ---

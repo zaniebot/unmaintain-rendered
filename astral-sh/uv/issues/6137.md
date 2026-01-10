@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-16T02:35:45Z
 updated_at: 2024-08-16T17:03:27Z
 url: https://github.com/astral-sh/uv/issues/6137
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Optimize `MarkerTree::is_disjoint`
@@ -28,10 +28,6 @@ _Label `performance` added by @ibraheemdev on 2024-08-16 02:35_
 ---
 
 _Assigned to @ibraheemdev by @ibraheemdev on 2024-08-16 02:35_
-
----
-
-_Referenced in [astral-sh/uv#6148](../../astral-sh/uv/pulls/6148.md) on 2024-08-16 15:24_
 
 ---
 

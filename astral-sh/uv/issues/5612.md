@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-30T17:23:30Z
 updated_at: 2024-07-30T17:48:07Z
 url: https://github.com/astral-sh/uv/issues/5612
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Error messages should omit `a==1`-to-`a==1{marker}` relationships
@@ -31,10 +31,6 @@ _Label `error messages` added by @charliermarsh on 2024-07-30 17:23_
 _Comment by @zanieb on 2024-07-30 17:45_
 
 Is this a dupe of https://github.com/astral-sh/uv/issues/5618 now?
-
----
-
-_Referenced in [astral-sh/uv#5618](../../astral-sh/uv/issues/5618.md) on 2024-07-30 17:45_
 
 ---
 

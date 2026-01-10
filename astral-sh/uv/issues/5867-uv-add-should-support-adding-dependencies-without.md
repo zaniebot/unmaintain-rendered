@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-07T15:13:19Z
 updated_at: 2024-08-07T18:09:12Z
 url: https://github.com/astral-sh/uv/issues/5867
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv add` should support adding dependencies without updating the environment
@@ -76,10 +76,6 @@ _Comment by @zanieb on 2024-08-07 16:13_
 _Comment by @charliermarsh on 2024-08-07 17:07_
 
 It's reasonable! Just wary of adding too many flags here.
-
----
-
-_Referenced in [astral-sh/uv#5881](../../astral-sh/uv/pulls/5881.md) on 2024-08-07 17:35_
 
 ---
 

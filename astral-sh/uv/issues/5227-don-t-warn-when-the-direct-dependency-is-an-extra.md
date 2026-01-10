@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-19T17:42:50Z
 updated_at: 2024-07-28T18:35:20Z
 url: https://github.com/astral-sh/uv/issues/5227
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Don't warn when the direct dependency is an extra on root
@@ -49,22 +49,10 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-07-28 17:51_
 
 ---
 
-_Referenced in [astral-sh/uv#5518](../../astral-sh/uv/pulls/5518.md) on 2024-07-28 17:51_
-
----
-
 _Closed by @charliermarsh on 2024-07-28 18:35_
 
 ---
 
 _Closed by @charliermarsh on 2024-07-28 18:35_
-
----
-
-_Referenced in [materialsproject/pymatgen#4073](../../materialsproject/pymatgen/pulls/4073.md) on 2024-10-13 04:09_
-
----
-
-_Referenced in [astral-sh/uv#8155](../../astral-sh/uv/issues/8155.md) on 2024-10-13 04:20_
 
 ---

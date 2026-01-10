@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-25T15:25:42Z
 updated_at: 2024-08-01T13:00:00Z
 url: https://github.com/astral-sh/uv/issues/5448
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # UV 0.2.29 Permission error
@@ -745,17 +745,5 @@ _Comment by @djc on 2024-08-01 12:59_
 Right. IMO the environment variable name is a little unfortunate since it confuses the TLS implementation crate (native-tls is still used by many in the Rust world) with the source of trust roots (the crate name is rustls-native-certs and reqwest chose to name the feature `-native-roots`).
 
 Not sure what else I can contribute here, sounds like the uv team has things under control? In the future, could also consider using the rustls-platform-verifier crate which might be more robust on platforms like Windows, macOS (and derivatives) and Android, but that will do the same thing here. This is currently not natively supported within reqwest, but you can pass it a preconfigured TLS config to make it work.
-
----
-
-_Referenced in [rustls/rustls-native-certs#124](../../rustls/rustls-native-certs/issues/124.md) on 2024-08-19 10:56_
-
----
-
-_Referenced in [astral-sh/uv#1339](../../astral-sh/uv/issues/1339.md) on 2024-08-20 12:37_
-
----
-
-_Referenced in [astral-sh/rye#1130](../../astral-sh/rye/issues/1130.md) on 2024-08-30 13:48_
 
 ---

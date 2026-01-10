@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-03T13:52:32Z
 updated_at: 2024-08-08T14:28:00Z
 url: https://github.com/astral-sh/uv/issues/5749
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Cannot install Babel
@@ -101,14 +101,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-03 17:07_
 ---
 
 _Label `preview` added by @charliermarsh on 2024-08-03 17:07_
-
----
-
-_Referenced in [python-babel/babel#1109](../../python-babel/babel/issues/1109.md) on 2024-08-03 19:56_
-
----
-
-_Referenced in [astral-sh/uv#5756](../../astral-sh/uv/pulls/5756.md) on 2024-08-03 23:23_
 
 ---
 

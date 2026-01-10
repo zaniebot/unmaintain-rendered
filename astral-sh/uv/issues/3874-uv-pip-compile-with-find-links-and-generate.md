@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-28T08:46:37Z
 updated_at: 2024-07-29T08:49:40Z
 url: https://github.com/astral-sh/uv/issues/3874
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # uv pip compile with --find-links and --generate-hashes does not generate hashes for wheels (.whl)
@@ -48,14 +48,6 @@ _Label `bug` added by @charliermarsh on 2024-07-29 01:58_
 
 ---
 
-_Referenced in [astral-sh/uv#5544](../../astral-sh/uv/pulls/5544.md) on 2024-07-29 02:06_
-
----
-
 _Closed by @charliermarsh on 2024-07-29 08:49_
-
----
-
-_Referenced in [astral-sh/uv#10987](../../astral-sh/uv/issues/10987.md) on 2025-01-27 15:08_
 
 ---

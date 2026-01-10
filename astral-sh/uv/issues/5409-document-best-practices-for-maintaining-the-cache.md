@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-24T14:30:38Z
 updated_at: 2024-08-20T20:10:17Z
 url: https://github.com/astral-sh/uv/issues/5409
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Document best practices for maintaining the cache
@@ -26,10 +26,6 @@ How to remove specific packages? (`uv cache clean <name>`)
 How to optimize size in CI?
 
 
-
----
-
-_Referenced in [astral-sh/uv#5222](../../astral-sh/uv/issues/5222.md) on 2024-07-24 14:31_
 
 ---
 
@@ -59,10 +55,6 @@ Maybe you also want to add information related to
 - running several CI pipelines in parallel (eg several GitHub runners on one Windows machine) - should I have one cache for all or several caches?
 - incorrect treatment of new packages - maybe also add this [comment](https://github.com/astral-sh/uv/issues/5351#issuecomment-2252911773)
 - best practices for running CI pipelines on Windows servers ( i.e. where the CI server might stay the same for years, while kubernetes-based pods might get recreated from template regularly).
-
----
-
-_Referenced in [astral-sh/uv#5663](../../astral-sh/uv/pulls/5663.md) on 2024-07-31 16:34_
 
 ---
 

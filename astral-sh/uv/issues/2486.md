@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-03-16T12:23:27Z
 updated_at: 2024-08-11T15:38:32Z
 url: https://github.com/astral-sh/uv/issues/2486
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `python -m pip install uv` does not install stub - `pip install uv` does
@@ -266,10 +266,6 @@ Long story short: with the above reproduction steps, in a clean environment, I c
 
 ---
 
-_Referenced in [pypa/pip#12909](../../pypa/pip/issues/12909.md) on 2024-08-11 15:38_
-
----
-
 _Comment by @bersbersbers on 2024-08-11 15:38_
 
 Follow https://github.com/pypa/pip/issues/12909 if interested.
@@ -277,9 +273,5 @@ Follow https://github.com/pypa/pip/issues/12909 if interested.
 ---
 
 _Closed by @bersbersbers on 2024-08-11 15:38_
-
----
-
-_Referenced in [pyenv/pyenv#3031](../../pyenv/pyenv/issues/3031.md) on 2024-08-11 16:00_
 
 ---

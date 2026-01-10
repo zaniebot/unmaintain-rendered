@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-18T13:12:57Z
 updated_at: 2024-07-19T05:13:56Z
 url: https://github.com/astral-sh/uv/issues/5185
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Feature request: option to not update `uv.lock` file
@@ -77,10 +77,6 @@ _Label `preview` added by @charliermarsh on 2024-07-18 13:56_
 _Comment by @charliermarsh on 2024-07-18 18:26_
 
 I'll likely ship this today.
-
----
-
-_Referenced in [astral-sh/uv#5196](../../astral-sh/uv/pulls/5196.md) on 2024-07-18 18:47_
 
 ---
 

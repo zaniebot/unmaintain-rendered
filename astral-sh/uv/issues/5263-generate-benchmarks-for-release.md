@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-21T18:36:45Z
 updated_at: 2024-07-28T23:27:15Z
 url: https://github.com/astral-sh/uv/issues/5263
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Generate benchmarks for release
@@ -52,14 +52,6 @@ For tools:
 - Warm run
 - Already-installed run
 
-
----
-
-_Referenced in [astral-sh/uv#5524](../../astral-sh/uv/pulls/5524.md) on 2024-07-28 20:54_
-
----
-
-_Referenced in [astral-sh/uv#5531](../../astral-sh/uv/pulls/5531.md) on 2024-07-28 23:15_
 
 ---
 

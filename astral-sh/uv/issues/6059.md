@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-13T16:50:10Z
 updated_at: 2024-08-15T15:50:01Z
 url: https://github.com/astral-sh/uv/issues/6059
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Resolver should exclude forks that are disjoint with `requires-python`
@@ -71,15 +71,7 @@ _Comment by @charliermarsh on 2024-08-13 17:06_
 
 ---
 
-_Referenced in [astral-sh/uv#6064](../../astral-sh/uv/issues/6064.md) on 2024-08-13 17:54_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-14 01:07_
-
----
-
-_Referenced in [astral-sh/uv#6076](../../astral-sh/uv/pulls/6076.md) on 2024-08-14 01:11_
 
 ---
 

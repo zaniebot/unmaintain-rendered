@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-20T02:33:36Z
 updated_at: 2024-08-03T13:47:13Z
 url: https://github.com/astral-sh/uv/issues/5238
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Resolution concept documentation needs introduction
@@ -28,10 +28,6 @@ _Label `documentation` added by @zanieb on 2024-07-20 02:33_
 ---
 
 _Assigned to @konstin by @charliermarsh on 2024-07-30 16:07_
-
----
-
-_Referenced in [astral-sh/uv#5723](../../astral-sh/uv/pulls/5723.md) on 2024-08-02 13:40_
 
 ---
 

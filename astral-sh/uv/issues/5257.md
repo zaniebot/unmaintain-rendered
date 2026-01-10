@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-21T14:01:26Z
 updated_at: 2024-07-24T12:33:11Z
 url: https://github.com/astral-sh/uv/issues/5257
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Ctrl-C to to uv run is not handled by the child process
@@ -76,18 +76,6 @@ _Label `bug` added by @zanieb on 2024-07-21 14:52_
 
 ---
 
-_Referenced in [astral-sh/uv#5333](../../astral-sh/uv/pulls/5333.md) on 2024-07-23 14:08_
-
----
-
-_Referenced in [astral-sh/uv#5395](../../astral-sh/uv/pulls/5395.md) on 2024-07-24 04:06_
-
----
-
 _Closed by @charliermarsh on 2024-07-24 12:33_
-
----
-
-_Referenced in [astral-sh/uv#3095](../../astral-sh/uv/issues/3095.md) on 2024-07-24 18:50_
 
 ---

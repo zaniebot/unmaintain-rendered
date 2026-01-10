@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-01T23:20:55Z
 updated_at: 2024-08-04T18:33:14Z
 url: https://github.com/astral-sh/uv/issues/5716
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # uv tree: disconnected packages (not selected for current platform)
@@ -123,10 +123,6 @@ _Label `preview` added by @zanieb on 2024-08-01 23:28_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-02 14:58_
-
----
-
-_Referenced in [astral-sh/uv#5761](../../astral-sh/uv/pulls/5761.md) on 2024-08-04 18:15_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-20T18:27:53Z
 updated_at: 2024-08-04T18:33:14Z
 url: https://github.com/astral-sh/uv/issues/5253
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `tree` does not properly handle multiple versions of the same package
@@ -164,10 +164,6 @@ _Unassigned @ibraheemdev by @charliermarsh on 2024-08-04 18:15_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-04 18:15_
-
----
-
-_Referenced in [astral-sh/uv#5761](../../astral-sh/uv/pulls/5761.md) on 2024-08-04 18:15_
 
 ---
 

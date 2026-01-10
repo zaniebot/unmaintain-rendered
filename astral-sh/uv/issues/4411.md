@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-19T13:24:45Z
 updated_at: 2024-08-20T16:31:48Z
 url: https://github.com/astral-sh/uv/issues/4411
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Store Python toolchains under XDG directory on macOS
@@ -176,10 +176,6 @@ edit: We should at least do #4671
 
 ---
 
-_Referenced in [astral-sh/uv#4769](../../astral-sh/uv/pulls/4769.md) on 2024-07-03 13:52_
-
----
-
 _Comment by @zanieb on 2024-07-03 13:52_
 
 I've opened a pull request to support the variable if set https://github.com/astral-sh/uv/pull/4769
@@ -198,14 +194,6 @@ _Unassigned @zanieb by @charliermarsh on 2024-07-30 15:39_
 
 ---
 
-_Referenced in [astral-sh/uv#5806](../../astral-sh/uv/pulls/5806.md) on 2024-08-06 01:49_
-
----
-
 _Closed by @zanieb on 2024-08-20 16:31_
-
----
-
-_Referenced in [tox-dev/platformdirs#269](../../tox-dev/platformdirs/issues/269.md) on 2025-02-06 19:48_
 
 ---

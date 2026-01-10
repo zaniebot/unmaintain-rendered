@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-29T16:01:53Z
 updated_at: 2024-07-29T19:00:20Z
 url: https://github.com/astral-sh/uv/issues/5565
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Consider skipping file copies for 0-byte zips
@@ -32,10 +32,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-07-29 16:02_
 ---
 
 _Unassigned @charliermarsh by @charliermarsh on 2024-07-29 17:30_
-
----
-
-_Referenced in [astral-sh/uv#5571](../../astral-sh/uv/pulls/5571.md) on 2024-07-29 18:52_
 
 ---
 

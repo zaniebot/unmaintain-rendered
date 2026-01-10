@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-31T13:39:06Z
 updated_at: 2024-08-01T21:04:31Z
 url: https://github.com/astral-sh/uv/issues/5650
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Allow top level dev decencies in top level workspace
@@ -79,10 +79,6 @@ This looks more difficult than I thought, since we don't have an entry for the v
 _Comment by @charliermarsh on 2024-08-01 17:08_
 
 Ok, working on this one now, but not sure how to solve it yet.
-
----
-
-_Referenced in [astral-sh/uv#5709](../../astral-sh/uv/pulls/5709.md) on 2024-08-01 20:12_
 
 ---
 

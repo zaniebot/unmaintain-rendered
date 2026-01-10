@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-27T12:18:18Z
 updated_at: 2024-07-29T00:10:13Z
 url: https://github.com/astral-sh/uv/issues/3863
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Feature request: decouple "build" and "target" paths in `install_wheel` API
@@ -119,10 +119,6 @@ The fact that each install action (`install`, `sync`, `add`) against a given ven
 (this was, in IMHO, one of the worse aspects of the virtualenv package relocatable implementation: you had to go back and patch/fix packages after each new pip install)
 
 Making it somehow a venv attribute would alleviate this UX issue
-
----
-
-_Referenced in [astral-sh/uv#5515](../../astral-sh/uv/pulls/5515.md) on 2024-07-28 14:26_
 
 ---
 

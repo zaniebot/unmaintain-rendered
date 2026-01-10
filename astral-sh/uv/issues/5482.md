@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-26T14:14:35Z
 updated_at: 2024-08-16T17:30:26Z
 url: https://github.com/astral-sh/uv/issues/5482
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # investigate "remaining universe" fork and marker construction
@@ -82,10 +82,6 @@ For now, we decided to move forward with #5163 in its current state since it fix
 ---
 
 _Label `resolver` added by @BurntSushi on 2024-07-26 14:14_
-
----
-
-_Referenced in [astral-sh/uv#5163](../../astral-sh/uv/pulls/5163.md) on 2024-07-26 14:15_
 
 ---
 

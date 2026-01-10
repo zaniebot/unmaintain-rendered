@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-28T18:58:53Z
 updated_at: 2024-07-28T21:26:48Z
 url: https://github.com/astral-sh/uv/issues/5521
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # workspace exclude mismatch on linux vs windows
@@ -180,10 +180,6 @@ _Comment by @bluss on 2024-07-28 19:13_
 Ok good. I'd like to document the glob syntax - I think * is wildcard and ** recursive wildcard - but I didn't quite get my understanding of it to line up with the glob crate's docs.
 
 People running into this bug by the way can in this case work around it by setting `[tool.uv.workspace]` in x's pyproject too, then it definitely will not be assigned as a member of the parent directory.
-
----
-
-_Referenced in [astral-sh/uv#5525](../../astral-sh/uv/pulls/5525.md) on 2024-07-28 21:04_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-12T00:14:36Z
 updated_at: 2024-08-12T02:02:40Z
 url: https://github.com/astral-sh/uv/issues/6013
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv lock` rejects wheels from `--find-links`
@@ -39,10 +39,6 @@ _Label `preview` added by @charliermarsh on 2024-08-12 00:14_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-12 00:14_
-
----
-
-_Referenced in [astral-sh/uv#6016](../../astral-sh/uv/pulls/6016.md) on 2024-08-12 01:12_
 
 ---
 

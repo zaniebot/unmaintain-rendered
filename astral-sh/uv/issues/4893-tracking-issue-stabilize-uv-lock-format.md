@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-08T13:47:43Z
 updated_at: 2024-08-09T14:03:05Z
 url: https://github.com/astral-sh/uv/issues/4893
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Tracking issue: Stabilize `uv.lock` format
@@ -89,14 +89,6 @@ _Renamed from "Stabilize `uv.lock` format" to "Tracking issue: Stabilize `uv.loc
 
 ---
 
-_Referenced in [astral-sh/uv#3347](../../astral-sh/uv/issues/3347.md) on 2024-07-09 11:28_
-
----
-
-_Referenced in [astral-sh/uv#4963](../../astral-sh/uv/issues/4963.md) on 2024-07-10 15:35_
-
----
-
 _Assigned to @konstin by @charliermarsh on 2024-07-30 15:28_
 
 ---
@@ -124,18 +116,6 @@ Can `source` at top level contain _the original source_ where the address was ob
 
 ---
 
-_Referenced in [astral-sh/uv#5853](../../astral-sh/uv/pulls/5853.md) on 2024-08-07 12:29_
-
----
-
-_Referenced in [astral-sh/uv#5861](../../astral-sh/uv/pulls/5861.md) on 2024-08-07 13:57_
-
----
-
-_Referenced in [astral-sh/uv#5884](../../astral-sh/uv/pulls/5884.md) on 2024-08-07 18:18_
-
----
-
 _Comment by @konstin on 2024-08-09 14:03_
 
 We have the format ready for the release.
@@ -143,9 +123,5 @@ We have the format ready for the release.
 ---
 
 _Closed by @konstin on 2024-08-09 14:03_
-
----
-
-_Referenced in [jvolkman/rules_pycross#121](../../jvolkman/rules_pycross/pulls/121.md) on 2024-09-23 04:17_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-30T10:06:36Z
 updated_at: 2024-07-31T02:32:34Z
 url: https://github.com/astral-sh/uv/issues/5593
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Don't install dev dependencies from deps
@@ -180,15 +180,7 @@ foo = { path = "../foo" }
 
 ---
 
-_Referenced in [astral-sh/uv#5601](../../astral-sh/uv/pulls/5601.md) on 2024-07-30 14:46_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-30 15:53_
-
----
-
-_Referenced in [astral-sh/uv#5646](../../astral-sh/uv/pulls/5646.md) on 2024-07-31 02:21_
 
 ---
 

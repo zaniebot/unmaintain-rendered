@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-23T22:19:51Z
 updated_at: 2024-08-12T14:59:08Z
 url: https://github.com/astral-sh/uv/issues/4454
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Order of settings in CLI `help` is not intuitive
@@ -47,22 +47,6 @@ Nope. I'll take care of it though.
 ---
 
 _Assigned to @zanieb by @zanieb on 2024-07-09 22:40_
-
----
-
-_Referenced in [astral-sh/uv#5516](../../astral-sh/uv/pulls/5516.md) on 2024-07-31 17:10_
-
----
-
-_Referenced in [astral-sh/uv#5665](../../astral-sh/uv/pulls/5665.md) on 2024-07-31 17:49_
-
----
-
-_Referenced in [astral-sh/uv#5691](../../astral-sh/uv/pulls/5691.md) on 2024-08-01 16:21_
-
----
-
-_Referenced in [astral-sh/uv#5693](../../astral-sh/uv/pulls/5693.md) on 2024-08-01 16:38_
 
 ---
 

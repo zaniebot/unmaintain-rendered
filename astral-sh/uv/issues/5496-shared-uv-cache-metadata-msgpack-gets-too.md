@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-07-26T23:14:01Z
 updated_at: 2024-07-27T00:28:09Z
 url: https://github.com/astral-sh/uv/issues/5496
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # shared uv cache: `metadata.msgpack` gets too restrictive perms for `built-wheels`
@@ -103,10 +103,6 @@ And I see from PR that indeed you're using tempfile, which is almost always the 
 
 ---
 
-_Referenced in [astral-sh/uv#5498](../../astral-sh/uv/pulls/5498.md) on 2024-07-26 23:59_
-
----
-
 _Comment by @charliermarsh on 2024-07-26 23:59_
 
 For some reason I changed it to 644 rather than 666. I don't know why I did that.
@@ -195,9 +191,5 @@ hint: See above for details.
 _Comment by @stas00 on 2024-07-27 00:26_
 
 and after `apt install rustc cargo`, my Ubuntu has `rustc-1.76` as the highest, but `uv` builder wants 1.77 or higher, so will have to wait till the next release to validate.
-
----
-
-_Referenced in [astral-sh/uv#5581](../../astral-sh/uv/issues/5581.md) on 2024-07-30 00:29_
 
 ---

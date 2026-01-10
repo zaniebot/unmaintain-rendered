@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-16T16:38:50Z
 updated_at: 2024-08-17T18:34:36Z
 url: https://github.com/astral-sh/uv/issues/6152
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Hide global arguments to `generate-shell-completions`
@@ -29,14 +29,6 @@ _Label `good first issue` added by @zanieb on 2024-08-16 16:38_
 ---
 
 _Label `cli` added by @zanieb on 2024-08-16 16:38_
-
----
-
-_Referenced in [astral-sh/uv#6151](../../astral-sh/uv/issues/6151.md) on 2024-08-16 16:39_
-
----
-
-_Referenced in [astral-sh/uv#6170](../../astral-sh/uv/pulls/6170.md) on 2024-08-17 16:12_
 
 ---
 

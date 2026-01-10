@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-24T11:37:47Z
 updated_at: 2024-07-24T16:21:35Z
 url: https://github.com/astral-sh/uv/issues/5403
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Workspace discovery considers hidden directories
@@ -59,10 +59,6 @@ _Label `preview` added by @konstin on 2024-07-24 12:02_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-24 13:41_
-
----
-
-_Referenced in [astral-sh/uv#5408](../../astral-sh/uv/pulls/5408.md) on 2024-07-24 14:24_
 
 ---
 

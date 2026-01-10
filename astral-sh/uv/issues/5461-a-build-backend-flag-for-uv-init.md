@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-25T22:27:41Z
 updated_at: 2024-07-29T14:00:13Z
 url: https://github.com/astral-sh/uv/issues/5461
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # A build backend flag for `uv init`
@@ -57,10 +57,6 @@ I vote for hatchling.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-28 21:30_
-
----
-
-_Referenced in [astral-sh/uv#5527](../../astral-sh/uv/pulls/5527.md) on 2024-07-28 21:30_
 
 ---
 

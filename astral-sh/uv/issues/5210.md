@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-19T02:36:58Z
 updated_at: 2024-07-22T20:26:38Z
 url: https://github.com/astral-sh/uv/issues/5210
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Non-default system-installed Python versions not listed
@@ -112,10 +112,6 @@ PS: I'm eager to be able to install cpython-3.13 beta via uv!
 ---
 
 _Closed by @mgaitan on 2024-07-22 20:23_
-
----
-
-_Referenced in [astral-sh/uv#5308](../../astral-sh/uv/issues/5308.md) on 2024-07-22 20:26_
 
 ---
 

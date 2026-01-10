@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-22T13:21:25Z
 updated_at: 2024-07-22T18:31:09Z
 url: https://github.com/astral-sh/uv/issues/5284
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # When packages are unavailable due to wheel tag Python requirement mismatches, error message should reflect that
@@ -36,15 +36,7 @@ _Label `error messages` added by @charliermarsh on 2024-07-22 13:21_
 
 ---
 
-_Referenced in [astral-sh/rye#1259](../../astral-sh/rye/issues/1259.md) on 2024-07-22 13:45_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-22 13:45_
-
----
-
-_Referenced in [astral-sh/uv#5296](../../astral-sh/uv/pulls/5296.md) on 2024-07-22 17:56_
 
 ---
 

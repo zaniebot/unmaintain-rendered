@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-29T01:50:18Z
 updated_at: 2024-07-29T02:39:49Z
 url: https://github.com/astral-sh/uv/issues/5543
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # uv 0.2.30 breaks editable projects when installed a second or more times due to caching
@@ -153,10 +153,6 @@ I think the contents of `site-packages` are actually correct, it's just that the
 _Comment by @bulletmark on 2024-07-29 02:32_
 
 That is correct. It is only the list command reporting that the project is not editable. My [installer tool](https://github.com/bulletmark/pipxu) parses `list` output to determine the editable project dir so this problem is very apparent to me.
-
----
-
-_Referenced in [astral-sh/uv#5545](../../astral-sh/uv/pulls/5545.md) on 2024-07-29 02:32_
 
 ---
 

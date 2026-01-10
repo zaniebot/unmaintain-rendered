@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-23T22:21:18Z
 updated_at: 2024-08-20T18:21:31Z
 url: https://github.com/astral-sh/uv/issues/5385
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Allow `uv add --path <path>`
@@ -27,19 +27,11 @@ Part of https://github.com/astral-sh/uv/issues/5381
 
 ---
 
-_Referenced in [astral-sh/uv#5386](../../astral-sh/uv/issues/5386.md) on 2024-07-23 22:23_
-
----
-
 _Label `cli` added by @zanieb on 2024-07-23 22:24_
 
 ---
 
 _Label `preview` added by @zanieb on 2024-07-23 22:24_
-
----
-
-_Referenced in [astral-sh/uv#5381](../../astral-sh/uv/issues/5381.md) on 2024-07-23 22:27_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-09T22:51:19Z
 updated_at: 2024-08-13T16:21:45Z
 url: https://github.com/astral-sh/uv/issues/5982
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Hide Python options in `uv tool list` help
@@ -49,10 +49,6 @@ Python options:
 ---
 
 _Label `cli` added by @zanieb on 2024-08-09 22:51_
-
----
-
-_Referenced in [astral-sh/uv#6003](../../astral-sh/uv/pulls/6003.md) on 2024-08-11 07:55_
 
 ---
 

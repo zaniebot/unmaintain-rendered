@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-04T18:13:55Z
 updated_at: 2024-08-05T19:15:04Z
 url: https://github.com/astral-sh/uv/issues/5759
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Indicate extra and dev dependencies in `uv tree`
@@ -33,10 +33,6 @@ _Label `preview` added by @charliermarsh on 2024-08-04 18:14_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-04 18:36_
-
----
-
-_Referenced in [astral-sh/uv#5768](../../astral-sh/uv/pulls/5768.md) on 2024-08-04 21:09_
 
 ---
 

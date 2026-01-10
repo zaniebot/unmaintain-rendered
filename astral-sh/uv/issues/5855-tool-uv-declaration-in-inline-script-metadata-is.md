@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-07T13:07:20Z
 updated_at: 2024-08-10T03:11:11Z
 url: https://github.com/astral-sh/uv/issues/5855
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `[tool.uv]` declaration in inline script metadata is ignored
@@ -73,10 +73,6 @@ DEBUG Running `python script.py`
 
 ---
 
-_Referenced in [astral-sh/uv#5841](../../astral-sh/uv/pulls/5841.md) on 2024-08-07 13:10_
-
----
-
 _Label `bug` added by @charliermarsh on 2024-08-07 15:45_
 
 ---
@@ -104,14 +100,6 @@ At the very least, we should warn that it's unsupported.
 _Comment by @zanieb on 2024-08-09 14:44_
 
 (both in the documentation and from the CLI when the section is present)
-
----
-
-_Referenced in [astral-sh/uv#5977](../../astral-sh/uv/pulls/5977.md) on 2024-08-09 21:51_
-
----
-
-_Referenced in [astral-sh/uv#5990](../../astral-sh/uv/pulls/5990.md) on 2024-08-10 02:18_
 
 ---
 

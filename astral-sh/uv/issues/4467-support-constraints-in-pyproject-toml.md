@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-24T11:27:11Z
 updated_at: 2024-07-21T23:45:05Z
 url: https://github.com/astral-sh/uv/issues/4467
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Support `constraints` in `pyproject.toml`
@@ -24,10 +24,6 @@ Similar to the override support we added, we should probably also support constr
 ---
 
 _Label `preview` added by @charliermarsh on 2024-06-24 11:27_
-
----
-
-_Referenced in [astral-sh/uv#5248](../../astral-sh/uv/pulls/5248.md) on 2024-07-20 14:46_
 
 ---
 

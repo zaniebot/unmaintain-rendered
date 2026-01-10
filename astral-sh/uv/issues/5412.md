@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-24T15:30:47Z
 updated_at: 2024-07-24T15:54:20Z
 url: https://github.com/astral-sh/uv/issues/5412
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv lock` should always show lock updates
@@ -33,10 +33,6 @@ _Label `enhancement` added by @charliermarsh on 2024-07-24 15:30_
 ---
 
 _Label `preview` added by @charliermarsh on 2024-07-24 15:30_
-
----
-
-_Referenced in [astral-sh/uv#5413](../../astral-sh/uv/pulls/5413.md) on 2024-07-24 15:34_
 
 ---
 

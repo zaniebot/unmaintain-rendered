@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-12T14:21:41Z
 updated_at: 2024-08-12T20:15:31Z
 url: https://github.com/astral-sh/uv/issues/6036
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Installing managed python with different mounts of `.local` and `.cache` fails.
@@ -64,14 +64,6 @@ Thanks for reporting -- we should definitely be robust to this.
 
 ---
 
-_Referenced in [astral-sh/uv#6043](../../astral-sh/uv/pulls/6043.md) on 2024-08-12 19:53_
-
----
-
 _Closed by @charliermarsh on 2024-08-12 20:15_
-
----
-
-_Referenced in [astral-sh/uv#9749](../../astral-sh/uv/issues/9749.md) on 2024-12-09 23:06_
 
 ---

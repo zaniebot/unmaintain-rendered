@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-23T22:10:10Z
 updated_at: 2024-07-23T22:28:23Z
 url: https://github.com/astral-sh/uv/issues/5379
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Don't show "Nothing to uninstall" if we remove dangling entries
@@ -38,10 +38,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-07-23 22:19_
 ---
 
 _Label `preview` added by @charliermarsh on 2024-07-23 22:19_
-
----
-
-_Referenced in [astral-sh/uv#5382](../../astral-sh/uv/pulls/5382.md) on 2024-07-23 22:19_
 
 ---
 

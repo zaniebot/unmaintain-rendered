@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-11T06:37:47Z
 updated_at: 2024-08-20T18:22:16Z
 url: https://github.com/astral-sh/uv/issues/4988
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # uv python list doesn't show all possible combinations of python installation
@@ -80,10 +80,6 @@ _Label `cli` added by @zanieb on 2024-07-11 14:32_
 ---
 
 _Label `preview` added by @zanieb on 2024-07-11 14:32_
-
----
-
-_Referenced in [astral-sh/uv#5036](../../astral-sh/uv/pulls/5036.md) on 2024-07-13 14:31_
 
 ---
 

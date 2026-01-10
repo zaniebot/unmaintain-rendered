@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-23T20:38:56Z
 updated_at: 2024-08-19T22:47:49Z
 url: https://github.com/astral-sh/uv/issues/5371
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Update Docker guide to include project CLI
@@ -27,10 +27,6 @@ e.g. we're recommending
 ---
 
 _Label `documentation` added by @zanieb on 2024-07-23 20:38_
-
----
-
-_Referenced in [astral-sh/uv#6217](../../astral-sh/uv/pulls/6217.md) on 2024-08-19 17:45_
 
 ---
 

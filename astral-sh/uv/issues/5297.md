@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-22T17:57:04Z
 updated_at: 2024-07-22T18:43:00Z
 url: https://github.com/astral-sh/uv/issues/5297
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Wheel tag error is grammatically incorrect
@@ -31,10 +31,6 @@ _Label `error messages` added by @charliermarsh on 2024-07-22 17:57_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-22 17:58_
-
----
-
-_Referenced in [astral-sh/uv#5303](../../astral-sh/uv/pulls/5303.md) on 2024-07-22 18:09_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-06T16:25:31Z
 updated_at: 2024-08-16T16:32:41Z
 url: https://github.com/astral-sh/uv/issues/5818
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Don't create forks the are disjoint with requires-python
@@ -81,9 +81,5 @@ Going to close this and create a separate issue around sometimes respecting uppe
 ---
 
 _Closed by @charliermarsh on 2024-08-16 16:32_
-
----
-
-_Referenced in [astral-sh/uv#6150](../../astral-sh/uv/issues/6150.md) on 2024-08-16 16:33_
 
 ---

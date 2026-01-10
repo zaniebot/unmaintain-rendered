@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-15T12:20:35Z
 updated_at: 2024-07-19T17:23:01Z
 url: https://github.com/astral-sh/uv/issues/5070
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Support for non-URL dependencies having URL dependencies?
@@ -60,13 +60,5 @@ That one seems a bit easier: couldn't you just add that URL dependency as a dire
 _Comment by @slochower on 2024-07-19 17:23_
 
 We could... but lots of packages would have to be updated and managed rather than the core dependency :)
-
----
-
-_Referenced in [rapidsai/build-planning#85](../../rapidsai/build-planning/issues/85.md) on 2024-07-22 22:41_
-
----
-
-_Referenced in [astral-sh/uv#7996](../../astral-sh/uv/issues/7996.md) on 2024-10-08 22:32_
 
 ---

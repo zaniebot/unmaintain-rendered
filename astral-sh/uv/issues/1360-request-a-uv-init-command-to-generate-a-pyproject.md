@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-15T21:39:39Z
 updated_at: 2024-07-19T15:11:49Z
 url: https://github.com/astral-sh/uv/issues/1360
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Request: A `uv init` command to generate a pyproject.toml
@@ -66,10 +66,6 @@ But perhaps the _biggest incentive_ to switch would be poetry-like management of
 _Comment by @zanieb on 2024-02-18 17:28_
 
 The full project management workflow provided is on our roadmap. We've put the `pip` compatibility commands in a separate namespace explicitly so we have room for things like `uv install`.
-
----
-
-_Referenced in [astral-sh/uv#1837](../../astral-sh/uv/issues/1837.md) on 2024-02-22 15:01_
 
 ---
 
@@ -139,14 +135,6 @@ requires-python = ">= 3.8"
 https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#dependencies-and-requirements
 
 I think the dependencies and project.optional-dependencies syntax would ideal for a future "uv add", but `requires-python` is currently relevant for `uv init`. This syntax is already supported by uv for `uv pip compile`.
-
----
-
-_Referenced in [astral-sh/uv#4511](../../astral-sh/uv/issues/4511.md) on 2024-06-25 15:13_
-
----
-
-_Referenced in [astral-sh/uv#4791](../../astral-sh/uv/pulls/4791.md) on 2024-07-03 22:24_
 
 ---
 

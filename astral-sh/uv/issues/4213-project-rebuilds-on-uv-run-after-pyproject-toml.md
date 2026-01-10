@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-10T19:19:30Z
 updated_at: 2024-07-30T15:21:26Z
 url: https://github.com/astral-sh/uv/issues/4213
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Project rebuilds on `uv run` after `pyproject.toml` edit "feel bad"
@@ -28,10 +28,6 @@ _Label `preview` added by @charliermarsh on 2024-06-10 19:19_
 ---
 
 _Renamed from "Project rebuilds on `uv run` after `pyproject.toml` edit "feels bad"" to "Project rebuilds on `uv run` after `pyproject.toml` edit "feel bad"" by @charliermarsh on 2024-06-10 19:19_
-
----
-
-_Referenced in [astral-sh/uv#5458](../../astral-sh/uv/issues/5458.md) on 2024-07-25 19:08_
 
 ---
 

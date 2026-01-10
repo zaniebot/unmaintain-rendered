@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-03T18:20:10Z
 updated_at: 2024-08-03T23:37:41Z
 url: https://github.com/astral-sh/uv/issues/5754
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Incorrect default value for python-preference in ``docs/reference/settings.md``
@@ -43,10 +43,6 @@ _Label `bug` added by @charliermarsh on 2024-08-03 18:28_
 ---
 
 _Label `documentation` added by @charliermarsh on 2024-08-03 18:28_
-
----
-
-_Referenced in [astral-sh/uv#5755](../../astral-sh/uv/pulls/5755.md) on 2024-08-03 18:50_
 
 ---
 

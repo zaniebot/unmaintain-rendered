@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-01T16:22:57Z
 updated_at: 2024-08-02T12:55:52Z
 url: https://github.com/astral-sh/uv/issues/5692
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Show possible options in CLI reference documentation
@@ -29,10 +29,6 @@ _Label `documentation` added by @zanieb on 2024-08-01 16:23_
 ---
 
 _Label `help wanted` added by @zanieb on 2024-08-01 16:23_
-
----
-
-_Referenced in [astral-sh/uv#5720](../../astral-sh/uv/pulls/5720.md) on 2024-08-02 08:56_
 
 ---
 

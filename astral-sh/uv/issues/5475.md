@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-26T11:52:23Z
 updated_at: 2024-08-10T01:02:02Z
 url: https://github.com/astral-sh/uv/issues/5475
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # uv installs incompatible wheel if `data-requires-python` isn't set 
@@ -104,10 +104,6 @@ pypiserver never writes `data-requires-python`: https://github.com/pypiserver/py
 _Comment by @charliermarsh on 2024-07-26 12:33_
 
 Makes sense. I don't know that I'd want to check this in the resolver, but we should reject in the installer at minimum?
-
----
-
-_Referenced in [astral-sh/packse#205](../../astral-sh/packse/pulls/205.md) on 2024-07-26 12:56_
 
 ---
 

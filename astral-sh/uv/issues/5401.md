@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-24T10:45:03Z
 updated_at: 2024-07-24T15:33:11Z
 url: https://github.com/astral-sh/uv/issues/5401
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv lock` doesn't show when we drop versions
@@ -94,10 +94,6 @@ Yes please!
 
 ---
 
-_Referenced in [astral-sh/uv#5410](../../astral-sh/uv/pulls/5410.md) on 2024-07-24 14:55_
-
----
-
 _Comment by @charliermarsh on 2024-07-24 14:56_
 
 Separately, we only show these when you run `uv lock --update` right now (not `uv sync`, `uv run`, or `uv lock` without `--update`). Should we... always show these, when a lock exists already? I guess Cargo doesn't.
@@ -113,10 +109,6 @@ I was surprised that there was no output indicating a change to the lock file wi
 _Comment by @charliermarsh on 2024-07-24 14:59_
 
 I'll change it separately. (But probably not for `uv run` and `uv sync`, I suppose.)
-
----
-
-_Referenced in [astral-sh/uv#5412](../../astral-sh/uv/issues/5412.md) on 2024-07-24 15:30_
 
 ---
 

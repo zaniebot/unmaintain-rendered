@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-20T15:39:17Z
 updated_at: 2024-07-22T11:43:05Z
 url: https://github.com/astral-sh/uv/issues/5249
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv init` should discover workspace from the target path
@@ -40,10 +40,6 @@ dependencies = []
 [tool.uv]
 dev-dependencies = []
 ```
-
----
-
-_Referenced in [astral-sh/uv#5250](../../astral-sh/uv/pulls/5250.md) on 2024-07-20 15:40_
 
 ---
 

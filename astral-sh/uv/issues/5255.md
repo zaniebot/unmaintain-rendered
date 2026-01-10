@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-07-21T11:19:20Z
 updated_at: 2024-07-22T16:09:26Z
 url: https://github.com/astral-sh/uv/issues/5255
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv init` creates unimportable package subdirectory
@@ -71,18 +71,10 @@ _Label `good first issue` added by @charliermarsh on 2024-07-21 17:38_
 
 ---
 
-_Referenced in [astral-sh/uv#5292](../../astral-sh/uv/pulls/5292.md) on 2024-07-22 15:08_
-
----
-
 _Closed by @konstin on 2024-07-22 16:09_
 
 ---
 
 _Closed by @konstin on 2024-07-22 16:09_
-
----
-
-_Referenced in [astral-sh/uv#12046](../../astral-sh/uv/issues/12046.md) on 2025-03-07 14:53_
 
 ---

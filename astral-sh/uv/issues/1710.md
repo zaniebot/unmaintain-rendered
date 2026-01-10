@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-19T17:11:46Z
 updated_at: 2024-08-12T12:18:18Z
 url: https://github.com/astral-sh/uv/issues/1710
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `Failed to download distributions` with `unexpected BufError` errors
@@ -164,10 +164,6 @@ It's reasonable that we should just fall back to non-range requests when we see 
 
 ---
 
-_Referenced in [astral-sh/uv#2053](../../astral-sh/uv/pulls/2053.md) on 2024-02-28 20:34_
-
----
-
 _Comment by @zanieb on 2024-03-01 15:52_
 
 I would recommend reporting that buffer overflow as a bug to the proxy you're using (if you can), it seems like the proxy is failing to buffer the streamed data correctly sometimes.
@@ -188,9 +184,5 @@ It was just a bit difficult to understand what was the nature of the failure bas
 ---
 
 _Label `error messages` added by @zanieb on 2024-08-12 12:18_
-
----
-
-_Referenced in [astral-sh/uv#6349](../../astral-sh/uv/issues/6349.md) on 2024-08-21 16:10_
 
 ---

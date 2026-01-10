@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-25T18:25:54Z
 updated_at: 2024-07-30T18:11:53Z
 url: https://github.com/astral-sh/uv/issues/5458
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Significantly reduce user-facing output in `uv run`
@@ -71,10 +71,6 @@ I'll do this next week.
 _Comment by @charliermarsh on 2024-07-29 02:19_
 
 Will focus on this tomorrow.
-
----
-
-_Referenced in [astral-sh/uv#5580](../../astral-sh/uv/pulls/5580.md) on 2024-07-30 00:01_
 
 ---
 

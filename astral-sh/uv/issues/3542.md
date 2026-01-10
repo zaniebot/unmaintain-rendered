@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-13T11:25:34Z
 updated_at: 2024-07-26T23:41:48Z
 url: https://github.com/astral-sh/uv/issues/3542
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Private package not found from Azure DevOps
@@ -233,10 +233,6 @@ If you add a username to your index URL, we'll look up the credentials as you'd 
 ---
 
 _Label `question` added by @zanieb on 2024-05-13 15:44_
-
----
-
-_Referenced in [astral-sh/uv#3550](../../astral-sh/uv/pulls/3550.md) on 2024-05-13 15:46_
 
 ---
 
@@ -1141,10 +1137,6 @@ Installed 13 packages in 12ms
 
 ---
 
-_Referenced in [jaraco/keyring#681](../../jaraco/keyring/issues/681.md) on 2024-05-13 18:57_
-
----
-
 _Comment by @jaraco on 2024-05-13 19:02_
 
 > > Maybe like they implemented that wrong? cc @BakerNet
@@ -1319,10 +1311,6 @@ I'd love for this to be fixed too, but it's not entirely clear what we need to c
 Perhaps we need to be requesting `https://pkgs.dev.azure.com/mycompany/_packaging/MyFeed/pypi/simple` specifically? I believe this was discussed some at https://github.com/astral-sh/uv/issues/4056
 
 Every keyring plugin works differently and it is difficult to give them all what they want. Some clarity on the exact requirements of the Azure plugin would help move this issue forward.
-
----
-
-_Referenced in [astral-sh/uv#4583](../../astral-sh/uv/issues/4583.md) on 2024-06-27 11:03_
 
 ---
 
@@ -1625,10 +1613,6 @@ Will have a doc ready for you to review early next week 😉
 
 ---
 
-_Referenced in [astral-sh/uv#4857](../../astral-sh/uv/pulls/4857.md) on 2024-07-07 15:18_
-
----
-
 _Comment by @nathanjmcdougall on 2024-07-10 05:43_
 
 In case this helps others, I was having intermittent (yet frequent) issues with authentication associated with #3260
@@ -1705,9 +1689,5 @@ Seems reasonable to me.
 ---
 
 _Closed by @charliermarsh on 2024-07-26 23:41_
-
----
-
-_Referenced in [astral-sh/uv#16733](../../astral-sh/uv/issues/16733.md) on 2025-12-03 09:31_
 
 ---

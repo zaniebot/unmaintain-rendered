@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-02T12:35:00Z
 updated_at: 2024-08-02T19:44:44Z
 url: https://github.com/astral-sh/uv/issues/5724
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Workspace discovery fails on matching files
@@ -45,14 +45,6 @@ _Label `bug` added by @charliermarsh on 2024-08-02 12:35_
 ---
 
 _Label `preview` added by @charliermarsh on 2024-08-02 12:35_
-
----
-
-_Referenced in [astral-sh/uv#5725](../../astral-sh/uv/issues/5725.md) on 2024-08-02 12:44_
-
----
-
-_Referenced in [astral-sh/uv#5735](../../astral-sh/uv/pulls/5735.md) on 2024-08-02 19:35_
 
 ---
 

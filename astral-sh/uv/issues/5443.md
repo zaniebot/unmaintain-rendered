@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-25T14:15:22Z
 updated_at: 2024-08-10T01:01:06Z
 url: https://github.com/astral-sh/uv/issues/5443
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Store index URLs in tool receipts
@@ -72,10 +72,6 @@ _Comment by @charliermarsh on 2024-07-25 14:31_
 _Comment by @zanieb on 2024-07-25 14:31_
 
 Although for tool receipts, it's "okay" if we store credentials that the user handed us since it's not checked into version control.
-
----
-
-_Referenced in [astral-sh/uv#5197](../../astral-sh/uv/pulls/5197.md) on 2024-08-07 22:03_
 
 ---
 

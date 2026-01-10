@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-19T18:23:55Z
 updated_at: 2024-08-01T20:22:39Z
 url: https://github.com/astral-sh/uv/issues/4418
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv add` should not have to perform a full `uv sync`
@@ -27,18 +27,6 @@ _Label `preview` added by @ibraheemdev on 2024-06-19 18:24_
 
 ---
 
-_Referenced in [astral-sh/uv#3959](../../astral-sh/uv/issues/3959.md) on 2024-06-19 18:25_
-
----
-
-_Referenced in [astral-sh/uv#5705](../../astral-sh/uv/pulls/5705.md) on 2024-08-01 19:02_
-
----
-
 _Closed by @zanieb on 2024-08-01 20:22_
-
----
-
-_Referenced in [treyhunner/uvrs#9](../../treyhunner/uvrs/issues/9.md) on 2025-10-16 22:54_
 
 ---

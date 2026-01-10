@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-26T04:56:40Z
 updated_at: 2024-08-16T21:57:47Z
 url: https://github.com/astral-sh/uv/issues/4537
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv add -r requirements.txt`
@@ -31,10 +31,6 @@ _Label `preview` added by @ibraheemdev on 2024-06-26 04:56_
 ---
 
 _Label `cli` added by @charliermarsh on 2024-07-30 16:10_
-
----
-
-_Referenced in [astral-sh/uv#6005](../../astral-sh/uv/pulls/6005.md) on 2024-08-11 13:57_
 
 ---
 

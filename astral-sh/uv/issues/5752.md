@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-03T15:53:12Z
 updated_at: 2024-08-03T17:35:55Z
 url: https://github.com/astral-sh/uv/issues/5752
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv add` adds a dependency and then declares it invalid
@@ -84,10 +84,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-03 15:59_
 ---
 
 _Label `preview` added by @charliermarsh on 2024-08-03 15:59_
-
----
-
-_Referenced in [astral-sh/uv#5753](../../astral-sh/uv/pulls/5753.md) on 2024-08-03 17:24_
 
 ---
 

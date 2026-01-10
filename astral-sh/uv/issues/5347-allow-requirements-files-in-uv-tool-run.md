@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-23T16:46:16Z
 updated_at: 2024-07-23T20:06:18Z
 url: https://github.com/astral-sh/uv/issues/5347
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Allow requirements files in `uv tool run`
@@ -33,10 +33,6 @@ _Label `enhancement` added by @charliermarsh on 2024-07-23 16:46_
 ---
 
 _Label `preview` added by @charliermarsh on 2024-07-23 16:46_
-
----
-
-_Referenced in [astral-sh/uv#5362](../../astral-sh/uv/pulls/5362.md) on 2024-07-23 18:40_
 
 ---
 

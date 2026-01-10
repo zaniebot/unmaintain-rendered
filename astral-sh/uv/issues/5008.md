@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-12T13:48:46Z
 updated_at: 2024-07-31T15:27:19Z
 url: https://github.com/astral-sh/uv/issues/5008
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Add `uv install` to install a specific packages from the workspace
@@ -37,10 +37,6 @@ Currently I use `uv sync` to install all locked packages including the whole wor
 I tried to do `uv pip install -c uv.lock packages/package_a` but this obviously does not work because uv.lock is not a constrain file.
 
 
-
----
-
-_Referenced in [astral-sh/uv#5653](../../astral-sh/uv/issues/5653.md) on 2024-07-31 14:08_
 
 ---
 
@@ -71,10 +67,6 @@ _Assigned to @charliermarsh by @konstin on 2024-07-31 14:21_
 _Comment by @charliermarsh on 2024-07-31 14:24_
 
 To be clear, this would be intended to support installing a specific _member_ (like `package/package_a` above), rather than installing a specific transitive dependency (like `flask` or whatever).
-
----
-
-_Referenced in [astral-sh/uv#5656](../../astral-sh/uv/pulls/5656.md) on 2024-07-31 14:54_
 
 ---
 

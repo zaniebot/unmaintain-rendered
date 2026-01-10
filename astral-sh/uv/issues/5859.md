@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-07T13:19:29Z
 updated_at: 2024-08-07T14:56:06Z
 url: https://github.com/astral-sh/uv/issues/5859
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `dependencies` cannot be missing when `requires-python` is present in inline script metadata
@@ -63,10 +63,6 @@ _Label `preview` added by @charliermarsh on 2024-08-07 13:20_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-07 14:37_
-
----
-
-_Referenced in [astral-sh/uv#5864](../../astral-sh/uv/pulls/5864.md) on 2024-08-07 14:44_
 
 ---
 

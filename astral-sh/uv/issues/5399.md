@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-07-24T09:14:44Z
 updated_at: 2024-07-24T09:18:47Z
 url: https://github.com/astral-sh/uv/issues/5399
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # uv not installing build dependencies
@@ -49,9 +49,5 @@ This is another case of #2252. The difference between pip and uv is intentional,
 ---
 
 _Closed by @konstin on 2024-07-24 09:18_
-
----
-
-_Referenced in [prefix-dev/pixi#1666](../../prefix-dev/pixi/issues/1666.md) on 2024-07-24 09:57_
 
 ---

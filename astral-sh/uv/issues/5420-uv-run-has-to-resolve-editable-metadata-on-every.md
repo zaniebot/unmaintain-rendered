@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-24T20:07:37Z
 updated_at: 2024-07-25T13:45:53Z
 url: https://github.com/astral-sh/uv/issues/5420
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv run` has to resolve editable metadata on every invocation
@@ -36,10 +36,6 @@ _Label `preview` added by @charliermarsh on 2024-07-24 20:07_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-24 20:07_
-
----
-
-_Referenced in [astral-sh/uv#5423](../../astral-sh/uv/pulls/5423.md) on 2024-07-24 20:23_
 
 ---
 

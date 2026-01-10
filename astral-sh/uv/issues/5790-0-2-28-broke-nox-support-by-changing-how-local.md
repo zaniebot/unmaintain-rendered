@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-05T08:08:47Z
 updated_at: 2024-08-06T15:05:05Z
 url: https://github.com/astral-sh/uv/issues/5790
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # 0.2.28 broke Nox support by changing how local reinstallation works
@@ -65,9 +65,5 @@ OK, I guess it's a documentation issue for Nox then – thanks!
 ---
 
 _Closed by @hynek on 2024-08-06 15:05_
-
----
-
-_Referenced in [wntrblm/nox#840](../../wntrblm/nox/issues/840.md) on 2024-08-06 15:12_
 
 ---

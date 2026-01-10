@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-07T17:06:53Z
 updated_at: 2024-08-07T22:35:06Z
 url: https://github.com/astral-sh/uv/issues/5876
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Remove repeated Git fetch in resolver
@@ -28,10 +28,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-07 17:06_
 ---
 
 _Label `internal` added by @charliermarsh on 2024-08-07 17:06_
-
----
-
-_Referenced in [astral-sh/uv#5886](../../astral-sh/uv/pulls/5886.md) on 2024-08-07 18:43_
 
 ---
 

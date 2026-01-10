@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-01T14:51:33Z
 updated_at: 2024-08-01T16:41:38Z
 url: https://github.com/astral-sh/uv/issues/5687
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv add --optional` doesn't include optional group in lockfile
@@ -33,10 +33,6 @@ _Label `preview` added by @charliermarsh on 2024-08-01 14:51_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-01 14:51_
-
----
-
-_Referenced in [astral-sh/uv#5686](../../astral-sh/uv/pulls/5686.md) on 2024-08-01 14:51_
 
 ---
 

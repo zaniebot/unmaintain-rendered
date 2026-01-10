@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-25T06:37:46Z
 updated_at: 2024-07-25T18:01:42Z
 url: https://github.com/astral-sh/uv/issues/5434
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # uv sync in empty workspace succeeds and fails
@@ -68,10 +68,6 @@ Oops, good call.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-25 17:28_
-
----
-
-_Referenced in [astral-sh/uv#5453](../../astral-sh/uv/pulls/5453.md) on 2024-07-25 17:31_
 
 ---
 

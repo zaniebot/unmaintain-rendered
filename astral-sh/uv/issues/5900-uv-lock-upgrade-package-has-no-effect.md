@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-08T08:22:33Z
 updated_at: 2024-08-08T13:07:03Z
 url: https://github.com/astral-sh/uv/issues/5900
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv lock --upgrade-package` has no effect
@@ -76,10 +76,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-08 12:19_
 ---
 
 _Renamed from "`uv locik --upgrade-package` has no effect" to "`uv lock --upgrade-package` has no effect" by @charliermarsh on 2024-08-08 12:36_
-
----
-
-_Referenced in [astral-sh/uv#5907](../../astral-sh/uv/pulls/5907.md) on 2024-08-08 12:46_
 
 ---
 

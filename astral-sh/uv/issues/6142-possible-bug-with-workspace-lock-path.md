@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-16T05:38:54Z
 updated_at: 2024-08-16T17:24:28Z
 url: https://github.com/astral-sh/uv/issues/6142
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Possible bug with Workspace.lock_path initialization
@@ -60,10 +60,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-16 11:22_
 _Comment by @idlsoft on 2024-08-16 15:03_
 
 FWIW replacing `Path::new("")` with `project_root` takes care of it and doesn't break any existing unit tests
-
----
-
-_Referenced in [astral-sh/uv#6157](../../astral-sh/uv/pulls/6157.md) on 2024-08-16 17:13_
 
 ---
 

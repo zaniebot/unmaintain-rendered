@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-07-22T02:08:55Z
 updated_at: 2024-07-22T13:17:11Z
 url: https://github.com/astral-sh/uv/issues/5278
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Feature Request: Add Poetry dependency group support to `uv pip compile`
@@ -79,9 +79,5 @@ Agreed. Unfortunately I think we're unlikely to support this both because we avo
 ---
 
 _Closed by @charliermarsh on 2024-07-22 13:17_
-
----
-
-_Referenced in [astral-sh/uv#5632](../../astral-sh/uv/issues/5632.md) on 2024-07-30 20:19_
 
 ---

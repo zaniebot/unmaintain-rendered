@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-19T18:18:58Z
 updated_at: 2024-07-28T00:42:01Z
 url: https://github.com/astral-sh/uv/issues/4417
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Git references are not normalized in lockfile
@@ -96,10 +96,6 @@ I'm not sure if we can normalize to the revision because the commit pointed to b
 ---
 
 _Label `preview` added by @ibraheemdev on 2024-06-19 18:19_
-
----
-
-_Referenced in [astral-sh/uv#4406](../../astral-sh/uv/pulls/4406.md) on 2024-06-19 18:19_
 
 ---
 

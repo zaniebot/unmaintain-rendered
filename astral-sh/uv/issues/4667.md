@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-06-30T20:34:49Z
 updated_at: 2024-08-11T01:41:00Z
 url: https://github.com/astral-sh/uv/issues/4667
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Support PEP 723 scripts in `uv add`
@@ -34,10 +34,6 @@ _Label `preview` added by @charliermarsh on 2024-06-30 20:34_
 ---
 
 _Label `help wanted` added by @charliermarsh on 2024-07-19 16:46_
-
----
-
-_Referenced in [astral-sh/uv#5995](../../astral-sh/uv/pulls/5995.md) on 2024-08-10 14:45_
 
 ---
 

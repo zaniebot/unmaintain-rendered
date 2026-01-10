@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-12T08:40:22Z
 updated_at: 2024-08-13T22:17:26Z
 url: https://github.com/astral-sh/uv/issues/6028
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv pip install` fails when install from files with `-r`, but passes "regularly"
@@ -78,10 +78,6 @@ pip install -r requirements-dev.txt -r requirements-ci.txt
 
 ---
 
-_Referenced in [astral-sh/uv#6034](../../astral-sh/uv/issues/6034.md) on 2024-08-12 12:23_
-
----
-
 _Comment by @zanieb on 2024-08-12 12:25_
 
 ```
@@ -124,9 +120,5 @@ That'll do it too! Glad you found a solution.
 ---
 
 _Closed by @zanieb on 2024-08-13 22:17_
-
----
-
-_Referenced in [pola-rs/polars#17995](../../pola-rs/polars/pulls/17995.md) on 2024-08-14 08:05_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-19T09:30:57Z
 updated_at: 2024-07-19T14:15:33Z
 url: https://github.com/astral-sh/uv/issues/5211
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # The result of `uv python list --python-preference only-system` shows unwanted python
@@ -67,10 +67,6 @@ _Label `good first issue` added by @zanieb on 2024-07-19 13:48_
 ---
 
 _Label `cli` added by @zanieb on 2024-07-19 13:48_
-
----
-
-_Referenced in [astral-sh/uv#5219](../../astral-sh/uv/pulls/5219.md) on 2024-07-19 14:07_
 
 ---
 

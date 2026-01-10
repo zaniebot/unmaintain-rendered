@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-19T17:37:10Z
 updated_at: 2024-07-22T12:28:23Z
 url: https://github.com/astral-sh/uv/issues/5226
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `--resolution lowest` with `uv sync` needs to discard preferences
@@ -133,10 +133,6 @@ Are you commenting on the originating issue here or my previous comment?
 _Comment by @zanieb on 2024-07-21 15:57_
 
 The previous comment.
-
----
-
-_Referenced in [astral-sh/uv#5264](../../astral-sh/uv/pulls/5264.md) on 2024-07-21 20:16_
 
 ---
 

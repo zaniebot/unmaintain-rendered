@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-28T21:47:47Z
 updated_at: 2024-08-10T03:21:58Z
 url: https://github.com/astral-sh/uv/issues/5530
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Consider adding custom error messages for `uvx` et al
@@ -48,10 +48,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-09 14:05_
 ---
 
 _Unassigned @zanieb by @charliermarsh on 2024-08-09 14:05_
-
----
-
-_Referenced in [astral-sh/uv#5991](../../astral-sh/uv/pulls/5991.md) on 2024-08-10 03:03_
 
 ---
 

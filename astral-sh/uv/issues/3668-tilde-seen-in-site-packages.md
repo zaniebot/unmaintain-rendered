@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-20T05:03:56Z
 updated_at: 2024-07-28T19:13:07Z
 url: https://github.com/astral-sh/uv/issues/3668
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Tilde seen in site-packages
@@ -85,10 +85,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-07-28 18:07_
 ---
 
 _Label `needs-decision` removed by @charliermarsh on 2024-07-28 18:07_
-
----
-
-_Referenced in [astral-sh/uv#5520](../../astral-sh/uv/pulls/5520.md) on 2024-07-28 18:22_
 
 ---
 

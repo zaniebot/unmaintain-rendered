@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-07-01T09:59:57Z
 updated_at: 2024-07-29T14:57:00Z
 url: https://github.com/astral-sh/uv/issues/4685
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Install `azure-cli` with `uv` fails
@@ -94,10 +94,6 @@ _Renamed from "How to install tools that require `wheel`?" to "Install `azure-cl
 
 ---
 
-_Referenced in [astral-sh/uv#4686](../../astral-sh/uv/pulls/4686.md) on 2024-07-01 10:36_
-
----
-
 _Renamed from "Install `azure-cli` with uv" to "Install `azure-cli` with `uv` fails" by @baggiponte on 2024-07-01 10:39_
 
 ---
@@ -122,10 +118,6 @@ _Closed by @konstin on 2024-07-01 10:43_
 
 ---
 
-_Referenced in [astral-sh/uv#4689](../../astral-sh/uv/issues/4689.md) on 2024-07-01 12:15_
-
----
-
 _Comment by @mdragoss on 2024-07-26 12:30_
 
 I which release version this would be fixed? 0.2.29 this still fails
@@ -137,9 +129,5 @@ _Comment by @baggiponte on 2024-07-29 14:56_
 > I which release version this would be fixed? 0.2.29 this still fails
 
 that's odd. it works for me on the latest (and even previous ones) with `--prerelease=allow`.
-
----
-
-_Referenced in [astral-sh/uv#14415](../../astral-sh/uv/issues/14415.md) on 2025-07-02 10:20_
 
 ---

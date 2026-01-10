@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-20T07:27:23Z
 updated_at: 2024-07-20T13:11:35Z
 url: https://github.com/astral-sh/uv/issues/5241
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Should uv add have editable as a flag
@@ -46,10 +46,6 @@ _Label `help wanted` added by @charliermarsh on 2024-07-20 11:12_
 ---
 
 _Label `good first issue` added by @charliermarsh on 2024-07-20 11:13_
-
----
-
-_Referenced in [astral-sh/uv#5246](../../astral-sh/uv/pulls/5246.md) on 2024-07-20 12:37_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-13T15:14:24Z
 updated_at: 2024-08-13T23:49:00Z
 url: https://github.com/astral-sh/uv/issues/6055
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Strip Git credentials by default in `uv lock`
@@ -42,10 +42,6 @@ _Label `preview` added by @charliermarsh on 2024-08-13 15:14_
 ---
 
 _Label `help wanted` added by @charliermarsh on 2024-08-13 17:14_
-
----
-
-_Referenced in [astral-sh/uv#6070](../../astral-sh/uv/pulls/6070.md) on 2024-08-13 22:32_
 
 ---
 

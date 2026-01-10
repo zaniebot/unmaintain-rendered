@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-06T02:36:10Z
 updated_at: 2024-08-19T16:58:38Z
 url: https://github.com/astral-sh/uv/issues/5807
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Support `uv tool run {package}@latest`
@@ -53,10 +53,6 @@ As part of this, we also want to remove `--upgrade` from `uv tool run`...
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-16 02:22_
-
----
-
-_Referenced in [astral-sh/uv#6138](../../astral-sh/uv/pulls/6138.md) on 2024-08-16 03:06_
 
 ---
 

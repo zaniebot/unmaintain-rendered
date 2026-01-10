@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-09T14:20:39Z
 updated_at: 2024-08-10T00:59:24Z
 url: https://github.com/astral-sh/uv/issues/5958
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Check `{ workspace = true, editable = false }` support
@@ -57,14 +57,6 @@ I guess we should remove it for now.
 _Comment by @charliermarsh on 2024-08-09 22:55_
 
 I think I should make a timeboxed effort to fix it.
-
----
-
-_Referenced in [astral-sh/uv#5985](../../astral-sh/uv/pulls/5985.md) on 2024-08-09 23:33_
-
----
-
-_Referenced in [astral-sh/uv#5987](../../astral-sh/uv/pulls/5987.md) on 2024-08-10 00:27_
 
 ---
 

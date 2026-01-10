@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-16T01:23:48Z
 updated_at: 2024-07-26T14:28:21Z
 url: https://github.com/astral-sh/uv/issues/5086
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `--universal` does not propagate markers to transitive dependencies
@@ -130,19 +130,7 @@ I can look at this.
 
 ---
 
-_Referenced in [astral-sh/uv#5109](../../astral-sh/uv/pulls/5109.md) on 2024-07-16 14:43_
-
----
-
-_Referenced in [astral-sh/uv#5104](../../astral-sh/uv/pulls/5104.md) on 2024-07-16 16:21_
-
----
-
 _Renamed from "`--universal` does not propogate markers to transitive dependencies" to "`--universal` does not propagate markers to transitive dependencies" by @charliermarsh on 2024-07-17 01:20_
-
----
-
-_Referenced in [astral-sh/uv#5163](../../astral-sh/uv/pulls/5163.md) on 2024-07-25 14:13_
 
 ---
 

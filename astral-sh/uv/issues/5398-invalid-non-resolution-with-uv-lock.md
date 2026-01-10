@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-24T06:03:09Z
 updated_at: 2024-08-09T08:04:07Z
 url: https://github.com/astral-sh/uv/issues/5398
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Invalid non-resolution with `uv lock`
@@ -188,10 +188,6 @@ _Comment by @zanieb on 2024-07-24 22:05_
 ---
 
 _Assigned to @konstin by @konstin on 2024-07-29 09:53_
-
----
-
-_Referenced in [astral-sh/uv#5594](../../astral-sh/uv/issues/5594.md) on 2024-07-30 11:16_
 
 ---
 

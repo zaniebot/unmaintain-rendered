@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-26T19:43:51Z
 updated_at: 2024-07-31T19:27:25Z
 url: https://github.com/astral-sh/uv/issues/5490
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Installing no-executable packages can leave lingering executables around
@@ -54,10 +54,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-07-30 16:06_
 _Comment by @charliermarsh on 2024-07-31 18:28_
 
 Working on this now.
-
----
-
-_Referenced in [astral-sh/uv#5666](../../astral-sh/uv/pulls/5666.md) on 2024-07-31 18:57_
 
 ---
 

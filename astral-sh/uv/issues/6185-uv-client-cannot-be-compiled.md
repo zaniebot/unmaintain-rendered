@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-18T19:38:32Z
 updated_at: 2024-08-19T07:28:44Z
 url: https://github.com/astral-sh/uv/issues/6185
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv-client` cannot be compiled
@@ -121,9 +121,5 @@ _Label `question` added by @charliermarsh on 2024-08-18 22:16_
 _Comment by @fyusifov on 2024-08-19 07:28_
 
 Thanks, @charliermarsh. This worked. 
-
----
-
-_Referenced in [astral-sh/uv#7689](../../astral-sh/uv/issues/7689.md) on 2024-09-25 18:26_
 
 ---

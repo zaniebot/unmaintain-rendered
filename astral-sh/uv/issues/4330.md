@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-14T17:18:09Z
 updated_at: 2024-08-20T14:23:54Z
 url: https://github.com/astral-sh/uv/issues/4330
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `RegistryClientBuilder` should support creation from `BaseClientBuilder`
@@ -29,10 +29,6 @@ _Label `good first issue` added by @zanieb on 2024-06-14 17:18_
 ---
 
 _Label `internal` added by @zanieb on 2024-06-14 17:18_
-
----
-
-_Referenced in [astral-sh/uv#4326](../../astral-sh/uv/pulls/4326.md) on 2024-06-14 17:20_
 
 ---
 
@@ -110,10 +106,6 @@ impl<'a> From<BaseClientBuilder<'a>> for RegistryClientBuilder<'a> {
 
 
 ```
-
----
-
-_Referenced in [astral-sh/uv#4729](../../astral-sh/uv/pulls/4729.md) on 2024-07-02 12:52_
 
 ---
 

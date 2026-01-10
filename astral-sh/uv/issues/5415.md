@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-24T15:42:02Z
 updated_at: 2024-07-25T14:22:37Z
 url: https://github.com/astral-sh/uv/issues/5415
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Add "lockfile" or "lock file" to style guide
@@ -44,10 +44,6 @@ _Reopened by @charliermarsh on 2024-07-24 15:42_
 _Comment by @charliermarsh on 2024-07-24 15:43_
 
 (Did not mean to close.)
-
----
-
-_Referenced in [astral-sh/uv#5427](../../astral-sh/uv/pulls/5427.md) on 2024-07-24 22:08_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-17T15:14:40Z
 updated_at: 2024-07-22T14:29:50Z
 url: https://github.com/astral-sh/uv/issues/1595
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv pip compile` does not include extras in output
@@ -57,10 +57,6 @@ I'd say that if `uv` decides not to support this behavior of `pip-compile` (whic
 
 ---
 
-_Referenced in [astral-sh/uv#1665](../../astral-sh/uv/issues/1665.md) on 2024-02-18 21:04_
-
----
-
 _Renamed from "uv pip compile removes extras from the output" to "`uv pip compile` does not include extras in output" by @zanieb on 2024-02-18 21:24_
 
 ---
@@ -76,18 +72,6 @@ _Comment by @palfrey on 2024-02-25 20:31_
 > My 2c: This should certainly not be the default, pip-compile is doing the right thing by changing its default to `--strip-extras`. This ensures compatibility with constraints files, avoids pip bugs like [pypa/pip#9644](https://github.com/pypa/pip/issues/9644), etc
 
 I'm not too fussed (especially given the possible change in `pip-tools`) about this being the default or not, provided there's an option to not strip them, which is my personal preference as I'd rather that and live with the possible issues from it. Also, it makes it much easier to use this as a drop-in "no changes in output" option from an existing pip-tools setup, and then _maybe_ change the setting if I hit the issues later on.
-
----
-
-_Referenced in [astral-sh/uv#2163](../../astral-sh/uv/issues/2163.md) on 2024-03-04 17:01_
-
----
-
-_Referenced in [astral-sh/uv#2349](../../astral-sh/uv/issues/2349.md) on 2024-03-11 02:02_
-
----
-
-_Referenced in [astral-sh/uv#2498](../../astral-sh/uv/issues/2498.md) on 2024-03-17 19:29_
 
 ---
 
@@ -108,10 +92,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-03-19 02:44_
 
 ---
 
-_Referenced in [astral-sh/uv#2555](../../astral-sh/uv/pulls/2555.md) on 2024-03-19 23:28_
-
----
-
 _Closed by @charliermarsh on 2024-03-19 23:59_
 
 ---
@@ -119,29 +99,5 @@ _Closed by @charliermarsh on 2024-03-19 23:59_
 _Comment by @kennethreitz on 2024-07-22 14:29_
 
 Thanks @charliermarsh I just used this functionality
-
----
-
-_Referenced in [grafana/oncall#4799](../../grafana/oncall/pulls/4799.md) on 2024-08-09 19:27_
-
----
-
-_Referenced in [mozilla/pontoon#3312](../../mozilla/pontoon/pulls/3312.md) on 2024-09-22 15:00_
-
----
-
-_Referenced in [alphagov/notifications-api#4271](../../alphagov/notifications-api/pulls/4271.md) on 2024-11-29 13:04_
-
----
-
-_Referenced in [mc-bench/mc-bench-backend#160](../../mc-bench/mc-bench-backend/pulls/160.md) on 2025-03-17 04:35_
-
----
-
-_Referenced in [astral-sh/uv#12543](../../astral-sh/uv/issues/12543.md) on 2025-03-29 11:11_
-
----
-
-_Referenced in [astral-sh/uv#13085](../../astral-sh/uv/issues/13085.md) on 2025-04-24 10:24_
 
 ---

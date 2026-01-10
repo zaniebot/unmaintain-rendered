@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-05T16:34:39Z
 updated_at: 2024-08-05T21:12:38Z
 url: https://github.com/astral-sh/uv/issues/5793
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Create guide for publishing a package
@@ -43,10 +43,6 @@ _Label `preview` added by @zanieb on 2024-08-05 16:34_
 ---
 
 _Assigned to @zanieb by @zanieb on 2024-08-05 16:34_
-
----
-
-_Referenced in [astral-sh/uv#5794](../../astral-sh/uv/pulls/5794.md) on 2024-08-05 17:11_
 
 ---
 

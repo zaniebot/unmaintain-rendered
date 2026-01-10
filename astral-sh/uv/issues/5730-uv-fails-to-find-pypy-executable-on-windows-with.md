@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-02T16:38:17Z
 updated_at: 2024-08-02T19:17:50Z
 url: https://github.com/astral-sh/uv/issues/5730
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # uv fails to find PyPy executable on Windows with Python 3.8
@@ -42,9 +42,5 @@ _Label `bug` added by @charliermarsh on 2024-08-02 16:38_
 _Comment by @henryiii on 2024-08-02 19:16_
 
 Ahh, this is what I was remembering: https://github.com/pypa/cibuildwheel/pull/1941. Next release of cibuildwheel will just ignore uv on PyPy 3.8 (and I guess this means it works fine for 3.9+). uv 0.2.25+ seems to be the issue.
-
----
-
-_Referenced in [john-kurkowski/tldextract#335](../../john-kurkowski/tldextract/pulls/335.md) on 2024-08-21 20:39_
 
 ---

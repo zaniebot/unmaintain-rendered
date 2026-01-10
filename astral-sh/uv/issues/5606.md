@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-30T16:37:03Z
 updated_at: 2024-08-20T20:08:38Z
 url: https://github.com/astral-sh/uv/issues/5606
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Update `astral.sh` to reference new uv documentation
@@ -28,10 +28,6 @@ _Label `documentation` added by @zanieb on 2024-07-30 16:37_
 ---
 
 _Assigned to @charliermarsh by @zanieb on 2024-07-30 16:37_
-
----
-
-_Referenced in [astral-sh/uv#5973](../../astral-sh/uv/issues/5973.md) on 2024-08-09 18:21_
 
 ---
 

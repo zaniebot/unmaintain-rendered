@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-05T12:53:26Z
 updated_at: 2024-08-06T14:14:21Z
 url: https://github.com/astral-sh/uv/issues/5791
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Add `--no-sources` to allow locking, syncing, and installing without `tool.uv.sources`
@@ -62,10 +62,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-05 18:25_
 ---
 
 _Label `needs-decision` removed by @charliermarsh on 2024-08-05 18:25_
-
----
-
-_Referenced in [astral-sh/uv#5801](../../astral-sh/uv/pulls/5801.md) on 2024-08-05 20:31_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-24T20:30:49Z
 updated_at: 2024-07-25T13:46:00Z
 url: https://github.com/astral-sh/uv/issues/5424
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `--reinstall` should imply `--refresh`
@@ -33,10 +33,6 @@ _Label `enhancement` added by @charliermarsh on 2024-07-24 20:30_
 ---
 
 _Label `cli` added by @charliermarsh on 2024-07-24 20:30_
-
----
-
-_Referenced in [astral-sh/uv#5425](../../astral-sh/uv/pulls/5425.md) on 2024-07-24 21:10_
 
 ---
 

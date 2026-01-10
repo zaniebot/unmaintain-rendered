@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-20T13:04:17Z
 updated_at: 2024-08-20T17:11:58Z
 url: https://github.com/astral-sh/uv/issues/6249
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `requires-dist` sorting is unstable
@@ -72,10 +72,6 @@ _Label `preview` added by @konstin on 2024-08-20 13:04_
 ---
 
 _Assigned to @konstin by @konstin on 2024-08-20 13:04_
-
----
-
-_Referenced in [astral-sh/uv#6253](../../astral-sh/uv/pulls/6253.md) on 2024-08-20 14:57_
 
 ---
 

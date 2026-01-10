@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-14T10:56:09Z
 updated_at: 2024-08-14T15:05:07Z
 url: https://github.com/astral-sh/uv/issues/6080
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Non-CLI usage of uv? (From existing Rust code, or possibly from Python)
@@ -21,10 +21,6 @@ _Issue opened by @twardoch on 2024-08-14 10:56_
 Is there a way to use "uv" not via CLI, but to build and use it "programmatically" (like a library)? 
 
 I mean from existing Rust code, or possibly from Python (akin to micropip in Pyodide, or the undocumented usage of the "pip" package from within running Python code). 
-
----
-
-_Referenced in [MeVisLab/pythonqt#231](../../MeVisLab/pythonqt/issues/231.md) on 2024-08-14 10:57_
 
 ---
 

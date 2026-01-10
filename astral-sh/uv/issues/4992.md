@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-11T14:53:40Z
 updated_at: 2024-08-10T01:12:04Z
 url: https://github.com/astral-sh/uv/issues/4992
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Another example of duplicate packages with different versions using `--universal`
@@ -58,10 +58,6 @@ We're solving once for `python_version >= '3.12'` and once for `python_version <
 ---
 
 _Renamed from "Another example of duplicate lines with `--universal`" to "Another example of duplicate packages with different versions using `--universal`" by @notatallshaw-gts on 2024-07-11 15:04_
-
----
-
-_Referenced in [astral-sh/uv#4996](../../astral-sh/uv/pulls/4996.md) on 2024-07-11 18:07_
 
 ---
 

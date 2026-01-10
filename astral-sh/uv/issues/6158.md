@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-16T17:35:31Z
 updated_at: 2024-08-16T17:42:08Z
 url: https://github.com/astral-sh/uv/issues/6158
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv add foo` followed by a `uv remove foo` can sometimes produce a different lock file than what one started with
@@ -105,17 +105,5 @@ I think this is basically the same problem as the Jax thing.
 _Comment by @BurntSushi on 2024-08-16 17:42_
 
 Yeah it is. And this particular case is fixed by more aggressive forking. (But I believe I can come up with other cases of instability that aren't fixed by aggressive forking.)
-
----
-
-_Referenced in [astral-sh/uv#6161](../../astral-sh/uv/pulls/6161.md) on 2024-08-16 18:21_
-
----
-
-_Referenced in [astral-sh/uv#9990](../../astral-sh/uv/issues/9990.md) on 2024-12-18 17:22_
-
----
-
-_Referenced in [mlrun/mlrun#7558](../../mlrun/mlrun/pulls/7558.md) on 2025-04-01 10:58_
 
 ---

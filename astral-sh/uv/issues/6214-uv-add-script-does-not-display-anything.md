@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-19T17:11:48Z
 updated_at: 2024-08-19T21:29:34Z
 url: https://github.com/astral-sh/uv/issues/6214
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv add --script` does not display anything
@@ -44,10 +44,6 @@ _Label `tracing` removed by @zanieb on 2024-08-19 17:22_
 ---
 
 _Assigned to @zanieb by @zanieb on 2024-08-19 18:28_
-
----
-
-_Referenced in [astral-sh/uv#6231](../../astral-sh/uv/pulls/6231.md) on 2024-08-19 20:51_
 
 ---
 

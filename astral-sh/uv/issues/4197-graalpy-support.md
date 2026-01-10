@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-10T13:51:00Z
 updated_at: 2024-07-19T20:31:06Z
 url: https://github.com/astral-sh/uv/issues/4197
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # GraalPy support
@@ -46,9 +46,5 @@ _Closed by @charliermarsh on 2024-07-19 20:31_
 ---
 
 _Label `enhancement` added by @charliermarsh on 2024-07-19 20:31_
-
----
-
-_Referenced in [astral-sh/uv#13114](../../astral-sh/uv/issues/13114.md) on 2025-04-26 03:38_
 
 ---

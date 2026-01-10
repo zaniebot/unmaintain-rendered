@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-29T16:35:49Z
 updated_at: 2024-07-28T00:52:28Z
 url: https://github.com/astral-sh/uv/issues/2087
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Option for the Windows installer to setup to a specific dir
@@ -40,14 +40,6 @@ I would certainly make use of it.
 ---
 
 _Label `upstream` added by @charliermarsh on 2024-02-29 23:47_
-
----
-
-_Referenced in [astral-sh/uv#2236](../../astral-sh/uv/pulls/2236.md) on 2024-03-08 00:58_
-
----
-
-_Referenced in [astral-sh/uv#2248](../../astral-sh/uv/issues/2248.md) on 2024-03-08 21:30_
 
 ---
 

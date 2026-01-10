@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-08T14:28:57Z
 updated_at: 2024-08-08T17:55:09Z
 url: https://github.com/astral-sh/uv/issues/5913
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Adding a dependency twice is not a no-op
@@ -76,10 +76,6 @@ Because we write to the `pyproject.toml`, and that triggers a rebuild (even if t
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-08 17:10_
-
----
-
-_Referenced in [astral-sh/uv#5922](../../astral-sh/uv/pulls/5922.md) on 2024-08-08 17:31_
 
 ---
 

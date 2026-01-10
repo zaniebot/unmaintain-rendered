@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-24T22:13:56Z
 updated_at: 2024-07-30T17:40:36Z
 url: https://github.com/astral-sh/uv/issues/5429
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Add `--no-project` to `uv run`
@@ -33,10 +33,6 @@ _Label `cli` added by @charliermarsh on 2024-07-24 22:14_
 ---
 
 _Label `preview` added by @charliermarsh on 2024-07-24 22:14_
-
----
-
-_Referenced in [astral-sh/uv#5465](../../astral-sh/uv/pulls/5465.md) on 2024-07-26 00:10_
 
 ---
 

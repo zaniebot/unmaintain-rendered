@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-08-07T13:11:56Z
 updated_at: 2024-08-09T23:10:35Z
 url: https://github.com/astral-sh/uv/issues/5856
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Warn when project options are used with `uv run` outside a project
@@ -53,10 +53,6 @@ _Label `preview` added by @charliermarsh on 2024-08-09 02:53_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-09 14:38_
-
----
-
-_Referenced in [astral-sh/uv#5977](../../astral-sh/uv/pulls/5977.md) on 2024-08-09 20:22_
 
 ---
 

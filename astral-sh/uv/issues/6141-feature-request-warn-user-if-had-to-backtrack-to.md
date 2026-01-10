@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-16T03:21:41Z
 updated_at: 2024-08-16T14:32:51Z
 url: https://github.com/astral-sh/uv/issues/6141
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Feature Request: Warn user if had to backtrack to a very old version of a package for a newer version of Python
@@ -40,9 +40,5 @@ If uv has to backtrack to previous versions of a package to meet minimum Python 
 
 I don't think uv can "fix" this, but I do think they can warn the user that this happened (though extracting the correct heuristics from the resolution might be extremely difficult?). 
 
-
----
-
-_Referenced in [astral-sh/uv#6186](../../astral-sh/uv/issues/6186.md) on 2024-08-20 00:41_
 
 ---

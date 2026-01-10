@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-07-29T11:48:39Z
 updated_at: 2024-07-29T16:05:54Z
 url: https://github.com/astral-sh/uv/issues/5556
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # SPECIFICATION.md in async_zip fork is not redistributable
@@ -55,10 +55,6 @@ Thanks, will take a look at this today.
 
 ---
 
-_Referenced in [astral-sh/uv#5560](../../astral-sh/uv/pulls/5560.md) on 2024-07-29 14:14_
-
----
-
 _Closed by @charliermarsh on 2024-07-29 14:42_
 
 ---
@@ -66,9 +62,5 @@ _Closed by @charliermarsh on 2024-07-29 14:42_
 _Comment by @musicinmybrain on 2024-07-29 16:05_
 
 Thanks! https://github.com/astral-sh/uv/pull/5560 looks good.
-
----
-
-_Referenced in [astral-sh/uv#5588](../../astral-sh/uv/issues/5588.md) on 2024-07-30 05:05_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-22T04:20:07Z
 updated_at: 2024-08-02T22:13:32Z
 url: https://github.com/astral-sh/uv/issues/1854
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Show the source of conflicting dependencies
@@ -46,16 +46,8 @@ _Label `error messages` added by @zanieb on 2024-02-22 04:21_
 
 ---
 
-_Referenced in [astral-sh/uv#3269](../../astral-sh/uv/pulls/3269.md) on 2024-04-25 22:45_
-
----
-
 _Comment by @telamonian on 2024-08-02 22:13_
 
 @zanieb I need this functionality for for an app installer tool that I'm writing. If you're willing to point out the files and rough line numbers that need to change, I would be happy to contribute a fix for this.
-
----
-
-_Referenced in [Comfy-Org/comfy-cli#141](../../Comfy-Org/comfy-cli/pulls/141.md) on 2024-08-09 12:58_
 
 ---

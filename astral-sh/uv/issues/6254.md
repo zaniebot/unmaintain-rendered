@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-20T15:14:37Z
 updated_at: 2024-08-20T19:04:48Z
 url: https://github.com/astral-sh/uv/issues/6254
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Allow flags in `uv run`'s  `--with` values
@@ -98,10 +98,6 @@ _Comment by @mgaitan on 2024-08-20 17:23_
 ---
 
 _Assigned to @zanieb by @zanieb on 2024-08-20 17:27_
-
----
-
-_Referenced in [astral-sh/uv#6262](../../astral-sh/uv/pulls/6262.md) on 2024-08-20 17:50_
 
 ---
 

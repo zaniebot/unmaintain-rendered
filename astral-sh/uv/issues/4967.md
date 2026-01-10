@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-10T16:35:02Z
 updated_at: 2024-07-28T00:38:35Z
 url: https://github.com/astral-sh/uv/issues/4967
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `--override`ing a package from a `--extra-index-url` index is not registered in the cache properly
@@ -128,10 +128,6 @@ _Comment by @BurntSushi on 2024-07-10 17:36_
 I agree that `--offline` is opting into "stale cache is ok," and I think that would mean that we could ignore things like `must-revalidate` where you're supposed to send a revalidation request to the origin. I could see that if `--offline` is given, we could say, "nah we don't have to do that because the client told us that stale data was cool." But in this particular case, PyTorch is telling us not to even _store_ a response in the first place. The question of staleness shouldn't even come up in this case because we shouldn't even be caching in the first place.
 
 I'd be really curious if this is intended behavior on the PyTorch side.
-
----
-
-_Referenced in [pytorch/pytorch#130571](../../pytorch/pytorch/issues/130571.md) on 2024-07-11 20:52_
 
 ---
 

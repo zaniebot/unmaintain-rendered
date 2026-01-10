@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-16T16:37:51Z
 updated_at: 2024-08-18T13:13:30Z
 url: https://github.com/astral-sh/uv/issues/6151
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Show `generate-shell-completion` in `uv help`
@@ -23,14 +23,6 @@ We should hide this in the concise help, but show it in the long help menu.
 See also:
 - #6152
 - https://github.com/astral-sh/uv/issues/6153
-
----
-
-_Referenced in [astral-sh/uv#6152](../../astral-sh/uv/issues/6152.md) on 2024-08-16 16:38_
-
----
-
-_Referenced in [astral-sh/uv#6180](../../astral-sh/uv/pulls/6180.md) on 2024-08-18 10:05_
 
 ---
 

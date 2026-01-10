@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-21T12:26:15Z
 updated_at: 2024-07-22T14:28:21Z
 url: https://github.com/astral-sh/uv/issues/5256
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv pip install` should support reasonable variations on `pythonw.exe` e.g. `.pythonw.exe`
@@ -36,10 +36,6 @@ It seems like a reasonable change to me. For stuff like this, pip is effectively
 ---
 
 _Label `compatibility` added by @charliermarsh on 2024-07-21 12:34_
-
----
-
-_Referenced in [astral-sh/uv#5259](../../astral-sh/uv/pulls/5259.md) on 2024-07-21 15:53_
 
 ---
 

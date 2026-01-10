@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-30T18:52:15Z
 updated_at: 2024-08-02T19:33:27Z
 url: https://github.com/astral-sh/uv/issues/5627
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # PEP-710: Implement provenance records for installed packages
@@ -37,10 +37,6 @@ _Label `question` added by @zanieb on 2024-07-30 18:53_
 ---
 
 _Label `compatibility` added by @zanieb on 2024-07-30 18:53_
-
----
-
-_Referenced in [python/peps#3880](../../python/peps/pulls/3880.md) on 2024-07-30 18:57_
 
 ---
 

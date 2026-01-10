@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-20T11:08:31Z
 updated_at: 2024-07-20T13:10:45Z
 url: https://github.com/astral-sh/uv/issues/5243
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Typo in tools guide
@@ -44,10 +44,6 @@ _Label `documentation` added by @charliermarsh on 2024-07-20 11:13_
 _Comment by @iw on 2024-07-20 11:17_
 
 Absolutely. Mini delay due to 🐶 walking duty, then submit.
-
----
-
-_Referenced in [astral-sh/uv#5245](../../astral-sh/uv/pulls/5245.md) on 2024-07-20 12:18_
 
 ---
 

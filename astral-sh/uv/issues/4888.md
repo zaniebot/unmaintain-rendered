@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-08T12:10:12Z
 updated_at: 2024-07-18T18:07:50Z
 url: https://github.com/astral-sh/uv/issues/4888
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Remove extra duplication from lockfile
@@ -87,19 +87,7 @@ Right, okay. I think this LGTM. Although I don't totally mind our existing forma
 
 ---
 
-_Referenced in [astral-sh/uv#4893](../../astral-sh/uv/issues/4893.md) on 2024-07-08 13:47_
-
----
-
-_Referenced in [astral-sh/uv#3347](../../astral-sh/uv/issues/3347.md) on 2024-07-09 11:29_
-
----
-
 _Assigned to @konstin by @konstin on 2024-07-18 09:19_
-
----
-
-_Referenced in [astral-sh/uv#5181](../../astral-sh/uv/pulls/5181.md) on 2024-07-18 10:48_
 
 ---
 

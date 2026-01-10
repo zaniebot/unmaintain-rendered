@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-24T22:13:29Z
 updated_at: 2024-07-25T23:58:37Z
 url: https://github.com/astral-sh/uv/issues/5428
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Rename `--isolated` to `--no-config`
@@ -28,10 +28,6 @@ _Label `cli` added by @charliermarsh on 2024-07-24 22:13_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-24 22:13_
-
----
-
-_Referenced in [astral-sh/uv#5463](../../astral-sh/uv/pulls/5463.md) on 2024-07-25 23:36_
 
 ---
 

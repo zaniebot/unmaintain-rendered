@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-19T16:49:20Z
 updated_at: 2024-08-20T00:28:22Z
 url: https://github.com/astral-sh/uv/issues/6212
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Python interpreter download is a bottleneck 
@@ -79,13 +79,5 @@ _Comment by @samypr100 on 2024-08-20 00:28_
 > Use an image we provide that has python installed
 
 🤞 https://github.com/astral-sh/uv/pull/6053
-
----
-
-_Referenced in [astral-sh/uv#4242](../../astral-sh/uv/issues/4242.md) on 2024-08-22 09:07_
-
----
-
-_Referenced in [astral-sh/uv#16289](../../astral-sh/uv/issues/16289.md) on 2025-10-13 23:07_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-05T18:44:34Z
 updated_at: 2024-08-06T01:52:13Z
 url: https://github.com/astral-sh/uv/issues/5797
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uvx` doesn't upgrade when existing tool is installed
@@ -89,10 +89,6 @@ I guess we can ignore the installed tool if you pass `--upgrade` or `--reinstall
 _Comment by @charliermarsh on 2024-08-05 18:57_
 
 @zanieb -- I might expect `ruff@latest` to work
-
----
-
-_Referenced in [astral-sh/uv#5799](../../astral-sh/uv/pulls/5799.md) on 2024-08-05 19:01_
 
 ---
 

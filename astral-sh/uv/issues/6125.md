@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-15T18:49:41Z
 updated_at: 2024-08-16T01:42:17Z
 url: https://github.com/astral-sh/uv/issues/6125
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `python_version` and `python_full_version` should be simplified together
@@ -41,10 +41,6 @@ _Label `preview` added by @charliermarsh on 2024-08-15 18:49_
 ---
 
 _Label `preview` removed by @charliermarsh on 2024-08-15 18:49_
-
----
-
-_Referenced in [astral-sh/uv#6126](../../astral-sh/uv/pulls/6126.md) on 2024-08-15 19:06_
 
 ---
 

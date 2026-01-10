@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-15T20:07:18Z
 updated_at: 2024-08-20T14:16:37Z
 url: https://github.com/astral-sh/uv/issues/6127
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Disjoint dependencies are not ignored in non-forked resolution
@@ -65,10 +65,6 @@ _Label `preview` removed by @charliermarsh on 2024-08-15 20:07_
 _Comment by @charliermarsh on 2024-08-15 20:07_
 
 \cc @BurntSushi -- I think this would be fixed by aggressive forking.
-
----
-
-_Referenced in [astral-sh/uv#6143](../../astral-sh/uv/pulls/6143.md) on 2024-08-16 12:14_
 
 ---
 
@@ -696,13 +692,5 @@ environments = ["platform_system == 'Windows'", "platform_system != 'Windows'"]
 ```
 
 I.e., instruct uv to solve for Windows and non-Windows.
-
----
-
-_Referenced in [galaxyproject/galaxy#19099](../../galaxyproject/galaxy/pulls/19099.md) on 2024-11-03 18:19_
-
----
-
-_Referenced in [ansible/ansible-lint#4348](../../ansible/ansible-lint/issues/4348.md) on 2024-11-05 22:05_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-26T10:55:48Z
 updated_at: 2024-08-19T16:53:53Z
 url: https://github.com/astral-sh/uv/issues/5474
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Installed package versions depend upon argument order in uv pip install
@@ -216,18 +216,6 @@ From a pubgrub perspective, this is an interesting problem: Pubgrub works so tha
 
 ---
 
-_Referenced in [astral-sh/uv#5796](../../astral-sh/uv/issues/5796.md) on 2024-08-05 17:27_
-
----
-
-_Referenced in [astral-sh/uv#6209](../../astral-sh/uv/issues/6209.md) on 2024-08-19 15:32_
-
----
-
-_Referenced in [astral-sh/uv#6211](../../astral-sh/uv/pulls/6211.md) on 2024-08-19 16:34_
-
----
-
 _Closed by @zanieb on 2024-08-19 16:53_
 
 ---
@@ -239,13 +227,5 @@ _Closed by @zanieb on 2024-08-19 16:53_
 _Comment by @zanieb on 2024-08-19 16:53_
 
 Discussion welcome to continue here — just closing as I've documented this now.
-
----
-
-_Referenced in [astral-sh/uv#7575](../../astral-sh/uv/issues/7575.md) on 2024-09-20 17:14_
-
----
-
-_Referenced in [HarrisonKramer/optiland#305](../../HarrisonKramer/optiland/pulls/305.md) on 2025-09-04 07:23_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-15T10:51:32Z
 updated_at: 2024-07-18T18:21:41Z
 url: https://github.com/astral-sh/uv/issues/5068
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # “warning: pyproject.toml does not contain `project` table”, though there is a [project] section
@@ -290,10 +290,6 @@ dev-dependencies = [
 
 ---
 
-_Referenced in [astral-sh/uv#5069](../../astral-sh/uv/pulls/5069.md) on 2024-07-15 11:05_
-
----
-
 _Comment by @charliermarsh on 2024-07-15 13:16_
 
 Thanks, likely due to `dynamic = ["version"]`. Will adjust.
@@ -389,10 +385,6 @@ _Label `good first issue` added by @zanieb on 2024-07-18 03:34_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-18 14:50_
-
----
-
-_Referenced in [astral-sh/uv#5194](../../astral-sh/uv/pulls/5194.md) on 2024-07-18 18:11_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-13T17:52:04Z
 updated_at: 2024-08-15T15:50:02Z
 url: https://github.com/astral-sh/uv/issues/6064
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # uv 0.2.36 regression - `uv pip compile --universal` gives contradictory versions of same packages
@@ -129,10 +129,6 @@ wrapt==1.16.0 ; python_version >= '3.11'
 _Comment by @charliermarsh on 2024-08-13 23:53_
 
 I think we should remove that block from `graph.rs`, and instead ensure that all the markers we see at that point have _already_ been simplified based on `requires-python`.
-
----
-
-_Referenced in [astral-sh/uv#6076](../../astral-sh/uv/pulls/6076.md) on 2024-08-14 01:00_
 
 ---
 

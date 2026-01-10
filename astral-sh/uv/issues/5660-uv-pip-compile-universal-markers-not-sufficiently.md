@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-31T15:46:12Z
 updated_at: 2024-08-09T17:40:03Z
 url: https://github.com/astral-sh/uv/issues/5660
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # uv pip  compile `--universal` markers not sufficiently simplifying
@@ -77,10 +77,6 @@ _Assigned to @ibraheemdev by @charliermarsh on 2024-07-31 23:01_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-07-31 23:01_
-
----
-
-_Referenced in [astral-sh/uv#5898](../../astral-sh/uv/pulls/5898.md) on 2024-08-07 23:55_
 
 ---
 

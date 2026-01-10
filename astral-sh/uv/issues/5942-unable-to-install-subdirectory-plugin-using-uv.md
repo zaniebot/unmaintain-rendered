@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-08T23:20:24Z
 updated_at: 2024-08-09T00:16:39Z
 url: https://github.com/astral-sh/uv/issues/5942
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Unable to install subdirectory plugin using uv pip install
@@ -71,10 +71,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-09 00:02_
 
 ---
 
-_Referenced in [astral-sh/uv#5944](../../astral-sh/uv/pulls/5944.md) on 2024-08-09 00:03_
-
----
-
 _Closed by @charliermarsh on 2024-08-09 00:13_
 
 ---
@@ -86,9 +82,5 @@ _Closed by @charliermarsh on 2024-08-09 00:13_
 _Comment by @charliermarsh on 2024-08-09 00:16_
 
 Fixed in the next release, sorry about that.
-
----
-
-_Referenced in [astral-sh/uv#6093](../../astral-sh/uv/issues/6093.md) on 2024-08-14 20:29_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-23T14:52:23Z
 updated_at: 2024-07-23T21:48:51Z
 url: https://github.com/astral-sh/uv/issues/5335
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv add` allows git-specific flags when irrelevant
@@ -41,10 +41,6 @@ _Label `preview` added by @zanieb on 2024-07-23 14:52_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-23 21:04_
-
----
-
-_Referenced in [astral-sh/uv#5377](../../astral-sh/uv/pulls/5377.md) on 2024-07-23 21:36_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-21T00:24:40Z
 updated_at: 2024-08-19T14:10:22Z
 url: https://github.com/astral-sh/uv/issues/3683
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Support `in` operators with `python_version` marker
@@ -36,10 +36,6 @@ Right now, these are evaluate as `Arbitrary`.
 
 ---
 
-_Referenced in [astral-sh/uv#6168](../../astral-sh/uv/issues/6168.md) on 2024-08-17 15:57_
-
----
-
 _Assigned to @zanieb by @zanieb on 2024-08-17 16:32_
 
 ---
@@ -47,10 +43,6 @@ _Assigned to @zanieb by @zanieb on 2024-08-17 16:32_
 _Comment by @zanieb on 2024-08-17 17:01_
 
 Working on this... 
-
----
-
-_Referenced in [astral-sh/uv#6172](../../astral-sh/uv/pulls/6172.md) on 2024-08-17 18:33_
 
 ---
 

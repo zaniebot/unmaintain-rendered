@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-07-23T15:56:26Z
 updated_at: 2024-08-20T18:22:20Z
 url: https://github.com/astral-sh/uv/issues/5341
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv add` does not validate dependency range when source is present
@@ -111,10 +111,6 @@ This seems like it would be a warning on add whereas #4604 would be an error?
 _Comment by @charliermarsh on 2024-07-23 16:45_
 
 Ok, we can just leave them both.
-
----
-
-_Referenced in [astral-sh/uv#5383](../../astral-sh/uv/issues/5383.md) on 2024-07-24 09:02_
 
 ---
 

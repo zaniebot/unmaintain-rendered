@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-06T21:15:50Z
 updated_at: 2024-08-06T23:41:00Z
 url: https://github.com/astral-sh/uv/issues/5832
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `--config-file pyproject.toml` silently fails
@@ -33,10 +33,6 @@ _Label `bug` added by @charliermarsh on 2024-08-06 21:15_
 ---
 
 _Label `configuration` added by @charliermarsh on 2024-08-06 21:15_
-
----
-
-_Referenced in [astral-sh/uv#5842](../../astral-sh/uv/pulls/5842.md) on 2024-08-06 23:04_
 
 ---
 

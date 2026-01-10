@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-18T19:31:29Z
 updated_at: 2024-08-16T20:20:01Z
 url: https://github.com/astral-sh/uv/issues/2519
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # No build error message very verbose
@@ -132,21 +132,9 @@ _Comment by @zanieb on 2024-03-24 21:53_
 
 ---
 
-_Referenced in [astral-sh/uv#1901](../../astral-sh/uv/issues/1901.md) on 2024-04-10 22:15_
-
----
-
-_Referenced in [pubgrub-rs/pubgrub#232](../../pubgrub-rs/pubgrub/issues/232.md) on 2024-06-07 09:32_
-
----
-
 _Comment by @konstin on 2024-06-07 09:38_
 
 Found another case with tensorflow and reported it upstream: https://github.com/pubgrub-rs/pubgrub/issues/232
-
----
-
-_Referenced in [astral-sh/uv#6154](../../astral-sh/uv/pulls/6154.md) on 2024-08-16 16:55_
 
 ---
 

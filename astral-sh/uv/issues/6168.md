@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-17T12:15:38Z
 updated_at: 2024-08-17T16:12:29Z
 url: https://github.com/astral-sh/uv/issues/6168
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # uv misinterprets `python_version in "2.6 2.7 3.2 3.3"` marker
@@ -48,14 +48,6 @@ See https://github.com/astral-sh/uv/issues/3683
 
 ---
 
-_Referenced in [astral-sh/uv#6169](../../astral-sh/uv/issues/6169.md) on 2024-08-17 16:02_
-
----
-
 _Closed by @sbidoul on 2024-08-17 16:12_
-
----
-
-_Referenced in [astral-sh/uv#6172](../../astral-sh/uv/pulls/6172.md) on 2024-08-17 17:44_
 
 ---

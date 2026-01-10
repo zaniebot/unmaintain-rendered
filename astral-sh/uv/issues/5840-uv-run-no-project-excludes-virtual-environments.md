@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-06T22:38:52Z
 updated_at: 2024-08-07T02:52:16Z
 url: https://github.com/astral-sh/uv/issues/5840
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv run --no-project` excludes virtual environments that are not in projects 
@@ -81,10 +81,6 @@ What would you use to avoid `.venv` detection? `--isolated`?
 _Comment by @charliermarsh on 2024-08-07 01:38_
 
 I think so?
-
----
-
-_Referenced in [astral-sh/uv#5846](../../astral-sh/uv/pulls/5846.md) on 2024-08-07 02:05_
 
 ---
 

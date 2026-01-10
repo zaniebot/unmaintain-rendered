@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-07-29T06:26:48Z
 updated_at: 2024-07-31T13:54:17Z
 url: https://github.com/astral-sh/uv/issues/5552
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv venv` should support respecting `pyproject.toml`
@@ -26,10 +26,6 @@ Currently, seems that only `uv sync` can do this, but `uv sync` has a few shortc
 * Custom user demands as specified in #5258
 
 So, I think the feature described in this issue would be the entrypoint for user to tweak their environment with all dependencies (including python itself) specified in `pyproject.toml`, instead of having to pass the python version through command line or environment variables.
-
----
-
-_Referenced in [astral-sh/uv#5592](../../astral-sh/uv/pulls/5592.md) on 2024-07-30 09:39_
 
 ---
 

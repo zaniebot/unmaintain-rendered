@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-19T14:50:24Z
 updated_at: 2024-07-24T14:31:00Z
 url: https://github.com/astral-sh/uv/issues/5222
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Write integration guide for GitHub Actions
@@ -60,10 +60,6 @@ How would we cleanup caches safely in a CI environment, without having to drop t
 I.e. clean all artifacts not used in the last week, etc.
 
 Do let me know if this should be tracked under a separate issue.
-
----
-
-_Referenced in [astral-sh/uv#5409](../../astral-sh/uv/issues/5409.md) on 2024-07-24 14:30_
 
 ---
 

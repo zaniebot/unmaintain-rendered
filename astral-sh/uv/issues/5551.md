@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-29T05:13:04Z
 updated_at: 2024-07-29T14:24:52Z
 url: https://github.com/astral-sh/uv/issues/5551
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # ModuleNotFoundError: No module named 'setuptools.command.test'
@@ -256,22 +256,6 @@ Using the `--no-build-isolation` flag works for me (`uv` correctly uses the inst
 
 ---
 
-_Referenced in [prefix-dev/pixi#1691](../../prefix-dev/pixi/pulls/1691.md) on 2024-07-29 07:47_
-
----
-
-_Referenced in [WeblateOrg/docker#2519](../../WeblateOrg/docker/issues/2519.md) on 2024-07-29 08:03_
-
----
-
-_Referenced in [watson-developer-cloud/python-sdk#849](../../watson-developer-cloud/python-sdk/issues/849.md) on 2024-07-29 08:54_
-
----
-
-_Referenced in [pypa/setuptools#4519](../../pypa/setuptools/issues/4519.md) on 2024-07-29 09:03_
-
----
-
 _Comment by @MatthijsKok on 2024-07-29 09:11_
 
 > Using the `--no-build-isolation` flag works for me (`uv` correctly uses the installed version of `setuptools`)
@@ -369,10 +353,6 @@ So, does pip apply constraints to build environments? It’s easy for us to do t
 
 ---
 
-_Referenced in [eurotech/add-ons-automation#28](../../eurotech/add-ons-automation/pulls/28.md) on 2024-07-29 12:46_
-
----
-
 _Comment by @tomwojcik on 2024-07-29 13:32_
 
 setuptools 72.0.0 is yanked
@@ -419,10 +399,6 @@ Agreed. Somewhat undecided on whether it should be coupled to `--constraints`, s
 
 ---
 
-_Referenced in [astral-sh/uv#5561](../../astral-sh/uv/issues/5561.md) on 2024-07-29 14:24_
-
----
-
 _Comment by @charliermarsh on 2024-07-29 14:24_
 
 Will track here: https://github.com/astral-sh/uv/issues/5561
@@ -430,9 +406,5 @@ Will track here: https://github.com/astral-sh/uv/issues/5561
 ---
 
 _Closed by @charliermarsh on 2024-07-29 14:24_
-
----
-
-_Referenced in [astral-sh/uv#2252](../../astral-sh/uv/issues/2252.md) on 2024-07-29 16:53_
 
 ---

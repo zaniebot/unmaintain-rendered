@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-12T22:25:54Z
 updated_at: 2024-08-12T23:34:30Z
 url: https://github.com/astral-sh/uv/issues/6048
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Lockfile path dependencies on Windows sometimes include `\\?` prefix
@@ -51,10 +51,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-12 22:25_
 
 ---
 
-_Referenced in [astral-sh/uv#6046](../../astral-sh/uv/pulls/6046.md) on 2024-08-12 22:26_
-
----
-
 _Closed by @charliermarsh on 2024-08-12 23:14_
 
 ---
@@ -64,10 +60,6 @@ _Closed by @charliermarsh on 2024-08-12 23:14_
 ---
 
 _Reopened by @charliermarsh on 2024-08-12 23:22_
-
----
-
-_Referenced in [astral-sh/uv#6049](../../astral-sh/uv/pulls/6049.md) on 2024-08-12 23:27_
 
 ---
 

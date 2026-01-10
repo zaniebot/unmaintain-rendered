@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-08T17:11:51Z
 updated_at: 2024-08-13T23:42:06Z
 url: https://github.com/astral-sh/uv/issues/5920
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv lock` should invalidate lockfile if registries change
@@ -64,10 +64,6 @@ The only quirk is that if you don’t specify _any_ index URL, we treat it as Py
 _Comment by @charliermarsh on 2024-08-10 18:53_
 
 Actually, I think the type is rich enough that we can avoid enforcing this if no index URLs are provided (i.e., assume the lockfile is fine). It's a little strange because if we fail, we'll then resolve against PyPI. But probably fine in practice.
-
----
-
-_Referenced in [astral-sh/uv#6026](../../astral-sh/uv/pulls/6026.md) on 2024-08-12 02:26_
 
 ---
 

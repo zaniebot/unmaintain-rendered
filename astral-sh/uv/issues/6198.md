@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-19T07:20:49Z
 updated_at: 2024-08-20T07:00:04Z
 url: https://github.com/astral-sh/uv/issues/6198
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv pip install --target` inconsistencies
@@ -146,14 +146,6 @@ Didn't expect this to behave differently than executing `venv\Scripts\uv`. But i
 
 ---
 
-_Referenced in [astral-sh/uv#6245](../../astral-sh/uv/issues/6245.md) on 2024-08-20 06:55_
-
----
-
-_Referenced in [astral-sh/uv#6246](../../astral-sh/uv/issues/6246.md) on 2024-08-20 06:58_
-
----
-
 _Comment by @schlamar on 2024-08-20 07:00_
 
 I made #6245 for 2) and #6246 for 3)
@@ -165,9 +157,5 @@ Sorry again for mixing different points in one issue.
 ---
 
 _Closed by @schlamar on 2024-08-20 07:00_
-
----
-
-_Referenced in [astral-sh/uv#9356](../../astral-sh/uv/issues/9356.md) on 2024-11-22 20:33_
 
 ---

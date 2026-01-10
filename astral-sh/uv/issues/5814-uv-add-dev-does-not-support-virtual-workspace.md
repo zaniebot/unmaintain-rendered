@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-06T14:24:17Z
 updated_at: 2024-08-06T18:06:05Z
 url: https://github.com/astral-sh/uv/issues/5814
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # uv add --dev does not support virtual workspace roots
@@ -56,10 +56,6 @@ _Label `projects` added by @zanieb on 2024-08-06 14:39_
 ---
 
 _Label `preview` added by @zanieb on 2024-08-06 14:39_
-
----
-
-_Referenced in [astral-sh/uv#5821](../../astral-sh/uv/pulls/5821.md) on 2024-08-06 17:48_
 
 ---
 

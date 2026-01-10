@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-17T19:08:29Z
 updated_at: 2024-08-18T13:19:08Z
 url: https://github.com/astral-sh/uv/issues/6173
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # missing default in the `--help` output.
@@ -128,9 +128,5 @@ You should be able to make it work by changing `Option<LinkMode>` to `LinkMode` 
 _Comment by @zanieb on 2024-08-18 13:19_
 
 Oh interesting. So we'll need to audit all of our uses of `Option` for CLI options? Fun. I'm willing to review these — preferably one at a time? not sure.
-
----
-
-_Referenced in [astral-sh/uv#6183](../../astral-sh/uv/pulls/6183.md) on 2024-08-18 16:08_
 
 ---

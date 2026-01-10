@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-11T03:02:17Z
 updated_at: 2024-08-20T18:21:38Z
 url: https://github.com/astral-sh/uv/issues/6001
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Remember previous lock options when running `uv sync`
@@ -95,9 +95,5 @@ Ah, sorry my understanding of uv internals is not the best. That said, the spiri
 ---
 
 _Label `preview` removed by @zanieb on 2024-08-20 18:21_
-
----
-
-_Referenced in [pulumi/pulumi#17853](../../pulumi/pulumi/issues/17853.md) on 2024-12-05 11:46_
 
 ---

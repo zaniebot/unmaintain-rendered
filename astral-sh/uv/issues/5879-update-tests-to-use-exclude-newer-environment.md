@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-07T17:24:50Z
 updated_at: 2024-08-09T13:28:43Z
 url: https://github.com/astral-sh/uv/issues/5879
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Update tests to use exclude newer environment variable
@@ -29,10 +29,6 @@ _Label `help wanted` added by @zanieb on 2024-08-07 17:24_
 ---
 
 _Label `testing` added by @zanieb on 2024-08-07 17:24_
-
----
-
-_Referenced in [astral-sh/uv#5946](../../astral-sh/uv/pulls/5946.md) on 2024-08-09 00:15_
 
 ---
 

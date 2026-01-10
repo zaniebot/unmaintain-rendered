@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-07T12:26:13Z
 updated_at: 2024-08-07T16:06:40Z
 url: https://github.com/astral-sh/uv/issues/5851
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv lock --locked` raises false-positive errors with git dependencies
@@ -264,14 +264,6 @@ Going to separate into two issues, I've identified them both but they're differe
 
 ---
 
-_Referenced in [astral-sh/uv#5860](../../astral-sh/uv/issues/5860.md) on 2024-08-07 13:25_
-
----
-
-_Referenced in [astral-sh/uv#5865](../../astral-sh/uv/pulls/5865.md) on 2024-08-07 15:07_
-
----
-
 _Closed by @charliermarsh on 2024-08-07 15:47_
 
 ---
@@ -285,9 +277,5 @@ These are great, thank you for testing this stuff out and reporting. We'll proba
 _Comment by @tpgillam on 2024-08-07 16:06_
 
 Thanks, and I look forward to testing the new release! Very happy to help track down the buglets.
-
----
-
-_Referenced in [astral-sh/uv#5902](../../astral-sh/uv/issues/5902.md) on 2024-08-08 08:57_
 
 ---

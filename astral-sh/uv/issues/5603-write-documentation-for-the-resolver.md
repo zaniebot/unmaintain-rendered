@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-30T15:23:37Z
 updated_at: 2024-08-03T13:47:12Z
 url: https://github.com/astral-sh/uv/issues/5603
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Write documentation for the resolver
@@ -33,10 +33,6 @@ _Label `preview` added by @konstin on 2024-07-30 15:23_
 ---
 
 _Assigned to @konstin by @konstin on 2024-07-30 15:37_
-
----
-
-_Referenced in [astral-sh/uv#5723](../../astral-sh/uv/pulls/5723.md) on 2024-08-02 13:39_
 
 ---
 

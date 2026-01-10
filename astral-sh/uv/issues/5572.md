@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-07-29T20:34:52Z
 updated_at: 2024-07-30T22:29:12Z
 url: https://github.com/astral-sh/uv/issues/5572
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # remove dynamic linking to `liblzma` from pip binary 
@@ -102,19 +102,11 @@ Interesting, thanks for reporting. I believe we can statically link it
 
 ---
 
-_Referenced in [astral-sh/uv#5577](../../astral-sh/uv/pulls/5577.md) on 2024-07-29 21:31_
-
----
-
 _Closed by @charliermarsh on 2024-07-29 21:46_
 
 ---
 
 _Closed by @charliermarsh on 2024-07-29 21:46_
-
----
-
-_Referenced in [axodotdev/cargo-dist#1249](../../axodotdev/cargo-dist/issues/1249.md) on 2024-07-30 08:45_
 
 ---
 

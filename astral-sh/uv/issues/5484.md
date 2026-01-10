@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-26T15:51:13Z
 updated_at: 2024-08-16T21:01:13Z
 url: https://github.com/astral-sh/uv/issues/5484
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv pip install -e .` does not recompute dynamic dependencies anymore
@@ -136,10 +136,6 @@ BTW, in the example above it should be `--reinstall-package black` instead of `-
 
 ---
 
-_Referenced in [astral-sh/uv#5703](../../astral-sh/uv/issues/5703.md) on 2024-08-01 18:45_
-
----
-
 _Comment by @Nomelas on 2024-08-01 18:59_
 
 Thanks, this solution by @charliermarsh seems to work and suit my needs
@@ -162,18 +158,10 @@ Yes for sure.
 
 ---
 
-_Referenced in [astral-sh/uv#5993](../../astral-sh/uv/pulls/5993.md) on 2024-08-10 03:53_
-
----
-
 _Closed by @charliermarsh on 2024-08-16 21:01_
 
 ---
 
 _Closed by @charliermarsh on 2024-08-16 21:01_
-
----
-
-_Referenced in [sbidoul/pip-deepfreeze#160](../../sbidoul/pip-deepfreeze/pulls/160.md) on 2024-08-17 10:23_
 
 ---

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-02T23:28:40Z
 updated_at: 2024-08-06T21:11:49Z
 url: https://github.com/astral-sh/uv/issues/5742
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Allow `uv sync --no-build-isolation`
@@ -709,10 +709,6 @@ Prepared 1 package in 387ms
 Installed 1 package in 73ms
  + project==0.1.0 (from file:///C:/Users/user/git/project)
 ```
-
----
-
-_Referenced in [astral-sh/uv#5829](../../astral-sh/uv/pulls/5829.md) on 2024-08-06 20:40_
 
 ---
 

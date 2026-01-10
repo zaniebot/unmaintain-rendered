@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-03T13:00:48Z
 updated_at: 2024-08-05T02:32:25Z
 url: https://github.com/astral-sh/uv/issues/5747
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `Ctrl-C` interruptes `uv python install` and leaves temporary files
@@ -33,10 +33,6 @@ Using `/tmp` has other problems, namely that the temporary directories won't be 
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-05 02:19_
-
----
-
-_Referenced in [astral-sh/uv#5787](../../astral-sh/uv/pulls/5787.md) on 2024-08-05 02:21_
 
 ---
 

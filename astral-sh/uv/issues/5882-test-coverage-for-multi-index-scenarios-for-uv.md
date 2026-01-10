@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-07T17:40:39Z
 updated_at: 2024-08-20T18:21:35Z
 url: https://github.com/astral-sh/uv/issues/5882
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Test coverage for multi-index scenarios for `uv.lock`
@@ -23,10 +23,6 @@ Currently, there is only one scenarios for the lockfile with multiple registries
 ---
 
 _Label `preview` added by @konstin on 2024-08-07 17:40_
-
----
-
-_Referenced in [astral-sh/uv#5884](../../astral-sh/uv/pulls/5884.md) on 2024-08-07 18:18_
 
 ---
 

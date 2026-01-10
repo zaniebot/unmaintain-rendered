@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-07T13:13:36Z
 updated_at: 2024-08-09T01:39:49Z
 url: https://github.com/astral-sh/uv/issues/5858
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv add https://.../foo.git` throws a confusing error
@@ -72,14 +72,6 @@ _Comment by @charliermarsh on 2024-08-07 13:16_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-07 15:06_
-
----
-
-_Referenced in [astral-sh/uv#5866](../../astral-sh/uv/issues/5866.md) on 2024-08-07 15:10_
-
----
-
-_Referenced in [astral-sh/uv#5888](../../astral-sh/uv/pulls/5888.md) on 2024-08-07 19:37_
 
 ---
 

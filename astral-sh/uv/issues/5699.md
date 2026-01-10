@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-01T18:01:35Z
 updated_at: 2024-08-06T18:14:13Z
 url: https://github.com/astral-sh/uv/issues/5699
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # --no-binary in conjunction with a custom uv index url results in a failure to build.
@@ -143,10 +143,6 @@ _Comment by @harmstyler on 2024-08-01 19:12_
 > @harmstyler -- Just curious, what's the motivation for using `--no-binary`? Trying to make a decision on how to approach this change, just trying to learn more about the use-cases.
 
 Our company wants to build the whl files for security reasons. We used to use the `no-manylinux` package in the past. That package outlines the _why_ pretty well https://pypi.org/project/no-manylinux/
-
----
-
-_Referenced in [astral-sh/uv#5707](../../astral-sh/uv/pulls/5707.md) on 2024-08-01 19:28_
 
 ---
 

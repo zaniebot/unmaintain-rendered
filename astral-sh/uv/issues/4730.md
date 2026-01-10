@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-07-02T14:08:32Z
 updated_at: 2024-08-20T18:22:12Z
 url: https://github.com/astral-sh/uv/issues/4730
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Decide on semantics for workspace environment syncing (with `--package`, `--extra`, and `--dev`)
@@ -230,10 +230,6 @@ I personally don't want `uv sync` to be required, because it makes the environme
 
 ---
 
-_Referenced in [astral-sh/uv#5471](../../astral-sh/uv/pulls/5471.md) on 2024-07-26 00:51_
-
----
-
 _Closed by @charliermarsh on 2024-08-01 20:29_
 
 ---
@@ -260,22 +256,6 @@ _Comment by @charliermarsh on 2024-08-01 20:40_
 
 ---
 
-_Referenced in [astral-sh/uv#6001](../../astral-sh/uv/issues/6001.md) on 2024-08-11 14:55_
-
----
-
 _Label `preview` removed by @zanieb on 2024-08-20 18:22_
-
----
-
-_Referenced in [astral-sh/uv#7719](../../astral-sh/uv/issues/7719.md) on 2024-09-26 18:13_
-
----
-
-_Referenced in [astral-sh/uv#12353](../../astral-sh/uv/issues/12353.md) on 2025-03-20 22:43_
-
----
-
-_Referenced in [astral-sh/uv#11183](../../astral-sh/uv/issues/11183.md) on 2025-03-20 22:46_
 
 ---

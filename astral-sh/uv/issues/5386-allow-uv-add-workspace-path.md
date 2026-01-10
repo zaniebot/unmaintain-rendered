@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-23T22:23:14Z
 updated_at: 2024-08-20T18:21:31Z
 url: https://github.com/astral-sh/uv/issues/5386
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Allow `uv add --workspace <path>`
@@ -32,10 +32,6 @@ _Label `cli` added by @zanieb on 2024-07-23 22:24_
 ---
 
 _Label `preview` added by @zanieb on 2024-07-23 22:24_
-
----
-
-_Referenced in [astral-sh/uv#5381](../../astral-sh/uv/issues/5381.md) on 2024-07-23 22:27_
 
 ---
 

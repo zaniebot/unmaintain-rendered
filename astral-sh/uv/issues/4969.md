@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-10T17:04:29Z
 updated_at: 2024-07-19T18:17:43Z
 url: https://github.com/astral-sh/uv/issues/4969
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv python pin` should check for compatibility with `Requires-Python` if present
@@ -44,10 +44,6 @@ _Label `cli` added by @zanieb on 2024-07-10 17:04_
 ---
 
 _Label `preview` added by @zanieb on 2024-07-10 17:04_
-
----
-
-_Referenced in [astral-sh/uv#4989](../../astral-sh/uv/pulls/4989.md) on 2024-07-11 09:43_
 
 ---
 

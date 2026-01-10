@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-06-05T20:28:58Z
 updated_at: 2024-08-20T18:23:36Z
 url: https://github.com/astral-sh/uv/issues/4071
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Determine Python requirement boundary based on supported `Requires-Python` range
@@ -24,10 +24,6 @@ Rather than writing the user's `Requires-Python` to the lockfile, we _could_ ins
 ---
 
 _Label `preview` added by @charliermarsh on 2024-06-05 20:29_
-
----
-
-_Referenced in [astral-sh/uv#4022](../../astral-sh/uv/issues/4022.md) on 2024-06-05 21:46_
 
 ---
 
@@ -145,10 +141,6 @@ Yeah. In that case, I was suggesting that you have a successful resolve, and the
 _Comment by @charliermarsh on 2024-06-06 03:01_
 
 What you've described above makes sense, though. If we fail, tell the user, "Hey, we could only create a universal environment for Python 3.10 and later, so set that as your lock constraint." And critically "your lock constraint" is not `Requires-Python` but something else.
-
----
-
-_Referenced in [astral-sh/uv#4087](../../astral-sh/uv/issues/4087.md) on 2024-06-06 04:06_
 
 ---
 

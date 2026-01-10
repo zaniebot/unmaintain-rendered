@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-17T02:03:54Z
 updated_at: 2024-08-18T21:04:07Z
 url: https://github.com/astral-sh/uv/issues/6167
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Intermittent 401 in test cases with authentication
@@ -41,10 +41,6 @@ _Comment by @zanieb on 2024-08-18 14:01_
         7 │+called `Result::unwrap()` on an `Err` value: Err(ChannelClosed)
         8 │+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ```
-
----
-
-_Referenced in [astral-sh/uv#6182](../../astral-sh/uv/pulls/6182.md) on 2024-08-18 14:23_
 
 ---
 

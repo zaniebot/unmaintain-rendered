@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-31T13:43:29Z
 updated_at: 2024-08-12T23:50:46Z
 url: https://github.com/astral-sh/uv/issues/3943
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Missing test coverage for `tool.uv` behaviours
@@ -35,35 +35,15 @@ _Label `preview` added by @konstin on 2024-05-31 13:43_
 
 ---
 
-_Referenced in [astral-sh/uv#3904](../../astral-sh/uv/pulls/3904.md) on 2024-05-31 13:44_
-
----
-
 _Comment by @charliermarsh on 2024-06-06 23:28_
 
 We should also test the `requires-python` behavior for workspaces -- what happens when no project has a `requires-python`? What happens when a single project has a `requires-python`? Etc.
 
 ---
 
-_Referenced in [astral-sh/uv#4119](../../astral-sh/uv/issues/4119.md) on 2024-06-06 23:50_
-
----
-
 _Comment by @charliermarsh on 2024-06-13 02:39_
 
 See also: https://github.com/astral-sh/uv/pull/4298
-
----
-
-_Referenced in [astral-sh/uv#4298](../../astral-sh/uv/pulls/4298.md) on 2024-06-13 02:39_
-
----
-
-_Referenced in [astral-sh/uv#4499](../../astral-sh/uv/pulls/4499.md) on 2024-06-28 14:30_
-
----
-
-_Referenced in [astral-sh/uv#4833](../../astral-sh/uv/pulls/4833.md) on 2024-07-07 20:22_
 
 ---
 
@@ -84,26 +64,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-07-30 15:41_
 ---
 
 _Label `testing` added by @charliermarsh on 2024-07-30 15:41_
-
----
-
-_Referenced in [astral-sh/uv#6045](../../astral-sh/uv/pulls/6045.md) on 2024-08-12 20:55_
-
----
-
-_Referenced in [astral-sh/uv#6046](../../astral-sh/uv/pulls/6046.md) on 2024-08-12 21:45_
-
----
-
-_Referenced in [astral-sh/uv#6047](../../astral-sh/uv/pulls/6047.md) on 2024-08-12 21:51_
-
----
-
-_Referenced in [astral-sh/uv#6050](../../astral-sh/uv/pulls/6050.md) on 2024-08-12 23:28_
-
----
-
-_Referenced in [astral-sh/uv#6051](../../astral-sh/uv/pulls/6051.md) on 2024-08-12 23:42_
 
 ---
 

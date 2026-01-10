@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-08T21:21:47Z
 updated_at: 2024-08-11T21:13:15Z
 url: https://github.com/astral-sh/uv/issues/5934
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Failure to parse `pyproject.toml` doesn't come with error even in verbose mode
@@ -47,10 +47,6 @@ _Label `error messages` added by @zanieb on 2024-08-08 21:22_
 ---
 
 _Label `tracing` added by @zanieb on 2024-08-08 21:22_
-
----
-
-_Referenced in [astral-sh/uv#6009](../../astral-sh/uv/pulls/6009.md) on 2024-08-11 15:32_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-24T22:14:42Z
 updated_at: 2024-07-30T19:27:48Z
 url: https://github.com/astral-sh/uv/issues/5430
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Add `--isolate` or `--standalone` or similar flag to `uv run`
@@ -34,10 +34,6 @@ _Label `cli` added by @charliermarsh on 2024-07-24 22:14_
 ---
 
 _Label `preview` added by @charliermarsh on 2024-07-24 22:14_
-
----
-
-_Referenced in [astral-sh/uv#5471](../../astral-sh/uv/pulls/5471.md) on 2024-07-26 00:51_
 
 ---
 

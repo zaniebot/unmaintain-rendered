@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-18T08:00:28Z
 updated_at: 2024-08-10T03:54:55Z
 url: https://github.com/astral-sh/uv/issues/5179
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Lockfile-normalized marker representation
@@ -40,14 +40,6 @@ _Label `preview` added by @konstin on 2024-07-18 08:00_
 ---
 
 _Assigned to @ibraheemdev by @charliermarsh on 2024-07-30 15:35_
-
----
-
-_Referenced in [astral-sh/uv#5898](../../astral-sh/uv/pulls/5898.md) on 2024-08-07 23:55_
-
----
-
-_Referenced in [astral-sh/uv#5992](../../astral-sh/uv/issues/5992.md) on 2024-08-10 03:29_
 
 ---
 

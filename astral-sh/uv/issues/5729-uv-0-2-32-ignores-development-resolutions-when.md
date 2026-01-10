@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-02T15:17:08Z
 updated_at: 2024-08-03T02:01:59Z
 url: https://github.com/astral-sh/uv/issues/5729
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # uv 0.2.32 ignores development resolutions when running `pip compile`
@@ -92,10 +92,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-02 19:36_
 _Comment by @charliermarsh on 2024-08-02 20:23_
 
 Working on it.
-
----
-
-_Referenced in [astral-sh/uv#5736](../../astral-sh/uv/pulls/5736.md) on 2024-08-02 20:35_
 
 ---
 

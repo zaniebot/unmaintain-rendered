@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-30T04:30:27Z
 updated_at: 2024-07-30T12:26:00Z
 url: https://github.com/astral-sh/uv/issues/5586
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Missing license text for crates/uv-python/fetch-download-metadata.py
@@ -35,10 +35,6 @@ Similarly to https://github.com/astral-sh/uv/issues/5584, `crates/uv-python/fetc
 https://github.com/astral-sh/uv/blob/c0d3da8b6ae134036b3ed024762b08c4fb9f967b/crates/uv-python/fetch-download-metadata.py#L18-L19
 
 It looks like this is just a utility script for generating `download-metadata.json` and is not compiled into the `uv` executable, so one possibility would be to just add the contents of https://github.com/astral-sh/rye/raw/f9822267a7f00332d15be8551f89a212e7bc9017/LICENSE as a comment in the script itself, rather than, say, adding a `LICENSE.rye` file to the crate. (For files that *do* end up somewhere inside the `uv` executable, a separate license text file is much easier for distribution packagers who are trying to make sure all necessary license texts are included in compiled binary packages.)
-
----
-
-_Referenced in [astral-sh/uv#5587](../../astral-sh/uv/pulls/5587.md) on 2024-07-30 04:56_
 
 ---
 

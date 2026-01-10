@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-22T13:44:09Z
 updated_at: 2024-07-22T14:33:55Z
 url: https://github.com/astral-sh/uv/issues/5287
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Wheel tag-Python version matching has false negatives for minor versions
@@ -27,15 +27,7 @@ _Label `bug` added by @charliermarsh on 2024-07-22 13:44_
 
 ---
 
-_Referenced in [astral-sh/rye#1259](../../astral-sh/rye/issues/1259.md) on 2024-07-22 13:45_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-22 13:45_
-
----
-
-_Referenced in [astral-sh/uv#5289](../../astral-sh/uv/pulls/5289.md) on 2024-07-22 14:13_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-14T21:13:04Z
 updated_at: 2024-08-09T09:42:34Z
 url: https://github.com/astral-sh/uv/issues/3021
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # FR: add `--check-only` flag to `pip sync` command
@@ -101,13 +101,5 @@ This would make parsing much more reliable than evaluating the output message. :
 
 For comparison, `pip-sync --dry-run` also returns an non-zero return code.
 
-
----
-
-_Referenced in [astral-sh/uv#6053](../../astral-sh/uv/pulls/6053.md) on 2024-08-30 09:25_
-
----
-
-_Referenced in [astral-sh/uv#14194](../../astral-sh/uv/issues/14194.md) on 2025-06-21 22:47_
 
 ---

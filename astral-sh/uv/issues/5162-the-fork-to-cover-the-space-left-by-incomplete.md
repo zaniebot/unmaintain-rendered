@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-17T18:19:59Z
 updated_at: 2024-07-26T14:28:22Z
 url: https://github.com/astral-sh/uv/issues/5162
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # the fork to cover the space left by incomplete markers is probably not correctly constructed
@@ -28,14 +28,6 @@ Namely, it has no dependencies in it, but I believe it should have all dependenc
 https://github.com/astral-sh/uv/blob/af66f75980ad06ac5801ae4ed2417a2ef1dd209b/crates/uv-resolver/src/resolver/mod.rs#L2547-L2551
 
 I believe this is the cause of one aspect of the problem reported in #5161.
-
----
-
-_Referenced in [astral-sh/uv#5161](../../astral-sh/uv/issues/5161.md) on 2024-07-17 18:23_
-
----
-
-_Referenced in [astral-sh/uv#5163](../../astral-sh/uv/pulls/5163.md) on 2024-07-17 18:24_
 
 ---
 

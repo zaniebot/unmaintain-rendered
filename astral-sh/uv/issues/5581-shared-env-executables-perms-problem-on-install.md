@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-30T00:29:04Z
 updated_at: 2024-07-30T18:24:54Z
 url: https://github.com/astral-sh/uv/issues/5581
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # shared env: executables perms problem on install
@@ -181,10 +181,6 @@ Thank you, Charles
 
 if after you merge the fix PR you could give me a wheel I could test with (or I guess I could try to patch 0.2.31) then it'd be easier - because as I said hardlinking is potentially another issue to resolve.
 
-
----
-
-_Referenced in [astral-sh/uv#5582](../../astral-sh/uv/pulls/5582.md) on 2024-07-30 01:24_
 
 ---
 
@@ -386,10 +382,6 @@ I appreciate your amazing support, @charliermarsh and @zanieb and wanting to mee
 
 ---
 
-_Referenced in [astral-sh/uv#5611](../../astral-sh/uv/issues/5611.md) on 2024-07-30 17:16_
-
----
-
 _Comment by @stas00 on 2024-07-30 17:18_
 
 @charliermarsh, your suggestion doesn't work:
@@ -575,13 +567,5 @@ Thank you!
 _Comment by @charliermarsh on 2024-07-30 18:24_
 
 Great!!!
-
----
-
-_Referenced in [astral-sh/uv#6101](../../astral-sh/uv/issues/6101.md) on 2024-08-15 01:24_
-
----
-
-_Referenced in [astral-sh/uv#6648](../../astral-sh/uv/issues/6648.md) on 2024-08-26 19:05_
 
 ---

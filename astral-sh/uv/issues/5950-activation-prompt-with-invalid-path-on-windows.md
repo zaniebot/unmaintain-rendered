@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-09T05:57:49Z
 updated_at: 2024-08-09T16:28:01Z
 url: https://github.com/astral-sh/uv/issues/5950
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Activation prompt with invalid path on Windows Git Bash
@@ -63,10 +63,6 @@ Do we need to treat Windows Git Bash as its own shell?
 _Comment by @zanieb on 2024-08-09 13:34_
 
 I think it should be sufficient to always use the portable path
-
----
-
-_Referenced in [astral-sh/uv#5956](../../astral-sh/uv/pulls/5956.md) on 2024-08-09 13:35_
 
 ---
 

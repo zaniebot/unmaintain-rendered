@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-25T07:25:13Z
 updated_at: 2024-07-26T20:30:16Z
 url: https://github.com/astral-sh/uv/issues/5436
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Editable install of tools 
@@ -52,10 +52,6 @@ I think we should support this, yeah.
 ---
 
 _Label `help wanted` added by @zanieb on 2024-07-25 14:13_
-
----
-
-_Referenced in [astral-sh/uv#5454](../../astral-sh/uv/pulls/5454.md) on 2024-07-25 17:49_
 
 ---
 

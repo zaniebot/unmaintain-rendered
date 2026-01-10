@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-07-16T19:37:25Z
 updated_at: 2024-07-22T14:08:59Z
 url: https://github.com/astral-sh/uv/issues/5124
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Bug: `uv help pip compile` failing with `error: program not found`
@@ -118,10 +118,6 @@ I can test it.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-18 18:50_
-
----
-
-_Referenced in [astral-sh/uv#5198](../../astral-sh/uv/pulls/5198.md) on 2024-07-18 20:18_
 
 ---
 

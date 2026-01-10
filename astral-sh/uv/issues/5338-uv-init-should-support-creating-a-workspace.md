@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-23T15:35:31Z
 updated_at: 2024-08-20T20:09:58Z
 url: https://github.com/astral-sh/uv/issues/5338
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # `uv init` should support creating a workspace
@@ -83,10 +83,6 @@ Seems okay? A `uv init --virtual` flag could cover the remaining use-case, right
 _Comment by @charliermarsh on 2024-07-24 00:50_
 
 Yeah that all seems ok. `--virtual` could be useful.
-
----
-
-_Referenced in [astral-sh/uv#5396](../../astral-sh/uv/pulls/5396.md) on 2024-07-24 04:30_
 
 ---
 

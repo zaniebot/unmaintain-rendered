@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-30T17:44:24Z
 updated_at: 2024-07-28T00:44:42Z
 url: https://github.com/astral-sh/uv/issues/3925
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Read metadata directly from lockfile during resolution
@@ -30,14 +30,6 @@ _Label `performance` added by @charliermarsh on 2024-05-30 17:44_
 ---
 
 _Label `preview` added by @charliermarsh on 2024-05-30 17:44_
-
----
-
-_Referenced in [astral-sh/uv#3892](../../astral-sh/uv/issues/3892.md) on 2024-06-10 13:43_
-
----
-
-_Referenced in [astral-sh/uv#4495](../../astral-sh/uv/pulls/4495.md) on 2024-06-24 22:50_
 
 ---
 

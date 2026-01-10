@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-01T18:24:51Z
 updated_at: 2024-08-06T21:18:06Z
 url: https://github.com/astral-sh/uv/issues/5702
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Improve ordering of top-level commands
@@ -94,10 +94,6 @@ it's lgtm:
       version  Display uv's version
       help     Display documentation for a command
 ```
-
----
-
-_Referenced in [astral-sh/uv#5830](../../astral-sh/uv/pulls/5830.md) on 2024-08-06 20:45_
 
 ---
 

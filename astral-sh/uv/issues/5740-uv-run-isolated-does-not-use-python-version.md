@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-02T22:08:15Z
 updated_at: 2024-08-02T23:34:27Z
 url: https://github.com/astral-sh/uv/issues/5740
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # uv run --isolated does not use .python-version
@@ -74,10 +74,6 @@ _Label `bug` added by @charliermarsh on 2024-08-02 22:51_
 ---
 
 _Label `preview` added by @charliermarsh on 2024-08-02 22:51_
-
----
-
-_Referenced in [astral-sh/uv#5741](../../astral-sh/uv/pulls/5741.md) on 2024-08-02 23:22_
 
 ---
 

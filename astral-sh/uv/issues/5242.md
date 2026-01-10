@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-20T10:59:41Z
 updated_at: 2024-07-20T15:47:12Z
 url: https://github.com/astral-sh/uv/issues/5242
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # "prefix not found" in nested uv init
@@ -46,10 +46,6 @@ _Label `bug` added by @charliermarsh on 2024-07-20 11:13_
 ---
 
 _Label `preview` added by @charliermarsh on 2024-07-20 11:13_
-
----
-
-_Referenced in [astral-sh/uv#5247](../../astral-sh/uv/pulls/5247.md) on 2024-07-20 13:52_
 
 ---
 

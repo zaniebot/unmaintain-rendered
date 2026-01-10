@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-23T16:46:45Z
 updated_at: 2024-07-23T20:34:02Z
 url: https://github.com/astral-sh/uv/issues/5349
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Respect (or warn) on `--index-url` and other settings from `--with-requirements`
@@ -33,10 +33,6 @@ _Label `enhancement` added by @charliermarsh on 2024-07-23 16:46_
 ---
 
 _Label `preview` added by @charliermarsh on 2024-07-23 16:46_
-
----
-
-_Referenced in [astral-sh/uv#5364](../../astral-sh/uv/pulls/5364.md) on 2024-07-23 19:00_
 
 ---
 

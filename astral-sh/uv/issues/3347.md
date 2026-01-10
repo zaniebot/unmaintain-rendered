@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-03T14:20:19Z
 updated_at: 2024-08-09T14:03:04Z
 url: https://github.com/astral-sh/uv/issues/3347
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # ship cross platform lock files to users as a preview feature
@@ -59,74 +59,6 @@ _Label `tracking` added by @BurntSushi on 2024-05-03 14:20_
 
 ---
 
-_Referenced in [astral-sh/uv#3350](../../astral-sh/uv/issues/3350.md) on 2024-05-03 14:58_
-
----
-
-_Referenced in [astral-sh/uv#3356](../../astral-sh/uv/issues/3356.md) on 2024-05-03 16:01_
-
----
-
-_Referenced in [astral-sh/uv#3516](../../astral-sh/uv/issues/3516.md) on 2024-05-10 21:48_
-
----
-
-_Referenced in [astral-sh/uv#3880](../../astral-sh/uv/issues/3880.md) on 2024-05-28 13:37_
-
----
-
-_Referenced in [astral-sh/uv#3881](../../astral-sh/uv/issues/3881.md) on 2024-05-28 13:41_
-
----
-
-_Referenced in [commaai/openpilot#32763](../../commaai/openpilot/issues/32763.md) on 2024-06-16 19:40_
-
----
-
-_Referenced in [astral-sh/uv#1465](../../astral-sh/uv/issues/1465.md) on 2024-06-19 00:34_
-
----
-
-_Referenced in [astral-sh/uv#1870](../../astral-sh/uv/issues/1870.md) on 2024-06-19 00:39_
-
----
-
-_Referenced in [astral-sh/uv#2679](../../astral-sh/uv/issues/2679.md) on 2024-06-19 00:40_
-
----
-
-_Referenced in [astral-sh/uv#2142](../../astral-sh/uv/issues/2142.md) on 2024-06-19 00:43_
-
----
-
-_Referenced in [astral-sh/uv#4331](../../astral-sh/uv/issues/4331.md) on 2024-06-19 00:45_
-
----
-
-_Referenced in [bazel-contrib/rules_python#1989](../../bazel-contrib/rules_python/pulls/1989.md) on 2024-06-21 13:20_
-
----
-
-_Referenced in [jvolkman/rules_pycross#103](../../jvolkman/rules_pycross/issues/103.md) on 2024-06-21 13:40_
-
----
-
-_Referenced in [astral-sh/uv#4447](../../astral-sh/uv/issues/4447.md) on 2024-06-22 14:37_
-
----
-
-_Referenced in [astral-sh/uv#2917](../../astral-sh/uv/issues/2917.md) on 2024-07-02 01:41_
-
----
-
-_Referenced in [astral-sh/uv#4908](../../astral-sh/uv/issues/4908.md) on 2024-07-08 20:53_
-
----
-
-_Referenced in [astral-sh/uv#3321](../../astral-sh/uv/issues/3321.md) on 2024-07-08 21:31_
-
----
-
 _Comment by @BurntSushi on 2024-07-16 16:49_
 
 While not every issue in the list has been completed, `uv lock` is currently shipping as a preview feature that folks can use. There is still work to do before it leaves "preview," but I think that's better tracked by the release-ready project: https://github.com/orgs/astral-sh/projects/11
@@ -170,17 +102,5 @@ The project should be public now: https://github.com/orgs/astral-sh/projects/11
 _Comment by @charliermarsh on 2024-07-16 18:25_
 
 (Thanks, it wasn't intended to be private, glad you pointed that out.)
-
----
-
-_Referenced in [pantsbuild/pants#20679](../../pantsbuild/pants/issues/20679.md) on 2024-07-17 18:53_
-
----
-
-_Referenced in [astral-sh/uv#3560](../../astral-sh/uv/issues/3560.md) on 2024-07-30 18:06_
-
----
-
-_Referenced in [pdm-project/pdm#3341](../../pdm-project/pdm/issues/3341.md) on 2024-12-10 07:12_
 
 ---

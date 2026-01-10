@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-27T22:05:52Z
 updated_at: 2024-08-12T23:46:45Z
 url: https://github.com/astral-sh/uv/issues/4603
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # No error when PEP508 source and `tool.uv.sources` entry don't match
@@ -37,23 +37,7 @@ _Label `preview` added by @ibraheemdev on 2024-06-27 22:05_
 
 ---
 
-_Referenced in [astral-sh/uv#4604](../../astral-sh/uv/issues/4604.md) on 2024-06-27 22:08_
-
----
-
 _Renamed from "Error when PEP508 source and `tool.uv.sources` entry don't match" to "No error when PEP508 source and `tool.uv.sources` entry don't match" by @ibraheemdev on 2024-06-27 22:09_
-
----
-
-_Referenced in [astral-sh/uv#3943](../../astral-sh/uv/issues/3943.md) on 2024-07-09 10:05_
-
----
-
-_Referenced in [astral-sh/uv#5341](../../astral-sh/uv/issues/5341.md) on 2024-07-23 16:04_
-
----
-
-_Referenced in [astral-sh/uv#5383](../../astral-sh/uv/issues/5383.md) on 2024-07-24 14:38_
 
 ---
 

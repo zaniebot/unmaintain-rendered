@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-04T12:28:35Z
 updated_at: 2024-08-08T15:26:42Z
 url: https://github.com/astral-sh/uv/issues/5758
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Show ephemeral progress bar in `uv run` and `uv tool run`
@@ -62,10 +62,6 @@ Personally, i'd like `uv run` to be completely if everything is cached (i do `ca
 _Comment by @charliermarsh on 2024-08-06 12:24_
 
 I agree. The main problem there is that with `uv tool run`, we have to resolve in order to locate a cached environment 🤔 
-
----
-
-_Referenced in [astral-sh/uv#5899](../../astral-sh/uv/pulls/5899.md) on 2024-08-08 00:36_
 
 ---
 

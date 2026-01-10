@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-22T13:30:09Z
 updated_at: 2024-07-22T19:57:54Z
 url: https://github.com/astral-sh/uv/issues/5285
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Resolution depends on empty extra
@@ -108,10 +108,6 @@ Ok, thanks.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-22 16:29_
-
----
-
-_Referenced in [astral-sh/uv#5306](../../astral-sh/uv/pulls/5306.md) on 2024-07-22 19:09_
 
 ---
 

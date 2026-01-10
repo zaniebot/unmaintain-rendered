@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-04T23:56:49Z
 updated_at: 2024-07-28T18:37:50Z
 url: https://github.com/astral-sh/uv/issues/2187
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T04:53:49Z
 ```
 
 # Support `xz` compressed source packages
@@ -71,14 +71,6 @@ _Label `help wanted` added by @zanieb on 2024-07-01 21:57_
 
 ---
 
-_Referenced in [astral-sh/uv#5513](../../astral-sh/uv/pulls/5513.md) on 2024-07-28 12:58_
-
----
-
 _Closed by @charliermarsh on 2024-07-28 18:37_
-
----
-
-_Referenced in [astral-sh/uv#16911](../../astral-sh/uv/issues/16911.md) on 2025-12-01 17:35_
 
 ---
