@@ -1,0 +1,558 @@
+```yaml
+number: 21579
+title: "[ty] Add `from` imports to `imported_modules` *if* the module being imported is not relative to the current module"
+type: pull_request
+state: closed
+author: AlexWaygood
+labels:
+  - ty
+assignees: []
+draft: true
+base: main
+head: alex/from-import-submodule-attributes
+created_at: 2025-11-22T15:32:18Z
+updated_at: 2025-11-22T15:37:58Z
+url: https://github.com/astral-sh/ruff/pull/21579
+synced_at: 2026-01-10T16:48:02Z
+```
+
+# [ty] Add `from` imports to `imported_modules` *if* the module being imported is not relative to the current module
+
+---
+
+_Pull request opened by @AlexWaygood on 2025-11-22 15:32_
+
+## Summary
+
+Make it so that we recognise that `foo` is available as an attribute on `bar` if the user has something like
+
+```py
+import bar
+from foo.bar import whatever
+```
+
+## Test Plan
+
+just manual testing so far...
+
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-11-22 15:32_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-11-22 15:34_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-11-22 15:34:02.043293246 +0000
++++ new-output.txt	2025-11-22 15:34:05.591280777 +0000
+@@ -1,4 +1,4 @@
+-fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/17bc55d/src/function/execute.rs:469:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(19ea3)): execute: too many cycle iterations`
++fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/17bc55d/src/function/execute.rs:469:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(1a2a3)): execute: too many cycle iterations`
+ _directives_deprecated_library.py:15:31: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ _directives_deprecated_library.py:30:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+ _directives_deprecated_library.py:36:41: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@__add__`
+
+```
+
+</details>
+
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-11-22 15:36_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+bandersnatch (https://github.com/pypa/bandersnatch)
+- src/bandersnatch/tests/test_verify.py:169:25: error[unresolved-attribute] Submodule `verify` may not be available as an attribute on module `bandersnatch`
+- src/bandersnatch/tests/test_verify.py:237:25: error[unresolved-attribute] Submodule `verify` may not be available as an attribute on module `bandersnatch`
+- src/bandersnatch/tests/test_verify.py:238:25: error[unresolved-attribute] Submodule `verify` may not be available as an attribute on module `bandersnatch`
+- Found 104 diagnostics
++ Found 101 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
+- tests/test_commands.py:46:59: error[unresolved-attribute] Submodule `settings` may not be available as an attribute on module `scrapy`
+- tests/test_feedexport.py:1348:29: error[unresolved-attribute] Submodule `extensions` may not be available as an attribute on module `scrapy`
+- tests/test_feedexport.py:1352:29: error[unresolved-attribute] Submodule `extensions` may not be available as an attribute on module `scrapy`
+- Found 1726 diagnostics
++ Found 1723 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- testing/test_assertrewrite.py:2084:13: error[unresolved-attribute] Submodule `assertion` may not be available as an attribute on module `_pytest`
+- testing/test_assertrewrite.py:2111:13: error[unresolved-attribute] Submodule `assertion` may not be available as an attribute on module `_pytest`
+- testing/test_config.py:2313:30: error[unresolved-attribute] Submodule `config` may not be available as an attribute on module `_pytest`
+- testing/test_config.py:2496:18: error[unresolved-attribute] Submodule `config` may not be available as an attribute on module `_pytest`
+- testing/test_config.py:2497:21: error[unresolved-attribute] Submodule `config` may not be available as an attribute on module `_pytest`
+- Found 446 diagnostics
++ Found 441 diagnostics
+
+PyGithub (https://github.com/PyGithub/PyGithub)
++ tests/GithubRetry.py:137:17: error[call-non-callable] Object of type `<module 'github.GithubRetry'>` is not callable
++ tests/GithubRetry.py:165:17: error[call-non-callable] Object of type `<module 'github.GithubRetry'>` is not callable
++ tests/GithubRetry.py:200:17: error[call-non-callable] Object of type `<module 'github.GithubRetry'>` is not callable
++ tests/GithubRetry.py:211:17: error[call-non-callable] Object of type `<module 'github.GithubRetry'>` is not callable
++ tests/GithubRetry.py:240:17: error[call-non-callable] Object of type `<module 'github.GithubRetry'>` is not callable
++ tests/GithubRetry.py:268:17: error[call-non-callable] Object of type `<module 'github.GithubRetry'>` is not callable
++ tests/GithubRetry.py:303:17: error[call-non-callable] Object of type `<module 'github.GithubRetry'>` is not callable
++ tests/GithubRetry.py:328:17: error[call-non-callable] Object of type `<module 'github.GithubRetry'>` is not callable
++ tests/GithubRetry.py:364:17: error[call-non-callable] Object of type `<module 'github.GithubRetry'>` is not callable
++ tests/GithubRetry.py:369:17: error[call-non-callable] Object of type `<module 'github.GithubRetry'>` is not callable
++ tests/GithubRetry.py:378:17: error[call-non-callable] Object of type `<module 'github.GithubRetry'>` is not callable
++ tests/GithubRetry.py:383:17: error[call-non-callable] Object of type `<module 'github.GithubRetry'>` is not callable
++ tests/GithubRetry.py:388:17: error[call-non-callable] Object of type `<module 'github.GithubRetry'>` is not callable
+- Found 289 diagnostics
++ Found 302 diagnostics
+
+dragonchain (https://github.com/dragonchain/dragonchain)
+- dragonchain/lib/faas_utest.py:30:29: error[unresolved-attribute] Submodule `mock` may not be available as an attribute on module `unittest`
+- Found 433 diagnostics
++ Found 432 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- examples/contrib/check_ssl_pinning.py:93:9: error[unresolved-attribute] Submodule `certs` may not be available as an attribute on module `mitmproxy`
++ examples/contrib/check_ssl_pinning.py:93:9: error[invalid-assignment] Implicit shadowing of function `dummy_cert`
+- mitmproxy/tools/web/app.py:580:30: error[unresolved-attribute] Submodule `http` may not be available as an attribute on module `mitmproxy`
+- mitmproxy/tools/web/app.py:585:29: error[unresolved-attribute] Unresolved attribute `port` on type `object`.
+- mitmproxy/tools/web/app.py:587:29: error[unresolved-attribute] Object of type `object` has no attribute `headers`
++ mitmproxy/tools/web/app.py:580:55: error[invalid-assignment] Object of type `object` is not assignable to `Request`
++ mitmproxy/tools/web/app.py:596:33: warning[possibly-missing-attribute] Attribute `add` may be missing on object of type `Headers | None`
+- mitmproxy/tools/web/app.py:589:33: error[unresolved-attribute] Object of type `object` has no attribute `headers`
+- mitmproxy/tools/web/app.py:591:32: error[unresolved-attribute] Object of type `object` has no attribute `trailers`
+- mitmproxy/tools/web/app.py:592:33: error[unresolved-attribute] Object of type `object` has no attribute `trailers`
+- mitmproxy/tools/web/app.py:594:33: error[unresolved-attribute] Unresolved attribute `trailers` on type `object`.
+- mitmproxy/tools/web/app.py:594:52: error[unresolved-attribute] Submodule `http` may not be available as an attribute on module `mitmproxy`
+- mitmproxy/tools/web/app.py:596:33: error[unresolved-attribute] Object of type `object` has no attribute `trailers`
+- mitmproxy/tools/web/app.py:598:29: error[unresolved-attribute] Unresolved attribute `text` on type `object`.
+- mitmproxy/tools/web/app.py:603:31: error[unresolved-attribute] Submodule `http` may not be available as an attribute on module `mitmproxy`
+- mitmproxy/tools/web/app.py:608:29: error[unresolved-attribute] Unresolved attribute `status_code` on type `object`.
+- mitmproxy/tools/web/app.py:610:29: error[unresolved-attribute] Object of type `object` has no attribute `headers`
++ mitmproxy/tools/web/app.py:603:57: error[invalid-assignment] Object of type `object` is not assignable to `Response`
++ mitmproxy/tools/web/app.py:619:33: warning[possibly-missing-attribute] Attribute `add` may be missing on object of type `Headers | None`
+- mitmproxy/tools/web/app.py:612:33: error[unresolved-attribute] Object of type `object` has no attribute `headers`
+- mitmproxy/tools/web/app.py:614:32: error[unresolved-attribute] Object of type `object` has no attribute `trailers`
+- mitmproxy/tools/web/app.py:615:33: error[unresolved-attribute] Object of type `object` has no attribute `trailers`
+- mitmproxy/tools/web/app.py:617:33: error[unresolved-attribute] Unresolved attribute `trailers` on type `object`.
+- mitmproxy/tools/web/app.py:617:53: error[unresolved-attribute] Submodule `http` may not be available as an attribute on module `mitmproxy`
+- mitmproxy/tools/web/app.py:619:33: error[unresolved-attribute] Object of type `object` has no attribute `trailers`
+- mitmproxy/tools/web/app.py:621:29: error[unresolved-attribute] Unresolved attribute `text` on type `object`.
+- test/mitmproxy/test_flow.py:135:25: error[unresolved-attribute] Submodule `test` may not be available as an attribute on module `mitmproxy`
++ test/mitmproxy/test_flow.py:135:25: error[unresolved-attribute] Submodule `tutils` may not be available as an attribute on module `mitmproxy.test`
+- test/mitmproxy/test_flow.py:139:26: error[unresolved-attribute] Submodule `test` may not be available as an attribute on module `mitmproxy`
++ test/mitmproxy/test_flow.py:139:26: error[unresolved-attribute] Submodule `tutils` may not be available as an attribute on module `mitmproxy.test`
+- Found 1843 diagnostics
++ Found 1827 diagnostics
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
++ schema_salad/sourceline.py:17:30: error[invalid-argument-type] Argument to function `_add_lc_filename` is incorrect: Expected `CommentedBase`, found `object`
++ schema_salad/sourceline.py:20:30: error[invalid-argument-type] Argument to function `_add_lc_filename` is incorrect: Expected `CommentedBase`, found `object`
+- schema_salad/sourceline.py:12:25: error[unresolved-attribute] Submodule `comments` may not be available as an attribute on module `ruamel.yaml`
+- schema_salad/sourceline.py:13:22: error[unresolved-attribute] Submodule `comments` may not be available as an attribute on module `ruamel.yaml`
+- schema_salad/sourceline.py:30:24: error[unresolved-attribute] Submodule `comments` may not be available as an attribute on module `ruamel.yaml`
+- schema_salad/sourceline.py:286:38: error[unresolved-attribute] Submodule `comments` may not be available as an attribute on module `ruamel.yaml`
+- schema_salad/tests/test_errors.py:302:24: error[unresolved-attribute] Submodule `schema` may not be available as an attribute on module `schema_salad`
+- schema_salad/tests/test_errors.py:323:20: error[unresolved-attribute] Submodule `schema` may not be available as an attribute on module `schema_salad`
+- schema_salad/tests/test_errors.py:350:20: error[unresolved-attribute] Submodule `schema` may not be available as an attribute on module `schema_salad`
+- schema_salad/tests/test_errors.py:372:20: error[unresolved-attribute] Submodule `schema` may not be available as an attribute on module `schema_salad`
+- schema_salad/tests/test_errors.py:394:20: error[unresolved-attribute] Submodule `schema` may not be available as an attribute on module `schema_salad`
+- schema_salad/tests/test_examples.py:589:11: error[unresolved-attribute] Submodule `ref_resolver` may not be available as an attribute on module `schema_salad`
+- Found 204 diagnostics
++ Found 196 diagnostics
+
+pandera (https://github.com/pandera-dev/pandera)
+- tests/pyspark/test_pyspark_model.py:488:9: error[unresolved-attribute] Submodule `errors` may not be available as an attribute on module `pandera`
+- Found 1637 diagnostics
++ Found 1636 diagnostics
+
+comtypes (https://github.com/enthought/comtypes)
++ comtypes/_post_coinit/activeobj.py:21:57: error[invalid-type-form] Variable of type `<module 'comtypes.GUID'>` is not allowed in a type expression
++ comtypes/_post_coinit/activeobj.py:35:28: error[invalid-type-form] Variable of type `<module 'comtypes.GUID'>` is not allowed in a type expression
++ comtypes/_post_coinit/activeobj.py:37:28: error[invalid-type-form] Variable of type `<module 'comtypes.GUID'>` is not allowed in a type expression
++ comtypes/_post_coinit/activeobj.py:39:12: error[invalid-type-form] Variable of type `<module 'comtypes.GUID'>` is not allowed in a type expression
++ comtypes/_post_coinit/misc.py:52:13: error[call-non-callable] Object of type `<module 'comtypes.GUID'>` is not callable
++ comtypes/_post_coinit/misc.py:59:33: error[invalid-type-form] Variable of type `<module 'comtypes.GUID'>` is not allowed in a type expression
++ comtypes/_post_coinit/misc.py:67:13: error[call-non-callable] Object of type `<module 'comtypes.GUID'>` is not callable
++ comtypes/_post_coinit/misc.py:73:27: error[invalid-type-form] Variable of type `<module 'comtypes.GUID'>` is not allowed in a type expression
++ comtypes/_post_coinit/misc.py:114:12: error[invalid-type-form] Variable of type `<module 'comtypes.GUID'>` is not allowed in a type expression
++ comtypes/_post_coinit/misc.py:121:12: error[invalid-type-form] Variable of type `<module 'comtypes.GUID'>` is not allowed in a type expression
++ comtypes/_post_coinit/misc.py:127:12: error[invalid-type-form] Variable of type `<module 'comtypes.GUID'>` is not allowed in a type expression
++ comtypes/_post_coinit/misc.py:149:16: error[invalid-type-form] Variable of type `<module 'comtypes.GUID'>` is not allowed in a type expression
++ comtypes/_post_coinit/misc.py:156:16: error[invalid-type-form] Variable of type `<module 'comtypes.GUID'>` is not allowed in a type expression
++ comtypes/_post_coinit/misc.py:179:15: error[invalid-type-form] Variable of type `<module 'comtypes.GUID'>` is not allowed in a type expression
++ comtypes/_post_coinit/misc.py:336:12: error[invalid-type-form] Variable of type `<module 'comtypes.GUID'>` is not allowed in a type expression
++ comtypes/_post_coinit/misc.py:344:12: error[invalid-type-form] Variable of type `<module 'comtypes.GUID'>` is not allowed in a type expression
++ comtypes/_post_coinit/misc.py:351:12: error[invalid-type-form] Variable of type `<module 'comtypes.GUID'>` is not allowed in a type expression
++ comtypes/server/localserver.py:68:19: error[call-non-callable] Object of type `<module 'comtypes.GUID'>` is not callable
++ comtypes/server/localserver.py:83:25: error[invalid-type-form] Variable of type `<module 'comtypes.GUID'>` is not allowed in a type expression
++ comtypes/test/test_outparam.py:29:13: error[call-non-callable] Object of type `<module 'comtypes.GUID'>` is not callable
+- Found 354 diagnostics
++ Found 374 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
+- tests/_test_cursor.py:63:16: error[unresolved-attribute] Submodule `rows` may not be available as an attribute on module `psycopg`
+- tests/fix_faker.py:88:14: error[unresolved-attribute] Submodule `adapt` may not be available as an attribute on module `psycopg`
+- tests/test_connection.py:112:25: error[unresolved-attribute] Submodule `conninfo` may not be available as an attribute on module `psycopg`
+- tests/test_connection.py:643:35: error[unresolved-attribute] Submodule `rows` may not be available as an attribute on module `psycopg`
+- tests/test_connection.py:656:35: error[unresolved-attribute] Submodule `rows` may not be available as an attribute on module `psycopg`
+- tests/test_connection.py:668:47: error[unresolved-attribute] Submodule `rows` may not be available as an attribute on module `psycopg`
+- tests/test_connection_async.py:107:25: error[unresolved-attribute] Submodule `conninfo` may not be available as an attribute on module `psycopg`
+- tests/test_connection_async.py:641:40: error[unresolved-attribute] Submodule `rows` may not be available as an attribute on module `psycopg`
+- tests/test_connection_async.py:653:40: error[unresolved-attribute] Submodule `rows` may not be available as an attribute on module `psycopg`
+- tests/test_connection_async.py:665:52: error[unresolved-attribute] Submodule `rows` may not be available as an attribute on module `psycopg`
+- tests/test_cursor_common.py:203:29: error[unresolved-attribute] Submodule `adapt` may not be available as an attribute on module `psycopg`
+- tests/test_cursor_common_async.py:201:29: error[unresolved-attribute] Submodule `adapt` may not be available as an attribute on module `psycopg`
+- tests/types/test_json.py:28:23: error[unresolved-attribute] Submodule `json` may not be available as an attribute on module `psycopg.types`
+- tests/types/test_json.py:41:23: error[unresolved-attribute] Submodule `json` may not be available as an attribute on module `psycopg.types`
+- tests/types/test_json.py:63:22: error[unresolved-attribute] Submodule `json` may not be available as an attribute on module `psycopg.types`
+- tests/types/test_json.py:85:23: error[unresolved-attribute] Submodule `json` may not be available as an attribute on module `psycopg.types`
+- tests/types/test_json.py:133:23: error[unresolved-attribute] Submodule `json` may not be available as an attribute on module `psycopg.types`
+- tests/types/test_json.py:148:23: error[unresolved-attribute] Submodule `json` may not be available as an attribute on module `psycopg.types`
+- tests/types/test_json.py:163:23: error[unresolved-attribute] Submodule `json` may not be available as an attribute on module `psycopg.types`
+- tests/types/test_json.py:178:23: error[unresolved-attribute] Submodule `json` may not be available as an attribute on module `psycopg.types`
+- tests/types/test_numeric.py:589:23: error[unresolved-attribute] Submodule `numeric` may not be available as an attribute on module `psycopg.types`
+- tests/types/test_numeric.py:600:23: error[unresolved-attribute] Submodule `numeric` may not be available as an attribute on module `psycopg.types`
+- tests/types/test_numeric.py:612:23: error[unresolved-attribute] Submodule `numeric` may not be available as an attribute on module `psycopg.types`
+- Found 649 diagnostics
++ Found 626 diagnostics
+
+trio (https://github.com/python-trio/trio)
++ src/trio/testing/_fake_net.py:261:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 519 diagnostics
++ Found 520 diagnostics
+
+scikit-learn (https://github.com/scikit-learn/scikit-learn)
++ sklearn/ensemble/_hist_gradient_boosting/tests/test_gradient_boosting.py:874:9: error[unresolved-attribute] Submodule `gradient_boosting` may not be available as an attribute on module `sklearn.ensemble._hist_gradient_boosting`
+- Found 2253 diagnostics
++ Found 2254 diagnostics
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+- sphinx/parsers.py:88:21: error[unresolved-attribute] Submodule `statemachine` may not be available as an attribute on module `docutils`
+- sphinx/util/docutils.py:211:9: error[unresolved-attribute] Submodule `parsers` may not be available as an attribute on module `docutils`
++ sphinx/util/docutils.py:211:9: error[unresolved-attribute] Submodule `languages` may not be available as an attribute on module `docutils.parsers.rst`
+- sphinx/util/docutils.py:824:15: error[unresolved-attribute] Submodule `utils` may not be available as an attribute on module `docutils`
+- Found 521 diagnostics
++ Found 519 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
+- unittests/internaltests.py:77:20: error[unresolved-attribute] Submodule `mesonlib` may not be available as an attribute on module `mesonbuild`
+- unittests/internaltests.py:282:20: error[unresolved-attribute] Submodule `mesonlib` may not be available as an attribute on module `mesonbuild`
+- unittests/internaltests.py:283:21: error[unresolved-attribute] Submodule `mesonlib` may not be available as an attribute on module `mesonbuild`
+- unittests/internaltests.py:284:14: error[unresolved-attribute] Submodule `mesonlib` may not be available as an attribute on module `mesonbuild`
+- unittests/internaltests.py:487:19: error[unresolved-attribute] Submodule `mesonlib` may not be available as an attribute on module `mesonbuild`
+- unittests/internaltests.py:497:27: error[unresolved-attribute] Submodule `mesonlib` may not be available as an attribute on module `mesonbuild`
+- unittests/internaltests.py:512:19: error[unresolved-attribute] Submodule `mesonlib` may not be available as an attribute on module `mesonbuild`
+- unittests/internaltests.py:520:27: error[unresolved-attribute] Submodule `mesonlib` may not be available as an attribute on module `mesonbuild`
+- unittests/internaltests.py:714:23: error[unresolved-attribute] Submodule `mesonlib` may not be available as an attribute on module `mesonbuild`
+- unittests/internaltests.py:857:22: error[unresolved-attribute] Submodule `mesonlib` may not be available as an attribute on module `mesonbuild`
+- unittests/internaltests.py:858:21: error[unresolved-attribute] Submodule `mesonlib` may not be available as an attribute on module `mesonbuild`
+- unittests/internaltests.py:921:22: error[unresolved-attribute] Submodule `mesonlib` may not be available as an attribute on module `mesonbuild`
+- unittests/internaltests.py:922:21: error[unresolved-attribute] Submodule `mesonlib` may not be available as an attribute on module `mesonbuild`
+- unittests/internaltests.py:1722:35: error[unresolved-attribute] Submodule `mesonlib` may not be available as an attribute on module `mesonbuild`
+- unittests/internaltests.py:1723:17: error[unresolved-attribute] Submodule `interpreter` may not be available as an attribute on module `mesonbuild`
+- Found 1865 diagnostics
++ Found 1850 diagnostics
+
+openlibrary (https://github.com/internetarchive/openlibrary)
+- openlibrary/core/processors/readableurls.py:59:34: error[unresolved-attribute] Submodule `parse` may not be available as an attribute on module `urllib`
+- openlibrary/plugins/openlibrary/code.py:1061:22: error[unresolved-attribute] Submodule `parse` may not be available as an attribute on module `urllib`
+- openlibrary/plugins/upstream/utils.py:207:19: error[unresolved-attribute] Submodule `parse` may not be available as an attribute on module `urllib`
+- openlibrary/plugins/upstream/utils.py:640:12: error[unresolved-attribute] Submodule `parse` may not be available as an attribute on module `urllib`
+- Found 945 diagnostics
++ Found 941 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
+- tests/unittests/cmd/test_clean.py:544:17: error[unresolved-attribute] Submodule `cmd` may not be available as an attribute on module `cloudinit`
++ tests/unittests/cmd/test_clean.py:544:17: error[unresolved-attribute] Submodule `clean` may not be available as an attribute on module `cloudinit.cmd`
+- tests/unittests/sources/test_upcloud.py:289:19: error[unresolved-attribute] Submodule `DataSourceUpCloud` may not be available as an attribute on module `cloudinit.sources`
+- tests/unittests/sources/test_upcloud.py:294:19: error[unresolved-attribute] Submodule `DataSourceUpCloud` may not be available as an attribute on module `cloudinit.sources`
+- Found 1191 diagnostics
++ Found 1189 diagnostics
+
+cwltool (https://github.com/common-workflow-language/cwltool)
+- cwltool/main.py:184:17: error[unresolved-attribute] Submodule `comments` may not be available as an attribute on module `ruamel.yaml`
+- cwltool/main.py:185:22: error[unresolved-attribute] Submodule `comments` may not be available as an attribute on module `ruamel.yaml`
+- cwltool/main.py:240:23: error[unresolved-attribute] Submodule `comments` may not be available as an attribute on module `ruamel.yaml`
+- cwltool/main.py:325:16: error[unresolved-attribute] Submodule `comments` may not be available as an attribute on module `ruamel.yaml`
+- tests/test_mpi.py:323:10: error[unresolved-attribute] Submodule `main` may not be available as an attribute on module `cwltool`
+- Found 192 diagnostics
++ Found 187 diagnostics
+
+setuptools (https://github.com/pypa/setuptools)
+- setuptools/_distutils/tests/test_version.py:11:10: error[unresolved-attribute] Submodule `version` may not be available as an attribute on module `distutils`
++ setuptools/_distutils/tests/test_version.py:11:10: error[unresolved-attribute] Module `distutils.version` has no member `suppress_known_deprecation`
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 45 diagnostics
++ Found 44 diagnostics
+
+pwndbg (https://github.com/pwndbg/pwndbg)
+- pwndbg/aglib/argv.py:29:12: warning[possibly-missing-attribute] Attribute `is_linux` may be missing on object of type `Process | None`
+- pwndbg/aglib/argv.py:38:22: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `Value | None`
+- pwndbg/aglib/argv.py:38:22: warning[possibly-missing-attribute] Attribute `regs` may be missing on object of type `Frame | None`
++ pwndbg/aglib/argv.py:27:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/aglib/argv.py:29:12: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
++ pwndbg/aglib/argv.py:38:22: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_frame`
+- pwndbg/aglib/argv.py:97:12: warning[possibly-missing-attribute] Attribute `create_value` may be missing on object of type `Process | None`
+- pwndbg/aglib/argv.py:117:12: warning[possibly-missing-attribute] Attribute `create_value` may be missing on object of type `Process | None`
+- pwndbg/aglib/argv.py:132:12: warning[possibly-missing-attribute] Attribute `create_value` may be missing on object of type `Process | None`
++ pwndbg/aglib/argv.py:97:12: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
++ pwndbg/aglib/argv.py:117:12: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
++ pwndbg/aglib/argv.py:132:12: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
++ pwndbg/aglib/ctypes.py:24:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/aglib/ctypes.py:25:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/aglib/disasm/disassembly.py:72:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/aglib/disasm/disassembly.py:82:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/aglib/disasm/disassembly.py:83:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/aglib/disasm/disassembly.py:149:14: error[unresolved-attribute] Module `pwndbg.dbg` has no member `x86_disassembly_flavor`
++ pwndbg/aglib/elf.py:72:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/aglib/elf.py:73:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
+- pwndbg/aglib/elf.py:269:13: warning[possibly-missing-attribute] Attribute `main_module_entry` may be missing on object of type `Process | None`
+- pwndbg/aglib/elf.py:339:12: warning[possibly-missing-attribute] Attribute `is_linux` may be missing on object of type `Process | None`
++ pwndbg/aglib/elf.py:268:11: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
++ pwndbg/aglib/elf.py:339:12: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
++ pwndbg/aglib/heap/__init__.py:66:4: error[unresolved-attribute] Module `pwndbg.dbg` has no member `name`
++ pwndbg/aglib/heap/__init__.py:128:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/aglib/heap/__init__.py:133:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/aglib/kernel/rbtree.py:15:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/aglib/kernel/symbol.py:257:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
+- pwndbg/aglib/memory.py:35:12: warning[possibly-missing-attribute] Attribute `read_memory` may be missing on object of type `Process | None`
+- pwndbg/aglib/memory.py:66:5: warning[possibly-missing-attribute] Attribute `write_memory` may be missing on object of type `Process | None`
++ pwndbg/aglib/memory.py:35:12: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
++ pwndbg/aglib/memory.py:66:5: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
++ pwndbg/aglib/memory.py:123:9: error[unresolved-attribute] Module `pwndbg.dbg` has no member `suspend_events`
++ pwndbg/aglib/memory.py:128:9: error[unresolved-attribute] Module `pwndbg.dbg` has no member `resume_events`
+- pwndbg/aglib/memory.py:285:16: warning[possibly-missing-attribute] Attribute `create_value` may be missing on object of type `Process | None`
++ pwndbg/aglib/memory.py:285:16: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
+- pwndbg/aglib/memory.py:419:20: warning[possibly-missing-attribute] Attribute `types_with_name` may be missing on object of type `Process | None`
+- pwndbg/aglib/memory.py:445:12: warning[possibly-missing-attribute] Attribute `is_linux` may be missing on object of type `Process | None`
++ pwndbg/aglib/memory.py:419:20: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
++ pwndbg/aglib/memory.py:445:12: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
++ pwndbg/aglib/next.py:124:12: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
++ pwndbg/aglib/next.py:144:12: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
++ pwndbg/aglib/next.py:207:12: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
+- pwndbg/aglib/next.py:129:18: warning[possibly-missing-attribute] Attribute `break_at` may be missing on object of type `Process | None`
+- pwndbg/aglib/next.py:146:14: warning[possibly-missing-attribute] Attribute `break_at` may be missing on object of type `Process | None`
+- pwndbg/aglib/next.py:215:22: warning[possibly-missing-attribute] Attribute `break_at` may be missing on object of type `Process | None`
+- pwndbg/aglib/next.py:228:26: warning[possibly-missing-attribute] Attribute `break_at` may be missing on object of type `Process | None`
+- pwndbg/aglib/next.py:284:10: warning[possibly-missing-attribute] Attribute `break_at` may be missing on object of type `Process | None`
++ pwndbg/aglib/next.py:283:12: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
+- pwndbg/aglib/regs.py:62:11: warning[possibly-missing-attribute] Attribute `send_monitor` may be missing on object of type `Process | None`
++ pwndbg/aglib/regs.py:46:17: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_frame`
++ pwndbg/aglib/regs.py:62:11: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
+- pwndbg/aglib/regs.py:134:20: warning[possibly-missing-attribute] Attribute `reg_write` may be missing on object of type `Frame | None`
++ pwndbg/aglib/regs.py:134:20: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_frame`
+- pwndbg/aglib/regs.py:252:17: warning[possibly-missing-attribute] Attribute `ptid` may be missing on object of type `Thread | None`
++ pwndbg/aglib/regs.py:252:17: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_thread`
++ pwndbg/aglib/regs.py:276:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/aglib/regs.py:277:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/aglib/shellcode.py:98:21: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_frame`
+- pwndbg/aglib/shellcode.py:98:21: warning[possibly-missing-attribute] Attribute `regs` may be missing on object of type `Frame | None`
+- pwndbg/aglib/shellcode.py:99:27: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `Value | None`
+- pwndbg/aglib/shellcode.py:126:10: warning[possibly-missing-attribute] Attribute `break_at` may be missing on object of type `Process | None`
+- pwndbg/aglib/shellcode.py:139:12: warning[possibly-missing-attribute] Attribute `pc` may be missing on object of type `Frame | None`
++ pwndbg/aglib/shellcode.py:126:10: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
++ pwndbg/aglib/shellcode.py:139:12: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_frame`
++ pwndbg/aglib/shellcode.py:167:22: error[unresolved-attribute] Module `pwndbg.dbg` has no member `ctx_suspend_events`
+- pwndbg/aglib/symbol.py:71:12: warning[possibly-missing-attribute] Attribute `lookup_symbol` may be missing on object of type `Process | None`
+- pwndbg/aglib/symbol.py:96:12: warning[possibly-missing-attribute] Attribute `lookup_symbol` may be missing on object of type `Frame | None`
+- pwndbg/aglib/symbol.py:112:19: warning[possibly-missing-attribute] Attribute `symbol_name_at_address` may be missing on object of type `Process | None`
++ pwndbg/aglib/symbol.py:71:12: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
++ pwndbg/aglib/symbol.py:96:12: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_frame`
++ pwndbg/aglib/symbol.py:112:19: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
+- pwndbg/aglib/vmmap.py:101:31: warning[possibly-missing-attribute] Attribute `vmmap` may be missing on object of type `Process | None`
++ pwndbg/aglib/vmmap.py:101:31: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
++ pwndbg/aglib/vmmap_custom.py:39:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
+- pwndbg/commands/config.py:90:26: error[unresolved-attribute] Submodule `color` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/dt.py:26:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/got_tracking.py:99:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/got_tracking.py:100:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/jemalloc.py:18:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/jemalloc.py:50:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/jemalloc.py:80:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/kdmabuf.py:61:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/kdmabuf.py:62:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/kdmabuf.py:63:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/kdmabuf.py:64:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
++ pwndbg/commands/kmem_trace.py:59:23: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_frame`
+- pwndbg/commands/kmem_trace.py:190:9: warning[possibly-missing-attribute] Attribute `trace_ret` may be missing on object of type `Process | None`
++ pwndbg/commands/kmem_trace.py:190:9: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
+- pwndbg/commands/kmem_trace.py:305:5: warning[possibly-missing-attribute] Attribute `runcmd` may be missing on object of type `Process | None`
++ pwndbg/commands/kmem_trace.py:212:15: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
++ pwndbg/commands/kmem_trace.py:230:15: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
++ pwndbg/commands/kmem_trace.py:305:5: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
++ pwndbg/commands/kmem_trace.py:313:5: error[unresolved-attribute] Module `pwndbg.dbg` has no member `ctx_suspend_once`
+- pwndbg/commands/ktask.py:30:20: error[unresolved-attribute] Submodule `aglib` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/ktask.py:31:68: error[unresolved-attribute] Submodule `aglib` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/ktask.py:90:17: error[unresolved-attribute] Submodule `aglib` may not be available as an attribute on module `pwndbg`
++ pwndbg/commands/ktask.py:90:17: error[unresolved-attribute] Submodule `symbol` may not be available as an attribute on module `pwndbg.aglib`
+- pwndbg/commands/linkmap.py:15:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/linkmap.py:16:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/mallocng.py:35:17: error[unresolved-attribute] Submodule `lib` may not be available as an attribute on module `pwndbg`
++ pwndbg/commands/mallocng.py:35:17: error[unresolved-attribute] Submodule `config` may not be available as an attribute on module `pwndbg.lib`
+- pwndbg/commands/mallocng.py:36:11: error[unresolved-attribute] Submodule `lib` may not be available as an attribute on module `pwndbg`
++ pwndbg/commands/mallocng.py:36:11: error[unresolved-attribute] Submodule `config` may not be available as an attribute on module `pwndbg.lib`
+- pwndbg/commands/mallocng.py:533:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/mallocng.py:538:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/mallocng.py:566:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/mallocng.py:571:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/mallocng.py:593:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/mallocng.py:598:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/mallocng.py:641:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/mallocng.py:646:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/mallocng.py:705:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/mallocng.py:710:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/mallocng.py:752:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/mallocng.py:757:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/mallocng.py:818:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/mallocng.py:823:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/mallocng.py:948:17: error[unresolved-attribute] Submodule `lib` may not be available as an attribute on module `pwndbg`
++ pwndbg/commands/mallocng.py:948:17: error[unresolved-attribute] Submodule `config` may not be available as an attribute on module `pwndbg.lib`
+- pwndbg/commands/mallocng.py:949:11: error[unresolved-attribute] Submodule `lib` may not be available as an attribute on module `pwndbg`
++ pwndbg/commands/mallocng.py:949:11: error[unresolved-attribute] Submodule `config` may not be available as an attribute on module `pwndbg.lib`
+- pwndbg/commands/mallocng.py:969:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/mallocng.py:974:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/mallocng.py:1128:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/mallocng.py:1147:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/mallocng.py:1229:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/msr.py:140:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/msr.py:141:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/nearpc.py:51:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/nearpc.py:52:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/nearpc.py:125:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/nearpc.py:126:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/paging.py:86:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/paging.py:87:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/paging.py:88:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/paging.py:96:17: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
++ pwndbg/commands/paging.py:96:17: error[unresolved-attribute] Submodule `kcurrent` may not be available as an attribute on module `pwndbg.commands`
+- pwndbg/commands/paging.py:126:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/paging.py:127:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/paging.py:128:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/paging.py:129:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/paging.py:148:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/paging.py:149:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/paging.py:150:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/paging.py:151:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/paging.py:172:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/paging.py:173:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/paging.py:174:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/paging.py:175:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/profiler.py:28:2: error[unresolved-attribute] Submodule `commands` may not be available as an attribute on module `pwndbg`
++ pwndbg/commands/version.py:46:8: error[unresolved-attribute] Module `pwndbg.dbg` has no member `is_gdblib_available`
++ pwndbg/commands/version.py:70:8: error[unresolved-attribute] Module `pwndbg.dbg` has no member `is_gdblib_available`
++ pwndbg/commands/version.py:204:8: error[unresolved-attribute] Module `pwndbg.dbg` has no member `is_gdblib_available`
++ pwndbg/commands/version.py:216:8: error[unresolved-attribute] Module `pwndbg.dbg` has no member `is_gdblib_available`
+- pwndbg/commands/vmmap.py:286:17: error[unresolved-attribute] Submodule `lib` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/vmmap.py:372:12: error[unresolved-attribute] Submodule `lib` may not be available as an attribute on module `pwndbg`
+- pwndbg/commands/vmmap.py:461:20: error[unresolved-attribute] Submodule `lib` may not be available as an attribute on module `pwndbg`
+- pwndbg/dbg/gdb/__init__.py:1211:17: warning[possibly-missing-attribute] Attribute `create_value` may be missing on object of type `Process | None`
++ pwndbg/dbg/gdb/__init__.py:1211:17: error[unresolved-attribute] Module `pwndbg.dbg` has no member `selected_inferior`
++ pwndbg/dbg/lldb/hooks.py:14:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/dbg/lldb/hooks.py:15:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/dbg/lldb/hooks.py:16:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/dbg/lldb/hooks.py:22:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/dbg/lldb/hooks.py:27:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/dbg/lldb/hooks.py:32:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/dbg/lldb/hooks.py:37:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/dbg/lldb/hooks.py:46:18: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/dbg/lldb/hooks.py:47:21: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/dbg/lldb/hooks.py:48:19: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/dbg/lldb/hooks.py:50:13: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/dbg/lldb/hooks.py:51:13: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/dbg/lldb/hooks.py:52:13: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/dbg/lldb/hooks.py:55:13: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/dbg/lldb/hooks.py:56:13: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/dbg/lldb/hooks.py:57:13: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/dbg/lldb/hooks.py:78:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
+- pwndbg/dbg/lldb/hooks.py:88:17: error[invalid-assignment] Object of type `Debugger` is not assignable to `LLDB`
++ pwndbg/dbg/lldb/hooks.py:88:17: error[invalid-assignment] Object of type `<module 'pwndbg.dbg'>` is not assignable to `LLDB`
+- pwndbg/dbg/lldb/repl/__init__.py:671:26: error[unresolved-attribute] Submodule `lib` may not be available as an attribute on module `pwndbg`
++ pwndbg/dbg/lldb/repl/__init__.py:671:26: error[unresolved-attribute] Submodule `config` may not be available as an attribute on module `pwndbg.lib`
++ pwndbg/gdblib/hooks.py:17:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/gdblib/hooks.py:18:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/gdblib/hooks.py:19:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/gdblib/hooks.py:40:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/gdblib/hooks.py:41:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/gdblib/hooks.py:42:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/gdblib/hooks.py:47:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/gdblib/hooks.py:52:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/gdblib/hooks.py:57:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/gdblib/hooks.py:62:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/gdblib/prompt.py:102:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
+- pwndbg/gdblib/ptmalloc2_tracking.py:80:5: error[unresolved-attribute] Submodule `color` may not be available as an attribute on module `pwndbg`
+- pwndbg/gdblib/ptmalloc2_tracking.py:81:5: error[unresolved-attribute] Submodule `color` may not be available as an attribute on module `pwndbg`
+- pwndbg/gdblib/ptmalloc2_tracking.py:82:5: error[unresolved-attribute] Submodule `color` may not be available as an attribute on module `pwndbg`
+- pwndbg/gdblib/ptmalloc2_tracking.py:83:5: error[unresolved-attribute] Submodule `color` may not be available as an attribute on module `pwndbg`
+- pwndbg/gdblib/ptmalloc2_tracking.py:84:5: error[unresolved-attribute] Submodule `color` may not be available as an attribute on module `pwndbg`
+- pwndbg/gdblib/ptmalloc2_tracking.py:85:5: error[unresolved-attribute] Submodule `color` may not be available as an attribute on module `pwndbg`
+- pwndbg/gdblib/ptmalloc2_tracking.py:86:5: error[unresolved-attribute] Submodule `color` may not be available as an attribute on module `pwndbg`
+- pwndbg/gdblib/ptmalloc2_tracking.py:87:5: error[unresolved-attribute] Submodule `color` may not be available as an attribute on module `pwndbg`
+- pwndbg/gdblib/ptmalloc2_tracking.py:88:5: error[unresolved-attribute] Submodule `color` may not be available as an attribute on module `pwndbg`
+- pwndbg/gdblib/ptmalloc2_tracking.py:89:5: error[unresolved-attribute] Submodule `color` may not be available as an attribute on module `pwndbg`
+- pwndbg/gdblib/ptmalloc2_tracking.py:90:5: error[unresolved-attribute] Submodule `color` may not be available as an attribute on module `pwndbg`
+- pwndbg/gdblib/ptmalloc2_tracking.py:91:5: error[unresolved-attribute] Submodule `color` may not be available as an attribute on module `pwndbg`
+- pwndbg/gdblib/ptmalloc2_tracking.py:92:5: error[unresolved-attribute] Submodule `color` may not be available as an attribute on module `pwndbg`
+- pwndbg/gdblib/ptmalloc2_tracking.py:93:5: error[unresolved-attribute] Submodule `color` may not be available as an attribute on module `pwndbg`
++ pwndbg/integration/binja.py:283:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/integration/binja.py:297:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/integration/binja.py:298:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
++ pwndbg/integration/binja.py:299:2: error[unresolved-attribute] Module `pwndbg.dbg` has no member `event_handler`
+- pwndbg/integration/binja.py:312:14: warning[possibly-mis
+
+... (truncated 493 lines) ...
+```
+
+</details>
+
+
+
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+```diff
+sphinx (https://github.com/sphinx-doc/sphinx)
+-     memo metadata = ~66MB
++     memo metadata = ~69MB
+
+
+```
+
+</details>
+
+
+
+
+---
+
+_Comment by @AlexWaygood on 2025-11-22 15:37_
+
+and we're back to tie-breaking hell...
+
+---
+
+_Closed by @AlexWaygood on 2025-11-22 15:37_
+
+---

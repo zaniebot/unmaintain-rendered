@@ -1,0 +1,720 @@
+```yaml
+number: 21641
+title: "[ty] Generic implicit types aliases (take 3)"
+type: pull_request
+state: closed
+author: sharkdp
+labels:
+  - ty
+assignees: []
+draft: true
+base: main
+head: david/generic-implicit-aliases-genericaliasinstance
+created_at: 2025-11-26T13:59:08Z
+updated_at: 2025-11-27T09:25:17Z
+url: https://github.com/astral-sh/ruff/pull/21641
+synced_at: 2026-01-10T16:48:02Z
+```
+
+# [ty] Generic implicit types aliases (take 3)
+
+---
+
+_Pull request opened by @sharkdp on 2025-11-26 13:59_
+
+<!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+## Test Plan
+
+<!-- How was it tested? -->
+
+
+---
+
+_Label `ty` added by @sharkdp on 2025-11-26 13:59_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-11-26 14:01_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-11-26 14:01:00.001855659 +0000
++++ new-output.txt	2025-11-26 14:01:03.773884774 +0000
+@@ -1,25 +1,45 @@
+-fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/17bc55d/src/function/execute.rs:469:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(1a6a3)): execute: too many cycle iterations`
++fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/17bc55d/src/function/execute.rs:469:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(1b6a3)): execute: too many cycle iterations`
+ _directives_deprecated_library.py:15:31: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ _directives_deprecated_library.py:30:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+ _directives_deprecated_library.py:36:41: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@__add__`
+ _directives_deprecated_library.py:41:25: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int | float`
+ _directives_deprecated_library.py:45:24: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
++aliases_explicit.py:25:62: error[invalid-type-form] `<class 'list[T]'>` is not subscriptable
++aliases_explicit.py:36:9: error[invalid-type-form] `<class 'list[T]'>` is not subscriptable
++aliases_explicit.py:38:9: error[invalid-type-form] `<class 'tuple[int, int, S, T]'>` is not subscriptable
++aliases_explicit.py:41:9: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
+ aliases_explicit.py:41:24: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[str, str]`?
+-aliases_explicit.py:52:5: error[type-assertion-failure] Type `list[int]` does not match asserted type `@Todo(specialized generic alias in type expression)`
+-aliases_explicit.py:53:5: error[type-assertion-failure] Type `tuple[str, ...] | list[str]` does not match asserted type `@Todo(Generic specialization of types.UnionType)`
+-aliases_explicit.py:54:5: error[type-assertion-failure] Type `tuple[int, int, int, str]` does not match asserted type `@Todo(specialized generic alias in type expression)`
+-aliases_explicit.py:56:5: error[type-assertion-failure] Type `(int, str, /) -> str` does not match asserted type `@Todo(Generic specialization of typing.Callable)`
+-aliases_explicit.py:57:5: error[type-assertion-failure] Type `(int, str, str, /) -> None` does not match asserted type `@Todo(Generic specialization of typing.Callable)`
+-aliases_explicit.py:59:5: error[type-assertion-failure] Type `int | str | None | list[list[int]]` does not match asserted type `int | str | None | list[@Todo(specialized generic alias in type expression)]`
++aliases_explicit.py:52:5: error[type-assertion-failure] Type `list[int]` does not match asserted type `Unknown`
++aliases_explicit.py:54:5: error[type-assertion-failure] Type `tuple[int, int, int, str]` does not match asserted type `Unknown`
++aliases_explicit.py:57:5: error[type-assertion-failure] Type `(int, str, str, /) -> None` does not match asserted type `Unknown`
++aliases_explicit.py:59:5: error[type-assertion-failure] Type `int | str | None | list[list[int]]` does not match asserted type `int | str | None | list[Unknown]`
++aliases_explicit.py:67:9: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++aliases_explicit.py:68:9: error[invalid-type-form] `<class 'list[int | None]'>` is not subscriptable
++aliases_explicit.py:69:9: error[invalid-type-form] `<class 'list[T]'>` is not subscriptable
++aliases_explicit.py:70:9: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
++aliases_explicit.py:71:9: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
+ aliases_explicit.py:101:6: error[call-non-callable] Object of type `UnionType` is not callable
++aliases_explicit.py:102:5: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++aliases_implicit.py:14:19: error[invalid-type-form] `<class 'Iterable[tuple[TFloat@Vector, TFloat@Vector]]'>` is not subscriptable
++aliases_implicit.py:18:15: error[invalid-type-form] `<class 'Iterable[tuple[TFloat@Vector, TFloat@Vector]]'>` is not subscriptable
++aliases_implicit.py:18:47: error[invalid-type-form] `<class 'Iterable[tuple[TFloat@Vector, TFloat@Vector]]'>` is not subscriptable
++aliases_implicit.py:40:58: error[invalid-type-form] `<class 'list[T@GoodTypeAlias4]'>` is not subscriptable
++aliases_implicit.py:49:9: error[invalid-type-form] `<class 'list[T@GoodTypeAlias4]'>` is not subscriptable
++aliases_implicit.py:51:9: error[invalid-type-form] `<class 'tuple[int, int, S@GoodTypeAlias6, T@GoodTypeAlias6]'>` is not subscriptable
++aliases_implicit.py:54:9: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
+ aliases_implicit.py:54:24: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[str, str]`?
+-aliases_implicit.py:63:5: error[type-assertion-failure] Type `list[int]` does not match asserted type `@Todo(specialized generic alias in type expression)`
+-aliases_implicit.py:64:5: error[type-assertion-failure] Type `tuple[str, ...] | list[str]` does not match asserted type `@Todo(Generic specialization of types.UnionType)`
+-aliases_implicit.py:65:5: error[type-assertion-failure] Type `tuple[int, int, int, str]` does not match asserted type `@Todo(specialized generic alias in type expression)`
+-aliases_implicit.py:67:5: error[type-assertion-failure] Type `(int, str, /) -> str` does not match asserted type `@Todo(Generic specialization of typing.Callable)`
+-aliases_implicit.py:68:5: error[type-assertion-failure] Type `(int, str, str, /) -> None` does not match asserted type `@Todo(Generic specialization of typing.Callable)`
+-aliases_implicit.py:70:5: error[type-assertion-failure] Type `int | str | None | list[list[int]]` does not match asserted type `int | str | None | list[@Todo(specialized generic alias in type expression)]`
+-aliases_implicit.py:71:5: error[type-assertion-failure] Type `list[bool]` does not match asserted type `@Todo(specialized generic alias in type expression)`
++aliases_implicit.py:57:10: error[invalid-type-form] `<class 'list[TFloat@GoodTypeAlias12]'>` is not subscriptable
++aliases_implicit.py:63:5: error[type-assertion-failure] Type `list[int]` does not match asserted type `Unknown`
++aliases_implicit.py:65:5: error[type-assertion-failure] Type `tuple[int, int, int, str]` does not match asserted type `Unknown`
++aliases_implicit.py:68:5: error[type-assertion-failure] Type `(int, str, str, /) -> None` does not match asserted type `Unknown`
++aliases_implicit.py:70:5: error[type-assertion-failure] Type `int | str | None | list[list[int]]` does not match asserted type `int | str | None | list[Unknown]`
++aliases_implicit.py:71:5: error[type-assertion-failure] Type `list[bool]` does not match asserted type `Unknown`
++aliases_implicit.py:76:9: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++aliases_implicit.py:77:9: error[invalid-type-form] `<class 'list[int | None]'>` is not subscriptable
++aliases_implicit.py:78:9: error[invalid-type-form] `<class 'list[T@GoodTypeAlias4]'>` is not subscriptable
++aliases_implicit.py:79:9: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
++aliases_implicit.py:80:9: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
++aliases_implicit.py:81:9: error[invalid-type-form] `<class 'list[TFloat@GoodTypeAlias12]'>` is not subscriptable
+ aliases_implicit.py:107:9: error[invalid-type-form] Variable of type `list[Unknown | <class 'int'> | <class 'str'>]` is not allowed in a type expression
+ aliases_implicit.py:108:9: error[invalid-type-form] Variable of type `tuple[tuple[<class 'int'>, <class 'str'>]]` is not allowed in a type expression
+ aliases_implicit.py:109:9: error[invalid-type-form] Variable of type `list[<class 'int'> | Unknown]` is not allowed in a type expression
+@@ -30,6 +50,7 @@
+ aliases_implicit.py:118:10: error[invalid-type-form] Variable of type `Literal["int"]` is not allowed in a type expression
+ aliases_implicit.py:119:10: error[invalid-type-form] Variable of type `Literal["int | str"]` is not allowed in a type expression
+ aliases_implicit.py:133:6: error[call-non-callable] Object of type `UnionType` is not callable
++aliases_implicit.py:135:5: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
+ aliases_newtype.py:11:8: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Literal["user"]`
+ aliases_newtype.py:12:14: error[invalid-assignment] Object of type `Literal[42]` is not assignable to `UserId`
+ aliases_newtype.py:18:11: error[invalid-assignment] Object of type `<NewType pseudo-class 'UserId'>` is not assignable to `type`
+@@ -43,6 +64,14 @@
+ aliases_newtype.py:61:38: error[invalid-newtype] invalid base for `typing.NewType`: type `TD1`
+ aliases_newtype.py:63:15: error[invalid-newtype] Wrong number of arguments in `NewType` creation, expected 2, found 3
+ aliases_newtype.py:65:38: error[invalid-newtype] invalid base for `typing.NewType`: type `Any`
++aliases_recursive.py:58:27: error[invalid-type-form] `<class 'list[Unknown | T1@GenericTypeAlias1]'>` is not subscriptable
++aliases_recursive.py:59:25: error[invalid-type-form] `<class 'list[Unknown | T1@GenericTypeAlias1]'>` is not subscriptable
++aliases_recursive.py:62:5: error[invalid-type-form] `<class 'list[Unknown | T1@GenericTypeAlias1]'>` is not subscriptable
++aliases_recursive.py:63:5: error[invalid-type-form] `<class 'list[Unknown | T1@GenericTypeAlias1]'>` is not subscriptable
++aliases_recursive.py:65:27: error[invalid-type-form] `<class 'list[Unknown | T1@GenericTypeAlias2 | T2@GenericTypeAlias2]'>` is not subscriptable
++aliases_recursive.py:67:5: error[invalid-type-form] `<class 'list[Unknown | T1@GenericTypeAlias2 | T2@GenericTypeAlias2]'>` is not subscriptable
++aliases_recursive.py:68:5: error[invalid-type-form] `<class 'list[Unknown | T1@GenericTypeAlias2 | T2@GenericTypeAlias2]'>` is not subscriptable
++aliases_recursive.py:69:5: error[invalid-type-form] `<class 'list[Unknown | T1@GenericTypeAlias2 | T2@GenericTypeAlias2]'>` is not subscriptable
+ aliases_type_statement.py:10:19: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 3
+ aliases_type_statement.py:17:1: error[unresolved-attribute] Object of type `typing.TypeAliasType` has no attribute `bit_count`
+ aliases_type_statement.py:19:1: error[call-non-callable] Object of type `TypeAliasType` is not callable
+@@ -72,9 +101,9 @@
+ aliases_type_statement.py:79:7: error[too-many-positional-arguments] Too many positional arguments: expected 2, got 3
+ aliases_type_statement.py:80:7: error[too-many-positional-arguments] Too many positional arguments: expected 2, got 3
+ aliases_type_statement.py:80:37: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int, str]`?
+-aliases_variance.py:18:24: error[non-subscriptable] Cannot subscript object of type `<class 'ClassA[typing.TypeVar]'>` with no `__class_getitem__` method
+-aliases_variance.py:28:16: error[non-subscriptable] Cannot subscript object of type `<class 'ClassA[typing.TypeVar]'>` with no `__class_getitem__` method
+-aliases_variance.py:44:16: error[non-subscriptable] Cannot subscript object of type `<class 'ClassB[typing.TypeVar, typing.TypeVar]'>` with no `__class_getitem__` method
++aliases_variance.py:18:24: error[invalid-type-form] `<class 'ClassA[T_co]'>` is not subscriptable
++aliases_variance.py:28:16: error[invalid-type-form] `<class 'ClassA[T_co]'>` is not subscriptable
++aliases_variance.py:44:16: error[invalid-type-form] `<class 'ClassB[T_co@B_Alias_1, T_contra@B_Alias_1]'>` is not subscriptable
+ annotations_forward_refs.py:47:10: error[invalid-type-form] Invalid subscript of object of type `list[Unknown | <class 'int'>]` in type expression
+ annotations_forward_refs.py:49:10: error[invalid-type-form] Variable of type `Literal[1]` is not allowed in a type expression
+ annotations_forward_refs.py:54:11: error[fstring-type-annotation] Type expressions cannot use f-strings
+@@ -125,6 +154,12 @@
+ callables_annotation.py:58:5: error[invalid-type-form] Special form `typing.Callable` expected exactly two arguments (parameter types and return type)
+ callables_annotation.py:58:14: error[invalid-type-form] The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+ callables_annotation.py:157:20: error[invalid-assignment] Object of type `Proto7` is not assignable to `Proto6`
++callables_annotation.py:171:9: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++callables_annotation.py:172:9: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++callables_annotation.py:174:9: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++callables_annotation.py:175:9: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++callables_annotation.py:188:9: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++callables_annotation.py:189:9: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
+ callables_kwargs.py:24:5: error[type-assertion-failure] Type `int` does not match asserted type `@Todo(`Unpack[]` special form)`
+ callables_kwargs.py:32:9: error[type-assertion-failure] Type `str` does not match asserted type `@Todo(`Unpack[]` special form)`
+ callables_kwargs.py:35:5: error[type-assertion-failure] Type `str` does not match asserted type `@Todo(`Unpack[]` special form)`
+@@ -176,6 +211,8 @@
+ callables_subtyping.py:195:22: error[invalid-assignment] Object of type `StrKwargs6` is not assignable to `IntKwargs6`
+ callables_subtyping.py:196:22: error[invalid-assignment] Object of type `IntStrKwargs6` is not assignable to `Standard6`
+ callables_subtyping.py:197:22: error[invalid-assignment] Object of type `StrKwargs6` is not assignable to `Standard6`
++callables_subtyping.py:211:40: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++callables_subtyping.py:213:9: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
+ callables_subtyping.py:236:23: error[invalid-assignment] Object of type `NoDefaultArg8` is not assignable to `DefaultArg8`
+ callables_subtyping.py:237:23: error[invalid-assignment] Object of type `NoX8` is not assignable to `DefaultArg8`
+ callables_subtyping.py:240:25: error[invalid-assignment] Object of type `NoX8` is not assignable to `NoDefaultArg8`
+@@ -453,9 +490,10 @@
+ generics_defaults_referential.py:37:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Literal[""]`
+ generics_defaults_referential.py:94:1: error[type-assertion-failure] Type `type[Bar[Any, list[Any]]]` does not match asserted type `<class 'Bar'>`
+ generics_defaults_referential.py:95:1: error[type-assertion-failure] Type `type[Bar[int, list[int]]]` does not match asserted type `<class 'Bar[int, list[int]]'>`
+-generics_defaults_specialization.py:26:5: error[type-assertion-failure] Type `SomethingWithNoDefaults[int, str]` does not match asserted type `SomethingWithNoDefaults[int, typing.TypeVar]`
+-generics_defaults_specialization.py:27:5: error[type-assertion-failure] Type `SomethingWithNoDefaults[int, bool]` does not match asserted type `@Todo(specialized generic alias in type expression)`
+-generics_defaults_specialization.py:30:1: error[non-subscriptable] Cannot subscript object of type `<class 'SomethingWithNoDefaults[int, typing.TypeVar]'>` with no `__class_getitem__` method
++generics_defaults_specialization.py:25:28: error[invalid-type-form] `<class 'SomethingWithNoDefaults[int, DefaultStrT]'>` is not subscriptable
++generics_defaults_specialization.py:26:5: error[type-assertion-failure] Type `SomethingWithNoDefaults[int, str]` does not match asserted type `SomethingWithNoDefaults[int, DefaultStrT]`
++generics_defaults_specialization.py:27:5: error[type-assertion-failure] Type `SomethingWithNoDefaults[int, bool]` does not match asserted type `Unknown`
++generics_defaults_specialization.py:30:1: error[invalid-type-form] `<class 'SomethingWithNoDefaults[int, DefaultStrT]'>` is not subscriptable
+ generics_defaults_specialization.py:45:1: error[type-assertion-failure] Type `type[Bar[str]]` does not match asserted type `<class 'Bar'>`
+ generics_paramspec_basic.py:10:1: error[invalid-paramspec] The name of a `ParamSpec` (`NotIt`) must match the name of the variable it is assigned to (`WrongName`)
+ generics_paramspec_basic.py:23:20: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `P@func1`
+@@ -601,27 +639,48 @@
+ generics_typevartuple_concat.py:52:1: error[type-assertion-failure] Type `tuple[int, bool, str]` does not match asserted type `tuple[@Todo(PEP 646), ...]`
+ generics_typevartuple_overloads.py:16:13: error[invalid-argument-type] `@Todo(starred expression)` is not a valid argument to `Generic`
+ generics_typevartuple_specialization.py:16:13: error[invalid-argument-type] `@Todo(starred expression)` is not a valid argument to `Generic`
+-generics_typevartuple_specialization.py:46:5: error[type-assertion-failure] Type `tuple[int, int | float, bool]` does not match asserted type `@Todo(specialized generic alias in type expression)`
+-generics_typevartuple_specialization.py:47:5: error[type-assertion-failure] Type `tuple[str, @Todo(specialized non-generic class)]` does not match asserted type `@Todo(specialized generic alias in type expression)`
+-generics_typevartuple_specialization.py:50:23: error[invalid-type-form] Tuple literals are not allowed in this context in a type expression: Did you mean `tuple[()]`?
+-generics_typevartuple_specialization.py:50:42: error[invalid-type-form] Tuple literals are not allowed in this context in a type expression: Did you mean `tuple[()]`?
+-generics_typevartuple_specialization.py:51:5: error[type-assertion-failure] Type `tuple[int]` does not match asserted type `@Todo(specialized generic alias in type expression)`
+-generics_typevartuple_specialization.py:52:5: error[type-assertion-failure] Type `tuple[str, @Todo(specialized non-generic class)]` does not match asserted type `@Todo(specialized generic alias in type expression)`
++generics_typevartuple_specialization.py:45:14: error[invalid-type-form] `<class 'tuple[@Todo(PEP 646), ...]'>` is not subscriptable
++generics_typevartuple_specialization.py:45:40: error[invalid-type-form] `<class 'tuple[str, @Todo(specialized non-generic class)]'>` is not subscriptable
++generics_typevartuple_specialization.py:46:5: error[type-assertion-failure] Type `tuple[int, int | float, bool]` does not match asserted type `Unknown`
++generics_typevartuple_specialization.py:47:5: error[type-assertion-failure] Type `tuple[str, @Todo(specialized non-generic class)]` does not match asserted type `Unknown`
++generics_typevartuple_specialization.py:50:14: error[invalid-type-form] `<class 'tuple[@Todo(PEP 646), ...]'>` is not subscriptable
++generics_typevartuple_specialization.py:50:31: error[invalid-type-form] `<class 'tuple[str, @Todo(specialized non-generic class)]'>` is not subscriptable
++generics_typevartuple_specialization.py:51:5: error[type-assertion-failure] Type `tuple[int]` does not match asserted type `Unknown`
++generics_typevartuple_specialization.py:52:5: error[type-assertion-failure] Type `tuple[str, @Todo(specialized non-generic class)]` does not match asserted type `Unknown`
+ generics_typevartuple_specialization.py:52:37: error[invalid-type-form] Tuple literals are not allowed in this context in a type expression: Did you mean `tuple[()]`?
+ generics_typevartuple_specialization.py:59:14: error[invalid-argument-type] `@Todo(starred expression)` is not a valid argument to `Generic`
+-generics_typevartuple_specialization.py:93:5: error[type-assertion-failure] Type `tuple[str, int]` does not match asserted type `@Todo(specialized generic alias in type expression)`
+-generics_typevartuple_specialization.py:94:5: error[type-assertion-failure] Type `tuple[int | float]` does not match asserted type `@Todo(specialized generic alias in type expression)`
++generics_typevartuple_specialization.py:92:14: error[invalid-type-form] `<class 'tuple[@Todo(PEP 646), ...]'>` is not subscriptable
++generics_typevartuple_specialization.py:92:42: error[invalid-type-form] `<class 'tuple[@Todo(PEP 646), ...]'>` is not subscriptable
++generics_typevartuple_specialization.py:93:5: error[type-assertion-failure] Type `tuple[str, int]` does not match asserted type `Unknown`
++generics_typevartuple_specialization.py:94:5: error[type-assertion-failure] Type `tuple[int | float]` does not match asserted type `Unknown`
+ generics_typevartuple_specialization.py:95:5: error[type-assertion-failure] Type `tuple[Any, *tuple[Any, ...]]` does not match asserted type `tuple[@Todo(PEP 646), ...]`
++generics_typevartuple_specialization.py:102:20: error[invalid-type-form] `<class 'tuple[@Todo(PEP 646), ...]'>` is not subscriptable
++generics_typevartuple_specialization.py:103:21: error[invalid-type-form] `<class 'tuple[@Todo(PEP 646), ...]'>` is not subscriptable
++generics_typevartuple_specialization.py:108:1: error[invalid-type-form] `<class 'tuple[int, T@IntTupleGeneric]'>` is not subscriptable
++generics_typevartuple_specialization.py:109:1: error[invalid-type-form] `<class 'tuple[int, T@IntTupleGeneric]'>` is not subscriptable
++generics_typevartuple_specialization.py:110:1: error[invalid-type-form] `<class 'tuple[int, T@IntTupleGeneric]'>` is not subscriptable
++generics_typevartuple_specialization.py:127:5: error[invalid-type-form] `<class 'tuple[@Todo(PEP 646), ...]'>` is not subscriptable
++generics_typevartuple_specialization.py:130:14: error[invalid-type-form] `<class 'tuple[@Todo(PEP 646), ...]'>` is not subscriptable
+ generics_typevartuple_specialization.py:130:35: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `tuple[tuple[@Todo(PEP 646), ...], T1@func7, T2@func7]`
++generics_typevartuple_specialization.py:134:14: error[invalid-type-form] `<class 'tuple[@Todo(PEP 646), ...]'>` is not subscriptable
++generics_typevartuple_specialization.py:134:33: error[invalid-type-form] `<class 'tuple[@Todo(PEP 646), ...]'>` is not subscriptable
++generics_typevartuple_specialization.py:134:59: error[invalid-type-form] `<class 'tuple[@Todo(PEP 646), ...]'>` is not subscriptable
+ generics_typevartuple_specialization.py:135:5: error[type-assertion-failure] Type `tuple[tuple[()], str, bool]` does not match asserted type `tuple[tuple[@Todo(PEP 646), ...], Unknown, Unknown]`
+ generics_typevartuple_specialization.py:136:5: error[type-assertion-failure] Type `tuple[tuple[str], bool, int | float]` does not match asserted type `tuple[tuple[@Todo(PEP 646), ...], Unknown, Unknown]`
+ generics_typevartuple_specialization.py:137:5: error[type-assertion-failure] Type `tuple[tuple[str, bool], int | float, int]` does not match asserted type `tuple[tuple[@Todo(PEP 646), ...], Unknown, Unknown]`
++generics_typevartuple_specialization.py:143:14: error[invalid-type-form] `<class 'tuple[@Todo(PEP 646), ...]'>` is not subscriptable
+ generics_typevartuple_specialization.py:143:39: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `tuple[tuple[@Todo(PEP 646), ...], T1@func9, T2@func9, T3@func9]`
++generics_typevartuple_specialization.py:147:15: error[invalid-type-form] `<class 'tuple[@Todo(PEP 646), ...]'>` is not subscriptable
++generics_typevartuple_specialization.py:147:41: error[invalid-type-form] `<class 'tuple[@Todo(PEP 646), ...]'>` is not subscriptable
+ generics_typevartuple_specialization.py:148:5: error[type-assertion-failure] Type `tuple[tuple[()], str, bool, int | float]` does not match asserted type `tuple[tuple[@Todo(PEP 646), ...], Unknown, Unknown, Unknown]`
+ generics_typevartuple_specialization.py:149:5: error[type-assertion-failure] Type `tuple[tuple[bool], str, int | float, int]` does not match asserted type `tuple[tuple[@Todo(PEP 646), ...], Unknown, Unknown, Unknown]`
+-generics_typevartuple_specialization.py:157:5: error[type-assertion-failure] Type `tuple[*tuple[int, ...], int]` does not match asserted type `@Todo(Support for `typing.GenericAlias` instances in type expressions)`
+-generics_typevartuple_specialization.py:158:5: error[type-assertion-failure] Type `tuple[*tuple[int, ...], str]` does not match asserted type `@Todo(specialized generic alias in type expression)`
+-generics_typevartuple_specialization.py:159:5: error[type-assertion-failure] Type `tuple[*tuple[int, ...], str]` does not match asserted type `@Todo(specialized generic alias in type expression)`
++generics_typevartuple_specialization.py:153:8: error[invalid-type-form] `<class 'tuple[@Todo(PEP 646), ...]'>` is not subscriptable
++generics_typevartuple_specialization.py:156:24: error[invalid-type-form] `<class 'tuple[@Todo(PEP 646), ...]'>` is not subscriptable
++generics_typevartuple_specialization.py:156:55: error[invalid-type-form] `<class 'tuple[@Todo(PEP 646), ...]'>` is not subscriptable
++generics_typevartuple_specialization.py:157:5: error[type-assertion-failure] Type `tuple[*tuple[int, ...], int]` does not match asserted type `Unknown`
++generics_typevartuple_specialization.py:158:5: error[type-assertion-failure] Type `tuple[*tuple[int, ...], str]` does not match asserted type `Unknown`
++generics_typevartuple_specialization.py:159:5: error[type-assertion-failure] Type `tuple[*tuple[int, ...], str]` does not match asserted type `Unknown`
++generics_typevartuple_specialization.py:163:8: error[invalid-type-form] `<class 'tuple[@Todo(PEP 646), ...]'>` is not subscriptable
+ generics_typevartuple_unpack.py:17:13: error[invalid-argument-type] `@Todo(starred expression)` is not a valid argument to `Generic`
+ generics_upper_bound.py:37:1: error[type-assertion-failure] Type `list[int]` does not match asserted type `list[Unknown | int]`
+ generics_upper_bound.py:38:1: error[type-assertion-failure] Type `set[int]` does not match asserted type `set[Unknown | int]`
+@@ -632,20 +691,12 @@
+ generics_variance.py:14:6: error[invalid-legacy-type-variable] A `TypeVar` cannot be both covariant and contravariant
+ generics_variance.py:26:27: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Iterator[T_co@ImmutableList]`
+ generics_variance.py:57:28: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `B_co@func`
+-generics_variance.py:175:25: error[non-subscriptable] Cannot subscript object of type `<class 'Contra[typing.TypeVar]'>` with no `__class_getitem__` method
+-generics_variance.py:175:35: error[non-subscriptable] Cannot subscript object of type `<class 'Co[typing.TypeVar]'>` with no `__class_getitem__` method
+-generics_variance.py:179:29: error[non-subscriptable] Cannot subscript object of type `<class 'Contra[typing.TypeVar]'>` with no `__class_getitem__` method
+-generics_variance.py:179:39: error[non-subscriptable] Cannot subscript object of type `<class 'Contra[typing.TypeVar]'>` with no `__class_getitem__` method
+-generics_variance.py:183:21: error[non-subscriptable] Cannot subscript object of type `<class 'Co[typing.TypeVar]'>` with no `__class_getitem__` method
+-generics_variance.py:183:27: error[non-subscriptable] Cannot subscript object of type `<class 'Co[typing.TypeVar]'>` with no `__class_getitem__` method
+-generics_variance.py:187:25: error[non-subscriptable] Cannot subscript object of type `<class 'Co[typing.TypeVar]'>` with no `__class_getitem__` method
+-generics_variance.py:187:31: error[non-subscriptable] Cannot subscript object of type `<class 'Contra[typing.TypeVar]'>` with no `__class_getitem__` method
+-generics_variance.py:191:33: error[non-subscriptable] Cannot subscript object of type `<class 'Contra[typing.TypeVar]'>` with no `__class_getitem__` method
+-generics_variance.py:191:43: error[non-subscriptable] Cannot subscript object of type `<class 'Co[typing.TypeVar]'>` with no `__class_getitem__` method
+-generics_variance.py:191:49: error[non-subscriptable] Cannot subscript object of type `<class 'Contra[typing.TypeVar]'>` with no `__class_getitem__` method
+-generics_variance.py:196:5: error[non-subscriptable] Cannot subscript object of type `<class 'Contra[typing.TypeVar]'>` with no `__class_getitem__` method
+-generics_variance.py:196:15: error[non-subscriptable] Cannot subscript object of type `<class 'Contra[typing.TypeVar]'>` with no `__class_getitem__` method
+-generics_variance.py:196:25: error[non-subscriptable] Cannot subscript object of type `<class 'Contra[typing.TypeVar]'>` with no `__class_getitem__` method
++generics_variance.py:175:25: error[invalid-type-form] `<class 'Contra[T_contra@Contra_TA]'>` is not subscriptable
++generics_variance.py:179:29: error[invalid-type-form] `<class 'Contra[T_contra@Contra_TA]'>` is not subscriptable
++generics_variance.py:183:21: error[invalid-type-form] `<class 'Co[T_co@Co_TA]'>` is not subscriptable
++generics_variance.py:187:25: error[invalid-type-form] `<class 'Co[T_co@Co_TA]'>` is not subscriptable
++generics_variance.py:191:33: error[invalid-type-form] `<class 'Contra[T_contra@Contra_TA]'>` is not subscriptable
++generics_variance.py:196:5: error[invalid-type-form] `<class 'Contra[T_contra@Contra_TA]'>` is not subscriptable
+ generics_variance_inference.py:19:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `T3@ClassA`
+ generics_variance_inference.py:24:33: error[invalid-assignment] Object of type `ClassA[int | float, int, int]` is not assignable to `ClassA[int, int, int]`
+ generics_variance_inference.py:25:37: error[invalid-assignment] Object of type `ClassA[int | float, int, int]` is not assignable to `ClassA[int | float, int | float, int]`
+@@ -904,8 +955,6 @@
+ specialtypes_type.py:139:5: error[type-assertion-failure] Type `type[Any]` does not match asserted type `type`
+ specialtypes_type.py:143:1: error[unresolved-attribute] Object of type `typing.Type` has no attribute `unknown`
+ specialtypes_type.py:145:1: error[unresolved-attribute] Class `type` has no attribute `unknown`
+-specialtypes_type.py:152:16: error[invalid-type-form] `typing.TypeVar` is not a generic class
+-specialtypes_type.py:156:16: error[invalid-type-form] `typing.TypeVar` is not a generic class
+ specialtypes_type.py:160:1: error[type-assertion-failure] Type `int` does not match asserted type `Unknown`
+ specialtypes_type.py:161:1: error[type-assertion-failure] Type `int` does not match asserted type `Unknown`
+ specialtypes_type.py:169:21: error[invalid-assignment] Object of type `type` is not assignable to `type[int]`
+@@ -1011,5 +1060,5 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Unknown key "title" for TypedDict `Movie`: Unknown key "title"
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions
+-Found 1013 diagnostics
++Found 1062 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+
+```
+
+</details>
+
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-11-26 14:02_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+bidict (https://github.com/jab/bidict)
++ bidict/_base.py:54:26: error[invalid-type-form] `<class 'tuple[KT@OldKV | @Todo, VT@OldKV | @Todo]'>` is not subscriptable
++ bidict/_base.py:311:58: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 2
++ bidict/_iter.py:23:61: error[invalid-type-form] `<class 'Iterator[tuple[KT@ItemsIter, VT@ItemsIter]]'>` is not subscriptable
++ bidict/_iter.py:31:23: error[invalid-type-form] `<class 'Iterator[tuple[KT@ItemsIter, VT@ItemsIter]]'>` is not subscriptable
++ bidict/_iter.py:37:42: error[invalid-type-form] `<class 'Iterator[tuple[KT@ItemsIter, VT@ItemsIter]]'>` is not subscriptable
++ bidict/_iter.py:50:14: error[invalid-type-form] `<class 'Iterator[tuple[KT@ItemsIter, VT@ItemsIter]]'>` is not subscriptable
++ bidict/_typing.py:40:39: error[invalid-type-form] `<class 'Iterable[tuple[KT@Items, VT@Items]]'>` is not subscriptable
+- Found 16 diagnostics
++ Found 23 diagnostics
+
+attrs (https://github.com/python-attrs/attrs)
+- src/attrs/__init__.pyi:67:21: error[unsupported-operator] Operator `|` is unsupported between objects of type `GenericAlias` and `<class 'Sequence[@Todo]'>`
++ tests/test_functional.py:730:17: error[no-matching-overload] No overload of function `attrib` matches arguments
++ tests/test_make.py:102:13: error[no-matching-overload] No overload of function `attrib` matches arguments
++ tests/test_validators.py:634:43: error[unresolved-attribute] Object of type `(Any, Attribute[Unknown], Unknown, /) -> Any` has no attribute `member_validator`
++ tests/test_validators.py:635:45: error[unresolved-attribute] Object of type `(Any, Attribute[Unknown], Unknown, /) -> Any` has no attribute `iterable_validator`
++ tests/test_validators.py:786:40: error[unresolved-attribute] Object of type `(Any, Attribute[Unknown], Unknown, /) -> Any` has no attribute `key_validator`
++ tests/test_validators.py:787:42: error[unresolved-attribute] Object of type `(Any, Attribute[Unknown], Unknown, /) -> Any` has no attribute `value_validator`
++ tests/test_validators.py:788:44: error[unresolved-attribute] Object of type `(Any, Attribute[Unknown], Unknown, /) -> Any` has no attribute `mapping_validator`
++ tests/test_validators.py:1143:64: error[unresolved-attribute] Object of type `(Any, Attribute[Unknown], Unknown, /) -> Any` has no attribute `exc_types`
+- Found 596 diagnostics
++ Found 603 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
++ src/anyio/_backends/_asyncio.py:365:34: error[invalid-argument-type] Argument to function `getcoroutinestate` is incorrect: Expected `Coroutine[Any, Any, Any]`, found `Generator[Future[object] | None, None, Unknown] | Coroutine[Any, Any, Unknown]`
+- Found 88 diagnostics
++ Found 89 diagnostics
+
+pip (https://github.com/pypa/pip)
++ src/pip/_internal/resolution/resolvelib/factory.py:111:31: error[invalid-type-form] `<class 'dict[Link, C@Cache]'>` is not subscriptable
++ src/pip/_internal/resolution/resolvelib/factory.py:112:37: error[invalid-type-form] `<class 'dict[Link, C@Cache]'>` is not subscriptable
++ src/pip/_internal/resolution/resolvelib/factory.py:113:41: error[invalid-type-form] `<class 'dict[Link, C@Cache]'>` is not subscriptable
++ src/pip/_vendor/resolvelib/structs.py:203:37: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `() -> Iterable[Unknown]`, found `(Iterable[CT@build_iter_view] & (() -> object)) | (() -> Iterable[CT@build_iter_view])`
+- Found 603 diagnostics
++ Found 607 diagnostics
+
+spack (https://github.com/spack/spack)
++ lib/spack/spack/environment/environment.py:590:24: error[unresolved-attribute] Object of type `Path` has no attribute `startswith`
+- Found 7961 diagnostics
++ Found 7962 diagnostics
+
+boostedblob (https://github.com/hauntsaninja/boostedblob)
++ boostedblob/boost.py:577:16: error[invalid-return-type] Return type does not match returned value: expected `NotReady | Exhausted | T@dequeue_underlying`, found `object`
++ boostedblob/boost.py:589:16: error[invalid-return-type] Return type does not match returned value: expected `T@blocking_dequeue_underlying`, found `object`
++ boostedblob/listing.py:300:19: error[unsupported-operator] Operator `/` is unsupported between objects of type `LocalPath` and `LocalPath`
++ boostedblob/listing.py:300:29: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `LocalPath`
+- Found 16 diagnostics
++ Found 20 diagnostics
+
+starlette (https://github.com/encode/starlette)
+- starlette/_exception_handler.py:59:34: error[invalid-await] `@Todo | Response | Awaitable[Response]` is not awaitable
+- starlette/_exception_handler.py:59:42: error[invalid-argument-type] Argument is incorrect: Expected `Request`, found `Request | WebSocket`
+- starlette/_exception_handler.py:59:42: error[invalid-argument-type] Argument is incorrect: Expected `WebSocket`, found `Request | WebSocket`
+- starlette/applications.py:33:19: error[invalid-type-form] Invalid subscript of object of type `UnionType` in type expression
+- starlette/middleware/errors.py:176:38: error[invalid-await] `@Todo | Response | Awaitable[Response]` is not awaitable
+- starlette/middleware/errors.py:176:51: error[invalid-argument-type] Argument is incorrect: Expected `WebSocket`, found `Request`
+- starlette/routing.py:67:51: error[invalid-assignment] Object of type `((Request, /) -> Awaitable[Response] | Response) | partial[Unknown]` is not assignable to `(Request, /) -> Awaitable[Response]`
++ starlette/routing.py:67:51: error[invalid-assignment] Object of type `(((Request, /) -> Awaitable[Response] | Response) & (() -> Awaitable[object])) | partial[Unknown]` is not assignable to `(Request, /) -> Awaitable[Response]`
+- starlette/routing.py:590:19: error[invalid-type-form] Invalid subscript of object of type `UnionType` in type expression
+- starlette/routing.py:615:36: error[invalid-type-form] Invalid subscript of object of type `UnionType` in type expression
++ starlette/routing.py:624:17: error[invalid-argument-type] Argument to function `asynccontextmanager` is incorrect: Expected `(...) -> AsyncIterator[Unknown]`, found `((Any, /) -> AbstractAsyncContextManager[None, bool | None]) | ((Any, /) -> AbstractAsyncContextManager[Mapping[str, Any], bool | None])`
++ starlette/routing.py:632:17: error[invalid-argument-type] Argument to function `_wrap_gen_lifespan_context` is incorrect: Expected `(Any, /) -> Generator[Any, Any, Any]`, found `((Any, /) -> AbstractAsyncContextManager[None, bool | None]) | ((Any, /) -> AbstractAsyncContextManager[Mapping[str, Any], bool | None])`
+- tests/test_applications.py:423:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_applications.py:445:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 222 diagnostics
++ Found 214 diagnostics
+
+black (https://github.com/psf/black)
+- src/black/rusty.py:28:23: error[invalid-argument-type] Argument to class `Err` is incorrect: Expected `Exception`, found `typing.TypeVar`
++ src/black/trans.py:55:16: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++ src/black/trans.py:256:19: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++ src/black/trans.py:472:19: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++ src/black/trans.py:503:10: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++ src/black/trans.py:544:10: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++ src/black/trans.py:752:55: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++ src/black/trans.py:985:19: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++ src/black/trans.py:1111:57: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++ src/black/trans.py:1480:19: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++ src/black/trans.py:2162:19: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
+- Found 63 diagnostics
++ Found 72 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
++ src/_pytest/fixtures.py:217:51: error[invalid-type-form] `<class 'dict[_V@OrderedSet, None]'>` is not subscriptable
++ src/_pytest/fixtures.py:238:12: error[invalid-type-form] `<class 'dict[_V@OrderedSet, None]'>` is not subscriptable
++ src/_pytest/fixtures.py:239:57: error[invalid-type-form] `<class 'dict[_V@OrderedSet, None]'>` is not subscriptable
++ src/_pytest/fixtures.py:244:6: error[invalid-type-form] `<class 'dict[_V@OrderedSet, None]'>` is not subscriptable
++ src/_pytest/fixtures.py:253:17: error[invalid-type-form] `<class 'dict[_V@OrderedSet, None]'>` is not subscriptable
++ src/_pytest/fixtures.py:255:26: error[invalid-type-form] `<class 'dict[_V@OrderedSet, None]'>` is not subscriptable
++ src/_pytest/fixtures.py:788:45: error[unresolved-attribute] Object of type `((...) -> object) | ((...) -> Generator[object, None, None])` has no attribute `__name__`
++ src/_pytest/fixtures.py:1004:42: error[unresolved-attribute] Object of type `((...) -> FixtureValue@FixtureDef) | ((...) -> Generator[FixtureValue@FixtureDef, None, None])` has no attribute `__name__`
++ src/_pytest/fixtures.py:1087:28: error[invalid-return-type] Return type does not match returned value: expected `FixtureValue@FixtureDef`, found `FixtureValue@FixtureDef | None`
++ src/_pytest/pathlib.py:177:12: error[unresolved-attribute] Object of type `Path` has no attribute `lower`
+- Found 457 diagnostics
++ Found 467 diagnostics
+
+beartype (https://github.com/beartype/beartype)
+- beartype/_decor/decorcache.py:74:16: error[invalid-return-type] Return type does not match returned value: expected `typing.TypeVar | ((typing.TypeVar, /) -> typing.TypeVar)`, found `BeartypeableT@beartype`
++ beartype/_decor/decorcache.py:74:16: error[invalid-return-type] Return type does not match returned value: expected `BeartypeableT@BeartypeReturn | ((BeartypeableT@BeartypeConfedDecorator, /) -> BeartypeableT@BeartypeConfedDecorator)`, found `BeartypeableT@beartype | BeartypeableT@BeartypeReturn | ((BeartypeableT@BeartypeConfedDecorator, /) -> BeartypeableT@BeartypeConfedDecorator)`
+- beartype/_decor/decorcache.py:130:5: error[invalid-assignment] Invalid subscript assignment with key of type `BeartypeConf` and value of type `def _beartype_confed(obj: BeartypeableT@beartype) -> BeartypeableT@beartype` on object of type `dict[BeartypeConf, (typing.TypeVar, /) -> typing.TypeVar]`
++ beartype/_decor/decorcache.py:130:5: error[invalid-assignment] Invalid subscript assignment with key of type `BeartypeConf` and value of type `def _beartype_confed(obj: BeartypeableT@beartype) -> BeartypeableT@beartype` on object of type `dict[BeartypeConf, (BeartypeableT@BeartypeConfedDecorator, /) -> BeartypeableT@BeartypeConfedDecorator]`
+- beartype/_decor/decorcache.py:133:12: error[invalid-return-type] Return type does not match returned value: expected `typing.TypeVar | ((typing.TypeVar, /) -> typing.TypeVar)`, found `def _beartype_confed(obj: BeartypeableT@beartype) -> BeartypeableT@beartype`
++ beartype/_decor/decorcache.py:133:12: error[invalid-return-type] Return type does not match returned value: expected `BeartypeableT@BeartypeReturn | ((BeartypeableT@BeartypeConfedDecorator, /) -> BeartypeableT@BeartypeConfedDecorator)`, found `def _beartype_confed(obj: BeartypeableT@beartype) -> BeartypeableT@beartype`
+- beartype/_decor/decormain.py:93:20: error[invalid-return-type] Return type does not match returned value: expected `typing.TypeVar | ((typing.TypeVar, /) -> typing.TypeVar)`, found `BeartypeableT@beartype`
++ beartype/_decor/decormain.py:93:20: error[invalid-return-type] Return type does not match returned value: expected `BeartypeableT@BeartypeReturn | ((BeartypeableT@BeartypeConfedDecorator, /) -> BeartypeableT@BeartypeConfedDecorator)`, found `BeartypeableT@beartype`
+- beartype/_decor/decormain.py:102:16: error[invalid-return-type] Return type does not match returned value: expected `typing.TypeVar | ((typing.TypeVar, /) -> typing.TypeVar)`, found `def _beartype_optimized[BeartypeableT](obj: BeartypeableT@_beartype_optimized) -> BeartypeableT@_beartype_optimized`
+- Found 505 diagnostics
++ Found 504 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/metrics/metastatus_lib.py:591:5: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `(Sequence[typing.TypeVar], /) -> Sequence[typing.TypeVar]`
++ paasta_tools/metrics/metastatus_lib.py:591:5: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `(Sequence[_GenericNodeT@_GenericNodeSortFunctionT], /) -> Sequence[_GenericNodeT@_GenericNodeSortFunctionT]`
+- paasta_tools/metrics/metastatus_lib.py:606:25: error[invalid-assignment] Object of type `Sequence[typing.TypeVar]` is not assignable to `Sequence[_GenericNodeT@group_slaves_by_key_func]`
+- paasta_tools/metrics/metastatus_lib.py:606:35: error[invalid-argument-type] Argument is incorrect: Expected `Sequence[typing.TypeVar]`, found `Sequence[_GenericNodeT@group_slaves_by_key_func]`
+- paasta_tools/metrics/metastatus_lib.py:608:36: error[no-matching-overload] No overload of function `__new__` matches arguments
+- paasta_tools/metrics/metastatus_lib.py:769:41: error[invalid-argument-type] Argument is incorrect: Expected `typing.TypeVar`, found `_GenericNodeT@filter_slaves`
+- paasta_tools/metrics/metastatus_lib.py:776:5: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `(Sequence[typing.TypeVar], /) -> Sequence[typing.TypeVar]`
++ paasta_tools/metrics/metastatus_lib.py:776:5: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `(Sequence[_GenericNodeT@_GenericNodeSortFunctionT], /) -> Sequence[_GenericNodeT@_GenericNodeSortFunctionT]`
+- paasta_tools/metrics/metastatus_lib.py:815:5: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `(Sequence[typing.TypeVar], /) -> Sequence[typing.TypeVar]`
++ paasta_tools/metrics/metastatus_lib.py:815:5: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `(Sequence[_GenericNodeT@_GenericNodeSortFunctionT], /) -> Sequence[_GenericNodeT@_GenericNodeSortFunctionT]`
+- Found 1112 diagnostics
++ Found 1108 diagnostics
+
+kopf (https://github.com/nolar/kopf)
+- kopf/_core/actions/invocation.py:114:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- kopf/_core/actions/invocation.py:155:28: error[invalid-argument-type] Argument to function `is_async_fn` is incorrect: Expected `((...) -> @Todo) | None`, found `object`
++ kopf/_core/actions/invocation.py:155:28: error[invalid-argument-type] Argument to function `is_async_fn` is incorrect: Expected `((...) -> object) | None`, found `object`
+- kopf/_core/intents/registries.py:276:17: error[invalid-argument-type] Argument is incorrect: Expected `(Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, /) -> @Todo`, found `def login_via_pykube(*, logger: Logger | LoggerAdapter[Any], **_: Any) -> ConnectionInfo | None`
++ kopf/_core/intents/registries.py:276:17: error[invalid-argument-type] Argument is incorrect: Expected `(Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, /) -> object`, found `def login_via_pykube(*, logger: Logger | LoggerAdapter[Any], **_: Any) -> ConnectionInfo | None`
+- kopf/_core/intents/registries.py:285:17: error[invalid-argument-type] Argument is incorrect: Expected `(Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, /) -> @Todo`, found `def login_via_client(*, logger: Logger | LoggerAdapter[Any], **_: Any) -> ConnectionInfo | None`
++ kopf/_core/intents/registries.py:285:17: error[invalid-argument-type] Argument is incorrect: Expected `(Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, /) -> object`, found `def login_via_client(*, logger: Logger | LoggerAdapter[Any], **_: Any) -> ConnectionInfo | None`
+- kopf/_core/intents/registries.py:297:17: error[invalid-argument-type] Argument is incorrect: Expected `(Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, /) -> @Todo`, found `def login_with_kubeconfig(**_: Any) -> ConnectionInfo | None`
++ kopf/_core/intents/registries.py:297:17: error[invalid-argument-type] Argument is incorrect: Expected `(Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, /) -> object`, found `def login_with_kubeconfig(**_: Any) -> ConnectionInfo | None`
+- kopf/_core/intents/registries.py:306:17: error[invalid-argument-type] Argument is incorrect: Expected `(Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, /) -> @Todo`, found `def login_with_service_account(**_: Any) -> ConnectionInfo | None`
++ kopf/_core/intents/registries.py:306:17: error[invalid-argument-type] Argument is incorrect: Expected `(Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, /) -> object`, found `def login_with_service_account(**_: Any) -> ConnectionInfo | None`
+- kopf/_core/reactor/subhandling.py:72:17: error[invalid-argument-type] Argument is incorrect: Expected `(Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, /) -> @Todo`, found `object`
++ kopf/_core/reactor/subhandling.py:72:17: error[invalid-argument-type] Argument is incorrect: Expected `(Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, /) -> object`, found `object`
+- Found 261 diagnostics
++ Found 260 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- src/graphql/execution/async_iterables.py:41:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/graphql/execution/execute.py:500:38: error[invalid-await] `@Todo | UndefinedType` is not awaitable
++ src/graphql/execution/execute.py:427:42: error[invalid-await] `Awaitable[GraphQLWrappedResult[dict[str, Any]]] | GraphQLWrappedResult[dict[str, Any]]` is not awaitable
++ src/graphql/execution/execute.py:500:38: error[invalid-await] `Awaitable[GraphQLWrappedResult[Any]] | GraphQLWrappedResult[Any] | UndefinedType` is not awaitable
+- src/graphql/execution/execute.py:556:54: error[invalid-argument-type] Argument to function `resolve` is incorrect: Expected `Awaitable[GraphQLWrappedResult[dict[str, Any]]]`, found `@Todo | UndefinedType`
++ src/graphql/execution/execute.py:556:54: error[invalid-argument-type] Argument to function `resolve` is incorrect: Expected `Awaitable[GraphQLWrappedResult[dict[str, Any]]]`, found `Awaitable[GraphQLWrappedResult[Any]] | GraphQLWrappedResult[Any] | UndefinedType`
++ src/graphql/execution/execute.py:655:38: error[invalid-await] `Awaitable[GraphQLWrappedResult[Any]] | GraphQLWrappedResult[Any]` is not awaitable
+- src/graphql/execution/execute.py:878:27: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/graphql/execution/execute.py:868:35: error[invalid-await] `Awaitable[GraphQLWrappedResult[Any]] | GraphQLWrappedResult[Any]` is not awaitable
++ src/graphql/execution/execute.py:1286:35: error[invalid-await] `Awaitable[GraphQLWrappedResult[Any]] | GraphQLWrappedResult[Any]` is not awaitable
++ src/graphql/execution/execute.py:1355:34: error[invalid-await] `Awaitable[GraphQLWrappedResult[dict[str, Any]]] | GraphQLWrappedResult[dict[str, Any]]` is not awaitable
+- src/graphql/execution/execute.py:1674:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/graphql/execution/execute.py:1746:22: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/graphql/execution/execute.py:1469:38: error[invalid-await] `Awaitable[GraphQLWrappedResult[dict[str, Any]]] | GraphQLWrappedResult[dict[str, Any]]` is not awaitable
++ src/graphql/execution/execute.py:1673:42: error[invalid-await] `Awaitable[ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult] | ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult` is not awaitable
++ src/graphql/execution/execute.py:1676:21: error[invalid-assignment] Object of type `BoxedAwaitableOrValue[CoroutineType[Any, Any, ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult]]` is not assignable to attribute `result` of type `BoxedAwaitableOrValue[ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult] | (() -> BoxedAwaitableOrValue[ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult])`
++ src/graphql/execution/execute.py:1726:44: error[invalid-await] `Awaitable[GraphQLWrappedResult[dict[str, Any]]] | GraphQLWrappedResult[dict[str, Any]]` is not awaitable
++ src/graphql/execution/execute.py:1828:32: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `BoxedAwaitableOrValue[StreamItemResult] | (() -> BoxedAwaitableOrValue[StreamItemResult])`, found `BoxedAwaitableOrValue[CoroutineType[Any, Any, StreamItemResult]]`
+- src/graphql/execution/execute.py:1984:46: error[invalid-await] `@Todo | GraphQLWrappedResult[None]` is not awaitable
++ src/graphql/execution/execute.py:1917:26: error[invalid-await] `Awaitable[StreamItemResult] | StreamItemResult` is not awaitable
+- src/graphql/execution/execute.py:2005:22: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/graphql/execution/execute.py:1984:46: error[invalid-await] `Awaitable[GraphQLWrappedResult[Any]] | GraphQLWrappedResult[Any] | GraphQLWrappedResult[None]` is not awaitable
++ src/graphql/execution/execute.py:2018:34: error[invalid-await] `Awaitable[GraphQLWrappedResult[dict[str, Any]]] | GraphQLWrappedResult[dict[str, Any]]` is not awaitable
+- src/graphql/execution/execute.py:2562:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/graphql/execution/execute.py:2552:46: error[invalid-await] `Awaitable[AsyncIterable[Any] | ExecutionResult] | AsyncIterable[Any] | ExecutionResult` is not awaitable
++ src/graphql/execution/execute.py:2638:30: error[invalid-await] `Awaitable[AsyncIterable[Any]] | AsyncIterable[Any]` is not awaitable
++ src/graphql/execution/incremental_graph.py:201:29: error[invalid-argument-type] Argument to bound method `_enqueue` is incorrect: Expected `ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult | StreamItemsResult`, found `~Top[Future[Any]]`
++ src/graphql/execution/incremental_graph.py:367:16: error[unresolved-attribute] Object of type `object` has no attribute `item`
++ src/graphql/execution/incremental_graph.py:377:66: error[unresolved-attribute] Object of type `object` has no attribute `errors`
++ src/graphql/execution/incremental_graph.py:380:25: error[unresolved-attribute] Object of type `object` has no attribute `item`
++ src/graphql/execution/incremental_graph.py:381:16: error[unresolved-attribute] Object of type `object` has no attribute `errors`
++ src/graphql/execution/incremental_graph.py:382:31: error[unresolved-attribute] Object of type `object` has no attribute `errors`
++ src/graphql/execution/incremental_graph.py:383:16: error[unresolved-attribute] Object of type `object` has no attribute `incremental_data_records`
++ src/graphql/execution/incremental_graph.py:384:49: error[unresolved-attribute] Object of type `object` has no attribute `incremental_data_records`
++ src/graphql/graphql.py:159:9: error[no-matching-overload] No overload of function `ensure_future` matches arguments
+- src/graphql/pyutils/async_reduce.py:47:74: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/graphql/type/definition.py:1094:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/benchmarks/test_async_iterable.py:20:18: error[invalid-await] `Awaitable[ExecutionResult] | ExecutionResult` is not awaitable
+- tests/execution/test_abstract.py:47:24: error[invalid-await] `ExecutionResult | @Todo` is not awaitable
++ tests/execution/test_abstract.py:47:24: error[invalid-await] `ExecutionResult | Awaitable[ExecutionResult]` is not awaitable
++ tests/execution/test_defer.py:183:24: error[invalid-await] `Awaitable[ExecutionResult | ExperimentalIncrementalExecutionResults] | ExecutionResult | ExperimentalIncrementalExecutionResults` is not awaitable
+- tests/execution/test_defer.py:2575:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_defer.py:2599:58: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/execution/test_lists.py:138:22: error[invalid-await] `Awaitable[ExecutionResult] | ExecutionResult` is not awaitable
++ tests/execution/test_lists.py:175:22: error[invalid-await] `Awaitable[ExecutionResult] | ExecutionResult` is not awaitable
++ tests/execution/test_middleware.py:264:20: error[unresolved-attribute] Object of type `object` has no attribute `data`
++ tests/execution/test_middleware.py:266:20: error[unresolved-attribute] Object of type `object` has no attribute `data`
+- tests/execution/test_middleware.py:31:56: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_middleware.py:59:70: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_middleware.py:91:70: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_middleware.py:149:70: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_middleware.py:189:58: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_middleware.py:195:58: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_middleware.py:283:56: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_middleware.py:298:56: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_middleware.py:349:58: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_mutations.py:230:70: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_mutations.py:271:72: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_stream.py:2274:69: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_stream.py:2350:69: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_stream.py:2425:69: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_stream.py:2486:69: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_stream.py:2531:69: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/execution/test_subscribe.py:288:30: error[invalid-await] `Awaitable[AsyncIterator[ExecutionResult] | ExecutionResult] | AsyncIterator[ExecutionResult] | ExecutionResult` is not awaitable
+- tests/execution/test_subscribe.py:223:28: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_subscribe.py:247:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_subscribe.py:266:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/execution/test_subscribe.py:399:22: error[invalid-await] `Awaitable[ExecutionResult | AsyncIterable[Any]] | ExecutionResult | AsyncIterable[Any]` is not awaitable
++ tests/execution/test_subscribe.py:434:22: error[invalid-await] `Awaitable[ExecutionResult | AsyncIterable[Any]] | ExecutionResult | AsyncIterable[Any]` is not awaitable
++ tests/execution/test_subscribe.py:443:22: error[invalid-await] `Awaitable[ExecutionResult | AsyncIterable[Any]] | ExecutionResult | AsyncIterable[Any]` is not awaitable
++ tests/execution/test_sync.py:64:22: error[invalid-await] `Awaitable[ExecutionResult] | ExecutionResult` is not awaitable
+- tests/execution/test_subscribe.py:327:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_subscribe.py:555:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_subscribe.py:617:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_subscribe.py:693:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_subscribe.py:773:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_subscribe.py:866:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_subscribe.py:918:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/execution/test_subscribe.py:1165:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/pyutils/test_async_reduce.py:50:22: error[invalid-await] `Awaitable[Literal["foo"]] | Literal["foo"]` is not awaitable
+- tests/type/test_definition.py:340:72: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/type/test_definition.py:547:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/type/test_definition.py:664:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/type/test_definition.py:939:55: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/type/test_definition.py:946:57: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/type/test_definition.py:1044:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/type/test_validation.py:752:39: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 528 diagnostics
++ Found 519 diagnostics
+
+pylint (https://github.com/pycqa/pylint)
+- pylint/checkers/utils.py:492:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 215 diagnostics
++ Found 214 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
+- mkosi/config.py:1690:58: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 96 diagnostics
++ Found 95 diagnostics
+
+imagehash (https://github.com/JohannesBuchner/imagehash)
++ imagehash/__init__.py:146:12: error[invalid-type-form] `<class 'ndarray[tuple[Any, ...], dtype[_ScalarT]]'>` is not subscriptable
+- Found 10 diagnostics
++ Found 11 diagnostics
+
+PyGithub (https://github.com/PyGithub/PyGithub)
++ github/AuthenticatedUser.py:757:39: warning[possibly-missing-attribute] Attribute `strftime` may be missing on object of type `datetime | _NotSetType`
++ github/AuthenticatedUser.py:784:73: error[not-iterable] Object of type `list[Label] | _NotSetType` may not be iterable
++ github/AuthenticatedUser.py:790:39: warning[possibly-missing-attribute] Attribute `strftime` may be missing on object of type `datetime | _NotSetType`
++ github/AuthenticatedUser.py:817:73: error[not-iterable] Object of type `list[Label] | _NotSetType` may not be iterable
++ github/AuthenticatedUser.py:823:39: warning[possibly-missing-attribute] Attribute `strftime` may be missing on object of type `datetime | _NotSetType`
++ github/AuthenticatedUser.py:873:31: warning[possibly-missing-attribute] Attribute `strftime` may be missing on object of type `datetime | _NotSetType`
++ github/AuthenticatedUser.py:875:32: warning[possibly-missing-attribute] Attribute `strftime` may be missing on object of type `datetime | _NotSetType`
++ github/Branch.py:211:106: error[not-iterable] Object of type `list[str | tuple[str, int]] | _NotSetType` may not be iterable
++ github/Branch.py:222:34: error[not-iterable] Object of type `list[str | tuple[str, int]] | _NotSetType` may not be iterable
++ github/Branch.py:225:74: error[not-iterable] Object of type `list[str] | _NotSetType` may not be iterable
++ github/Branch.py:378:106: error[not-iterable] Object of type `list[str | tuple[str, int]] | _NotSetType` may not be iterable
++ github/Branch.py:384:30: error[not-iterable] Object of type `list[str | tuple[str, int]] | _NotSetType` may not be iterable
++ github/Branch.py:387:70: error[not-iterable] Object of type `list[str] | _NotSetType` may not be iterable
++ github/BranchProtection.py:169:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | None`, found `str | _NotSetType`
++ github/CheckRun.py:253:45: warning[possibly-missing-attribute] Attribute `strftime` may be missing on object of type `datetime | _NotSetType`
++ github/CheckRun.py:255:47: warning[possibly-missing-attribute] Attribute `strftime` may be missing on object of type `datetime | _NotSetType`
++ github/Gist.py:259:107: warning[possibly-missing-attribute] Attribute `items` may be missing on object of type `dict[str, InputFileContent | None] | _NotSetType`
+- github/Issue.py:459:73: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ github/Issue.py:463:32: error[not-iterable] Object of type `list[NamedUser | str] | _NotSetType` may not be iterable
++ github/MainClass.py:553:39: warning[possibly-missing-attribute] Attribute `strftime` may be missing on object of type `_NotSetType | datetime`
++ github/MainClass.py:645:27: error[no-matching-overload] No overload of bound method `join` matches arguments
++ github/MainClass.py:915:42: warning[possibly-missing-attribute] Attribute `_identity` may be missing on object of type `_NotSetType | (Repository & Unknown)`
++ github/Milestone.py:202:41: warning[possibly-missing-attribute] Attribute `strftime` may be missing on object of type `_NotSetType | date`
++ github/NamedUser.py:460:39: warning[possibly-missing-attribute] Attribute `strftime` may be missing on object of type `_NotSetType | datetime`
++ github/Organization.py:919:88: error[not-iterable] Object of type `list[Repository] | _NotSetType` may not be iterable
++ github/Organization.py:921:93: error[not-iterable] Object of type `list[Repository] | _NotSetType` may not be iterable
++ github/Organization.py:1013:79: error[not-iterable] Object of type `list[Repository] | _NotSetType` may not be iterable
++ github/Organization.py:1048:85: error[not-iterable] Object of type `list[Repository] | _NotSetType` may not be iterable
++ github/Organization.py:1237:73: error[not-iterable] Object of type `list[Label] | _NotSetType` may not be iterable
++ github/Organization.py:1239:39: warning[possibly-missing-attribute] Attribute `strftime` may be missing on object of type `datetime | _NotSetType`
++ github/Organization.py:1438:40: warning[possibly-missing-attribute] Attribute `id` may be missing on object of type `NamedUser | _NotSetType`
++ github/Organization.py:1440:53: error[not-iterable] Object of type `list[Team] | _NotSetType` may not be iterable
++ github/PullRequest.py:561:30: warning[possibly-missing-attribute] Attribute `sha` may be missing on object of type `Commit | _NotSetType`
++ github/PullRequest.py:686:39: warning[possibly-missing-attribute] Attribute `strftime` may be missing on object of type `datetime | _NotSetType`
+- github/Repository.py:1716:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- github/Repository.py:1723:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- github/Repository.py:3213:103: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ github/Repository.py:1450:41: warning[possibly-missing-attribute] Attribute `_identity` may be missing on object of type `InputGitAuthor | _NotSetType`
++ github/Repository.py:1452:44: warning[possibly-missing-attribute] Attribute `_identity` may be missing on object of type `InputGitAuthor | _NotSetType`
++ github/Repository.py:1631:41: warning[possibly-missing-attribute] Attribute `_identity` may be missing on object of type `InputGitAuthor | _NotSetType`
++ github/Repository.py:1648:44: warning[possibly-missing-attribute] Attribute `_identity` may be missing on object of type `GitTree | _NotSetType`
++ github/Repository.py:1719:44: warning[possibly-missing-attribute] Attribute `_identity` may be missing on object of type `Milestone | _NotSetType`
++ github/Repository.py:1802:45: error[unresolved-attribute] Object of type `_NotSetType & ~date` has no attribute `isoformat`
++ github/Repository.py:1860:40: warning[possibly-missing-attribute] Attribute `_identity` may be missing on object of type `Issue | _NotSetType`
++ github/Repository.py:2287:19: error[no-matching-overload] No overload of function `quote` matches arguments
++ github/Repository.py:2432:39: warning[possibly-missing-attribute] Attribute `strftime` may be missing on object of type `datetime | _NotSetType`
++ github/Repository.py:2434:39: warning[possibly-missing-attribute] Attribute `strftime` may be missing on object of type `datetime | _NotSetType`
++ github/Repository.py:2770:40: warning[possibly-missing-attribute] Attribute `_identity` may be missing on object of type `InputGitAuthor | _NotSetType`
++ github/Repository.py:2772:43: warning[possibly-missing-attribute] Attribute `_identity` may be missing on object of type `InputGitAuthor | _NotSetType`
++ github/Repository.py:2855:40: warning[possibly-missing-attribute] Attribute `_identity` may be missing on object of type `InputGitAuthor | _NotSetType`
++ github/Repository.py:2857:43: warning[possibly-missing-attribute] Attribute `_identity` may be missing on object of type `InputGitAuthor | _NotSetType`
++ github/Repository.py:2906:40: warning[possibly-missing-attribute] Attribute `_identity` may be missing on object of type `InputGitAuthor | _NotSetType`
++ github/Repository.py:2908:43: warning[possibly-missing-attribute] Attribute `_identity` may be missing on object of type `InputGitAuthor | _NotSetType`
++ github/Repository.py:3210:43: warning[possibly-missing-attribute] Attribute `_identity` may be missing on object of type `NamedUser | _NotSetType`
++ github/Repository.py:3220:39: warning[possibly-missing-attribute] Attribute `strftime` may be missing on object of type `datetime | _NotSetType`
++ github/Repository.py:3225:45: warning[possibly-missing-attribute] Attribute `_identity` may be missing on object of type `(NamedUser & ~str) | (_NotSetType & ~str)`
++ github/Repository.py:3250:39: warning[possibly-missing-attribute] Attribute `strftime` may be missing on object of type `datetime | _NotSetType`
++ github/Repository.py:3493:39: warning[possibly-missing-attribute] Attribute `strftime` may be missing on object of type `datetime | _NotSetType`
++ github/Repository.py:3897:31: warning[possibly-missing-attribute] Attribute `strftime` may be missing on object of type `datetime | _NotSetType`
++ github/Repository.py:3899:32: warning[possibly-missing-attribute] Attribute `strftime` may be missing on object of type `datetime | _NotSetType`
++ github/Repository.py:4217:45: warning[possibly-missing-attribute] Attribute `strftime` may be missing on object of type `datetime | _NotSetType`
++ github/Repository.py:4219:47: warning[possibly-missing-attribute] Attribute `strftime` may be missing on object of type `datetime | _NotSetType`
++ github/RepositoryAdvisory.py:284:92: error[invalid-argument-type] Argument to bound method `_validate_vulnerability` is incorrect: Expected `SimpleAdvisoryVulnerability | AdvisoryVulnerability`, found `object`
++ github/RepositoryAdvisory.py:290:71: error[invalid-argument-type] Argument to function `_validate_credit` is incorrect: Expected `SimpleCredit | AdvisoryCredit`, found `object`
++ github/RepositoryAdvisory.py:306:84: error[invalid-argument-type] Argument to function `_to_github_dict` is incorrect: Expected `SimpleAdvisoryVulnerability | AdvisoryVulnerability`, found `object`
++ github/RepositoryAdvisory.py:313:70: error[invalid-argument-type] Argument to function `_to_github_dict` is incorrect: Expected `SimpleCredit | AdvisoryCredit`, found `object`
+- Found 288 diagnostics
++ Found 346 diagnostics
+
+schemathesis (https://github.com/schemathesis/schemathesis)
+- src/schemathesis/core/result.py:27:18: error[invalid-argument-type] Argument to class `Err` is incorrect: Expected `Exception`, found `typing.TypeVar`
+- src/schemathesis/specs/openapi/negative/mutations.py:145:25: error[invalid-assignment] Object of type `typing.TypeVar` is not assignable to `list[(MutationContext, (SearchStrategy[typing.TypeVar], /) -> typing.TypeVar, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None]]`
++ src/schemathesis/specs/openapi/negative/mutations.py:145:25: error[invalid-assignment] Object of type `T@Draw` is not assignable to `list[(MutationContext, (SearchStrategy[T@Draw], /) -> T@Draw, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None]]`
+- src/schemathesis/specs/openapi/negative/mutations.py:145:30: error[invalid-argument-type] Argument is incorrect: Expected `SearchStrategy[typing.TypeVar]`, found `SearchStrategy[list[(MutationContext, (SearchStrategy[typing.TypeVar], /) -> typing.TypeVar, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None]]]`
++ src/schemathesis/specs/openapi/negative/mutations.py:145:30: error[invalid-argument-type] Argument is incorrect: Expected `SearchStrategy[T@Draw]`, found `SearchStrategy[list[(MutationContext, (SearchStrategy[T@Draw], /) -> T@Draw, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None]]]`
+- src/schemathesis/specs/openapi/negative/mutations.py:152:25: error[invalid-assignment] Object of type `typing.TypeVar` is not assignable to `list[(MutationContext, (SearchStrategy[typing.TypeVar], /) -> typing.TypeVar, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None]]`
++ src/schemathesis/specs/openapi/negative/mutations.py:152:25: error[invalid-assignment] Object of type `T@Draw` is not assignable to `list[(MutationContext, (SearchStrategy[T@Draw], /) -> T@Draw, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None]]`
+- src/schemathesis/specs/openapi/negative/mutations.py:152:30: error[invalid-argument-type] Argument is incorrect: Expected `SearchStrategy[typing.TypeVar]`, found `SearchStrategy[list[(MutationContext, (SearchStrategy[typing.TypeVar], /) -> typing.TypeVar, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None]]]`
++ src/schemathesis/specs/openapi/negative/mutations.py:152:30: error[invalid-argument-type] Argument is incorrect: Expected `SearchStrategy[T@Draw]`, found `SearchStrategy[list[(MutationContext, (SearchStrategy[T@Draw], /) -> T@Draw, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None]]]`
+- src/schemathesis/specs/openapi/negative/mutations.py:162:28: error[call-non-callable] Object of type `TypeVar` is not callable
++ src/schemathesis/specs/openapi/negative/mutations.py:162:28: error[call-non-callable] Object of type `T@Draw` is not callable
+- src/schemathesis/specs/openapi/negative/mutations.py:164:60: error[unresolved-attribute] Object of type `typing.TypeVar` has no attribute `is_enabled`
++ src/schemathesis/specs/openapi/negative/mutations.py:164:60: error[unresolved-attribute] Object of type `T@Draw` has no attribute `is_enabled`
+- src/schemathesis/specs/openapi/negative/mutations.py:164:89: error[unresolved-attribute] Object of type `(MutationContext, (SearchStrategy[typing.TypeVar], /) -> typing.TypeVar, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None]` has no attribute `__name__`
++ src/schemathesis/specs/openapi/negative/mutations.py:164:89: error[unresolved-attribute] Object of type `(MutationContext, (SearchStrategy[T@Draw], /) -> T@Draw, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None]` has no attribute `__name__`
+- src/schemathesis/specs/openapi/negative/mutations.py:231:72: error[unresolved-attribute] Object of type `typing.TypeVar` has no attribute `is_enabled`
++ src/schemathesis/specs/openapi/negative/mutations.py:231:72: error[unresolved-attribute] Object of type `T@Draw` has no attribute `is_enabled`
+- src/schemathesis/specs/openapi/negative/mutations.py:248:9: error[invalid-argument-type] Argument is incorrect: Expected `str | None`, found `typing.TypeVar`
++ src/schemathesis/specs/openapi/negative/mutations.py:248:9: error[invalid-argument-type] Argument is incorrect: Expected `str | None`, found `T@Draw`
+- src/schemathesis/specs/openapi/negative/mutations.py:288:27: error[invalid-argument-type] Argument to bound method `remove` is incorrect: Expected `str`, found `typing.TypeVar`
++ src/schemathesis/specs/openapi/negative/mutations.py:288:27: error[invalid-argument-type] Argument to bound method `remove` is incorrect: Expected `str`, found `T@Draw`
+- src/schemathesis/specs/openapi/negative/mutations.py:292:63: error[unresolved-attribute] Object of type `typing.TypeVar` has no attribute `is_enabled`
++ src/schemathesis/specs/openapi/negative/mutations.py:292:63: error[unresolved-attribute] Object of type `T@Draw` has no attribute `is_enabled`
+- src/schemathesis/specs/openapi/negative/mutations.py:297:46: error[invalid-argument-type] Argument to function `prevent_unsatisfiable_schema` is incorrect: Expected `str`, found `typing.TypeVar`
++ src/schemathesis/specs/openapi/negative/mutations.py:297:46: error[invalid-argument-type] Argument to function `prevent_unsatisfiable_schema` is incorrect: Expected `str`, found `T@Draw`
+- src/schemathesis/specs/openapi/negative/mutations.py:361:32: error[not-iterable] Object of type `typing.TypeVar` is not iterable
++ src/schemathesis/specs/openapi/negative/mutations.py:361:32: error[not-iterable] Object of type `T@Draw` is not iterable
+- src/schemathesis/specs/openapi/negative/mutations.py:361:37: error[invalid-argument-type] Argument is incorrect: Expected `SearchStrategy[typing.TypeVar]`, found `SearchStrategy[list[Unknown]]`
++ src/schemathesis/specs/openapi/negative/mutations.py:361:37: error[invalid-argument-type] Argument is incorrect: Expected `SearchStrategy[T@Draw]`, found `SearchStrategy[list[Unknown]]`
+- src/schemathesis/specs/openapi/negative/mutations.py:390:12: error[unresolved-attribute] Object of type `typing.TypeVar` has no attribute `is_enabled`
++ src/schemathesis/specs/openapi/negative/mutations.py:390:12: error[unresolved-attribute] Object of type `T@Draw` has no attribute `is_enabled`
+- src/schemathesis/specs/openapi/negative/mutations.py:393:20: error[unresolved-attribute] Object of type `typing.TypeVar` has no attribute `is_enabled`
++ src/schemathesis/specs/openapi/negative/mutations.py:393:20: error[unresolved-attribute] Object of type `T@Draw` has no attribute `is_enabled`
+- src/schemathesis/specs/openapi/negative/mutations.py:393:49: error[unresolved-attribute] Object of type `(MutationContext, (SearchStrategy[typing.TypeVar], /) -> typing.TypeVar, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None]` has no attribute `__name__`
++ src/schemathesis/specs/openapi/negative/mutations.py:393:49: error[unresolved-attribute] Object of type `(MutationContext, (SearchStrategy[T@Draw], /) -> T@Draw, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None]` has no attribute `__name__`
+- src/schemathesis/specs/openapi/negative/mutations.py:547:37: error[unresolved-attribute] Object of type `typing.TypeVar` has no attribute `is_enabled`
++ src/schemathesis/specs/openapi/negative/mutations.py:547:37: error[unresolved-attribute] Object of type `T@Draw` has no attribute `is_enabled`
+- src/schemathesis/specs/openapi/negative/mutations.py:607:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[(MutationContext, (SearchStrategy[typing.TypeVar], /) -> typing.TypeVar, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None], ...]`, found `typing.TypeVar`
++ src/schemathesis/specs/openapi/negative/mutations.py:607:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[(MutationContext, (SearchStrategy[T@Draw], /) -> T@Draw, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None], ...]`, found `T@Draw`
+- src/schemathesis/specs/openapi/negative/mutations.py:607:17: error[invalid-argument-type] Argument is incorrect: Expected `SearchStrategy[typing.TypeVar]`, found `SearchStrategy[list[(MutationContext, (SearchStrategy[typing.TypeVar], /) -> typing.TypeVar, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None]]]`
++ src/schemathesis/specs/openapi/negative/mutations.py:607:17: error[invalid-argument-type] Argument is incorrect: Expected `SearchStrategy[T@Draw]`, found `SearchStrategy[list[(MutationContext, (SearchStrategy[T@Draw], /) -> T@Draw, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None]]]`
++ src/schemathesis/specs/openapi/stateful/__init__.py:377:12: error[invalid-return-type] Return type does not match returned value: expected `((...) -> Unknown, /) -> Rule`, found `(...) -> MultipleResults[Any] | Any`
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
++ examples/contrib/ntlm_upstream_proxy.py:94:46: error[invalid-type-form] `<class 'Generator[Command, Any, T@CommandGenerator]'>` is not subscriptable
++ examples/contrib/ntlm_upstream_proxy.py:118:14: error[invalid-type-form] `<class 'Generator[Command, Any, T@CommandGenerator]'>` is not subscriptable
++ mitmproxy/addons/clientplayback.py:48:53: error[invalid-type-form] `<class 'Generator[Command, Any, T@CommandGenerator]'>` is not subscriptable
++ mitmproxy/proxy/layer.py:127:53: error[invalid-type-form] `<class 'Generator[Command
+
+... (truncated 6214 lines) ...
+```
+
+</details>
+
+
+
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+```diff
+trio (https://github.com/python-trio/trio)
+- TOTAL MEMORY USAGE: ~159MB
++ TOTAL MEMORY USAGE: ~167MB
+
+prefect (https://github.com/PrefectHQ/prefect)
+-     memo metadata = ~138MB
++     memo metadata = ~144MB
+
+
+```
+
+</details>
+
+
+
+
+---
+
+_Closed by @sharkdp on 2025-11-27 09:25_
+
+---

@@ -1,0 +1,468 @@
+```yaml
+number: 19799
+title: "[`ruff`] Catch more dummy variable uses (`RUF052`)"
+type: pull_request
+state: merged
+author: mikeleppane
+labels:
+  - rule
+  - preview
+assignees: []
+merged: true
+base: main
+head: feat(#19732)/flag-dummy-variables-in-loops
+created_at: 2025-08-07T06:48:30Z
+updated_at: 2025-11-21T17:57:02Z
+url: https://github.com/astral-sh/ruff/pull/19799
+synced_at: 2026-01-10T16:48:01Z
+```
+
+# [`ruff`] Catch more dummy variable uses (`RUF052`)
+
+---
+
+_Pull request opened by @mikeleppane on 2025-08-07 06:48_
+
+## Summary
+
+Extends the `used-dummy-variable` rule ([RUF052](https://docs.astral.sh/ruff/rules/used-dummy-variable/)) to detect dummy variables that are used within list comprehensions, dict comprehensions, set comprehensions, and generator expressions, not just regular for loops and function assignments.
+
+### Problem
+
+Previously, RUF052 only flagged dummy variables (variables with leading underscores) that were used in function scopes via assignments or regular for loops. It missed cases where dummy variables were used within comprehensions:
+
+```python
+def example():
+    my_list = [{"foo": 1}, {"foo": 2}]
+    
+    # These were not detected before:
+    [_item["foo"] for _item in my_list]  # Should warn: _item is used
+    {_item["key"]: _item["val"] for _item in my_list}  # Should warn: _item is used
+    (_item["foo"] for _item in my_list)  # Should warn: _item is used
+```
+
+### Solution
+
+- Extended scope checking to include all generator scopes () with any (list/dict/set comprehensions and generator expressions) `ScopeKind::Generator``GeneratorKind`
+- Added support for bindings, which cover loop variables in both regular for loops and comprehensions `BindingKind::LoopVar`
+- Refactored the scope validation logic for better readability with a descriptive variable `is_allowed_scope`
+
+
+
+[ISSUE](https://github.com/astral-sh/ruff/issues/19732)
+
+## Test Plan
+
+```bash
+cargo test
+```
+
+
+---
+
+_Comment by @github-actions[bot] on 2025-08-07 07:02_
+
+
+<!-- generated-comment ecosystem -->
+
+
+## `ruff-ecosystem` results
+
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+188 -3 violations, +0 -0 fixes in 17 projects; 38 projects unchanged)
+
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/DisnakeDev/disnake/blob/664d0a7fddfd180640b45f35192aac492f21ef94/disnake/guild.py#L5488'>disnake/guild.py:5488:29:</a> RUF052 Local dummy variable `_id` is accessed
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+15 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/engine/validation.py#L566'>rasa/engine/validation.py:566:13:</a> RUF052 Local dummy variable `_type` is accessed
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/nlu/extractors/crf_entity_extractor.py#L347'>rasa/nlu/extractors/crf_entity_extractor.py:347:29:</a> RUF052 Local dummy variable `_tag` is accessed
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/nlu/extractors/crf_entity_extractor.py#L347'>rasa/nlu/extractors/crf_entity_extractor.py:347:35:</a> RUF052 Local dummy variable `_confidence` is accessed
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/nlu/utils/bilou_utils.py#L82'>rasa/nlu/utils/bilou_utils.py:82:17:</a> RUF052 Local dummy variable `_tag` is accessed
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/shared/core/domain.py#L618'>rasa/shared/core/domain.py:618:21:</a> RUF052 Local dummy variable `_entity` is accessed
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/utils/tensorflow/model_data.py#L550'>rasa/utils/tensorflow/model_data.py:550:33:</a> RUF052 Local dummy variable `_features` is accessed
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/utils/tensorflow/model_data_utils.py#L249'>rasa/utils/tensorflow/model_data_utils.py:249:9:</a> RUF052 Local dummy variable `_features` is accessed
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/utils/tensorflow/model_data_utils.py#L323'>rasa/utils/tensorflow/model_data_utils.py:323:9:</a> RUF052 Local dummy variable `_features` is accessed
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/tests/core/test_exporter.py#L100'>tests/core/test_exporter.py:100:13:</a> RUF052 Local dummy variable `_id` is accessed
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/tests/core/test_exporter.py#L103'>tests/core/test_exporter.py:103:9:</a> RUF052 Local dummy variable `_id` is accessed
+... 5 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+43 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/5326d9444fd1bda4b98b264b48360d5c437e017b/airflow-core/src/airflow/jobs/scheduler_job_runner.py#L2154'>airflow-core/src/airflow/jobs/scheduler_job_runner.py:2154:61:</a> RUF052 Local dummy variable `_ti` is accessed
++ <a href='https://github.com/apache/airflow/blob/5326d9444fd1bda4b98b264b48360d5c437e017b/airflow-core/src/airflow/jobs/scheduler_job_runner.py#L2838'>airflow-core/src/airflow/jobs/scheduler_job_runner.py:2838:21:</a> RUF052 Local dummy variable `_executor` is accessed
++ <a href='https://github.com/apache/airflow/blob/5326d9444fd1bda4b98b264b48360d5c437e017b/airflow-core/src/airflow/jobs/scheduler_job_runner.py#L2844'>airflow-core/src/airflow/jobs/scheduler_job_runner.py:2844:17:</a> RUF052 Local dummy variable `_executor` is accessed
++ <a href='https://github.com/apache/airflow/blob/5326d9444fd1bda4b98b264b48360d5c437e017b/airflow-core/src/airflow/serialization/serialized_objects.py#L3901'>airflow-core/src/airflow/serialization/serialized_objects.py:3901:25:</a> RUF052 Local dummy variable `_type` is accessed
++ <a href='https://github.com/apache/airflow/blob/5326d9444fd1bda4b98b264b48360d5c437e017b/dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py#L698'>dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py:698:32:</a> RUF052 Local dummy variable `_python` is accessed
++ <a href='https://github.com/apache/airflow/blob/5326d9444fd1bda4b98b264b48360d5c437e017b/dev/breeze/src/airflow_breeze/utils/run_tests.py#L542'>dev/breeze/src/airflow_breeze/utils/run_tests.py:542:9:</a> RUF052 Local dummy variable `_test_type` is accessed
++ <a href='https://github.com/apache/airflow/blob/5326d9444fd1bda4b98b264b48360d5c437e017b/devel-common/src/tests_common/pytest_plugin.py#L227'>devel-common/src/tests_common/pytest_plugin.py:227:35:</a> RUF052 Local dummy variable `_fixture` is accessed
++ <a href='https://github.com/apache/airflow/blob/5326d9444fd1bda4b98b264b48360d5c437e017b/providers/amazon/tests/system/amazon/aws/utils/__init__.py#L299'>providers/amazon/tests/system/amazon/aws/utils/__init__.py:299:49:</a> RUF052 Local dummy variable `_task` is accessed
++ <a href='https://github.com/apache/airflow/blob/5326d9444fd1bda4b98b264b48360d5c437e017b/providers/amazon/tests/unit/amazon/aws/hooks/test_ecs.py#L32'>providers/amazon/tests/unit/amazon/aws/hooks/test_ecs.py:32:48:</a> RUF052 Local dummy variable `_conn` is accessed
++ <a href='https://github.com/apache/airflow/blob/5326d9444fd1bda4b98b264b48360d5c437e017b/providers/amazon/tests/unit/amazon/aws/operators/test_bedrock.py#L192'>providers/amazon/tests/unit/amazon/aws/operators/test_bedrock.py:192:56:</a> RUF052 Local dummy variable `_conn` is accessed
++ <a href='https://github.com/apache/airflow/blob/5326d9444fd1bda4b98b264b48360d5c437e017b/providers/amazon/tests/unit/amazon/aws/operators/test_bedrock.py#L241'>providers/amazon/tests/unit/amazon/aws/operators/test_bedrock.py:241:61:</a> RUF052 Local dummy variable `_conn` is accessed
+... 32 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/348b19cb4cd7b2ac54c5465e582e45d4198143d4/superset/commands/report/create.py#L151'>superset/commands/report/create.py:151:20:</a> RUF052 Local dummy variable `_invalid_tab_ids` is accessed
++ <a href='https://github.com/apache/superset/blob/348b19cb4cd7b2ac54c5465e582e45d4198143d4/superset/utils/core.py#L1931'>superset/utils/core.py:1931:9:</a> RUF052 Local dummy variable `_col` is accessed
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/binary-husky/gpt_academic">binary-husky/gpt_academic</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/binary-husky/gpt_academic/blob/0aa0472da44edc0a888c7f83b564c6d0d1089366/crazy_functions/rag_fns/llama_index_worker.py#L84'>crazy_functions/rag_fns/llama_index_worker.py:84:69:</a> RUF052 Local dummy variable `_id` is accessed
++ <a href='https://github.com/binary-husky/gpt_academic/blob/0aa0472da44edc0a888c7f83b564c6d0d1089366/crazy_functions/rag_fns/milvus_worker.py#L99'>crazy_functions/rag_fns/milvus_worker.py:99:73:</a> RUF052 Local dummy variable `_id` is accessed
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/test_examples.py#L218'>tests/test_examples.py:218:13:</a> RUF052 Local dummy variable `_line` is accessed
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/plotting/test_figure.py#L195'>tests/unit/bokeh/plotting/test_figure.py:195:16:</a> RUF052 Local dummy variable `_type` is accessed
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+30 -3 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/langchain-ai/langchain/blob/ee3373afc20e593b12aff1fb8df9f980dca96c3f/libs/core/langchain_core/messages/block_translators/openai.py#L351'>libs/core/langchain_core/messages/block_translators/openai.py:351:13:</a> RUF052 Local dummy variable `_id` is accessed
++ <a href='https://github.com/langchain-ai/langchain/blob/ee3373afc20e593b12aff1fb8df9f980dca96c3f/libs/core/langchain_core/messages/block_translators/openai.py#L364'>libs/core/langchain_core/messages/block_translators/openai.py:364:17:</a> RUF052 Local dummy variable `_id` is accessed
++ <a href='https://github.com/langchain-ai/langchain/blob/ee3373afc20e593b12aff1fb8df9f980dca96c3f/libs/core/langchain_core/prompts/chat.py#L957'>libs/core/langchain_core/prompts/chat.py:957:13:</a> RUF052 Local dummy variable `_message` is accessed
++ <a href='https://github.com/langchain-ai/langchain/blob/ee3373afc20e593b12aff1fb8df9f980dca96c3f/libs/core/langchain_core/prompts/loading.py#L181'>libs/core/langchain_core/prompts/loading.py:181:5:</a> DOC201 `return` is not documented in docstring
+- <a href='https://github.com/langchain-ai/langchain/blob/ee3373afc20e593b12aff1fb8df9f980dca96c3f/libs/core/langchain_core/prompts/loading.py#L181'>libs/core/langchain_core/prompts/loading.py:181:5:</a> DOC201 `return` is not documented in docstring
++ <a href='https://github.com/langchain-ai/langchain/blob/ee3373afc20e593b12aff1fb8df9f980dca96c3f/libs/core/langchain_core/prompts/loading.py#L87'>libs/core/langchain_core/prompts/loading.py:87:8:</a> RUF052 Local dummy variable `_config` is accessed
++ <a href='https://github.com/langchain-ai/langchain/blob/ee3373afc20e593b12aff1fb8df9f980dca96c3f/libs/core/langchain_core/vectorstores/in_memory.py#L179'>libs/core/langchain_core/vectorstores/in_memory.py:179:17:</a> RUF052 Local dummy variable `_id` is accessed
++ <a href='https://github.com/langchain-ai/langchain/blob/ee3373afc20e593b12aff1fb8df9f980dca96c3f/libs/langchain/langchain_classic/chains/query_constructor/base.py#L188'>libs/langchain/langchain_classic/chains/query_constructor/base.py:188:13:</a> RUF052 Local dummy variable `_input` is accessed
+... 22 additional changes omitted for rule RUF052
++ <a href='https://github.com/langchain-ai/langchain/blob/ee3373afc20e593b12aff1fb8df9f980dca96c3f/libs/langchain/langchain_classic/retrievers/document_compressors/base.py#L59'>libs/langchain/langchain_classic/retrievers/document_compressors/base.py:59:9:</a> DOC201 `return` is not documented in docstring
+- <a href='https://github.com/langchain-ai/langchain/blob/ee3373afc20e593b12aff1fb8df9f980dca96c3f/libs/langchain/langchain_classic/retrievers/document_compressors/base.py#L59'>libs/langchain/langchain_classic/retrievers/document_compressors/base.py:59:9:</a> DOC201 `return` is not documented in docstring
+... 23 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/lnbits/lnbits">lnbits/lnbits</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/lnbits/lnbits/blob/bd07a319abf1368723649d99add449607fcb2342/lnbits/core/services/lnurl.py#L132'>lnbits/core/services/lnurl.py:132:13:</a> RUF052 Local dummy variable `_data` is accessed
++ <a href='https://github.com/lnbits/lnbits/blob/bd07a319abf1368723649d99add449607fcb2342/lnbits/core/services/websockets.py#L39'>lnbits/core/services/websockets.py:39:21:</a> RUF052 Local dummy variable `_conn` is accessed
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+25 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pandas-dev/pandas/blob/7bf666098400d1f09a8491c10f163c972d19c946/pandas/core/frame.py#L8350'>pandas/core/frame.py:8350:21:</a> RUF052 Local dummy variable `_left` is accessed
++ <a href='https://github.com/pandas-dev/pandas/blob/7bf666098400d1f09a8491c10f163c972d19c946/pandas/core/frame.py#L8350'>pandas/core/frame.py:8350:28:</a> RUF052 Local dummy variable `_right` is accessed
++ <a href='https://github.com/pandas-dev/pandas/blob/7bf666098400d1f09a8491c10f163c972d19c946/pandas/core/groupby/groupby.py#L2629'>pandas/core/groupby/groupby.py:2629:26:</a> RUF052 Local dummy variable `_name` is accessed
++ <a href='https://github.com/pandas-dev/pandas/blob/7bf666098400d1f09a8491c10f163c972d19c946/pandas/core/indexing.py#L2735'>pandas/core/indexing.py:2735:44:</a> RUF052 Local dummy variable `_i` is accessed
++ <a href='https://github.com/pandas-dev/pandas/blob/7bf666098400d1f09a8491c10f163c972d19c946/pandas/core/indexing.py#L2735'>pandas/core/indexing.py:2735:48:</a> RUF052 Local dummy variable `_idx` is accessed
++ <a href='https://github.com/pandas-dev/pandas/blob/7bf666098400d1f09a8491c10f163c972d19c946/pandas/core/internals/managers.py#L2429'>pandas/core/internals/managers.py:2429:10:</a> RUF052 Local dummy variable `_can_consolidate` is accessed
++ <a href='https://github.com/pandas-dev/pandas/blob/7bf666098400d1f09a8491c10f163c972d19c946/pandas/io/parsers/python_parser.py#L1200'>pandas/io/parsers/python_parser.py:1200:20:</a> RUF052 Local dummy variable `_content` is accessed
++ <a href='https://github.com/pandas-dev/pandas/blob/7bf666098400d1f09a8491c10f163c972d19c946/pandas/plotting/_matplotlib/core.py#L2203'>pandas/plotting/_matplotlib/core.py:2203:17:</a> RUF052 Local dummy variable `_patch` is accessed
++ <a href='https://github.com/pandas-dev/pandas/blob/7bf666098400d1f09a8491c10f163c972d19c946/pandas/plotting/_matplotlib/core.py#L2203'>pandas/plotting/_matplotlib/core.py:2203:25:</a> RUF052 Local dummy variable `_leglabel` is accessed
++ <a href='https://github.com/pandas-dev/pandas/blob/7bf666098400d1f09a8491c10f163c972d19c946/pandas/tests/frame/methods/test_to_dict_of_blocks.py#L17'>pandas/tests/frame/methods/test_to_dict_of_blocks.py:17:13:</a> RUF052 Local dummy variable `_df` is accessed
+... 15 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/python-poetry/poetry">python-poetry/poetry</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/python-poetry/poetry/blob/500a313d68637cbd317171c567280a10eaabae3c/src/poetry/console/commands/add.py#L166'>src/poetry/console/commands/add.py:166:13:</a> RUF052 Local dummy variable `_constraint` is accessed
++ <a href='https://github.com/python-poetry/poetry/blob/500a313d68637cbd317171c567280a10eaabae3c/src/poetry/puzzle/solver.py#L170'>src/poetry/puzzle/solver.py:170:21:</a> RUF052 Local dummy variable `_package` is accessed
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/reflex-dev/reflex">reflex-dev/reflex</a> (+4 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/reflex-dev/reflex/blob/a98743734d292b8a7269ab0a2a87b43d8e7e6d61/reflex/compiler/utils.py#L76'>reflex/compiler/utils.py:76:14:</a> RUF052 Local dummy variable `_imports` is accessed
++ <a href='https://github.com/reflex-dev/reflex/blob/a98743734d292b8a7269ab0a2a87b43d8e7e6d61/reflex/compiler/utils.py#L77'>reflex/compiler/utils.py:77:13:</a> RUF052 Local dummy variable `_import` is accessed
++ <a href='https://github.com/reflex-dev/reflex/blob/a98743734d292b8a7269ab0a2a87b43d8e7e6d61/reflex/components/el/__init__.py#L12'>reflex/components/el/__init__.py:12:30:</a> RUF052 Local dummy variable `_v` is accessed
++ <a href='https://github.com/reflex-dev/reflex/blob/a98743734d292b8a7269ab0a2a87b43d8e7e6d61/reflex/components/markdown/markdown.py#L497'>reflex/components/markdown/markdown.py:497:13:</a> RUF052 Local dummy variable `_component` is accessed
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+15 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/rotki/rotki/blob/afb0cb2bacda5e6e50caa3c19141a48fc50cf3db/rotkehlchen/api/rest.py#L2893'>rotkehlchen/api/rest.py:2893:72:</a> RUF052 Local dummy variable `_chain` is accessed
++ <a href='https://github.com/rotki/rotki/blob/afb0cb2bacda5e6e50caa3c19141a48fc50cf3db/rotkehlchen/api/v1/schemas.py#L702'>rotkehlchen/api/v1/schemas.py:702:21:</a> RUF052 Local dummy variable `_type` is accessed
++ <a href='https://github.com/rotki/rotki/blob/afb0cb2bacda5e6e50caa3c19141a48fc50cf3db/rotkehlchen/chain/ethereum/modules/liquity/trove.py#L241'>rotkehlchen/chain/ethereum/modules/liquity/trove.py:241:38:</a> RUF052 Local dummy variable `_asset` is accessed
++ <a href='https://github.com/rotki/rotki/blob/afb0cb2bacda5e6e50caa3c19141a48fc50cf3db/rotkehlchen/chain/ethereum/modules/liquity/trove.py#L241'>rotkehlchen/chain/ethereum/modules/liquity/trove.py:241:46:</a> RUF052 Local dummy variable `_key` is accessed
++ <a href='https://github.com/rotki/rotki/blob/afb0cb2bacda5e6e50caa3c19141a48fc50cf3db/rotkehlchen/chain/ethereum/modules/sushiswap/decoder.py#L132'>rotkehlchen/chain/ethereum/modules/sushiswap/decoder.py:132:13:</a> RUF052 Local dummy variable `_tx_log` is accessed
++ <a href='https://github.com/rotki/rotki/blob/afb0cb2bacda5e6e50caa3c19141a48fc50cf3db/rotkehlchen/chain/evm/decoding/aave/v3/decoder.py#L258'>rotkehlchen/chain/evm/decoding/aave/v3/decoder.py:258:13:</a> RUF052 Local dummy variable `_log` is accessed
++ <a href='https://github.com/rotki/rotki/blob/afb0cb2bacda5e6e50caa3c19141a48fc50cf3db/rotkehlchen/chain/evm/decoding/curve/decoder.py#L243'>rotkehlchen/chain/evm/decoding/curve/decoder.py:243:21:</a> RUF052 Local dummy variable `_log` is accessed
++ <a href='https://github.com/rotki/rotki/blob/afb0cb2bacda5e6e50caa3c19141a48fc50cf3db/rotkehlchen/chain/evm/decoding/curve/decoder.py#L340'>rotkehlchen/chain/evm/decoding/curve/decoder.py:340:25:</a> RUF052 Local dummy variable `_log` is accessed
++ <a href='https://github.com/rotki/rotki/blob/afb0cb2bacda5e6e50caa3c19141a48fc50cf3db/rotkehlchen/chain/evm/decoding/curve/decoder.py#L381'>rotkehlchen/chain/evm/decoding/curve/decoder.py:381:25:</a> RUF052 Local dummy variable `_log` is accessed
++ <a href='https://github.com/rotki/rotki/blob/afb0cb2bacda5e6e50caa3c19141a48fc50cf3db/rotkehlchen/chain/evm/decoding/curve/decoder.py#L406'>rotkehlchen/chain/evm/decoding/curve/decoder.py:406:17:</a> RUF052 Local dummy variable `_log` is accessed
+... 5 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/scikit-build/scikit-build">scikit-build/scikit-build</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/scikit-build/scikit-build/blob/a2afff25f98e0d1fe573f520b659e1ee1f427c38/skbuild/cmaker.py#L653'>skbuild/cmaker.py:653:55:</a> RUF052 Local dummy variable `_install` is accessed
++ <a href='https://github.com/scikit-build/scikit-build/blob/a2afff25f98e0d1fe573f520b659e1ee1f427c38/tests/test_setup.py#L808'>tests/test_setup.py:808:9:</a> RUF052 Local dummy variable `_type` is accessed
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/python-trio/trio">python-trio/trio</a> (+4 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/python-trio/trio/blob/63ce96808bca270c8e58601c21c4d194d6249b56/src/trio/_core/_tests/test_asyncgen.py#L230'>src/trio/_core/_tests/test_asyncgen.py:230:9:</a> RUF052 Local dummy variable `_attempt` is accessed
++ <a href='https://github.com/python-trio/trio/blob/63ce96808bca270c8e58601c21c4d194d6249b56/src/trio/_tests/test_path.py#L213'>src/trio/_tests/test_path.py:213:19:</a> RUF052 Local dummy variable `_results` is accessed
++ <a href='https://github.com/python-trio/trio/blob/63ce96808bca270c8e58601c21c4d194d6249b56/src/trio/_tests/test_path.py#L213'>src/trio/_tests/test_path.py:213:9:</a> RUF052 Local dummy variable `_pattern` is accessed
++ <a href='https://github.com/python-trio/trio/blob/63ce96808bca270c8e58601c21c4d194d6249b56/src/trio/socket.py#L30'>src/trio/socket.py:30:13:</a> RUF052 Local dummy variable `_name` is accessed
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/wntrblm/nox">wntrblm/nox</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/wntrblm/nox/blob/af8ea878666bb73ec82247f5e386ea3bc4122f00/tests/test_logger.py#L26'>tests/test_logger.py:26:74:</a> RUF052 Local dummy variable `_log` is accessed
++ <a href='https://github.com/wntrblm/nox/blob/af8ea878666bb73ec82247f5e386ea3bc4122f00/tests/test_logger.py#L32'>tests/test_logger.py:32:74:</a> RUF052 Local dummy variable `_log` is accessed
+</pre>
+
+</p>
+</details>
+
+_... Truncated remaining completed project reports due to GitHub comment length restrictions_
+
+<details><summary>Changes by rule (3 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF052 | 185 | 185 | 0 | 0 | 0 |
+| DOC201 | 4 | 2 | 2 | 0 | 0 |
+| DOC501 | 2 | 1 | 1 | 0 | 0 |
+
+</p>
+</details>
+
+
+
+
+
+---
+
+_Comment by @mikeleppane on 2025-08-07 07:04_
+
+Hmm...It seems that a significant number of changes have been detected in the ecosystem run.
+
+---
+
+_Review requested from @ntBre by @ntBre on 2025-08-08 14:06_
+
+---
+
+_Label `rule` added by @ntBre on 2025-08-13 17:31_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/resources/test/fixtures/ruff/RUF052_1.py`:3 on 2025-08-13 17:32_
+
+Do we need his function here? I usually try to strip down test cases as much as possible. I think the example usage below would be fine as
+
+```py
+[1 for _ in my_list]
+```
+
+for example.
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/ruff/rules/used_dummy_variable.rs`:129 on 2025-08-13 17:34_
+
+If we're already using `matches!` we might as well combine these checks:
+
+
+```suggestion
+    if !matches!(binding.kind, BindingKind::Assignment | BindingKind::Assignment) {
+```
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/ruff/rules/used_dummy_variable.rs`:144 on 2025-08-13 17:34_
+
+Same, here we can just include `ScopeKind::Function` in the match.
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/ruff/rules/used_dummy_variable.rs`:149 on 2025-08-13 17:35_
+
+This is all of the `GeneratorKind`s right? We could just omit this.
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/ruff/rules/used_dummy_variable.rs`:154 on 2025-08-13 17:36_
+
+We probably don't need the variable once we reduce the above to
+
+```rust
+matches!(scope.kind, ScopeKind::Function(_) | ScopeKind::Generator { .. })
+```
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/resources/test/fixtures/ruff/RUF052_1.py`:14 on 2025-08-13 17:41_
+
+Would you mind moving this test case to the bottom of the file too? It will make the snapshots a lot easier to review if all of the others don't shift down. I know it will break up the existing `Correct` and `Incorrect` sections, so another option would be to create a separate `RUF052_1.py` file instead, if you prefer that.
+
+---
+
+_@ntBre reviewed on 2025-08-13 17:45_
+
+Thanks, the code changes look reasonable to me! If you don't mind, can you reorganize the snapshots a bit as I suggested down below? That will make it a little easier for me to review those. Otherwise I just had some minor simplification suggestions.
+
+As a note for myself, we don't have to do any special preview-gating here because the rule itself is still in preview.
+
+Have you had a chance to go through the ecosystem changes? It's not necessarily a bad thing for there to be this many of them, if they're all correct. I'll take a look at them at some point too, but I wanted to see if you've had the first pass yet.
+
+---
+
+_Comment by @MichaReiser on 2025-11-21 08:02_
+
+@ntBre it seems like there were only a few nit comments. Would it make sense for you to address them to get this PR landed?
+
+---
+
+_Label `preview` added by @ntBre on 2025-11-21 16:42_
+
+---
+
+_@ntBre reviewed on 2025-11-21 17:29_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/ruff/rules/used_dummy_variable.rs`:154 on 2025-11-21 17:29_
+
+I went ahead and expanded this a bit more to all of the binding kinds that seemed like "local" variables instead of only adding `LoopVar`. And we now match exhaustively so we know we've considered all of them.
+
+---
+
+_@ntBre reviewed on 2025-11-21 17:31_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/ruff/snapshots/ruff_linter__rules__ruff__tests__custom_dummy_var_regexp_preset__RUF052_RUF052_0.py_2.snap`:213 on 2025-11-21 17:31_
+
+I was pretty confused by this at first, but the [dummy-variable-rgx](https://docs.astral.sh/ruff/settings/#lint_dummy-variable-rgx) setting for this test is the empty string:
+
+https://github.com/astral-sh/ruff/blob/e3f9975749d331017ef4b54dd41ba22a8d1dff2f/crates/ruff_linter/src/rules/ruff/mod.rs#L626
+
+so I think it's correct. We just weren't checking usage of dummy loop variables before.
+
+---
+
+_Renamed from "[`ruff`] Extend RUF052 to handle dummy variables in comprehensions an…" to "[`ruff`] Catch more dummy variable uses (`RUF052`)" by @ntBre on 2025-11-21 17:43_
+
+---
+
+_Comment by @ntBre on 2025-11-21 17:56_
+
+I checked most of the ecosystem hits (I checked all of the error messages in the comment, but only clicked through to most), and they look correct to me. I think the DOC changes must be unrelated since we only modify the RUF052 code in this PR, maybe some quirk of the base branch or an old PR.
+
+---
+
+_Merged by @ntBre on 2025-11-21 17:57_
+
+---
+
+_Closed by @ntBre on 2025-11-21 17:57_
+
+---

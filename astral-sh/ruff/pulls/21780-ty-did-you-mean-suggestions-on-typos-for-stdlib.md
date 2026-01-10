@@ -1,0 +1,516 @@
+```yaml
+number: 21780
+title: "[ty] \"Did you mean?\" suggestions on typos for stdlib imports"
+type: pull_request
+state: closed
+author: AlexWaygood
+labels:
+  - ty
+  - diagnostics
+assignees: []
+base: main
+head: alex/did-you-mean-import
+created_at: 2025-12-03T20:41:22Z
+updated_at: 2025-12-03T20:47:01Z
+url: https://github.com/astral-sh/ruff/pull/21780
+synced_at: 2026-01-10T16:48:02Z
+```
+
+# [ty] "Did you mean?" suggestions on typos for stdlib imports
+
+---
+
+_Pull request opened by @AlexWaygood on 2025-12-03 20:41_
+
+An easy improvement opportunity I spotted while looking at this area of code for https://github.com/astral-sh/ty/issues/1708
+
+---
+
+_Review requested from @carljm by @AlexWaygood on 2025-12-03 20:41_
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-12-03 20:41_
+
+---
+
+_Label `diagnostics` added by @AlexWaygood on 2025-12-03 20:41_
+
+---
+
+_Review requested from @sharkdp by @AlexWaygood on 2025-12-03 20:41_
+
+---
+
+_Review requested from @dcreager by @AlexWaygood on 2025-12-03 20:41_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-03 20:43_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+No changes detected when running ty on typing conformance tests ✅
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-03 20:45_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+pyp (https://github.com/hauntsaninja/pyp)
+- tests/test_find_names.py:6:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ tests/test_find_names.py:6:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+- tests/test_pyp.py:13:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ tests/test_pyp.py:13:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+
+pegen (https://github.com/we-like-parsers/pegen)
+- src/pegen/utils.py:78:16: error[unresolved-import] Cannot resolve imported module `psutil`
++ src/pegen/utils.py:78:16: error[unresolved-import] Cannot resolve imported module `psutil`: Did you mean `shutil`?
+
+attrs (https://github.com/python-attrs/attrs)
+- bench/test_benchmarks.py:7:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ bench/test_benchmarks.py:7:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+- tests/conftest.py:5:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ tests/conftest.py:5:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+- tests/test_3rd_party.py:7:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ tests/test_3rd_party.py:7:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+- tests/test_abc.py:6:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ tests/test_abc.py:6:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+- tests/test_annotations.py:11:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ tests/test_annotations.py:11:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+- tests/test_cmp.py:7:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ tests/test_cmp.py:7:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+- tests/test_compat.py:7:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ tests/test_compat.py:7:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+- tests/test_config.py:7:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ tests/test_config.py:7:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+- tests/test_converters.py:9:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ tests/test_converters.py:9:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+- tests/test_dunders.py:11:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ tests/test_dunders.py:11:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+- tests/test_filters.py:7:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ tests/test_filters.py:7:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+- tests/test_funcs.py:12:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ tests/test_funcs.py:12:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+- tests/test_functional.py:13:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ tests/test_functional.py:13:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+- tests/test_hooks.py:7:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ tests/test_hooks.py:7:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+- tests/test_make.py:18:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ tests/test_make.py:18:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+- tests/test_next_gen.py:12:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ tests/test_next_gen.py:12:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+- tests/test_packaging.py:6:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ tests/test_packaging.py:6:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+- tests/test_pattern_matching.py:3:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ tests/test_pattern_matching.py:3:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+- tests/test_pyright.py:11:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ tests/test_pyright.py:11:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+- tests/test_setattr.py:6:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ tests/test_setattr.py:6:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+- tests/test_slots.py:13:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ tests/test_slots.py:13:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+- tests/test_validators.py:9:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ tests/test_validators.py:9:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+- tests/test_version_info.py:4:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ tests/test_version_info.py:4:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+
+com2ann (https://github.com/ilevkivskyi/com2ann)
+- src/test_cli.py:8:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ src/test_cli.py:8:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+
+anyio (https://github.com/agronholm/anyio)
+- src/anyio/_backends/_asyncio.py:2187:24: error[unresolved-import] Cannot resolve imported module `uvloop`
++ src/anyio/_backends/_asyncio.py:2187:24: error[unresolved-import] Cannot resolve imported module `uvloop`: Did you mean `audioop`?
+- src/anyio/_backends/_asyncio.py:2351:24: error[unresolved-import] Cannot resolve imported module `uvloop`
++ src/anyio/_backends/_asyncio.py:2351:24: error[unresolved-import] Cannot resolve imported module `uvloop`: Did you mean `audioop`?
+- src/anyio/_backends/_trio.py:43:6: error[unresolved-import] Cannot resolve imported module `outcome`
++ src/anyio/_backends/_trio.py:43:6: error[unresolved-import] Cannot resolve imported module `outcome`: Did you mean `opcode`?
+- src/anyio/_core/_sockets.py:643:20: error[unresolved-import] Cannot resolve imported module `idna`
++ src/anyio/_core/_sockets.py:643:20: error[unresolved-import] Cannot resolve imported module `idna`: Did you mean `lzma`?
+- src/anyio/pytest_plugin.py:10:8: error[unresolved-import] Cannot resolve imported module `pytest`
++ src/anyio/pytest_plugin.py:10:8: error[unresolved-import] Cannot resolve imported module `pytest`: Did you mean `pipes`?
+
+kornia (https://github.com/kornia/kornia)
+- kornia/augmentation/_2d/base.py:20:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/base.py:20:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/geometric/crop.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/geometric/crop.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/geometric/elastic_transform.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/geometric/elastic_transform.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/geometric/horizontal_flip.py:20:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/geometric/horizontal_flip.py:20:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/geometric/pad.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/geometric/pad.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/geometric/pad.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/geometric/pad.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/geometric/resize.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/geometric/resize.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/geometric/thin_plate_spline.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/geometric/thin_plate_spline.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/intensity/base.py:20:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/intensity/base.py:20:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/intensity/box_blur.py:20:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/intensity/box_blur.py:20:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/intensity/channel_shuffle.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/intensity/channel_shuffle.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/intensity/color_jitter.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/intensity/color_jitter.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/intensity/denormalize.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/intensity/denormalize.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/intensity/denormalize.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/intensity/denormalize.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/intensity/equalize.py:20:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/intensity/equalize.py:20:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/intensity/gaussian_blur.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/intensity/gaussian_blur.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/intensity/gaussian_blur.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/intensity/gaussian_blur.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/intensity/gaussian_illumination.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/intensity/gaussian_illumination.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/intensity/gaussian_noise.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/intensity/gaussian_noise.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/intensity/grayscale.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/intensity/grayscale.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/intensity/grayscale.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/intensity/grayscale.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/intensity/invert.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/intensity/invert.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/intensity/invert.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/intensity/invert.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/intensity/median_blur.py:20:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/intensity/median_blur.py:20:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/intensity/motion_blur.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/intensity/motion_blur.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/intensity/normalize.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/intensity/normalize.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/intensity/normalize.py:23:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/intensity/normalize.py:23:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/intensity/random_rain.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/intensity/random_rain.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/intensity/random_snow.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/intensity/random_snow.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/mix/base.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/mix/base.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/mix/jigsaw.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/mix/jigsaw.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/mix/mosaic.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/mix/mosaic.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_2d/mix/transplantation.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_2d/mix/transplantation.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_3d/base.py:20:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_3d/base.py:20:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_3d/geometric/depthical_flip.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_3d/geometric/depthical_flip.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_3d/geometric/depthical_flip.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_3d/geometric/depthical_flip.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_3d/geometric/horizontal_flip.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_3d/geometric/horizontal_flip.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_3d/geometric/horizontal_flip.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_3d/geometric/horizontal_flip.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_3d/geometric/vertical_flip.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_3d/geometric/vertical_flip.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_3d/geometric/vertical_flip.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_3d/geometric/vertical_flip.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/_3d/intensity/equalize.py:20:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/_3d/intensity/equalize.py:20:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/auto/base.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/auto/base.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/auto/operations/base.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/auto/operations/base.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/auto/operations/base.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/auto/operations/base.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/auto/operations/policy.py:20:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/auto/operations/policy.py:20:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/auto/rand_augment/rand_augment.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/auto/rand_augment/rand_augment.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/auto/trivial_augment/trivial_augment.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/auto/trivial_augment/trivial_augment.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/base.py:21:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/base.py:21:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/container/augment.py:21:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/container/augment.py:21:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/container/base.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/container/base.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/container/base.py:23:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/container/base.py:23:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/container/dispatcher.py:20:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/container/dispatcher.py:20:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/container/image.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/container/image.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/container/patch.py:21:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/container/patch.py:21:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/container/video.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/container/video.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/presets/ada.py:21:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/presets/ada.py:21:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/affine.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/affine.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/channel_dropout.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/channel_dropout.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/color_jiggle.py:21:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/color_jiggle.py:21:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/color_jitter.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/color_jitter.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/crop.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/crop.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/cutmix.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/cutmix.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/gaussian_blur.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/gaussian_blur.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/gaussian_blur.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/gaussian_blur.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/gaussian_illumination.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/gaussian_illumination.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/jigsaw.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/jigsaw.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/jpeg.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/jpeg.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/linear_illumination.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/linear_illumination.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/mixup.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/mixup.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/mosaic.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/mosaic.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/motion_blur.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/motion_blur.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/perspective.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/perspective.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/plain_uniform.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/plain_uniform.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/planckian_jitter.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/planckian_jitter.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/posterize.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/posterize.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/probability.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/probability.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/random_rain.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/random_rain.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/rectangle_earase.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/rectangle_earase.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/resize.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/resize.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/salt_pepper_noise.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/salt_pepper_noise.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/shear.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/shear.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_2d/translate.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_2d/translate.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_3d/affine.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_3d/affine.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_3d/crop.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_3d/crop.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_3d/motion_blur.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_3d/motion_blur.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_3d/perspective.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_3d/perspective.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/_3d/rotation.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/_3d/rotation.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/base.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/base.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/random_generator/utils.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/random_generator/utils.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/utils/helpers.py:21:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/utils/helpers.py:21:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/augmentation/utils/param_validation.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/augmentation/utils/param_validation.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/color/colormap.py:23:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/color/colormap.py:23:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/color/gray.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/color/gray.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/color/hls.py:23:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/color/hls.py:23:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/color/hsv.py:23:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/color/hsv.py:23:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/color/lab.py:27:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/color/lab.py:27:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/color/luv.py:27:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/color/luv.py:27:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/color/raw.py:23:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/color/raw.py:23:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/color/rgb.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/color/rgb.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/color/sepia.py:18:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/color/sepia.py:18:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/color/xyz.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/color/xyz.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/color/ycbcr.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/color/ycbcr.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/color/yuv.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/color/yuv.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/constants.py:21:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/constants.py:21:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/classification.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/classification.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/classification.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/classification.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/connected_components.py:18:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/connected_components.py:18:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/diamond_square.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/diamond_square.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/distance_transform.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/distance_transform.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/distance_transform.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/distance_transform.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/extract_patches.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/extract_patches.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/face_detection.py:23:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/face_detection.py:23:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/face_detection.py:25:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/face_detection.py:25:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/histogram_matching.py:18:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/histogram_matching.py:18:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/image_stitching.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/image_stitching.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/kmeans.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/kmeans.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/base.py:24:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/base.py:24:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/common.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/common.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/common.py:22:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/common.py:22:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/efficient_vit/backbone.py:25:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/efficient_vit/backbone.py:25:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/efficient_vit/backbone.py:26:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/efficient_vit/backbone.py:26:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/efficient_vit/model.py:23:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/efficient_vit/model.py:23:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/efficient_vit/nn/act.py:26:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/efficient_vit/nn/act.py:26:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/efficient_vit/nn/norm.py:25:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/efficient_vit/nn/norm.py:25:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/efficient_vit/nn/norm.py:26:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/efficient_vit/nn/norm.py:26:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/rt_detr/architecture/hgnetv2.py:27:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/rt_detr/architecture/hgnetv2.py:27:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/rt_detr/architecture/hybrid_encoder.py:28:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/rt_detr/architecture/hybrid_encoder.py:28:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/rt_detr/architecture/hybrid_encoder.py:30:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/rt_detr/architecture/hybrid_encoder.py:30:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/rt_detr/architecture/resnet_d.py:28:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/rt_detr/architecture/resnet_d.py:28:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/rt_detr/architecture/rtdetr_head.py:26:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/rt_detr/architecture/rtdetr_head.py:26:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/rt_detr/architecture/rtdetr_head.py:27:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/rt_detr/architecture/rtdetr_head.py:27:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/rt_detr/model.py:27:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/rt_detr/model.py:27:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/rt_detr/post_processor.py:24:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/rt_detr/post_processor.py:24:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/sam/architecture/common.py:28:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/sam/architecture/common.py:28:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/sam/architecture/image_encoder.py:28:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/sam/architecture/image_encoder.py:28:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/sam/architecture/image_encoder.py:30:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/sam/architecture/image_encoder.py:30:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/sam/architecture/mask_decoder.py:26:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/sam/architecture/mask_decoder.py:26:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/sam/architecture/mask_decoder.py:27:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/sam/architecture/mask_decoder.py:27:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/sam/architecture/prompt_encoder.py:29:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/sam/architecture/prompt_encoder.py:29:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/sam/architecture/prompt_encoder.py:30:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/sam/architecture/prompt_encoder.py:30:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/sam/architecture/transformer.py:28:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/sam/architecture/transformer.py:28:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/sam/model.py:34:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/sam/model.py:34:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/tiny_vit.py:26:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/tiny_vit.py:26:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/models/tiny_vit.py:28:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/models/tiny_vit.py:28:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/visual_prompter.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/visual_prompter.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/vit.py:31:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/vit.py:31:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/vit.py:32:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/vit.py:32:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/vit_mobile.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/vit_mobile.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/contrib/vit_mobile.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/contrib/vit_mobile.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/core/_backend.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/core/_backend.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/core/check.py:24:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/core/check.py:24:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/core/check.py:25:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/core/check.py:25:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/core/mixin/onnx.py:29:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/core/mixin/onnx.py:29:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/enhance/adjust.py:23:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/enhance/adjust.py:23:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/enhance/equalization.py:23:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/enhance/equalization.py:23:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/enhance/histogram.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/enhance/histogram.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/enhance/jpeg.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/enhance/jpeg.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/enhance/normalize.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/enhance/normalize.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/enhance/zca.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/enhance/zca.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/feature/adalam/adalam.py:24:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/feature/adalam/adalam.py:24:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/feature/adalam/core.py:21:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/feature/adalam/core.py:21:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/feature/adalam/ransac.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/feature/adalam/ransac.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/feature/adalam/utils.py:21:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/feature/adalam/utils.py:21:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/feature/affine_shape.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/feature/affine_shape.py:22:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/feature/affine_shape.py:23:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/feature/affine_shape.py:23:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/feature/dedode/decoder.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/feature/dedode/decoder.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/feature/dedode/decoder.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/feature/dedode/decoder.py:21:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/feature/dedode/dedode.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/feature/dedode/dedode.py:20:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/feature/dedode/dedode_models.py:18:8: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/feature/dedode/dedode_models.py:18:8: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token`?
+- kornia/feature/dedode/dedode_models.py:19:6: error[unresolved-import] Cannot resolve imported module `torch`
++ kornia/feature/dedode/dedode_models.py:19:6: error[unresolved-import] Cannot resolve imported module `torch`: Did you mean `token
+
+... (truncated 17229 lines) ...
+```
+
+</details>
+
+
+No memory usage changes detected ✅
+
+
+
+---
+
+_Comment by @AlexWaygood on 2025-12-03 20:46_
+
+Okay the failing snapshots in the ty crate (and the mypy_primer results) persuade me that this is a bad idea -- too many incorrect hits for these
+
+---
+
+_Closed by @AlexWaygood on 2025-12-03 20:46_
+
+---
+
+_Branch deleted on 2025-12-03 20:46_
+
+---

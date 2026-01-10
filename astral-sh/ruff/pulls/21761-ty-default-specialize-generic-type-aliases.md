@@ -1,0 +1,511 @@
+```yaml
+number: 21761
+title: "[ty] Default specialize generic type aliases"
+type: pull_request
+state: closed
+author: sharkdp
+labels:
+  - ty
+  - ecosystem-analyzer
+assignees: []
+draft: true
+base: main
+head: david/default-specialize-2
+created_at: 2025-12-02T19:12:35Z
+updated_at: 2025-12-02T20:12:11Z
+url: https://github.com/astral-sh/ruff/pull/21761
+synced_at: 2026-01-10T16:48:02Z
+```
+
+# [ty] Default specialize generic type aliases
+
+---
+
+_Pull request opened by @sharkdp on 2025-12-02 19:12_
+
+<!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+## Test Plan
+
+<!-- How was it tested? -->
+
+
+---
+
+_Label `ty` added by @sharkdp on 2025-12-02 19:12_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-12-02 19:12_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-02 19:14_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-12-02 19:14:26.069783579 +0000
++++ new-output.txt	2025-12-02 19:14:29.644790388 +0000
+@@ -470,7 +470,6 @@
+ generics_defaults_referential.py:37:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Literal[""]`
+ generics_defaults_referential.py:94:1: error[type-assertion-failure] Type `type[Bar[Any, list[Any]]]` does not match asserted type `<class 'Bar'>`
+ generics_defaults_referential.py:95:1: error[type-assertion-failure] Type `type[Bar[int, list[int]]]` does not match asserted type `<class 'Bar[int, list[int]]'>`
+-generics_defaults_specialization.py:26:5: error[type-assertion-failure] Type `SomethingWithNoDefaults[int, str]` does not match asserted type `SomethingWithNoDefaults[int, DefaultStrT]`
+ generics_defaults_specialization.py:30:15: error[invalid-type-arguments] Too many type arguments: expected between 0 and 1, got 2
+ generics_defaults_specialization.py:45:1: error[type-assertion-failure] Type `type[Bar[str]]` does not match asserted type `<class 'Bar'>`
+ generics_paramspec_basic.py:10:1: error[invalid-paramspec] The name of a `ParamSpec` (`NotIt`) must match the name of the variable it is assigned to (`WrongName`)
+@@ -1029,4 +1028,4 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Unknown key "title" for TypedDict `Movie`: Unknown key "title"
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions
+-Found 1031 diagnostics
++Found 1030 diagnostics
+
+```
+
+</details>
+
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-02 19:16_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+beartype (https://github.com/beartype/beartype)
+- beartype/_decor/decorcache.py:74:16: error[invalid-return-type] Return type does not match returned value: expected `BeartypeableT@BeartypeReturn | ((BeartypeableT@BeartypeConfedDecorator, /) -> BeartypeableT@BeartypeConfedDecorator)`, found `BeartypeableT@beartype | BeartypeableT@BeartypeReturn | ((BeartypeableT@BeartypeConfedDecorator, /) -> BeartypeableT@BeartypeConfedDecorator)`
+- beartype/_decor/decorcache.py:130:5: error[invalid-assignment] Invalid subscript assignment with key of type `BeartypeConf` and value of type `def _beartype_confed(obj: BeartypeableT@beartype) -> BeartypeableT@beartype` on object of type `dict[BeartypeConf, (BeartypeableT@BeartypeConfedDecorator, /) -> BeartypeableT@BeartypeConfedDecorator]`
+- beartype/_decor/decorcache.py:133:12: error[invalid-return-type] Return type does not match returned value: expected `BeartypeableT@BeartypeReturn | ((BeartypeableT@BeartypeConfedDecorator, /) -> BeartypeableT@BeartypeConfedDecorator)`, found `def _beartype_confed(obj: BeartypeableT@beartype) -> BeartypeableT@beartype`
+- beartype/_decor/decormain.py:93:20: error[invalid-return-type] Return type does not match returned value: expected `BeartypeableT@BeartypeReturn | ((BeartypeableT@BeartypeConfedDecorator, /) -> BeartypeableT@BeartypeConfedDecorator)`, found `BeartypeableT@beartype`
+- Found 498 diagnostics
++ Found 494 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/metrics/metastatus_lib.py:591:5: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `(Sequence[_GenericNodeT@_GenericNodeSortFunctionT], /) -> Sequence[_GenericNodeT@_GenericNodeSortFunctionT]`
++ paasta_tools/metrics/metastatus_lib.py:591:5: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `(Sequence[Unknown], /) -> Sequence[Unknown]`
+- paasta_tools/metrics/metastatus_lib.py:776:5: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `(Sequence[_GenericNodeT@_GenericNodeSortFunctionT], /) -> Sequence[_GenericNodeT@_GenericNodeSortFunctionT]`
++ paasta_tools/metrics/metastatus_lib.py:776:5: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `(Sequence[Unknown], /) -> Sequence[Unknown]`
+- paasta_tools/metrics/metastatus_lib.py:815:5: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `(Sequence[_GenericNodeT@_GenericNodeSortFunctionT], /) -> Sequence[_GenericNodeT@_GenericNodeSortFunctionT]`
++ paasta_tools/metrics/metastatus_lib.py:815:5: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `(Sequence[Unknown], /) -> Sequence[Unknown]`
+
+schemathesis (https://github.com/schemathesis/schemathesis)
++ src/schemathesis/specs/openapi/negative/mutations.py:164:89: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((MutationContext, (SearchStrategy[Unknown], /) -> Unknown, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None])`
+- src/schemathesis/specs/openapi/negative/mutations.py:145:25: error[invalid-assignment] Object of type `T@Draw` is not assignable to `list[(MutationContext, (SearchStrategy[T@Draw], /) -> T@Draw, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None]]`
+- src/schemathesis/specs/openapi/negative/mutations.py:145:30: error[invalid-argument-type] Argument is incorrect: Expected `SearchStrategy[T@Draw]`, found `SearchStrategy[list[(MutationContext, (SearchStrategy[T@Draw], /) -> T@Draw, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None]]]`
+- src/schemathesis/specs/openapi/negative/mutations.py:152:25: error[invalid-assignment] Object of type `T@Draw` is not assignable to `list[(MutationContext, (SearchStrategy[T@Draw], /) -> T@Draw, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None]]`
+- src/schemathesis/specs/openapi/negative/mutations.py:152:30: error[invalid-argument-type] Argument is incorrect: Expected `SearchStrategy[T@Draw]`, found `SearchStrategy[list[(MutationContext, (SearchStrategy[T@Draw], /) -> T@Draw, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None]]]`
+- src/schemathesis/specs/openapi/negative/mutations.py:162:28: error[call-non-callable] Object of type `T@Draw` is not callable
+- src/schemathesis/specs/openapi/negative/mutations.py:164:60: error[unresolved-attribute] Object of type `T@Draw` has no attribute `is_enabled`
+- src/schemathesis/specs/openapi/negative/mutations.py:164:89: error[unresolved-attribute] Object of type `(MutationContext, (SearchStrategy[T@Draw], /) -> T@Draw, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None]` has no attribute `__name__`
+- src/schemathesis/specs/openapi/negative/mutations.py:231:72: error[unresolved-attribute] Object of type `T@Draw` has no attribute `is_enabled`
+- src/schemathesis/specs/openapi/negative/mutations.py:248:9: error[invalid-argument-type] Argument is incorrect: Expected `str | None`, found `T@Draw`
+- src/schemathesis/specs/openapi/negative/mutations.py:288:27: error[invalid-argument-type] Argument to bound method `remove` is incorrect: Expected `str`, found `T@Draw`
+- src/schemathesis/specs/openapi/negative/mutations.py:292:63: error[unresolved-attribute] Object of type `T@Draw` has no attribute `is_enabled`
+- src/schemathesis/specs/openapi/negative/mutations.py:297:46: error[invalid-argument-type] Argument to function `prevent_unsatisfiable_schema` is incorrect: Expected `str`, found `T@Draw`
+- src/schemathesis/specs/openapi/negative/mutations.py:361:32: error[not-iterable] Object of type `T@Draw` is not iterable
+- src/schemathesis/specs/openapi/negative/mutations.py:361:37: error[invalid-argument-type] Argument is incorrect: Expected `SearchStrategy[T@Draw]`, found `SearchStrategy[list[Unknown]]`
+- src/schemathesis/specs/openapi/negative/mutations.py:390:12: error[unresolved-attribute] Object of type `T@Draw` has no attribute `is_enabled`
+- src/schemathesis/specs/openapi/negative/mutations.py:393:20: error[unresolved-attribute] Object of type `T@Draw` has no attribute `is_enabled`
+- src/schemathesis/specs/openapi/negative/mutations.py:393:49: error[unresolved-attribute] Object of type `(MutationContext, (SearchStrategy[T@Draw], /) -> T@Draw, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None]` has no attribute `__name__`
++ src/schemathesis/specs/openapi/negative/mutations.py:393:49: error[unresolved-attribute] Object of type `(MutationContext, (SearchStrategy[Unknown], /) -> Unknown, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None]` has no attribute `__name__`
+- src/schemathesis/specs/openapi/negative/mutations.py:547:37: error[unresolved-attribute] Object of type `T@Draw` has no attribute `is_enabled`
+- src/schemathesis/specs/openapi/negative/mutations.py:607:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[(MutationContext, (SearchStrategy[T@Draw], /) -> T@Draw, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None], ...]`, found `T@Draw`
+- src/schemathesis/specs/openapi/negative/mutations.py:607:17: error[invalid-argument-type] Argument is incorrect: Expected `SearchStrategy[T@Draw]`, found `SearchStrategy[list[(MutationContext, (SearchStrategy[T@Draw], /) -> T@Draw, dict[str, Any], /) -> tuple[MutationResult, MutationMetadata | None]]]`
+- Found 290 diagnostics
++ Found 272 diagnostics
+
+pandera (https://github.com/pandera-dev/pandera)
+- pandera/backends/pandas/checks.py:34:20: error[no-matching-overload] No overload of bound method `groupby` matches arguments
+- pandera/backends/pandas/checks.py:34:20: error[no-matching-overload] No overload of bound method `groupby` matches arguments
++ tests/mypy/pandas_modules/pandas_series.py:9:4: error[invalid-argument-type] Argument to function `fn` is incorrect: Expected `Series[str]`, found `Series[str | float]`
++ tests/mypy/pandas_modules/pandas_series.py:12:4: error[invalid-argument-type] Argument to function `fn` is incorrect: Expected `Series[str]`, found `Series[float]`
+
+vision (https://github.com/pytorch/vision)
+- references/depth/stereo/train.py:508:17: error[unresolved-attribute] Object of type `ndarray[tuple[Any, ...], dtype[_ScalarT]]` has no attribute `load_state_dict`
++ references/depth/stereo/train.py:508:17: error[unresolved-attribute] Object of type `ndarray[tuple[Any, ...], dtype[Unknown]]` has no attribute `load_state_dict`
+
+Tanjun (https://github.com/FasterSpeeding/Tanjun)
+- tanjun/annotations.py:1469:46: error[invalid-type-form] Variable of type `type[_EnumT@__getitem__]` is not allowed in a type expression
++ tanjun/annotations.py:1469:46: error[invalid-type-form] Variable of type `type[Unknown]` is not allowed in a type expression
+- tanjun/annotations.py:1601:29: error[invalid-type-form] Variable of type `type[_T@_annotated]` is not allowed in a type expression
++ tanjun/annotations.py:1601:29: error[invalid-type-form] Variable of type `type[Unknown]` is not allowed in a type expression
+- tanjun/annotations.py:2206:64: error[invalid-type-form] Variable of type `type[_T@__getitem__]` is not allowed in a type expression
++ tanjun/annotations.py:2206:64: error[invalid-type-form] Variable of type `type[Unknown]` is not allowed in a type expression
+- tanjun/dependencies/data.py:160:70: error[invalid-type-form] Variable of type `type[_T@make_lc_resolver]` is not allowed in a type expression
++ tanjun/dependencies/data.py:160:70: error[invalid-type-form] Variable of type `type[Unknown]` is not allowed in a type expression
+
+freqtrade (https://github.com/freqtrade/freqtrade)
+- freqtrade/data/converter/converter.py:77:12: error[no-matching-overload] No overload of bound method `aggregate` matches arguments
+- freqtrade/data/converter/trade_converter_kraken.py:59:33: error[invalid-argument-type] Argument to function `read_csv` is incorrect: Expected `MutableSequence[HashableT] | ndarray[tuple[int], dtype[GenericT]] | tuple[HashableT, ...] | range | None`, found `list[Unknown | str]`
+- freqtrade/data/metrics.py:351:18: error[no-matching-overload] No overload of function `std` matches arguments
+- freqtrade/data/metrics.py:378:16: error[no-matching-overload] No overload of function `std` matches arguments
+- freqtrade/exchange/binance_public_data.py:285:33: error[invalid-argument-type] Argument to function `read_csv` is incorrect: Expected `MutableSequence[HashableT] | ndarray[tuple[int], dtype[GenericT]] | tuple[HashableT, ...] | range | None`, found `list[Unknown | str]`
+- freqtrade/exchange/binance_public_data.py:371:9: error[invalid-argument-type] Argument to function `read_csv` is incorrect: Expected `MutableSequence[HashableT] | ndarray[tuple[int], dtype[GenericT]] | tuple[HashableT, ...] | range | None`, found `list[Unknown | str]`
+- freqtrade/freqai/data_kitchen.py:179:30: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Sequence[Unknown] | Iterable[Sequence[Unknown] | ndarray[tuple[int], dtype[GenericT]] | Series[Any] | ... omitted 3 union elements] | Series[Any] | ... omitted 4 union elements`, found `Unknown | _Buffer | _SupportsArray[dtype[Any]] | ... omitted 7 union elements`
++ freqtrade/freqai/data_kitchen.py:179:30: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Sequence[Unknown] | Iterable[Sequence[Unknown] | ndarray[tuple[int], dtype[Any]] | Series[Any] | ... omitted 3 union elements] | Series[Any] | ... omitted 4 union elements`, found `Unknown | _Buffer | _SupportsArray[dtype[Any]] | ... omitted 7 union elements`
+- freqtrade/freqai/freqai_interface.py:490:13: error[invalid-assignment] Object of type `ndarray[tuple[int], dtype[float64]]` is not assignable to attribute `DI_values` of type `ndarray[tuple[Any, ...], dtype[_ScalarT]]`
+- freqtrade/optimize/optimize_reports/optimize_reports.py:210:28: error[no-matching-overload] No overload of bound method `groupby` matches arguments
++ freqtrade/optimize/optimize_reports/optimize_reports.py:215:84: error[invalid-argument-type] Argument to function `_generate_result_line` is incorrect: Expected `str | list[str]`, found `str | bytes | date | ... omitted 10 union elements`
+- Found 695 diagnostics
++ Found 688 diagnostics
+
+discord.py (https://github.com/Rapptz/discord.py)
+- discord/app_commands/transformers.py:238:22: error[invalid-type-form] Variable of type `Self@__or__` is not allowed in a type expression
++ discord/ext/commands/bot.py:501:69: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- discord/ext/commands/bot.py:424:37: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `(ContextT@UserCheck, /) -> bool | Coroutine[Any, Any, bool]`, found `(ContextT@add_check, /) -> bool | Coroutine[Any, Any, bool]`
+- discord/ext/commands/bot.py:426:33: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `(ContextT@UserCheck, /) -> bool | Coroutine[Any, Any, bool]`, found `(ContextT@add_check, /) -> bool | Coroutine[Any, Any, bool]`
+- discord/ext/commands/bot.py:449:22: error[invalid-argument-type] Argument to bound method `remove` is incorrect: Expected `(ContextT@UserCheck, /) -> bool | Coroutine[Any, Any, bool]`, found `(ContextT@remove_check, /) -> bool | Coroutine[Any, Any, bool]`
+- discord/ext/commands/core.py:1146:9: error[invalid-assignment] Object of type `((CogT@Command, ContextT@before_invoke, /) -> Coroutine[Any, Any, Any]) | ((ContextT@before_invoke, /) -> Coroutine[Any, Any, Any])` is not assignable to attribute `_before_invoke` of type `((CogT@Hook, ContextT@Hook, /) -> Coroutine[Any, Any, Any]) | ((ContextT@Hook, /) -> Coroutine[Any, Any, Any]) | None`
+- discord/ext/commands/core.py:1177:9: error[invalid-assignment] Object of type `((CogT@Command, ContextT@after_invoke, /) -> Coroutine[Any, Any, Any]) | ((ContextT@after_invoke, /) -> Coroutine[Any, Any, Any])` is not assignable to attribute `_after_invoke` of type `((CogT@Hook, ContextT@Hook, /) -> Coroutine[Any, Any, Any]) | ((ContextT@Hook, /) -> Coroutine[Any, Any, Any]) | None`
+- Found 566 diagnostics
++ Found 561 diagnostics
+
+zope.interface (https://github.com/zopefoundation/zope.interface)
+- src/zope/interface/interface.py:978:22: error[invalid-type-form] Variable of type `Self@__or__` is not allowed in a type expression
+- src/zope/interface/interface.py:982:29: error[invalid-type-form] Variable of type `Self@__ror__` is not allowed in a type expression
+- Found 421 diagnostics
++ Found 419 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
+- mesonbuild/interpreter/interpreter.py:398:9: error[no-matching-overload] No overload of bound method `update` matches arguments
+- mesonbuild/interpreter/interpreter.py:450:9: error[no-matching-overload] No overload of bound method `update` matches arguments
+- mesonbuild/interpreterbase/baseobjects.py:70:17: error[no-matching-overload] No overload of bound method `update` matches arguments
+- mesonbuild/interpreterbase/baseobjects.py:137:26: error[invalid-argument-type] Argument is incorrect: Expected `TYPE_op_arg@TYPE_op_func`, found `Self@operator_call`
+- mesonbuild/interpreterbase/baseobjects.py:137:32: error[invalid-argument-type] Argument is incorrect: Expected `TYPE_op_arg@TYPE_op_func`, found `Sequence[Divergent] | int | dict[str, Divergent] | ... omitted 5 union elements`
+- mesonbuild/interpreterbase/baseobjects.py:139:45: error[invalid-argument-type] Argument is incorrect: Expected `TYPE_op_arg@TYPE_op_func`, found `Self@operator_call`
+- mesonbuild/interpreterbase/baseobjects.py:139:51: error[invalid-argument-type] Argument is incorrect: Expected `TYPE_op_arg@TYPE_op_func`, found `Sequence[Divergent] | int | dict[str, Divergent] | ... omitted 5 union elements`
+- mesonbuild/interpreterbase/interpreterbase.py:569:28: error[invalid-argument-type] Argument is incorrect: Expected `InterpreterObjectTypeVar@HolderMapType`, found `HoldableObject | int | str | ... omitted 8 union elements`
+- mesonbuild/interpreterbase/interpreterbase.py:573:32: error[invalid-argument-type] Argument is incorrect: Expected `InterpreterObjectTypeVar@HolderMapType`, found `HoldableObject | int | str | ... omitted 8 union elements`
+- Found 1926 diagnostics
++ Found 1917 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
++ strawberry/types/field.py:200:25: error[not-iterable] Object of type `object` is not iterable
+- strawberry/types/lazy_type.py:59:22: error[invalid-type-form] Variable of type `Self@__or__` is not allowed in a type expression
+- strawberry/types/lazy_type.py:59:28: error[invalid-type-form] Variable of type `Other@__or__` is not allowed in a type expression
+- Found 400 diagnostics
++ Found 399 diagnostics
+
+setuptools (https://github.com/pypa/setuptools)
+- setuptools/_vendor/typing_extensions.py:2074:29: error[invalid-type-form] Variable of type `Self@__or__` is not allowed in a type expression
+- setuptools/_vendor/typing_extensions.py:2077:36: error[invalid-type-form] Variable of type `Self@__ror__` is not allowed in a type expression
+- Found 1262 diagnostics
++ Found 1260 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- src/hydra_zen/third_party/beartype.py:129:31: error[invalid-argument-type] Argument to function `coerce_sequences` is incorrect: Argument type `_T@validates_with_beartype | BeartypeableT@BeartypeReturn | ((BeartypeableT@BeartypeConfedDecorator, /) -> BeartypeableT@BeartypeConfedDecorator)` does not satisfy upper bound `(...) -> Unknown` of type variable `_T`
+- Found 539 diagnostics
++ Found 538 diagnostics
+
+scipy-stubs (https://github.com/scipy/scipy-stubs)
+- scipy-stubs/special/_ufuncs.pyi:762:43: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:764:43: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:766:45: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:768:41: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:770:48: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:788:43: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:790:43: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:792:45: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:794:42: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:796:45: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:814:45: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:816:43: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:818:47: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:836:57: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:838:43: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:840:46: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:842:45: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:844:43: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:846:48: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:848:47: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1014:59: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1016:62: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1018:61: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1045:59: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1047:68: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1049:68: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1051:67: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1053:67: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1077:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1089:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1101:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1145:63: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1147:67: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1149:67: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1165:63: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1167:58: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1169:68: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1171:66: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1200:61: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1202:58: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1204:68: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1206:68: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1208:67: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1210:67: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1212:68: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1214:66: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1238:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1250:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1262:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1331:59: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1333:63: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1335:58: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1337:58: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1339:67: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1341:67: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1343:67: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1345:67: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1380:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1392:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1405:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1417:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1430:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1622:75: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1625:68: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1629:68: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1633:68: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1637:77: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1641:77: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1645:77: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1665:66: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1669:68: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1673:64: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1677:86: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1681:86: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1685:86: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1689:77: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1693:77: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1697:77: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1701:76: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1705:78: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1709:78: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1729:66: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1733:72: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1742:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1752:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1762:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1767:77: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1771:77: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1775:77: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1779:78: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1783:78: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1787:78: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1853:87: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1863:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1874:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1885:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1896:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1907:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1918:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1929:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1940:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1974:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1986:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:1998:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2010:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2039:82: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2043:84: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2047:79: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2057:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2068:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2079:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2090:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2101:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2112:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2123:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2134:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2145:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2156:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2167:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2178:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2206:82: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2210:90: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2220:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2231:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2242:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2253:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2264:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2275:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2286:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2297:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2308:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2319:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2330:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- scipy-stubs/special/_ufuncs.pyi:2341:9: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `tuple[_MaybeOutT] | _MaybeOutT`
+- tests/fft/test_backend.pyi:17:36: error[invalid-argument-type] Argument to function `set_global_backend` is incorrect: Expected `type[_Backend[_T]] | Literal["scipy"]`, found `<class 'MyBackend'>`
++ tests/fft/test_backend.pyi:17:36: error[invalid-argument-type] Argument to function `set_global_backend` is incorrect: Expected `type[_Backend[Any]] | Literal["scipy"]`, found `<class 'MyBackend'>`
+- tests/fft/test_backend.pyi:21:34: error[invalid-argument-type] Argument to function `register_backend` is incorrect: Expected `type[_Backend[_T]] | Literal["scipy"]`, found `<class 'MyBackend'>`
++ tests/fft/test_backend.pyi:21:34: error[invalid-argument-type] Argument to function `register_backend` is incorrect: Expected `type[_Backend[Any]] | Literal["scipy"]`, found `<class 'MyBackend'>`
+- tests/fft/test_backend.pyi:30:22: error[invalid-argument-type] Argument to function `set_backend` is incorrect: Expected `type[_Backend[_T]] | Literal["scipy"]`, found `<class 'MyBackend'>`
++ tests/fft/test_backend.pyi:30:22: error[invalid-argument-type] Argument to function `set_backend` is incorrect: Expected `type[_Backend[Any]] | Literal["scipy"]`, found `<class 'MyBackend'>`
+- tests/fft/test_backend.pyi:36:23: error[invalid-argument-type] Argument to function `skip_backend` is incorrect: Expected `type[_Backend[_T]] | Literal["scipy"]`, found `<class 'MyBackend'>`
++ tests/fft/test_backend.pyi:36:23: error[invalid-argument-type] Argument to function `skip_backend` is incorrect: Expected `type[_Backend[Any]] | Literal["scipy"]`, found `<class 'MyBackend'>`
+- tests/sparse/test_construct.pyi:125:1: error[type-assertion-failure] Type `dia_array[float64]` does not match asserted type `Unknown`
+- tests/sparse/test_construct.pyi:125:30: error[invalid-argument-type] Argument to function `eye_array` is incorrect: Expected `_IntT | CanInt[_IntT] | CanIndex[_IntT]`, found `Literal[5]`
+- tests/sparse/test_construct.pyi:126:1: error[type-assertion-failure] Type `bsr_array[float64]` does not match asserted type `Unknown`
+- tests/sparse/test_construct.pyi:126:13: error[no-matching-overload] No overload of function `eye_array` matches arguments
+- tests/sparse/test_construct.pyi:127:1: error[type-assertion-failure] Type `coo_array[float64, tuple[int, int]]` does not match asserted type `Unknown`
+- tests/sparse/test_construct.pyi:127:13: error[no-matching-overload] No overload of function `eye_array` matches arguments
+- tests/sparse/test_construct.pyi:128:1: error[type-assertion-failure] Type `csc_array[float64]` does not match asserted type `Unknown`
+- tests/sparse/test_construct.pyi:128:13: error[no-matching-overload] No overload of function `eye_array` matches arguments
+- tests/sparse/test_construct.pyi:129:1: error[type-assertion-failure] Type `csr_array[float64, tuple[int, int]]` does not match asserted type `Unknown`
+- tests/sparse/test_construct.pyi:129:13: error[no-matching-overload] No overload of function `eye_array` matches arguments
+- tests/sparse/test_construct.pyi:130:1: error[type-assertion-failure] Type `dia_array[float64]` does not match asserted type `Unknown`
+- tests/sparse/test_construct.pyi:130:13: error[no-matching-overload] No overload of function `eye_array` matches arguments
+- tests/sparse/test_construct.pyi:131:1: error[type-assertion-failure] Type `dok_array[float64, tuple[int, int]]` does not match asserted type `Unknown`
+- tests/sparse/test_construct.pyi:131:13: error[no-matching-overload] No overload of function `eye_array` matches arguments
+- tests/sparse/test_construct.pyi:132:1: error[type-assertion-failure] Type `lil_array[float64]` does not match asserted type `Unknown`
+- tests/sparse/test_construct.pyi:132:13: error[no-matching-overload] No overload of function `eye_array` matches arguments
+- tests/sparse/test_construct.pyi:133:1: error[type-assertion-failure] Type `dia_array[floating[_32Bit]]` does not match asserted type `Unknown`
++ tests/sparse/test_construct.pyi:133:1: error[type-assertion-failure] Type `dia_array[floating[_32Bit]]` does not match asserted type `dia_array[float64]`
+- tests/sparse/test_construct.pyi:133:13: error[no-matching-overload] No overload of function `eye_array` matches arguments
+- tests/sparse/test_construct.pyi:134:1: error[type-assertion-failure] Type `bsr_array[floating[_32Bit]]` does not match asserted type `Unknown`
++ tests/sparse/test_construct.pyi:134:1: error[type-assertion-failure] Type `bsr_array[floating[_32Bit]]` does not match asserted type `bsr_array[float64]`
+- tests/sparse/test_construct.pyi:134:13: error[no-matching-overload] No overload of function `eye_array` matches arguments
+- tests/sparse/test_construct.pyi:135:1: error[type-assertion-failure] Type `coo_array[floating[_32Bit], tuple[int, int]]` does not match asserted type `Unknown`
++ tests/sparse/test_construct.pyi:135:1: error[type-assertion-failure] Type `coo_array[floating[_32Bit], tuple[int, int]]` does not match asserted type `coo_array[float64, tuple[int, int]]`
+- tests/sparse/test_construct.pyi:135:13: error[no-matching-overload] No overload of function `eye_array` matches arguments
+- tests/sparse/test_construct.pyi:136:1: error[type-assertion-failure] Type `csc_array[floating[_32Bit]]` does not match asserted type `Unknown`
++ tests/sparse/test_construct.pyi:136:1: error[type-assertion-failure] Type `csc_array[floating[_32Bit]]` does not match asserted type `csc_array[float64]`
+- tests/sparse/test_construct.pyi:136:13: error[no-matching-overload] No overload of function `eye_array` matches arguments
+- tests/sparse/test_construct.pyi:137:1: error[type-assertion-failure] Type `csr_array[floating[_32Bit], tuple[int, int]]` does not match asserted type `Unknown`
++ tests/sparse/test_construct.pyi:137:1: error[type-assertion-failure] Type `csr_array[floating[_32Bit], tuple[int, int]]` does not match asserted type `csr_array[float64, tuple[int, int]]`
+- tests/sparse/test_construct.pyi:137:13: error[no-matching-overload] No overload of function `eye_array` matches arguments
+- tests/sparse/test_construct.pyi:138:1: error[type-assertion-failure] Type `dia_array[floating[_32Bit]]` does not match asserted type `Unknown`
++ tests/sparse/test_construct.pyi:138:1: error[type-assertion-failure] Type `dia_array[floating[_32Bit]]` does not match asserted type `dia_array[float64]`
+- tests/sparse/test_construct.pyi:138:13: error[no-matching-overload] No overload of function `eye_array` matches arguments
+- tests/sparse/test_construct.pyi:139:1: error[type-assertion-failure] Type `dok_array[floating[_32Bit], tuple[int, int]]` does not match asserted type `Unknown`
++ tests/sparse/test_construct.pyi:139:1: error[type-assertion-failure] Type `dok_array[floating[_32Bit], tuple[int, int]]` does not match asserted type `dok_array[float64, tuple[int, int]]`
+- tests/sparse/test_construct.pyi:139:13: error[no-matching-overload] No overload of function `eye_array` matches arguments
+- tests/sparse/test_construct.pyi:140:1: error[type-assertion-failure] Type `lil_array[floating[_32Bit]]` does not match asserted type `Unknown`
++ tests/sparse/test_construct.pyi:140:1: error[type-assertion-failure] Type `lil_array[floating[_32Bit]]` does not match asserted type `lil_array[float64]`
+- tests/sparse/test_construct.pyi:140:13: error[no-matching-overload] No overload of function `eye_array` matches arguments
+- tests/sparse/test_construct.pyi:142:1: error[type-assertion-failure] Type `dia_matrix[float64]` does not match asserted type `Unknown`
+- tests/sparse/test_construct.pyi:142:24: error[invalid-argument-type] Argument to function `eye` is incorrect: Expected 
+
+... (truncated 1961 lines) ...
+```
+
+</details>
+
+
+
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+```diff
+sphinx (https://github.com/sphinx-doc/sphinx)
+-     memo metadata = ~76MB
++     memo metadata = ~80MB
+
+
+```
+
+</details>
+
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-02 19:21_
+
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `no-matching-overload` | 3 | 453 | 0 |
+| `type-assertion-failure` | 24 | 171 | 184 |
+| `unsupported-operator` | 1 | 283 | 1 |
+| `invalid-argument-type` | 3 | 239 | 26 |
+| `invalid-return-type` | 0 | 206 | 3 |
+| `invalid-parameter-default` | 0 | 134 | 3 |
+| `invalid-assignment` | 0 | 52 | 3 |
+| `invalid-context-manager` | 0 | 0 | 32 |
+| `unresolved-attribute` | 9 | 14 | 2 |
+| `invalid-type-form` | 0 | 9 | 8 |
+| `non-subscriptable` | 2 | 15 | 0 |
+| `unused-ignore-comment` | 8 | 0 | 0 |
+| `not-iterable` | 1 | 3 | 1 |
+| `possibly-missing-attribute` | 1 | 2 | 0 |
+| `call-non-callable` | 0 | 1 | 0 |
+| `invalid-method-override` | 0 | 1 | 0 |
+| `unsupported-base` | 1 | 0 | 0 |
+| **Total** | **53** | **1,583** | **263** |
+
+**[Full report with detailed diff](https://david-default-specialize-2.ecosystem-663.pages.dev/diff)** ([timing results](https://david-default-specialize-2.ecosystem-663.pages.dev/timing))
+
+
+
+
+---
+
+_Comment by @codspeed-hq[bot] on 2025-12-02 19:31_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/david%2Fdefault-specialize-2?utm_source=github&utm_medium=comment&utm_content=header)
+
+### Merging #21761 will **degrade performances by 7.63%**
+
+<sub>Comparing <code>david/default-specialize-2</code> (e483361) with <code>main</code> (515de2d)</sub>
+
+
+
+### Summary
+
+`❌ 1` regression  
+`✅ 21` untouched  
+`⏩ 30` skipped[^skipped]  
+
+
+> :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/david%2Fdefault-specialize-2?utm_source=github&utm_medium=comment&utm_content=acknowledge)._
+
+### Benchmarks breakdown
+
+|     | Mode | Benchmark | `BASE` | `HEAD` | Change |
+| --- | ---- | --------- | ------ | ------ | ------ |
+| ❌ | WallTime | [`` medium[colour-science] ``](https://codspeed.io/astral-sh/ruff/branches/david%2Fdefault-specialize-2?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Amedium%5Bcolour-science%5D&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 87.8 s | 95.1 s | -7.63% |
+[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/david%2Fdefault-specialize-2?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment&utm_content=archive).
+
+
+---
+
+_Closed by @sharkdp on 2025-12-02 20:12_
+
+---

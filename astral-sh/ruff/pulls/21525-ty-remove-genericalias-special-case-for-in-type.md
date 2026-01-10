@@ -1,0 +1,159 @@
+```yaml
+number: 21525
+title: "[ty] Remove `GenericAlias` special case for in_type_expression"
+type: pull_request
+state: closed
+author: sharkdp
+labels:
+  - ty
+assignees: []
+draft: true
+base: main
+head: david/no-genericalias-special-case
+created_at: 2025-11-19T14:09:41Z
+updated_at: 2025-11-19T14:17:10Z
+url: https://github.com/astral-sh/ruff/pull/21525
+synced_at: 2026-01-10T16:48:02Z
+```
+
+# [ty] Remove `GenericAlias` special case for in_type_expression
+
+---
+
+_Pull request opened by @sharkdp on 2025-11-19 14:09_
+
+<!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+## Test Plan
+
+<!-- How was it tested? -->
+
+
+---
+
+_Label `ty` added by @sharkdp on 2025-11-19 14:09_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-11-19 14:11_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-11-19 14:11:34.378315533 +0000
++++ new-output.txt	2025-11-19 14:11:37.827372540 +0000
+@@ -45,6 +45,7 @@
+ aliases_newtype.py:61:38: error[invalid-newtype] invalid base for `typing.NewType`: type `TD1`
+ aliases_newtype.py:63:15: error[invalid-newtype] Wrong number of arguments in `NewType` creation, expected 2, found 3
+ aliases_newtype.py:65:38: error[invalid-newtype] invalid base for `typing.NewType`: type `Any`
++aliases_recursive.py:61:5: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
+ aliases_type_statement.py:10:19: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 3
+ aliases_type_statement.py:17:1: error[unresolved-attribute] Object of type `typing.TypeAliasType` has no attribute `bit_count`
+ aliases_type_statement.py:19:1: error[call-non-callable] Object of type `TypeAliasType` is not callable
+@@ -614,7 +615,8 @@
+ generics_typevartuple_specialization.py:143:39: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `tuple[tuple[@Todo(PEP 646), ...], T1@func9, T2@func9, T3@func9]`
+ generics_typevartuple_specialization.py:148:5: error[type-assertion-failure] Type `tuple[tuple[()], str, bool, int | float]` does not match asserted type `tuple[tuple[@Todo(PEP 646), ...], Unknown, Unknown, Unknown]`
+ generics_typevartuple_specialization.py:149:5: error[type-assertion-failure] Type `tuple[tuple[bool], str, int | float, int]` does not match asserted type `tuple[tuple[@Todo(PEP 646), ...], Unknown, Unknown, Unknown]`
+-generics_typevartuple_specialization.py:157:5: error[type-assertion-failure] Type `tuple[*tuple[int, ...], int]` does not match asserted type `@Todo(Support for `typing.GenericAlias` instances in type expressions)`
++generics_typevartuple_specialization.py:156:15: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
++generics_typevartuple_specialization.py:157:5: error[type-assertion-failure] Type `tuple[*tuple[int, ...], int]` does not match asserted type `Unknown`
+ generics_typevartuple_specialization.py:158:5: error[type-assertion-failure] Type `tuple[*tuple[int, ...], str]` does not match asserted type `@Todo(specialized generic alias in type expression)`
+ generics_typevartuple_specialization.py:159:5: error[type-assertion-failure] Type `tuple[*tuple[int, ...], str]` does not match asserted type `@Todo(specialized generic alias in type expression)`
+ generics_typevartuple_unpack.py:17:13: error[invalid-argument-type] `@Todo(starred expression)` is not a valid argument to `Generic`
+@@ -993,5 +995,5 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Unknown key "title" for TypedDict `Movie`: Unknown key "title"
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 995 diagnostics
++Found 997 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+
+```
+
+</details>
+
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-11-19 14:13_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+Tanjun (https://github.com/FasterSpeeding/Tanjun)
++ tanjun/abc.py:246:69: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
++ tanjun/abc.py:247:65: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
++ tanjun/checks.py:91:48: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
++ tanjun/checks.py:96:39: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
++ tanjun/checks.py:969:12: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
++ tanjun/checks.py:1056:12: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
++ tanjun/checks.py:1056:44: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
++ tanjun/checks.py:1198:12: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
++ tanjun/checks.py:1200:14: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
++ tanjun/clients.py:76:53: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
++ tanjun/clients.py:739:28: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
++ tanjun/clients.py:1197:48: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
++ tanjun/clients.py:1903:34: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
++ tanjun/clients.py:1926:35: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
++ tanjun/commands/base.py:45:53: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
++ tanjun/commands/message.py:63:69: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
++ tanjun/commands/message.py:66:69: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
++ tanjun/commands/slash.py:95:65: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
++ tanjun/components.py:57:53: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
++ tanjun/components.py:197:28: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
++ tanjun/components.py:229:48: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
++ tanjun/components.py:570:34: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
++ tanjun/components.py:589:35: error[invalid-type-form] Variable of type `GenericAlias` is not allowed in a type expression
+- Found 140 diagnostics
++ Found 163 diagnostics
+
+
+```
+
+</details>
+
+
+No memory usage changes detected ✅
+
+
+
+---
+
+_Comment by @sharkdp on 2025-11-19 14:17_
+
+No, not today.
+
+---
+
+_Closed by @sharkdp on 2025-11-19 14:17_
+
+---

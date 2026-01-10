@@ -1,0 +1,564 @@
+```yaml
+number: 21598
+title: "[ty] Extend Liskov checks to also cover classmethods and staticmethods"
+type: pull_request
+state: merged
+author: AlexWaygood
+labels:
+  - ty
+  - ecosystem-analyzer
+assignees: []
+merged: true
+base: main
+head: alex/static-class-method-liskov
+created_at: 2025-11-23T22:13:58Z
+updated_at: 2025-11-24T23:14:09Z
+url: https://github.com/astral-sh/ruff/pull/21598
+synced_at: 2026-01-10T16:48:02Z
+```
+
+# [ty] Extend Liskov checks to also cover classmethods and staticmethods
+
+---
+
+_Pull request opened by @AlexWaygood on 2025-11-23 22:13_
+
+## Summary
+
+Building on https://github.com/astral-sh/ruff/pull/21436.
+
+There's nothing conceptually more complicated about this, it just requires its own set of tests and its own subdiagnostic hint.
+
+I also uncovered another inconsistency between mypy/pyright/pyrefly, which is fun. In this case, I suggest we go with pyright's behaviour.
+
+## Test Plan
+
+mdtests/snapshots
+
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-11-23 22:13_
+
+---
+
+_Label `ecosystem-analyzer` added by @AlexWaygood on 2025-11-23 22:15_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-11-23 22:15_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+No changes detected when running ty on typing conformance tests ✅
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-11-23 22:17_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+anyio (https://github.com/agronholm/anyio)
+- src/anyio/_backends/_asyncio.py:2716:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 89 diagnostics
++ Found 88 diagnostics
+
+kornia (https://github.com/kornia/kornia)
+- kornia/geometry/boxes.py:744:23: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ kornia/geometry/keypoints.py:202:9: error[invalid-method-override] Invalid override of method `from_tensor`: Definition is incompatible with `Keypoints.from_tensor`
++ kornia/models/_hf_models/preprocessor.py:50:9: error[invalid-method-override] Invalid override of method `from_json`: Definition is incompatible with `PreprocessingLoader.from_json`
+- Found 762 diagnostics
++ Found 763 diagnostics
+
+pip (https://github.com/pypa/pip)
++ src/pip/_internal/vcs/git.py:566:9: error[invalid-method-override] Invalid override of method `should_add_vcs_url_prefix`: Definition is incompatible with `VersionControl.should_add_vcs_url_prefix`
++ src/pip/_internal/vcs/mercurial.py:128:9: error[invalid-method-override] Invalid override of method `get_requirement_revision`: Definition is incompatible with `VersionControl.get_requirement_revision`
++ src/pip/_vendor/urllib3/packages/six.py:947:13: error[invalid-method-override] Invalid override of method `__prepare__`: Definition is incompatible with `type.__prepare__`
+- Found 603 diagnostics
++ Found 606 diagnostics
+
+spack (https://github.com/spack/spack)
+- lib/spack/spack/vendor/jinja2/runtime.py:639:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/vendor/six.py:875:13: error[invalid-method-override] Invalid override of method `__prepare__`: Definition is incompatible with `type.__prepare__`
+
+jinja (https://github.com/pallets/jinja)
+- src/jinja2/runtime.py:595:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 179 diagnostics
++ Found 178 diagnostics
+
+pyjwt (https://github.com/jpadilla/pyjwt)
++ jwt/algorithms.py:867:13: error[invalid-method-override] Invalid override of method `to_jwk`: Definition is incompatible with `Algorithm.to_jwk`
+- Found 44 diagnostics
++ Found 45 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
++ tests/test_crawler.py:194:17: error[invalid-method-override] Invalid override of method `from_crawler`: Definition is incompatible with `Spider.from_crawler`
++ tests/test_crawler.py:248:17: error[invalid-method-override] Invalid override of method `from_crawler`: Definition is incompatible with `Spider.from_crawler`
++ tests/test_crawler.py:274:17: error[invalid-method-override] Invalid override of method `from_crawler`: Definition is incompatible with `Spider.from_crawler`
++ tests/test_crawler.py:328:17: error[invalid-method-override] Invalid override of method `from_crawler`: Definition is incompatible with `Spider.from_crawler`
++ tests/test_crawler.py:354:17: error[invalid-method-override] Invalid override of method `from_crawler`: Definition is incompatible with `Spider.from_crawler`
++ tests/test_crawler.py:408:17: error[invalid-method-override] Invalid override of method `from_crawler`: Definition is incompatible with `Spider.from_crawler`
++ tests/test_crawler.py:434:17: error[invalid-method-override] Invalid override of method `from_crawler`: Definition is incompatible with `Spider.from_crawler`
++ tests/test_crawler.py:488:17: error[invalid-method-override] Invalid override of method `from_crawler`: Definition is incompatible with `Spider.from_crawler`
+- Found 1727 diagnostics
++ Found 1735 diagnostics
+
+boostedblob (https://github.com/hauntsaninja/boostedblob)
++ boostedblob/path.py:139:9: error[invalid-method-override] Invalid override of method `from_str`: Definition is incompatible with `BasePath.from_str`
++ boostedblob/path.py:218:9: error[invalid-method-override] Invalid override of method `from_str`: Definition is incompatible with `BasePath.from_str`
+- Found 14 diagnostics
++ Found 16 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- src/_pytest/doctest.py:272:23: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/_pytest/main.py:537:23: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/_pytest/python.py:750:69: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- testing/test_collection.py:1619:52: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 459 diagnostics
++ Found 455 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
+- ignite/handlers/param_scheduler.py:785:27: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- ignite/handlers/param_scheduler.py:1003:27: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- ignite/handlers/param_scheduler.py:1698:27: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 2124 diagnostics
++ Found 2121 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
++ dulwich/objects.py:911:9: error[invalid-method-override] Invalid override of method `from_path`: Definition is incompatible with `ShaFile.from_path`
++ dulwich/objects.py:1329:9: error[invalid-method-override] Invalid override of method `from_path`: Definition is incompatible with `ShaFile.from_path`
+- Found 183 diagnostics
++ Found 185 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
++ tornado/test/web_test.py:1562:17: error[invalid-method-override] Invalid override of method `make_static_url`: Definition is incompatible with `StaticFileHandler.make_static_url`
++ tornado/test/web_test.py:1579:17: error[invalid-method-override] Invalid override of method `get_absolute_path`: Definition is incompatible with `StaticFileHandler.get_absolute_path`
++ tornado/test/web_test.py:1586:17: error[invalid-method-override] Invalid override of method `get_content`: Definition is incompatible with `StaticFileHandler.get_content`
+- Found 320 diagnostics
++ Found 323 diagnostics
+
+pandera (https://github.com/pandera-dev/pandera)
++ pandera/api/dataframe/model.py:268:9: error[invalid-method-override] Invalid override of method `__class_getitem__`: Definition is incompatible with `BaseModel.__class_getitem__`
+- pandera/typing/pandas.py:361:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
++ schema_salad/metaschema.py:1219:9: error[invalid-method-override] Invalid override of method `fromDoc`: Definition is incompatible with `Saveable.fromDoc`
++ schema_salad/metaschema.py:1479:9: error[invalid-method-override] Invalid override of method `fromDoc`: Definition is incompatible with `Saveable.fromDoc`
++ schema_salad/metaschema.py:1691:9: error[invalid-method-override] Invalid override of method `fromDoc`: Definition is incompatible with `Saveable.fromDoc`
++ schema_salad/metaschema.py:1951:9: error[invalid-method-override] Invalid override of method `fromDoc`: Definition is incompatible with `Saveable.fromDoc`
++ schema_salad/metaschema.py:2150:9: error[invalid-method-override] Invalid override of method `fromDoc`: Definition is incompatible with `Saveable.fromDoc`
++ schema_salad/metaschema.py:2349:9: error[invalid-method-override] Invalid override of method `fromDoc`: Definition is incompatible with `Saveable.fromDoc`
++ schema_salad/metaschema.py:2598:9: error[invalid-method-override] Invalid override of method `fromDoc`: Definition is incompatible with `Saveable.fromDoc`
++ schema_salad/metaschema.py:3295:9: error[invalid-method-override] Invalid override of method `fromDoc`: Definition is incompatible with `Saveable.fromDoc`
++ schema_salad/metaschema.py:3532:9: error[invalid-method-override] Invalid override of method `fromDoc`: Definition is incompatible with `Saveable.fromDoc`
++ schema_salad/metaschema.py:3953:9: error[invalid-method-override] Invalid override of method `fromDoc`: Definition is incompatible with `Saveable.fromDoc`
++ schema_salad/metaschema.py:4808:9: error[invalid-method-override] Invalid override of method `fromDoc`: Definition is incompatible with `Saveable.fromDoc`
++ schema_salad/metaschema.py:5547:9: error[invalid-method-override] Invalid override of method `fromDoc`: Definition is incompatible with `Saveable.fromDoc`
++ schema_salad/metaschema.py:6230:9: error[invalid-method-override] Invalid override of method `fromDoc`: Definition is incompatible with `Saveable.fromDoc`
++ schema_salad/metaschema.py:6850:9: error[invalid-method-override] Invalid override of method `fromDoc`: Definition is incompatible with `Saveable.fromDoc`
+- Found 214 diagnostics
++ Found 228 diagnostics
+
+artigraph (https://github.com/artigraph/artigraph)
+- src/arti/storage/__init__.py:87:64: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 174 diagnostics
++ Found 173 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
+- tests/scripts/spiketest.py:108:58: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 663 diagnostics
++ Found 662 diagnostics
+
+scikit-learn (https://github.com/scikit-learn/scikit-learn)
++ sklearn/metrics/_pairwise_distances_reduction/_dispatcher.py:185:9: error[invalid-method-override] Invalid override of method `compute`: Definition is incompatible with `BaseDistancesReductionDispatcher.compute`
++ sklearn/metrics/_pairwise_distances_reduction/_dispatcher.py:323:9: error[invalid-method-override] Invalid override of method `compute`: Definition is incompatible with `BaseDistancesReductionDispatcher.compute`
++ sklearn/metrics/_pairwise_distances_reduction/_dispatcher.py:479:9: error[invalid-method-override] Invalid override of method `compute`: Definition is incompatible with `BaseDistancesReductionDispatcher.compute`
++ sklearn/metrics/_pairwise_distances_reduction/_dispatcher.py:647:9: error[invalid-method-override] Invalid override of method `compute`: Definition is incompatible with `BaseDistancesReductionDispatcher.compute`
+- Found 2317 diagnostics
++ Found 2321 diagnostics
+
+mypy (https://github.com/python/mypy)
++ mypy/test/data.py:746:9: error[invalid-method-override] Invalid override of method `from_parent`: Definition is incompatible with `Node.from_parent`
++ mypy/typeshed/stdlib/_frozen_importlib.pyi:57:9: error[invalid-method-override] Invalid override of method `find_spec`: Definition is incompatible with `MetaPathFinder.find_spec`
++ mypy/typeshed/stdlib/_frozen_importlib.pyi:96:9: error[invalid-method-override] Invalid override of method `find_spec`: Definition is incompatible with `MetaPathFinder.find_spec`
++ mypy/typeshed/stdlib/_frozen_importlib.pyi:115:13: error[invalid-method-override] Invalid override of method `module_repr`: Definition is incompatible with `Loader.module_repr`
++ mypy/typeshed/stdlib/builtins.pyi:141:9: error[invalid-method-override] Invalid override of method `__subclasshook__`: Definition is incompatible with `builtins.object.__subclasshook__`
++ mypy/typeshed/stdlib/encodings/ascii.pyi:7:9: error[invalid-method-override] Invalid override of method `encode`: Definition is incompatible with `codecs.Codec.encode`
++ mypy/typeshed/stdlib/encodings/ascii.pyi:10:9: error[invalid-method-override] Invalid override of method `decode`: Definition is incompatible with `codecs.Codec.decode`
+- mypy/typeshed/stdlib/encodings/ascii.pyi:25:93: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- mypy/typeshed/stdlib/encodings/ascii.pyi:28:83: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ mypy/typeshed/stdlib/encodings/charmap.pyi:8:9: error[invalid-method-override] Invalid override of method `encode`: Definition is incompatible with `codecs.Codec.encode`
++ mypy/typeshed/stdlib/encodings/charmap.pyi:11:9: error[invalid-method-override] Invalid override of method `decode`: Definition is incompatible with `codecs.Codec.decode`
++ mypy/typeshed/stdlib/encodings/latin_1.pyi:7:9: error[invalid-method-override] Invalid override of method `encode`: Definition is incompatible with `codecs.Codec.encode`
++ mypy/typeshed/stdlib/encodings/latin_1.pyi:10:9: error[invalid-method-override] Invalid override of method `decode`: Definition is incompatible with `codecs.Codec.decode`
+- mypy/typeshed/stdlib/encodings/latin_1.pyi:25:93: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- mypy/typeshed/stdlib/encodings/latin_1.pyi:28:83: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ mypy/typeshed/stdlib/encodings/mbcs.pyi:16:13: error[invalid-method-override] Invalid override of method `_buffer_decode`: Definition is incompatible with `BufferedIncrementalDecoder._buffer_decode`
++ mypy/typeshed/stdlib/encodings/mbcs.pyi:21:13: error[invalid-method-override] Invalid override of method `encode`: Definition is incompatible with `Codec.encode`
++ mypy/typeshed/stdlib/encodings/mbcs.pyi:26:13: error[invalid-method-override] Invalid override of method `decode`: Definition is incompatible with `Codec.decode`
++ mypy/typeshed/stdlib/encodings/oem.pyi:16:13: error[invalid-method-override] Invalid override of method `_buffer_decode`: Definition is incompatible with `BufferedIncrementalDecoder._buffer_decode`
++ mypy/typeshed/stdlib/encodings/oem.pyi:21:13: error[invalid-method-override] Invalid override of method `encode`: Definition is incompatible with `Codec.encode`
++ mypy/typeshed/stdlib/encodings/oem.pyi:26:13: error[invalid-method-override] Invalid override of method `decode`: Definition is incompatible with `Codec.decode`
++ mypy/typeshed/stdlib/encodings/raw_unicode_escape.pyi:7:9: error[invalid-method-override] Invalid override of method `encode`: Definition is incompatible with `codecs.Codec.encode`
++ mypy/typeshed/stdlib/encodings/raw_unicode_escape.pyi:10:9: error[invalid-method-override] Invalid override of method `decode`: Definition is incompatible with `codecs.Codec.decode`
++ mypy/typeshed/stdlib/encodings/unicode_escape.pyi:7:9: error[invalid-method-override] Invalid override of method `encode`: Definition is incompatible with `codecs.Codec.encode`
++ mypy/typeshed/stdlib/encodings/unicode_escape.pyi:10:9: error[invalid-method-override] Invalid override of method `decode`: Definition is incompatible with `codecs.Codec.decode`
++ mypy/typeshed/stdlib/encodings/utf_16_be.pyi:14:9: error[invalid-method-override] Invalid override of method `_buffer_decode`: Definition is incompatible with `BufferedIncrementalDecoder._buffer_decode`
++ mypy/typeshed/stdlib/encodings/utf_16_be.pyi:19:9: error[invalid-method-override] Invalid override of method `encode`: Definition is incompatible with `Codec.encode`
++ mypy/typeshed/stdlib/encodings/utf_16_be.pyi:24:9: error[invalid-method-override] Invalid override of method `decode`: Definition is incompatible with `Codec.decode`
++ mypy/typeshed/stdlib/encodings/utf_16_le.pyi:14:9: error[invalid-method-override] Invalid override of method `_buffer_decode`: Definition is incompatible with `BufferedIncrementalDecoder._buffer_decode`
++ mypy/typeshed/stdlib/encodings/utf_16_le.pyi:19:9: error[invalid-method-override] Invalid override of method `encode`: Definition is incompatible with `Codec.encode`
++ mypy/typeshed/stdlib/encodings/utf_16_le.pyi:24:9: error[invalid-method-override] Invalid override of method `decode`: Definition is incompatible with `Codec.decode`
++ mypy/typeshed/stdlib/encodings/utf_32_be.pyi:14:9: error[invalid-method-override] Invalid override of method `_buffer_decode`: Definition is incompatible with `BufferedIncrementalDecoder._buffer_decode`
++ mypy/typeshed/stdlib/encodings/utf_32_be.pyi:19:9: error[invalid-method-override] Invalid override of method `encode`: Definition is incompatible with `Codec.encode`
++ mypy/typeshed/stdlib/encodings/utf_32_be.pyi:24:9: error[invalid-method-override] Invalid override of method `decode`: Definition is incompatible with `Codec.decode`
++ mypy/typeshed/stdlib/encodings/utf_32_le.pyi:14:9: error[invalid-method-override] Invalid override of method `_buffer_decode`: Definition is incompatible with `BufferedIncrementalDecoder._buffer_decode`
++ mypy/typeshed/stdlib/encodings/utf_32_le.pyi:19:9: error[invalid-method-override] Invalid override of method `encode`: Definition is incompatible with `Codec.encode`
++ mypy/typeshed/stdlib/encodings/utf_32_le.pyi:24:9: error[invalid-method-override] Invalid override of method `decode`: Definition is incompatible with `Codec.decode`
++ mypy/typeshed/stdlib/encodings/utf_7.pyi:14:9: error[invalid-method-override] Invalid override of method `_buffer_decode`: Definition is incompatible with `BufferedIncrementalDecoder._buffer_decode`
++ mypy/typeshed/stdlib/encodings/utf_7.pyi:19:9: error[invalid-method-override] Invalid override of method `encode`: Definition is incompatible with `Codec.encode`
++ mypy/typeshed/stdlib/encodings/utf_7.pyi:24:9: error[invalid-method-override] Invalid override of method `decode`: Definition is incompatible with `Codec.decode`
++ mypy/typeshed/stdlib/encodings/utf_8.pyi:14:9: error[invalid-method-override] Invalid override of method `_buffer_decode`: Definition is incompatible with `BufferedIncrementalDecoder._buffer_decode`
++ mypy/typeshed/stdlib/encodings/utf_8.pyi:19:9: error[invalid-method-override] Invalid override of method `encode`: Definition is incompatible with `Codec.encode`
++ mypy/typeshed/stdlib/encodings/utf_8.pyi:24:9: error[invalid-method-override] Invalid override of method `decode`: Definition is incompatible with `Codec.decode`
+- Found 1743 diagnostics
++ Found 1778 diagnostics
+
+discord.py (https://github.com/Rapptz/discord.py)
++ discord/ext/commands/converter.py:1119:9: error[invalid-method-override] Invalid override of method `__class_getitem__`: Definition is incompatible with `list.__class_getitem__`
++ discord/flags.py:1784:9: error[invalid-method-override] Invalid override of method `_from_value`: Definition is incompatible with `BaseFlags._from_value`
++ discord/ui/action_row.py:597:9: error[invalid-method-override] Invalid override of method `from_component`: Definition is incompatible with `Item.from_component`
++ discord/ui/button.py:259:9: error[invalid-method-override] Invalid override of method `from_component`: Definition is incompatible with `Item.from_component`
++ discord/ui/container.py:260:9: error[invalid-method-override] Invalid override of method `from_component`: Definition is incompatible with `Item.from_component`
++ discord/ui/file.py:162:9: error[invalid-method-override] Invalid override of method `from_component`: Definition is incompatible with `Item.from_component`
++ discord/ui/file_upload.py:184:9: error[invalid-method-override] Invalid override of method `from_component`: Definition is incompatible with `Item.from_component`
++ discord/ui/label.py:125:9: error[invalid-method-override] Invalid override of method `from_component`: Definition is incompatible with `Item.from_component`
++ discord/ui/media_gallery.py:259:9: error[invalid-method-override] Invalid override of method `from_component`: Definition is incompatible with `Item.from_component`
++ discord/ui/section.py:251:9: error[invalid-method-override] Invalid override of method `from_component`: Definition is incompatible with `Item.from_component`
++ discord/ui/select.py:405:9: error[invalid-method-override] Invalid override of method `from_component`: Definition is incompatible with `Item.from_component`
++ discord/ui/separator.py:129:9: error[invalid-method-override] Invalid override of method `from_component`: Definition is incompatible with `Item.from_component`
++ discord/ui/text_display.py:87:9: error[invalid-method-override] Invalid override of method `from_component`: Definition is incompatible with `Item.from_component`
++ discord/ui/text_input.py:259:9: error[invalid-method-override] Invalid override of method `from_component`: Definition is incompatible with `Item.from_component`
++ discord/ui/thumbnail.py:138:9: error[invalid-method-override] Invalid override of method `from_component`: Definition is incompatible with `Item.from_component`
+- Found 536 diagnostics
++ Found 551 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
++ tests/unittests/test_url_helper.py:250:17: error[invalid-method-override] Invalid override of method `request`: Definition is incompatible with `Session.request`
++ tests/unittests/test_url_helper.py:255:17: error[invalid-method-override] Invalid override of method `request`: Definition is incompatible with `Session.request`
++ tests/unittests/test_url_helper.py:332:17: error[invalid-method-override] Invalid override of method `request`: Definition is incompatible with `Session.request`
++ tests/unittests/test_url_helper.py:388:17: error[invalid-method-override] Invalid override of method `request`: Definition is incompatible with `Session.request`
++ tests/unittests/test_url_helper.py:420:17: error[invalid-method-override] Invalid override of method `request`: Definition is incompatible with `Session.request`
++ tests/unittests/util.py:106:9: error[invalid-method-override] Invalid override of method `get_proc_ppid`: Definition is incompatible with `Distro.get_proc_ppid`
++ tests/unittests/util.py:110:9: error[invalid-method-override] Invalid override of method `get_proc_pgid`: Definition is incompatible with `Distro.get_proc_pgid`
+- Found 1204 diagnostics
++ Found 1211 diagnostics
+
+xarray (https://github.com/pydata/xarray)
++ xarray/core/indexes.py:761:9: error[invalid-method-override] Invalid override of method `concat`: Definition is incompatible with `Index.concat`
++ xarray/core/indexes.py:1064:9: error[invalid-method-override] Invalid override of method `concat`: Definition is incompatible with `PandasIndex.concat`
++ xarray/tests/indexes.py:49:9: error[invalid-method-override] Invalid override of method `concat`: Definition is incompatible with `Index.concat`
+- Found 1830 diagnostics
++ Found 1833 diagnostics
+
+setuptools (https://github.com/pypa/setuptools)
++ setuptools/_vendor/typeguard/_importhook.py:56:9: error[invalid-method-override] Invalid override of method `source_to_code`: Definition is incompatible with `SourceFileLoader.source_to_code`
++ setuptools/discovery.py:181:9: error[invalid-method-override] Invalid override of method `_looks_like_package`: Definition is incompatible with `PackageFinder._looks_like_package`
++ setuptools/discovery.py:256:9: error[invalid-method-override] Invalid override of method `_looks_like_package`: Definition is incompatible with `PEP420PackageFinder._looks_like_package`
+- Found 1274 diagnostics
++ Found 1277 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
++ src/prefect/blocks/core.py:1603:9: error[invalid-method-override] Invalid override of method `model_json_schema`: Definition is incompatible with `BaseModel.model_json_schema`
++ src/prefect/blocks/core.py:1623:9: error[invalid-method-override] Invalid override of method `model_validate`: Definition is incompatible with `BaseModel.model_validate`
++ src/prefect/events/worker.py:100:9: error[invalid-method-override] Invalid override of method `instance`: Definition is incompatible with `_QueueServiceBase.instance`
++ src/prefect/server/events/schemas/automations.py:611:9: error[invalid-method-override] Invalid override of method `model_validate`: Definition is incompatible with `BaseModel.model_validate`
++ src/prefect/server/events/stream.py:147:9: error[invalid-method-override] Invalid override of method `environment_variable_name`: Definition is incompatible with `Service.environment_variable_name`
++ src/prefect/server/schemas/core.py:1142:9: error[invalid-method-override] Invalid override of method `model_validate`: Definition is incompatible with `BaseModel.model_validate`
++ src/prefect/server/schemas/responses.py:312:9: error[invalid-method-override] Invalid override of method `model_validate`: Definition is incompatible with `BaseModel.model_validate`
++ src/prefect/server/schemas/responses.py:513:9: error[invalid-method-override] Invalid override of method `model_validate`: Definition is incompatible with `BaseModel.model_validate`
++ src/prefect/server/schemas/responses.py:545:9: error[invalid-method-override] Invalid override of method `model_validate`: Definition is incompatible with `BaseModel.model_validate`
++ src/prefect/server/schemas/responses.py:579:9: error[invalid-method-override] Invalid override of method `model_validate`: Definition is incompatible with `BaseModel.model_validate`
+- Found 3289 diagnostics
++ Found 3299 diagnostics
+
+altair (https://github.com/vega/altair)
+- altair/expr/__init__.py:1730:90: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 1026 diagnostics
++ Found 1025 diagnostics
+
+apprise (https://github.com/caronc/apprise)
++ apprise/attachment/base.py:397:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `URLBase.parse_url`
++ apprise/attachment/file.py:131:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `AttachBase.parse_url`
++ apprise/attachment/http.py:363:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `AttachBase.parse_url`
++ apprise/attachment/memory.py:181:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `AttachBase.parse_url`
++ apprise/config/base.py:443:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `URLBase.parse_url`
++ apprise/config/file.py:160:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `ConfigBase.parse_url`
++ apprise/config/http.py:261:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `ConfigBase.parse_url`
++ apprise/config/memory.py:72:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `ConfigBase.parse_url`
++ apprise/decorators/base.py:65:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/africas_talking.py:444:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/apprise_api.py:485:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/aprs.py:716:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/bark.py:557:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/base.py:893:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `URLBase.parse_url`
++ apprise/plugins/bluesky.py:674:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/bulksms.py:482:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/bulkvs.py:379:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/burstsms.py:418:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/chanify.py:190:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/clickatell.py:272:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/clicksend.py:317:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/custom_form.py:535:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/custom_json.py:428:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/custom_xml.py:519:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/d7networks.py:385:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/dapnet.py:371:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/dbus.py:417:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/dingtalk.py:331:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/discord.py:692:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/dot.py:528:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/email/base.py:812:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/emby.py:680:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/enigma2.py:351:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/fcm/__init__.py:587:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/feishu.py:217:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/flock.py:343:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/fortysixelks.py:337:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/freemobile.py:188:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/glib.py:361:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/gnome.py:250:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/google_chat.py:322:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/gotify.py:322:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/growl.py:417:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/home_assistant.py:317:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/httpsms.py:298:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/ifttt.py:327:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/join.py:397:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/kavenegar.py:341:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/kumulos.py:222:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/lametric.py:981:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/lark.py:155:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/line.py:274:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/macosx.py:230:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/mailgun.py:706:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/mastodon.py:997:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/matrix.py:1584:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/mattermost.py:378:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/messagebird.py:325:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/misskey.py:297:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/mqtt.py:566:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/msg91.py:371:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/msteams.py:606:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/nextcloud.py:366:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/nextcloudtalk.py:325:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/notica.py:344:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/notifiarr.py:406:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/notifico.py:340:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/ntfy.py:850:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/office365.py:999:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/one_signal.py:627:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/opsgenie.py:842:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/pagerduty.py:503:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/pagertree.py:365:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/parseplatform.py:319:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/plivo.py:367:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/popcorn_notify.py:298:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/prowl.py:295:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/pushbullet.py:450:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/pushdeer.py:210:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/pushed.py:350:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/pushjet.py:256:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/pushme.py:203:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/pushover.py:631:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/pushplus.py:144:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/pushsafer.py:869:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/pushy.py:356:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/qq.py:142:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/reddit.py:720:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/resend.py:421:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/revolt.py:395:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/rocketchat.py:724:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/rsyslog.py:350:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/ryver.py:317:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/sendgrid.py:497:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/sendpulse.py:685:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/serverchan.py:164:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/ses.py:897:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/seven.py:314:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/sfr.py:412:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/signal_api.py:493:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/signl4.py:301:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/simplepush.py:352:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/sinch.py:447:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/slack.py:1178:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/smpp.py:282:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/smseagle.py:715:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/smsmanager.py:395:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/smtp2go.py:579:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/sns.py:618:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/sparkpost.py:782:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/spike.py:149:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/splunk.py:444:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/spugpush.py:144:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/streamlabs.py:412:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/synology.py:328:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/syslog.py:271:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/techuluspush.py:206:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/telegram.py:1096:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/threema.py:344:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/twilio.py:566:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/twist.py:749:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/twitter.py:899:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/vapid/__init__.py:524:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/voipms.py:358:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/vonage.py:347:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/webexteams.py:238:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/wecombot.py:224:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/whatsapp.py:534:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/windows.py:265:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/workflows.py:551:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/wxpusher.py:359:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/xbmc.py:389:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ apprise/plugins/zulip.py:385:9: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
++ tests/test_api.py:1021:13: error[invalid-method-override] Invalid override of method `parse_url`: Definition is incompatible with `NotifyBase.parse_url`
+- Found 2621 diagnostics
++ Found 2755 diagnostics
+
+bokeh (https://github.com/bokeh/bokeh)
++ src/bokeh/document/events.py:278:9: error[invalid-method-override] Invalid override of method `_handle_event`: Definition is incompatible with `DocumentPatchedEvent._handle_event`
++ src/bokeh/document/events.py:374:9: error[invalid-method-override] Invalid override of method `_handle_event`: Definition is incompatible with `DocumentPatchedEvent._handle_event`
++ src/bokeh/document/events.py:464:9: error[invalid-method-override] Invalid override of method `_handle_event`: Definition is incompatible with `DocumentPatchedEvent._handle_event`
++ src/bokeh/document/events.py:563:9: error[invalid-method-override] Invalid override of method `_handle_event`: Definition is incompatible with `DocumentPatchedEvent._handle_event`
++ src/bokeh/document/events.py:644:9: error[invalid-method-override] Invalid override of method `_handle_event`: Definition is incompatible with `DocumentPatchedEvent._handle_event`
++ src/bokeh/document/events.py:726:9: error[invalid-method-override] Invalid override of method `_handle_event`: Definition is incompatible with `DocumentPatchedEvent._handle_event`
++ src/bokeh/document/events.py:784:9: error[invalid-method-override] Invalid override of method `_handle_event`: Definition is incompatible with `DocumentPatchedEvent._handle_event`
++ src/bokeh/document/events.py:844:9: error[invalid-method-override] Invalid override of method `_handle_event`: Definition is incompatible with `DocumentPatchedEvent._handle_event`
++ src/bokeh/server/views/multi_root_static_handler.py:57:9: error[invalid-method-override] Invalid override of method `get_absolute_path`: Definition is incompatible with `StaticFileHandler.get_absolute_path`
+- Found 706 diagnostics
++ Found 715 diagnostics
+
+django-stubs (https://github.com/typeddjango/django-stubs)
+- django-stubs/http/request.pyi:166:20: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 445 diagnostics
++ Found 444 diagnostics
+
+ibis (https://github.com/ibis-project/ibis)
++ ibis/backends/bigquery/datatypes.py:66:9: error[invalid-method-override] Invalid override of method `to_ibis`: Definition is incompatible with `SchemaMapper.to_ibis`
++ ibis/backends/duckdb/converter.py:31:13: error[invalid-method-override] Invalid override of method `convert_scalar`: Definition is incompatible with `DataMapper.convert_scalar`
++ ibis/backends/duckdb/converter.py:37:13: error[invalid-method-override] Invalid override of method `convert_column`: Definition is incompatible with `DataMapper.convert_column`
++ ibis/backends/exasol/converter.py:26:9: error[invalid-method-override] Invalid override of method `convert_Interval`: Definition is incompatible with `PandasData.convert_Interval`
++ ibis/backends/flink/datatypes.py:38:9: error[invalid-method-override] Invalid override of method `to_ibis`: Definition is incompatible with `TypeMapper.to_ibis`
++ ibis/backends/pyspark/datatypes.py:124:9: error[invalid-method-override] Invalid override of method `to_ibis`: Definition is incompatible with `SchemaMapper.to_ibis`
++ ibis/backends/snowflake/converter.py:97:13: error[invalid-method-override] Invalid override of method `convert_table`: Definition is incompatible with `DataMapper.convert_table`
++ ibis/backends/snowflake/converter.py:112:13: error[invalid-method-override] Invalid override of method `convert_column`: Definition is incompatible with `DataMapper.convert_column`
++ ibis/backends/snowflake/converter.py:126:13: error[invalid-method-override] Invalid override of method `convert_scalar`: Definition is incompatibl
+
+... (truncated 488 lines) ...
+```
+
+</details>
+
+
+No memory usage changes detected ✅
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-11-23 22:23_
+
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `invalid-method-override` | 687 | 0 | 0 |
+| `unused-ignore-comment` | 0 | 45 | 0 |
+| **Total** | **687** | **45** | **0** |
+
+**[Full report with detailed diff](https://alex-static-class-method-lis.ecosystem-663.pages.dev/diff)** ([timing results](https://alex-static-class-method-lis.ecosystem-663.pages.dev/timing))
+
+
+
+
+---
+
+_Comment by @AlexWaygood on 2025-11-23 22:33_
+
+I skimmed the new diagnostics and couldn't see any obvious false positives. A lot of them are, once again, us being more pedantic than other type checkers when it comes to subclasses changing the names of parameters -- but as before, it's very hard for us to put those in a different error code until we're able to propagate through `Type::has_relation_to` the reason _why_ an assignability/subtyping check failed. The `unused-ignore-comment` diagnostics going away seem all to be `type: ignore[override]` comments (i.e., folks were suppressing mypy's version of this check, and those suppression comments are now no longer viewed as unused by ty -- which is good!)
+
+---
+
+_Marked ready for review by @AlexWaygood on 2025-11-23 22:54_
+
+---
+
+_Review requested from @carljm by @AlexWaygood on 2025-11-23 22:54_
+
+---
+
+_Review requested from @sharkdp by @AlexWaygood on 2025-11-23 22:54_
+
+---
+
+_Review requested from @dcreager by @AlexWaygood on 2025-11-23 22:54_
+
+---
+
+_Review requested from @MichaReiser by @AlexWaygood on 2025-11-23 22:54_
+
+---
+
+_@AlexWaygood reviewed on 2025-11-24 00:01_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/snapshots/liskov.md_-_The_Liskov_Substitut…_-_Staticmethods_and_cl…_(49e28aae6fdd1291).snap`:88 on 2025-11-24 00:01_
+
+Ugh this needs to be "an instance method" rather than "a instance method" — will fix tomorrow
+
+---
+
+_Label `ecosystem-analyzer` removed by @AlexWaygood on 2025-11-24 21:16_
+
+---
+
+_Label `ecosystem-analyzer` added by @AlexWaygood on 2025-11-24 21:16_
+
+---
+
+_@carljm approved on 2025-11-24 22:36_
+
+---
+
+_Merged by @AlexWaygood on 2025-11-24 23:14_
+
+---
+
+_Closed by @AlexWaygood on 2025-11-24 23:14_
+
+---
+
+_Branch deleted on 2025-11-24 23:14_
+
+---

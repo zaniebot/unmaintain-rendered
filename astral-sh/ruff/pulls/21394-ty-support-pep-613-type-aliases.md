@@ -1,0 +1,951 @@
+```yaml
+number: 21394
+title: "[ty] support PEP 613 type aliases"
+type: pull_request
+state: merged
+author: carljm
+labels:
+  - ty
+  - ecosystem-analyzer
+assignees: []
+merged: true
+base: main
+head: cjm/pep613import
+created_at: 2025-11-12T01:22:25Z
+updated_at: 2025-11-21T08:22:09Z
+url: https://github.com/astral-sh/ruff/pull/21394
+synced_at: 2026-01-10T16:48:01Z
+```
+
+# [ty] support PEP 613 type aliases
+
+---
+
+_Pull request opened by @carljm on 2025-11-12 01:22_
+
+Refs https://github.com/astral-sh/ty/issues/544
+
+## Summary
+
+Takes a more incremental approach to PEP 613 type alias support (vs https://github.com/astral-sh/ruff/pull/20107). Instead of eagerly inferring the RHS of a PEP 613 type alias as a type expression, infer it as a value expression, just like we do for implicit type aliases, taking advantage of the same support for e.g. unions and other type special forms.
+
+The main reason I'm following this path instead of the one in https://github.com/astral-sh/ruff/pull/20107 is that we've realized that people do sometimes use PEP 613 type aliases as values, not just as types (because they are just a normal runtime assignment, unlike PEP 695 type aliases which create an opaque `TypeAliasType`).
+
+This PR doesn't yet provide full support for recursive type aliases (they don't panic, but they just fall back to `Unknown` at the recursion point). This is probably post-beta work.
+
+## Test Plan
+
+Added mdtests.
+
+Many new ecosystem diagnostics, probably mostly just because we understand new types in lots of places, but I'll spot-check for potential problems.
+
+Conformance suite changes are correct.
+
+Performance regression is also just due to understanding lots of new types; nothing we do in this PR is inherently expensive.
+
+---
+
+_Label `ty` added by @carljm on 2025-11-12 01:22_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-11-12 01:25_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-11-21 01:41:28.885585207 +0000
++++ new-output.txt	2025-11-21 01:41:32.391601775 +0000
+@@ -5,14 +5,12 @@
+ _directives_deprecated_library.py:41:25: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int | float`
+ _directives_deprecated_library.py:45:24: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+ aliases_explicit.py:41:24: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[str, str]`?
+-aliases_explicit.py:45:10: error[invalid-type-form] Variable of type `Literal["int | str"]` is not allowed in a type expression
+ aliases_explicit.py:52:5: error[type-assertion-failure] Type `list[int]` does not match asserted type `@Todo(specialized generic alias in type expression)`
+ aliases_explicit.py:53:5: error[type-assertion-failure] Type `tuple[str, ...] | list[str]` does not match asserted type `@Todo(Generic specialization of types.UnionType)`
+ aliases_explicit.py:54:5: error[type-assertion-failure] Type `tuple[int, int, int, str]` does not match asserted type `@Todo(specialized generic alias in type expression)`
+ aliases_explicit.py:56:5: error[type-assertion-failure] Type `(int, str, /) -> str` does not match asserted type `@Todo(Generic specialization of typing.Callable)`
+ aliases_explicit.py:57:5: error[type-assertion-failure] Type `(int, str, str, /) -> None` does not match asserted type `@Todo(Generic specialization of typing.Callable)`
+ aliases_explicit.py:59:5: error[type-assertion-failure] Type `int | str | None | list[list[int]]` does not match asserted type `int | str | None | list[@Todo(specialized generic alias in type expression)]`
+-aliases_explicit.py:61:5: error[type-assertion-failure] Type `int | str` does not match asserted type `Unknown`
+ aliases_explicit.py:101:6: error[call-non-callable] Object of type `UnionType` is not callable
+ aliases_implicit.py:54:24: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[str, str]`?
+ aliases_implicit.py:63:5: error[type-assertion-failure] Type `list[int]` does not match asserted type `@Todo(specialized generic alias in type expression)`
+@@ -909,21 +907,13 @@
+ tuples_type_compat.py:47:40: error[invalid-assignment] Object of type `tuple[Any, ...]` is not assignable to `tuple[int, *tuple[str, ...]]`
+ tuples_type_compat.py:62:26: error[invalid-assignment] Object of type `tuple[int, ...]` is not assignable to `tuple[int, int]`
+ tuples_type_compat.py:75:9: error[type-assertion-failure] Type `tuple[int]` does not match asserted type `tuple[int] | tuple[str, str] | tuple[int, *tuple[str, ...], int]`
+-tuples_type_compat.py:76:9: error[type-assertion-failure] Type `@Todo(Support for `typing.TypeAlias`)` does not match asserted type `tuple[int] | tuple[str, str] | tuple[int, *tuple[str, ...], int]`
+ tuples_type_compat.py:80:9: error[type-assertion-failure] Type `tuple[str, str] | tuple[int, int]` does not match asserted type `tuple[int] | tuple[str, str] | tuple[int, *tuple[str, ...], int]`
+-tuples_type_compat.py:81:9: error[type-assertion-failure] Type `@Todo(Support for `typing.TypeAlias`)` does not match asserted type `tuple[int] | tuple[str, str] | tuple[int, *tuple[str, ...], int]`
+ tuples_type_compat.py:85:9: error[type-assertion-failure] Type `tuple[int, str, int]` does not match asserted type `tuple[int] | tuple[str, str] | tuple[int, *tuple[str, ...], int]`
+-tuples_type_compat.py:86:9: error[type-assertion-failure] Type `@Todo(Support for `typing.TypeAlias`)` does not match asserted type `tuple[int] | tuple[str, str] | tuple[int, *tuple[str, ...], int]`
+ tuples_type_compat.py:101:13: error[type-assertion-failure] Type `tuple[int]` does not match asserted type `tuple[int] | tuple[str, str] | tuple[int, *tuple[str, ...], int]`
+-tuples_type_compat.py:102:13: error[type-assertion-failure] Type `@Todo(Support for `typing.TypeAlias`)` does not match asserted type `tuple[int] | tuple[str, str] | tuple[int, *tuple[str, ...], int]`
+ tuples_type_compat.py:106:13: error[type-assertion-failure] Type `tuple[str, str] | tuple[int, int]` does not match asserted type `tuple[int] | tuple[str, str] | tuple[int, *tuple[str, ...], int]`
+-tuples_type_compat.py:107:13: error[type-assertion-failure] Type `@Todo(Support for `typing.TypeAlias`)` does not match asserted type `tuple[int] | tuple[str, str] | tuple[int, *tuple[str, ...], int]`
+ tuples_type_compat.py:111:13: error[type-assertion-failure] Type `tuple[int, str, int]` does not match asserted type `tuple[int] | tuple[str, str] | tuple[int, *tuple[str, ...], int]`
+-tuples_type_compat.py:112:13: error[type-assertion-failure] Type `@Todo(Support for `typing.TypeAlias`)` does not match asserted type `tuple[int] | tuple[str, str] | tuple[int, *tuple[str, ...], int]`
+ tuples_type_compat.py:126:13: error[type-assertion-failure] Type `tuple[int | str, str]` does not match asserted type `tuple[int | str, int | str]`
+-tuples_type_compat.py:127:13: error[type-assertion-failure] Type `@Todo(Support for `typing.TypeAlias`)` does not match asserted type `tuple[int | str, int | str]`
+ tuples_type_compat.py:129:13: error[type-assertion-failure] Type `tuple[int | str, int]` does not match asserted type `tuple[int | str, int | str]`
+-tuples_type_compat.py:130:13: error[type-assertion-failure] Type `@Todo(Support for `typing.TypeAlias`)` does not match asserted type `tuple[int | str, int | str]`
+ tuples_type_compat.py:157:6: error[invalid-assignment] Object of type `tuple[Literal[1], Literal[""], Literal[""]]` is not assignable to `tuple[int, str]`
+ tuples_type_compat.py:162:6: error[invalid-assignment] Object of type `tuple[Literal[1], Literal[1], Literal[""]]` is not assignable to `tuple[int, *tuple[str, ...]]`
+ tuples_type_compat.py:163:6: error[invalid-assignment] Object of type `tuple[Literal[1], Literal[""], Literal[1]]` is not assignable to `tuple[int, *tuple[str, ...]]`
+@@ -1011,5 +1001,5 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Unknown key "title" for TypedDict `Movie`: Unknown key "title"
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 1013 diagnostics
++Found 1003 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+
+```
+
+</details>
+
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-11-12 01:25_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+attrs (https://github.com/python-attrs/attrs)
+- src/attr/validators.py:175:24: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `((Overload[(pattern: str | Pattern[str], string: str, flags: int = Literal[0]) -> Match[str] | None, (pattern: bytes | Pattern[bytes], string: @Todo, flags: int = Literal[0]) -> Match[bytes] | None]) & ~AlwaysTruthy & ~AlwaysFalsy) | (str & ~AlwaysFalsy)` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ src/attr/validators.py:175:24: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `((Overload[(pattern: str | Pattern[str], string: str, flags: int = Literal[0]) -> Match[str] | None, (pattern: bytes | Pattern[bytes], string: Buffer, flags: int = Literal[0]) -> Match[bytes] | None]) & ~AlwaysTruthy & ~AlwaysFalsy) | (str & ~AlwaysFalsy)` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+
+aioredis (https://github.com/aio-libs/aioredis)
++ aioredis/client.py:3898:38: error[no-matching-overload] No overload of bound method `split` matches arguments
++ aioredis/client.py:3898:53: error[invalid-argument-type] Argument to bound method `split` is incorrect: Expected `Buffer | None`, found `Literal[" "]`
+- Found 26 diagnostics
++ Found 28 diagnostics
+
+packaging (https://github.com/pypa/packaging)
+- src/packaging/metadata.py:496:65: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 22 diagnostics
++ Found 21 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
++ src/anyio/_backends/_trio.py:1140:30: error[invalid-argument-type] Argument to function `convert_item` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `str | bytes | (Sequence[str | bytes | PathLike[str] | PathLike[bytes]] & PathLike[object]) | PathLike[str] | PathLike[bytes]`
+- Found 90 diagnostics
++ Found 91 diagnostics
+
+parso (https://github.com/davidhalter/parso)
+- parso/utils.py:95:27: warning[possibly-missing-attribute] Attribute `group` may be missing on object of type `Match[bytes] | None`
++ parso/utils.py:95:27: error[no-matching-overload] No overload of function `match` matches arguments
+
+python-chess (https://github.com/niklasf/python-chess)
+- chess/__init__.py:4112:63: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- chess/__init__.py:4119:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- chess/__init__.py:4278:56: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- chess/engine.py:143:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- chess/polyglot.py:404:31: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- chess/syzygy.py:1009:63: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- chess/syzygy.py:1012:60: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- chess/syzygy.py:1015:63: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- chess/syzygy.py:1018:60: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 25 diagnostics
++ Found 16 diagnostics
+
+pyinstrument (https://github.com/joerick/pyinstrument)
++ pyinstrument/context_manager.py:40:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Literal["enabled", "disabled", "strict"]`, found `Unknown | None`
+- pyinstrument/session.py:213:9: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `str | bytes` on object of type `dict[str, str]`
+- pyinstrument/session.py:215:16: error[invalid-return-type] Return type does not match returned value: expected `str`, found `str | bytes`
+- Found 41 diagnostics
++ Found 40 diagnostics
+
+spack (https://github.com/spack/spack)
+- lib/spack/spack/ci/gitlab.py:432:61: error[invalid-argument-type] Argument to function `ensure_expected_target_path` is incorrect: Expected `str`, found `Unknown | str | bytes`
++ lib/spack/spack/cmd/ci.py:327:30: error[no-matching-overload] No overload of function `join` matches arguments
++ lib/spack/spack/cmd/ci.py:328:19: error[no-matching-overload] No overload of function `join` matches arguments
++ lib/spack/spack/cmd/ci.py:329:20: error[no-matching-overload] No overload of function `join` matches arguments
++ lib/spack/spack/cmd/ci.py:330:17: error[no-matching-overload] No overload of function `join` matches arguments
++ lib/spack/spack/cmd/ci.py:331:24: error[no-matching-overload] No overload of function `join` matches arguments
+- lib/spack/spack/cmd/license.py:81:24: error[no-matching-overload] No overload of bound method `match` matches arguments
++ lib/spack/spack/cmd/style.py:670:16: error[no-matching-overload] No overload of bound method `search` matches arguments
++ lib/spack/spack/cmd/style.py:672:32: error[invalid-argument-type] Argument to function `_spec_str_format` is incorrect: Expected `str`, found `str | bytes | int | ... omitted 4 union elements`
++ lib/spack/spack/cmd/style.py:674:57: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `str | bytes | int | ... omitted 4 union elements`
++ lib/spack/spack/config.py:1098:35: error[invalid-argument-type] Argument to function `isfile` is incorrect: Expected `int | str | bytes | PathLike[str] | PathLike[bytes]`, found `object`
++ lib/spack/spack/config.py:1100:34: error[invalid-argument-type] Argument to function `isdir` is incorrect: Expected `int | str | bytes | PathLike[str] | PathLike[bytes]`, found `object`
++ lib/spack/spack/installer.py:1306:27: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | None | str`
++ lib/spack/spack/installer.py:1319:23: error[invalid-argument-type] Argument to function `rename` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | None | str`
+- lib/spack/spack/repo_migrate.py:216:30: warning[possibly-missing-attribute] Attribute `encode` may be missing on object of type `bytes | str`
++ lib/spack/spack/test/cmd/commands.py:239:5: error[no-matching-overload] No overload of function `copy` matches arguments
+- lib/spack/spack/test/cmd/logs.py:38:36: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `TextIOWrapper[_WrappedBuffer]` does not satisfy upper bound `_WrappedBuffer` of type variable `_BufferT_co`
+- lib/spack/spack/test/cmd/logs.py:38:36: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_WrappedBuffer`, found `TextIOWrapper[_WrappedBuffer]`
++ lib/spack/spack/test/llnl/util/lock.py:192:23: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `None | Unknown`
++ lib/spack/spack/test/oci/mock_registry.py:230:20: error[call-non-callable] Object of type `object` is not callable
++ lib/spack/spack/util/unparse/unparser.py:1284:16: error[invalid-return-type] Return type does not match returned value: expected `str | None`, found `str | bytes | int | ... omitted 4 union elements`
++ lib/spack/spack/vendor/archspec/cli.py:64:16: error[invalid-return-type] Return type does not match returned value: expected `int`, found `str | int | None`
+- lib/spack/spack/vendor/attr/validators.py:186:25: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `((Overload[(pattern: str | Pattern[str], string: str, flags: int = Literal[0]) -> Match[str] | None, (pattern: bytes | Pattern[bytes], string: @Todo, flags: int = Literal[0]) -> Match[bytes] | None]) & ~AlwaysTruthy & ~AlwaysFalsy) | (str & ~AlwaysFalsy)` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ lib/spack/spack/vendor/attr/validators.py:186:25: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `((Overload[(pattern: str | Pattern[str], string: str, flags: int = Literal[0]) -> Match[str] | None, (pattern: bytes | Pattern[bytes], string: Buffer, flags: int = Literal[0]) -> Match[bytes] | None]) & ~AlwaysTruthy & ~AlwaysFalsy) | (str & ~AlwaysFalsy)` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- lib/spack/spack/vendor/jinja2/debug.py:147:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/vendor/jinja2/environment.py:1612:17: error[no-matching-overload] No overload of bound method `writelines` matches arguments
++ lib/spack/spack/vendor/jinja2/environment.py:1612:31: error[invalid-argument-type] Argument to bound method `writelines` is incorrect: Expected `Iterable[Buffer]`, found `GeneratorType[bytes, None, None] | Self@dump`
+- Found 7909 diagnostics
++ Found 7922 diagnostics
+
+pip (https://github.com/pypa/pip)
++ src/pip/_internal/build_env.py:58:27: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
++ src/pip/_internal/commands/search.py:85:16: error[invalid-return-type] Return type does not match returned value: expected `list[dict[str, str]]`, found `list[Any] | (DateTime & Top[list[Unknown]]) | (Binary & Top[list[Unknown]])`
++ src/pip/_internal/locations/_distutils.py:101:29: error[no-matching-overload] No overload of function `join` matches arguments
++ src/pip/_internal/network/session.py:246:13: error[invalid-assignment] Implicit shadowing of function `close`
+- src/pip/_internal/operations/install/wheel.py:227:16: error[invalid-assignment] Object of type `bytes` is not assignable to `str`
++ src/pip/_internal/req/req_install.py:460:16: error[no-matching-overload] No overload of function `join` matches arguments
+- src/pip/_internal/vcs/versioncontrol.py:100:12: error[invalid-return-type] Return type does not match returned value: expected `str | None`, found `bytes`
+- src/pip/_vendor/distlib/scripts.py:380:51: warning[possibly-missing-attribute] Attribute `readline` may be missing on object of type `@Todo | None`
++ src/pip/_vendor/distlib/scripts.py:380:51: warning[possibly-missing-attribute] Attribute `readline` may be missing on object of type `BufferedReader[_BufferedReaderStream] | None`
+- src/pip/_vendor/distlib/scripts.py:381:17: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `@Todo | None`
++ src/pip/_vendor/distlib/scripts.py:381:17: warning[possibly-missing-attribute] Attribute `seek` may be missing on object of type `BufferedReader[_BufferedReaderStream] | None`
+- src/pip/_vendor/distlib/scripts.py:388:50: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `@Todo | None`
++ src/pip/_vendor/distlib/scripts.py:388:50: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `BufferedReader[_BufferedReaderStream] | None`
+- src/pip/_vendor/distlib/util.py:1484:36: warning[possibly-missing-attribute] Attribute `getpeercert` may be missing on object of type `socket | @Todo`
++ src/pip/_vendor/distlib/util.py:1484:36: warning[possibly-missing-attribute] Attribute `getpeercert` may be missing on object of type `socket | Any`
++ src/pip/_vendor/idna/codec.py:114:9: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `_Decoder`, found `bound method Codec.decode(data: bytes, errors: str = Literal["strict"]) -> tuple[str, int]`
+- src/pip/_vendor/packaging/metadata.py:439:65: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/pip/_vendor/pkg_resources/__init__.py:3281:15: error[no-matching-overload] No overload of function `normalize_path` matches arguments
+- src/pip/_vendor/truststore/_macos.py:276:70: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/pip/_vendor/truststore/_macos.py:277:69: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/pip/_vendor/truststore/_macos.py:278:73: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/pip/_vendor/truststore/_macos.py:279:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/pip/_vendor/truststore/_macos.py:280:56: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/pip/_vendor/urllib3/contrib/securetransport.py:671:31: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | None`
++ src/pip/_vendor/urllib3/packages/backports/weakref_finalize.py:149:40: error[invalid-argument-type] Argument is incorrect: Expected `type[BaseException]`, found `type[BaseException] | None`
++ src/pip/_vendor/urllib3/packages/backports/weakref_finalize.py:149:40: error[invalid-argument-type] Argument is incorrect: Expected `BaseException`, found `BaseException | None`
++ src/pip/_vendor/urllib3/util/ssl_.py:182:62: error[invalid-argument-type] Argument to function `wrap_socket` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes] | None`, found `Unknown | None | VerifyMode | bool`
++ src/pip/_vendor/urllib3/util/ssl_.py:182:62: error[invalid-argument-type] Argument to function `wrap_socket` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes] | None`, found `Unknown | None | VerifyMode | bool`
+- Found 579 diagnostics
++ Found 583 diagnostics
+
+asynq (https://github.com/quora/asynq)
++ asynq/async_task.py:241:23: warning[possibly-missing-attribute] Attribute `tb_next` may be missing on object of type `TracebackType | None`
++ asynq/async_task.py:242:26: warning[possibly-missing-attribute] Attribute `tb_next` may be missing on object of type `TracebackType | None`
++ asynq/async_task.py:243:31: warning[possibly-missing-attribute] Attribute `tb_frame` may be missing on object of type `TracebackType | None`
+- asynq/tests/test_debug.py:199:60: error[invalid-argument-type] Argument to function `extract_tb` is incorrect: Expected `TracebackType`, found `None | @Todo`
++ asynq/tests/test_debug.py:199:60: error[invalid-argument-type] Argument to function `extract_tb` is incorrect: Expected `TracebackType`, found `None | TracebackType`
+- asynq/tests/test_debug.py:249:53: error[invalid-argument-type] Argument to function `format_tb` is incorrect: Expected `TracebackType`, found `None | @Todo`
++ asynq/tests/test_debug.py:249:53: error[invalid-argument-type] Argument to function `format_tb` is incorrect: Expected `TracebackType`, found `None | TracebackType`
+- Found 170 diagnostics
++ Found 173 diagnostics
+
+bandersnatch (https://github.com/pypa/bandersnatch)
++ src/bandersnatch/tests/test_main.py:69:29: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
++ src/bandersnatch/tests/test_main.py:138:25: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
+- Found 103 diagnostics
++ Found 105 diagnostics
+
+isort (https://github.com/pycqa/isort)
+- isort/settings.py:605:32: error[invalid-argument-type] Argument to function `fnmatch` is incorrect: Argument type `bytes | str` does not satisfy constraints (`str`, `bytes`) of type variable `AnyStr`
+- isort/settings.py:605:32: error[invalid-argument-type] Argument to function `fnmatch` is incorrect: Expected `str`, found `bytes | str`
+- isort/settings.py:605:69: error[unsupported-operator] Operator `+` is unsupported between objects of type `Literal["/"]` and `bytes | str`
+- Found 37 diagnostics
++ Found 34 diagnostics
+
+stone (https://github.com/dropbox/stone)
++ stone/frontend/ir_generator.py:902:55: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsFloat | SupportsIndex`, found `TagRef | (Unknown & ~AstTagRef)`
+- Found 251 diagnostics
++ Found 252 diagnostics
+
+jinja (https://github.com/pallets/jinja)
+- src/jinja2/debug.py:128:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/jinja2/environment.py:1617:17: error[no-matching-overload] No overload of bound method `writelines` matches arguments
+
+werkzeug (https://github.com/pallets/werkzeug)
++ src/werkzeug/_internal.py:42:12: error[invalid-return-type] Return type does not match returned value: expected `dict[str, Any]`, found `(Any & Top[dict[Unknown, Unknown]]) | dict[str, Any] | (Request & Top[dict[Unknown, Unknown]])`
++ src/werkzeug/datastructures/file_storage.py:196:37: error[no-matching-overload] No overload of function `open` matches arguments
+- src/werkzeug/debug/__init__.py:352:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/werkzeug/debug/__init__.py:349:17: error[call-non-callable] Object of type `object` is not callable
++ src/werkzeug/middleware/profiler.py:121:17: error[call-non-callable] Object of type `object` is not callable
++ src/werkzeug/routing/rules.py:779:44: error[unsupported-operator] Operator `+` is unsupported between objects of type `Unknown | str | bytes | ... omitted 5 union elements` and `str | bytes | int | ... omitted 4 union elements`
+- src/werkzeug/serving.py:223:12: warning[possibly-missing-attribute] Attribute `strip` may be missing on object of type `Unknown | tuple[int, int] | str | ... omitted 3 union elements`
+- src/werkzeug/serving.py:225:52: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `IO[bytes]`, found `Unknown | tuple[int, int] | str | ... omitted 3 union elements`
++ src/werkzeug/serving.py:367:21: error[call-non-callable] Object of type `object` is not callable
+- src/werkzeug/serving.py:751:30: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/werkzeug/utils.py:480:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/werkzeug/wsgi.py:78:67: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/middleware/test_shared_data.py:10:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `(dict[str, Any], StartResponse, /) -> Iterable[bytes]`, found `None`
++ tests/test_routing.py:473:13: error[invalid-argument-type] Argument to bound method `force_type` is incorrect: Expected `Response`, found `(dict[str, Any], StartResponse, /) -> Iterable[bytes]`
+- Found 409 diagnostics
++ Found 411 diagnostics
+
+aiortc (https://github.com/aiortc/aiortc)
++ src/aiortc/rtcpeerconnection.py:132:24: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `int | str | None`
++ src/aiortc/sdp.py:486:48: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `str | None`
++ src/aiortc/sdp.py:524:55: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `str | None`
+- Found 191 diagnostics
++ Found 194 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
++ src/graphql/execution/collect_fields.py:322:35: error[invalid-argument-type] Argument to bound method `is_sub_type` is incorrect: Expected `GraphQLInterfaceType | GraphQLUnionType`, found `GraphQLNamedType | None`
+- src/graphql/execution/execute.py:500:38: error[invalid-await] `Unknown | UndefinedType` is not awaitable
++ src/graphql/execution/execute.py:500:38: error[invalid-await] `@Todo | UndefinedType` is not awaitable
+- src/graphql/execution/execute.py:556:54: error[invalid-argument-type] Argument to function `resolve` is incorrect: Expected `Awaitable[GraphQLWrappedResult[dict[str, Any]]]`, found `Unknown | UndefinedType`
++ src/graphql/execution/execute.py:556:54: error[invalid-argument-type] Argument to function `resolve` is incorrect: Expected `Awaitable[GraphQLWrappedResult[dict[str, Any]]]`, found `@Todo | UndefinedType`
++ src/graphql/execution/execute.py:776:17: warning[possibly-missing-attribute] Attribute `of_type` may be missing on object of type `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`
++ src/graphql/execution/execute.py:799:17: error[invalid-argument-type] Argument to bound method `complete_list_value` is incorrect: Expected `GraphQLList[GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements]`, found `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`
++ src/graphql/execution/execute.py:811:66: error[invalid-argument-type] Argument to function `complete_leaf_value` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType`, found `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`
++ src/graphql/execution/execute.py:817:17: error[invalid-argument-type] Argument to bound method `complete_abstract_value` is incorrect: Expected `GraphQLInterfaceType | GraphQLUnionType`, found `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`
++ src/graphql/execution/execute.py:829:17: error[invalid-argument-type] Argument to bound method `complete_object_value` is incorrect: Expected `GraphQLObjectType`, found `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`
+- src/graphql/execution/execute.py:1984:46: error[invalid-await] `Unknown | GraphQLWrappedResult[None]` is not awaitable
++ src/graphql/execution/execute.py:1984:46: error[invalid-await] `@Todo | GraphQLWrappedResult[None]` is not awaitable
+- src/graphql/execution/incremental_graph.py:186:67: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/graphql/execution/incremental_graph.py:125:61: error[invalid-argument-type] Argument to bound method `_add_deferred_grouped_field_set_record` is incorrect: Expected `DeferredGroupedFieldSetRecord`, found `DeferredGroupedFieldSetRecord | StreamRecord`
++ src/graphql/execution/incremental_graph.py:159:25: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `DeferredFragmentRecord | StreamRecord`, found `DeferredFragmentNode | StreamRecord`
++ src/graphql/execution/incremental_graph.py:160:17: error[invalid-assignment] Invalid subscript assignment with key of type `DeferredFragmentNode | StreamRecord` and value of type `None` on object of type `dict[DeferredGroupedFieldSetRecord | StreamRecord, None]`
++ src/graphql/execution/incremental_graph.py:181:25: error[invalid-argument-type] Argument to bound method `_on_stream_items` is incorrect: Expected `StreamRecord`, found `DeferredGroupedFieldSetRecord | StreamRecord`
++ src/graphql/execution/incremental_graph.py:182:25: warning[possibly-missing-attribute] Attribute `stream_item_queue` may be missing on object of type `DeferredGroupedFieldSetRecord | StreamRecord`
++ src/graphql/execution/incremental_publisher.py:197:17: error[invalid-argument-type] Argument to bound method `_handle_completed_deferred_grouped_field_set` is incorrect: Expected `ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult`, found `ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult | StreamItemsResult`
+- src/graphql/execution/types.py:798:13: error[invalid-type-form] Invalid subscript of object of type `types.UnionType | Unknown` in type expression
+- src/graphql/execution/types.py:805:17: error[invalid-type-form] Invalid subscript of object of type `types.UnionType | Unknown` in type expression
++ src/graphql/execution/values.py:106:49: error[invalid-argument-type] Argument to function `value_from_ast` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLType | None`
++ src/graphql/execution/values.py:151:20: error[invalid-argument-type] Argument to function `coerce_input_value` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLType | None`
+- src/graphql/language/parser.py:266:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Source`, found `Source | str | Unknown`
++ src/graphql/language/parser.py:266:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Source`, found `Source | str`
++ src/graphql/type/definition.py:444:27: error[invalid-argument-type] Invalid argument to key "parse_literal" with declared type `((ValueNode, dict[str, Any] | None, /) -> Any) | None` on TypedDict `GraphQLScalarTypeKwargs`: value of type `None | (bound method Self@to_kwargs.parse_literal(node: ValueNode, variables: dict[str, Any] | None = None) -> Any) | (def parse_literal(self, node: ValueNode, variables: dict[str, Any] | None = None) -> Any)`
+- src/graphql/type/definition.py:753:17: error[invalid-type-form] Invalid subscript of object of type `types.UnionType | Unknown` in type expression
+- src/graphql/type/definition.py:754:21: error[invalid-type-form] Invalid subscript of object of type `types.UnionType | Unknown` in type expression
+- src/graphql/type/definition.py:857:17: error[invalid-type-form] Invalid subscript of object of type `types.UnionType | Unknown` in type expression
+- src/graphql/type/definition.py:858:21: error[invalid-type-form] Invalid subscript of object of type `types.UnionType | Unknown` in type expression
+- src/graphql/type/definition.py:963:16: error[invalid-type-form] Invalid subscript of object of type `types.UnionType | Unknown` in type expression
+- src/graphql/type/definition.py:1071:17: error[invalid-type-form] Invalid subscript of object of type `types.UnionType | Unknown` in type expression
+- src/graphql/type/definition.py:1316:17: error[invalid-type-form] Invalid subscript of object of type `types.UnionType | Unknown` in type expression
+- src/graphql/type/schema.py:399:52: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/graphql/type/schema.py:328:13: warning[possibly-missing-attribute] Attribute `types` may be missing on object of type `GraphQLInterfaceType | GraphQLUnionType`
++ src/graphql/type/schema.py:354:30: warning[possibly-missing-attribute] Attribute `types` may be missing on object of type `GraphQLInterfaceType | GraphQLUnionType`
+- src/graphql/type/validate.py:214:38: error[invalid-argument-type] Argument to bound method `validate_fields` is incorrect: Expected `GraphQLObjectType | GraphQLInterfaceType`, found `GraphQLNamedType | Unknown`
++ src/graphql/type/validate.py:214:38: error[invalid-argument-type] Argument to bound method `validate_fields` is incorrect: Expected `GraphQLObjectType | GraphQLInterfaceType`, found `GraphQLNamedType`
+- src/graphql/type/validate.py:217:42: error[invalid-argument-type] Argument to bound method `validate_interfaces` is incorrect: Expected `GraphQLObjectType | GraphQLInterfaceType`, found `GraphQLNamedType | Unknown`
++ src/graphql/type/validate.py:217:42: error[invalid-argument-type] Argument to bound method `validate_interfaces` is incorrect: Expected `GraphQLObjectType | GraphQLInterfaceType`, found `GraphQLNamedType`
+- src/graphql/type/validate.py:220:38: error[invalid-argument-type] Argument to bound method `validate_fields` is incorrect: Expected `GraphQLObjectType | GraphQLInterfaceType`, found `GraphQLNamedType | Unknown`
++ src/graphql/type/validate.py:220:38: error[invalid-argument-type] Argument to bound method `validate_fields` is incorrect: Expected `GraphQLObjectType | GraphQLInterfaceType`, found `GraphQLNamedType`
+- src/graphql/type/validate.py:223:42: error[invalid-argument-type] Argument to bound method `validate_interfaces` is incorrect: Expected `GraphQLObjectType | GraphQLInterfaceType`, found `GraphQLNamedType | Unknown`
++ src/graphql/type/validate.py:223:42: error[invalid-argument-type] Argument to bound method `validate_interfaces` is incorrect: Expected `GraphQLObjectType | GraphQLInterfaceType`, found `GraphQLNamedType`
+- src/graphql/type/validate.py:226:45: error[invalid-argument-type] Argument to bound method `validate_union_members` is incorrect: Expected `GraphQLUnionType`, found `GraphQLNamedType | Unknown`
++ src/graphql/type/validate.py:226:45: error[invalid-argument-type] Argument to bound method `validate_union_members` is incorrect: Expected `GraphQLUnionType`, found `GraphQLNamedType`
+- src/graphql/type/validate.py:229:43: error[invalid-argument-type] Argument to bound method `validate_enum_values` is incorrect: Expected `GraphQLEnumType`, found `GraphQLNamedType | Unknown`
++ src/graphql/type/validate.py:229:43: error[invalid-argument-type] Argument to bound method `validate_enum_values` is incorrect: Expected `GraphQLEnumType`, found `GraphQLNamedType`
+- src/graphql/type/validate.py:232:44: error[invalid-argument-type] Argument to bound method `validate_input_fields` is incorrect: Expected `GraphQLInputObjectType`, found `GraphQLNamedType | Unknown`
++ src/graphql/type/validate.py:232:44: error[invalid-argument-type] Argument to bound method `validate_input_fields` is incorrect: Expected `GraphQLInputObjectType`, found `GraphQLNamedType`
+- src/graphql/type/validate.py:235:53: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `GraphQLInputObjectType`, found `GraphQLNamedType | Unknown`
++ src/graphql/type/validate.py:235:53: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `GraphQLInputObjectType`, found `GraphQLNamedType`
++ src/graphql/utilities/ast_from_value.py:63:43: warning[possibly-missing-attribute] Attribute `of_type` may be missing on object of type `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`
++ src/graphql/utilities/ast_from_value.py:79:21: warning[possibly-missing-attribute] Attribute `of_type` may be missing on object of type `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`
++ src/graphql/utilities/ast_from_value.py:93:38: warning[possibly-missing-attribute] Attribute `fields` may be missing on object of type `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`
++ src/graphql/utilities/ast_from_value.py:106:22: warning[possibly-missing-attribute] Attribute `serialize` may be missing on object of type `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`
++ src/graphql/utilities/build_client_schema.py:262:81: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | ((scalar_introspection: IntrospectionScalarType) -> GraphQLScalarType) | ((object_introspection: IntrospectionObjectType) -> GraphQLObjectType) | ... omitted 4 union elements]` is not assignable to `dict[str, (IntrospectionScalarType | IntrospectionObjectType | IntrospectionInterfaceType | ... omitted 3 union elements, /) -> GraphQLNamedType]`
++ src/graphql/utilities/build_client_schema.py:302:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLType`
++ src/graphql/utilities/build_client_schema.py:332:75: error[invalid-argument-type] Argument to function `value_from_ast` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLType`
++ src/graphql/utilities/build_client_schema.py:335:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLType`
++ src/graphql/utilities/build_client_schema.py:369:75: error[invalid-argument-type] Argument to function `value_from_ast` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLType`
++ src/graphql/utilities/build_client_schema.py:372:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLType`
++ src/graphql/utilities/coerce_input_value.py:57:52: warning[possibly-missing-attribute] Attribute `of_type` may be missing on object of type `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`
++ src/graphql/utilities/coerce_input_value.py:72:21: warning[possibly-missing-attribute] Attribute `of_type` may be missing on object of type `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`
++ src/graphql/utilities/coerce_input_value.py:91:48: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`
++ src/graphql/utilities/coerce_input_value.py:96:18: warning[possibly-missing-attribute] Attribute `fields` may be missing on object of type `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`
++ src/graphql/utilities/coerce_input_value.py:118:75: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`
++ src/graphql/utilities/coerce_input_value.py:129:73: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`
++ src/graphql/utilities/coerce_input_value.py:134:12: warning[possibly-missing-attribute] Attribute `is_one_of` may be missing on object of type `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`
++ src/graphql/utilities/coerce_input_value.py:142:45: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`
++ src/graphql/utilities/coerce_input_value.py:157:16: warning[possibly-missing-attribute] Attribute `out_type` may be missing on object of type `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`
++ src/graphql/utilities/type_comparators.py:77:32: error[invalid-argument-type] Argument to bound method `is_sub_type` is incorrect: Expected `GraphQLInterfaceType | GraphQLUnionType`, found `GraphQLType`
++ src/graphql/utilities/type_comparators.py:103:36: error[invalid-argument-type] Argument to bound method `is_sub_type` is incorrect: Expected `GraphQLInterfaceType | GraphQLUnionType`, found `GraphQLObjectType | GraphQLInterfaceType | GraphQLUnionType`
++ src/graphql/utilities/type_comparators.py:104:56: error[invalid-argument-type] Argument to bound method `get_possible_types` is incorrect: Expected `GraphQLInterfaceType | GraphQLUnionType`, found `GraphQLObjectType | GraphQLInterfaceType | GraphQLUnionType`
++ src/graphql/utilities/type_comparators.py:107:35: error[invalid-argument-type] Argument to bound method `is_sub_type` is incorrect: Expected `GraphQLInterfaceType | GraphQLUnionType`, found `GraphQLObjectType | GraphQLInterfaceType | GraphQLUnionType`
++ src/graphql/utilities/type_comparators.py:111:35: error[invalid-argument-type] Argument to bound method `is_sub_type` is incorrect: Expected `GraphQLInterfaceType | GraphQLUnionType`, found `GraphQLObjectType | GraphQLInterfaceType | GraphQLUnionType`
+- src/graphql/utilities/type_info.py:200:21: error[unresolved-attribute] Object of type `None` has no attribute `of_type`
++ src/graphql/utilities/type_info.py:92:47: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | ... omitted 3 union elements`, found `GraphQLType & ~AlwaysFalsy`
++ src/graphql/utilities/type_info.py:94:48: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `GraphQLObjectType | GraphQLInterfaceType | GraphQLUnionType | None`, found `GraphQLType & ~AlwaysFalsy`
++ src/graphql/utilities/type_info.py:96:41: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 5 union elements`, found `GraphQLType & ~AlwaysFalsy`
++ src/graphql/utilities/type_info.py:150:13: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `GraphQLObjectType | GraphQLInterfaceType | GraphQLUnionType | None`, found `GraphQLNamedType | None`
++ src/graphql/utilities/type_info.py:177:33: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 5 union elements`, found `GraphQLNamedType | None`
++ src/graphql/utilities/type_info.py:183:39: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | ... omitted 3 union elements`, found `GraphQLType | None`
++ src/graphql/utilities/type_info.py:200:21: warning[possibly-missing-attribute] Attribute `of_type` may be missing on object of type `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 5 union elements`
++ src/graphql/utilities/type_info.py:203:39: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | ... omitted 3 union elements`, found `Unknown | GraphQLScalarType | GraphQLObjectType | ... omitted 6 union elements`
+- src/graphql/utilities/type_info.py:208:27: error[unresolved-attribute] Object of type `None` has no attribute `fields`
++ src/graphql/utilities/type_info.py:208:27: error[unresolved-attribute] Object of type `GraphQLNamedType | None` has no attribute `fields`
+- src/graphql/utilities/type_info.py:222:26: error[unresolved-attribute] Object of type `None` has no attribute `values`
++ src/graphql/utilities/type_info.py:222:26: error[unresolved-attribute] Object of type `GraphQLNamedType | None` has no attribute `values`
++ src/graphql/utilities/value_from_ast.py:73:43: warning[possibly-missing-attribute] Attribute `of_type` may be missing on object of type `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`
++ src/graphql/utilities/value_from_ast.py:79:21: warning[possibly-missing-attribute] Attribute `of_type` may be missing on object of type `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`
++ src/graphql/utilities/value_from_ast.py:105:18: warning[possibly-missing-attribute] Attribute `fields` may be missing on object of type `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`
++ src/graphql/utilities/value_from_ast.py:121:12: warning[possibly-missing-attribute] Attribute `is_one_of` may be missing on object of type `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`
++ src/graphql/utilities/value_from_ast.py:129:16: warning[possibly-missing-attribute] Attribute `out_type` may be missing on object of type `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`
+- src/graphql/validation/rules/custom/no_deprecated.py:77:31: error[unresolved-attribute] Object of type `None` has no attribute `fields`
++ src/graphql/validation/rules/custom/no_deprecated.py:77:31: error[unresolved-attribute] Object of type `GraphQLNamedType | None` has no attribute `fields`
+- src/graphql/validation/rules/custom/no_deprecated.py:82:41: error[unresolved-attribute] Object of type `None` has no attribute `name`
++ src/graphql/validation/rules/custom/no_deprecated.py:82:41: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `GraphQLNamedType | None`
++ src/graphql/validation/rules/fields_on_correct_type.py:83:52: error[invalid-argument-type] Argument to bound method `get_possible_types` is incorrect: Expected `GraphQLInterfaceType | GraphQLUnionType`, found `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`
++ src/graphql/validation/rules/fields_on_correct_type.py:109:61: error[invalid-argument-type] Argument to bound method `is_sub_type` is incorrect: Expected `GraphQLInterfaceType | GraphQLUnionType`, found `GraphQLObjectType | GraphQLInterfaceType`
++ src/graphql/validation/rules/fields_on_correct_type.py:111:61: error[invalid-argument-type] Argument to bound method `is_sub_type` is incorrect: Expected `GraphQLInterfaceType | GraphQLUnionType`, found `GraphQLObjectType | GraphQLInterfaceType`
++ src/graphql/validation/rules/fields_on_correct_type.py:132:37: warning[possibly-missing-attribute] Attribute `fields` may be missing on object of type `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`
++ src/graphql/validation/rules/overlapping_fields_can_be_merged.py:659:31: warning[possibly-missing-attribute] Attribute `of_type` may be missing on object of type `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`
++ src/graphql/validation/rules/overlapping_fields_can_be_merged.py:659:46: warning[possibly-missing-attribute] Attribute `of_type` may be missing on object of type `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`
++ src/graphql/validation/rules/overlapping_fields_can_be_merged.py:667:31: warning[possibly-missing-attribute] Attribute `of_type` may be missing on object of type `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`
++ src/graphql/validation/rules/overlapping_fields_can_be_merged.py:667:46: warning[possibly-missing-attribute] Attribute `of_type` may be missing on object of type `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`
++ src/graphql/validation/rules/possible_fragment_spreads.py:33:54: error[invalid-argument-type] Argument to function `do_types_overlap` is incorrect: Expected `GraphQLObjectType | GraphQLInterfaceType | GraphQLUnionType`, found `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 5 union elements`
++ src/graphql/validation/rules/possible_fragment_spreads.py:33:65: error[invalid-argument-type] Argument to function `do_types_overlap` is incorrect: Expected `GraphQLObjectType | GraphQLInterfaceType | GraphQLUnionType`, found `GraphQLObjectType | GraphQLInterfaceType | GraphQLUnionType | None`
++ src/graphql/validation/rules/possible_fragment_spreads.py:67:24: error[invalid-return-type] Return type does not match returned value: expected `GraphQLObjectType | GraphQLInterfaceType | GraphQLUnionType | None`, found `GraphQLNamedType | None`
+- src/graphql/validation/rules/stream_directive_on_list_field.py:42:38: warning[possibly-missing-attribute] Attribute `of_type` may be missing on object of type `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 5 union elements`
++ src/graphql/validation/rules/stream_directive_on_list_field.py:42:38: warning[possibly-missing-attribute] Attribute `of_type` may be missing on object of type `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`
+- src/graphql/validation/rules/stream_directive_on_list_field.py:49:68: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/graphql/validation/rules/values_of_correct_type.py:80:38: error[unresolved-attribute] Object of type `None` has no attribute `fields`
++ src/graphql/validation/rules/values_of_correct_type.py:80:38: error[unresolved-attribute] Object of type `GraphQLNamedType | None` has no attribute `fields`
+- src/graphql/validation/rules/values_of_correct_type.py:86:35: error[unresolved-attribute] Object of type `None` has no attribute `name`
++ src/graphql/validation/rules/values_of_correct_type.py:86:35: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `GraphQLNamedType | None`
+- src/graphql/validation/rules/values_of_correct_type.py:91:12: error[unresolved-attribute] Object of type `None` has no attribute `is_one_of`
++ src/graphql/validation/rules/values_of_correct_type.py:91:12: error[unresolved-attribute] Object of type `GraphQLNamedType | None` has no attribute `is_one_of`
+- src/graphql/validation/rules/values_of_correct_type.py:93:37: error[invalid-argument-type] Argument to function `validate_one_of_input_object` is incorrect: Expected `GraphQLInputObjectType`, found `None`
++ src/graphql/validation/rules/values_of_correct_type.py:93:37: error[invalid-argument-type] Argument to function `validate_one_of_input_object` is incorrect: Expected `GraphQLInputObjectType`, found `GraphQLNamedType | None`
+- src/graphql/validation/rules/values_of_correct_type.py:101:65: error[unresolved-attribute] Object of type `None` has no attribute `fields`
++ src/graphql/validation/rules/values_of_correct_type.py:101:65: error[unresolved-attribute] Object of type `GraphQLNamedType | None` has no attribute `fields`
+- src/graphql/validation/rules/values_of_correct_type.py:105:49: error[unresolved-attribute] Object of type `None` has no attribute `name`
++ src/graphql/validation/rules/values_of_correct_type.py:105:49: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `GraphQLNamedType | None`
+- tests/execution/test_abstract.py:47:24: error[invalid-await] `ExecutionResult | Unknown` is not awaitable
++ tests/execution/test_abstract.py:47:24: error[invalid-await] `ExecutionResult | @Todo` is not awaitable
+- tests/type/test_definition.py:243:70: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/type/test_validation.py:423:9: error[invalid-assignment] Object of type `dict[str, GraphQLNamedType | dict[Unknown | str, Unknown | str] | GraphQLDirective]` is not assignable to attribute `type_map` of type `dict[str, GraphQLNamedType]`
+- tests/type/test_validation.py:1015:51: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/type/test_validation.py:1308:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/type/test_validation.py:1421:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/type/test_validation.py:1537:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 489 diagnostics
++ Found 537 diagnostics
+
+python-htmlgen (https://github.com/srittau/python-htmlgen)
++ htmlgen/form.py:271:27: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsFloat | SupportsIndex`, found `str | None`
+- Found 22 diagnostics
++ Found 23 diagnostics
+
+kopf (https://github.com/nolar/kopf)
+- kopf/_core/intents/registries.py:276:17: error[invalid-argument-type] Argument is incorrect: Expected `(Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, /) -> @Todo`, found `def login_via_pykube(*, logger: @Todo, **_: Any) -> ConnectionInfo | None`
++ kopf/_core/intents/registries.py:276:17: error[invalid-argument-type] Argument is incorrect: Expected `(Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, /) -> @Todo`, found `def login_via_pykube(*, logger: Logger | LoggerAdapter[A
+
+... (truncated 7906 lines) ...
+```
+
+</details>
+
+
+No memory usage changes detected ✅
+
+
+
+---
+
+_Comment by @codspeed-hq[bot] on 2025-11-12 01:32_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/cjm%2Fpep613import?utm_source=github&utm_medium=comment&utm_content=header)
+
+### Merging #21394 will **degrade performances by 55.21%**
+
+<sub>Comparing <code>cjm/pep613import</code> (e8608b9) with <code>main</code> (06941c1)</sub>
+
+
+
+### Summary
+
+`❌ 10` regressions  
+`✅ 42` untouched  
+
+
+> :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/cjm%2Fpep613import?utm_source=github&utm_medium=comment&utm_content=acknowledge)._
+
+### Benchmarks breakdown
+
+|     | Mode | Benchmark | `BASE` | `HEAD` | Change |
+| --- | ---- | --------- | ------ | ------ | ------ |
+| ❌ | Simulation | [`` ty_check_file[incremental] ``](https://codspeed.io/astral-sh/ruff/branches/cjm%2Fpep613import?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Acheck_file%3A%3Abenchmark_incremental%3A%3Aty_check_file%5Bincremental%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 6.3 ms | 6.8 ms | -6.24% |
+| ❌ | Simulation | [`` anyio ``](https://codspeed.io/astral-sh/ruff/branches/cjm%2Fpep613import?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Aanyio%3A%3Aproject%3A%3Aanyio&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 1.1 s | 1.3 s | -19.02% |
+| ❌ | Simulation | [`` DateType ``](https://codspeed.io/astral-sh/ruff/branches/cjm%2Fpep613import?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Adatetype%3A%3Aproject%3A%3ADateType&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 239.2 ms | 250.4 ms | -4.47% |
+| ❌ | WallTime | [`` large[pydantic] ``](https://codspeed.io/astral-sh/ruff/branches/cjm%2Fpep613import?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Alarge%5Bpydantic%5D&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 199.4 s | 209.7 s | -4.88% |
+| ❌ | WallTime | [`` medium[colour-science] ``](https://codspeed.io/astral-sh/ruff/branches/cjm%2Fpep613import?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Amedium%5Bcolour-science%5D&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 16.1 s | 20 s | -19.58% |
+| ❌ | WallTime | [`` medium[pandas] ``](https://codspeed.io/astral-sh/ruff/branches/cjm%2Fpep613import?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Amedium%5Bpandas%5D&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 46.6 s | 54.1 s | -13.84% |
+| ❌ | WallTime | [`` medium[static-frame] ``](https://codspeed.io/astral-sh/ruff/branches/cjm%2Fpep613import?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Amedium%5Bstatic-frame%5D&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 15.1 s | 16 s | -5.18% |
+| ❌ | WallTime | [`` multithreaded[altair] ``](https://codspeed.io/astral-sh/ruff/branches/cjm%2Fpep613import?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Amultithreaded%5Baltair%5D&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 556.5 ms | 1,242.7 ms | -55.21% |
+| ❌ | WallTime | [`` small[altair] ``](https://codspeed.io/astral-sh/ruff/branches/cjm%2Fpep613import?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Asmall%5Baltair%5D&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 2.9 s | 4.2 s | -30.06% |
+| ❌ | WallTime | [`` small[freqtrade] ``](https://codspeed.io/astral-sh/ruff/branches/cjm%2Fpep613import?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Asmall%5Bfreqtrade%5D&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 6.3 s | 7 s | -9.47% |
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-11-12 02:01_
+
+
+<!-- generated-comment ecosystem -->
+
+
+## `ruff-ecosystem` results
+
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
+
+---
+
+_Label `ecosystem-analyzer` added by @carljm on 2025-11-12 02:14_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-11-12 02:21_
+
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `invalid-argument-type` | 1,645 | 121 | 255 |
+| `invalid-key` | 1,837 | 0 | 0 |
+| `type-assertion-failure` | 170 | 432 | 327 |
+| `no-matching-overload` | 410 | 15 | 0 |
+| `unused-ignore-comment` | 13 | 333 | 0 |
+| `possibly-missing-attribute` | 155 | 10 | 135 |
+| `unresolved-attribute` | 101 | 83 | 70 |
+| `invalid-assignment` | 91 | 38 | 58 |
+| `non-subscriptable` | 97 | 38 | 8 |
+| `invalid-return-type` | 47 | 47 | 36 |
+| `unsupported-operator` | 76 | 14 | 19 |
+| `invalid-type-form` | 24 | 64 | 10 |
+| `not-iterable` | 7 | 9 | 8 |
+| `possibly-unresolved-reference` | 0 | 19 | 0 |
+| `call-non-callable` | 9 | 2 | 1 |
+| `unknown-argument` | 9 | 1 | 0 |
+| `invalid-parameter-default` | 7 | 0 | 1 |
+| `index-out-of-bounds` | 1 | 1 | 3 |
+| `missing-argument` | 5 | 0 | 0 |
+| `invalid-await` | 1 | 0 | 3 |
+| `division-by-zero` | 2 | 0 | 0 |
+| `missing-typed-dict-key` | 2 | 0 | 0 |
+| `invalid-raise` | 1 | 0 | 0 |
+| `redundant-cast` | 1 | 0 | 0 |
+| `too-many-positional-arguments` | 1 | 0 | 0 |
+| **Total** | **4,712** | **1,227** | **934** |
+
+**[Full report with detailed diff](https://cjm-pep613import.ecosystem-663.pages.dev/diff)** ([timing results](https://cjm-pep613import.ecosystem-663.pages.dev/timing))
+
+
+
+
+---
+
+_Comment by @AlexWaygood on 2025-11-12 12:01_
+
+~~If you rebase on `main`, I think the number of new `invalid-type-form` diagnostics should go down drastically due to the temporary hack for literal-strings-in-type-expressions that David added in #21363~~
+
+Ah, no, David's corrected me -- the final version of that PR added no such hack. @sharkdp figured out a way of implementing #21363 without it. So don't mind me 🙃
+
+---
+
+_Comment by @carljm on 2025-11-12 23:35_
+
+From the ecosystem, most diagnostics look like either true positives or unrelated existing issues, exposed by now understanding a bunch of new types.
+
+But there are quite a few `invalid-type-form` resulting from failing to understand stringified annotations in these aliases. It looks like it may not be a good idea to land this without adding some kind of support or workaround for those.
+
+---
+
+_Comment by @sharkdp on 2025-11-13 07:43_
+
+> But there are quite a few `invalid-type-form` resulting from failing to understand stringified annotations in these aliases. It looks like it may not be a good idea to land this without adding some kind of support or workaround for those.
+
+Given that this PR implements PEP 613 aliases as if they were implicit aliases, a simple first-iteration version might be to add a new `Type::LiteralString(_) => todo_type!("Stringified annotation in type alias")` branch in `Type::in_type_expression`?
+
+---
+
+_Comment by @MichaReiser on 2025-11-13 07:47_
+
+> Performance regression is also just due to understanding lots of new types; nothing we do in this PR is inherently expensive.
+
+While true, I think it's still worth looking at the performance regression to see if anything stands out. 50% is way more than even the type-of-self PR introduced and I suspect what we're seeing is some bad run-away, similar to what we've seen with pydantic the other day. I'm not suggesting that we necessearily need to fix the performance regression, but we should at least try to understand where it's coming from and if there's something that clearly stands out.
+
+---
+
+_Label `ecosystem-analyzer` removed by @carljm on 2025-11-15 06:18_
+
+---
+
+_Label `ecosystem-analyzer` added by @carljm on 2025-11-15 06:18_
+
+---
+
+_Label `ecosystem-analyzer` removed by @AlexWaygood on 2025-11-15 15:51_
+
+---
+
+_Label `ecosystem-analyzer` added by @AlexWaygood on 2025-11-15 15:51_
+
+---
+
+_Label `ecosystem-analyzer` removed by @carljm on 2025-11-15 16:16_
+
+---
+
+_Label `ecosystem-analyzer` added by @carljm on 2025-11-15 16:16_
+
+---
+
+_Renamed from "[ty] support imported PEP 613 type aliases" to "[ty] support PEP 613 type aliases" by @carljm on 2025-11-15 16:20_
+
+---
+
+_Comment by @carljm on 2025-11-15 16:46_
+
+Adding support for stringified RHS eliminated the false positives from that -- but just added a bunch more diagnostics from understanding even more type aliases!
+
+Some major categories of new diagnostics that I'm seeing:
+1. `invalid-type-form` due to seeing a type of `object` or `UnionType` in a type expression. It looks like these are mostly due to specialized generic aliases or callable types or other things we don't understand yet. Probably need to either delay this PR until after support for those lands, or find a way to silence the false positives.
+2. A ton of new `invalid-key` diagnostics from pydantic, because we now understand more type aliases for unions of typed dicts, and we don't support tagged-union discrimination. (We will also need to support aliased conditional expressions to get rid of some of these, because in some places pydantic does `schema_type = schema['type']` and then performs checks on the `schema_type` variable.) These we just have to live with until we implement those features.
+
+Trying to debug the first category is painful, because you just get this opaque error at the usage site of the type alias and have to dig back to its definition and then figure out what we didn't understand, sometimes several layers of type aliases deep. I'm a bit worried that even once we support all the "correct" forms of type aliases, users will still get confusing and unhelpful error messages if they write bad type aliases. Maybe one way we could mitigate this, at least for `TypeAlias` if not for implicit type aliases, would be to always create a known-instance union type that is valid in type expressions for any vertical-pipe operators, even if some of the components weren't valid/known.
+
+
+---
+
+_Comment by @AlexWaygood on 2025-11-15 17:09_
+
+The pydantic benchmark is panicking FYI, so the codspeed results aren't up to date:
+
+```
+  Expected between 1 and 5000 diagnostics on project 'pydantic' but got 6334
+```
+
+---
+
+_Label `ecosystem-analyzer` removed by @carljm on 2025-11-15 23:05_
+
+---
+
+_Label `ecosystem-analyzer` added by @carljm on 2025-11-15 23:05_
+
+---
+
+_Label `ecosystem-analyzer` removed by @carljm on 2025-11-15 23:29_
+
+---
+
+_Label `ecosystem-analyzer` added by @carljm on 2025-11-15 23:29_
+
+---
+
+_Comment by @carljm on 2025-11-15 23:58_
+
+Added a Todo type for subscripting `UnionType` known instance, and added specialized handling for PEP 604 unions in a `TypeAlias`, and that looks a lot better. Still a few added `invalid-type-form` diagnostics to debug.
+
+---
+
+_Label `ecosystem-analyzer` removed by @carljm on 2025-11-17 19:29_
+
+---
+
+_Label `ecosystem-analyzer` added by @carljm on 2025-11-17 19:29_
+
+---
+
+_Label `ecosystem-analyzer` removed by @carljm on 2025-11-18 02:25_
+
+---
+
+_Label `ecosystem-analyzer` added by @carljm on 2025-11-18 02:25_
+
+---
+
+_Label `ecosystem-analyzer` removed by @carljm on 2025-11-18 02:40_
+
+---
+
+_Label `ecosystem-analyzer` added by @carljm on 2025-11-18 02:40_
+
+---
+
+_Label `ecosystem-analyzer` removed by @carljm on 2025-11-18 17:56_
+
+---
+
+_Label `ecosystem-analyzer` added by @carljm on 2025-11-18 17:56_
+
+---
+
+_Comment by @carljm on 2025-11-20 04:48_
+
+> I think it's still worth looking at the performance regression to see if anything stands out. 50% is way more than even the type-of-self PR introduced and I suspect what we're seeing is some bad run-away, similar to what we've seen with pydantic the other day.
+
+I spent some time looking at it and can't find any evidence of runaway or pathological performance. Altair is a relatively small project which checks very fast both before and after this PR. On CI it is showing 50% regression multi-threaded and 30% single-threaded; locally it shows even less regression for a single-threaded check (0.22s to 0.27s). `-vvv` traces for old and new look remarkably similar when diffed; there are just more types resolved and more diagnostics emitted in the new version. There are no slow files reported in either version.
+
+It still appears to me that the regression here is explained mostly by resolving more types and emitting more diagnostics.
+
+I do think that we can be somewhat more efficient about how we handle implicit and PEP 613 type aliases, especially if they are large union type aliases used in many places, but @sharkdp is already fixing this in https://github.com/astral-sh/ruff/pull/21531
+
+So I will mark this ready for review.
+
+---
+
+_Marked ready for review by @carljm on 2025-11-20 04:48_
+
+---
+
+_Review requested from @AlexWaygood by @carljm on 2025-11-20 04:48_
+
+---
+
+_Review requested from @sharkdp by @carljm on 2025-11-20 04:48_
+
+---
+
+_Review requested from @dcreager by @carljm on 2025-11-20 04:48_
+
+---
+
+_Review requested from @MichaReiser by @carljm on 2025-11-20 04:48_
+
+---
+
+_Label `ecosystem-analyzer` removed by @carljm on 2025-11-20 04:49_
+
+---
+
+_Label `ecosystem-analyzer` added by @carljm on 2025-11-20 04:49_
+
+---
+
+_Label `ecosystem-analyzer` removed by @carljm on 2025-11-20 05:23_
+
+---
+
+_Label `ecosystem-analyzer` added by @carljm on 2025-11-20 05:23_
+
+---
+
+_Label `ecosystem-analyzer` removed by @carljm on 2025-11-20 05:44_
+
+---
+
+_Label `ecosystem-analyzer` added by @carljm on 2025-11-20 05:44_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/pep613_type_aliases.md`:73 on 2025-11-20 12:11_
+
+This TODO seems done?
+
+```suggestion
+    reveal_type(x)  # revealed: int | ((str, /) -> int)
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/pep613_type_aliases.md`:205 on 2025-11-20 12:11_
+
+```suggestion
+## Right-hand side is required
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types.rs`:869 on 2025-11-20 12:15_
+
+nit: this type is simple enough that it seems like it's less code overall without this helper method?
+
+```diff
+diff --git a/crates/ty_python_semantic/src/types.rs b/crates/ty_python_semantic/src/types.rs
+index 16abbbb191..91ec7b4585 100644
+--- a/crates/ty_python_semantic/src/types.rs
++++ b/crates/ty_python_semantic/src/types.rs
+@@ -863,10 +863,6 @@ impl<'db> Type<'db> {
+             .is_some()
+     }
+ 
+-    fn is_typealias_special_form(&self) -> bool {
+-        matches!(self, Type::SpecialForm(SpecialFormType::TypeAlias))
+-    }
+-
+     /// Return true if this type overrides __eq__ or __ne__ methods
+     fn overrides_equality(&self, db: &'db dyn Db) -> bool {
+         let check_dunder = |dunder_name, allowed_return_value| {
+diff --git a/crates/ty_python_semantic/src/types/infer.rs b/crates/ty_python_semantic/src/types/infer.rs
+index 94d2ca6115..03a65ccbc3 100644
+--- a/crates/ty_python_semantic/src/types/infer.rs
++++ b/crates/ty_python_semantic/src/types/infer.rs
+@@ -379,8 +379,7 @@ impl<'db> TypeContext<'db> {
+     }
+ 
+     pub(crate) fn is_typealias(&self) -> bool {
+-        self.annotation
+-            .is_some_and(|ty| ty.is_typealias_special_form())
++        self.annotation == Some(Type::SpecialForm(SpecialFormType::TypeAlias))
+     }
+ }
+ 
+diff --git a/crates/ty_python_semantic/src/types/infer/builder.rs b/crates/ty_python_semantic/src/types/infer/builder.rs
+index 56c5f421c9..e8bfa4b9a7 100644
+--- a/crates/ty_python_semantic/src/types/infer/builder.rs
++++ b/crates/ty_python_semantic/src/types/infer/builder.rs
+@@ -5461,7 +5461,8 @@ impl<'db, 'ast> TypeInferenceBuilder<'db, 'ast> {
+ 
+         // Check if this is a PEP 613 `TypeAlias`. (This must come below the SpecialForm handling
+         // immediately below, since that can overwrite the type to be `TypeAlias`.)
+-        let is_pep_613_type_alias = declared.inner_type().is_typealias_special_form();
++        let is_pep_613_type_alias =
++            declared.inner_type() == Type::SpecialForm(SpecialFormType::TypeAlias);
+ 
+         // Handle various singletons.
+         if let Some(name_expr) = target.as_name_expr() {
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/pep613_type_aliases.md`:110 on 2025-11-20 12:16_
+
+```suggestion
+## String literal on the right-hand side
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/pep613_type_aliases.md`:47 on 2025-11-20 12:18_
+
+could you also add a test that makes sure that we _disallow_ this if it's a string literal on the right-hand side? E.g. this will obviously pass at runtime:
+
+```py
+from typing import TypeAlias
+
+MyList: TypeAlias = list["int"]
+
+class Foo(MyList): ...
+reveal_mro(Foo)
+```
+
+but this obviously won't:
+
+```py
+from typing import TypeAlias
+
+MyList: TypeAlias = "list[int]"
+
+class Foo(MyList): ...
+reveal_mro(Foo)
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:9304 on 2025-11-20 12:27_
+
+have you added any tests for this new diagnostic? It looks like we now emit both `unsupported-operator` and `invalid-type-form` if you use `+` in a type expression, which feels a bit excessive?
+
+<img width="2124" height="772" alt="image" src="https://github.com/user-attachments/assets/99fe61bf-00ab-42f1-9a3b-d843c31325df" />
+
+If we keep the new diagnostic, I also think the subdiagnostic would probably be better as a `help` subdiagnostic rather than an `info` one:
+
+```suggestion
+        if *op != ast::Operator::BitOr {
+            if let Some(builder) = self.context.report_lint(&INVALID_TYPE_FORM, node) {
+                let mut diag = builder.into_diagnostic(format_args!(
+                    "Invalid binary operator `{}` in type alias",
+                    op.as_str()
+                ));
+                diag.help("Did you mean to use `|`?");
+            }
+            return Type::unknown();
+        }
+```
+
+Though I'm not sure it really is obvious that the user meant to use `|` if they have something like `int + str` or `int - str` TBH. For the first of these, I have no idea _what_ they meant; for the second, my best guess would be that they're new to Python typing and they're trying to express a negation type somehow. This subdiagnostic really feels more suitable for something like `int or str` in a type expression? For that case, I think it really is pretty obvious that they meant to use `|`
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder/annotation_expression.rs`:31 on 2025-11-20 12:30_
+
+blegh, I hate having functions that take boolean arguments in Rust 😆 unless you open the code up in an IDE, it makes callsites impossible to read -- you have to navigate to the function signature to figure out which parameter is being passed `true` here, and what that implies. I'd create a custom enum here:
+
+```rs
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+enum PEP613Policy {
+    Allowed,
+    Disallowed,
+}
+
+---
+
+_@AlexWaygood approved on 2025-11-20 12:31_
+
+Awesome!!
+
+---
+
+_@carljm reviewed on 2025-11-21 01:11_
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types.rs`:869 on 2025-11-21 01:11_
+
+There's barely a difference in overall code size either way, but I don't think that's what the decision should be based on. If the representation changes, there's only one place we have to change it. The explicit version isn't super complex but still reads quite repetitively (three occurrences of `Type`, two of `SpecialForm`).
+
+I agree only two usage sites makes this marginal; there were more before I added `TypeContext::is_typealias` to wrap it. But it doesn't seem like an improvement to me to remove it.
+
+---
+
+_@carljm reviewed on 2025-11-21 01:12_
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer/builder.rs`:9304 on 2025-11-21 01:12_
+
+I think in the interests of getting this PR landed, I will just remove this diagnostic. The value seems likely low, and it would be better designed in a dedicated effort.
+
+---
+
+_Label `ecosystem-analyzer` removed by @carljm on 2025-11-21 01:48_
+
+---
+
+_Label `ecosystem-analyzer` added by @carljm on 2025-11-21 01:48_
+
+---
+
+_Merged by @carljm on 2025-11-21 01:59_
+
+---
+
+_Closed by @carljm on 2025-11-21 01:59_
+
+---
+
+_Branch deleted on 2025-11-21 01:59_
+
+---
+
+_Comment by @MichaReiser on 2025-11-21 08:22_
+
+@carljm would you mind updating https://github.com/astral-sh/ty/issues/445, now that type aliases are supported?
+
+---

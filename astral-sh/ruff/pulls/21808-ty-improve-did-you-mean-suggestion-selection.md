@@ -1,0 +1,640 @@
+```yaml
+number: 21808
+title: "[ty] improve \"Did you mean?\" suggestion selection algorithm"
+type: pull_request
+state: closed
+author: mtshiba
+labels:
+  - ty
+  - diagnostics
+assignees: []
+draft: true
+base: main
+head: improve-edit-distance
+created_at: 2025-12-05T10:27:28Z
+updated_at: 2025-12-05T12:36:15Z
+url: https://github.com/astral-sh/ruff/pull/21808
+synced_at: 2026-01-10T16:48:02Z
+```
+
+# [ty] improve "Did you mean?" suggestion selection algorithm
+
+---
+
+_Pull request opened by @mtshiba on 2025-12-05 10:27_
+
+## Summary
+
+This is a revival of #21780. After seeing #21780, I thought that perhaps we could reduce the number of incorrect hits by improving the edit distance calculation and candidate filtering.
+
+I improved `did_you_mean` by referring to rustc's suggestion selection algorithm[^1].
+
+[^1]: https://doc.rust-lang.org/beta/nightly-rustc/src/rustc_span/edit_distance.rs.html
+
+## Test Plan
+
+new snapshots
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-05 10:29_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-12-05 12:09:17.684474584 +0000
++++ new-output.txt	2025-12-05 12:09:21.638475206 +0000
+@@ -158,7 +158,7 @@
+ callables_protocol.py:169:7: error[invalid-assignment] Object of type `def cb8_bad1(x: int) -> Any` is not assignable to `Proto8`
+ callables_protocol.py:186:5: error[invalid-assignment] Object of type `Literal["str"]` is not assignable to attribute `other_attribute` of type `int`
+ callables_protocol.py:187:5: error[unresolved-attribute] Unresolved attribute `xxx` on type `Proto9[P@decorator1, R@decorator1]`.
+-callables_protocol.py:197:7: error[unresolved-attribute] Object of type `Proto9[Unknown, Unknown]` has no attribute `other_attribute2`
++callables_protocol.py:197:7: error[unresolved-attribute] Object of type `Proto9[Unknown, Unknown]` has no attribute `other_attribute2`: Did you mean `other_attribute`?
+ callables_protocol.py:238:8: error[invalid-assignment] Object of type `def cb11_bad1(x: int, y: str, /) -> Any` is not assignable to `Proto11`
+ callables_protocol.py:260:8: error[invalid-assignment] Object of type `def cb12_bad1(*args: Any, *, kwarg0: Any) -> None` is not assignable to `Proto12`
+ callables_protocol.py:284:27: error[invalid-assignment] Object of type `def cb13_no_default(path: str) -> str` is not assignable to `Proto13_Default`
+@@ -289,8 +289,8 @@
+ dataclasses_order.py:50:4: error[unsupported-operator] Operator `<` is not supported between objects of type `DC1` and `DC2`
+ dataclasses_postinit.py:28:7: error[unresolved-attribute] Object of type `DC1` has no attribute `x`
+ dataclasses_postinit.py:29:7: error[unresolved-attribute] Object of type `DC1` has no attribute `y`
+-dataclasses_slots.py:66:1: error[unresolved-attribute] Class `DC6` has no attribute `__slots__`
+-dataclasses_slots.py:69:1: error[unresolved-attribute] Object of type `DC6` has no attribute `__slots__`
++dataclasses_slots.py:66:1: error[unresolved-attribute] Class `DC6` has no attribute `__slots__`: Did you mean `__class__`?
++dataclasses_slots.py:69:1: error[unresolved-attribute] Object of type `DC6` has no attribute `__slots__`: Did you mean `__class__`?
+ dataclasses_transform_class.py:63:1: error[invalid-assignment] Property `id` defined in `Customer1` is read-only
+ dataclasses_transform_class.py:66:8: error[missing-argument] No arguments provided for required parameters `id`, `name`
+ dataclasses_transform_class.py:66:18: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 2
+@@ -971,7 +971,7 @@
+ typeddicts_extra_items.py:310:5: error[type-assertion-failure] Type `list[tuple[str, int | str]]` does not match asserted type `list[tuple[str, object]]`
+ typeddicts_extra_items.py:311:5: error[type-assertion-failure] Type `list[int | str]` does not match asserted type `list[object]`
+ typeddicts_extra_items.py:326:25: error[invalid-assignment] Object of type `IntDict` is not assignable to `dict[str, int]`
+-typeddicts_extra_items.py:329:52: error[invalid-key] Unknown key "bar" for TypedDict `IntDictWithNum` - did you mean "num"?
++typeddicts_extra_items.py:329:52: error[invalid-key] Unknown key "bar" for TypedDict `IntDictWithNum`: Unknown key "bar"
+ typeddicts_extra_items.py:330:32: error[invalid-assignment] Object of type `IntDictWithNum` is not assignable to `dict[str, int]`
+ typeddicts_extra_items.py:337:1: error[unresolved-attribute] Object of type `IntDictWithNum` has no attribute `clear`
+ typeddicts_extra_items.py:339:1: error[type-assertion-failure] Type `tuple[str, int]` does not match asserted type `Unknown`
+
+```
+
+</details>
+
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-05 10:31_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+zipp (https://github.com/jaraco/zipp)
+- zipp/__init__.py:94:16: error[unresolved-attribute] Object of type `Self@__getstate__` has no attribute `_saved___init__`
++ zipp/__init__.py:94:16: error[unresolved-attribute] Object of type `Self@__getstate__` has no attribute `_saved___init__`: Did you mean `__init__`?
+- zipp/__init__.py:94:43: error[unresolved-attribute] Object of type `Self@__getstate__` has no attribute `_saved___init__`
++ zipp/__init__.py:94:43: error[unresolved-attribute] Object of type `Self@__getstate__` has no attribute `_saved___init__`: Did you mean `__init__`?
+
+more-itertools (https://github.com/more-itertools/more-itertools)
+- more_itertools/more.py:181:22: error[unresolved-import] Module `math` has no member `sumprod`
++ more_itertools/more.py:181:22: error[unresolved-import] Module `math` has no member `sumprod`: Did you mean `prod`?
+- more_itertools/recipes.py:98:23: error[unresolved-import] Module `heapq` has no member `heappush_max`
++ more_itertools/recipes.py:98:23: error[unresolved-import] Module `heapq` has no member `heappush_max`: Did you mean `heappush`?
+- more_itertools/recipes.py:98:37: error[unresolved-import] Module `heapq` has no member `heappushpop_max`
++ more_itertools/recipes.py:98:37: error[unresolved-import] Module `heapq` has no member `heappushpop_max`: Did you mean `heappushpop`?
+- more_itertools/recipes.py:286:22: error[unresolved-import] Module `math` has no member `sumprod`
++ more_itertools/recipes.py:286:22: error[unresolved-import] Module `math` has no member `sumprod`: Did you mean `prod`?
+
+attrs (https://github.com/python-attrs/attrs)
+- src/attr/_compat.py:9:20: error[unresolved-import] Module `typing` has no member `_GenericAlias`
++ src/attr/_compat.py:9:20: error[unresolved-import] Module `typing` has no member `_GenericAlias`: Did you mean `_Generic`?
+- src/attr/validators.pyi:1:19: error[unresolved-import] Module `types` has no member `UnionType`
++ src/attr/validators.pyi:1:19: error[unresolved-import] Module `types` has no member `UnionType`: Did you mean `FunctionType`?
+- tests/test_make.py:2618:32: error[unresolved-attribute] Object of type `object` has no attribute `__le__`
++ tests/test_make.py:2618:32: error[unresolved-attribute] Object of type `object` has no attribute `__le__`: Did you mean `__ne__`?
+- tests/test_make.py:2619:32: error[unresolved-attribute] Object of type `object` has no attribute `__lt__`
++ tests/test_make.py:2619:32: error[unresolved-attribute] Object of type `object` has no attribute `__lt__`: Did you mean `__eq__`?
+- tests/test_make.py:2620:32: error[unresolved-attribute] Object of type `object` has no attribute `__ge__`
++ tests/test_make.py:2620:32: error[unresolved-attribute] Object of type `object` has no attribute `__ge__`: Did you mean `__ne__`?
+- tests/test_make.py:2621:32: error[unresolved-attribute] Object of type `object` has no attribute `__gt__`
++ tests/test_make.py:2621:32: error[unresolved-attribute] Object of type `object` has no attribute `__gt__`: Did you mean `__eq__`?
+- tests/test_packaging.py:41:49: error[unresolved-attribute] Module `attr` has no member `VersionInfo`
++ tests/test_packaging.py:41:49: error[unresolved-attribute] Module `attr` has no member `VersionInfo`: Did you mean `_version_info`?
+- tests/test_slots.py:91:45: error[unresolved-attribute] Object of type `C1Slots` has no attribute `__slots__`
++ tests/test_slots.py:91:45: error[unresolved-attribute] Object of type `C1Slots` has no attribute `__slots__`: Did you mean `__lt__`?
+- tests/test_slots.py:169:25: error[unresolved-attribute] Class `C2Slots` has no attribute `__slots__`
++ tests/test_slots.py:169:25: error[unresolved-attribute] Class `C2Slots` has no attribute `__slots__`: Did you mean `__lt__`?
+- tests/test_slots.py:260:25: error[unresolved-attribute] Class `C2Slots` has no attribute `__slots__`
++ tests/test_slots.py:260:25: error[unresolved-attribute] Class `C2Slots` has no attribute `__slots__`: Did you mean `__lt__`?
+- tests/test_slots.py:311:25: error[unresolved-attribute] Class `C2Slots` has no attribute `__slots__`
++ tests/test_slots.py:311:25: error[unresolved-attribute] Class `C2Slots` has no attribute `__slots__`: Did you mean `__lt__`?
+- tests/test_slots.py:768:16: error[unresolved-attribute] Class `A` has no attribute `__slots__`
++ tests/test_slots.py:768:16: error[unresolved-attribute] Class `A` has no attribute `__slots__`: Did you mean `__lt__`?
+- tests/test_slots.py:985:24: error[unresolved-attribute] Object of type `<super: <class 'B'>, B>` has no attribute `__getattr__`
++ tests/test_slots.py:985:24: error[unresolved-attribute] Object of type `<super: <class 'B'>, B>` has no attribute `__getattr__`: Did you mean `__setattr__`?
+- tests/test_slots.py:1037:12: error[unresolved-attribute] Class `B` has no attribute `__slots__`
++ tests/test_slots.py:1037:12: error[unresolved-attribute] Class `B` has no attribute `__slots__`: Did you mean `__lt__`?
+- tests/test_slots.py:1058:12: error[unresolved-attribute] Class `B` has no attribute `__slots__`
++ tests/test_slots.py:1058:12: error[unresolved-attribute] Class `B` has no attribute `__slots__`: Did you mean `__lt__`?
+- tests/test_version_info.py:6:18: error[unresolved-import] Module `attr` has no member `VersionInfo`
++ tests/test_version_info.py:6:18: error[unresolved-import] Module `attr` has no member `VersionInfo`: Did you mean `_version_info`?
+
+dacite (https://github.com/konradhalas/dacite)
+- dacite/types.py:17:16: error[unresolved-attribute] Object of type `type` has no attribute `__extra__`
++ dacite/types.py:17:16: error[unresolved-attribute] Object of type `type` has no attribute `__extra__`: Did you mean `__str__`?
+
+parso (https://github.com/davidhalter/parso)
+- parso/python/pep8.py:679:21: error[unresolved-attribute] Object of type `Self@_analyse_non_prefix` has no attribute `add_issuadd_issue`
++ parso/python/pep8.py:679:21: error[unresolved-attribute] Object of type `Self@_analyse_non_prefix` has no attribute `add_issuadd_issue`: Did you mean `add_issue`?
+
+anyio (https://github.com/agronholm/anyio)
+- src/anyio/_backends/_asyncio.py:290:12: error[unresolved-attribute] Object of type `AbstractEventLoop` has no attribute `_default_executor`
++ src/anyio/_backends/_asyncio.py:290:12: error[unresolved-attribute] Object of type `AbstractEventLoop` has no attribute `_default_executor`: Did you mean `set_default_executor`?
+- src/anyio/_backends/_asyncio.py:492:21: error[unresolved-attribute] Object of type `Task[Unknown]` has no attribute `uncancel`
++ src/anyio/_backends/_asyncio.py:492:21: error[unresolved-attribute] Object of type `Task[Unknown]` has no attribute `uncancel`: Did you mean `cancel`?
+
+pyinstrument (https://github.com/joerick/pyinstrument)
+- pyinstrument/vendor/decorator.py:57:34: error[unresolved-attribute] Module `inspect` has no member `getargspec`
++ pyinstrument/vendor/decorator.py:57:34: error[unresolved-attribute] Module `inspect` has no member `getargspec`: Did you mean `getargs`?
+- pyinstrument/vendor/decorator.py:279:28: error[unresolved-import] Module `contextlib` has no member `GeneratorContextManager`
++ pyinstrument/vendor/decorator.py:279:28: error[unresolved-import] Module `contextlib` has no member `GeneratorContextManager`: Did you mean `_GeneratorContextManager`?
+
+asynq (https://github.com/quora/asynq)
+- asynq/async_task.py:161:13: error[unresolved-attribute] Class `FutureBase` has no attribute `_computed`
++ asynq/async_task.py:161:13: error[unresolved-attribute] Class `FutureBase` has no attribute `_computed`: Did you mean `is_computed`?
+- asynq/async_task.py:213:20: error[unresolved-attribute] Object of type `DebugOptions` has no attribute `KEEP_DEPENDENCIES`
++ asynq/async_task.py:213:20: error[unresolved-attribute] Object of type `DebugOptions` has no attribute `KEEP_DEPENDENCIES`: Did you mean `DUMP_DEPENDENCIES`?
+- asynq/async_task.py:258:12: error[unresolved-attribute] Object of type `Self@_accept_error` has no attribute `_value`
++ asynq/async_task.py:258:12: error[unresolved-attribute] Object of type `Self@_accept_error` has no attribute `_value`: Did you mean `value`?
+- asynq/async_task.py:288:12: error[unresolved-attribute] Object of type `Self@_queue_exit` has no attribute `_value`
++ asynq/async_task.py:288:12: error[unresolved-attribute] Object of type `Self@_queue_exit` has no attribute `_value`: Did you mean `value`?
+- asynq/async_task.py:300:12: error[unresolved-attribute] Object of type `Self@_queue_throw_error` has no attribute `_value`
++ asynq/async_task.py:300:12: error[unresolved-attribute] Object of type `Self@_queue_throw_error` has no attribute `_value`: Did you mean `value`?
+- asynq/batching.py:90:20: error[unresolved-attribute] Object of type `DebugOptions` has no attribute `KEEP_DEPENDENCIES`
++ asynq/batching.py:90:20: error[unresolved-attribute] Object of type `DebugOptions` has no attribute `KEEP_DEPENDENCIES`: Did you mean `DUMP_DEPENDENCIES`?
+- asynq/batching.py:134:9: error[unresolved-attribute] Class `FutureBase` has no attribute `_computed`
++ asynq/batching.py:134:9: error[unresolved-attribute] Class `FutureBase` has no attribute `_computed`: Did you mean `is_computed`?
+- asynq/generator.py:176:26: error[unresolved-attribute] Object of type `Self@__repr__` has no attribute `stopped`
++ asynq/generator.py:176:26: error[unresolved-attribute] Object of type `Self@__repr__` has no attribute `stopped`: Did you mean `is_stopped`?
+- asynq/tests/test_debug.py:179:15: error[unresolved-attribute] Object of type `AsyncDecorator[Any, Unknown]` has no attribute `__name__`
++ asynq/tests/test_debug.py:179:15: error[unresolved-attribute] Object of type `AsyncDecorator[Any, Unknown]` has no attribute `__name__`: Did you mean `__ne__`?
+- asynq/tests/test_debug.py:181:9: error[unresolved-attribute] Object of type `AsyncDecorator[Any, Unknown]` has no attribute `__name__`
++ asynq/tests/test_debug.py:181:9: error[unresolved-attribute] Object of type `AsyncDecorator[Any, Unknown]` has no attribute `__name__`: Did you mean `__ne__`?
+- asynq/tests/test_futures.py:22:5: error[unresolved-attribute] Object of type `Future[Unknown]` has no attribute `on_computed`
++ asynq/tests/test_futures.py:22:5: error[unresolved-attribute] Object of type `Future[Unknown]` has no attribute `on_computed`: Did you mean `is_computed`?
+- asynq/tests/test_futures.py:25:5: error[unresolved-attribute] Object of type `Future[Unknown]` has no attribute `on_computed`
++ asynq/tests/test_futures.py:25:5: error[unresolved-attribute] Object of type `Future[Unknown]` has no attribute `on_computed`: Did you mean `is_computed`?
+
+pip (https://github.com/pypa/pip)
+- src/pip/_vendor/distlib/scripts.py:59:46: error[unresolved-attribute] Module `os` has no member `_name`
++ src/pip/_vendor/distlib/scripts.py:59:46: error[unresolved-attribute] Module `os` has no member `_name`: Did you mean `name`?
+- src/pip/_vendor/distlib/scripts.py:107:72: error[unresolved-attribute] Module `os` has no member `_name`
++ src/pip/_vendor/distlib/scripts.py:107:72: error[unresolved-attribute] Module `os` has no member `_name`: Did you mean `name`?
+- src/pip/_vendor/distlib/scripts.py:111:65: error[unresolved-attribute] Module `os` has no member `_name`
++ src/pip/_vendor/distlib/scripts.py:111:65: error[unresolved-attribute] Module `os` has no member `_name`: Did you mean `name`?
+- src/pip/_vendor/distlib/scripts.py:400:50: error[unresolved-attribute] Module `os` has no member `_name`
++ src/pip/_vendor/distlib/scripts.py:400:50: error[unresolved-attribute] Module `os` has no member `_name`: Did you mean `name`?
+- src/pip/_vendor/distlib/util.py:566:57: error[unresolved-attribute] Module `os` has no member `_name`
++ src/pip/_vendor/distlib/util.py:566:57: error[unresolved-attribute] Module `os` has no member `_name`: Did you mean `name`?
+- src/pip/_vendor/distlib/util.py:1467:17: error[unresolved-attribute] Object of type `Self@connect` has no attribute `_tunnel`
++ src/pip/_vendor/distlib/util.py:1467:17: error[unresolved-attribute] Object of type `Self@connect` has no attribute `_tunnel`: Did you mean `set_tunnel`?
+- src/pip/_vendor/pygments/lexer.py:599:34: error[unresolved-attribute] Object of type `Self@process_tokendef` has no attribute `tokens`
++ src/pip/_vendor/pygments/lexer.py:599:34: error[unresolved-attribute] Object of type `Self@process_tokendef` has no attribute `tokens`: Did you mean `_tokens`?
+- src/pip/_vendor/pygments/lexer.py:709:21: error[unresolved-attribute] Object of type `Self@get_tokens_unprocessed` has no attribute `_tokens`
++ src/pip/_vendor/pygments/lexer.py:709:21: error[unresolved-attribute] Object of type `Self@get_tokens_unprocessed` has no attribute `_tokens`: Did you mean `tokens`?
+- src/pip/_vendor/pygments/lexer.py:789:21: error[unresolved-attribute] Object of type `Self@get_tokens_unprocessed` has no attribute `_tokens`
++ src/pip/_vendor/pygments/lexer.py:789:21: error[unresolved-attribute] Object of type `Self@get_tokens_unprocessed` has no attribute `_tokens`: Did you mean `tokens`?
+- src/pip/_vendor/pygments/style.py:127:13: error[unresolved-attribute] Object of type `Self@style_for_token` has no attribute `_styles`
++ src/pip/_vendor/pygments/style.py:127:13: error[unresolved-attribute] Object of type `Self@style_for_token` has no attribute `_styles`: Did you mean `list_styles`?
+- src/pip/_vendor/pygments/style.py:160:25: error[unresolved-attribute] Object of type `Self@styles_token` has no attribute `_styles`
++ src/pip/_vendor/pygments/style.py:160:25: error[unresolved-attribute] Object of type `Self@styles_token` has no attribute `_styles`: Did you mean `list_styles`?
+- src/pip/_vendor/pygments/style.py:163:22: error[unresolved-attribute] Object of type `Self@__iter__` has no attribute `_styles`
++ src/pip/_vendor/pygments/style.py:163:22: error[unresolved-attribute] Object of type `Self@__iter__` has no attribute `_styles`: Did you mean `list_styles`?
+- src/pip/_vendor/pygments/style.py:167:20: error[unresolved-attribute] Object of type `Self@__len__` has no attribute `_styles`
++ src/pip/_vendor/pygments/style.py:167:20: error[unresolved-attribute] Object of type `Self@__len__` has no attribute `_styles`: Did you mean `list_styles`?
+- src/pip/_vendor/requests/cookies.py:437:16: error[unresolved-attribute] Object of type `Self@get_policy` has no attribute `_policy`
++ src/pip/_vendor/requests/cookies.py:437:16: error[unresolved-attribute] Object of type `Self@get_policy` has no attribute `_policy`: Did you mean `get_policy`?
+- src/pip/_vendor/requests/help.py:44:13: error[unresolved-attribute] Module `sys` has no member `pypy_version_info`
++ src/pip/_vendor/requests/help.py:44:13: error[unresolved-attribute] Module `sys` has no member `pypy_version_info`: Did you mean `_version_info`?
+- src/pip/_vendor/requests/help.py:45:13: error[unresolved-attribute] Module `sys` has no member `pypy_version_info`
++ src/pip/_vendor/requests/help.py:45:13: error[unresolved-attribute] Module `sys` has no member `pypy_version_info`: Did you mean `_version_info`?
+- src/pip/_vendor/requests/help.py:46:13: error[unresolved-attribute] Module `sys` has no member `pypy_version_info`
++ src/pip/_vendor/requests/help.py:46:13: error[unresolved-attribute] Module `sys` has no member `pypy_version_info`: Did you mean `_version_info`?
+- src/pip/_vendor/requests/help.py:48:12: error[unresolved-attribute] Module `sys` has no member `pypy_version_info`
++ src/pip/_vendor/requests/help.py:48:12: error[unresolved-attribute] Module `sys` has no member `pypy_version_info`: Did you mean `_version_info`?
+- src/pip/_vendor/requests/help.py:50:42: error[unresolved-attribute] Module `sys` has no member `pypy_version_info`
++ src/pip/_vendor/requests/help.py:50:42: error[unresolved-attribute] Module `sys` has no member `pypy_version_info`: Did you mean `_version_info`?
+
+spack (https://github.com/spack/spack)
+- lib/spack/spack/ci/__init__.py:1139:9: error[unresolved-attribute] Object of type `list[Unknown]` has no attribute `extent`
++ lib/spack/spack/ci/__init__.py:1139:9: error[unresolved-attribute] Object of type `list[Unknown]` has no attribute `extent`: Did you mean `extend`?
+- lib/spack/spack/llnl/util/tty/color.py:428:32: error[unresolved-attribute] Object of type `Self@writelines` has no attribute `color`
++ lib/spack/spack/llnl/util/tty/color.py:428:32: error[unresolved-attribute] Object of type `Self@writelines` has no attribute `color`: Did you mean `_color`?
+- lib/spack/spack/multimethod.py:137:42: error[unresolved-attribute] Object of type `Self@__call__` has no attribute `__name__`
++ lib/spack/spack/multimethod.py:137:42: error[unresolved-attribute] Object of type `Self@__call__` has no attribute `__name__`: Did you mean `__ne__`?
+- lib/spack/spack/multimethod.py:149:13: error[unresolved-attribute] Object of type `Self@__call__` has no attribute `__name__`
++ lib/spack/spack/multimethod.py:149:13: error[unresolved-attribute] Object of type `Self@__call__` has no attribute `__name__`: Did you mean `__ne__`?
+- lib/spack/spack/package_base.py:1770:21: error[unresolved-attribute] Object of type `Self@do_patch` has no attribute `patch`
++ lib/spack/spack/package_base.py:1770:21: error[unresolved-attribute] Object of type `Self@do_patch` has no attribute `patch`: Did you mean `path`?
+- lib/spack/spack/spec.py:2255:34: error[unresolved-attribute] Object of type `Self@package_hash` has no attribute `_package_hash`
++ lib/spack/spack/spec.py:2255:34: error[unresolved-attribute] Object of type `Self@package_hash` has no attribute `_package_hash`: Did you mean `package_hash`?
+- lib/spack/spack/vendor/macholib/ptypes.py:70:54: error[unresolved-attribute] Object of type `Self@from_str` has no attribute `_format_`
++ lib/spack/spack/vendor/macholib/ptypes.py:70:54: error[unresolved-attribute] Object of type `Self@from_str` has no attribute `_format_`: Did you mean `__format__`?
+- lib/spack/spack/vendor/pyrsistent/_pdeque.py:95:62: error[unresolved-attribute] Object of type `Self@__repr__` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:95:62: error[unresolved-attribute] Object of type `Self@__repr__` has no attribute `_maxlen`: Did you mean `maxlen`?
+- lib/spack/spack/vendor/pyrsistent/_pdeque.py:95:79: error[unresolved-attribute] Object of type `Self@__repr__` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:95:79: error[unresolved-attribute] Object of type `Self@__repr__` has no attribute `_maxlen`: Did you mean `maxlen`?
+- lib/spack/spack/vendor/pyrsistent/_pdeque.py:103:16: error[unresolved-attribute] Object of type `Self@maxlen` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:103:16: error[unresolved-attribute] Object of type `Self@maxlen` has no attribute `_maxlen`: Did you mean `maxlen`?
+- lib/spack/spack/vendor/pyrsistent/_pdeque.py:123:84: error[unresolved-attribute] Object of type `Self@pop` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:123:84: error[unresolved-attribute] Object of type `Self@pop` has no attribute `_maxlen`: Did you mean `maxlen`?
+- lib/spack/spack/vendor/pyrsistent/_pdeque.py:137:84: error[unresolved-attribute] Object of type `Self@popleft` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:137:84: error[unresolved-attribute] Object of type `Self@popleft` has no attribute `_maxlen`: Did you mean `maxlen`?
+- lib/spack/spack/vendor/pyrsistent/_pdeque.py:191:66: error[unresolved-attribute] Object of type `Self@append` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:191:66: error[unresolved-attribute] Object of type `Self@append` has no attribute `_maxlen`: Did you mean `maxlen`?
+- lib/spack/spack/vendor/pyrsistent/_pdeque.py:201:66: error[unresolved-attribute] Object of type `Self@appendleft` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:201:66: error[unresolved-attribute] Object of type `Self@appendleft` has no attribute `_maxlen`: Did you mean `maxlen`?
+- lib/spack/spack/vendor/pyrsistent/_pdeque.py:204:12: error[unresolved-attribute] Object of type `Self@_append` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:204:12: error[unresolved-attribute] Object of type `Self@_append` has no attribute `_maxlen`: Did you mean `maxlen`?
+- lib/spack/spack/vendor/pyrsistent/_pdeque.py:204:57: error[unresolved-attribute] Object of type `Self@_append` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:204:57: error[unresolved-attribute] Object of type `Self@_append` has no attribute `_maxlen`: Did you mean `maxlen`?
+- lib/spack/spack/vendor/pyrsistent/_pdeque.py:205:16: error[unresolved-attribute] Object of type `Self@_append` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:205:16: error[unresolved-attribute] Object of type `Self@_append` has no attribute `_maxlen`: Did you mean `maxlen`?
+- lib/spack/spack/vendor/pyrsistent/_pdeque.py:225:12: error[unresolved-attribute] Object of type `Self@_extend` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:225:12: error[unresolved-attribute] Object of type `Self@_extend` has no attribute `_maxlen`: Did you mean `maxlen`?
+- lib/spack/spack/vendor/pyrsistent/_pdeque.py:225:55: error[unresolved-attribute] Object of type `Self@_extend` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:225:55: error[unresolved-attribute] Object of type `Self@_extend` has no attribute `_maxlen`: Did you mean `maxlen`?
+- lib/spack/spack/vendor/pyrsistent/_pdeque.py:226:37: error[unresolved-attribute] Object of type `Self@_extend` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:226:37: error[unresolved-attribute] Object of type `Self@_extend` has no attribute `_maxlen`: Did you mean `maxlen`?
+- lib/spack/spack/vendor/pyrsistent/_pdeque.py:240:83: error[unresolved-attribute] Object of type `Self@extend` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:240:83: error[unresolved-attribute] Object of type `Self@extend` has no attribute `_maxlen`: Did you mean `maxlen`?
+- lib/spack/spack/vendor/pyrsistent/_pdeque.py:252:83: error[unresolved-attribute] Object of type `Self@extendleft` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:252:83: error[unresolved-attribute] Object of type `Self@extendleft` has no attribute `_maxlen`: Did you mean `maxlen`?
+- lib/spack/spack/vendor/pyrsistent/_pdeque.py:315:37: error[unresolved-attribute] Object of type `Self@__reduce__` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:315:37: error[unresolved-attribute] Object of type `Self@__reduce__` has no attribute `_maxlen`: Did you mean `maxlen`?
+- lib/spack/spack/vendor/pyrsistent/_pdeque.py:321:58: error[unresolved-attribute] Object of type `Self@__getitem__` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:321:58: error[unresolved-attribute] Object of type `Self@__getitem__` has no attribute `_maxlen`: Did you mean `maxlen`?
+- lib/spack/spack/vendor/typing_extensions.py:18:24: error[unresolved-import] Module `typing` has no member `GenericMeta`
++ lib/spack/spack/vendor/typing_extensions.py:18:24: error[unresolved-import] Module `typing` has no member `GenericMeta`: Did you mean `Generic`?
+- lib/spack/spack/vendor/typing_extensions.py:18:37: error[unresolved-import] Module `typing` has no member `_type_vars`
++ lib/spack/spack/vendor/typing_extensions.py:18:37: error[unresolved-import] Module `typing` has no member `_type_vars`: Did you mean `TypeVar`?
+- lib/spack/spack/vendor/typing_extensions.py:127:30: error[unresolved-attribute] Module `typing` has no member `_GenericAlias`
++ lib/spack/spack/vendor/typing_extensions.py:127:30: error[unresolved-attribute] Module `typing` has no member `_GenericAlias`: Did you mean `_Generic`?
+- lib/spack/spack/vendor/typing_extensions.py:244:28: error[unresolved-attribute] Module `typing` has no member `_type_check`
++ lib/spack/spack/vendor/typing_extensions.py:244:28: error[unresolved-attribute] Module `typing` has no member `_type_check`: Did you mean `no_type_check`?
+- lib/spack/spack/vendor/typing_extensions.py:449:20: error[unresolved-attribute] Module `typing` has no member `_generic_new`
++ lib/spack/spack/vendor/typing_extensions.py:449:20: error[unresolved-attribute] Module `typing` has no member `_generic_new`: Did you mean `_Generic`?
+- lib/spack/spack/vendor/typing_extensions.py:494:20: error[unresolved-attribute] Module `typing` has no member `_generic_new`
++ lib/spack/spack/vendor/typing_extensions.py:494:20: error[unresolved-attribute] Module `typing` has no member `_generic_new`: Did you mean `_Generic`?
+- lib/spack/spack/vendor/typing_extensions.py:510:20: error[unresolved-attribute] Module `typing` has no member `_generic_new`
++ lib/spack/spack/vendor/typing_extensions.py:510:20: error[unresolved-attribute] Module `typing` has no member `_generic_new`: Did you mean `_Generic`?
+- lib/spack/spack/vendor/typing_extensions.py:525:20: error[unresolved-attribute] Module `typing` has no member `_generic_new`
++ lib/spack/spack/vendor/typing_extensions.py:525:20: error[unresolved-attribute] Module `typing` has no member `_generic_new`: Did you mean `_Generic`?
+- lib/spack/spack/vendor/typing_extensions.py:769:38: error[unresolved-import] Module `typing` has no member `_type_check`
++ lib/spack/spack/vendor/typing_extensions.py:769:38: error[unresolved-import] Module `typing` has no member `_type_check`: Did you mean `no_type_check`?
+- lib/spack/spack/vendor/typing_extensions.py:1004:20: error[unresolved-attribute] Module `typing` has no member `_generic_new`
++ lib/spack/spack/vendor/typing_extensions.py:1004:20: error[unresolved-attribute] Module `typing` has no member `_generic_new`: Did you mean `_Generic`?
+- lib/spack/spack/vendor/typing_extensions.py:1140:20: error[unresolved-attribute] Module `typing` has no member `_type_check`
++ lib/spack/spack/vendor/typing_extensions.py:1140:20: error[unresolved-attribute] Module `typing` has no member `_type_check`: Did you mean `no_type_check`?
+- lib/spack/spack/vendor/typing_extensions.py:1486:26: error[unresolved-attribute] Module `typing` has no member `_type_check`
++ lib/spack/spack/vendor/typing_extensions.py:1486:26: error[unresolved-attribute] Module `typing` has no member `_type_check`: Did you mean `no_type_check`?
+- lib/spack/spack/vendor/typing_extensions.py:1830:34: error[unresolved-attribute] Module `typing` has no member `_type_check`
++ lib/spack/spack/vendor/typing_extensions.py:1830:34: error[unresolved-attribute] Module `typing` has no member `_type_check`: Did you mean `no_type_check`?
+- lib/spack/spack/vendor/typing_extensions.py:1928:24: error[unresolved-attribute] Module `typing` has no member `_type_check`
++ lib/spack/spack/vendor/typing_extensions.py:1928:24: error[unresolved-attribute] Module `typing` has no member `_type_check`: Did you mean `no_type_check`?
+- lib/spack/spack/vendor/typing_extensions.py:2174:28: error[unresolved-attribute] Module `typing` has no member `_type_check`
++ lib/spack/spack/vendor/typing_extensions.py:2174:28: error[unresolved-attribute] Module `typing` has no member `_type_check`: Did you mean `no_type_check`?
+- lib/spack/spack/vendor/typing_extensions.py:2504:28: error[unresolved-attribute] Module `typing` has no member `_type_check`
++ lib/spack/spack/vendor/typing_extensions.py:2504:28: error[unresolved-attribute] Module `typing` has no member `_type_check`: Did you mean `no_type_check`?
+- lib/spack/spack/vendor/typing_extensions.py:2644:28: error[unresolved-attribute] Module `typing` has no member `_type_check`
++ lib/spack/spack/vendor/typing_extensions.py:2644:28: error[unresolved-attribute] Module `typing` has no member `_type_check`: Did you mean `no_type_check`?
+
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/api/api.py:331:16: error[unresolved-attribute] Module `sys` has no member `_argv`
++ paasta_tools/api/api.py:331:16: error[unresolved-attribute] Module `sys` has no member `_argv`: Did you mean `argv`?
+- paasta_tools/contrib/emit_allocated_cpu_metrics.py:36:16: error[unresolved-attribute] Object of type `InstanceConfig & <Protocol with members 'get_instances'>` has no attribute `get_max_instances`
++ paasta_tools/contrib/emit_allocated_cpu_metrics.py:36:16: error[unresolved-attribute] Object of type `InstanceConfig & <Protocol with members 'get_instances'>` has no attribute `get_max_instances`: Did you mean `get_instance`?
+
+scrapy (https://github.com/scrapy/scrapy)
+- tests/mockserver/http_base.py:49:28: error[unresolved-attribute] Object of type `str` has no attribute `decode`
++ tests/mockserver/http_base.py:49:28: error[unresolved-attribute] Object of type `str` has no attribute `decode`: Did you mean `encode`?
+- tests/mockserver/http_base.py:53:29: error[unresolved-attribute] Object of type `str` has no attribute `decode`
++ tests/mockserver/http_base.py:53:29: error[unresolved-attribute] Object of type `str` has no attribute `decode`: Did you mean `encode`?
+- tests/test_cmdline/__init__.py:26:16: error[unresolved-attribute] Object of type `str` has no attribute `decode`
++ tests/test_cmdline/__init__.py:26:16: error[unresolved-attribute] Object of type `str` has no attribute `decode`: Did you mean `encode`?
+- tests/test_downloadermiddleware_httpcache.py:111:14: error[unresolved-attribute] Object of type `Self@test_storage` has no attribute `_storage`
++ tests/test_downloadermiddleware_httpcache.py:111:14: error[unresolved-attribute] Object of type `Self@test_storage` has no attribute `_storage`: Did you mean `test_storage`?
+- tests/test_downloadermiddleware_httpcache.py:124:14: error[unresolved-attribute] Object of type `Self@test_storage_never_expire` has no attribute `_storage`
++ tests/test_downloadermiddleware_httpcache.py:124:14: error[unresolved-attribute] Object of type `Self@test_storage_never_expire` has no attribute `_storage`: Did you mean `test_storage`?
+- tests/test_downloadermiddleware_httpcache.py:133:14: error[unresolved-attribute] Object of type `Self@test_storage_no_content_type_header` has no attribute `_storage`
++ tests/test_downloadermiddleware_httpcache.py:133:14: error[unresolved-attribute] Object of type `Self@test_storage_no_content_type_header` has no attribute `_storage`: Did you mean `test_storage`?
+- tests/test_downloadermiddleware_httpcache.py:169:14: error[unresolved-attribute] Object of type `Self@test_middleware` has no attribute `_middleware`
++ tests/test_downloadermiddleware_httpcache.py:169:14: error[unresolved-attribute] Object of type `Self@test_middleware` has no attribute `_middleware`: Did you mean `test_middleware`?
+- tests/test_downloadermiddleware_httpcache.py:178:14: error[unresolved-attribute] Object of type `Self@test_different_request_response_urls` has no attribute `_middleware`
++ tests/test_downloadermiddleware_httpcache.py:178:14: error[unresolved-attribute] Object of type `Self@test_different_request_response_urls` has no attribute `_middleware`: Did you mean `test_middleware`?
+- tests/test_downloadermiddleware_httpcache.py:189:14: error[unresolved-attribute] Object of type `Self@test_middleware_ignore_missing` has no attribute `_middleware`
++ tests/test_downloadermiddleware_httpcache.py:189:14: error[unresolved-attribute] Object of type `Self@test_middleware_ignore_missing` has no attribute `_middleware`: Did you mean `test_middleware`?
+- tests/test_downloadermiddleware_httpcache.py:201:14: error[unresolved-attribute] Object of type `Self@test_middleware_ignore_schemes` has no attribute `_middleware`
++ tests/test_downloadermiddleware_httpcache.py:201:14: error[unresolved-attribute] Object of type `Self@test_middleware_ignore_schemes` has no attribute `_middleware`: Did you mean `test_middleware`?
+- tests/test_downloadermiddleware_httpcache.py:212:14: error[unresolved-attribute] Object of type `Self@test_middleware_ignore_schemes` has no attribute `_middleware`
++ tests/test_downloadermiddleware_httpcache.py:212:14: error[unresolved-attribute] Object of type `Self@test_middleware_ignore_schemes` has no attribute `_middleware`: Did you mean `test_middleware`?
+- tests/test_downloadermiddleware_httpcache.py:221:14: error[unresolved-attribute] Object of type `Self@test_middleware_ignore_schemes` has no attribute `_middleware`
++ tests/test_downloadermiddleware_httpcache.py:221:14: error[unresolved-attribute] Object of type `Self@test_middleware_ignore_schemes` has no attribute `_middleware`: Did you mean `test_middleware`?
+- tests/test_downloadermiddleware_httpcache.py:232:14: error[unresolved-attribute] Object of type `Self@test_middleware_ignore_schemes` has no attribute `_middleware`
++ tests/test_downloadermiddleware_httpcache.py:232:14: error[unresolved-attribute] Object of type `Self@test_middleware_ignore_schemes` has no attribute `_middleware`: Did you mean `test_middleware`?
+- tests/test_downloadermiddleware_httpcache.py:241:14: error[unresolved-attribute] Object of type `Self@test_middleware_ignore_http_codes` has no attribute `_middleware`
++ tests/test_downloadermiddleware_httpcache.py:241:14: error[unresolved-attribute] Object of type `Self@test_middleware_ignore_http_codes` has no attribute `_middleware`: Did you mean `test_middleware`?
+- tests/test_downloadermiddleware_httpcache.py:249:14: error[unresolved-attribute] Object of type `Self@test_middleware_ignore_http_codes` has no attribute `_middleware`
++ tests/test_downloadermiddleware_httpcache.py:249:14: error[unresolved-attribute] Object of type `Self@test_middleware_ignore_http_codes` has no attribute `_middleware`: Did you mean `test_middleware`?
+
+alerta (https://github.com/alerta/alerta)
+- alerta/database/backends/mongodb/base.py:1609:59: error[unresolved-attribute] Object of type `AlarmModel` has no attribute `DEFAULT_INFORM_SEVERITY`
++ alerta/database/backends/mongodb/base.py:1609:59: error[unresolved-attribute] Object of type `AlarmModel` has no attribute `DEFAULT_INFORM_SEVERITY`: Did you mean `DEFAULT_NORMAL_SEVERITY`?
+- alerta/database/backends/postgres/base.py:1540:57: error[unresolved-attribute] Object of type `AlarmModel` has no attribute `DEFAULT_INFORM_SEVERITY`
++ alerta/database/backends/postgres/base.py:1540:57: error[unresolved-attribute] Object of type `AlarmModel` has no attribute `DEFAULT_INFORM_SEVERITY`: Did you mean `DEFAULT_NORMAL_SEVERITY`?
+- alerta/views/alerts.py:310:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`
++ alerta/views/alerts.py:310:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`: Did you mean `Alerts`?
+- alerta/views/alerts.py:358:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`
++ alerta/views/alerts.py:358:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`: Did you mean `Alerts`?
+- alerta/views/alerts.py:385:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`
++ alerta/views/alerts.py:385:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`: Did you mean `Alerts`?
+- alerta/views/alerts.py:406:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`
++ alerta/views/alerts.py:406:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`: Did you mean `Alerts`?
+- alerta/views/alerts.py:433:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`
++ alerta/views/alerts.py:433:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`: Did you mean `Alerts`?
+- alerta/views/alerts.py:460:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`
++ alerta/views/alerts.py:460:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`: Did you mean `Alerts`?
+- alerta/views/alerts.py:486:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`
++ alerta/views/alerts.py:486:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`: Did you mean `Alerts`?
+- alerta/views/alerts.py:511:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`
++ alerta/views/alerts.py:511:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`: Did you mean `Alerts`?
+- alerta/views/alerts.py:536:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`
++ alerta/views/alerts.py:536:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`: Did you mean `Alerts`?
+- alerta/views/alerts.py:561:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`
++ alerta/views/alerts.py:561:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`: Did you mean `Alerts`?
+- alerta/views/blackouts.py:66:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `blackouts`
++ alerta/views/blackouts.py:66:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `blackouts`: Did you mean `Blackouts`?
+- alerta/views/bulk.py:43:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`
++ alerta/views/bulk.py:43:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`: Did you mean `Alerts`?
+- alerta/views/bulk.py:85:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`
++ alerta/views/bulk.py:85:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`: Did you mean `Alerts`?
+- alerta/views/bulk.py:105:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`
++ alerta/views/bulk.py:105:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`: Did you mean `Alerts`?
+- alerta/views/bulk.py:120:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`
++ alerta/views/bulk.py:120:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`: Did you mean `Alerts`?
+- alerta/views/bulk.py:135:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`
++ alerta/views/bulk.py:135:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`: Did you mean `Alerts`?
+- alerta/views/bulk.py:147:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`
++ alerta/views/bulk.py:147:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`: Did you mean `Alerts`?
+- alerta/views/customers.py:58:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `customers`
++ alerta/views/customers.py:58:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `customers`: Did you mean `Customers`?
+- alerta/views/groups.py:83:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `groups`
++ alerta/views/groups.py:83:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `groups`: Did you mean `Groups`?
+- alerta/views/heartbeats.py:62:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `heartbeats`
++ alerta/views/heartbeats.py:62:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `heartbeats`: Did you mean `Heartbeats`?
+- alerta/views/oembed.py:35:21: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`
++ alerta/views/oembed.py:35:21: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`: Did you mean `Alerts`?
+- alerta/views/users.py:133:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `users`
++ alerta/views/users.py:133:13: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `users`: Did you mean `Users`?
+- alerta/webhooks/grafana.py:116:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`
++ alerta/webhooks/grafana.py:116:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`: Did you mean `Alerts`?
+- tests/test_search.py:59:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`
++ tests/test_search.py:59:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`: Did you mean `Alerts`?
+- tests/test_search.py:98:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`
++ tests/test_search.py:98:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`: Did you mean `Alerts`?
+- tests/test_search.py:116:21: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`
++ tests/test_search.py:116:21: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`: Did you mean `Alerts`?
+- tests/test_search.py:131:21: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`
++ tests/test_search.py:131:21: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `alerts`: Did you mean `Alerts`?
+- tests/test_search.py:165:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `blackouts`
++ tests/test_search.py:165:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `blackouts`: Did you mean `Blackouts`?
+- tests/test_search.py:192:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `blackouts`
++ tests/test_search.py:192:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `blackouts`: Did you mean `Blackouts`?
+- tests/test_search.py:212:21: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `blackouts`
++ tests/test_search.py:212:21: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `blackouts`: Did you mean `Blackouts`?
+- tests/test_search.py:245:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `heartbeats`
++ tests/test_search.py:245:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `heartbeats`: Did you mean `Heartbeats`?
+- tests/test_search.py:266:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `heartbeats`
++ tests/test_search.py:266:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `heartbeats`: Did you mean `Heartbeats`?
+- tests/test_search.py:283:21: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `heartbeats`
++ tests/test_search.py:283:21: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `heartbeats`: Did you mean `Heartbeats`?
+- tests/test_search.py:388:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `users`
++ tests/test_search.py:388:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `users`: Did you mean `Users`?
+- tests/test_search.py:411:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `users`
++ tests/test_search.py:411:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `users`: Did you mean `Users`?
+- tests/test_search.py:428:21: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `users`
++ tests/test_search.py:428:21: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `users`: Did you mean `Users`?
+- tests/test_search.py:451:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `groups`
++ tests/test_search.py:451:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `groups`: Did you mean `Groups`?
+- tests/test_search.py:465:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `groups`
++ tests/test_search.py:465:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `groups`: Did you mean `Groups`?
+- tests/test_search.py:481:21: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `groups`
++ tests/test_search.py:481:21: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `groups`: Did you mean `Groups`?
+- tests/test_search.py:557:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `customers`
++ tests/test_search.py:557:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `customers`: Did you mean `Customers`?
+- tests/test_search.py:570:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `customers`
++ tests/test_search.py:570:25: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `customers`: Did you mean `Customers`?
+- tests/test_search.py:588:21: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `customers`
++ tests/test_search.py:588:21: error[unresolved-attribute] Object of type `QueryBuilder` has no attribute `customers`: Did you mean `Customers`?
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- src/graphql/execution/execute.py:114:39: error[unresolved-import] Module `typing` has no member `TypeGuard`
++ src/graphql/execution/execute.py:114:39: error[unresolved-import] Module `typing` has no member `TypeGuard`: Did you mean `TypeVar`?
+- src/graphql/execution/incremental_graph.py:47:28: error[unresolved-import] Module `typing` has no member `TypeGuard`
++ src/graphql/execution/incremental_graph.py:47:28: error[unresolved-import] Module `typing` has no member `TypeGuard`: Did you mean `TypeVar`?
+- src/graphql/execution/types.py:33:28: error[unresolved-import] Module `typing` has no member `TypeGuard`
++ src/graphql/execution/types.py:33:28: error[unresolved-import] Module `typing` has no member `TypeGuard`: Did you mean `TypeVar`?
+- src/graphql/graphql.py:23:28: error[unresolved-import] Module `typing` has no member `TypeGuard`
++ src/graphql/graphql.py:23:28: error[unresolved-import] Module `typing` has no member `TypeGuard`: Did you mean `TypeVar`?
+- src/graphql/language/predicates.py:23:24: error[unresolved-import] Module `typing` has no member `TypeGuard`
++ src/graphql/language/predicates.py:23:24: error[unresolved-import] Module `typing` has no member `TypeGuard`: Did you mean `TypeVar`?
+- src/graphql/language/source.py:10:24: error[unresolved-import] Module `typing` has no member `TypeGuard`
++ src/graphql/language/source.py:10:24: error[unresolved-import] Module `typing` has no member `TypeGuard`: Did you mean `TypeVar`?
+- src/graphql/pyutils/async_reduce.py:13:28: error[unresolved-import] Module `typing` has no member `TypeGuard`
++ src/graphql/pyutils/async_reduce.py:13:28: error[unresolved-import] Module `typing` has no member `TypeGuard`: Did you mean `TypeVar`?
+- src/graphql/pyutils/is_awaitable.py:10:24: error[unresolved-import] Module `typing` has no member `TypeGuard`
++ src/graphql/pyutils/is_awaitable.py:10:24: error[unresolved-import] Module `typing` has no member `TypeGuard`: Did you mean `TypeVar`?
+- src/graphql/pyutils/is_iterable.py:9:24: error[unresolved-import] Module `typing` has no member `TypeGuard`
++ src/graphql/pyutils/is_iterable.py:9:24: error[unresolved-import] Module `typing` has no member `TypeGuard`: Did you mean `TypeVar`?
+- src/graphql/type/definition.py:31:39: error[unresolved-import] Module `typing` has no member `TypeGuard`
++ src/graphql/type/definition.py:31:39: error[unresolved-import] Module `typing` has no member `TypeGuard`: Did you mean `TypeVar`?
+- src/graphql/type/directives.py:18:24: error[unresolved-import] Module `typing` has no member `TypeGuard`
++ src/graphql/type/directives.py:18:24: error[unresolved-import] Module `typing` has no member `TypeGuard`: Did you mean `TypeVar`?
+- src/graphql/type/scalars.py:21:24: error[unresolved-import] Module `typing` has no member `TypeGuard`
++ src/graphql/type/scalars.py:21:24: error[unresolved-import] Module `typing` has no member `TypeGuard`: Did you mean `TypeVar`?
+- src/graphql/type/schema.py:49:35: error[unresolved-import] Module `typing` has no member `TypeGuard`
++ src/graphql/type/schema.py:49:35: error[unresolved-import] Module `typing` has no member `TypeGuard`: Did you mean `TypeVar`?
+- src/graphql/validation/rules/known_type_names.py:22:24: error[unresolved-import] Module `typing` has no member `TypeGuard`
++ src/graphql/validation/rules/known_type_names.py:22:24: error[unresolved-import] Module `typing` has no member `TypeGuard`: Did you mean `TypeVar`?
+- tests/type/test_definition.py:62:24: error[unresolved-import] Module `typing` has no member `TypeGuard`
++ tests/type/test_definition.py:62:24: error[unresolved-import] Module `typing` has no member `TypeGuard`: Did you mean `TypeVar`?
+
+ignite (https://github.com/pytorch/ignite)
+- tests/ignite/metrics/test_metric.py:1295:33: error[unresolved-attribute] Class `Metric` has no attribute `_Metric__state_dict_key_per_rank`
++ tests/ignite/metrics/test_metric.py:1295:33: error[unresolved-attribute] Class `Metric` has no attribute `_Metric__state_dict_key_per_rank`: Did you mean `__state_dict_key_per_rank`?
+- tests/ignite/metrics/test_metric.py:1335:60: error[unresolved-attribute] Class `Metric` has no attribute `_Metric__state_dict_key_per_rank`
++ tests/ignite/metrics/test_metric.py:1335:60: error[unresolved-attribute] Class `Metric` has no attribute `_Metric__state_dict_key_per_rank`: Did you mean `__state_dict_key_per_rank`?
+- tests/ignite/metrics/test_metric.py:1340:30: error[unresolved-attribute] Class `Metric` has no attribute `_Metric__state_dict_key_per_rank`
++ tests/ignite/metrics/test_metric.py:1340:30: error[unresolved-attribute] Class `Metric` has no attribute `_Metric__state_dict_key_per_rank`: Did you mean `__state_dict_key_per_rank`?
+- tests/ignite/metrics/test_metric.py:1389:22: error[unresolved-a
+
+... (truncated 4359 lines) ...
+```
+
+</details>
+
+
+
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+```diff
+trio (https://github.com/python-trio/trio)
+-     memo metadata = ~35MB
++     memo metadata = ~38MB
+
+prefect (https://github.com/PrefectHQ/prefect)
+-     struct metadata = ~49MB
++     struct metadata = ~52MB
+-     memo metadata = ~167MB
++     memo metadata = ~176MB
+
+
+```
+
+</details>
+
+
+
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-12-05 11:16_
+
+---
+
+_Label `diagnostics` added by @AlexWaygood on 2025-12-05 11:16_
+
+---
+
+_Comment by @AlexWaygood on 2025-12-05 11:20_
+
+You might be interested in looking at https://github.com/astral-sh/ruff/pull/18705 (which was reverted because it caused big performance regressions, but the performance regressions weren't because of the Levenshtein implementation — they were because the PR tried to list all attributes on a type, which is expensive). In that PR, we adapted CPython's Levenshtein implementation directly, because it's now existed in CPython for several Python minor releases, so we know that it gives very good suggestions for Python code specifically 
+
+---
+
+_Renamed from "[ty] "Did you mean?" suggestions for typos in stdlib imports (with improved suggestion selection algorithm)" to "[ty] improve "Did you mean?" suggestion selection algorithm" by @mtshiba on 2025-12-05 11:32_
+
+---
+
+_Comment by @mtshiba on 2025-12-05 11:34_
+
+I decided to change the purpose of the PR to improve `did_you_mean` alone, so that the improvement would be easier to see from the mypy_primer results.
+
+---
+
+_Comment by @mtshiba on 2025-12-05 11:43_
+
+> You might be interested in looking at #18705 (which was reverted because it caused big performance regressions, but the performance regressions weren't because of the Levenshtein implementation — they were because the PR tried to list all attributes on a type, which is expensive). In that PR, we adapted CPython's Levenshtein implementation directly, because it's now existed in CPython for several Python minor releases, so we know that it gives very good suggestions for Python code specifically
+
+Ah, I didn't notice that.
+If the suggestion scope is expanded to the same extent as #18751 and the same degree of performance regression occurs, then this PR is pointless.
+
+---
+
+_Comment by @AlexWaygood on 2025-12-05 11:47_
+
+I suspect that the performance regression would be much less if we tried that PR again now, because we have to infer the types of all attributes on all first-party types anyway these days (to check for Liskov violations). So nearly all the expensive analysis from that PR would just be work that we'd have to do anyway at some point (and would be cached after the first computation). But we haven't finished our Liskov implementation yet; I was planning on experimenting with it again after we've finished our Liskov implementation.
+
+Anyway, I think it's very much worth it to improve our Levenshtein algorithm in the meantime! But I'd still be inclined to just pull out the Levenshtein implementation from that PR, since we added lots of tests for it, and since an algorithm that CPython uses for Python code is likely to be better at giving suggestions for Python code than an algorithm rustc uses for Rust code.
+
+---
+
+_Comment by @AlexWaygood on 2025-12-05 12:11_
+
+> But we haven't finished our Liskov implementation yet; I was planning on experimenting with it again after we've finished our Liskov implementation.
+
+(one big, possibly expensive, thing that we don't do yet with our Liskov implementation, but that we need to add soon, is inferring the types of all first-party _implicit instance attributes_.)
+
+---
+
+_Comment by @mtshiba on 2025-12-05 12:12_
+
+> I suspect that the performance regression would be much less if we tried that PR again now, because we have to infer the types of all attributes on all first-party types anyway these days (to check for Liskov violations). So nearly all the expensive analysis from that PR would just be work that we'd have to do anyway at some point (and would be cached after the first computation). But we haven't finished our Liskov implementation yet; I was planning on experimenting with it again after we've finished our Liskov implementation.
+> 
+> Anyway, I think it's very much worth it to improve our Levenshtein algorithm in the meantime! But I'd still be inclined to just pull out the Levenshtein implementation from that PR, since we added lots of tests for it, and since an algorithm that CPython uses for Python code is likely to be better at giving suggestions for Python code than an algorithm rustc uses for Rust code.
+
+OK, so I'm going to close this.
+
+---
+
+_Comment by @codspeed-hq[bot] on 2025-12-05 12:26_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimprove-edit-distance?utm_source=github&utm_medium=comment&utm_content=header)
+
+### Merging #21808 will **degrade performances by 12.13%**
+
+<sub>Comparing <code>mtshiba:improve-edit-distance</code> (e553bcf) with <code>main</code> (3deb7e1)</sub>
+
+
+
+### Summary
+
+`❌ 3` regressions  
+`✅ 19` untouched  
+`⏩ 30` skipped[^skipped]  
+
+
+> :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimprove-edit-distance?utm_source=github&utm_medium=comment&utm_content=acknowledge)._
+
+### Benchmarks breakdown
+
+|     | Mode | Benchmark | `BASE` | `HEAD` | Change |
+| --- | ---- | --------- | ------ | ------ | ------ |
+| ❌ | WallTime | [`` large[sympy] ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimprove-edit-distance?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Alarge%5Bsympy%5D&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 55.4 s | 63.1 s | -12.13% |
+| ❌ | Simulation | [`` ty_micro[complex_constrained_attributes_1] ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimprove-edit-distance?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Amicro%3A%3Abenchmark_complex_constrained_attributes_1%3A%3Aty_micro%5Bcomplex_constrained_attributes_1%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 67.3 ms | 72.9 ms | -7.66% |
+| ❌ | Simulation | [`` attrs ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimprove-edit-distance?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Aattrs%3A%3Aproject%3A%3Aattrs&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 448.7 ms | 474.4 ms | -5.42% |
+[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimprove-edit-distance?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment&utm_content=archive).
+
+
+---
+
+_Comment by @mtshiba on 2025-12-05 12:33_
+
+Hmm, this algorithm also causes performance degradation.
+
+Sorry for taking up your time!
+
+---
+
+_Closed by @mtshiba on 2025-12-05 12:33_
+
+---
+
+_Branch deleted on 2025-12-05 12:34_
+
+---
+
+_Comment by @AlexWaygood on 2025-12-05 12:36_
+
+No worries at all, thanks for trying it out!
+
+I still think it's probably worth it to try to improve our current Levenshtein algorithm. I'd welcome a PR that just pulls out the Levenshtein algorithm from https://github.com/astral-sh/ruff/pull/18705 and uses it to improve our current `did_you_mean` function (without adding any new suggestions anywhere)!
+
+---
