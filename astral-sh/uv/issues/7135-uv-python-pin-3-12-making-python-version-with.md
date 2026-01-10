@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-09-06T19:53:37Z
 updated_at: 2024-09-06T22:03:53Z
 url: https://github.com/astral-sh/uv/issues/7135
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv python pin 3.12` making `.python-version` with trailing whitespace
@@ -53,10 +53,6 @@ _Label `help wanted` added by @charliermarsh on 2024-09-06 19:54_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-06 21:47_
-
----
-
-_Referenced in [astral-sh/uv#7140](../../astral-sh/uv/pulls/7140.md) on 2024-09-06 21:55_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-23T02:29:22Z
 updated_at: 2024-08-23T18:00:55Z
 url: https://github.com/astral-sh/uv/issues/6486
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv add` adds a depencency even if there is a failure during installation
@@ -53,10 +53,6 @@ _Label `help wanted` added by @charliermarsh on 2024-08-23 02:30_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-08-23 02:50_
-
----
-
-_Referenced in [astral-sh/uv#6526](../../astral-sh/uv/pulls/6526.md) on 2024-08-23 15:31_
 
 ---
 

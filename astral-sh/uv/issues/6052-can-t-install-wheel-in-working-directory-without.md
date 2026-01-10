@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-13T00:26:11Z
 updated_at: 2024-09-09T11:49:28Z
 url: https://github.com/astral-sh/uv/issues/6052
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Can't install wheel in working directory without specifying `./`
@@ -119,10 +119,6 @@ _Renamed from "Can't install wheel inside Docker" to "Can't install wheel in wor
 
 ---
 
-_Referenced in [python-trio/trio#2957](../../python-trio/trio/pulls/2957.md) on 2024-08-14 22:51_
-
----
-
 _Comment by @lexiconlp on 2024-09-04 16:54_
 
 > BTW, this behaviour is only inside Docker, outside the Docker, everything works as expected.
@@ -179,10 +175,6 @@ AttributeError: module 'distutils.util' has no attribute 'run_2to3'
 _Comment by @zanieb on 2024-09-04 16:59_
 
 @lexiconlp I think you're looking for `uv add python-dotenv`.
-
----
-
-_Referenced in [astral-sh/uv#7035](../../astral-sh/uv/issues/7035.md) on 2024-09-04 17:00_
 
 ---
 

@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-08-23T18:09:44Z
 updated_at: 2024-08-28T16:40:50Z
 url: https://github.com/astral-sh/uv/issues/6535
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Support `uv tool install package@version` to match `uvx`
@@ -94,10 +94,6 @@ That makes sense 😁
 
 ---
 
-_Referenced in [astral-sh/uv#6759](../../astral-sh/uv/issues/6759.md) on 2024-08-28 15:30_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-28 15:32_
 
 ---
@@ -122,18 +118,10 @@ _Comment by @charliermarsh on 2024-08-28 15:36_
 
 ---
 
-_Referenced in [astral-sh/uv#6762](../../astral-sh/uv/pulls/6762.md) on 2024-08-28 15:52_
-
----
-
 _Closed by @charliermarsh on 2024-08-28 16:40_
 
 ---
 
 _Closed by @charliermarsh on 2024-08-28 16:40_
-
----
-
-_Referenced in [astral-sh/uv#12472](../../astral-sh/uv/issues/12472.md) on 2025-03-25 22:10_
 
 ---

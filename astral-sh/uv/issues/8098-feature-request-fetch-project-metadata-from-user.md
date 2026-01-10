@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-10T15:48:22Z
 updated_at: 2024-10-14T15:16:00Z
 url: https://github.com/astral-sh/uv/issues/8098
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # [Feature Request] Fetch project metadata from user level `uv.toml` for `pyproject.toml`
@@ -23,10 +23,6 @@ In #7718 we discussed to fetch project metadata from user level `uv.toml` to in 
 In particular the `authors`/`maintainers`, `license` and `classifiers` fields come to mind, but possibly others as well, maybe even something like the `[build-system]` table.
 
 (Probably obvious, because configured over inferred, but `authors` from `uv.toml` should take precedence over `--author-from git`/#7756).
-
----
-
-_Referenced in [astral-sh/uv#8099](../../astral-sh/uv/issues/8099.md) on 2024-10-10 21:25_
 
 ---
 

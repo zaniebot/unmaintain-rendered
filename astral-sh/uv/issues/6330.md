@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-21T14:21:48Z
 updated_at: 2024-09-18T09:31:00Z
 url: https://github.com/astral-sh/uv/issues/6330
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # transformers ecosystem test times out locally
@@ -24,10 +24,6 @@ The transformers ecosystem test times out for me a lot locally, we need to eithe
 ---
 
 _Label `internal` added by @konstin on 2024-08-21 14:21_
-
----
-
-_Referenced in [astral-sh/uv#7432](../../astral-sh/uv/pulls/7432.md) on 2024-09-16 16:19_
 
 ---
 

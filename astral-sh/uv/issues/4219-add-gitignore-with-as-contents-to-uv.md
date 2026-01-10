@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-10T21:32:04Z
 updated_at: 2024-08-28T16:49:46Z
 url: https://github.com/astral-sh/uv/issues/4219
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Add .gitignore with * as contents to .uv
@@ -37,10 +37,6 @@ This has been done by ruff and many other tools: https://github.com/astral-sh/ru
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-06-10 21:48_
-
----
-
-_Referenced in [astral-sh/uv#4223](../../astral-sh/uv/pulls/4223.md) on 2024-06-10 22:17_
 
 ---
 

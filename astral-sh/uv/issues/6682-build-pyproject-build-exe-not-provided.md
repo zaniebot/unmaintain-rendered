@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-27T10:06:00Z
 updated_at: 2024-08-27T14:24:56Z
 url: https://github.com/astral-sh/uv/issues/6682
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Build pyproject-build.exe not provided
@@ -87,10 +87,6 @@ Okay great good to know. We'll look into this.
 ---
 
 _Label `uv tool` added by @zanieb on 2024-08-27 11:59_
-
----
-
-_Referenced in [astral-sh/uv#6683](../../astral-sh/uv/pulls/6683.md) on 2024-08-27 12:11_
 
 ---
 

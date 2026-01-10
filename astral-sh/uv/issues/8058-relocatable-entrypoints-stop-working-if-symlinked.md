@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-09T21:27:20Z
 updated_at: 2024-10-10T12:00:57Z
 url: https://github.com/astral-sh/uv/issues/8058
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # relocatable entrypoints stop working if symlinked to
@@ -73,10 +73,6 @@ I can/should raise a PR, but I will need help with testing this across as many p
 ---
 
 _Label `bug` added by @charliermarsh on 2024-10-09 23:07_
-
----
-
-_Referenced in [astral-sh/uv#8079](../../astral-sh/uv/pulls/8079.md) on 2024-10-10 09:48_
 
 ---
 

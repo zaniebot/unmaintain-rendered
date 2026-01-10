@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-08T11:45:21Z
 updated_at: 2024-10-09T10:41:12Z
 url: https://github.com/astral-sh/uv/issues/8003
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # .netrc not working on Windows without having HOME environment variable
@@ -39,10 +39,6 @@ _Label `upstream` added by @zanieb on 2024-10-08 21:13_
 
 ---
 
-_Referenced in [astral-sh/uv#8021](../../astral-sh/uv/pulls/8021.md) on 2024-10-08 21:17_
-
----
-
 _Closed by @zanieb on 2024-10-08 22:15_
 
 ---
@@ -54,13 +50,5 @@ _Closed by @zanieb on 2024-10-08 22:15_
 _Comment by @delreluca on 2024-10-09 10:41_
 
 Many thanks!
-
----
-
-_Referenced in [gribouille/netrc#7](../../gribouille/netrc/issues/7.md) on 2024-10-16 14:41_
-
----
-
-_Referenced in [astral-sh/uv#8424](../../astral-sh/uv/pulls/8424.md) on 2024-10-21 18:32_
 
 ---

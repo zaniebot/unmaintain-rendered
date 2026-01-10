@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-31T06:01:00Z
 updated_at: 2024-09-15T18:30:46Z
 url: https://github.com/astral-sh/uv/issues/6892
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv pip install fails while pip install success
@@ -137,9 +137,5 @@ If you specifically want to avoid using an old `pdfplumber`, you should add a co
 _Comment by @rakeshksr on 2024-09-15 18:30_
 
 @charliermarsh  thanks for information.
-
----
-
-_Referenced in [Unstructured-IO/unstructured-inference#368](../../Unstructured-IO/unstructured-inference/issues/368.md) on 2024-09-27 02:01_
 
 ---

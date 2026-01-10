@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-02T07:02:41Z
 updated_at: 2024-10-16T18:03:38Z
 url: https://github.com/astral-sh/uv/issues/7858
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Documentation: Add upgrade instructions to README
@@ -51,10 +51,6 @@ _Label `documentation` added by @zanieb on 2024-10-02 14:58_
 _Comment by @hanpham32 on 2024-10-02 17:20_
 
 Simply yes
-
----
-
-_Referenced in [astral-sh/uv#7937](../../astral-sh/uv/pulls/7937.md) on 2024-10-05 05:24_
 
 ---
 

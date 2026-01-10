@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-16T16:39:29Z
 updated_at: 2024-08-21T03:07:26Z
 url: https://github.com/astral-sh/uv/issues/6153
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Improve documentation for `generate-shell-completions`
@@ -29,10 +29,6 @@ _Label `documentation` added by @zanieb on 2024-08-16 16:39_
 ---
 
 _Label `cli` added by @zanieb on 2024-08-16 16:39_
-
----
-
-_Referenced in [astral-sh/uv#6151](../../astral-sh/uv/issues/6151.md) on 2024-08-16 16:39_
 
 ---
 
@@ -66,9 +62,5 @@ No, but we should document it similar to pixi.
 _Comment by @zanieb on 2024-08-21 03:07_
 
 Related https://github.com/astral-sh/uv/issues/2191
-
----
-
-_Referenced in [astral-sh/uv#5605](../../astral-sh/uv/issues/5605.md) on 2024-08-21 03:07_
 
 ---

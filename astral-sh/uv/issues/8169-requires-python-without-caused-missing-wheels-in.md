@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-14T08:54:06Z
 updated_at: 2024-10-14T14:44:42Z
 url: https://github.com/astral-sh/uv/issues/8169
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `requires-python` without `*` caused missing wheels in `uv.lock`
@@ -114,9 +114,5 @@ Thanks, looks like uv followed the [PEP 440](https://peps.python.org/pep-0440/) 
 _Comment by @zanieb on 2024-10-14 14:44_
 
 Yep! We're adding a warning for people who run into this.
-
----
-
-_Referenced in [astral-sh/uv#8197](../../astral-sh/uv/issues/8197.md) on 2024-10-15 04:50_
 
 ---

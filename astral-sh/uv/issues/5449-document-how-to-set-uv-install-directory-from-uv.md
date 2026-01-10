@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-25T15:32:00Z
 updated_at: 2024-10-17T01:06:25Z
 url: https://github.com/astral-sh/uv/issues/5449
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Document how to set `uv` install directory from `uv-installer.sh`
@@ -55,14 +55,6 @@ Thanks! This would go in https://github.com/astral-sh/uv/blob/main/docs/installa
 ---
 
 _Label `documentation` added by @zanieb on 2024-07-25 16:18_
-
----
-
-_Referenced in [astral-sh/uv#5455](../../astral-sh/uv/pulls/5455.md) on 2024-07-25 17:56_
-
----
-
-_Referenced in [astral-sh/uv#2087](../../astral-sh/uv/issues/2087.md) on 2024-07-28 00:52_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-19T18:13:36Z
 updated_at: 2024-09-19T20:35:45Z
 url: https://github.com/astral-sh/uv/issues/7557
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv pip compile --universal` is not universal enough for an x86 mac
@@ -379,9 +379,5 @@ Thank you for the discussion. After doing more debugging, I think you were right
 ---
 
 _Label `duplicate` added by @zanieb on 2024-09-19 20:35_
-
----
-
-_Referenced in [astral-sh/uv#9711](../../astral-sh/uv/issues/9711.md) on 2024-12-07 20:47_
 
 ---

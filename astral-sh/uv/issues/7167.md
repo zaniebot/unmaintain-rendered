@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-07T12:38:24Z
 updated_at: 2024-09-07T16:25:29Z
 url: https://github.com/astral-sh/uv/issues/7167
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Allow use of `tool.uv.sources` in published build metadata
@@ -130,9 +130,5 @@ An alternative is that we display a warning which requires opt-in to silence. I 
 > The ask here is that tool.uv.sources find its way into the declared project metadata, so that uv build would retain that Git reference above by translating it to PEP 508.
 
 This might be kind of hard to teach as well, but it does seem like reasonable behavior to opt-in to. I think we could consider exposing this with a flag like `--convert-sources`. What source kinds could we support here?
-
----
-
-_Referenced in [astral-sh/uv#7355](../../astral-sh/uv/issues/7355.md) on 2024-09-13 12:53_
 
 ---

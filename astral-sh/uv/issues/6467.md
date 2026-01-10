@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-22T22:37:30Z
 updated_at: 2024-08-23T15:49:57Z
 url: https://github.com/astral-sh/uv/issues/6467
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv run` with stdin
@@ -96,14 +96,6 @@ I'm gonna do this as a break from hard issues!
 
 ---
 
-_Referenced in [astral-sh/uv#6481](../../astral-sh/uv/pulls/6481.md) on 2024-08-23 00:50_
-
----
-
 _Closed by @charliermarsh on 2024-08-23 15:49_
-
----
-
-_Referenced in [astral-sh/uv#6375](../../astral-sh/uv/pulls/6375.md) on 2024-09-18 17:03_
 
 ---

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-09T06:01:24Z
 updated_at: 2024-10-12T21:34:00Z
 url: https://github.com/astral-sh/uv/issues/8033
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv publish` uploads every file in `/dist`
@@ -115,9 +115,5 @@ Thanks - will close.
 ---
 
 _Closed by @konstin on 2024-10-12 21:34_
-
----
-
-_Referenced in [astral-sh/uv#16030](../../astral-sh/uv/issues/16030.md) on 2025-09-25 19:22_
 
 ---

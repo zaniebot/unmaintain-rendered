@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-03-04T14:05:44Z
 updated_at: 2024-10-02T14:38:32Z
 url: https://github.com/astral-sh/uv/issues/2155
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Print installation path when running `uv pip install`
@@ -117,10 +117,6 @@ I think this would be really useful. I was just caught out by `uv` unexpectedly 
 
 ---
 
-_Referenced in [astral-sh/uv#2500](../../astral-sh/uv/issues/2500.md) on 2024-04-22 21:23_
-
----
-
 _Comment by @ChannyClaus on 2024-04-22 21:44_
 
 another separate, but related nicety would be printing out the `Location` column that `pip list --verbose` prints:
@@ -221,10 +217,6 @@ I wasn't sure the best way to check for being in `.venv` so definitely open to s
 
 ---
 
-_Referenced in [astral-sh/uv#4835](../../astral-sh/uv/pulls/4835.md) on 2024-07-05 20:16_
-
----
-
 _Comment by @Aditya-PS-05 on 2024-09-15 07:21_
 
 There are 
@@ -242,18 +234,6 @@ Which will be good practice?
 _Comment by @Aditya-PS-05 on 2024-09-15 07:23_
 
 I am trying to print the path at every place where some changes in packaging is occuring.
-
----
-
-_Referenced in [astral-sh/uv#7407](../../astral-sh/uv/pulls/7407.md) on 2024-09-15 13:29_
-
----
-
-_Referenced in [astral-sh/uv#7422](../../astral-sh/uv/pulls/7422.md) on 2024-09-16 11:14_
-
----
-
-_Referenced in [astral-sh/uv#7850](../../astral-sh/uv/pulls/7850.md) on 2024-10-01 16:47_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-22T09:42:23Z
 updated_at: 2024-08-23T02:04:58Z
 url: https://github.com/astral-sh/uv/issues/6417
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv cache prune` causes self update to fail
@@ -103,18 +103,10 @@ Yeah, that makes sense. Will fix though.
 
 ---
 
-_Referenced in [astral-sh/uv#6482](../../astral-sh/uv/pulls/6482.md) on 2024-08-23 01:21_
-
----
-
 _Closed by @charliermarsh on 2024-08-23 02:04_
 
 ---
 
 _Closed by @charliermarsh on 2024-08-23 02:04_
-
----
-
-_Referenced in [astral-sh/uv#6774](../../astral-sh/uv/issues/6774.md) on 2024-10-27 02:22_
 
 ---

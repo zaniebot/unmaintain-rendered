@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-07T14:47:35Z
 updated_at: 2024-09-10T21:28:55Z
 url: https://github.com/astral-sh/uv/issues/3423
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # The `tokio-tar` dependency seems unmaintained, and it is broken on PowerPC
@@ -134,14 +134,6 @@ We can't really use `async-tar` because it's built on `async-std` and we're usin
 _Comment by @musicinmybrain on 2024-05-22 14:39_
 
 I haven’t attempted to build an RPM package for `async-tar` or test it on architectures other than `x86_64` (especially in light of @charliermarsh’s comment), but I did try repeatedly running `cargo test`, with and without `--release`, as in https://github.com/astral-sh/uv/issues/3423#issuecomment-2124671700, and I haven’t managed to get it to fail so far.
-
----
-
-_Referenced in [neondatabase/neon#7944](../../neondatabase/neon/pulls/7944.md) on 2024-06-07 15:41_
-
----
-
-_Referenced in [astral-sh/uv#7271](../../astral-sh/uv/pulls/7271.md) on 2024-09-10 19:03_
 
 ---
 

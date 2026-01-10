@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-22T23:22:44Z
 updated_at: 2024-08-27T18:08:11Z
 url: https://github.com/astral-sh/uv/issues/6471
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv init` should create a runnable project
@@ -112,10 +112,6 @@ I'd love to hear if there's a better way to approach this but this works for me.
 _Comment by @suomela on 2024-08-26 19:56_
 
 Interesting, I didn't realize setting up `[project.scripts]` is enough; I thought I'd have to add `print()` or something in the `hello()` function for it to actually print something.
-
----
-
-_Referenced in [astral-sh/uv#6689](../../astral-sh/uv/pulls/6689.md) on 2024-08-27 15:33_
 
 ---
 

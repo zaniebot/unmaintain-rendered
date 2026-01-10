@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-04T17:18:13Z
 updated_at: 2024-10-05T22:21:07Z
 url: https://github.com/astral-sh/uv/issues/7931
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # FR: allow more customization of uv init via env vars or settings
@@ -87,9 +87,5 @@ _Comment by @chrisrodrigue on 2024-10-05 22:20_
 I think for flexibility and consistency, a dev could/should have the ability to set every uv “configurable” via: command line, `pyproject.toml`, `uv.toml`, and environment variable, with override resolution performed in that order of priority.
 
 I don’t know what implementation would look like, but I think it could be the same abstract implementation for each `Configurable`, using the command line string as the universal key (same for command line, `pyproject.toml`, `uv.toml`, and env var) which maps to the data/function that actually modifies the command/behavior.
-
----
-
-_Referenced in [astral-sh/uv#12429](../../astral-sh/uv/issues/12429.md) on 2025-04-01 07:52_
 
 ---

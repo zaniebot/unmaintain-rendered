@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-22T19:23:17Z
 updated_at: 2024-08-28T18:20:03Z
 url: https://github.com/astral-sh/uv/issues/6460
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Docs suggestion for use with existing simple projects
@@ -65,10 +65,6 @@ It's becoming obvious that we need a better solution for projects that don't def
 
 ---
 
-_Referenced in [astral-sh/uv#6462](../../astral-sh/uv/issues/6462.md) on 2024-08-22 21:08_
-
----
-
 _Label `documentation` added by @zanieb on 2024-08-22 21:10_
 
 ---
@@ -101,10 +97,6 @@ I don't know if there's a way to separate parts of the docs out more, so that so
 
 ---
 
-_Referenced in [astral-sh/uv#6405](../../astral-sh/uv/issues/6405.md) on 2024-08-23 13:16_
-
----
-
 _Comment by @zanieb on 2024-08-23 13:37_
 
 We will address this in https://github.com/astral-sh/uv/issues/6511
@@ -118,9 +110,5 @@ As of [uv v0.4.0](https://github.com/astral-sh/uv/releases/tag/0.4.0), we now su
 ---
 
 _Closed by @zanieb on 2024-08-28 18:20_
-
----
-
-_Referenced in [astral-sh/uv#8178](../../astral-sh/uv/issues/8178.md) on 2024-11-06 14:40_
 
 ---

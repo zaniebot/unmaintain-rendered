@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-05T01:22:45Z
 updated_at: 2024-09-05T03:09:33Z
 url: https://github.com/astral-sh/uv/issues/7059
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Wrong hash is used for repeated `tensorflow-text`
@@ -76,19 +76,11 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-09-05 01:22_
 
 ---
 
-_Referenced in [astral-sh/uv#7060](../../astral-sh/uv/pulls/7060.md) on 2024-09-05 01:50_
-
----
-
 _Closed by @charliermarsh on 2024-09-05 01:58_
 
 ---
 
 _Closed by @charliermarsh on 2024-09-05 01:58_
-
----
-
-_Referenced in [astral-sh/uv#7061](../../astral-sh/uv/pulls/7061.md) on 2024-09-05 01:58_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-21T08:51:06Z
 updated_at: 2024-08-21T13:22:53Z
 url: https://github.com/astral-sh/uv/issues/6312
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # uv cache prune --ci prunes everything in the cache
@@ -45,13 +45,5 @@ Yeah, it's strange, but it turns out that it's actually (a lot) faster to just r
 ---
 
 _Closed by @charliermarsh on 2024-08-21 13:22_
-
----
-
-_Referenced in [astral-sh/setup-uv#122](../../astral-sh/setup-uv/issues/122.md) on 2024-10-16 18:06_
-
----
-
-_Referenced in [VOICEVOX/voicevox_engine#1827](../../VOICEVOX/voicevox_engine/pulls/1827.md) on 2025-11-29 14:24_
 
 ---

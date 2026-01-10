@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-05T04:42:52Z
 updated_at: 2024-09-05T05:59:09Z
 url: https://github.com/astral-sh/uv/issues/7066
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv build doesn't respect SOURCE_DATE_EPOCH
@@ -22,10 +22,6 @@ While moving [build-and-inspect-package to uv build](https://github.com/hynek/bu
 
 ---
 
-_Referenced in [hynek/build-and-inspect-python-package#140](../../hynek/build-and-inspect-python-package/pulls/140.md) on 2024-09-05 04:43_
-
----
-
 _Comment by @hynek on 2024-09-05 05:59_
 
 my bad, solved with the help of @henryiii, `uv build` is not responsible for any of this.
@@ -33,9 +29,5 @@ my bad, solved with the help of @henryiii, `uv build` is not responsible for any
 ---
 
 _Closed by @hynek on 2024-09-05 05:59_
-
----
-
-_Referenced in [astral-sh/uv#13139](../../astral-sh/uv/issues/13139.md) on 2025-04-27 22:06_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-07T03:19:33Z
 updated_at: 2024-09-07T14:32:26Z
 url: https://github.com/astral-sh/uv/issues/7154
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv build --wheel doesn't seem to be installing dev-dependencies
@@ -133,10 +133,6 @@ No problem at all! Glad it's not a bug at least. Though confused why `--show-set
 _Comment by @charliermarsh on 2024-09-07 13:02_
 
 Oh sorry... Dumb of me. I'm running `--show-settings` in the first command which doesn't have the env var attached. I will add more logging though.
-
----
-
-_Referenced in [astral-sh/uv#7169](../../astral-sh/uv/pulls/7169.md) on 2024-09-07 14:25_
 
 ---
 

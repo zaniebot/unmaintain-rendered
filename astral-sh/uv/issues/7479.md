@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-17T19:41:10Z
 updated_at: 2024-09-18T19:28:56Z
 url: https://github.com/astral-sh/uv/issues/7479
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv >=4.8 cache error output
@@ -167,10 +167,6 @@ I think my suggestion would be to pin the uv version within your `pyproject.toml
 ---
 
 _Closed by @charliermarsh on 2024-09-18 03:03_
-
----
-
-_Referenced in [astral-sh/uv#7485](../../astral-sh/uv/issues/7485.md) on 2024-09-18 06:26_
 
 ---
 

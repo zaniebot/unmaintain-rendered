@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-08T19:49:33Z
 updated_at: 2024-10-15T09:27:34Z
 url: https://github.com/astral-sh/uv/issues/8017
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `test_prepare_metadata` hash changes on uv version bump
@@ -41,14 +41,6 @@ _Label `testing` added by @zanieb on 2024-10-08 19:49_
 _Comment by @konstin on 2024-10-08 20:33_
 
 We should redact that hash, it pulls in the uv version number because it's listed as generator in the WHEEL file.
-
----
-
-_Referenced in [astral-sh/uv#8188](../../astral-sh/uv/pulls/8188.md) on 2024-10-14 20:48_
-
----
-
-_Referenced in [astral-sh/uv#8205](../../astral-sh/uv/pulls/8205.md) on 2024-10-15 09:15_
 
 ---
 

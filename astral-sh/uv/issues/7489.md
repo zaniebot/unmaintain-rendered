@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-18T09:54:26Z
 updated_at: 2024-09-18T15:34:28Z
 url: https://github.com/astral-sh/uv/issues/7489
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Warning using pre-commit and uv
@@ -68,18 +68,6 @@ Yeah idk why this is user-facing, maybe because it could take a while?
 
 ---
 
-_Referenced in [astral-sh/uv#7502](../../astral-sh/uv/pulls/7502.md) on 2024-09-18 14:41_
-
----
-
 _Closed by @zanieb on 2024-09-18 15:34_
-
----
-
-_Referenced in [astral-sh/uv#16112](../../astral-sh/uv/issues/16112.md) on 2025-10-06 08:35_
-
----
-
-_Referenced in [astral-sh/uv#16138](../../astral-sh/uv/pulls/16138.md) on 2025-10-06 16:42_
 
 ---

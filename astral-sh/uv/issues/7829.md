@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-01T07:43:51Z
 updated_at: 2024-10-01T14:06:45Z
 url: https://github.com/astral-sh/uv/issues/7829
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # CONDA_PREFIX not leading to conda env being used
@@ -150,9 +150,5 @@ _Assigned to @zanieb by @zanieb on 2024-10-01 14:03_
 _Comment by @mbspng on 2024-10-01 14:06_
 
 I understand. Thanks! Btw. I think it is good that it now supports the poetry / pdm style interface with lock files etc. I evaluated uv a while back before it supported that and decided not to use it at that point, because of the awkward old pip-type-of workflow. Now with the new interface, I re-evaluated.
-
----
-
-_Referenced in [spedas/pyspedas#1265](../../spedas/pyspedas/issues/1265.md) on 2025-11-13 19:43_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-03T18:42:27Z
 updated_at: 2024-09-25T21:50:29Z
 url: https://github.com/astral-sh/uv/issues/6974
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv installs wrong (cached) version when specifying a git+ dependency with hash
@@ -179,10 +179,6 @@ I hope this is helpful.
 _Comment by @charliermarsh on 2024-09-05 01:22_
 
 Thanks @maparent. Looks like a real bug but separate from the above; going to move into its own issue.
-
----
-
-_Referenced in [astral-sh/uv#7059](../../astral-sh/uv/issues/7059.md) on 2024-09-05 01:22_
 
 ---
 

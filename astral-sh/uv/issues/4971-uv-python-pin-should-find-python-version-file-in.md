@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-07-10T17:06:59Z
 updated_at: 2024-09-22T23:37:55Z
 url: https://github.com/astral-sh/uv/issues/4971
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv python pin` should find `.python-version` file in a workspace
@@ -54,10 +54,6 @@ Should `uv python pin 3.12` also only write to the project root or the workspace
 
 ---
 
-_Referenced in [astral-sh/uv#5035](../../astral-sh/uv/pulls/5035.md) on 2024-07-13 09:23_
-
----
-
 _Comment by @zanieb on 2024-07-13 15:31_
 
 This is a good (and open) question. Do users opt-in to operating on the project or operating on the workspace? When working in the workspace root, we require `--project <name>` to affect a project. When in a project directory, we should probably require `--workspace` to mutate the workspace?
@@ -76,10 +72,6 @@ If you want to change this behaviour you'd use the `--project <name>` or `--work
 The `--isolate` option ignores all the above and pins in the current working directory as you said in https://github.com/astral-sh/uv/pull/5035#issuecomment-2226960463.
 
 It makes sense in my head but maybe it could be confusing to some? 🤔 
-
----
-
-_Referenced in [astral-sh/uv#5592](../../astral-sh/uv/pulls/5592.md) on 2024-07-30 14:17_
 
 ---
 

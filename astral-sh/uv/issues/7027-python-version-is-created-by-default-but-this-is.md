@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-04T15:09:32Z
 updated_at: 2024-09-04T23:22:35Z
 url: https://github.com/astral-sh/uv/issues/7027
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `.python-version` is created by default but this is not documented 
@@ -37,10 +37,6 @@ _Label `documentation` added by @zanieb on 2024-09-04 15:10_
 ---
 
 _Label `good first issue` added by @zanieb on 2024-09-04 15:10_
-
----
-
-_Referenced in [astral-sh/uv#7051](../../astral-sh/uv/pulls/7051.md) on 2024-09-04 21:38_
 
 ---
 

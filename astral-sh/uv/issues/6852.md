@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-30T03:27:42Z
 updated_at: 2024-09-04T02:49:21Z
 url: https://github.com/astral-sh/uv/issues/6852
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv fails to compile proper `--universal` txt file with `openai-whisper`
@@ -101,9 +101,5 @@ In order to access it.
 ---
 
 _Closed by @charliermarsh on 2024-09-04 02:49_
-
----
-
-_Referenced in [deepset-ai/haystack#8965](../../deepset-ai/haystack/pulls/8965.md) on 2025-03-04 17:09_
 
 ---

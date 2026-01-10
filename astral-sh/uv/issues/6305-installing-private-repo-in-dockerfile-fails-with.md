@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-21T07:36:49Z
 updated_at: 2024-09-21T14:21:39Z
 url: https://github.com/astral-sh/uv/issues/6305
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # installing private repo in Dockerfile fails with uv, works with poetry
@@ -140,10 +140,6 @@ Ahhh it's because we're stripping the username in the lockfile (`git@` in `git@g
 _Comment by @charliermarsh on 2024-08-21 14:35_
 
 I'll fix this for today's release, sorry.
-
----
-
-_Referenced in [astral-sh/uv#6335](../../astral-sh/uv/pulls/6335.md) on 2024-08-21 15:01_
 
 ---
 

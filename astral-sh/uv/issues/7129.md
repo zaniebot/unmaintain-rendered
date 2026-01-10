@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-06T16:58:35Z
 updated_at: 2024-09-06T23:23:17Z
 url: https://github.com/astral-sh/uv/issues/7129
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv python`: Python installation keys must have valid Python versions
@@ -49,10 +49,6 @@ Eek! Sorry about that.
 ---
 
 _Label `bug` added by @zanieb on 2024-09-06 17:04_
-
----
-
-_Referenced in [astral-sh/uv#7131](../../astral-sh/uv/pulls/7131.md) on 2024-09-06 17:19_
 
 ---
 

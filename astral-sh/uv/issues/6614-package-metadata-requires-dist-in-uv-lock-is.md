@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-25T18:56:16Z
 updated_at: 2024-08-25T21:04:26Z
 url: https://github.com/astral-sh/uv/issues/6614
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `package.metadata.requires-dist` in `uv.lock` is incomplete for last added packages.
@@ -67,10 +67,6 @@ requires-dist = [
 
 ---
 
-_Referenced in [astral-sh/uv#6607](../../astral-sh/uv/pulls/6607.md) on 2024-08-25 19:12_
-
----
-
 _Comment by @charliermarsh on 2024-08-25 20:05_
 
 Thanks! Will take a look, looks wrong.
@@ -88,10 +84,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-25 20:05_
 _Comment by @charliermarsh on 2024-08-25 20:15_
 
 Oh this actually _does_ make sense (we update the `pyproject.toml` _after_ the resolution, to set the lower-bound specifier). Difficult to fix but we definitely need to.
-
----
-
-_Referenced in [astral-sh/uv#6618](../../astral-sh/uv/pulls/6618.md) on 2024-08-25 20:43_
 
 ---
 

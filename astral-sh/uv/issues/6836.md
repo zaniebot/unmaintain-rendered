@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-29T22:23:42Z
 updated_at: 2024-09-03T22:41:17Z
 url: https://github.com/astral-sh/uv/issues/6836
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Universal resolution can generate un-installable requirements with environments
@@ -63,10 +63,6 @@ importlib-metadata==8.4.0 ; python_full_version < '3.10.2'
 ```
 
 
-
----
-
-_Referenced in [pyca/cryptography#11505](../../pyca/cryptography/pulls/11505.md) on 2024-08-29 22:23_
 
 ---
 
@@ -181,10 +177,6 @@ warning: The requested Python version 3.7 is not available; 3.12.5 will be used 
 _Comment by @alex on 2024-08-30 11:24_
 
 I spot checked those markers against the `build` source, and they look right.
-
----
-
-_Referenced in [astral-sh/uv#6268](../../astral-sh/uv/pulls/6268.md) on 2024-08-30 11:55_
 
 ---
 

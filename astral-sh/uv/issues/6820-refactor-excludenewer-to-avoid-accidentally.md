@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-29T16:34:39Z
 updated_at: 2024-08-29T16:34:39Z
 url: https://github.com/astral-sh/uv/issues/6820
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # refactor `ExcludeNewer` to avoid accidentally exposing "local date" input
@@ -30,9 +30,5 @@ _Label `internal` added by @BurntSushi on 2024-08-29 16:34_
 ---
 
 _Assigned to @BurntSushi by @BurntSushi on 2024-08-29 16:34_
-
----
-
-_Referenced in [astral-sh/uv#6562](../../astral-sh/uv/pulls/6562.md) on 2024-08-29 16:34_
 
 ---

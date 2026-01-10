@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-11T14:14:45Z
 updated_at: 2024-09-11T18:36:42Z
 url: https://github.com/astral-sh/uv/issues/7292
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Relative paths in script sources don't work
@@ -71,10 +71,6 @@ Thanks, these look like bugs.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-11 15:25_
-
----
-
-_Referenced in [astral-sh/uv#7301](../../astral-sh/uv/pulls/7301.md) on 2024-09-11 18:20_
 
 ---
 

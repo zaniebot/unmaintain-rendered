@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-09T16:54:25Z
 updated_at: 2024-09-05T13:56:41Z
 url: https://github.com/astral-sh/uv/issues/5964
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Sync with system Python?
@@ -44,10 +44,6 @@ Na this isn't supported yet.
 _Comment by @chrisrodrigue on 2024-08-11 01:39_
 
 I think you can use `uv venv --system-site-packages` but `uv sync` is not yet aware of requirements that are already satisfied by the system/inherited environment so it still attempts to resolve and install them.
-
----
-
-_Referenced in [astral-sh/uv#6007](../../astral-sh/uv/issues/6007.md) on 2024-08-14 19:45_
 
 ---
 
@@ -88,18 +84,6 @@ jobs:
 ```
 
 And making sure that my docker commands are using `uv run` instead of `python`
-
----
-
-_Referenced in [BesLogic/releaf-canopeum#195](../../BesLogic/releaf-canopeum/pulls/195.md) on 2024-08-14 20:47_
-
----
-
-_Referenced in [Komorebi-AI/python-template#47](../../Komorebi-AI/python-template/pulls/47.md) on 2024-08-23 18:18_
-
----
-
-_Referenced in [astral-sh/uv#6451](../../astral-sh/uv/issues/6451.md) on 2024-08-24 22:18_
 
 ---
 
@@ -144,9 +128,5 @@ This is now supported via `UV_PROJECT_ENVIRONMENT` (#6834) — I still don't rec
 ---
 
 _Closed by @zanieb on 2024-09-05 13:56_
-
----
-
-_Referenced in [astral-sh/uv#8085](../../astral-sh/uv/issues/8085.md) on 2024-10-10 14:01_
 
 ---

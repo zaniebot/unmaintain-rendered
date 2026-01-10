@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-22T12:46:19Z
 updated_at: 2024-10-22T13:44:16Z
 url: https://github.com/astral-sh/uv/issues/8448
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # unable to pull package from private artifactory registry
@@ -83,10 +83,6 @@ _Label `bug` added by @charliermarsh on 2024-10-22 13:03_
 
 ---
 
-_Referenced in [astral-sh/uv#8452](../../astral-sh/uv/pulls/8452.md) on 2024-10-22 13:14_
-
----
-
 _Comment by @danieleades on 2024-10-22 13:36_
 
 > Can you try using a name without dashes in it? We might not be normalizing those correctly.
@@ -124,9 +120,5 @@ Will the normalisation behaviour be described in the docs?
 _Comment by @charliermarsh on 2024-10-22 13:44_
 
 Yeah, but for reference, we uppercase the index name and replace any non-alphanumeric characters with underscores.
-
----
-
-_Referenced in [astral-sh/uv#7963](../../astral-sh/uv/issues/7963.md) on 2024-10-23 06:56_
 
 ---

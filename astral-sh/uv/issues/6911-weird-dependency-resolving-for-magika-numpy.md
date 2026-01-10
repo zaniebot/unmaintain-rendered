@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-01T11:59:38Z
 updated_at: 2024-09-04T15:57:15Z
 url: https://github.com/astral-sh/uv/issues/6911
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Weird dependency resolving (for magika → numpy → distutils)
@@ -372,10 +372,6 @@ _Label `bug` added by @charliermarsh on 2024-09-04 15:11_
 _Comment by @charliermarsh on 2024-09-04 15:11_
 
 Thanks, I see the bug here.
-
----
-
-_Referenced in [astral-sh/uv#7031](../../astral-sh/uv/pulls/7031.md) on 2024-09-04 15:42_
 
 ---
 

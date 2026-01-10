@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-20T15:36:34Z
 updated_at: 2024-09-10T01:43:07Z
 url: https://github.com/astral-sh/uv/issues/6255
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Add option to add files that need to be considered for the cache key in pyproject.toml
@@ -49,10 +49,6 @@ Worth mentioning also (not part of this ticket) that it would be good if `uv` su
 ---
 
 _Label `enhancement` added by @charliermarsh on 2024-08-20 17:15_
-
----
-
-_Referenced in [astral-sh/uv#6964](../../astral-sh/uv/issues/6964.md) on 2024-09-03 14:03_
 
 ---
 
@@ -101,10 +97,6 @@ I _think_ "commit hash changed" is fine.
 _Comment by @charliermarsh on 2024-09-04 03:07_
 
 I guess `setuptools-scm` will also reflect uncommitted changes, but that may not be necessary.
-
----
-
-_Referenced in [astral-sh/uv#7136](../../astral-sh/uv/pulls/7136.md) on 2024-09-06 21:04_
 
 ---
 

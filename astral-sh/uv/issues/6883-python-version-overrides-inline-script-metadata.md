@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-30T19:01:29Z
 updated_at: 2024-08-30T19:26:51Z
 url: https://github.com/astral-sh/uv/issues/6883
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `.python-version` overrides inline script metadata `required-python` for `uv run`
@@ -77,10 +77,6 @@ Definitely wrong, thanks!
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-30 19:19_
-
----
-
-_Referenced in [astral-sh/uv#6884](../../astral-sh/uv/pulls/6884.md) on 2024-08-30 19:19_
 
 ---
 

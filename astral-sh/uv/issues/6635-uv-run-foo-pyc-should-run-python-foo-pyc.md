@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-26T00:18:22Z
 updated_at: 2024-09-03T19:29:35Z
 url: https://github.com/astral-sh/uv/issues/6635
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv run foo.pyc` should run `python foo.pyc`
@@ -31,10 +31,6 @@ _Label `cli` added by @charliermarsh on 2024-08-26 00:18_
 ---
 
 _Label `good first issue` added by @charliermarsh on 2024-08-26 00:19_
-
----
-
-_Referenced in [astral-sh/uv#6886](../../astral-sh/uv/pulls/6886.md) on 2024-08-30 19:48_
 
 ---
 

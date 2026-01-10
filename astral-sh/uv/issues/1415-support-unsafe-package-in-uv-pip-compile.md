@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T02:43:10Z
 updated_at: 2024-09-20T22:29:37Z
 url: https://github.com/astral-sh/uv/issues/1415
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Support `--unsafe-package` in `uv pip compile`
@@ -58,10 +58,6 @@ This is not a critical feature in that we could be unblocked by writing a wrappe
 
 ---
 
-_Referenced in [astral-sh/uv#1715](../../astral-sh/uv/issues/1715.md) on 2024-02-20 22:51_
-
----
-
 _Comment by @hmc-cs-mdrissi on 2024-02-20 23:07_
 
 I originally contributed unsafe-package to pip-compile mostly as an escape hatch. My main use case was handing multiple editable installs. I work in monorepo with several libraries. My requirements.in looks like this,
@@ -89,18 +85,6 @@ We pip compile our requirements, to pinned dependencies of such packages, but as
 We want to have the dependencies of these packages to be pinned and be included in the generated requirements package, but we can't have these cuda-versioned packeges there.
 
 Having a flag that says - "omit cupy from the generated file" will be great. (We can solve this by post processing the requirements file, but I think it will be safer to have this explicit)
-
----
-
-_Referenced in [astral-sh/uv#1828](../../astral-sh/uv/issues/1828.md) on 2024-02-21 20:50_
-
----
-
-_Referenced in [astral-sh/uv#1353](../../astral-sh/uv/issues/1353.md) on 2024-02-21 21:34_
-
----
-
-_Referenced in [astral-sh/uv#1838](../../astral-sh/uv/issues/1838.md) on 2024-02-21 22:30_
 
 ---
 
@@ -154,15 +138,7 @@ I think `--exclude` would be a good alias.
 
 ---
 
-_Referenced in [astral-sh/uv#1889](../../astral-sh/uv/pulls/1889.md) on 2024-02-23 00:13_
-
----
-
 _Closed by @charliermarsh on 2024-02-23 18:47_
-
----
-
-_Referenced in [astral-sh/uv#2738](../../astral-sh/uv/issues/2738.md) on 2024-03-31 00:02_
 
 ---
 
@@ -175,9 +151,5 @@ I don't see --unsafe-package in the docs: https://docs.astral.sh/uv/reference/cl
 _Comment by @charliermarsh on 2024-09-20 22:29_
 
 It’s “no-emit-package”.
-
----
-
-_Referenced in [opendatahub-io/notebooks#1998](../../opendatahub-io/notebooks/pulls/1998.md) on 2025-08-19 11:35_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-14T14:42:14Z
 updated_at: 2024-08-23T13:42:12Z
 url: https://github.com/astral-sh/uv/issues/5046
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Bad resolver error for `colabfold[alphafold]==1.5.5` on python 3.11
@@ -1097,10 +1097,6 @@ Related
 
 ---
 
-_Referenced in [astral-sh/uv#4922](../../astral-sh/uv/issues/4922.md) on 2024-07-30 15:25_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-30 15:27_
 
 ---
@@ -1214,18 +1210,6 @@ As of f2d67180388101ed24e70eb71e04fef1e3ddfc8e the error is
       And because you require colabfold==1.5.5 and colabfold[alphafold]==1.5.5, we can conclude that your requirements are
       unsatisfiable.
 ```
-
----
-
-_Referenced in [astral-sh/uv#6154](../../astral-sh/uv/pulls/6154.md) on 2024-08-16 16:55_
-
----
-
-_Referenced in [astral-sh/uv#6160](../../astral-sh/uv/pulls/6160.md) on 2024-08-16 18:19_
-
----
-
-_Referenced in [astral-sh/uv#6162](../../astral-sh/uv/pulls/6162.md) on 2024-08-16 20:14_
 
 ---
 
@@ -1360,9 +1344,5 @@ well I guess this issue is an example of that decision having downside
 Even with the relatively improved error message: if the fact is that this project does not install on python 3.12 and had declared that it didn't install on python 3.12 - I guess users would rather have seen that message than this one.
 
 (of course there is upside too, no doubt some projects will succeed in installing even though they declared that they would fail)
-
----
-
-_Referenced in [astral-sh/uv#4022](../../astral-sh/uv/issues/4022.md) on 2025-09-18 09:11_
 
 ---

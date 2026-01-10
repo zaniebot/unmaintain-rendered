@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-14T14:26:51Z
 updated_at: 2024-09-18T03:18:06Z
 url: https://github.com/astral-sh/uv/issues/7393
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Allow users to pre-define dependency metadata
@@ -32,10 +32,6 @@ my-dependency = ["click>0.8"]
 ---
 
 _Label `enhancement` added by @charliermarsh on 2024-09-14 14:26_
-
----
-
-_Referenced in [astral-sh/uv#7390](../../astral-sh/uv/issues/7390.md) on 2024-09-14 14:27_
 
 ---
 
@@ -84,10 +80,6 @@ _Comment by @charliermarsh on 2024-09-15 15:21_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-16 21:12_
-
----
-
-_Referenced in [astral-sh/uv#7442](../../astral-sh/uv/pulls/7442.md) on 2024-09-16 21:14_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-07T11:16:12Z
 updated_at: 2024-10-09T09:20:06Z
 url: https://github.com/astral-sh/uv/issues/7965
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Order of entries in pyproject.toml [dependencies] defines what versions get installed. 
@@ -237,9 +237,5 @@ _Comment by @MatteoLacki on 2024-10-09 09:20_
 
 I also do get it that you have tons of work on your plate, and that this is not a game-breaker as such, but in the context I would still consider this being a bug, albeit one that can be handled later on...
 
-
----
-
-_Referenced in [tilde-research/activault#2](../../tilde-research/activault/issues/2.md) on 2025-06-02 19:11_
 
 ---

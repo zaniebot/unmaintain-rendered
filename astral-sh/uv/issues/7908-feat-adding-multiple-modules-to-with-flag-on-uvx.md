@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-03T22:16:18Z
 updated_at: 2024-10-11T09:29:09Z
 url: https://github.com/astral-sh/uv/issues/7908
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # [feat] Adding multiple modules to --with flag on uvx startup
@@ -35,10 +35,6 @@ uvx --with numpy --with polars --with matplotlib ipython
 ```bash
 uvx --with numpy,polars,matplotlib ipython
 ```
-
----
-
-_Referenced in [astral-sh/uv#7909](../../astral-sh/uv/pulls/7909.md) on 2024-10-03 22:21_
 
 ---
 

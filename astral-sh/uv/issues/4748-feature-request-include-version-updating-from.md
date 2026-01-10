@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-02T22:57:58Z
 updated_at: 2024-08-23T13:50:29Z
 url: https://github.com/astral-sh/uv/issues/4748
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Feature Request: Include version updating from when running `uv self update`
@@ -44,10 +44,6 @@ _Label `tracing` added by @zanieb on 2024-07-02 23:01_
 ---
 
 _Label `cli` added by @zanieb on 2024-07-02 23:01_
-
----
-
-_Referenced in [astral-sh/uv#6473](../../astral-sh/uv/pulls/6473.md) on 2024-08-23 13:45_
 
 ---
 

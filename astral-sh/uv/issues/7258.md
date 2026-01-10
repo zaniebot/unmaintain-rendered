@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-10T15:56:04Z
 updated_at: 2024-09-17T03:27:20Z
 url: https://github.com/astral-sh/uv/issues/7258
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Shell completion for uvx
@@ -45,14 +45,6 @@ Install into `~/.local/share/bash-completion/completions/uvx`
 
 ---
 
-_Referenced in [astral-sh/uv#7323](../../astral-sh/uv/pulls/7323.md) on 2024-09-12 05:09_
-
----
-
-_Referenced in [astral-sh/uv#7388](../../astral-sh/uv/pulls/7388.md) on 2024-09-14 09:30_
-
----
-
 _Label `enhancement` added by @charliermarsh on 2024-09-16 02:48_
 
 ---
@@ -62,9 +54,5 @@ _Label `cli` added by @charliermarsh on 2024-09-16 02:48_
 ---
 
 _Closed by @charliermarsh on 2024-09-17 03:27_
-
----
-
-_Referenced in [DarylStark/slough-dev-dc-python#18](../../DarylStark/slough-dev-dc-python/issues/18.md) on 2024-09-27 20:22_
 
 ---

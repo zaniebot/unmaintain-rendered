@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-10T08:50:17Z
 updated_at: 2024-09-11T18:31:26Z
 url: https://github.com/astral-sh/uv/issues/7247
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # BUG: crash in `uv sync --no-build --no-install-project`
@@ -90,10 +90,6 @@ _Label `bug` added by @charliermarsh on 2024-09-10 13:23_
 ---
 
 _Renamed from "BUG(?): crash in `uv sync --no-build --no-install-project`" to "BUG: crash in `uv sync --no-build --no-install-project`" by @neutrinoceros on 2024-09-10 15:24_
-
----
-
-_Referenced in [astral-sh/uv#7277](../../astral-sh/uv/pulls/7277.md) on 2024-09-10 21:54_
 
 ---
 

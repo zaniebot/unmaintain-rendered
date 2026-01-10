@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-09T18:00:01Z
 updated_at: 2024-10-01T17:50:47Z
 url: https://github.com/astral-sh/uv/issues/4931
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Respect `PAGER` environment variable in `uv help`
@@ -46,10 +46,6 @@ Can you assign me?
 ---
 
 _Assigned to @MadGanGithub by @zanieb on 2024-07-10 05:54_
-
----
-
-_Referenced in [astral-sh/uv#5511](../../astral-sh/uv/pulls/5511.md) on 2024-07-27 21:24_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-18T13:54:17Z
 updated_at: 2024-10-19T14:18:30Z
 url: https://github.com/astral-sh/uv/issues/8328
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Underscores in Git dependencies and [tool.uv.sources]
@@ -94,10 +94,6 @@ i.e. it has removed the dependency from `[project.dependencies]`, but not the so
 
 ---
 
-_Referenced in [astral-sh/uv#8330](../../astral-sh/uv/issues/8330.md) on 2024-10-18 14:32_
-
----
-
 _Comment by @charliermarsh on 2024-10-18 16:32_
 
 Hmm, I think `uv remove` requires a package name and not a dependency specifier (i.e., `uv remove https://github.com/cgravill/example_python_library.git` isn't accepted, but `uv remove example_python_library` is). Does that seem wrong to you?
@@ -146,10 +142,6 @@ index 71c2ebc..33d2eb3 100644
 +example-python-library = { git = "https://github.com/cgravill/example_python_library.git" }
 ```
 is also an annoyance. The slightly more involved context that comes from is we also specify git `rev` so I was trying to update the handwritten entry. The failure made me incorrectly conclude that `uv` couldn't handle updates at all. Depending how the fix for #8330 goes it might also fix this!
-
----
-
-_Referenced in [astral-sh/uv#8359](../../astral-sh/uv/pulls/8359.md) on 2024-10-19 12:46_
 
 ---
 

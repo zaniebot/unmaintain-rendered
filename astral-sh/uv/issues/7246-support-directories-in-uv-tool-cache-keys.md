@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-10T08:16:00Z
 updated_at: 2024-09-11T19:31:01Z
 url: https://github.com/astral-sh/uv/issues/7246
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Support directories in `uv.tool.cache-keys`
@@ -56,10 +56,6 @@ Related: the ask for glob patterns in cache-keys, discussed in https://github.co
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-10 18:17_
-
----
-
-_Referenced in [astral-sh/uv#7268](../../astral-sh/uv/pulls/7268.md) on 2024-09-10 18:39_
 
 ---
 

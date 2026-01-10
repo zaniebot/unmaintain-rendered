@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-24T12:12:27Z
 updated_at: 2024-08-26T18:05:00Z
 url: https://github.com/astral-sh/uv/issues/6580
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv sync --no-build-isolation` doesn't remove extra dependencies
@@ -114,10 +114,6 @@ _Closed by @charliermarsh on 2024-08-25 02:30_
 
 ---
 
-_Referenced in [astral-sh/uv#6599](../../astral-sh/uv/issues/6599.md) on 2024-08-25 09:52_
-
----
-
 _Comment by @kabouzeid on 2024-08-25 09:56_
 
 Thank you for your consideration. I needed some time to fully think through this problem.
@@ -156,10 +152,6 @@ _Reopened by @charliermarsh on 2024-08-25 11:41_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-25 11:41_
-
----
-
-_Referenced in [astral-sh/uv#6606](../../astral-sh/uv/pulls/6606.md) on 2024-08-25 14:16_
 
 ---
 

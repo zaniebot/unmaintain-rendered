@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-19T13:14:18Z
 updated_at: 2024-08-29T14:55:05Z
 url: https://github.com/astral-sh/uv/issues/6203
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv add` should preserve alphabetic package ordering
@@ -72,18 +72,6 @@ _Label `preview` removed by @zanieb on 2024-08-20 18:21_
 
 ---
 
-_Referenced in [astral-sh/uv#6388](../../astral-sh/uv/pulls/6388.md) on 2024-08-21 23:11_
-
----
-
 _Closed by @konstin on 2024-08-29 14:55_
-
----
-
-_Referenced in [astral-sh/uv#10076](../../astral-sh/uv/issues/10076.md) on 2024-12-21 13:26_
-
----
-
-_Referenced in [astral-sh/uv#10738](../../astral-sh/uv/issues/10738.md) on 2025-01-18 19:03_
 
 ---

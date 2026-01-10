@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-23T14:41:15Z
 updated_at: 2024-08-26T07:35:01Z
 url: https://github.com/astral-sh/uv/issues/6520
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Easing migration from Poetry, requirements.txt, etc.
@@ -63,10 +63,6 @@ Gonna close given the other issues.
 ---
 
 _Closed by @charliermarsh on 2024-08-23 15:05_
-
----
-
-_Referenced in [astral-sh/uv#1804](../../astral-sh/uv/issues/1804.md) on 2024-08-23 15:27_
 
 ---
 

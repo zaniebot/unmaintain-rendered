@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-21T21:38:46Z
 updated_at: 2024-08-21T22:34:14Z
 url: https://github.com/astral-sh/uv/issues/6380
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Using uv to install coverage with toml extra as a dev dep gives error when generating lock file
@@ -145,10 +145,6 @@ Ah, I assume that is because the toml loading part of `tomli` got integrated int
 _Comment by @charliermarsh on 2024-08-21 21:58_
 
 Yeah that's right. We should still fix it though haha.
-
----
-
-_Referenced in [astral-sh/uv#6383](../../astral-sh/uv/pulls/6383.md) on 2024-08-21 22:21_
 
 ---
 

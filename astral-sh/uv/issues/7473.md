@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-17T17:16:41Z
 updated_at: 2024-09-17T17:16:41Z
 url: https://github.com/astral-sh/uv/issues/7473
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # tests: find a reliable strategy for testing system and managed interpreters
@@ -27,17 +27,5 @@ While this works fairly well in CI, there is some implicit nondeterminism relate
 ---
 
 _Label `testing` added by @lucab on 2024-09-17 17:16_
-
----
-
-_Referenced in [astral-sh/uv#7451](../../astral-sh/uv/pulls/7451.md) on 2024-09-17 17:34_
-
----
-
-_Referenced in [astral-sh/uv#7596](../../astral-sh/uv/pulls/7596.md) on 2024-09-20 17:59_
-
----
-
-_Referenced in [astral-sh/uv#12246](../../astral-sh/uv/pulls/12246.md) on 2025-03-17 19:53_
 
 ---

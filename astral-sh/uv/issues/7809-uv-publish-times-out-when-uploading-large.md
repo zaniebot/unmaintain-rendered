@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-30T13:19:55Z
 updated_at: 2024-10-04T13:52:24Z
 url: https://github.com/astral-sh/uv/issues/7809
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv publish` times out when uploading large packages (~85MiB)
@@ -225,10 +225,6 @@ _Renamed from "`uv publish` times out when uploading package to forgejo registry
 
 ---
 
-_Referenced in [astral-sh/uv#7923](../../astral-sh/uv/pulls/7923.md) on 2024-10-04 11:17_
-
----
-
 _Comment by @konstin on 2024-10-04 11:19_
 
 Thank you for the great reproduction!
@@ -246,9 +242,5 @@ _Label `bug` added by @konstin on 2024-10-04 11:19_
 ---
 
 _Closed by @konstin on 2024-10-04 13:52_
-
----
-
-_Referenced in [astral-sh/uv#7839](../../astral-sh/uv/issues/7839.md) on 2024-11-03 18:09_
 
 ---

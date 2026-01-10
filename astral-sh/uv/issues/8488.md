@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-23T06:30:42Z
 updated_at: 2024-10-23T13:17:33Z
 url: https://github.com/astral-sh/uv/issues/8488
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Confusing failure to deserialize cache entry when running older uv with uv
@@ -83,10 +83,6 @@ _Label `error messages` added by @charliermarsh on 2024-10-23 12:54_
 _Comment by @charliermarsh on 2024-10-23 12:54_
 
 (Relabeling since this isn't a bug, it's just an error message issue.)
-
----
-
-_Referenced in [astral-sh/uv#8500](../../astral-sh/uv/pulls/8500.md) on 2024-10-23 13:07_
 
 ---
 

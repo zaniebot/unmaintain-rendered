@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-15T08:37:03Z
 updated_at: 2024-10-08T15:14:50Z
 url: https://github.com/astral-sh/uv/issues/1310
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Windows: uv doesn't find python versions on PATH
@@ -60,10 +60,6 @@ Nice, good find.
 _Comment by @MichaReiser on 2024-02-16 19:16_
 
 The issue is probably more general and applies to all python versions that are on the PATH. See [this comment](https://github.com/astral-sh/uv/pull/940#issuecomment-1949127576)
-
----
-
-_Referenced in [astral-sh/uv#940](../../astral-sh/uv/pulls/940.md) on 2024-02-16 19:16_
 
 ---
 
@@ -178,18 +174,6 @@ https://github.com/astral-sh/uv/issues/1521 should not be the next step. I know 
 
 ---
 
-_Referenced in [astral-sh/uv#1636](../../astral-sh/uv/issues/1636.md) on 2024-02-18 23:06_
-
----
-
-_Referenced in [astral-sh/uv#1639](../../astral-sh/uv/issues/1639.md) on 2024-02-18 23:08_
-
----
-
-_Referenced in [astral-sh/uv#1660](../../astral-sh/uv/issues/1660.md) on 2024-02-18 23:13_
-
----
-
 _Comment by @zanieb on 2024-02-18 23:58_
 
 @ofek can you please clarify what you'd like us to find on the PATH? We already will find `python.exe`.
@@ -248,22 +232,6 @@ I think #1381 only fixes the problem for `find_default_python` but not when call
 
 ---
 
-_Referenced in [astral-sh/uv#1693](../../astral-sh/uv/issues/1693.md) on 2024-02-19 15:00_
-
----
-
-_Referenced in [astral-sh/uv#1711](../../astral-sh/uv/pulls/1711.md) on 2024-02-19 17:17_
-
----
-
 _Closed by @MichaReiser on 2024-02-22 07:47_
-
----
-
-_Referenced in [astral-sh/uv#2056](../../astral-sh/uv/issues/2056.md) on 2024-02-29 01:44_
-
----
-
-_Referenced in [astral-sh/ty#684](../../astral-sh/ty/issues/684.md) on 2025-06-19 19:13_
 
 ---

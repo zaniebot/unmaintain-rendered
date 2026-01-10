@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-18T17:34:13Z
 updated_at: 2024-10-18T18:11:53Z
 url: https://github.com/astral-sh/uv/issues/8341
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # specifying single-package indices with uv add --index
@@ -53,13 +53,5 @@ _Label `question` added by @charliermarsh on 2024-10-18 17:58_
 _Comment by @itrase on 2024-10-18 18:11_
 
 ah thank you! explicit solves the problem for now. And I think a CLI flag like `--explicit-index` would work totally fine.
-
----
-
-_Referenced in [astral-sh/uv#8344](../../astral-sh/uv/issues/8344.md) on 2024-10-21 09:29_
-
----
-
-_Referenced in [astral-sh/uv#12483](../../astral-sh/uv/issues/12483.md) on 2025-03-26 11:10_
 
 ---

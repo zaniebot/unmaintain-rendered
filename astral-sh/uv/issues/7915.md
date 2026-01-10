@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-04T08:07:26Z
 updated_at: 2024-10-06T14:19:49Z
 url: https://github.com/astral-sh/uv/issues/7915
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Failed to check python version compatibility of the package when installing or locking
@@ -135,9 +135,5 @@ One last question though, the whole purpose of the command `uv pip compile ...` 
 I hope that the `uv` team can some how fix that problem and make it better for everyone.
 
 Thanks a lot for creating a great tool with amazing performance.
-
----
-
-_Referenced in [astral-sh/uv#8374](../../astral-sh/uv/issues/8374.md) on 2024-10-19 22:21_
 
 ---

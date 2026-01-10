@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-14T21:55:52Z
 updated_at: 2024-09-16T07:11:01Z
 url: https://github.com/astral-sh/uv/issues/7400
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Support for external python management tools
@@ -21,10 +21,6 @@ _Issue opened by @delfick on 2024-09-14 21:55_
 Hello,
 
 It would be really handy if `uv` was able to understand and use other tools (for example asdf/pyenv) for the discovery and installation of Python rather than only `python-build-standalone`.
-
----
-
-_Referenced in [astral-sh/uv#4198](../../astral-sh/uv/issues/4198.md) on 2024-09-14 21:56_
 
 ---
 

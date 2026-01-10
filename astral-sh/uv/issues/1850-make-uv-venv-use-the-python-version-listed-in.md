@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-22T02:53:38Z
 updated_at: 2024-08-22T07:19:17Z
 url: https://github.com/astral-sh/uv/issues/1850
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Make `uv venv` use the python version listed in `.python-version` if no `--python` is provided
@@ -58,10 +58,6 @@ Thank you for this wonderful project!
 _Comment by @Spenhouet on 2024-04-20 07:52_
 
 This becomes especially interesting in combination with https://github.com/astral-sh/uv/issues/2607
-
----
-
-_Referenced in [astral-sh/uv#2607](../../astral-sh/uv/issues/2607.md) on 2024-04-20 07:54_
 
 ---
 

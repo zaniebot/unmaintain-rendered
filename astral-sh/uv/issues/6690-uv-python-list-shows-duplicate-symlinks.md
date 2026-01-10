@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-27T14:26:26Z
 updated_at: 2024-08-28T23:09:26Z
 url: https://github.com/astral-sh/uv/issues/6690
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # uv python list shows duplicate symlinks
@@ -126,10 +126,6 @@ _Label `uv python` added by @zanieb on 2024-08-27 16:29_
 
 ---
 
-_Referenced in [astral-sh/uv#6740](../../astral-sh/uv/pulls/6740.md) on 2024-08-28 08:20_
-
----
-
 _Comment by @charliermarsh on 2024-08-28 23:09_
 
 I believe this was closed by https://github.com/astral-sh/uv/pull/6740.
@@ -137,9 +133,5 @@ I believe this was closed by https://github.com/astral-sh/uv/pull/6740.
 ---
 
 _Closed by @charliermarsh on 2024-08-28 23:09_
-
----
-
-_Referenced in [astral-sh/uv#12302](../../astral-sh/uv/issues/12302.md) on 2025-03-18 23:07_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-02T07:19:55Z
 updated_at: 2024-10-18T16:34:07Z
 url: https://github.com/astral-sh/uv/issues/7859
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Torch installation instructions for different platforms
@@ -60,10 +60,6 @@ _Label `duplicate` added by @zanieb on 2024-10-02 14:56_
 ---
 
 _Label `question` added by @zanieb on 2024-10-02 14:56_
-
----
-
-_Referenced in [astral-sh/rye#1407](../../astral-sh/rye/issues/1407.md) on 2024-10-04 06:07_
 
 ---
 

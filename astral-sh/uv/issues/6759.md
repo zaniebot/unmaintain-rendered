@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-28T15:28:35Z
 updated_at: 2024-08-28T16:40:50Z
 url: https://github.com/astral-sh/uv/issues/6759
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Unable to use uv tool install for specific versions 
@@ -79,10 +79,6 @@ Thanks, I didn't find that when I was searching. Great project!
 ---
 
 _Label `duplicate` added by @zanieb on 2024-08-28 15:34_
-
----
-
-_Referenced in [astral-sh/uv#6762](../../astral-sh/uv/pulls/6762.md) on 2024-08-28 15:52_
 
 ---
 

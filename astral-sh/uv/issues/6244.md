@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-20T05:10:28Z
 updated_at: 2024-10-08T21:54:18Z
 url: https://github.com/astral-sh/uv/issues/6244
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # uv sync fails to install remote private dependencies when poetry is involved
@@ -351,9 +351,5 @@ _Comment by @Eyal-Shalev on 2024-10-08 21:54_
 This bug still exists on `0.4.20`
 
 I had to check because there were so many releases since I opened this ticket.
-
----
-
-_Referenced in [astral-sh/uv#8272](../../astral-sh/uv/pulls/8272.md) on 2024-10-28 09:34_
 
 ---

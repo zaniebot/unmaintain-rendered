@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-15T10:23:11Z
 updated_at: 2024-10-15T23:09:57Z
 url: https://github.com/astral-sh/uv/issues/8208
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv add` with no version bound does not sufficiently update uv.lock
@@ -139,10 +139,6 @@ Thanks! There's some code to handle this case but apparently it's not quite righ
 _Comment by @charliermarsh on 2024-10-15 22:59_
 
 Oh, I'm so dumb... The relevant code is under a `debug_assert!`, so it only runs in debug builds...
-
----
-
-_Referenced in [astral-sh/uv#8230](../../astral-sh/uv/pulls/8230.md) on 2024-10-15 23:00_
 
 ---
 

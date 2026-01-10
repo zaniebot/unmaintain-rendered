@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-10T02:54:20Z
 updated_at: 2024-09-10T13:27:46Z
 url: https://github.com/astral-sh/uv/issues/7241
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # inconsistent behaviour of uv export with --no-emit-workspace option for the root project
@@ -82,10 +82,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-09-10 11:57_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-09-10 11:57_
-
----
-
-_Referenced in [astral-sh/uv#7254](../../astral-sh/uv/pulls/7254.md) on 2024-09-10 13:20_
 
 ---
 

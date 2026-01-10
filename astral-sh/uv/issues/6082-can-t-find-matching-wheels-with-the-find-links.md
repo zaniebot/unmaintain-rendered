@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-14T12:35:46Z
 updated_at: 2024-08-26T00:02:27Z
 url: https://github.com/astral-sh/uv/issues/6082
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Can't find matching wheels with the `--find-links` flag
@@ -98,14 +98,6 @@ See: https://github.com/y21/tl/issues/68
 ---
 
 _Label `upstream` added by @charliermarsh on 2024-08-14 16:00_
-
----
-
-_Referenced in [pybamm-team/PyBaMM#4353](../../pybamm-team/PyBaMM/pulls/4353.md) on 2024-08-16 14:46_
-
----
-
-_Referenced in [astral-sh/uv#6622](../../astral-sh/uv/pulls/6622.md) on 2024-08-25 23:54_
 
 ---
 

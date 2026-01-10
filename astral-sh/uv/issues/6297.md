@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-21T04:39:07Z
 updated_at: 2024-09-25T17:40:30Z
 url: https://github.com/astral-sh/uv/issues/6297
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # FR: Add support for `uv tool upgrade --python <PYTHON>`
@@ -52,22 +52,6 @@ Personally for me it just makes it easier to spot, at a glance, the tools that a
 For example if I run `uv tool install yt-dlp` with a system Python 3.7, `uv tool list` will show the installed package as `yt-dlp v2023.11.16`. After upgrading the system Python to 3.12, performing a `uv tool upgrade yt-dlp` will result in a `Nothing to upgrade`  message even though a newer version (`v2024.8.6`) is available for Python 3.12.
 
 Hope that makes sense.
-
----
-
-_Referenced in [astral-sh/uv#6448](../../astral-sh/uv/pulls/6448.md) on 2024-08-22 16:57_
-
----
-
-_Referenced in [astral-sh/uv#7287](../../astral-sh/uv/issues/7287.md) on 2024-09-11 11:41_
-
----
-
-_Referenced in [astral-sh/uv#7320](../../astral-sh/uv/issues/7320.md) on 2024-09-12 01:54_
-
----
-
-_Referenced in [astral-sh/uv#7605](../../astral-sh/uv/pulls/7605.md) on 2024-09-24 00:53_
 
 ---
 

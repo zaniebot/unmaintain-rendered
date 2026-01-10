@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-18T05:00:14Z
 updated_at: 2024-09-18T17:20:09Z
 url: https://github.com/astral-sh/uv/issues/7484
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Please add socks5 support via the `reqwest` rust package
@@ -77,10 +77,6 @@ forward-socks5 / 127.0.0.1:8080 .
 ```
 
 Then I just set the `*PROXY*` env variables to use port 8081.
-
----
-
-_Referenced in [astral-sh/uv#7503](../../astral-sh/uv/pulls/7503.md) on 2024-09-18 15:12_
 
 ---
 

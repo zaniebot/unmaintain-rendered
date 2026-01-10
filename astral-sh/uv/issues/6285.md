@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-20T23:49:10Z
 updated_at: 2024-08-22T00:17:34Z
 url: https://github.com/astral-sh/uv/issues/6285
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv run` ignores `.python-version`
@@ -160,10 +160,6 @@ _Comment by @charliermarsh on 2024-08-21 00:09_
 
 ---
 
-_Referenced in [astral-sh/uv#6289](../../astral-sh/uv/issues/6289.md) on 2024-08-21 00:35_
-
----
-
 _Comment by @denkasyanov on 2024-08-21 01:37_
 
 I just noticed similar behaviour on `uv 0.2.35 (e097f948c 2024-08-09)` WITH running `uv venv`
@@ -246,10 +242,6 @@ _Comment by @zanieb on 2024-08-21 17:32_
 Related https://github.com/astral-sh/uv/issues/5839
 
 I think we just don't think we need to create a virtual environment so we don't ever check if the interpreter is correct. 
-
----
-
-_Referenced in [astral-sh/uv#6361](../../astral-sh/uv/pulls/6361.md) on 2024-08-21 17:41_
 
 ---
 

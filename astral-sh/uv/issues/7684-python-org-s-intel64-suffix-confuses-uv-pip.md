@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-25T11:51:19Z
 updated_at: 2024-09-25T16:01:45Z
 url: https://github.com/astral-sh/uv/issues/7684
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # python.org's -intel64 suffix confuses uv pip
@@ -129,9 +129,5 @@ _Comment by @hynek on 2024-09-25 16:01_
 Fair enough. I'd prefer to keep doing it because it works flawlessly with `uv sync` / `uv lock` and I don't have to pass it in two places (.envrc for Direnv `uv sync` and Justfile for recreating the venv).
 
 But I can wait and live with workarounds for now – thanks! :)  I also wanted to make sure that it doesn't break for sync/lock at some point. ;)
-
----
-
-_Referenced in [astral-sh/uv#15694](../../astral-sh/uv/issues/15694.md) on 2025-09-05 10:18_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-30T12:31:59Z
 updated_at: 2024-09-05T00:21:02Z
 url: https://github.com/astral-sh/uv/issues/6862
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Ability to run script from clipboard
@@ -41,9 +41,5 @@ Do you know of other tools that support this?
 ---
 
 _Label `wish` added by @zanieb on 2024-09-05 00:21_
-
----
-
-_Referenced in [astral-sh/uv#13279](../../astral-sh/uv/issues/13279.md) on 2025-05-03 20:08_
 
 ---

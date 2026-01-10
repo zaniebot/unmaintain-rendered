@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-05T12:15:15Z
 updated_at: 2024-10-05T15:02:05Z
 url: https://github.com/astral-sh/uv/issues/7940
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Project environments docs have a bit of a contradiction
@@ -39,10 +39,6 @@ _Renamed from "Project environments docs have a bit of a contridiction" to "Proj
 ---
 
 _Label `documentation` added by @AlexWaygood on 2024-10-05 12:28_
-
----
-
-_Referenced in [astral-sh/uv#7941](../../astral-sh/uv/pulls/7941.md) on 2024-10-05 15:01_
 
 ---
 

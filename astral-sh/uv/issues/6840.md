@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-29T22:48:39Z
 updated_at: 2024-08-30T13:50:23Z
 url: https://github.com/astral-sh/uv/issues/6840
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # User display of paths drops `/` if in the root directory
@@ -38,10 +38,6 @@ _Label `good first issue` added by @zanieb on 2024-08-29 22:48_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-30 13:11_
-
----
-
-_Referenced in [astral-sh/uv#6865](../../astral-sh/uv/pulls/6865.md) on 2024-08-30 13:11_
 
 ---
 

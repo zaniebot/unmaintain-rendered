@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-21T05:03:33Z
 updated_at: 2024-10-16T12:20:00Z
 url: https://github.com/astral-sh/uv/issues/6299
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # FR: uv init --build-backend
@@ -44,14 +44,6 @@ _Label `projects` added by @zanieb on 2024-08-21 15:54_
 ---
 
 _Label `help wanted` added by @charliermarsh on 2024-08-22 01:01_
-
----
-
-_Referenced in [astral-sh/uv#6423](../../astral-sh/uv/issues/6423.md) on 2024-08-22 15:40_
-
----
-
-_Referenced in [astral-sh/uv#7857](../../astral-sh/uv/pulls/7857.md) on 2024-10-02 04:03_
 
 ---
 

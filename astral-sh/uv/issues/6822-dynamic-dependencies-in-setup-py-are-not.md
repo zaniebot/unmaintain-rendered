@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-29T16:45:16Z
 updated_at: 2024-09-10T01:44:15Z
 url: https://github.com/astral-sh/uv/issues/6822
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Dynamic dependencies in setup.py are not considered when editing dependencies
@@ -98,10 +98,6 @@ _Comment by @AbdealiLoKo on 2024-08-30 04:00_
 
 1. Local path - I assume uv already has this information
 2. Dynamic fields - If the [project.dynamic](https://peps.python.org/pep-0621/#dynamic) field is defined in pyproject.toml then we know if has dynamic fields ?
-
----
-
-_Referenced in [astral-sh/uv#6860](../../astral-sh/uv/issues/6860.md) on 2024-08-30 12:26_
 
 ---
 

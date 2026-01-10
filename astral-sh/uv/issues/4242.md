@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-06-11T17:52:51Z
 updated_at: 2024-08-27T00:06:55Z
 url: https://github.com/astral-sh/uv/issues/4242
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Inspect system to determine if musl toolchains should be used
@@ -29,19 +29,7 @@ _Label `preview` added by @zanieb on 2024-06-11 17:53_
 
 ---
 
-_Referenced in [astral-sh/uv#4236](../../astral-sh/uv/pulls/4236.md) on 2024-06-12 14:12_
-
----
-
-_Referenced in [astral-sh/uv#5036](../../astral-sh/uv/pulls/5036.md) on 2024-07-13 15:00_
-
----
-
 _Label `preview` removed by @zanieb on 2024-08-20 18:23_
-
----
-
-_Referenced in [astral-sh/uv#6392](../../astral-sh/uv/issues/6392.md) on 2024-08-22 00:09_
 
 ---
 
@@ -667,14 +655,6 @@ _Label `musl` added by @konstin on 2024-08-26 11:52_
 
 ---
 
-_Referenced in [astral-sh/uv#6643](../../astral-sh/uv/pulls/6643.md) on 2024-08-26 12:47_
-
----
-
 _Closed by @charliermarsh on 2024-08-27 00:06_
-
----
-
-_Referenced in [astral-sh/uv#6890](../../astral-sh/uv/issues/6890.md) on 2024-09-03 14:20_
 
 ---

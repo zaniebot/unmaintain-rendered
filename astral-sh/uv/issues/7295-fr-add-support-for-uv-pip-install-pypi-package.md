@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-11T15:52:41Z
 updated_at: 2024-09-12T05:41:59Z
 url: https://github.com/astral-sh/uv/issues/7295
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # FR: add support for `uv pip install <PyPI package> --all-extras`
@@ -108,13 +108,5 @@ Oof, this made me realize I don't know what `--all-extras` means for a requireme
 
 I didn't know self referential extras weren't documented. This is actually what the packages I have in mind (yt and astropy) already use !
 
-
----
-
-_Referenced in [astropy/astropy-APEs#86](../../astropy/astropy-APEs/pulls/86.md) on 2024-09-24 17:04_
-
----
-
-_Referenced in [pypa/pip#12963](../../pypa/pip/issues/12963.md) on 2024-10-26 16:03_
 
 ---

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-22T12:03:01Z
 updated_at: 2024-08-22T15:41:25Z
 url: https://github.com/astral-sh/uv/issues/6423
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # FR: Encode `flit-core` build backend in `uv`
@@ -86,9 +86,5 @@ It's a cool idea though. The offline use-case for #3957 is interesting.
 ---
 
 _Closed by @zanieb on 2024-08-22 15:41_
-
----
-
-_Referenced in [astral-sh/uv#3957](../../astral-sh/uv/issues/3957.md) on 2024-12-21 16:13_
 
 ---

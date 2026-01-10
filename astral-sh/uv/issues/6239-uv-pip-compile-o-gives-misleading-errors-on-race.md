@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-20T00:53:33Z
 updated_at: 2024-08-20T20:36:43Z
 url: https://github.com/astral-sh/uv/issues/6239
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv pip compile ... -o` gives misleading errors on race conditions
@@ -67,10 +67,6 @@ _Label `bug` added by @zanieb on 2024-08-20 02:10_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-20 20:18_
-
----
-
-_Referenced in [astral-sh/uv#6274](../../astral-sh/uv/pulls/6274.md) on 2024-08-20 20:30_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-07T08:01:08Z
 updated_at: 2024-09-20T05:33:07Z
 url: https://github.com/astral-sh/uv/issues/7157
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Wrong output of uv pip compile
@@ -64,10 +64,6 @@ Thanks! Upgrading package is definitely something I want to do in the future, bu
 ---
 
 _Closed by @hexponent on 2024-09-07 19:34_
-
----
-
-_Referenced in [astral-sh/uv#7563](../../astral-sh/uv/issues/7563.md) on 2024-09-19 22:13_
 
 ---
 

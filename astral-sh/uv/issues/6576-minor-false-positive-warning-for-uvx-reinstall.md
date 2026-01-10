@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-24T11:28:31Z
 updated_at: 2024-08-25T15:15:43Z
 url: https://github.com/astral-sh/uv/issues/6576
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Minor false positive warning for uvx reinstall
@@ -65,10 +65,6 @@ _Label `error messages` added by @charliermarsh on 2024-08-24 11:41_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-25 02:26_
-
----
-
-_Referenced in [astral-sh/uv#6609](../../astral-sh/uv/pulls/6609.md) on 2024-08-25 15:01_
 
 ---
 

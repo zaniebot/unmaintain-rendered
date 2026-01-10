@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-13T11:55:21Z
 updated_at: 2024-09-13T12:56:00Z
 url: https://github.com/astral-sh/uv/issues/7358
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv pip install reinstalls packages that are available via --system-site-packages
@@ -54,13 +54,5 @@ _Label `duplicate` added by @charliermarsh on 2024-09-13 12:55_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-09-13 12:56_
-
----
-
-_Referenced in [astral-sh/uv#4466](../../astral-sh/uv/issues/4466.md) on 2024-09-13 13:18_
-
----
-
-_Referenced in [mendhak/waveshare-epaper-display#112](../../mendhak/waveshare-epaper-display/pulls/112.md) on 2025-08-30 20:11_
 
 ---

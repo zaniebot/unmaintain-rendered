@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-23T22:30:13Z
 updated_at: 2024-10-21T21:18:11Z
 url: https://github.com/astral-sh/uv/issues/6555
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # An exclude newer extension for PEP 723
@@ -102,10 +102,6 @@ _Label `question` added by @zanieb on 2024-08-23 22:40_
 ---
 
 _Label `documentation` added by @zanieb on 2024-08-23 22:41_
-
----
-
-_Referenced in [astral-sh/uv#6562](../../astral-sh/uv/pulls/6562.md) on 2024-08-23 23:36_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-22T12:06:11Z
 updated_at: 2024-08-22T23:25:10Z
 url: https://github.com/astral-sh/uv/issues/6425
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Feature Request: Constraints for generating first `uv.lock` when migrating
@@ -87,10 +87,6 @@ _Closed by @zanieb on 2024-08-22 15:48_
 
 ---
 
-_Referenced in [astral-sh/uv#5605](../../astral-sh/uv/issues/5605.md) on 2024-08-22 15:49_
-
----
-
 _Comment by @mrcljx on 2024-08-22 23:24_
 
 Worked like a charm. 👍 
@@ -100,9 +96,5 @@ Worked like a charm. 👍
 _Comment by @charliermarsh on 2024-08-22 23:25_
 
 That's awesome.
-
----
-
-_Referenced in [astral-sh/uv#1804](../../astral-sh/uv/issues/1804.md) on 2024-08-23 15:27_
 
 ---

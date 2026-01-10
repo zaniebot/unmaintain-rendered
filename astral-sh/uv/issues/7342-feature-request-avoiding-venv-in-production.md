@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-12T20:20:08Z
 updated_at: 2024-09-13T08:10:36Z
 url: https://github.com/astral-sh/uv/issues/7342
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # [Feature request] Avoiding .venv in production
@@ -35,10 +35,6 @@ Don't the following satisfy your request:
   https://docs.astral.sh/uv/configuration/environment/
 
 ?
-
----
-
-_Referenced in [astral-sh/uv#7343](../../astral-sh/uv/issues/7343.md) on 2024-09-12 20:28_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-10T08:12:17Z
 updated_at: 2024-09-11T09:11:34Z
 url: https://github.com/astral-sh/uv/issues/7245
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Questions: Migrating from poetry
@@ -162,18 +162,6 @@ _Comment by @EdgyEdgemond on 2024-09-10 14:20_
 
 ---
 
-_Referenced in [astral-sh/uv#7284](../../astral-sh/uv/issues/7284.md) on 2024-09-11 08:36_
-
----
-
 _Closed by @EdgyEdgemond on 2024-09-11 09:11_
-
----
-
-_Referenced in [astral-sh/uv#5945](../../astral-sh/uv/issues/5945.md) on 2024-09-11 13:27_
-
----
-
-_Referenced in [astral-sh/uv#11695](../../astral-sh/uv/issues/11695.md) on 2025-02-21 17:55_
 
 ---

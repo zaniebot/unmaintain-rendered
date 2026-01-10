@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-04T15:14:26Z
 updated_at: 2024-09-10T01:49:18Z
 url: https://github.com/astral-sh/uv/issues/7028
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Application of config settings when installing package depends on content of uv cache
@@ -104,10 +104,6 @@ Now it works. So it looks like `--config-setting editable_mode=compat` is being 
 
 ---
 
-_Referenced in [dagster-io/dagster#24212](../../dagster-io/dagster/pulls/24212.md) on 2024-09-04 15:20_
-
----
-
 _Comment by @charliermarsh on 2024-09-04 23:49_
 
 Yeah, I think these definitely aren't included in the cache key.
@@ -128,10 +124,6 @@ I think using `--reinstall` would also work here (or `--reinstall-package foo`).
 
 ---
 
-_Referenced in [dagster-io/dagster#24289](../../dagster-io/dagster/pulls/24289.md) on 2024-09-06 13:38_
-
----
-
 _Comment by @smackesey on 2024-09-06 14:11_
 
 >I think using --reinstall would also work here (or --reinstall-package foo).
@@ -148,15 +140,7 @@ _Comment by @charliermarsh on 2024-09-06 15:02_
 
 ---
 
-_Referenced in [astral-sh/uv#7136](../../astral-sh/uv/pulls/7136.md) on 2024-09-06 21:04_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-06 21:16_
-
----
-
-_Referenced in [astral-sh/uv#7139](../../astral-sh/uv/pulls/7139.md) on 2024-09-06 21:42_
 
 ---
 

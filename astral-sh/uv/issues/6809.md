@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-29T12:39:06Z
 updated_at: 2024-10-08T22:15:40Z
 url: https://github.com/astral-sh/uv/issues/6809
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Windows _netrc not recognized for pip auth
@@ -39,14 +39,6 @@ _Label `bug` added by @zanieb on 2024-08-29 13:40_
 ---
 
 _Label `windows` added by @zanieb on 2024-08-29 13:40_
-
----
-
-_Referenced in [astral-sh/uv#8003](../../astral-sh/uv/issues/8003.md) on 2024-10-08 20:52_
-
----
-
-_Referenced in [astral-sh/uv#8021](../../astral-sh/uv/pulls/8021.md) on 2024-10-08 21:17_
 
 ---
 

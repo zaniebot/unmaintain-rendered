@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-30T16:30:32Z
 updated_at: 2024-09-03T23:18:07Z
 url: https://github.com/astral-sh/uv/issues/6878
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv crashes if the temporary directory does not exists
@@ -36,10 +36,6 @@ I think uv should create the folder if it does not exist rather than crash.
 ---
 
 _Label `bug` added by @charliermarsh on 2024-08-30 16:30_
-
----
-
-_Referenced in [astral-sh/uv#6929](../../astral-sh/uv/pulls/6929.md) on 2024-09-02 07:26_
 
 ---
 

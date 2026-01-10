@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-22T21:08:29Z
 updated_at: 2024-08-28T18:09:00Z
 url: https://github.com/astral-sh/uv/issues/6462
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Problems with using `setuptools` as a default build-backend for projects
@@ -41,10 +41,6 @@ Maybe there are other options?
 _Comment by @charliermarsh on 2024-08-22 21:09_
 
 The third one is sort of interesting. We could definitely check if there are obvious problems, and do something different.
-
----
-
-_Referenced in [astral-sh/uv#6460](../../astral-sh/uv/issues/6460.md) on 2024-08-22 21:10_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-03T10:03:21Z
 updated_at: 2024-09-10T07:32:03Z
 url: https://github.com/astral-sh/uv/issues/6964
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv` fails to retrieve right version with `setuptools_scm` in clone after new release
@@ -102,10 +102,6 @@ There's an interesting suggestion here (#6255) to allow users to mark certain fi
 
 ---
 
-_Referenced in [astral-sh/uv#7136](../../astral-sh/uv/pulls/7136.md) on 2024-09-06 21:04_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-06 21:16_
 
 ---
@@ -132,9 +128,5 @@ cache-keys = [{ file = "pyproject.toml" }, { git = true }]
 _Comment by @lkstrp on 2024-09-10 07:32_
 
 Thanks for tackling this so quickly!
-
----
-
-_Referenced in [astral-sh/uv#16828](../../astral-sh/uv/issues/16828.md) on 2025-11-24 10:53_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-30T14:23:24Z
 updated_at: 2024-08-30T19:02:07Z
 url: https://github.com/astral-sh/uv/issues/6872
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `Error: cannot uninstall package` occurs on installing a package a second time
@@ -106,10 +106,6 @@ Yeah totally understand -- I generally don't like "upgrade it" as a solution for
 
 ---
 
-_Referenced in [astral-sh/uv#6881](../../astral-sh/uv/pulls/6881.md) on 2024-08-30 17:39_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-30 17:39_
 
 ---
@@ -119,13 +115,5 @@ _Closed by @charliermarsh on 2024-08-30 19:02_
 ---
 
 _Closed by @charliermarsh on 2024-08-30 19:02_
-
----
-
-_Referenced in [iree-org/iree#18761](../../iree-org/iree/issues/18761.md) on 2024-10-11 18:50_
-
----
-
-_Referenced in [astral-sh/uv#16351](../../astral-sh/uv/pulls/16351.md) on 2025-10-17 21:50_
 
 ---

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-23T15:47:33Z
 updated_at: 2024-09-11T18:13:51Z
 url: https://github.com/astral-sh/uv/issues/6528
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # PowerPC page size issue with released binaries
@@ -98,10 +98,6 @@ _Label `release` added by @zanieb on 2024-08-26 16:48_
 
 ---
 
-_Referenced in [astral-sh/uv#4647](../../astral-sh/uv/issues/4647.md) on 2024-08-26 16:49_
-
----
-
 _Comment by @zanieb on 2024-08-26 16:50_
 
 We do this
@@ -177,26 +173,10 @@ _Label `help wanted` added by @charliermarsh on 2024-09-11 15:43_
 
 ---
 
-_Referenced in [astral-sh/uv#7298](../../astral-sh/uv/pulls/7298.md) on 2024-09-11 16:27_
-
----
-
 _Closed by @charliermarsh on 2024-09-11 18:13_
 
 ---
 
 _Closed by @charliermarsh on 2024-09-11 18:13_
-
----
-
-_Referenced in [astral-sh/uv#10942](../../astral-sh/uv/issues/10942.md) on 2025-01-24 18:18_
-
----
-
-_Referenced in [archlinuxarm/PKGBUILDs#2089](../../archlinuxarm/PKGBUILDs/pulls/2089.md) on 2025-02-09 01:31_
-
----
-
-_Referenced in [Wilfred/difftastic#872](../../Wilfred/difftastic/issues/872.md) on 2025-08-21 12:51_
 
 ---

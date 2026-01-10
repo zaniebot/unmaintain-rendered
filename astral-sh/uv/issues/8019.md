@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-08T20:41:23Z
 updated_at: 2024-10-09T19:25:59Z
 url: https://github.com/astral-sh/uv/issues/8019
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Support managed downloads of 3.13t (no-gil / freethreaded)
@@ -27,10 +27,6 @@ Right now, we only support a single build per CPython version. We need to add su
 ---
 
 _Label `enhancement` added by @zanieb on 2024-10-08 20:41_
-
----
-
-_Referenced in [astral-sh/uv#8015](../../astral-sh/uv/issues/8015.md) on 2024-10-08 22:05_
 
 ---
 
@@ -90,14 +86,6 @@ Is `uv` open to supporting installing builds with newer CPU architectures such a
 _Comment by @zanieb on 2024-10-08 23:25_
 
 We should chat about that in another issue as it's totally unrelated to this thread — but, yes? If we can detect the architecture reliably.
-
----
-
-_Referenced in [hynek/argon2-cffi-bindings#70](../../hynek/argon2-cffi-bindings/pulls/70.md) on 2024-10-09 12:08_
-
----
-
-_Referenced in [astral-sh/uv#8037](../../astral-sh/uv/issues/8037.md) on 2024-10-09 13:41_
 
 ---
 

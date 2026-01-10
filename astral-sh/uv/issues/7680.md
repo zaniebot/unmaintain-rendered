@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-25T07:49:03Z
 updated_at: 2024-09-25T12:35:42Z
 url: https://github.com/astral-sh/uv/issues/7680
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Regression in prefetching unbounded-lower-bound packages
@@ -73,10 +73,6 @@ cc @potiuk @dirrao
 
 ---
 
-_Referenced in [astral-sh/uv#7683](../../astral-sh/uv/pulls/7683.md) on 2024-09-25 10:57_
-
----
-
 _Closed by @charliermarsh on 2024-09-25 12:35_
 
 ---
@@ -88,9 +84,5 @@ Thank you for the thorough analysis... Yes, I think you're right.
 ---
 
 _Label `bug` added by @charliermarsh on 2024-09-25 12:35_
-
----
-
-_Referenced in [apache/airflow#42574](../../apache/airflow/pulls/42574.md) on 2024-09-29 19:29_
 
 ---

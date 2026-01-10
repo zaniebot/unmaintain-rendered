@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-16T10:36:49Z
 updated_at: 2024-10-16T15:52:27Z
 url: https://github.com/astral-sh/uv/issues/8248
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # UV_EXTRA_INDEX_URL not taking precedence over persistent configuration (pyproject.toml)
@@ -456,10 +456,6 @@ We might be "preferring" the auth in the `pyproject.toml`. That at least would b
 
 ---
 
-_Referenced in [astral-sh/uv#8256](../../astral-sh/uv/pulls/8256.md) on 2024-10-16 14:02_
-
----
-
 _Comment by @charliermarsh on 2024-10-16 14:02_
 
 I think this could plausibly be fixed by https://github.com/astral-sh/uv/pull/8256.
@@ -471,9 +467,5 @@ _Closed by @charliermarsh on 2024-10-16 15:52_
 ---
 
 _Closed by @charliermarsh on 2024-10-16 15:52_
-
----
-
-_Referenced in [astral-sh/uv#9285](../../astral-sh/uv/issues/9285.md) on 2024-11-20 17:29_
 
 ---

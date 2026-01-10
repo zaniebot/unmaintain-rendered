@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-11T14:05:38Z
 updated_at: 2024-09-14T12:24:50Z
 url: https://github.com/astral-sh/uv/issues/7291
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Can't install `chumpy`
@@ -330,10 +330,6 @@ in the `METADATA` is required by `uv lock`?
 
 ---
 
-_Referenced in [astral-sh/uv#7390](../../astral-sh/uv/issues/7390.md) on 2024-09-14 11:07_
-
----
-
 _Comment by @charliermarsh on 2024-09-14 12:24_
 
 Closing in favor of the other issue.
@@ -341,9 +337,5 @@ Closing in favor of the other issue.
 ---
 
 _Closed by @charliermarsh on 2024-09-14 12:24_
-
----
-
-_Referenced in [astral-sh/uv#7393](../../astral-sh/uv/issues/7393.md) on 2024-09-14 14:50_
 
 ---

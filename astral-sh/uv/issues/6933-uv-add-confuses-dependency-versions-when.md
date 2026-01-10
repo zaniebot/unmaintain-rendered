@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-02T10:03:57Z
 updated_at: 2024-09-02T18:21:26Z
 url: https://github.com/astral-sh/uv/issues/6933
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv add` confuses dependency versions when installing multiple libraries
@@ -112,10 +112,6 @@ _Label `bug` added by @charliermarsh on 2024-09-02 17:20_
 _Comment by @charliermarsh on 2024-09-02 17:43_
 
 It's a bug from #6388. I'll either fix and re-release, or revert.
-
----
-
-_Referenced in [astral-sh/uv#6939](../../astral-sh/uv/pulls/6939.md) on 2024-09-02 17:57_
 
 ---
 

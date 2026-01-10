@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-20T21:20:24Z
 updated_at: 2024-08-21T16:28:03Z
 url: https://github.com/astral-sh/uv/issues/6276
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv add -r requirements.txt` should translate to `tool.uv.sources` where applicable
@@ -60,10 +60,6 @@ _Comment by @Mrt3383x38 on 2024-08-20 23:51_
 
 Trasfer 
 
-
----
-
-_Referenced in [astral-sh/uv#6287](../../astral-sh/uv/pulls/6287.md) on 2024-08-21 00:04_
 
 ---
 

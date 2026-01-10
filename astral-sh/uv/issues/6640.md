@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-08-26T09:03:21Z
 updated_at: 2024-10-21T18:25:25Z
 url: https://github.com/astral-sh/uv/issues/6640
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Don't enable pre-releases when `!=` is used with pre-release specifier
@@ -40,10 +40,6 @@ uv pip compile --python-version 3.12 --output-file napari_repo/resources/constra
 
 Commit showing problem is here [napari/napari@`c81b0d0` (#7212)](https://github.com/napari/napari/pull/7212/commits/c81b0d029abcf654897e0f94f0ed8cd98b3dcb72) 
 And problematic line here [napari/napari@`c81b0d0` (#7212)](https://github.com/napari/napari/pull/7212/commits/c81b0d029abcf654897e0f94f0ed8cd98b3dcb72#diff-9a3fb85151bc0704510dd99c7b9ada03b52f6f0f99a44bb34259af2089e2dc8bL549)
-
----
-
-_Referenced in [napari/napari#7212](../../napari/napari/pulls/7212.md) on 2024-08-26 11:19_
 
 ---
 
@@ -149,23 +145,7 @@ Retitled the issue and added `help-wanted`.
 
 ---
 
-_Referenced in [pypa/packaging#794](../../pypa/packaging/pulls/794.md) on 2024-08-26 23:45_
-
----
-
 _Label `good first issue` added by @charliermarsh on 2024-08-27 02:08_
-
----
-
-_Referenced in [napari/napari#7217](../../napari/napari/pulls/7217.md) on 2024-08-31 11:41_
-
----
-
-_Referenced in [napari/napari#7305](../../napari/napari/pulls/7305.md) on 2024-09-30 08:24_
-
----
-
-_Referenced in [astral-sh/uv#7974](../../astral-sh/uv/pulls/7974.md) on 2024-10-07 15:08_
 
 ---
 

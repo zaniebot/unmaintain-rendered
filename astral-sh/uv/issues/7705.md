@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-26T11:14:09Z
 updated_at: 2024-09-27T02:46:08Z
 url: https://github.com/astral-sh/uv/issues/7705
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Add `uv build --all` option
@@ -30,10 +30,6 @@ Also, it will be great to have a way to list the workspace members.
 ---
 
 _Label `enhancement` added by @konstin on 2024-09-26 11:14_
-
----
-
-_Referenced in [astral-sh/uv#7724](../../astral-sh/uv/pulls/7724.md) on 2024-09-26 19:24_
 
 ---
 

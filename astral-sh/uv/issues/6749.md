@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-28T13:57:41Z
 updated_at: 2024-08-28T15:11:18Z
 url: https://github.com/astral-sh/uv/issues/6749
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Change project to virtual, `uv sync` still installs it
@@ -162,22 +162,10 @@ Thank you for testing on `main`.
 
 ---
 
-_Referenced in [astral-sh/uv#6754](../../astral-sh/uv/pulls/6754.md) on 2024-08-28 14:57_
-
----
-
 _Closed by @charliermarsh on 2024-08-28 15:11_
 
 ---
 
 _Closed by @charliermarsh on 2024-08-28 15:11_
-
----
-
-_Referenced in [astral-sh/uv#12311](../../astral-sh/uv/issues/12311.md) on 2025-03-19 11:57_
-
----
-
-_Referenced in [astral-sh/uv#1419](../../astral-sh/uv/issues/1419.md) on 2025-05-15 21:45_
 
 ---

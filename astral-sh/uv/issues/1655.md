@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-18T15:45:44Z
 updated_at: 2024-09-27T04:13:36Z
 url: https://github.com/astral-sh/uv/issues/1655
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Add `pip cache info` and `pip cache list`
@@ -64,10 +64,6 @@ Cache contents:
  - tinytext-3.6.1.dev64-py3-none-any.whl (4.4 kB)
 ```
 
-
----
-
-_Referenced in [astral-sh/uv#1646](../../astral-sh/uv/issues/1646.md) on 2024-02-18 15:46_
 
 ---
 

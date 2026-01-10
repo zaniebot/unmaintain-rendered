@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-05T06:55:51Z
 updated_at: 2024-09-09T16:08:07Z
 url: https://github.com/astral-sh/uv/issues/7071
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Workspace exclusion does not work
@@ -196,10 +196,6 @@ Or you could put all the projects in a subdirectory of their own, like `projects
 ---
 
 _Label `question` added by @charliermarsh on 2024-09-07 00:30_
-
----
-
-_Referenced in [astral-sh/uv#7175](../../astral-sh/uv/pulls/7175.md) on 2024-09-07 18:32_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-18T11:39:59Z
 updated_at: 2024-10-21T09:26:20Z
 url: https://github.com/astral-sh/uv/issues/8324
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Authentication error to Google Artifactory with custom index and env variables
@@ -127,10 +127,6 @@ Sounds like we're missing something in the credential attachment here. Thanks!
 _Comment by @Aditya-PS-05 on 2024-10-18 14:52_
 
 Working on it and It's strange but I guess `from_env` from credentials to set the credentials is not used. 
-
----
-
-_Referenced in [astral-sh/uv#8335](../../astral-sh/uv/pulls/8335.md) on 2024-10-18 15:20_
 
 ---
 

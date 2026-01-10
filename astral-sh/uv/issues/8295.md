@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-17T17:01:39Z
 updated_at: 2024-10-18T16:39:10Z
 url: https://github.com/astral-sh/uv/issues/8295
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `init::init_app_build_backend_maturin` and `init::init_lib_build_backend_maturin` test failures (offline?)
@@ -120,10 +120,6 @@ snapshot assertion for 'init_lib_build_backend_maturin-7' failed in line 2934
 ```
 
 My educated guess would be that the test assumes that `cargo` will be able to download `pyo3` from crates.io, but we're running everything 100% offline here. Could you please add a marker/feature to skip these tests? Alternatively, I think having `pyo3` (along with its dependencies) in `Cargo.lock` would also work.
-
----
-
-_Referenced in [astral-sh/uv#8320](../../astral-sh/uv/pulls/8320.md) on 2024-10-18 07:02_
 
 ---
 

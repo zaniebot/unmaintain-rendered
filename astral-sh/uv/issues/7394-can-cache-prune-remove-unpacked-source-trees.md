@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-14T14:41:54Z
 updated_at: 2024-09-16T23:18:21Z
 url: https://github.com/astral-sh/uv/issues/7394
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Can cache prune remove unpacked source trees?
@@ -58,10 +58,6 @@ I think we should remove these in `uv cache prune --ci`.
 _Comment by @bluss on 2024-09-16 22:04_
 
 Ok I understand now, they are downloaded and unpacked where they are, and the build happens in the tree. It sounds good to remove them at least in some mode of pruning. I realize the process for building wheels don't leave a lot of control for how to handle details of the build (cleaning the tree after build -- removing build intermediates -- and before reusing the unpacked source for another build?)
-
----
-
-_Referenced in [astral-sh/uv#7446](../../astral-sh/uv/pulls/7446.md) on 2024-09-16 23:01_
 
 ---
 

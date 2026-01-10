@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-20T00:55:40Z
 updated_at: 2024-09-22T04:39:38Z
 url: https://github.com/astral-sh/uv/issues/7566
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # AGPL License file in Source Distributes Confused License Scanners ...
@@ -51,10 +51,6 @@ Again ... sorry for such a silly bother!!!
 
 ---
 
-_Referenced in [astral-sh/uv#7567](../../astral-sh/uv/pulls/7567.md) on 2024-09-20 01:13_
-
----
-
 _Closed by @charliermarsh on 2024-09-20 01:20_
 
 ---
@@ -66,9 +62,5 @@ _Closed by @charliermarsh on 2024-09-20 01:20_
 _Comment by @musicinmybrain on 2024-09-22 04:39_
 
 This was actually really helpful for me in the Fedora package, as `pretix` has additional custom/nonstandard terms (“exceptions”) on top of the AGPL. Even though plain `AGPL-3.0-only` code is acceptable in Fedora, I was having to use a modified source archive with the contents of `ecosystem/pretix/` removed while waiting for legal review of pretix’s idiosyncratic extra terms. Since `saleor` is just `BSD-3-Clause`, I can now go back to distributing the unmodified `uv` source archives in the source RPMs.
-
----
-
-_Referenced in [astral-sh/uv#6181](../../astral-sh/uv/pulls/6181.md) on 2024-09-22 04:41_
 
 ---

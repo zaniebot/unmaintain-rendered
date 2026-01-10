@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-21T23:33:58Z
 updated_at: 2024-09-03T22:04:02Z
 url: https://github.com/astral-sh/uv/issues/6392
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv venv --python <version>` fails when querying managed python interpreter on alpine
@@ -190,10 +190,6 @@ _Comment by @konstin on 2024-08-22 10:36_
 
 ---
 
-_Referenced in [astral-sh/uv#6595](../../astral-sh/uv/issues/6595.md) on 2024-08-25 02:14_
-
----
-
 _Label `bug` added by @konstin on 2024-08-26 11:52_
 
 ---
@@ -209,10 +205,6 @@ _Unassigned @konstin by @konstin on 2024-09-02 18:22_
 _Comment by @konstin on 2024-09-02 18:27_
 
 Since we don't have a properly working Python interpreter for musl, we now show a correct error message that you need to install Python using the system tools (e.g. `apk add python3`). We plan to serve Python downloads for musl in the future; For now you should be getting a correct error message.
-
----
-
-_Referenced in [astral-sh/uv#6890](../../astral-sh/uv/issues/6890.md) on 2024-09-03 14:20_
 
 ---
 

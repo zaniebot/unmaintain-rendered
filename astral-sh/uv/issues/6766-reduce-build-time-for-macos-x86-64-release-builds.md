@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-28T17:59:41Z
 updated_at: 2024-08-29T20:11:54Z
 url: https://github.com/astral-sh/uv/issues/6766
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Reduce build time for `macos-x86_64` release builds
@@ -26,10 +26,6 @@ This is not critical, but it'd be nice for everything to be roughly on the same 
 ---
 
 _Label `release` added by @zanieb on 2024-08-28 17:59_
-
----
-
-_Referenced in [astral-sh/uv#6767](../../astral-sh/uv/pulls/6767.md) on 2024-08-28 18:00_
 
 ---
 

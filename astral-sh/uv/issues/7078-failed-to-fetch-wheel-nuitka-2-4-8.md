@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-05T11:51:30Z
 updated_at: 2024-09-06T04:10:50Z
 url: https://github.com/astral-sh/uv/issues/7078
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Failed to fetch wheel: nuitka==2.4.8
@@ -350,13 +350,5 @@ thanks
 ---
 
 _Closed by @ikreva on 2024-09-06 04:10_
-
----
-
-_Referenced in [astral-sh/uv#7240](../../astral-sh/uv/pulls/7240.md) on 2024-09-10 02:09_
-
----
-
-_Referenced in [astral-sh/uv#7376](../../astral-sh/uv/issues/7376.md) on 2024-09-14 20:21_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-28T22:26:00Z
 updated_at: 2024-08-29T14:56:34Z
 url: https://github.com/astral-sh/uv/issues/6780
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Use `uv init` to lock to a particular Python version
@@ -91,13 +91,5 @@ _Closed by @SamEdwardes on 2024-08-29 14:53_
 _Comment by @SamEdwardes on 2024-08-29 14:56_
 
 I also like the idea of creating the .python-version file when uv init is in "app" mode. 
-
----
-
-_Referenced in [astral-sh/uv#6821](../../astral-sh/uv/issues/6821.md) on 2024-08-29 16:44_
-
----
-
-_Referenced in [astral-sh/uv#14505](../../astral-sh/uv/issues/14505.md) on 2025-07-08 12:27_
 
 ---

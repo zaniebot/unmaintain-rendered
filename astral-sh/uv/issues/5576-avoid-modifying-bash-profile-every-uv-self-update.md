@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-29T21:21:10Z
 updated_at: 2024-10-17T01:07:07Z
 url: https://github.com/astral-sh/uv/issues/5576
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Avoid modifying `.bash_profile` every `uv self update`
@@ -62,29 +62,13 @@ Can the difference between an update and initial install be detected? If so, imp
 
 ---
 
-_Referenced in [axodotdev/cargo-dist#1264](../../axodotdev/cargo-dist/pulls/1264.md) on 2024-08-01 11:04_
-
----
-
 _Label `releases` added by @zanieb on 2024-09-12 02:18_
-
----
-
-_Referenced in [astral-sh/uv#7319](../../astral-sh/uv/issues/7319.md) on 2024-09-12 02:23_
 
 ---
 
 _Comment by @ilyagr on 2024-09-12 03:28_
 
 If/when https://github.com/axodotdev/axoupdater/issues/174 is implemented, this should become straightforward. 
-
----
-
-_Referenced in [axodotdev/axoupdater#181](../../axodotdev/axoupdater/pulls/181.md) on 2024-09-18 20:54_
-
----
-
-_Referenced in [axodotdev/cargo-dist#1421](../../axodotdev/cargo-dist/pulls/1421.md) on 2024-09-18 20:54_
 
 ---
 

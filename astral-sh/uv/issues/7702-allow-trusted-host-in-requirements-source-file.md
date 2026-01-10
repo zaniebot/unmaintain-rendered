@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-26T09:32:41Z
 updated_at: 2024-09-26T18:53:42Z
 url: https://github.com/astral-sh/uv/issues/7702
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Allow trusted-host in requirements source file
@@ -89,13 +89,5 @@ _Closed by @charliermarsh on 2024-09-26 18:53_
 ---
 
 _Label `compatibility` added by @charliermarsh on 2024-09-26 18:53_
-
----
-
-_Referenced in [astral-sh/uv#8290](../../astral-sh/uv/issues/8290.md) on 2024-10-17 15:25_
-
----
-
-_Referenced in [astral-sh/uv#10366](../../astral-sh/uv/issues/10366.md) on 2025-01-07 14:59_
 
 ---

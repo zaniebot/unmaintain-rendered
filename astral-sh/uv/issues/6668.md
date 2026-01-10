@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-27T02:45:21Z
 updated_at: 2024-08-29T17:46:44Z
 url: https://github.com/astral-sh/uv/issues/6668
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Export `uv.lock` to `requirements.txt`
@@ -48,10 +48,6 @@ Thanks!
 
 ---
 
-_Referenced in [astral-sh/uv#6778](../../astral-sh/uv/pulls/6778.md) on 2024-08-28 21:49_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-28 23:11_
 
 ---
@@ -61,13 +57,5 @@ _Closed by @charliermarsh on 2024-08-29 17:46_
 ---
 
 _Closed by @charliermarsh on 2024-08-29 17:46_
-
----
-
-_Referenced in [astral-sh/uv#7245](../../astral-sh/uv/issues/7245.md) on 2024-09-10 08:12_
-
----
-
-_Referenced in [astral-sh/uv#11575](../../astral-sh/uv/issues/11575.md) on 2025-02-17 11:25_
 
 ---

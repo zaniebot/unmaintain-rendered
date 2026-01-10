@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-09-06T06:18:23Z
 updated_at: 2024-09-24T17:52:16Z
 url: https://github.com/astral-sh/uv/issues/7118
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv-installed PyPy versions take precedence over non-uv CPython versions
@@ -73,10 +73,6 @@ I've argued this before too. :)
 
 ---
 
-_Referenced in [astral-sh/uv#7286](../../astral-sh/uv/issues/7286.md) on 2024-09-12 15:11_
-
----
-
 _Comment by @zanieb on 2024-09-12 15:17_
 
 Oh I might be fixing this by accident while working on #7286 haha
@@ -84,10 +80,6 @@ Oh I might be fixing this by accident while working on #7286 haha
 ---
 
 _Assigned to @zanieb by @zanieb on 2024-09-15 23:28_
-
----
-
-_Referenced in [astral-sh/uv#7508](../../astral-sh/uv/pulls/7508.md) on 2024-09-18 16:39_
 
 ---
 
@@ -117,14 +109,6 @@ uv python install python3.8  # wont install anything -> already found a 3.8 pyth
 
 ```
 
-
----
-
-_Referenced in [wntrblm/nox#842](../../wntrblm/nox/pulls/842.md) on 2024-09-23 23:07_
-
----
-
-_Referenced in [astral-sh/uv#7650](../../astral-sh/uv/pulls/7650.md) on 2024-09-23 23:40_
 
 ---
 

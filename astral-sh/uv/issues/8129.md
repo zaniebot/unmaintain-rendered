@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-11T19:02:44Z
 updated_at: 2024-10-20T13:47:24Z
 url: https://github.com/astral-sh/uv/issues/8129
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Unable to use `uv` with Cookiecutter templates
@@ -71,9 +71,5 @@ _Comment by @yakimka on 2024-10-20 13:47_
 If I want to create a new project from the cookiecutter template, then yes, I need to render it first.
 
 But for managing and updating dependencies of the template itself, I don't need to, and now it is working perfectly with Poetry. I can just navigate to `cookiecutter-pyproject/{{cookiecutter.project_name}}`, run `poetry install`, `poetry update`, or `poetry add some-package`, and it works perfectly fine because the `pyproject.toml` in my template is valid. For managing dependencies, Poetry doesn't need to validate the project name or load `setup.cfg`.
-
----
-
-_Referenced in [yakimka/picodi#127](../../yakimka/picodi/pulls/127.md) on 2024-10-24 17:39_
 
 ---

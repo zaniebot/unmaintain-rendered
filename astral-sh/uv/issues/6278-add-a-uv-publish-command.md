@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-20T21:54:23Z
 updated_at: 2024-10-15T15:31:25Z
 url: https://github.com/astral-sh/uv/issues/6278
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Add a `uv publish` command
@@ -50,14 +50,6 @@ Those are both out of scope for this issue — though `uv build` should be trivi
 
 ---
 
-_Referenced in [FinanceData/FinanceDataReader#225](../../FinanceData/FinanceDataReader/issues/225.md) on 2024-08-23 08:46_
-
----
-
-_Referenced in [astral-sh/uv#5507](../../astral-sh/uv/issues/5507.md) on 2024-08-25 21:26_
-
----
-
 _Comment by @Zaf4 on 2024-08-25 22:41_
 
 I was going to open the same issue I have been using poetry for publishing. Would be great to fully switch to uv for everything. 
@@ -82,10 +74,6 @@ _Comment by @andrlik on 2024-08-28 13:37_
 Adding this comment to the correct issue. 🤦 
 
 Would be good to mimic the `rye publish` command where it prompts you to encrypt your PyPI token with a password.
-
----
-
-_Referenced in [jorenham/mainpy#45](../../jorenham/mainpy/issues/45.md) on 2024-09-08 17:02_
 
 ---
 

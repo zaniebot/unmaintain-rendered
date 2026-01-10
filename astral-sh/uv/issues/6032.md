@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-12T11:27:36Z
 updated_at: 2024-09-30T16:38:39Z
 url: https://github.com/astral-sh/uv/issues/6032
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Broken path parsing for install spec
@@ -107,14 +107,6 @@ Yeah I'm describing what the behavior _should_ be, not what we do today.
 _Comment by @flying-sheep on 2024-08-12 15:36_
 
 I see! Thank you for clarifying!
-
----
-
-_Referenced in [astral-sh/uv#7765](../../astral-sh/uv/issues/7765.md) on 2024-09-28 19:39_
-
----
-
-_Referenced in [astral-sh/uv#7767](../../astral-sh/uv/pulls/7767.md) on 2024-09-28 21:23_
 
 ---
 

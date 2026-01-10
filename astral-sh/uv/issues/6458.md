@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-22T19:08:54Z
 updated_at: 2024-08-26T17:56:47Z
 url: https://github.com/astral-sh/uv/issues/6458
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `find-links` causing local wheel path to expand to absolute path when creating lockfile
@@ -62,14 +62,6 @@ Funny, we have tests for this, but the tests also resolve to the absolute path, 
 
 ---
 
-_Referenced in [astral-sh/uv#6475](../../astral-sh/uv/pulls/6475.md) on 2024-08-22 23:52_
-
----
-
-_Referenced in [astral-sh/uv#6566](../../astral-sh/uv/pulls/6566.md) on 2024-08-24 03:25_
-
----
-
 _Comment by @charliermarsh on 2024-08-26 17:56_
 
 Fixed in https://github.com/astral-sh/uv/pull/6566.
@@ -77,9 +69,5 @@ Fixed in https://github.com/astral-sh/uv/pull/6566.
 ---
 
 _Closed by @charliermarsh on 2024-08-26 17:56_
-
----
-
-_Referenced in [astral-sh/uv#16602](../../astral-sh/uv/issues/16602.md) on 2025-11-05 17:17_
 
 ---

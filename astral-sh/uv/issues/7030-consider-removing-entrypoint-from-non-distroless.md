@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-04T15:26:10Z
 updated_at: 2024-09-04T23:55:22Z
 url: https://github.com/astral-sh/uv/issues/7030
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Consider removing `ENTRYPOINT` from non-distroless uv Docker images
@@ -94,14 +94,6 @@ which showcases uv's capabilites further as you can see, but I might be biased t
 _Comment by @zanieb on 2024-09-04 18:33_
 
 People are weirdly against having `uv run` in their `CMD` but yeah I mean I think that makes sense too.
-
----
-
-_Referenced in [astral-sh/uv#6857](../../astral-sh/uv/pulls/6857.md) on 2024-09-04 21:00_
-
----
-
-_Referenced in [astral-sh/uv#7054](../../astral-sh/uv/pulls/7054.md) on 2024-09-04 23:00_
 
 ---
 

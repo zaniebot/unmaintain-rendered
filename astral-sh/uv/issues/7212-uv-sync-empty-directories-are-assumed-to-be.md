@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-09T07:50:37Z
 updated_at: 2024-09-19T11:52:20Z
 url: https://github.com/astral-sh/uv/issues/7212
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv sync: empty directories are assumed to be linked to non-existent interpreters
@@ -128,9 +128,5 @@ Closed by https://github.com/astral-sh/uv/pull/7527 and #7544
 ---
 
 _Closed by @zanieb on 2024-09-19 11:52_
-
----
-
-_Referenced in [Fred-Hutch-Innovation-Lab/quarto-vscode-server#1](../../Fred-Hutch-Innovation-Lab/quarto-vscode-server/issues/1.md) on 2025-09-04 19:41_
 
 ---

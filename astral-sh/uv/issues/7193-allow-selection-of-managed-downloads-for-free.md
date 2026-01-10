@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-08T17:30:41Z
 updated_at: 2024-10-14T20:18:53Z
 url: https://github.com/astral-sh/uv/issues/7193
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Allow selection of managed downloads for free-threaded Python 3.13
@@ -24,10 +24,6 @@ Related
 
 - https://github.com/indygreg/python-build-standalone/issues/320
 - https://github.com/astral-sh/uv/issues/4828
-
----
-
-_Referenced in [astral-sh/python-build-standalone#320](../../astral-sh/python-build-standalone/issues/320.md) on 2024-09-08 17:31_
 
 ---
 
@@ -58,22 +54,6 @@ _Comment by @seemethere on 2024-09-11 20:12_
 _Comment by @zanieb on 2024-09-27 13:19_
 
 I added these distributions upstream and will begin work on support here once I release them formally.
-
----
-
-_Referenced in [astral-sh/uv#8019](../../astral-sh/uv/issues/8019.md) on 2024-10-09 19:26_
-
----
-
-_Referenced in [astral-sh/rye#1411](../../astral-sh/rye/issues/1411.md) on 2024-10-09 19:27_
-
----
-
-_Referenced in [astral-sh/uv#8100](../../astral-sh/uv/pulls/8100.md) on 2024-10-10 16:44_
-
----
-
-_Referenced in [mhammond/pywin32#2303](../../mhammond/pywin32/issues/2303.md) on 2024-10-12 01:02_
 
 ---
 

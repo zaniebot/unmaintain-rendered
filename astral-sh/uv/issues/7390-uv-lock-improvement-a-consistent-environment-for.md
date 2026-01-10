@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-14T11:07:13Z
 updated_at: 2024-09-14T15:02:14Z
 url: https://github.com/astral-sh/uv/issues/7390
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv lock` Improvement: a consistent environment for `prepare_metadata_for_build_wheel`.
@@ -165,9 +165,5 @@ outputs = ["flash-attn", "some-other-packages"]
 dependencies = ["setuptools", "torch", "flash-attn"]
 outputs = ["some-packages"]
 ```
-
----
-
-_Referenced in [astral-sh/uv#11675](../../astral-sh/uv/issues/11675.md) on 2025-02-20 19:13_
 
 ---

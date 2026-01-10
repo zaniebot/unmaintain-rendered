@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-14T11:24:56Z
 updated_at: 2024-09-09T16:09:34Z
 url: https://github.com/astral-sh/uv/issues/3573
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Unknown operation system: mingw_x86_64_ucrt
@@ -54,10 +54,6 @@ _Label `windows` added by @charliermarsh on 2024-05-15 04:16_
 _Comment by @henryiii on 2024-05-16 15:05_
 
 If you want to test on gha, it’s pretty easy: https://github.com/scikit-build/scikit-build-core/blob/86f40d949741d8e6ce4d9f55264a6d05224408dd/.github/workflows/ci.yml#L251
-
----
-
-_Referenced in [astral-sh/uv#3632](../../astral-sh/uv/pulls/3632.md) on 2024-05-17 01:58_
 
 ---
 
@@ -214,10 +210,6 @@ _Comment by @zanieb on 2024-05-17 13:21_
 
 ---
 
-_Referenced in [msys2/MINGW-packages#21091](../../msys2/MINGW-packages/issues/21091.md) on 2024-06-12 10:37_
-
----
-
 _Comment by @lazka on 2024-08-23 09:50_
 
 Had a quick look, and three things:
@@ -227,13 +219,5 @@ Had a quick look, and three things:
 2) mingw Python doesn't seem to deal properly with UNC paths in sys.path. This could be worked around by using something like `dunce::simplified()` on the uv side from what I understand. Also needs investigation on the mingw-Python side why UNC paths don't work in sys.path. (edit: filed here now: https://github.com/msys2-contrib/cpython-mingw/issues/176)
 
 3) Once a non-UNC path is used uv gets back `{"result": "error", "kind": "unknown_operating_system", "operating_system": "mingw_x86_64_ucrt"}` which is due to it parsing the platform string instead of using sys.platform or os.name (it's also missing Windows arm64 support from what I see): https://github.com/astral-sh/uv/blob/d8c41481ec884cc5166bcfadd95674ff7b2e918d/crates/uv-python/python/get_interpreter_info.py#L428
-
----
-
-_Referenced in [astral-sh/uv#6699](../../astral-sh/uv/issues/6699.md) on 2024-08-28 12:48_
-
----
-
-_Referenced in [msys2-contrib/cpython-mingw#176](../../msys2-contrib/cpython-mingw/issues/176.md) on 2024-09-09 16:09_
 
 ---

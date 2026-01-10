@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-06-29T16:38:43Z
 updated_at: 2024-08-26T16:49:24Z
 url: https://github.com/astral-sh/uv/issues/4647
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # uv fails to start because of jemalloc
@@ -73,10 +73,6 @@ _Label `bug` removed by @konstin on 2024-07-09 10:24_
 
 ---
 
-_Referenced in [astral-sh/uv#6528](../../astral-sh/uv/issues/6528.md) on 2024-08-23 15:52_
-
----
-
 _Comment by @zanieb on 2024-08-26 16:49_
 
 I'm going to close this as stale. #6528 tracks this issue for our own binaries.
@@ -84,25 +80,5 @@ I'm going to close this as stale. #6528 tracks this issue for our own binaries.
 ---
 
 _Closed by @zanieb on 2024-08-26 16:49_
-
----
-
-_Referenced in [conda-forge/uv-feedstock#135](../../conda-forge/uv-feedstock/issues/135.md) on 2025-01-08 10:04_
-
----
-
-_Referenced in [prefix-dev/pixi#2936](../../prefix-dev/pixi/issues/2936.md) on 2025-01-17 12:45_
-
----
-
-_Referenced in [astral-sh/uv#10942](../../astral-sh/uv/issues/10942.md) on 2025-01-24 18:18_
-
----
-
-_Referenced in [astral-sh/uv#15401](../../astral-sh/uv/issues/15401.md) on 2025-08-21 10:57_
-
----
-
-_Referenced in [Wilfred/difftastic#872](../../Wilfred/difftastic/issues/872.md) on 2025-08-21 12:51_
 
 ---

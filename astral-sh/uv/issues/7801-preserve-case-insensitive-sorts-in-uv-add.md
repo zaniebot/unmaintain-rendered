@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-30T03:52:38Z
 updated_at: 2024-10-04T10:57:39Z
 url: https://github.com/astral-sh/uv/issues/7801
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Preserve case-insensitive sorts in `uv add`
@@ -59,10 +59,6 @@ _Renamed from "(🎁) `add` should add the thing alphabetically" to "Preserve ca
 ---
 
 _Label `good first issue` added by @charliermarsh on 2024-10-01 00:08_
-
----
-
-_Referenced in [astral-sh/uv#7864](../../astral-sh/uv/pulls/7864.md) on 2024-10-02 09:49_
 
 ---
 

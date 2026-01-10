@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-25T08:31:30Z
 updated_at: 2024-09-25T09:00:01Z
 url: https://github.com/astral-sh/uv/issues/7681
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # How do i update all my dependencies ?
@@ -46,9 +46,5 @@ Oh amazing - exactly, thank you very much!
 ---
 
 _Closed by @tim-x-y-z on 2024-09-25 09:00_
-
----
-
-_Referenced in [astral-sh/uv#8880](../../astral-sh/uv/issues/8880.md) on 2024-11-07 12:49_
 
 ---

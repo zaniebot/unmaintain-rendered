@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-14T08:02:08Z
 updated_at: 2024-10-16T17:34:30Z
 url: https://github.com/astral-sh/uv/issues/8167
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Package not found from Azure DevOps using a token
@@ -203,10 +203,6 @@ _Label `question` removed by @charliermarsh on 2024-10-16 02:12_
 ---
 
 _Label `error messages` added by @charliermarsh on 2024-10-16 02:12_
-
----
-
-_Referenced in [astral-sh/uv#8264](../../astral-sh/uv/pulls/8264.md) on 2024-10-16 17:21_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-05T06:28:11Z
 updated_at: 2024-09-06T03:52:41Z
 url: https://github.com/astral-sh/uv/issues/7069
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Support git URLs in project.dependencies
@@ -187,10 +187,6 @@ I suspect that the real solution would be to provide a uv-aware build-backend wh
 _Comment by @zanieb on 2024-09-06 00:43_
 
 Yes what you've written there sounds correct. We have plans to build a backend, just uncertain on the timeline, ref #3957 
-
----
-
-_Referenced in [astral-sh/uv#3957](../../astral-sh/uv/issues/3957.md) on 2024-09-06 03:51_
 
 ---
 

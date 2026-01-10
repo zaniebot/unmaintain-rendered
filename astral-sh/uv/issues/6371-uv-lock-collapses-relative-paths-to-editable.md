@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-21T19:17:10Z
 updated_at: 2024-08-24T02:19:12Z
 url: https://github.com/astral-sh/uv/issues/6371
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv lock` collapses relative paths to editable builds in monorepo, breaks `uv sync`
@@ -135,14 +135,6 @@ _Comment by @charliermarsh on 2024-08-22 00:47_
 ---
 
 _Assigned to @konstin by @konstin on 2024-08-22 07:48_
-
----
-
-_Referenced in [astral-sh/uv#6438](../../astral-sh/uv/pulls/6438.md) on 2024-08-22 14:08_
-
----
-
-_Referenced in [astral-sh/uv#6490](../../astral-sh/uv/pulls/6490.md) on 2024-08-23 20:49_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-08T09:14:45Z
 updated_at: 2024-10-16T15:13:31Z
 url: https://github.com/astral-sh/uv/issues/7997
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Extend Git cache-keys to include Git tags
@@ -117,22 +117,10 @@ uv 0.4.19 (a451fb685 2024-10-07)
 
 ---
 
-_Referenced in [astral-sh/uv#8259](../../astral-sh/uv/pulls/8259.md) on 2024-10-16 14:45_
-
----
-
 _Closed by @charliermarsh on 2024-10-16 15:13_
 
 ---
 
 _Closed by @charliermarsh on 2024-10-16 15:13_
-
----
-
-_Referenced in [astral-sh/uv#7866](../../astral-sh/uv/issues/7866.md) on 2024-10-17 22:06_
-
----
-
-_Referenced in [astral-sh/uv#6860](../../astral-sh/uv/issues/6860.md) on 2024-11-11 23:26_
 
 ---

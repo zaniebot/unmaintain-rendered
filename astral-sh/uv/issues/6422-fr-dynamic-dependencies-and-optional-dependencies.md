@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-22T11:12:41Z
 updated_at: 2024-10-11T11:14:10Z
 url: https://github.com/astral-sh/uv/issues/6422
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # FR: Dynamic dependencies and optional dependencies
@@ -85,10 +85,6 @@ It would be nice if `uv` supported reading dynamic dependencies such that comman
 
 ---
 
-_Referenced in [astral-sh/uv#6007](../../astral-sh/uv/issues/6007.md) on 2024-08-22 11:19_
-
----
-
 _Renamed from "Feat: Dynamic dependencies and optional dependencies" to "FR: Dynamic dependencies and optional dependencies" by @chrisrodrigue on 2024-08-22 11:27_
 
 ---
@@ -96,13 +92,5 @@ _Renamed from "Feat: Dynamic dependencies and optional dependencies" to "FR: Dyn
 _Comment by @adamtheturtle on 2024-10-11 11:14_
 
 At least better for me than the current situation is having a warning / error when trying to use dynamic dependencies.
-
----
-
-_Referenced in [astral-sh/uv#8949](../../astral-sh/uv/issues/8949.md) on 2024-12-07 14:26_
-
----
-
-_Referenced in [edgarrmondragon/hatch-pinned-extra#31](../../edgarrmondragon/hatch-pinned-extra/issues/31.md) on 2025-10-15 07:32_
 
 ---

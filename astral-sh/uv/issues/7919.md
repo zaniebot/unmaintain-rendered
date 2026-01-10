@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-04T10:35:11Z
 updated_at: 2024-10-04T11:10:55Z
 url: https://github.com/astral-sh/uv/issues/7919
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # "The discovered commit has an invalid length" bug
@@ -105,10 +105,6 @@ Reproducible on macOS and Windows.
 $ uv version
 uv 0.4.18 (7b55e9790 2024-10-01)
 ```
-
----
-
-_Referenced in [astral-sh/uv#7922](../../astral-sh/uv/pulls/7922.md) on 2024-10-04 11:04_
 
 ---
 

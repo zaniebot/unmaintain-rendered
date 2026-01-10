@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-08T16:42:22Z
 updated_at: 2024-10-12T18:36:09Z
 url: https://github.com/astral-sh/uv/issues/8009
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # [Error]stream did not contain valid UTF-8
@@ -201,14 +201,6 @@ uv pip install -vv -n crdmod==1.7
 
 ---
 
-_Referenced in [astral-sh/uv#7549](../../astral-sh/uv/issues/7549.md) on 2024-10-11 03:43_
-
----
-
-_Referenced in [astral-sh/uv#8120](../../astral-sh/uv/pulls/8120.md) on 2024-10-11 04:52_
-
----
-
 _Comment by @kahojyun on 2024-10-11 12:57_
 
 I think the non-UTF8 bytes come from the MSVC compiler output. It seems that the output of the compiler bypasses the `PYTHONIOENCODING` setting and writes directly to `stdout`/`stderr` using system default encoding.
@@ -218,10 +210,6 @@ I think the non-UTF8 bytes come from the MSVC compiler output. It seems that the
 _Comment by @BurntSushi on 2024-10-11 13:10_
 
 @sdbds With #8120 merged, when the next release comes out, could you let us know whether this issue is resolved or not? Thanks!
-
----
-
-_Referenced in [astral-sh/uv#8084](../../astral-sh/uv/issues/8084.md) on 2024-10-11 14:47_
 
 ---
 

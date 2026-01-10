@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-18T19:05:56Z
 updated_at: 2024-10-18T19:20:38Z
 url: https://github.com/astral-sh/uv/issues/8346
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Add a way to add a file to a build
@@ -39,9 +39,5 @@ Ah I understand. Thanks!
 ---
 
 _Closed by @ebits21 on 2024-10-18 19:20_
-
----
-
-_Referenced in [astral-sh/uv#8383](../../astral-sh/uv/issues/8383.md) on 2024-10-20 19:06_
 
 ---

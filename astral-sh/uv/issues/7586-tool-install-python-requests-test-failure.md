@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-20T14:32:15Z
 updated_at: 2024-09-21T05:25:29Z
 url: https://github.com/astral-sh/uv/issues/7586
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # tool_install_python_requests test failure
@@ -192,14 +192,6 @@ Perhaps `sysconfig.get_path("stdlib")` would work — it should be unique to eve
 _Comment by @zanieb on 2024-09-20 17:29_
 
 Thanks, maybe we'll use that
-
----
-
-_Referenced in [astral-sh/uv#7593](../../astral-sh/uv/pulls/7593.md) on 2024-09-20 17:33_
-
----
-
-_Referenced in [astral-sh/uv#7596](../../astral-sh/uv/pulls/7596.md) on 2024-09-20 17:57_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-30T05:04:59Z
 updated_at: 2024-10-21T22:59:12Z
 url: https://github.com/astral-sh/uv/issues/5588
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Paths to using published versions of vendored, forked crates?
@@ -66,10 +66,6 @@ _Label `question` added by @charliermarsh on 2024-07-30 12:27_
 ---
 
 _Label `internal` added by @charliermarsh on 2024-07-30 12:27_
-
----
-
-_Referenced in [prefix-dev/pixi#2002](../../prefix-dev/pixi/issues/2002.md) on 2024-09-07 14:18_
 
 ---
 

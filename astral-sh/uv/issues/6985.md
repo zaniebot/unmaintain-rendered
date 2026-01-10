@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-03T22:45:56Z
 updated_at: 2024-09-07T18:40:05Z
 url: https://github.com/astral-sh/uv/issues/6985
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Support `allow-insecure-host` in `uv python`
@@ -55,13 +55,5 @@ _Comment by @charliermarsh on 2024-09-05 02:01_
 ---
 
 _Label `help wanted` added by @zanieb on 2024-09-07 18:40_
-
----
-
-_Referenced in [astral-sh/uv#8423](../../astral-sh/uv/issues/8423.md) on 2024-10-22 07:18_
-
----
-
-_Referenced in [astral-sh/uv#8440](../../astral-sh/uv/pulls/8440.md) on 2024-10-22 09:27_
 
 ---

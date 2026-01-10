@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-29T06:08:25Z
 updated_at: 2024-09-09T03:27:53Z
 url: https://github.com/astral-sh/uv/issues/6793
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # dist-info entry in site-packages for editable install
@@ -39,10 +39,6 @@ uv 0.4.0
 I don't think it's a wrong behavior, but it's different from what pip does and it confuses Pylance.
 The packages is completely functional in Python.
 
-
----
-
-_Referenced in [microsoft/pylance-release#6353](../../microsoft/pylance-release/issues/6353.md) on 2024-09-05 09:01_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-11T03:59:35Z
 updated_at: 2024-09-11T19:46:17Z
 url: https://github.com/astral-sh/uv/issues/7280
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv python list --all-versions` does not include `3.13.0rc2`
@@ -48,10 +48,6 @@ _Label `uv python` added by @zanieb on 2024-09-11 13:28_
 ---
 
 _Assigned to @zanieb by @zanieb on 2024-09-11 13:28_
-
----
-
-_Referenced in [astral-sh/uv#7290](../../astral-sh/uv/pulls/7290.md) on 2024-09-11 13:56_
 
 ---
 

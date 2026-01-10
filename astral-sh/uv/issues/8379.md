@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-20T08:44:40Z
 updated_at: 2024-10-20T23:24:35Z
 url: https://github.com/astral-sh/uv/issues/8379
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv tree --quiet doesn't show the tree
@@ -33,10 +33,6 @@ uv 0.4.24
 
 ---
 
-_Referenced in [astral-sh/uv#6298](../../astral-sh/uv/issues/6298.md) on 2024-10-20 08:45_
-
----
-
 _Label `bug` added by @zanieb on 2024-10-20 14:08_
 
 ---
@@ -48,10 +44,6 @@ Yeah `uv tree` and `uv pip list` should both show output.
 ---
 
 _Label `help wanted` added by @charliermarsh on 2024-10-20 16:13_
-
----
-
-_Referenced in [astral-sh/uv#8392](../../astral-sh/uv/pulls/8392.md) on 2024-10-20 20:24_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-30T10:59:36Z
 updated_at: 2024-09-02T18:23:44Z
 url: https://github.com/astral-sh/uv/issues/6859
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Buggy interplay between `--python`, `--python-version` and dependency with Python upper bound in `pip compile`
@@ -95,10 +95,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-30 14:37_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-08-30 14:37_
-
----
-
-_Referenced in [astral-sh/uv#6882](../../astral-sh/uv/pulls/6882.md) on 2024-08-30 18:27_
 
 ---
 

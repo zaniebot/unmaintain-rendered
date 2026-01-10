@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-13T17:33:51Z
 updated_at: 2024-10-21T22:16:34Z
 url: https://github.com/astral-sh/uv/issues/7369
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Incorrect sysconfig in uv-managed Python installation
@@ -60,10 +60,6 @@ Related: https://github.com/bluss/sysconfigpatcher
 
 ---
 
-_Referenced in [bluss/sysconfigpatcher#1](../../bluss/sysconfigpatcher/issues/1.md) on 2024-09-13 18:16_
-
----
-
 _Comment by @bluss on 2024-09-14 14:35_
 
 Relatively simple patching go a long way and fixes many packages (as a start, patch CC and LIBDIR), but there is no obvious or perfect solution
@@ -84,24 +80,12 @@ Because there is no perfect solution, it's probably good go an experimental path
 
 ---
 
-_Referenced in [astral-sh/uv#7525](../../astral-sh/uv/issues/7525.md) on 2024-09-25 17:13_
-
----
-
 _Comment by @bluss on 2024-10-06 22:59_
 
 This proposed PEP is a little bit relevant for this issue
 
 - https://peps.python.org/pep-0739/
 - https://discuss.python.org/t/pep-739-static-description-file-for-build-details-of-python-installations/44572
-
----
-
-_Referenced in [astral-sh/uv#8036](../../astral-sh/uv/issues/8036.md) on 2024-10-14 15:44_
-
----
-
-_Referenced in [astral-sh/python-build-standalone#374](../../astral-sh/python-build-standalone/issues/374.md) on 2024-10-18 23:03_
 
 ---
 
@@ -112,9 +96,5 @@ Going to track improvements to this in https://github.com/astral-sh/uv/issues/84
 ---
 
 _Closed by @zanieb on 2024-10-21 22:16_
-
----
-
-_Referenced in [astral-sh/uv#8429](../../astral-sh/uv/issues/8429.md) on 2024-10-21 22:17_
 
 ---

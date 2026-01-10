@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-26T17:02:52Z
 updated_at: 2024-10-08T19:06:39Z
 url: https://github.com/astral-sh/uv/issues/7718
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv init` should autofill the `authors` field in pyproject.toml
@@ -250,10 +250,6 @@ https://github.com/pypa/hatch/blob/5352e4422636cf1238017a74f0c67d689ccee558/src/
 
 ---
 
-_Referenced in [astral-sh/uv#7756](../../astral-sh/uv/pulls/7756.md) on 2024-09-28 11:34_
-
----
-
 _Comment by @FishAlchemist on 2024-09-28 16:45_
 
 As I prefer not to expose my personal email in the Git commit history, I usually set up accounts with  email addresses like ``@users.noreply.github.com`` and ``@users.noreply.gitlab.com``.
@@ -290,9 +286,5 @@ _Closed by @zanieb on 2024-10-08 19:06_
 ---
 
 _Closed by @zanieb on 2024-10-08 19:06_
-
----
-
-_Referenced in [astral-sh/uv#8098](../../astral-sh/uv/issues/8098.md) on 2024-10-10 15:48_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-22T00:56:57Z
 updated_at: 2024-09-29T15:02:10Z
 url: https://github.com/astral-sh/uv/issues/6397
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Bootstrapped Python `Failed to hardlink files;` Error 
@@ -175,15 +175,7 @@ I think it `%LOCALAPPDATA%\uv\cache` could be more familiar for Windows user ins
 
 ---
 
-_Referenced in [astral-sh/uv#6433](../../astral-sh/uv/pulls/6433.md) on 2024-08-22 13:28_
-
----
-
 _Closed by @charliermarsh on 2024-08-23 18:01_
-
----
-
-_Referenced in [astral-sh/uv#6613](../../astral-sh/uv/issues/6613.md) on 2024-08-25 18:21_
 
 ---
 
@@ -208,9 +200,5 @@ It would be great if the user have updated their pip cache directory, uv would b
 _Comment by @zanieb on 2024-09-29 15:02_
 
 We can't read pip environment variable, their cache is quite different from ours.
-
----
-
-_Referenced in [astral-sh/uv#9500](../../astral-sh/uv/issues/9500.md) on 2024-11-28 12:42_
 
 ---

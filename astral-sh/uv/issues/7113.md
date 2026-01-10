@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-06T02:17:52Z
 updated_at: 2024-09-20T18:54:14Z
 url: https://github.com/astral-sh/uv/issues/7113
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # absent directory in find-links causes TOML parse errors: "relative URL without a base"
@@ -102,10 +102,6 @@ Audited 1 package in 0.06ms
 ---
 
 _Label `error messages` added by @charliermarsh on 2024-09-14 00:37_
-
----
-
-_Referenced in [astral-sh/uv#7598](../../astral-sh/uv/pulls/7598.md) on 2024-09-20 18:30_
 
 ---
 

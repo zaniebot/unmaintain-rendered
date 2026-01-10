@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-13T00:28:51Z
 updated_at: 2024-09-14T00:42:58Z
 url: https://github.com/astral-sh/uv/issues/7348
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uvx defaults to ruff?
@@ -93,9 +93,5 @@ I believe this is intended.
 ---
 
 _Closed by @charliermarsh on 2024-09-14 00:42_
-
----
-
-_Referenced in [astral-sh/uv#7641](../../astral-sh/uv/pulls/7641.md) on 2024-09-23 14:24_
 
 ---

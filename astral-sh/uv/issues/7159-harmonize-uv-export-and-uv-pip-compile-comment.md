@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-07T08:31:55Z
 updated_at: 2024-09-13T20:15:26Z
 url: https://github.com/astral-sh/uv/issues/7159
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Harmonize `uv export` and `uv pip compile` comment / output
@@ -76,10 +76,6 @@ _Label `enhancement` added by @charliermarsh on 2024-09-07 11:58_
 
 ---
 
-_Referenced in [astral-sh/uv#7374](../../astral-sh/uv/pulls/7374.md) on 2024-09-13 19:18_
-
----
-
 _Comment by @charliermarsh on 2024-09-13 20:15_
 
 Command will be included in the next release thanks to https://github.com/astral-sh/uv/pull/7374.
@@ -87,9 +83,5 @@ Command will be included in the next release thanks to https://github.com/astral
 ---
 
 _Closed by @charliermarsh on 2024-09-13 20:15_
-
----
-
-_Referenced in [astral-sh/uv-pre-commit#49](../../astral-sh/uv-pre-commit/issues/49.md) on 2025-04-22 11:31_
 
 ---

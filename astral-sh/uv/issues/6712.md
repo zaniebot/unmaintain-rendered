@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-27T18:38:32Z
 updated_at: 2024-08-27T19:23:28Z
 url: https://github.com/astral-sh/uv/issues/6712
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `0.3.5` regression: not respecting changes to `pyproject.toml`?
@@ -325,10 +325,6 @@ Reverted https://github.com/astral-sh/uv/pull/6655 and it's fixed
 _Comment by @charliermarsh on 2024-08-27 19:06_
 
 Apologies. You should be able to `rm -rf` any `.egg-info` directory in your project to clear it?
-
----
-
-_Referenced in [astral-sh/uv#6714](../../astral-sh/uv/pulls/6714.md) on 2024-08-27 19:10_
 
 ---
 

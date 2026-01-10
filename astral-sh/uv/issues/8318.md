@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-18T04:40:29Z
 updated_at: 2024-10-19T11:11:48Z
 url: https://github.com/astral-sh/uv/issues/8318
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Let User Know Self Update is Disabled
@@ -45,10 +45,6 @@ _Label `cli` added by @zanieb on 2024-10-18 04:50_
 ---
 
 _Label `help wanted` added by @zanieb on 2024-10-18 04:50_
-
----
-
-_Referenced in [astral-sh/uv#8337](../../astral-sh/uv/pulls/8337.md) on 2024-10-18 16:06_
 
 ---
 

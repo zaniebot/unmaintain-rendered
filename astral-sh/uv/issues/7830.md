@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-01T08:50:29Z
 updated_at: 2024-10-16T20:24:19Z
 url: https://github.com/astral-sh/uv/issues/7830
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Installing xarray[accel] uv fails
@@ -202,9 +202,5 @@ Thank you @charliermarsh , leaving the explicit solution here for future googler
 _Comment by @charliermarsh on 2024-10-16 20:24_
 
 Thank you so much! Sorry about this specific pain point. It's been bothering me a lot 😅 But we have a plan to fix it.
-
----
-
-_Referenced in [astral-sh/uv#8157](../../astral-sh/uv/issues/8157.md) on 2024-10-17 09:55_
 
 ---

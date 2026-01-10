@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-26T21:25:40Z
 updated_at: 2024-08-26T22:08:52Z
 url: https://github.com/astral-sh/uv/issues/6659
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Installing a new tool with --exclude-newer downgrades another previously installed tool
@@ -130,10 +130,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-26 21:32_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-08-26 21:44_
-
----
-
-_Referenced in [astral-sh/uv#6660](../../astral-sh/uv/pulls/6660.md) on 2024-08-26 21:45_
 
 ---
 

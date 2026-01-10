@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-02T21:20:45Z
 updated_at: 2024-09-03T04:31:50Z
 url: https://github.com/astral-sh/uv/issues/6948
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv pip install` under certain circumstances generates long paths (`\\?\`) on Windows under Python 3.13t when it does not do so under other Python versions
@@ -51,10 +51,6 @@ Sorry that I couldn't get the example any smaller or more isolated. I really tri
 
 ---
 
-_Referenced in [pypa/cibuildwheel#1975](../../pypa/cibuildwheel/issues/1975.md) on 2024-09-02 21:38_
-
----
-
 _Comment by @charliermarsh on 2024-09-02 21:46_
 
 Thanks! Am I correct that this call is ultimately failing?
@@ -70,10 +66,6 @@ I think we should avoid introducing these in that context. I'll take a look.
 _Comment by @charliermarsh on 2024-09-02 21:49_
 
 I admittedly have no idea why this would affect the free-threaded Pythons, but not Python 3.13 without free-threading.
-
----
-
-_Referenced in [astral-sh/uv#6949](../../astral-sh/uv/pulls/6949.md) on 2024-09-02 21:52_
 
 ---
 

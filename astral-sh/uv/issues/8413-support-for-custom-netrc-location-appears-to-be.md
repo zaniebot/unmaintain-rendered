@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-21T09:45:00Z
 updated_at: 2024-10-21T14:13:08Z
 url: https://github.com/astral-sh/uv/issues/8413
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Support for custom netrc location appears to be partially bugged.
@@ -126,9 +126,5 @@ Thanks for the help, I'll look into git credentials and see if I can solve my us
 ---
 
 _Closed by @EdgyMeshx on 2024-10-21 14:13_
-
----
-
-_Referenced in [astral-sh/uv#8441](../../astral-sh/uv/issues/8441.md) on 2024-10-22 09:40_
 
 ---

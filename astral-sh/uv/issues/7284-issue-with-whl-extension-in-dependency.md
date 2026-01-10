@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-11T08:36:53Z
 updated_at: 2024-09-12T08:18:23Z
 url: https://github.com/astral-sh/uv/issues/7284
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Issue with `.whl` extension in dependency.
@@ -132,17 +132,9 @@ _Label `bug` added by @charliermarsh on 2024-09-11 13:18_
 
 ---
 
-_Referenced in [dagster-io/dagster#24398](../../dagster-io/dagster/pulls/24398.md) on 2024-09-11 14:31_
-
----
-
 _Comment by @charliermarsh on 2024-09-11 18:36_
 
 I believe you need `uv lock --python 3.10`... Those torch versions _only_ work on Python 3.10 (`torch-2.0.1-cp310-none-macosx_11_0_arm64.whl`), but you're resolving Python 3.11 based on the `requires-python`. `sync --python 3.10` works as expected for me while `uv sync` fails. That error message needs to be improved though.
-
----
-
-_Referenced in [astral-sh/uv#7303](../../astral-sh/uv/pulls/7303.md) on 2024-09-11 18:58_
 
 ---
 

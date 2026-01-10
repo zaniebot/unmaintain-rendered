@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-23T16:43:16Z
 updated_at: 2024-08-23T22:12:08Z
 url: https://github.com/astral-sh/uv/issues/6532
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Remove `--preview` from test fixtures
@@ -39,10 +39,6 @@ Whoops, missed this in #6166
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-23 18:23_
-
----
-
-_Referenced in [astral-sh/uv#6536](../../astral-sh/uv/pulls/6536.md) on 2024-08-23 18:23_
 
 ---
 

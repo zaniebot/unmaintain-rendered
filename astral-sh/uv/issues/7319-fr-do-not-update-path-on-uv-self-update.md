@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-12T01:36:55Z
 updated_at: 2024-09-12T03:29:45Z
 url: https://github.com/astral-sh/uv/issues/7319
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # FR: Do not update PATH on `uv self update`.
@@ -58,13 +58,5 @@ The new files should probably be placed in the same binary dirs, though.
 ---
 
 _Closed by @ilyagr on 2024-09-12 03:29_
-
----
-
-_Referenced in [axodotdev/cargo-dist#1421](../../axodotdev/cargo-dist/pulls/1421.md) on 2024-09-18 20:41_
-
----
-
-_Referenced in [axodotdev/axoupdater#181](../../axodotdev/axoupdater/pulls/181.md) on 2024-09-18 20:41_
 
 ---

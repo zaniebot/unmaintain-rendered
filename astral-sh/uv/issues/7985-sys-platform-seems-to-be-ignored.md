@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-07T18:22:15Z
 updated_at: 2024-10-21T21:55:45Z
 url: https://github.com/astral-sh/uv/issues/7985
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # sys_platform seems to be ignored
@@ -146,13 +146,5 @@ In this case I wouldn't want to try and compile the c version unless I'm on a pr
 ---
 
 _Closed by @zanieb on 2024-10-21 21:55_
-
----
-
-_Referenced in [beeware/toga#2995](../../beeware/toga/issues/2995.md) on 2024-11-25 05:47_
-
----
-
-_Referenced in [astral-sh/uv#16396](../../astral-sh/uv/issues/16396.md) on 2025-11-06 02:28_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-23T10:01:22Z
 updated_at: 2024-08-24T12:57:28Z
 url: https://github.com/astral-sh/uv/issues/6505
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Provide an APE installer instead of curling scripts?
@@ -47,10 +47,6 @@ _Label `release` added by @zanieb on 2024-08-23 14:13_
 
 ---
 
-_Referenced in [astral-sh/uv#6533](../../astral-sh/uv/issues/6533.md) on 2024-08-23 22:20_
-
----
-
 _Comment by @ksamuel on 2024-08-24 12:57_
 
 Ok, I made some experiments, but there is a blocker: on some linux distros, including Ubuntu, you might get errors relating to run-detectors due to binfmt_misc registrations. 
@@ -70,9 +66,5 @@ I'm closing this, you have enough tickets as it is.
 ---
 
 _Closed by @ksamuel on 2024-08-24 12:57_
-
----
-
-_Referenced in [astral-sh/uv#6662](../../astral-sh/uv/issues/6662.md) on 2024-09-19 01:05_
 
 ---

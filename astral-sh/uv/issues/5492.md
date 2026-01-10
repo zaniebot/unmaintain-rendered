@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-26T20:06:43Z
 updated_at: 2024-09-26T19:30:48Z
 url: https://github.com/astral-sh/uv/issues/5492
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Ability to resolve lowest compatible versions of specific packages only
@@ -65,10 +65,6 @@ Finally, I also tried adding some constraints into the `uv pip install` command 
 
 ---
 
-_Referenced in [shap/shap#3770](../../shap/shap/pulls/3770.md) on 2024-07-26 20:45_
-
----
-
 _Comment by @charliermarsh on 2024-07-27 12:22_
 
 This seems like a reasonable use-case (though not yet sure how best to resolve it). One other option is that you could add a constraints file to set lower-bounds on your development dependencies... You could even take the output of the "standard" resolution to seed those constraints.
@@ -76,10 +72,6 @@ This seems like a reasonable use-case (though not yet sure how best to resolve i
 ---
 
 _Label `needs-design` added by @charliermarsh on 2024-07-27 12:22_
-
----
-
-_Referenced in [shap/shap#3854](../../shap/shap/pulls/3854.md) on 2024-09-09 18:00_
 
 ---
 
@@ -105,13 +97,5 @@ env-vars = {UV_RESOLUTION = "lowest-direct"}
 ... but unfortunately this means specifying a lower bound for all our dev dependencies. So ideally there would be some way to specify `lowest-direct` for just a subset of the dependencies.
 
 Also just wanted to echo a huge thank you for the amazing work on uv. It's sped up our development process massively!
-
----
-
-_Referenced in [astral-sh/uv#8585](../../astral-sh/uv/issues/8585.md) on 2024-10-28 20:46_
-
----
-
-_Referenced in [nsidc/earthaccess#876](../../nsidc/earthaccess/pulls/876.md) on 2024-11-08 19:50_
 
 ---

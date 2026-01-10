@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-04T13:38:40Z
 updated_at: 2024-09-04T14:26:33Z
 url: https://github.com/astral-sh/uv/issues/7018
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Feature request: lockfile import
@@ -28,10 +28,6 @@ What would help automate this process is if there was a `uv` command that would 
 Why do I need to do this? Well, if I have an existing project with a set of packages, I want to make sure that after I migrate to `uv`, I will essentially have the same lockfile, to avoid any surprises. If I just took the known root level packages and migrated them to `dependencies`, the versions of the transitive dependencies would most likely be updated by `uv` (especially since there's currently no support for changing versions of transitive dependencies in a lockfile, AFAIK).
 
 Let me know if it makes sense :)
-
----
-
-_Referenced in [astral-sh/uv#7019](../../astral-sh/uv/issues/7019.md) on 2024-09-04 13:49_
 
 ---
 

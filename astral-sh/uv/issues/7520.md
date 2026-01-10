@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-18T22:56:53Z
 updated_at: 2024-09-25T17:41:56Z
 url: https://github.com/astral-sh/uv/issues/7520
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Extras contain whitespace
@@ -62,10 +62,6 @@ packaging.requirements.InvalidRequirement: Expected extra name after comma
 
 Technically you might say it's a bug in pypa/packaging but since `uv` intends to be 100% drop-in compatible with pip-tools I imagine you might want to fix it here.
 
-
----
-
-_Referenced in [bazel-contrib/rules_uv#110](../../bazel-contrib/rules_uv/issues/110.md) on 2024-09-18 22:57_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-23T05:12:27Z
 updated_at: 2024-08-23T18:05:34Z
 url: https://github.com/astral-sh/uv/issues/6493
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # UV_COMPILE_BYTECODE=1 please? 🥺
@@ -69,10 +69,6 @@ Will do this real quick between meetings.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-23 15:52_
-
----
-
-_Referenced in [astral-sh/uv#6530](../../astral-sh/uv/pulls/6530.md) on 2024-08-23 15:52_
 
 ---
 

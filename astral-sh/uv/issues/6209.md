@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-19T15:18:21Z
 updated_at: 2024-08-27T00:13:04Z
 url: https://github.com/astral-sh/uv/issues/6209
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv pip compile` selects old version; different behavior between install vs. compile
@@ -360,14 +360,6 @@ _Assigned to @zanieb by @zanieb on 2024-08-19 16:13_
 
 ---
 
-_Referenced in [astral-sh/uv#6211](../../astral-sh/uv/pulls/6211.md) on 2024-08-19 16:34_
-
----
-
-_Referenced in [LiberTEM/LiberTEM#1672](../../LiberTEM/LiberTEM/issues/1672.md) on 2024-08-19 16:41_
-
----
-
 _Closed by @zanieb on 2024-08-19 16:53_
 
 ---
@@ -407,9 +399,5 @@ _Comment by @notatallshaw on 2024-08-27 00:12_
 @esc I've taken a look at the issue, and I beleive that pip is doing the right thing there because it is prioritizing depth.
 
 uv has an open issue for adding this https://github.com/astral-sh/uv/issues/3149
-
----
-
-_Referenced in [HarrisonKramer/optiland#305](../../HarrisonKramer/optiland/pulls/305.md) on 2025-09-04 07:23_
 
 ---

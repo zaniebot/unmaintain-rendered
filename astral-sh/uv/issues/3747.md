@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-22T17:44:26Z
 updated_at: 2024-09-09T15:06:45Z
 url: https://github.com/astral-sh/uv/issues/3747
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Where does `uv` land on PEP 517 `backend-path` out-of-tree?
@@ -62,10 +62,6 @@ Reasons doing this is actually a good idea ™️ :
 ---
 
 _Label `compatibility` added by @zanieb on 2024-05-22 17:51_
-
----
-
-_Referenced in [astral-sh/uv#3796](../../astral-sh/uv/issues/3796.md) on 2024-05-23 14:52_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-08T22:25:10Z
 updated_at: 2024-10-15T08:01:15Z
 url: https://github.com/astral-sh/uv/issues/8023
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv publish` giving `Missing credentials for https://upload.pypi.org/legacy/`
@@ -114,10 +114,6 @@ _Label `question` removed by @charliermarsh on 2024-10-08 22:43_
 
 ---
 
-_Referenced in [astral-sh/uv#8045](../../astral-sh/uv/pulls/8045.md) on 2024-10-09 12:20_
-
----
-
 _Comment by @konstin on 2024-10-09 12:30_
 
 it's unfortunate that `pypa/gh-action-pypi-publish@release/v1` calls the token a password. We can catch using a password without a username in clap, I don't think we need to special case the password -> token migration: #8045.
@@ -125,9 +121,5 @@ it's unfortunate that `pypa/gh-action-pypi-publish@release/v1` calls the token a
 ---
 
 _Closed by @konstin on 2024-10-15 08:01_
-
----
-
-_Referenced in [astral-sh/uv#7839](../../astral-sh/uv/issues/7839.md) on 2024-11-03 18:09_
 
 ---

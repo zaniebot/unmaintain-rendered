@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-17T16:45:59Z
 updated_at: 2024-09-25T22:50:59Z
 url: https://github.com/astral-sh/uv/issues/7471
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Support uv tool reinstall
@@ -57,10 +57,6 @@ _Comment by @tfsingh on 2024-09-18 07:25_
 Working on this, have an initial (rough draft) [here](https://github.com/astral-sh/uv/compare/main...tfsingh:uv:tfsingh/tool-upgrade-python?expand=1)!
 
 Still needs formal testing (but seems to be working after installing a tool with --python 3.12, upgrading with --python 3.13, and verifying the change in uv/tools/tool's pyvenv.cfg)
-
----
-
-_Referenced in [astral-sh/uv#7605](../../astral-sh/uv/pulls/7605.md) on 2024-09-20 22:08_
 
 ---
 

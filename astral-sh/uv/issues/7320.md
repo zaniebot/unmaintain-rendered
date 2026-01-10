@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-12T01:54:16Z
 updated_at: 2024-09-18T06:37:43Z
 url: https://github.com/astral-sh/uv/issues/7320
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Minor: `uv tool install` should be able to modify which Python a tool uses.
@@ -162,14 +162,6 @@ For this purpose it seems fine to compare `sys_executable`. I'm not sure about a
 _Comment by @charliermarsh on 2024-09-16 20:09_
 
 Yeah I think you basically want `is_same_executable` from the `satisfied` check.
-
----
-
-_Referenced in [astral-sh/uv#7451](../../astral-sh/uv/pulls/7451.md) on 2024-09-17 08:20_
-
----
-
-_Referenced in [astral-sh/uv#7471](../../astral-sh/uv/issues/7471.md) on 2024-09-17 16:51_
 
 ---
 

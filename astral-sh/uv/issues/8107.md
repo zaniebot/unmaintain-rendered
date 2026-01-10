@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-10T20:02:10Z
 updated_at: 2024-10-13T13:22:10Z
 url: https://github.com/astral-sh/uv/issues/8107
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv to detect uv.toml in active venv
@@ -49,9 +49,5 @@ _Label `configuration` added by @charliermarsh on 2024-10-12 14:58_
 _Comment by @Reclocco on 2024-10-13 13:22_
 
 Yes
-
----
-
-_Referenced in [astral-sh/uv#9935](../../astral-sh/uv/pulls/9935.md) on 2024-12-16 13:38_
 
 ---

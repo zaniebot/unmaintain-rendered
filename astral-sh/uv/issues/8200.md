@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-15T08:04:18Z
 updated_at: 2024-10-15T17:29:51Z
 url: https://github.com/astral-sh/uv/issues/8200
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # regression: uv build silently produces empty wheels with hatchling if .gitignore is missing
@@ -181,10 +181,6 @@ Tried a `uvx hatch build` with and without a project level `.gitignore`, the iss
 
 ---
 
-_Referenced in [astral-sh/uv#8220](../../astral-sh/uv/pulls/8220.md) on 2024-10-15 14:36_
-
----
-
 _Label `great writeup` added by @konstin on 2024-10-15 14:47_
 
 ---
@@ -198,9 +194,5 @@ Thanks for the great write-up and reproducer, they were very helpful for debuggi
 ---
 
 _Closed by @charliermarsh on 2024-10-15 17:29_
-
----
-
-_Referenced in [astral-sh/uv#10066](../../astral-sh/uv/issues/10066.md) on 2024-12-20 20:52_
 
 ---

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-06T05:55:46Z
 updated_at: 2024-09-06T05:55:46Z
 url: https://github.com/astral-sh/uv/issues/7117
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Create environment variable to place all uv data under one directory
@@ -31,9 +31,5 @@ UV_ROOT
 └── uv.toml    # equivalent to UV_CONFIG_FILE
 ```
 If any of the more specific env vars exist, they should take precedence over the `UV_ROOT` sub directory.
-
----
-
-_Referenced in [astral-sh/uv#14342](../../astral-sh/uv/issues/14342.md) on 2025-06-28 21:25_
 
 ---

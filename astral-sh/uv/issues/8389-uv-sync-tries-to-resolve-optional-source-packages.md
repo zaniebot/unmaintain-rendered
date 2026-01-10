@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-20T18:23:51Z
 updated_at: 2024-10-23T02:19:59Z
 url: https://github.com/astral-sh/uv/issues/8389
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv sync` tries to resolve optional source packages even though environment markers exclude the package from the environment
@@ -262,9 +262,5 @@ Closed by https://github.com/astral-sh/uv/pull/7846. I also added `flash-attn` (
 ---
 
 _Closed by @charliermarsh on 2024-10-23 02:19_
-
----
-
-_Referenced in [astral-sh/uv#15715](../../astral-sh/uv/issues/15715.md) on 2025-09-08 01:40_
 
 ---

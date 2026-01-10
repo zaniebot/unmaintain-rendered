@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-24T07:00:36Z
 updated_at: 2024-09-04T21:18:53Z
 url: https://github.com/astral-sh/uv/issues/6571
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Feature Request: `uv tool install/uninstall/upgrade` supports multiple packages
@@ -73,18 +73,10 @@ _Label `help wanted` added by @zanieb on 2024-08-26 18:12_
 
 ---
 
-_Referenced in [astral-sh/uv#7037](../../astral-sh/uv/pulls/7037.md) on 2024-09-04 17:20_
-
----
-
 _Closed by @charliermarsh on 2024-09-04 21:18_
 
 ---
 
 _Closed by @charliermarsh on 2024-09-04 21:18_
-
----
-
-_Referenced in [astral-sh/uv#13750](../../astral-sh/uv/issues/13750.md) on 2025-05-31 07:20_
 
 ---

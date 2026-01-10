@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-15T21:56:54Z
 updated_at: 2024-10-16T18:42:46Z
 url: https://github.com/astral-sh/uv/issues/8229
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Detect and install tool python version
@@ -57,9 +57,5 @@ _Comment by @Tobi-De on 2024-10-16 05:49_
 > Does https://github.com/astral-sh/uv/pull/7827 address this?
 
 Yep, I think it does
-
----
-
-_Referenced in [astral-sh/uv#11612](../../astral-sh/uv/issues/11612.md) on 2025-02-19 10:56_
 
 ---

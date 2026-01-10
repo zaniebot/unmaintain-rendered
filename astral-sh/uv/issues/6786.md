@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-29T01:37:19Z
 updated_at: 2024-10-18T14:22:38Z
 url: https://github.com/astral-sh/uv/issues/6786
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Docs request: Workspaces -- do we add `albatross` to `tool.uv.sources`
@@ -149,10 +149,6 @@ Am I misunderstanding the workspace concept?
 
 ---
 
-_Referenced in [astral-sh/uv#8302](../../astral-sh/uv/issues/8302.md) on 2024-10-18 12:58_
-
----
-
 _Comment by @charliermarsh on 2024-10-18 13:41_
 
 @thorbenk -- I think that should work because members inherit sources from the root. Did it not work?
@@ -175,9 +171,5 @@ I will try to create a minimal reproducible example for this.
 Thanks for an amazing `uv` experience!
 
 
-
----
-
-_Referenced in [astral-sh/uv#8407](../../astral-sh/uv/issues/8407.md) on 2024-10-21 07:37_
 
 ---

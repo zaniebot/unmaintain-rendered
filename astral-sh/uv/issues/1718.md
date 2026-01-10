@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-19T20:14:15Z
 updated_at: 2024-09-09T00:57:16Z
 url: https://github.com/astral-sh/uv/issues/1718
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv pip compile` error message not readable.
@@ -115,10 +115,6 @@ We should exempt unconstrained build dependencies from using the lowest version,
 
 ---
 
-_Referenced in [napari/napari#6673](../../napari/napari/pulls/6673.md) on 2024-02-20 10:16_
-
----
-
 _Comment by @charliermarsh on 2024-02-20 13:57_
 
 @konstin - this must be a direct dependency, right? We don’t propagate resolution-lowest to build dependencies.
@@ -154,14 +150,6 @@ _Comment by @konstin on 2024-02-20 15:08_
 > this must be a direct dependency, right? We don’t propagate resolution-lowest to build dependencies.
 
 Indeed! I think we should warn when we encounter dependencies with now lower limit and `--resolution=lowest` is set, hinting the user at defining a lower limit themselves.
-
----
-
-_Referenced in [astral-sh/uv#2797](../../astral-sh/uv/issues/2797.md) on 2024-04-03 04:34_
-
----
-
-_Referenced in [astral-sh/uv#5953](../../astral-sh/uv/pulls/5953.md) on 2024-08-09 08:54_
 
 ---
 

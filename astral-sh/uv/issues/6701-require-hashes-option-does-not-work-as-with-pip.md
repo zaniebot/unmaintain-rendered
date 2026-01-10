@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-27T16:54:04Z
 updated_at: 2024-08-28T01:13:24Z
 url: https://github.com/astral-sh/uv/issues/6701
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # --require-hashes option does not work as with pip
@@ -57,10 +57,6 @@ _Label `compatibility` added by @charliermarsh on 2024-08-27 20:03_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-27 20:03_
-
----
-
-_Referenced in [astral-sh/uv#6731](../../astral-sh/uv/pulls/6731.md) on 2024-08-27 23:41_
 
 ---
 

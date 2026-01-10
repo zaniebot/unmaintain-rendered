@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-09-19T11:26:57Z
 updated_at: 2024-10-04T14:41:26Z
 url: https://github.com/astral-sh/uv/issues/7542
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Make test suite robust against `UV_CACHE_DIR`
@@ -34,14 +34,6 @@ _Label `help wanted` added by @konstin on 2024-09-19 11:26_
 ---
 
 _Label `internal` added by @konstin on 2024-09-19 11:26_
-
----
-
-_Referenced in [astral-sh/uv#7540](../../astral-sh/uv/pulls/7540.md) on 2024-09-19 11:27_
-
----
-
-_Referenced in [astral-sh/uv#7895](../../astral-sh/uv/pulls/7895.md) on 2024-10-03 13:02_
 
 ---
 

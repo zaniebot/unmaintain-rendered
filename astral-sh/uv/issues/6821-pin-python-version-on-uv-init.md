@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-29T16:44:28Z
 updated_at: 2024-09-03T23:43:51Z
 url: https://github.com/astral-sh/uv/issues/6821
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Pin Python version on `uv init`
@@ -48,10 +48,6 @@ I think so — either way you want to develop on a consistent version.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-30 13:20_
-
----
-
-_Referenced in [astral-sh/uv#6869](../../astral-sh/uv/pulls/6869.md) on 2024-08-30 13:51_
 
 ---
 

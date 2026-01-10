@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-22T15:24:16Z
 updated_at: 2024-08-22T17:47:30Z
 url: https://github.com/astral-sh/uv/issues/6443
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv sync` freezes infinitely at the container root
@@ -633,17 +633,5 @@ _Closed by @sterliakov on 2024-08-22 17:39_
 ---
 
 _Label `upstream` added by @zanieb on 2024-08-22 17:47_
-
----
-
-_Referenced in [astral-sh/uv#6456](../../astral-sh/uv/issues/6456.md) on 2024-08-22 18:50_
-
----
-
-_Referenced in [astral-sh/uv#6462](../../astral-sh/uv/issues/6462.md) on 2024-08-22 21:08_
-
----
-
-_Referenced in [invoke-ai/InvokeAI#7944](../../invoke-ai/InvokeAI/pulls/7944.md) on 2025-04-23 00:50_
 
 ---

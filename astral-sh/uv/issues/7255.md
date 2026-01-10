@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-10T14:10:53Z
 updated_at: 2024-09-16T20:06:22Z
 url: https://github.com/astral-sh/uv/issues/7255
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Provide option to install only dev dependencies
@@ -81,18 +81,10 @@ _Label `enhancement` added by @charliermarsh on 2024-09-12 01:53_
 
 ---
 
-_Referenced in [astral-sh/uv#7367](../../astral-sh/uv/pulls/7367.md) on 2024-09-13 16:21_
-
----
-
 _Closed by @charliermarsh on 2024-09-16 20:06_
 
 ---
 
 _Closed by @charliermarsh on 2024-09-16 20:06_
-
----
-
-_Referenced in [astral-sh/uv#7993](../../astral-sh/uv/issues/7993.md) on 2024-10-08 02:25_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-27T10:58:03Z
 updated_at: 2024-09-06T00:41:41Z
 url: https://github.com/astral-sh/uv/issues/5507
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv build` command?
@@ -58,10 +58,6 @@ _Closed by @zanieb on 2024-08-26 17:05_
 ---
 
 _Label `duplicate` added by @zanieb on 2024-08-26 17:05_
-
----
-
-_Referenced in [astral-sh/uv#6739](../../astral-sh/uv/issues/6739.md) on 2024-08-28 12:34_
 
 ---
 

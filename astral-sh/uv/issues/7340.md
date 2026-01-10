@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-12T20:12:20Z
 updated_at: 2024-09-13T10:22:04Z
 url: https://github.com/astral-sh/uv/issues/7340
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv python install <x.y.z>` disregards the versions in `uv python list` installed by other tools
@@ -49,10 +49,6 @@ This issue is somewhat related to another one I opened: https://github.com/astra
 
 ---
 
-_Referenced in [jond01/xil#229](../../jond01/xil/pulls/229.md) on 2024-09-12 21:06_
-
----
-
 _Comment by @zanieb on 2024-09-13 01:53_
 
 Sorry if you're using `uv python install` we will always attempt to install a managed version even if you have an existing unmanaged version. If you use `uv run --python 3.10.12 python -V` you can verify that the correct version is installed?
@@ -62,10 +58,6 @@ Sorry if you're using `uv python install` we will always attempt to install a ma
 ---
 
 _Label `question` added by @zanieb on 2024-09-13 01:53_
-
----
-
-_Referenced in [astral-sh/setup-uv#66](../../astral-sh/setup-uv/issues/66.md) on 2024-09-13 01:55_
 
 ---
 

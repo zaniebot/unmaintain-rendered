@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-04T10:01:34Z
 updated_at: 2024-09-04T15:16:32Z
 url: https://github.com/astral-sh/uv/issues/7001
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Different venv prompts in `uv venv` and `uv sync`
@@ -65,10 +65,6 @@ _Label `needs-decision` added by @charliermarsh on 2024-09-04 13:16_
 _Comment by @zanieb on 2024-09-04 13:49_
 
 I think we should use the project name instead of `.venv`.
-
----
-
-_Referenced in [astral-sh/uv#7021](../../astral-sh/uv/pulls/7021.md) on 2024-09-04 14:07_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-25T11:27:20Z
 updated_at: 2024-08-25T15:01:40Z
 url: https://github.com/astral-sh/uv/issues/6601
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Docs missing uv add --editable
@@ -53,10 +53,6 @@ _Label `cli` added by @charliermarsh on 2024-08-25 11:43_
 _Comment by @ion-elgreco on 2024-08-25 12:20_
 
 @charliermarsh yes, and the website docs as well
-
----
-
-_Referenced in [astral-sh/uv#6608](../../astral-sh/uv/pulls/6608.md) on 2024-08-25 14:55_
 
 ---
 

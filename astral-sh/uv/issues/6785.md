@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-29T00:38:30Z
 updated_at: 2024-08-29T02:08:32Z
 url: https://github.com/astral-sh/uv/issues/6785
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv add` treats valid `pyproject.toml` as invalid
@@ -55,10 +55,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-29 01:15_
 _Comment by @charliermarsh on 2024-08-29 01:15_
 
 Thanks! Will take a look.
-
----
-
-_Referenced in [astral-sh/uv#6787](../../astral-sh/uv/pulls/6787.md) on 2024-08-29 02:01_
 
 ---
 

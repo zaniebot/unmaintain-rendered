@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-04T17:00:32Z
 updated_at: 2024-09-08T00:14:03Z
 url: https://github.com/astral-sh/uv/issues/7035
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Special case error message when build fails on a very old package version
@@ -33,10 +33,6 @@ _Label `error messages` added by @zanieb on 2024-09-04 17:00_
 ---
 
 _Label `help wanted` added by @zanieb on 2024-09-04 17:00_
-
----
-
-_Referenced in [astral-sh/uv#7183](../../astral-sh/uv/issues/7183.md) on 2024-09-08 00:10_
 
 ---
 

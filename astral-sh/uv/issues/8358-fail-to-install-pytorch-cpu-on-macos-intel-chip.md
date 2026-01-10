@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-19T12:23:09Z
 updated_at: 2024-10-20T15:07:54Z
 url: https://github.com/astral-sh/uv/issues/8358
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Fail to install pytorch (cpu) on MacOS intel chip
@@ -86,14 +86,6 @@ warning: No `requires-python` value found in the workspace. Defaulting to `>=3.1
 
 ---
 
-_Referenced in [astral-sh/uv#5945](../../astral-sh/uv/issues/5945.md) on 2024-10-19 12:24_
-
----
-
-_Referenced in [astral-sh/uv#6523](../../astral-sh/uv/pulls/6523.md) on 2024-10-19 12:24_
-
----
-
 _Comment by @FishAlchemist on 2024-10-20 10:13_
 
 Try: ``uv add torch<2.3.0``
@@ -119,25 +111,5 @@ _Comment by @FishAlchemist on 2024-10-20 15:07_
 
 The documentation states that macOS (x86_64) is supported, so UV should run correctly on that device. Otherwise, the documentation should be downgraded it.
 https://github.com/astral-sh/uv/blob/7d883fc12f23ff271797e3769ae942c26a91b359/docs/reference/platforms.md?plain=1#L1-L8
-
----
-
-_Referenced in [astral-sh/uv#9515](../../astral-sh/uv/issues/9515.md) on 2024-11-29 00:24_
-
----
-
-_Referenced in [tisu19021997/snipai#4](../../tisu19021997/snipai/issues/4.md) on 2025-01-12 05:23_
-
----
-
-_Referenced in [spinalcordtoolbox/spinalcordtoolbox#4781](../../spinalcordtoolbox/spinalcordtoolbox/issues/4781.md) on 2025-02-05 17:20_
-
----
-
-_Referenced in [CodeUpdaterBot/ClickUi#3](../../CodeUpdaterBot/ClickUi/issues/3.md) on 2025-03-24 19:07_
-
----
-
-_Referenced in [vllm-project/vllm#17212](../../vllm-project/vllm/issues/17212.md) on 2025-04-29 02:12_
 
 ---

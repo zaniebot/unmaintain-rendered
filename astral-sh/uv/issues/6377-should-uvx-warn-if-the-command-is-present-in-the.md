@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-21T21:00:35Z
 updated_at: 2024-08-21T21:01:08Z
 url: https://github.com/astral-sh/uv/issues/6377
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Should `uvx` warn if the command is present in the project environment?
@@ -26,9 +26,5 @@ Ref https://github.com/astral-sh/uv/issues/6376#issuecomment-2302988063
 ---
 
 _Label `error messages` added by @zanieb on 2024-08-21 21:01_
-
----
-
-_Referenced in [astral-sh/uv#7186](../../astral-sh/uv/issues/7186.md) on 2024-09-08 13:22_
 
 ---

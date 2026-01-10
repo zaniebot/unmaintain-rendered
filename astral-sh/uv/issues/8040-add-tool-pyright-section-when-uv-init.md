@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-09T09:24:23Z
 updated_at: 2024-10-16T09:23:03Z
 url: https://github.com/astral-sh/uv/issues/8040
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # add `[tool.pyright]` section when `uv init`
@@ -147,9 +147,5 @@ We try to avoid adding configuration for external tools in uv. There are some wo
 ---
 
 _Closed by @konstin on 2024-10-16 09:23_
-
----
-
-_Referenced in [tmcw/indiepixel#18](../../tmcw/indiepixel/pulls/18.md) on 2025-02-09 16:01_
 
 ---

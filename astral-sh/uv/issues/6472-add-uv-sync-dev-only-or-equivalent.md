@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-22T23:24:20Z
 updated_at: 2024-09-16T20:06:22Z
 url: https://github.com/astral-sh/uv/issues/6472
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Add `uv sync --dev-only` or equivalent
@@ -64,15 +64,7 @@ I feel like `--prod` might imply something more, like ignoring "sources"?
 
 ---
 
-_Referenced in [astral-sh/uv#7245](../../astral-sh/uv/issues/7245.md) on 2024-09-10 13:42_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-15 23:39_
-
----
-
-_Referenced in [astral-sh/uv#7367](../../astral-sh/uv/pulls/7367.md) on 2024-09-15 23:39_
 
 ---
 

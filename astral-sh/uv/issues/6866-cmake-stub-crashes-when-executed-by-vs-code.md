@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-30T13:14:11Z
 updated_at: 2024-09-05T06:13:30Z
 url: https://github.com/astral-sh/uv/issues/6866
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # CMake stub crashes when executed by VS Code
@@ -54,10 +54,6 @@ Windows 10, Python 3.10
 
 ---
 
-_Referenced in [astral-sh/uv#6792](../../astral-sh/uv/pulls/6792.md) on 2024-08-30 13:55_
-
----
-
 _Comment by @petermbauer on 2024-08-31 05:53_
 
 No idea why it did not work when testing with the binary from #6792 but i can confirm that it works now with uv 0.4.1 so thanks a lot for the fix!
@@ -70,10 +66,6 @@ However, the same error output as mentioned in https://github.com/astral-sh/uv/i
 ---
 
 _Closed by @petermbauer on 2024-08-31 05:53_
-
----
-
-_Referenced in [astral-sh/uv#6955](../../astral-sh/uv/pulls/6955.md) on 2024-09-03 02:31_
 
 ---
 

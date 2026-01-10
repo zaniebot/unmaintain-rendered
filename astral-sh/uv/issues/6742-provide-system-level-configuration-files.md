@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-28T10:32:06Z
 updated_at: 2024-10-22T15:04:00Z
 url: https://github.com/astral-sh/uv/issues/6742
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Provide system-level configuration files
@@ -65,10 +65,6 @@ _sigh_ That's malware.
 
 ---
 
-_Referenced in [astral-sh/ruff#13138](../../astral-sh/ruff/issues/13138.md) on 2024-08-28 12:36_
-
----
-
 _Label `configuration` added by @charliermarsh on 2024-08-28 12:54_
 
 ---
@@ -106,14 +102,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-29 12:56_
 ---
 
 _Unassigned @charliermarsh by @charliermarsh on 2024-08-29 13:52_
-
----
-
-_Referenced in [astral-sh/uv#6349](../../astral-sh/uv/issues/6349.md) on 2024-09-02 10:01_
-
----
-
-_Referenced in [astral-sh/uv#7354](../../astral-sh/uv/issues/7354.md) on 2024-09-13 09:43_
 
 ---
 
@@ -160,10 +148,6 @@ _Comment by @zanieb on 2024-09-30 18:32_
 I'm fine with this if we have a clear standard we can follow regarding the location.
 
 I don't really know what to do about toggling this behavior based on where the uv binary is. That seems quite complicated, though I share your concerns about the configuration not being valid for your version. Are we going to have a separate way to opt-out of this? e.g. `--no-system-config` and `system-config = false`?
-
----
-
-_Referenced in [astral-sh/uv#7851](../../astral-sh/uv/pulls/7851.md) on 2024-10-01 17:40_
 
 ---
 

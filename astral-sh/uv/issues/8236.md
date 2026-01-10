@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-16T00:47:33Z
 updated_at: 2024-10-16T00:53:20Z
 url: https://github.com/astral-sh/uv/issues/8236
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `.tar.gz` build fails due to `tool.uv.sources`
@@ -39,18 +39,10 @@ _Label `bug` added by @charliermarsh on 2024-10-16 00:47_
 
 ---
 
-_Referenced in [astral-sh/uv#8235](../../astral-sh/uv/pulls/8235.md) on 2024-10-16 00:47_
-
----
-
 _Closed by @charliermarsh on 2024-10-16 00:53_
 
 ---
 
 _Closed by @charliermarsh on 2024-10-16 00:53_
-
----
-
-_Referenced in [apache/airflow#43121](../../apache/airflow/pulls/43121.md) on 2024-10-17 14:56_
 
 ---

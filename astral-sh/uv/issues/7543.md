@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-19T11:42:41Z
 updated_at: 2024-09-19T20:31:57Z
 url: https://github.com/astral-sh/uv/issues/7543
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv 0.4.12 failing to read distribution cache in github actions
@@ -115,10 +115,6 @@ I'll fix this today.
 _Comment by @nijel on 2024-09-19 12:30_
 
 In our case, the GitHub cache really should be per Python version, so I've just changed that. Without that, it is not really useful as compiled wheels are not compatible across Python versions.
-
----
-
-_Referenced in [astral-sh/uv#7559](../../astral-sh/uv/pulls/7559.md) on 2024-09-19 19:26_
 
 ---
 

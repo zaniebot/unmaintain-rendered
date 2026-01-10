@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-17T06:33:37Z
 updated_at: 2024-10-17T12:23:00Z
 url: https://github.com/astral-sh/uv/issues/8281
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # PEP 508 parsing panics when the input starts with whitespace
@@ -32,10 +32,6 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ```
 
 [Originally reported](https://discord.com/channels/1039017663004942429/1207998321562619954/1296340012001923083) by dice on Discord.
-
----
-
-_Referenced in [astral-sh/uv#8282](../../astral-sh/uv/pulls/8282.md) on 2024-10-17 07:02_
 
 ---
 

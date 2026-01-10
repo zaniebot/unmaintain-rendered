@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-26T12:34:18Z
 updated_at: 2024-09-10T13:35:32Z
 url: https://github.com/astral-sh/uv/issues/6642
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Allow setting a target version for `uv self update`
@@ -58,10 +58,6 @@ This is supported upstream, e.g., https://github.com/axodotdev/cargo-dist/blob/c
 ---
 
 _Label `help wanted` added by @zanieb on 2024-08-29 17:56_
-
----
-
-_Referenced in [astral-sh/uv#7252](../../astral-sh/uv/pulls/7252.md) on 2024-09-10 13:06_
 
 ---
 

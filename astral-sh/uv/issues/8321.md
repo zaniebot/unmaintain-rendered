@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-10-18T08:10:48Z
 updated_at: 2024-10-18T17:37:51Z
 url: https://github.com/astral-sh/uv/issues/8321
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `UV_FROZEN` env var please
@@ -56,14 +56,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-10-18 17:22_
 
 ---
 
-_Referenced in [astral-sh/uv#8340](../../astral-sh/uv/pulls/8340.md) on 2024-10-18 17:24_
-
----
-
 _Closed by @charliermarsh on 2024-10-18 17:37_
-
----
-
-_Referenced in [astral-sh/uv#8094](../../astral-sh/uv/issues/8094.md) on 2024-10-31 19:26_
 
 ---

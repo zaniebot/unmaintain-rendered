@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-11T06:15:56Z
 updated_at: 2024-10-16T19:38:33Z
 url: https://github.com/astral-sh/uv/issues/7282
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Make metadata caching of local projects opt-in when it is dynamic?
@@ -92,10 +92,6 @@ _Label `needs-decision` added by @charliermarsh on 2024-09-12 01:52_
 
 ---
 
-_Referenced in [astral-sh/uv#2844](../../astral-sh/uv/issues/2844.md) on 2024-09-13 12:56_
-
----
-
 _Comment by @mmerickel on 2024-10-16 18:18_
 
 As the author of #2844 which is pulled into here - I'm just frankly surprised that `uv run` has so many side effects such that it would be a blocker for decisions here. My focus is on `uv sync` and it's "obvious" to me that `uv sync` should reinstall packages that are installed in editable mode every single time `uv sync` is executed. That's what editable means, and how `pip install -e` has worked forever. I'm completely fine with `uv run` having different semantics here because it's simply not a command that should guarantee that everything is perfectly up to date in my mind. It's cool if it can provide some sanity checks or basic things, but `uv sync` is the "one true thing that should get the env in the right state" and that means that it should reinstall editable packages.
@@ -137,9 +133,5 @@ I can do it with cache-keys to be clear but it's globbing a lot of files that 1)
 _Comment by @mmerickel on 2024-10-16 19:38_
 
 I confirmed that `tool.uv.cache-keys` does work as we thought it would. It does have the downsides I mentioned above and does require each project to define how it should work with uv or the wrong thing happens. My desired behavior would be a different default. Basically if you don't define `tool.uv.cache-keys` on a project and it's editable then `uv sync` should reinstall it. If you do define `cache-keys` then that is a fast-path for uv to use.
-
----
-
-_Referenced in [astral-sh/uv#12038](../../astral-sh/uv/issues/12038.md) on 2025-03-07 10:52_
 
 ---

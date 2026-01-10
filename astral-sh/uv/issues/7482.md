@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-18T03:41:22Z
 updated_at: 2024-09-20T01:27:26Z
 url: https://github.com/astral-sh/uv/issues/7482
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 #  uv generate-shell-completion powershell script error in uv 0.4.11.
@@ -35,10 +35,6 @@ _Comment by @charliermarsh on 2024-09-18 03:44_
 _Comment by @bluss on 2024-09-18 06:25_
 
 Ok, not good, that means not all shells can handle having this output in one stream. I think uv and uvx completions then need to be in separate commands, like `uvx --generate-shell-completion`
-
----
-
-_Referenced in [astral-sh/uv#7511](../../astral-sh/uv/pulls/7511.md) on 2024-09-18 17:04_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-29T10:45:50Z
 updated_at: 2024-08-29T21:24:00Z
 url: https://github.com/astral-sh/uv/issues/6802
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # False positive in warning: uv does not recognize "~" in $PATH
@@ -88,10 +88,6 @@ I can't imagine this being OS-specific (but I don't know for sure). It may be sh
 _Comment by @charliermarsh on 2024-08-29 15:50_
 
 Ah yeah, I'm using Zsh. That would explain it.
-
----
-
-_Referenced in [astral-sh/uv#6829](../../astral-sh/uv/pulls/6829.md) on 2024-08-29 19:36_
 
 ---
 

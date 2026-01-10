@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-01T20:41:49Z
 updated_at: 2024-08-23T03:00:05Z
 url: https://github.com/astral-sh/uv/issues/5713
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Reduce CI time
@@ -74,18 +74,6 @@ I strongly considered self-hosted runners, but it seemed painful to orchestrate 
 
 ---
 
-_Referenced in [astral-sh/uv#5714](../../astral-sh/uv/pulls/5714.md) on 2024-08-01 23:06_
-
----
-
-_Referenced in [astral-sh/uv#5715](../../astral-sh/uv/pulls/5715.md) on 2024-08-01 23:11_
-
----
-
-_Referenced in [astral-sh/uv#5717](../../astral-sh/uv/pulls/5717.md) on 2024-08-01 23:38_
-
----
-
 _Comment by @zanieb on 2024-08-02 01:03_
 
 I also very much want to look into something like https://github.com/astral-sh/uv/pull/609 again to cache our network traffic — I think that'd help a lot.
@@ -114,10 +102,6 @@ edit: I created a published image at https://github.com/astral-sh/nginx_pypi_cac
 
 ---
 
-_Referenced in [astral-sh/uv#5726](../../astral-sh/uv/pulls/5726.md) on 2024-08-02 13:35_
-
----
-
 _Comment by @zanieb on 2024-08-07 20:07_
 
 Some progress with:
@@ -131,18 +115,6 @@ Some progress with:
 _Comment by @zanieb on 2024-08-07 20:08_
 
 Linux is acceptably fast now. We're at the limit for macOS machine size without going to alternative runner providers. There are larger Windows runners, maybe I should test one (#5890). Cost may be a problem at some point, alternative runner providers may be cheaper (often saying things like a 2x cost reduction).
-
----
-
-_Referenced in [astral-sh/uv#5890](../../astral-sh/uv/pulls/5890.md) on 2024-08-07 20:11_
-
----
-
-_Referenced in [astral-sh/uv#5891](../../astral-sh/uv/pulls/5891.md) on 2024-08-07 20:46_
-
----
-
-_Referenced in [astral-sh/uv#5892](../../astral-sh/uv/pulls/5892.md) on 2024-08-07 20:46_
 
 ---
 
@@ -165,9 +137,5 @@ _Comment by @ChannyClaus on 2024-08-09 19:28_
 > Yes, I've heard a lot about complaints regarding bazel's complexity.
 
 this is definitely true - i've seen it improving the CI time drastically at the same time though so maybe something to consider down the line if there's no other option...
-
----
-
-_Referenced in [astral-sh/uv#6680](../../astral-sh/uv/pulls/6680.md) on 2024-09-05 00:32_
 
 ---

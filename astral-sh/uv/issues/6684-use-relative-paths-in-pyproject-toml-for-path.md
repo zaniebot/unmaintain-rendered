@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-27T12:52:16Z
 updated_at: 2024-08-27T14:02:10Z
 url: https://github.com/astral-sh/uv/issues/6684
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Use relative paths in pyproject.toml for path dependencies
@@ -65,10 +65,6 @@ _Label `cli` added by @charliermarsh on 2024-08-27 12:53_
 _Comment by @charliermarsh on 2024-08-27 12:54_
 
 (I'm gonna call it a bug since it probably should've always behaved this way.)
-
----
-
-_Referenced in [astral-sh/uv#6686](../../astral-sh/uv/pulls/6686.md) on 2024-08-27 13:15_
 
 ---
 

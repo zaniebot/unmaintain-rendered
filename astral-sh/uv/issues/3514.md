@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-05-10T17:59:01Z
 updated_at: 2024-10-12T11:22:12Z
 url: https://github.com/astral-sh/uv/issues/3514
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Add support for retrying connection failures
@@ -113,14 +113,6 @@ Thanks for the links @samypr100, cc @konstin ?
 
 ---
 
-_Referenced in [meltano/meltano#8539](../../meltano/meltano/issues/8539.md) on 2024-05-13 16:42_
-
----
-
-_Referenced in [astral-sh/uv#3572](../../astral-sh/uv/issues/3572.md) on 2024-05-14 10:42_
-
----
-
 _Comment by @notatallshaw on 2024-05-30 16:29_
 
 FYI, I'm also seeing this same error semi-often in my work environment:
@@ -138,25 +130,9 @@ I'm going to test setting the new `UV_CONCURRENT_DOWNLOADS` (https://github.com/
 
 ---
 
-_Referenced in [astral-sh/uv#3933](../../astral-sh/uv/pulls/3933.md) on 2024-05-31 09:48_
-
----
-
 _Comment by @charliermarsh on 2024-06-02 18:24_
 
 I assume those retries don't apply to streaming operations. Like, they apply to the initial request itself, but probably not the entirety of reading from the stream? We can fix this by adding our own retry around download operations.
-
----
-
-_Referenced in [TrueLayer/reqwest-middleware#159](../../TrueLayer/reqwest-middleware/pulls/159.md) on 2024-06-11 10:36_
-
----
-
-_Referenced in [astral-sh/uv#4402](../../astral-sh/uv/issues/4402.md) on 2024-06-18 20:22_
-
----
-
-_Referenced in [deepmodeling/deepmd-kit#3889](../../deepmodeling/deepmd-kit/pulls/3889.md) on 2024-06-19 23:41_
 
 ---
 
@@ -211,14 +187,6 @@ _Label `network` added by @konstin on 2024-07-02 09:35_
 
 ---
 
-_Referenced in [astral-sh/uv#4725](../../astral-sh/uv/pulls/4725.md) on 2024-07-02 09:49_
-
----
-
-_Referenced in [astral-sh/uv#4739](../../astral-sh/uv/issues/4739.md) on 2024-07-02 20:53_
-
----
-
 _Comment by @messense on 2024-07-09 07:44_
 
 I'm also hitting this issue, it's rather painful when going through a corporate proxy that may have concurrent connection limits, retry manually doesn't always work in CI.
@@ -262,10 +230,6 @@ Thanks, good catch! Let's fix that.
 _Comment by @benjamin-hodgson on 2024-07-10 11:52_
 
 Sounds like the fix would need to be on uv's end: https://github.com/TrueLayer/reqwest-middleware/issues/47#issuecomment-1170955570
-
----
-
-_Referenced in [astral-sh/uv#4960](../../astral-sh/uv/pulls/4960.md) on 2024-07-10 14:21_
 
 ---
 
@@ -410,10 +374,6 @@ Maybe because the unzip error causing an early error return?
 
 ---
 
-_Referenced in [astral-sh/uv#5094](../../astral-sh/uv/pulls/5094.md) on 2024-07-16 03:11_
-
----
-
 _Comment by @messense on 2024-07-19 01:24_
 
 Happy to report `uv` v0.2.26 runs smoothly for me, no more failures when downloading wheels.
@@ -461,10 +421,6 @@ Any pointers are appreciated!
 
 ---
 
-_Referenced in [pola-rs/polars#17899](../../pola-rs/polars/issues/17899.md) on 2024-07-26 22:02_
-
----
-
 _Comment by @charliermarsh on 2024-07-26 23:54_
 
 @stinodego -- Just confirming that you're on the most recent version of uv?
@@ -498,10 +454,6 @@ _Comment by @stinodego on 2024-07-27 20:04_
 > Verbose could be helpful because I'm trying to understand if we're retrying the download or not.
 
 I set our CI to verbose mode - will report back if I spot the error again.
-
----
-
-_Referenced in [astral-sh/uv#5555](../../astral-sh/uv/pulls/5555.md) on 2024-07-29 11:33_
 
 ---
 
@@ -553,17 +505,5 @@ _Comment by @jgehrcke on 2024-10-12 11:22_
 > I've seen a regression in this recently, in the last few days, using the latest version of uv,
 
 I think I can confirm. Just opened https://github.com/astral-sh/uv/issues/8144 before I found this issue here.
-
----
-
-_Referenced in [astral-sh/uv#8144](../../astral-sh/uv/issues/8144.md) on 2024-10-12 16:08_
-
----
-
-_Referenced in [astral-sh/uv#10570](../../astral-sh/uv/issues/10570.md) on 2025-01-13 16:07_
-
----
-
-_Referenced in [seanmonstar/reqwest#2819](../../seanmonstar/reqwest/issues/2819.md) on 2025-09-18 07:21_
 
 ---

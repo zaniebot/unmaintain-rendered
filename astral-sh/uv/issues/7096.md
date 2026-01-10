@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-09-05T19:18:51Z
 updated_at: 2024-09-06T01:40:52Z
 url: https://github.com/astral-sh/uv/issues/7096
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Prune unused source distributions from the cache
@@ -45,10 +45,6 @@ _Label `cache` added by @charliermarsh on 2024-09-05 19:18_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-06 01:26_
-
----
-
-_Referenced in [astral-sh/uv#7112](../../astral-sh/uv/pulls/7112.md) on 2024-09-06 01:27_
 
 ---
 

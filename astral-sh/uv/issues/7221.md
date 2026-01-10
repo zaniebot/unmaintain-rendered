@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-09T15:21:05Z
 updated_at: 2024-09-09T19:46:20Z
 url: https://github.com/astral-sh/uv/issues/7221
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Avoid batch prefetching for indexes that don't support `.metadata` or range requests
@@ -39,10 +39,6 @@ _Label `compatibility` added by @charliermarsh on 2024-09-09 15:21_
 _Comment by @charliermarsh on 2024-09-09 15:47_
 
 Working on this.
-
----
-
-_Referenced in [astral-sh/uv#7226](../../astral-sh/uv/pulls/7226.md) on 2024-09-09 18:17_
 
 ---
 

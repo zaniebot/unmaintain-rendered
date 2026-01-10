@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-12T14:14:00Z
 updated_at: 2024-09-24T16:36:13Z
 url: https://github.com/astral-sh/uv/issues/7332
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Pinning system dependencies in pyproject.toml
@@ -54,9 +54,5 @@ Hi @zanieb @konstin @charliermarsh , what do you think?
 _Comment by @zanieb on 2024-09-24 16:36_
 
 @thepowerfuldeez please don't ping us repeatedly. We don't have an obvious answer to this.
-
----
-
-_Referenced in [bgreenawald/bananagrams#75](../../bgreenawald/bananagrams/pulls/75.md) on 2025-08-03 18:31_
 
 ---

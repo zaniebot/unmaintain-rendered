@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-19T13:46:22Z
 updated_at: 2024-10-15T02:31:58Z
 url: https://github.com/astral-sh/uv/issues/7549
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv pip install` failed on Windows: `stream did not contain valid UTF-8`
@@ -101,10 +101,6 @@ ERROR: Could not build wheels for httptools, which is required to install pyproj
 
 ---
 
-_Referenced in [astral-sh/uv#7733](../../astral-sh/uv/issues/7733.md) on 2024-09-27 09:24_
-
----
-
 _Comment by @charliermarsh on 2024-09-28 12:39_
 
 This should be fixed by https://github.com/astral-sh/uv/pull/7757.
@@ -157,19 +153,11 @@ uv 0.4.18 (7b55e9790 2024-10-01)
 
 ---
 
-_Referenced in [astral-sh/uv#8009](../../astral-sh/uv/issues/8009.md) on 2024-10-11 03:28_
-
----
-
 _Comment by @jfcherng on 2024-10-11 03:38_
 
 Here's the full log with `uv 0.4.20`: [output.log](https://github.com/user-attachments/files/17337293/output.log)
 
 Probably the same issue with https://github.com/astral-sh/uv/issues/8009
-
----
-
-_Referenced in [astral-sh/uv#8120](../../astral-sh/uv/pulls/8120.md) on 2024-10-11 04:52_
 
 ---
 

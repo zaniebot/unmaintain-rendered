@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-26T23:03:38Z
 updated_at: 2024-08-30T20:40:29Z
 url: https://github.com/astral-sh/uv/issues/2679
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Support for platform independent lockfile and SHA-pinning
@@ -32,14 +32,6 @@ re-raising https://github.com/astral-sh/rye/issues/881
 >     * Check for outdated dependencies (like you can do with pip: `pip list --outdated`)
 
 
-
----
-
-_Referenced in [astral-sh/rye#881](../../astral-sh/rye/issues/881.md) on 2024-03-26 23:03_
-
----
-
-_Referenced in [DetachHead/pytest-robotframework#251](../../DetachHead/pytest-robotframework/pulls/251.md) on 2024-03-26 23:03_
 
 ---
 
@@ -71,15 +63,7 @@ I would personally be very grateful if you would target `poetry.lock` since this
 
 ---
 
-_Referenced in [astral-sh/uv#1870](../../astral-sh/uv/issues/1870.md) on 2024-04-10 14:15_
-
----
-
 _Assigned to @BurntSushi by @BurntSushi on 2024-04-10 14:16_
-
----
-
-_Referenced in [astral-sh/uv#2142](../../astral-sh/uv/issues/2142.md) on 2024-04-15 18:31_
 
 ---
 
@@ -355,18 +339,6 @@ _Comment by @considerate on 2024-04-22 04:23_
 
 ---
 
-_Referenced in [astral-sh/uv#3333](../../astral-sh/uv/issues/3333.md) on 2024-05-06 07:48_
-
----
-
-_Referenced in [astral-sh/uv#3672](../../astral-sh/uv/issues/3672.md) on 2024-05-20 17:07_
-
----
-
-_Referenced in [aspect-build/rules_py#345](../../aspect-build/rules_py/issues/345.md) on 2024-06-03 17:00_
-
----
-
 _Comment by @brettcannon on 2024-06-12 18:54_
 
 > Unsolicited thoughts on what I want from a lock file:
@@ -383,17 +355,9 @@ That should all be supported in the PEP I have coming (just got back from parent
 
 ---
 
-_Referenced in [astral-sh/uv#4331](../../astral-sh/uv/issues/4331.md) on 2024-06-14 18:43_
-
----
-
 _Comment by @zanieb on 2024-06-19 00:40_
 
 For those following, https://github.com/astral-sh/uv/issues/3347 is tracking the lock file work in progress.
-
----
-
-_Referenced in [astral-sh/uv#4447](../../astral-sh/uv/issues/4447.md) on 2024-06-22 14:38_
 
 ---
 
@@ -412,14 +376,6 @@ _Comment by @charliermarsh on 2024-06-26 21:53_
 
 It's definitely experimental! And part of the thinking here (in addition to shipping something useful in the `uv pip compile` interface) is that it will make it easier for folks to help us stress test the resolver. Would appreciate any feedback (via new issues).
 
-
----
-
-_Referenced in [astral-sh/rye#1056](../../astral-sh/rye/issues/1056.md) on 2024-06-28 19:18_
-
----
-
-_Referenced in [astral-sh/uv#5835](../../astral-sh/uv/issues/5835.md) on 2024-08-06 21:49_
 
 ---
 

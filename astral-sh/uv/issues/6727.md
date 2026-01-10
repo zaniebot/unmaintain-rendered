@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-27T22:52:23Z
 updated_at: 2024-08-27T23:04:49Z
 url: https://github.com/astral-sh/uv/issues/6727
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # minor formatting: dependency grouping not preserved if there's an empty line between
@@ -68,10 +68,6 @@ build-backend = "hatchling.build"
 ```
 i wonder if the empty line between `requests` and `pydantic` should be preserved?
 
-
----
-
-_Referenced in [astral-sh/uv#6388](../../astral-sh/uv/pulls/6388.md) on 2024-08-27 22:53_
 
 ---
 

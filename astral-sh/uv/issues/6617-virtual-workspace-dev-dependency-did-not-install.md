@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-25T20:15:33Z
 updated_at: 2024-08-26T00:31:43Z
 url: https://github.com/astral-sh/uv/issues/6617
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # virtual workspace dev-dependency did not install extras
@@ -596,10 +596,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-25 20:53_
 _Comment by @charliermarsh on 2024-08-25 20:56_
 
 I see the issue, I'll have it fixed for tomorrow's release.
-
----
-
-_Referenced in [astral-sh/uv#6620](../../astral-sh/uv/pulls/6620.md) on 2024-08-25 22:52_
 
 ---
 

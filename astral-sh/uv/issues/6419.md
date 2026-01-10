@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-22T09:51:28Z
 updated_at: 2024-09-14T20:03:49Z
 url: https://github.com/astral-sh/uv/issues/6419
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Better error message for invalid `[project]` table
@@ -169,22 +169,6 @@ _Label `upstream` added by @konstin on 2024-08-26 13:49_
 ---
 
 _Label `error messages` added by @konstin on 2024-08-26 13:49_
-
----
-
-_Referenced in [elevenlabs/elevenlabs-python#349](../../elevenlabs/elevenlabs-python/pulls/349.md) on 2024-08-28 10:22_
-
----
-
-_Referenced in [elevenlabs/elevenlabs-python#350](../../elevenlabs/elevenlabs-python/issues/350.md) on 2024-08-28 10:30_
-
----
-
-_Referenced in [astral-sh/uv#6803](../../astral-sh/uv/pulls/6803.md) on 2024-08-29 10:54_
-
----
-
-_Referenced in [astral-sh/uv#6838](../../astral-sh/uv/issues/6838.md) on 2024-08-29 22:35_
 
 ---
 

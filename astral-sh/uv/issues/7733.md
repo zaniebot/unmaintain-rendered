@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-27T09:24:46Z
 updated_at: 2024-09-28T12:39:39Z
 url: https://github.com/astral-sh/uv/issues/7733
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # UTF-8 Encoding Errors Prevent Package Installation
@@ -81,10 +81,6 @@ _Label `windows` added by @charliermarsh on 2024-09-27 12:24_
 
 ---
 
-_Referenced in [astral-sh/uv#7726](../../astral-sh/uv/issues/7726.md) on 2024-09-27 12:24_
-
----
-
 _Comment by @Paillat-dev on 2024-09-27 20:20_
 
 I think it was enabled already, double checked and made sure it was, restarted, but still the same issue:
@@ -125,10 +121,6 @@ When Windows username contains non-ASCII characters, the default uv cache direct
 _Comment by @Paillat-dev on 2024-09-28 07:29_
 
 Right that is most likely the reason, as my username contains the `é` accentuated character.
-
----
-
-_Referenced in [astral-sh/uv#7757](../../astral-sh/uv/pulls/7757.md) on 2024-09-28 12:32_
 
 ---
 

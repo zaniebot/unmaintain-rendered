@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-19T07:28:34Z
 updated_at: 2024-09-20T01:54:20Z
 url: https://github.com/astral-sh/uv/issues/7534
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Add pip shortcut to venv script
@@ -64,17 +64,5 @@ _Comment by @zanieb on 2024-09-19 11:09_
 ---
 
 _Closed by @zanieb on 2024-09-19 11:09_
-
----
-
-_Referenced in [astral-sh/uv#8354](../../astral-sh/uv/issues/8354.md) on 2024-10-19 02:19_
-
----
-
-_Referenced in [astral-sh/uv#11550](../../astral-sh/uv/issues/11550.md) on 2025-02-16 05:31_
-
----
-
-_Referenced in [astral-sh/uv#12604](../../astral-sh/uv/issues/12604.md) on 2025-04-01 17:56_
 
 ---

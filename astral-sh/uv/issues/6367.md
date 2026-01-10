@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-21T18:52:32Z
 updated_at: 2024-08-21T19:03:22Z
 url: https://github.com/astral-sh/uv/issues/6367
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `--no-build-isolation` has no effect in `uv add `
@@ -92,10 +92,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-21 18:53_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-08-21 18:53_
-
----
-
-_Referenced in [astral-sh/uv#6368](../../astral-sh/uv/pulls/6368.md) on 2024-08-21 18:55_
 
 ---
 

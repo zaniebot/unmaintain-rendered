@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-11T03:11:02Z
 updated_at: 2024-10-11T15:22:19Z
 url: https://github.com/astral-sh/uv/issues/8118
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Feature suggestion: `uv venv -a/--activate`
@@ -149,17 +149,5 @@ _Label `duplicate` added by @zanieb on 2024-10-11 15:22_
 ---
 
 _Closed by @zanieb on 2024-10-11 15:22_
-
----
-
-_Referenced in [astral-sh/uv#9166](../../astral-sh/uv/issues/9166.md) on 2024-11-16 16:03_
-
----
-
-_Referenced in [astral-sh/uv#9603](../../astral-sh/uv/issues/9603.md) on 2024-12-03 11:22_
-
----
-
-_Referenced in [Coacher/vim-virtualenv#7](../../Coacher/vim-virtualenv/issues/7.md) on 2025-10-02 14:37_
 
 ---

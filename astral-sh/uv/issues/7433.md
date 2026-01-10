@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-16T17:11:10Z
 updated_at: 2024-09-17T02:21:43Z
 url: https://github.com/astral-sh/uv/issues/7433
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv add --branch` is broken solely on a particular repo
@@ -198,10 +198,6 @@ No, I don't think the behavior we're seeing is wanted or expected. I'm just debu
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-16 17:40_
-
----
-
-_Referenced in [astral-sh/uv#7447](../../astral-sh/uv/pulls/7447.md) on 2024-09-17 02:06_
 
 ---
 

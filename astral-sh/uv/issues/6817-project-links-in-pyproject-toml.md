@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-29T15:04:08Z
 updated_at: 2024-08-30T12:52:55Z
 url: https://github.com/astral-sh/uv/issues/6817
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Project links in pyproject.toml
@@ -37,10 +37,6 @@ _Label `release` added by @zanieb on 2024-08-29 16:43_
 _Comment by @zanieb on 2024-08-29 16:43_
 
 Makes sense to me.
-
----
-
-_Referenced in [astral-sh/uv#6844](../../astral-sh/uv/pulls/6844.md) on 2024-08-30 00:25_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-30T17:01:12Z
 updated_at: 2024-10-01T19:18:39Z
 url: https://github.com/astral-sh/uv/issues/7816
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Warn if packages are missing wheels for the current python
@@ -34,17 +34,5 @@ I believe our issues are connected: #7435
 I would like `uv add` to should support (either via flag or config) using the latest compatible wheel (based on the project's `requires-python` field) instead of defaulting to building from source. 
 
 For reference, `pip` offers similar functionality with the `--prefer-binary` flag or by setting `prefer-binary = true` in the `pip.conf` file, and `uv pip install` also supports this with `--only-binary` (albeit you need to specify the package(s) you want to install as binary or use `:all:`)
-
----
-
-_Referenced in [astral-sh/uv#7703](../../astral-sh/uv/issues/7703.md) on 2024-11-20 00:37_
-
----
-
-_Referenced in [astral-sh/uv#9412](../../astral-sh/uv/issues/9412.md) on 2024-11-25 10:05_
-
----
-
-_Referenced in [astral-sh/uv#11743](../../astral-sh/uv/issues/11743.md) on 2025-02-24 11:43_
 
 ---

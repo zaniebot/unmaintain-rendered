@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-03T19:14:54Z
 updated_at: 2024-10-03T21:34:40Z
 url: https://github.com/astral-sh/uv/issues/7907
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # How to convince uv that a pyenv Python instance is a venv?
@@ -59,10 +59,6 @@ homeassistant@VM-Bookworm:~$ l -d /mnt/dietpi_userdata/homeassistant/deps/lib/py
 drwxr-xr-x 188 homeassistant homeassistant 12K Oct  3 20:00 /mnt/dietpi_userdata/homeassistant/deps/lib/python3.12/site-packages/
 ```
 Is there a way to convince `uv` that this is a virtualenv, without adding the actual unnecessary (in our case) virtualenv layer on top of the pyenv?
-
----
-
-_Referenced in [MichaIng/DietPi#7231](../../MichaIng/DietPi/issues/7231.md) on 2024-10-03 19:17_
 
 ---
 

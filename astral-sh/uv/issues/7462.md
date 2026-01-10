@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-17T14:24:55Z
 updated_at: 2024-09-17T15:05:24Z
 url: https://github.com/astral-sh/uv/issues/7462
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv install` installs incompatible package for python version
@@ -91,21 +91,5 @@ _Closed by @timvink on 2024-09-17 14:58_
 _Comment by @zanieb on 2024-09-17 15:05_
 
 @timvink you can add a lower bound using constraints or overrides https://docs.astral.sh/uv/concepts/resolution/#dependency-constraints
-
----
-
-_Referenced in [astral-sh/uv#7869](../../astral-sh/uv/issues/7869.md) on 2024-10-02 15:16_
-
----
-
-_Referenced in [astral-sh/uv#8374](../../astral-sh/uv/issues/8374.md) on 2024-10-19 22:21_
-
----
-
-_Referenced in [prefix-dev/pixi#2965](../../prefix-dev/pixi/issues/2965.md) on 2025-01-21 09:57_
-
----
-
-_Referenced in [rucio/rucio#7665](../../rucio/rucio/pulls/7665.md) on 2025-04-14 11:03_
 
 ---

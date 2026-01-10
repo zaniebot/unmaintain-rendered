@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-22T21:37:19Z
 updated_at: 2024-08-30T22:08:52Z
 url: https://github.com/astral-sh/uv/issues/6464
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Running on Windows in a virtualenv: stubs in .venv/Scripts crash when run from cmake
@@ -136,10 +136,6 @@ The complete environment passed to the ninja.exe trampoline from CMake is as fol
 
 ---
 
-_Referenced in [astral-sh/uv#6699](../../astral-sh/uv/issues/6699.md) on 2024-08-27 16:27_
-
----
-
 _Comment by @petermbauer on 2024-08-29 09:10_
 
 I am running into a similar issue here with VS Code executing cmake.exe whereas cmake has been installed via `uv pip install`.
@@ -152,14 +148,6 @@ I am running into a similar issue here with VS Code executing cmake.exe whereas 
 ...
 ```
 If cmake is installed via `pip install` into the same venv it works as expected. Since the actual cmake.exe in the `.venv\Lib\site-packages\cmake\data\bin` is exactly the same as when installed with pip, i also expect the problem to be the generated trampoline.
-
----
-
-_Referenced in [astral-sh/uv#6792](../../astral-sh/uv/pulls/6792.md) on 2024-08-30 07:05_
-
----
-
-_Referenced in [astral-sh/uv#6866](../../astral-sh/uv/issues/6866.md) on 2024-08-30 13:14_
 
 ---
 
@@ -176,13 +164,5 @@ _Closed by @ghost on 2024-08-30 21:09_
 _Comment by @charliermarsh on 2024-08-30 22:08_
 
 Awesome, thank for following up @garyoberbrunner-gpsw!
-
----
-
-_Referenced in [DetachHead/basedpyright#1634](../../DetachHead/basedpyright/pulls/1634.md) on 2025-11-09 03:05_
-
----
-
-_Referenced in [astral-sh/uv#6399](../../astral-sh/uv/issues/6399.md) on 2025-11-09 04:17_
 
 ---

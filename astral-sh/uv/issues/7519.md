@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-18T21:00:07Z
 updated_at: 2024-09-19T12:08:48Z
 url: https://github.com/astral-sh/uv/issues/7519
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv sync` deletes data in non-virtualenv `UV_PROJECT_ENVIRONMENT` without warning
@@ -124,10 +124,6 @@ _Label `bug` added by @zanieb on 2024-09-18 21:59_
 _Comment by @zanieb on 2024-09-18 22:44_
 
 (If someone wants to look into this feel free, otherwise I'll try to do so soon)
-
----
-
-_Referenced in [astral-sh/uv#7522](../../astral-sh/uv/pulls/7522.md) on 2024-09-18 23:32_
 
 ---
 

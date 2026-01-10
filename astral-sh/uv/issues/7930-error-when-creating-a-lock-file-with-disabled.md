@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-04T17:08:32Z
 updated_at: 2024-10-04T17:54:48Z
 url: https://github.com/astral-sh/uv/issues/7930
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Error when creating a lock file with disabled package management mode
@@ -236,9 +236,5 @@ configuration error: `project` must contain ['version'] properties
 Could a good way out of this be a logic where uv would not ask for the version when we get option `package = false`? We may not require a version at all, or we may already manage versioning (not of a package, but of a web service in my case) using bump2version or any other utility. In PDM this is exactly how it works, because now I'm trying to switch from it to uv
 
 
-
----
-
-_Referenced in [astral-sh/uv#9910](../../astral-sh/uv/issues/9910.md) on 2024-12-15 13:26_
 
 ---

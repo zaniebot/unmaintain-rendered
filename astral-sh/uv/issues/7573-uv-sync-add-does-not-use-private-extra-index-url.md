@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-20T08:24:52Z
 updated_at: 2024-09-20T18:18:41Z
 url: https://github.com/astral-sh/uv/issues/7573
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv sync/add` does not use (private) extra-index-url/index-url specified in pyproject.toml (but works from command line)
@@ -144,10 +144,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-09-20 14:15_
 ---
 
 _Label `error messages` added by @charliermarsh on 2024-09-20 14:15_
-
----
-
-_Referenced in [astral-sh/uv#7594](../../astral-sh/uv/pulls/7594.md) on 2024-09-20 17:42_
 
 ---
 

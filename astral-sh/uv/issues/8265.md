@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-16T17:39:24Z
 updated_at: 2024-10-16T17:48:24Z
 url: https://github.com/astral-sh/uv/issues/8265
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Support for `purl` notation
@@ -37,9 +37,5 @@ I think that it would be reasonable for a user to be able to install packages us
 uv add pkg:pypi/flask@3.0.3?download_url=https://pypi.io/packages/source/f/flask/flask-3.0.3.tar.gz&checksum=sha256:ceb27b0af3823ea2737928a4d99d125a06175b8512c445cbd9a9ce200ef76842
 ```
 
-
----
-
-_Referenced in [astral-sh/uv#6012](../../astral-sh/uv/issues/6012.md) on 2024-10-31 20:25_
 
 ---

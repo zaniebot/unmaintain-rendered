@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-26T07:09:21Z
 updated_at: 2024-09-26T13:52:11Z
 url: https://github.com/astral-sh/uv/issues/7696
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv `--no-compile-bytecode` seems to have no effect in Docker build
@@ -96,18 +96,6 @@ EDIT: https://github.com/astral-sh/uv/pull/7707 :)
 
 ---
 
-_Referenced in [astral-sh/uv#7707](../../astral-sh/uv/pulls/7707.md) on 2024-09-26 12:38_
-
----
-
 _Closed by @konstin on 2024-09-26 13:52_
-
----
-
-_Referenced in [astral-sh/uv#10773](../../astral-sh/uv/issues/10773.md) on 2025-01-20 08:48_
-
----
-
-_Referenced in [astral-sh/uv#11178](../../astral-sh/uv/pulls/11178.md) on 2025-02-11 19:41_
 
 ---

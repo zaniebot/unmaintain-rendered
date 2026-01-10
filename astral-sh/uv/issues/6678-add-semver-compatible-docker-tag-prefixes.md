@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-27T08:33:00Z
 updated_at: 2024-08-28T13:31:54Z
 url: https://github.com/astral-sh/uv/issues/6678
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Add semver-compatible docker tag prefixes
@@ -37,10 +37,6 @@ _Comment by @zanieb on 2024-08-27 11:37_
 Definitely. 
 
 Example at https://github.com/PrefectHQ/prefect/blob/0b747dc7b4c9f94d5e8ffe7e6ab7a045de7451e0/.github/workflows/docker-images.yaml#L110-L116
-
----
-
-_Referenced in [astral-sh/uv#6734](../../astral-sh/uv/pulls/6734.md) on 2024-08-28 00:08_
 
 ---
 

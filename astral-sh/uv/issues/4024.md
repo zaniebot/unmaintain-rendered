@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-04T21:50:08Z
 updated_at: 2024-10-08T19:34:51Z
 url: https://github.com/astral-sh/uv/issues/4024
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv run` and `uv tool run` should list available scripts and executables
@@ -68,10 +68,6 @@ _Label `needs-design` added by @konstin on 2024-07-09 16:54_
 
 ---
 
-_Referenced in [astral-sh/uv#5184](../../astral-sh/uv/issues/5184.md) on 2024-07-18 13:57_
-
----
-
 _Comment by @charliermarsh on 2024-07-19 23:37_
 
 I think `uv tool run` should list the available executables, to start. That seems straightforward.
@@ -95,10 +91,6 @@ The `uv tool run` part should be doable now, at least.
 ---
 
 _Label `good first issue` added by @charliermarsh on 2024-07-19 23:38_
-
----
-
-_Referenced in [astral-sh/uv#5553](../../astral-sh/uv/pulls/5553.md) on 2024-07-29 08:16_
 
 ---
 
@@ -165,14 +157,6 @@ We're not sure what we we want to do for `uv run`, but I think we'd want to eith
 https://packaging.python.org/en/latest/specifications/entry-points/
 
 https://github.com/astral-sh/uv/blob/4f2349119cf341eedf738d06a50ed136a5f207db/crates/uv/src/commands/tool/run.rs#L244-L258
-
----
-
-_Referenced in [astral-sh/uv#7641](../../astral-sh/uv/pulls/7641.md) on 2024-09-25 11:40_
-
----
-
-_Referenced in [astral-sh/uv#7687](../../astral-sh/uv/pulls/7687.md) on 2024-09-25 15:46_
 
 ---
 

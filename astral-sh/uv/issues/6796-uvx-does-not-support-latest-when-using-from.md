@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-29T08:13:13Z
 updated_at: 2024-08-30T13:00:18Z
 url: https://github.com/astral-sh/uv/issues/6796
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Uvx does not support @latest when using --from
@@ -56,10 +56,6 @@ _Label `cli` added by @zanieb on 2024-08-29 13:27_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-30 00:01_
-
----
-
-_Referenced in [astral-sh/uv#6842](../../astral-sh/uv/pulls/6842.md) on 2024-08-30 00:06_
 
 ---
 

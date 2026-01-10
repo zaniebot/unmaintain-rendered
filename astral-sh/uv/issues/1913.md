@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-23T13:45:01Z
 updated_at: 2024-09-10T01:46:11Z
 url: https://github.com/astral-sh/uv/issues/1913
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Changes to pyproject.toml dependency versions not updated on install
@@ -101,19 +101,7 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-24 03:01_
 
 ---
 
-_Referenced in [astral-sh/uv#1955](../../astral-sh/uv/pulls/1955.md) on 2024-02-24 19:35_
-
----
-
 _Closed by @charliermarsh on 2024-02-24 19:55_
-
----
-
-_Referenced in [astral-sh/uv#1960](../../astral-sh/uv/pulls/1960.md) on 2024-02-25 00:27_
-
----
-
-_Referenced in [astral-sh/uv#1965](../../astral-sh/uv/pulls/1965.md) on 2024-02-25 12:32_
 
 ---
 

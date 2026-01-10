@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-05T22:22:09Z
 updated_at: 2024-09-13T12:56:48Z
 url: https://github.com/astral-sh/uv/issues/2844
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # re-running "uv pip install -e ..." does not re-invoke the build system on the package
@@ -183,17 +183,9 @@ That’s the general idea yeah. It’s intended to be used during local developm
 
 ---
 
-_Referenced in [wntrblm/nox#827](../../wntrblm/nox/issues/827.md) on 2024-05-09 13:45_
-
----
-
 _Comment by @henryiii on 2024-05-12 06:31_
 
 Running `-e.` (or even `.`) again is a common way to rebuild binary packages, and it's a lot less convenient if it doesn't actually do anything. I don't think local packages should be cached. Local packages tend to have changes without releasing versions (since you are developing on the package).
-
----
-
-_Referenced in [PyCQA/flake8-pyi#493](../../PyCQA/flake8-pyi/pulls/493.md) on 2024-06-08 16:00_
 
 ---
 
@@ -268,10 +260,6 @@ So I was expecting a local-path dependency to be, semantically, the same kind of
 
 ---
 
-_Referenced in [astral-sh/uv#6822](../../astral-sh/uv/issues/6822.md) on 2024-08-29 16:45_
-
----
-
 _Comment by @charliermarsh on 2024-09-10 01:44_
 
 We have a new API whereby you can add additional files to consider when invalidating the cache. You can also include the current Git commit (i.e., invalidate whenever the SHA changes).
@@ -294,13 +282,5 @@ Gonna close in favor of #7282.
 ---
 
 _Closed by @charliermarsh on 2024-09-13 12:56_
-
----
-
-_Referenced in [astral-sh/uv#7282](../../astral-sh/uv/issues/7282.md) on 2024-10-16 18:18_
-
----
-
-_Referenced in [astral-sh/uv#12038](../../astral-sh/uv/issues/12038.md) on 2025-03-07 10:52_
 
 ---

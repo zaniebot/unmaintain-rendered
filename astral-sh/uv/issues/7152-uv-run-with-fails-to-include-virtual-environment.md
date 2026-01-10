@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-07T02:05:08Z
 updated_at: 2024-09-09T13:19:56Z
 url: https://github.com/astral-sh/uv/issues/7152
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv run --with` fails to include virtual environment in `sys.path` for Homebrew-installed Python
@@ -79,10 +79,6 @@ breadcrumbs
 https://github.com/Homebrew/homebrew-core/pull/133490
 
 https://docs.brew.sh/Homebrew-and-Python
-
----
-
-_Referenced in [astral-sh/uv#7161](../../astral-sh/uv/pulls/7161.md) on 2024-09-07 09:38_
 
 ---
 

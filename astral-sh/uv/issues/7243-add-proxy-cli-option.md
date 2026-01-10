@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-10T06:38:52Z
 updated_at: 2024-10-21T21:50:00Z
 url: https://github.com/astral-sh/uv/issues/7243
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Add --proxy CLI option
@@ -69,13 +69,5 @@ https://github.com/seanmonstar/reqwest/blob/master/src/lib.rs#L138
 ---
 
 _Closed by @zanieb on 2024-10-21 21:50_
-
----
-
-_Referenced in [OneDragon-Anything/ZenlessZoneZero-OneDragon#1031](../../OneDragon-Anything/ZenlessZoneZero-OneDragon/issues/1031.md) on 2025-06-09 00:03_
-
----
-
-_Referenced in [ankitects/anki#4226](../../ankitects/anki/issues/4226.md) on 2025-08-08 08:52_
 
 ---

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-23T13:04:29Z
 updated_at: 2024-10-15T07:13:52Z
 url: https://github.com/astral-sh/uv/issues/6512
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Restricting universal lock by OS still downloads wheels from all OSes
@@ -119,10 +119,6 @@ We'd need to track the supported platforms.
 ---
 
 _Assigned to @konstin by @konstin on 2024-09-02 12:35_
-
----
-
-_Referenced in [astral-sh/uv#6957](../../astral-sh/uv/pulls/6957.md) on 2024-09-03 07:39_
 
 ---
 

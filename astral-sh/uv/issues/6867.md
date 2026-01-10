@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-30T13:14:50Z
 updated_at: 2024-09-02T13:42:48Z
 url: https://github.com/astral-sh/uv/issues/6867
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Dockerfile with a workspace project
@@ -268,10 +268,6 @@ I'd be ok with `ADD`ing all `pyproject.toml` files, but Dockerfile `ADD` doesn't
 
 ---
 
-_Referenced in [astral-sh/uv#6935](../../astral-sh/uv/issues/6935.md) on 2024-09-02 12:09_
-
----
-
 _Comment by @Afoucaul on 2024-09-02 13:42_
 
 Closing in favor of https://github.com/astral-sh/uv/issues/6935
@@ -279,9 +275,5 @@ Closing in favor of https://github.com/astral-sh/uv/issues/6935
 ---
 
 _Closed by @Afoucaul on 2024-09-02 13:42_
-
----
-
-_Referenced in [bgreenawald/bananagrams#75](../../bgreenawald/bananagrams/pulls/75.md) on 2025-08-03 18:31_
 
 ---

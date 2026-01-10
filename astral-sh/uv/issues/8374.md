@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-19T21:22:52Z
 updated_at: 2024-10-20T16:07:57Z
 url: https://github.com/astral-sh/uv/issues/8374
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv` ignores the `requires_python` specification
@@ -463,25 +463,5 @@ _Label `question` added by @zanieb on 2024-10-19 22:21_
 ---
 
 _Closed by @charliermarsh on 2024-10-20 16:07_
-
----
-
-_Referenced in [aiidateam/aiida-core#6603](../../aiidateam/aiida-core/pulls/6603.md) on 2024-11-06 06:37_
-
----
-
-_Referenced in [astral-sh/uv#14110](../../astral-sh/uv/issues/14110.md) on 2025-06-17 16:49_
-
----
-
-_Referenced in [astral-sh/uv#14166](../../astral-sh/uv/issues/14166.md) on 2025-06-20 19:05_
-
----
-
-_Referenced in [move-coop/parsons#1521](../../move-coop/parsons/pulls/1521.md) on 2025-07-13 13:12_
-
----
-
-_Referenced in [move-coop/parsons#1515](../../move-coop/parsons/issues/1515.md) on 2025-07-13 13:17_
 
 ---

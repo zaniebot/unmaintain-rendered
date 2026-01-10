@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-21T18:31:32Z
 updated_at: 2024-10-22T15:43:41Z
 url: https://github.com/astral-sh/uv/issues/8423
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv publish` doesn't respect the `--allow-insecure-host` flag
@@ -108,10 +108,6 @@ _Label `great writeup` added by @konstin on 2024-10-22 09:26_
 
 ---
 
-_Referenced in [astral-sh/uv#8440](../../astral-sh/uv/pulls/8440.md) on 2024-10-22 09:27_
-
----
-
 _Comment by @konstin on 2024-10-22 09:27_
 
 Thank you for the great reproducer!
@@ -125,9 +121,5 @@ _Closed by @konstin on 2024-10-22 11:36_
 _Comment by @oriori1703 on 2024-10-22 15:43_
 
 Thanks 😊
-
----
-
-_Referenced in [astral-sh/uv#7839](../../astral-sh/uv/issues/7839.md) on 2024-11-03 18:09_
 
 ---

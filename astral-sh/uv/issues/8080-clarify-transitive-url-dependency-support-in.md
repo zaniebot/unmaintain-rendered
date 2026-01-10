@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-10T09:51:55Z
 updated_at: 2024-10-10T10:21:06Z
 url: https://github.com/astral-sh/uv/issues/8080
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Clarify transitive URL dependency support in documentation
@@ -24,14 +24,6 @@ See: https://github.com/astral-sh/uv/issues/1808#issuecomment-2404611095
 ---
 
 _Label `documentation` added by @charliermarsh on 2024-10-10 09:52_
-
----
-
-_Referenced in [astral-sh/uv#1808](../../astral-sh/uv/issues/1808.md) on 2024-10-10 09:54_
-
----
-
-_Referenced in [astral-sh/uv#8081](../../astral-sh/uv/pulls/8081.md) on 2024-10-10 10:13_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-11T01:52:30Z
 updated_at: 2024-09-18T15:59:38Z
 url: https://github.com/astral-sh/uv/issues/4227
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Support for SOCKS5 and SOCKS5H
@@ -34,10 +34,6 @@ _Label `network` added by @zanieb on 2024-06-11 01:52_
 
 ---
 
-_Referenced in [astral-sh/uv#4186](../../astral-sh/uv/issues/4186.md) on 2024-06-11 01:53_
-
----
-
 _Comment by @hongyi-zhao on 2024-06-11 02:23_
 
 Do you mean `SOCKSSH` is an alias of `SOCKS5H`, aka, [SOCKS5-hostname](https://everything.curl.dev/usingcurl/proxies/socks.html) used by curl?
@@ -53,10 +49,6 @@ The latter, thanks! 🤦‍♀️
 ---
 
 _Renamed from "Support for SOCKS5 and SOCKSSH" to "Support for SOCKS5 and SOCKS5H" by @zanieb on 2024-06-11 04:11_
-
----
-
-_Referenced in [astral-sh/uv#7503](../../astral-sh/uv/pulls/7503.md) on 2024-09-18 15:20_
 
 ---
 

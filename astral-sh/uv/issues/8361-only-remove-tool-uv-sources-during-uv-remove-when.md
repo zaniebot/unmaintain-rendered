@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-19T13:24:29Z
 updated_at: 2024-10-19T15:52:02Z
 url: https://github.com/astral-sh/uv/issues/8361
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Only remove `[tool.uv.sources]` during `uv remove` when no longer relevant
@@ -29,10 +29,6 @@ _Label `bug` added by @zanieb on 2024-10-19 13:24_
 ---
 
 _Label `help wanted` added by @zanieb on 2024-10-19 13:24_
-
----
-
-_Referenced in [astral-sh/uv#8366](../../astral-sh/uv/pulls/8366.md) on 2024-10-19 14:15_
 
 ---
 

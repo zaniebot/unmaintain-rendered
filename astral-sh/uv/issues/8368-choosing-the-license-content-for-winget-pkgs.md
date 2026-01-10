@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-19T16:37:04Z
 updated_at: 2024-10-22T02:36:15Z
 url: https://github.com/astral-sh/uv/issues/8368
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Choosing the ``license`` content for winget-pkgs manifest.
@@ -80,10 +80,6 @@ _Label `question` added by @zanieb on 2024-10-19 18:25_
 
 ---
 
-_Referenced in [microsoft/winget-pkgs#184787](../../microsoft/winget-pkgs/pulls/184787.md) on 2024-10-21 16:35_
-
----
-
 _Comment by @FishAlchemist on 2024-10-22 02:18_
 
 Option 3 of UV 0.4.25 has been merged into winget-pkgs (https://github.com/microsoft/winget-pkgs/pull/184787). 
@@ -101,9 +97,5 @@ Thanks
 ---
 
 _Closed by @zanieb on 2024-10-22 02:36_
-
----
-
-_Referenced in [microsoft/winget-pkgs#188802](../../microsoft/winget-pkgs/pulls/188802.md) on 2024-11-05 01:55_
 
 ---

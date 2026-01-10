@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-05T21:25:28Z
 updated_at: 2024-09-05T22:14:58Z
 url: https://github.com/astral-sh/uv/issues/7101
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv lock` doesn't update lockfile when project version updates
@@ -28,10 +28,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-09-05 21:25_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-09-05 21:25_
-
----
-
-_Referenced in [astral-sh/uv#7102](../../astral-sh/uv/pulls/7102.md) on 2024-09-05 21:44_
 
 ---
 

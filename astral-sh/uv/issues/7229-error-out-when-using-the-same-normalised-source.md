@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-09T19:33:05Z
 updated_at: 2024-09-14T03:37:25Z
 url: https://github.com/astral-sh/uv/issues/7229
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Error out when using the same normalised source twice
@@ -102,15 +102,7 @@ It bothers me lol.
 
 ---
 
-_Referenced in [renovatebot/renovate#31297](../../renovatebot/renovate/pulls/31297.md) on 2024-09-09 22:14_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-14 03:15_
-
----
-
-_Referenced in [astral-sh/uv#7383](../../astral-sh/uv/pulls/7383.md) on 2024-09-14 03:25_
 
 ---
 

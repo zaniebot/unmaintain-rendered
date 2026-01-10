@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-20T22:52:58Z
 updated_at: 2024-09-21T19:06:34Z
 url: https://github.com/astral-sh/uv/issues/7606
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 #  v0.4.14 seems to have resolver issues
@@ -203,10 +203,6 @@ cc @charliermarsh
 
 ---
 
-_Referenced in [astral-sh/uv#7608](../../astral-sh/uv/pulls/7608.md) on 2024-09-21 03:30_
-
----
-
 _Closed by @charliermarsh on 2024-09-21 12:34_
 
 ---
@@ -218,10 +214,6 @@ I'll do a release real-quick to get this revert out.
 ---
 
 _Label `bug` added by @charliermarsh on 2024-09-21 12:35_
-
----
-
-_Referenced in [astral-sh/uv#7553](../../astral-sh/uv/issues/7553.md) on 2024-09-21 13:43_
 
 ---
 
@@ -275,13 +267,5 @@ _Comment by @stas00 on 2024-09-21 19:05_
 That would require a lot of unnecessary maintenance work on your part. I wonder if `uv` falling back to `pip` on failure would be a sufficient workaround. Like having a new flag, `--fallback-to-pip-on-failure`, which would require `pip` to be installed (assuming pip has a more relaxed/less precise resolver) e.g. often when using conda I had to fall back to pip because conda was super anal about some dependency situations and pip saved the day and everything worked just fine.)
 
 
-
----
-
-_Referenced in [astral-sh/uv#7658](../../astral-sh/uv/issues/7658.md) on 2024-09-24 14:14_
-
----
-
-_Referenced in [astral-sh/uv#9339](../../astral-sh/uv/pulls/9339.md) on 2024-11-21 22:47_
 
 ---

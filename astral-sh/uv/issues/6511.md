@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-23T13:00:32Z
 updated_at: 2024-08-29T13:57:13Z
 url: https://github.com/astral-sh/uv/issues/6511
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Add first-class support for virtual projects
@@ -63,14 +63,6 @@ I am going to prototype this later today.
 
 ---
 
-_Referenced in [astral-sh/uv#6405](../../astral-sh/uv/issues/6405.md) on 2024-08-23 13:36_
-
----
-
-_Referenced in [astral-sh/uv#6460](../../astral-sh/uv/issues/6460.md) on 2024-08-23 13:37_
-
----
-
 _Comment by @chrisrodrigue on 2024-08-23 14:49_
 
 Thanks Charlie. This will definitely help users working in monorepos and legacy codebases that contain many nested packages/scripts without clear boundaries for various components of their applications/libraries.
@@ -82,10 +74,6 @@ It’s an architectural issue for sure, and outside of massively refactoring pro
 _Comment by @charliermarsh on 2024-08-23 14:50_
 
 Yeah I think this is something we missed on slightly in the initial release. I'm gonna prioritize it.
-
----
-
-_Referenced in [astral-sh/uv#6434](../../astral-sh/uv/issues/6434.md) on 2024-08-23 14:53_
 
 ---
 
@@ -105,21 +93,9 @@ Please see #1495 for that — let's try to avoid expanding the scope of this dis
 
 ---
 
-_Referenced in [astral-sh/uv#6293](../../astral-sh/uv/issues/6293.md) on 2024-08-23 15:39_
-
----
-
 _Comment by @charliermarsh on 2024-08-23 21:39_
 
 Highly unlikely that this ships today, but I'm starting to work on it.
-
----
-
-_Referenced in [astral-sh/uv#6462](../../astral-sh/uv/issues/6462.md) on 2024-08-24 12:53_
-
----
-
-_Referenced in [astral-sh/uv#6585](../../astral-sh/uv/pulls/6585.md) on 2024-08-24 16:07_
 
 ---
 
@@ -202,9 +178,5 @@ _Comment by @philgyford on 2024-08-29 13:57_
 Ah, thank you! I obviously got confused, and am still not really clear about the difference. I'll have to read through all the docs again.
 
 I was probably thrown by how I use pip-tools locally (although maybe I'm doing that wrong too!).
-
----
-
-_Referenced in [astral-sh/uv#13589](../../astral-sh/uv/issues/13589.md) on 2025-10-21 18:01_
 
 ---

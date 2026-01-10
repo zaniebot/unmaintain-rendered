@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-08T20:00:15Z
 updated_at: 2024-10-04T20:59:20Z
 url: https://github.com/astral-sh/uv/issues/3471
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # netrc authentication seems to fail for index_url specified in requirements.txt.
@@ -156,19 +156,11 @@ Does it look meaningfully different than your setup?
 
 ---
 
-_Referenced in [astral-sh/uv#3485](../../astral-sh/uv/pulls/3485.md) on 2024-05-09 14:24_
-
----
-
 _Comment by @chrisirhc on 2024-08-08 00:06_
 
 In case this might help, in my scenario, the `$HOME` environment variable wasn't populated and hence, uv did not detect the .netrc file, whereas pypi is able to find and use it.
 
 Opened https://github.com/gribouille/netrc/issues/4 in upstream.
-
----
-
-_Referenced in [gribouille/netrc#4](../../gribouille/netrc/issues/4.md) on 2024-08-08 00:43_
 
 ---
 
@@ -183,13 +175,5 @@ Not much to do here until addressed upstream, I think.
 ---
 
 _Closed by @zanieb on 2024-10-04 20:59_
-
----
-
-_Referenced in [astral-sh/uv#6809](../../astral-sh/uv/issues/6809.md) on 2024-10-08 11:40_
-
----
-
-_Referenced in [astral-sh/uv#8003](../../astral-sh/uv/issues/8003.md) on 2024-10-08 11:45_
 
 ---

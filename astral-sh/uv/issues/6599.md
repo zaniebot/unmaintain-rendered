@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-25T09:51:59Z
 updated_at: 2024-08-26T18:05:00Z
 url: https://github.com/astral-sh/uv/issues/6599
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `--exact` has no effect when used with `--no-build-isolation` in `uv sync`
@@ -48,10 +48,6 @@ Uninstalled 1 package in 0.67ms
 
 ---
 
-_Referenced in [astral-sh/uv#6580](../../astral-sh/uv/issues/6580.md) on 2024-08-25 09:56_
-
----
-
 _Comment by @charliermarsh on 2024-08-25 11:35_
 
 Thanks, this seems like a bug.
@@ -63,10 +59,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-25 11:35_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-08-25 11:37_
-
----
-
-_Referenced in [astral-sh/uv#6606](../../astral-sh/uv/pulls/6606.md) on 2024-08-25 14:16_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-24T07:45:59Z
 updated_at: 2024-09-14T22:16:19Z
 url: https://github.com/astral-sh/uv/issues/6573
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Allow `uv sync --no-install-project` without relying on `pyproject.toml`
@@ -76,10 +76,6 @@ Let me test it before I try to answer confidently.
 _Comment by @charliermarsh on 2024-08-24 13:34_
 
 Yes, but I think we can fix that part.
-
----
-
-_Referenced in [astral-sh/uv#6581](../../astral-sh/uv/pulls/6581.md) on 2024-08-24 13:36_
 
 ---
 
@@ -167,14 +163,6 @@ but generally - it was simply my bad, I was just quickly testing `uv` and haven'
 
 ---
 
-_Referenced in [astral-sh/uv#6685](../../astral-sh/uv/issues/6685.md) on 2024-08-27 12:56_
-
----
-
-_Referenced in [astral-sh/uv#6722](../../astral-sh/uv/issues/6722.md) on 2024-08-27 21:13_
-
----
-
 _Renamed from "Allow `uv sync --no-install-project` with relying on `pyproject.toml`" to "Allow `uv sync --no-install-project` without relying on `pyproject.toml`" by @konstin on 2024-08-28 09:58_
 
 ---
@@ -185,14 +173,6 @@ The biggest hangup to doing this is that you lose any configuration specified in
 
 ---
 
-_Referenced in [astral-sh/uv#6960](../../astral-sh/uv/issues/6960.md) on 2024-09-03 20:35_
-
----
-
 _Label `wish` added by @charliermarsh on 2024-09-14 22:16_
-
----
-
-_Referenced in [plugboard-dev/plugboard#66](../../plugboard-dev/plugboard/pulls/66.md) on 2025-01-16 17:28_
 
 ---

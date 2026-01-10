@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-22T06:59:22Z
 updated_at: 2024-09-03T22:41:17Z
 url: https://github.com/astral-sh/uv/issues/6412
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv pip compile --universal` resolves to wrong `python_full_version` specifier on `python3.8`
@@ -226,10 +226,6 @@ _Comment by @charliermarsh on 2024-08-22 12:45_
 ---
 
 _Assigned to @BurntSushi by @BurntSushi on 2024-08-22 15:18_
-
----
-
-_Referenced in [astral-sh/uv#6268](../../astral-sh/uv/pulls/6268.md) on 2024-08-30 11:56_
 
 ---
 

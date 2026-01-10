@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-10T09:59:21Z
 updated_at: 2024-09-14T00:31:15Z
 url: https://github.com/astral-sh/uv/issues/4959
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Support Python version upper bound in `uv pip compile --universal`
@@ -191,19 +191,7 @@ In addition to #4732 and the great explanation by @BurntSushi, i think we also n
 
 ---
 
-_Referenced in [astral-sh/uv#5150](../../astral-sh/uv/pulls/5150.md) on 2024-07-17 17:01_
-
----
-
 _Assigned to @BurntSushi by @BurntSushi on 2024-07-31 12:11_
-
----
-
-_Referenced in [astral-sh/uv#5733](../../astral-sh/uv/pulls/5733.md) on 2024-08-02 18:30_
-
----
-
-_Referenced in [astral-sh/uv#6139](../../astral-sh/uv/issues/6139.md) on 2024-08-16 14:59_
 
 ---
 

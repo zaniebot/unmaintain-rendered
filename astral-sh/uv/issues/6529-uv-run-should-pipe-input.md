@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-23T15:50:06Z
 updated_at: 2024-08-26T18:40:30Z
 url: https://github.com/astral-sh/uv/issues/6529
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv run -` should pipe input
@@ -73,9 +73,5 @@ The `scripts` block can be anywhere in the file, so we'd have to read the whole 
 _Comment by @zanieb on 2024-08-26 18:40_
 
 It can!? What the heck, spec.
-
----
-
-_Referenced in [astral-sh/uv#8301](../../astral-sh/uv/pulls/8301.md) on 2024-10-17 18:34_
 
 ---

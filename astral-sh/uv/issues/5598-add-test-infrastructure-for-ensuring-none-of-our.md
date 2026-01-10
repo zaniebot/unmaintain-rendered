@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-30T12:51:34Z
 updated_at: 2024-09-24T14:55:25Z
 url: https://github.com/astral-sh/uv/issues/5598
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # add test infrastructure for ensuring none of our universal locks can produce a dependency tree with multiple versions of the same package for the same marker environment
@@ -34,15 +34,7 @@ _Label `lock` added by @BurntSushi on 2024-07-30 12:51_
 
 ---
 
-_Referenced in [astral-sh/uv#5597](../../astral-sh/uv/pulls/5597.md) on 2024-07-30 12:52_
-
----
-
 _Assigned to @BurntSushi by @BurntSushi on 2024-07-30 13:24_
-
----
-
-_Referenced in [astral-sh/uv#7595](../../astral-sh/uv/pulls/7595.md) on 2024-09-20 17:53_
 
 ---
 

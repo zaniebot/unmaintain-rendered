@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-24T08:25:40Z
 updated_at: 2024-08-25T02:36:36Z
 url: https://github.com/astral-sh/uv/issues/6574
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Support `.tool-versions` as an alternative to `.python-versions`
@@ -28,10 +28,6 @@ https://mise.jdx.dev/configuration.html#tool-versions
 
 ---
 
-_Referenced in [astral-sh/uv#4359](../../astral-sh/uv/issues/4359.md) on 2024-08-24 08:26_
-
----
-
 _Label `enhancement` added by @charliermarsh on 2024-08-25 02:36_
 
 ---
@@ -43,9 +39,5 @@ _Label `configuration` added by @charliermarsh on 2024-08-25 02:36_
 _Comment by @charliermarsh on 2024-08-25 02:36_
 
 This generally makes sense to me (though the syntax is more flexible, e.g., supports `sub` and stuff, so it's not totally trivial).
-
----
-
-_Referenced in [astral-sh/setup-uv#557](../../astral-sh/setup-uv/issues/557.md) on 2025-09-08 21:20_
 
 ---

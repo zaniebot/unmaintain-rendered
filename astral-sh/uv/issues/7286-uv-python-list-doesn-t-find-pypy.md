@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-09-11T10:26:35Z
 updated_at: 2024-09-23T22:17:56Z
 url: https://github.com/astral-sh/uv/issues/7286
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv python list doesn't find pypy
@@ -125,10 +125,6 @@ That’s kinda funny in combination with #7118 — sorry for running into all ed
 
 ---
 
-_Referenced in [astral-sh/uv#7118](../../astral-sh/uv/issues/7118.md) on 2024-09-12 15:17_
-
----
-
 _Comment by @zanieb on 2024-09-12 15:27_
 
 I appreciate it :)
@@ -139,18 +135,6 @@ _Comment by @hynek on 2024-09-12 15:41_
 
 ![image](https://github.com/user-attachments/assets/a3feb564-c3ce-4236-82c1-94f9a1aa0d78)
 
-
----
-
-_Referenced in [astral-sh/uv#7508](../../astral-sh/uv/pulls/7508.md) on 2024-09-18 16:39_
-
----
-
-_Referenced in [astral-sh/uv#7514](../../astral-sh/uv/pulls/7514.md) on 2024-09-18 18:57_
-
----
-
-_Referenced in [astral-sh/uv#7649](../../astral-sh/uv/pulls/7649.md) on 2024-09-23 20:48_
 
 ---
 

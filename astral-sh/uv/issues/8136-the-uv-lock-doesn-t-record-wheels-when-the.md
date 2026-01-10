@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-12T00:28:20Z
 updated_at: 2024-10-12T07:23:05Z
 url: https://github.com/astral-sh/uv/issues/8136
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # The uv.lock doesn't record wheels when the requires-python is an exact version
@@ -76,10 +76,6 @@ The wheels for `cp312-cp312` should be recorded.
 
 ---
 
-_Referenced in [pdm-project/pdm#3203](../../pdm-project/pdm/issues/3203.md) on 2024-10-12 00:30_
-
----
-
 _Comment by @charliermarsh on 2024-10-12 03:49_
 
 That is... interesting. Thanks!
@@ -91,10 +87,6 @@ _Label `bug` added by @charliermarsh on 2024-10-12 03:49_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-10-12 04:07_
-
----
-
-_Referenced in [astral-sh/uv#8140](../../astral-sh/uv/pulls/8140.md) on 2024-10-12 04:10_
 
 ---
 

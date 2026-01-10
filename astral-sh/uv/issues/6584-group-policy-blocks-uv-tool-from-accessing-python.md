@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-24T14:04:34Z
 updated_at: 2024-09-06T00:23:28Z
 url: https://github.com/astral-sh/uv/issues/6584
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Group Policy Blocks UV Tool from Accessing Python Interpreter
@@ -211,9 +211,5 @@ _Comment by @IliasAarab on 2024-09-06 00:23_
 > Maybe the policy only allows certain locations for executables? The best bet is to look at the policy yourself e.g. via command prompt running something like `gpresult /h %USERPROFILE%\gp.html` and see if there's something in there that matches what you're seeing. Note, DO NOT attach that file here.
 
 Thanks! I cannot fully understand the output, but can understand that the policy is blocking executables on certain drives and certain locations. The easiest solution for me, currently, is to constraint new projects that are initialized with `uv` to live within the permitted policy locations. #1495 is an interesting proposal, and as far as I understand, would mimic the current behaviour of `conda`.  
-
----
-
-_Referenced in [astral-sh/uv#14401](../../astral-sh/uv/issues/14401.md) on 2025-07-01 18:56_
 
 ---

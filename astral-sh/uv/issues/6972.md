@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-03T14:54:06Z
 updated_at: 2024-10-03T12:01:00Z
 url: https://github.com/astral-sh/uv/issues/6972
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Remove use of `macos-12` image
@@ -29,10 +29,6 @@ _Label `release` added by @charliermarsh on 2024-09-03 14:54_
 ---
 
 _Label `help wanted` added by @charliermarsh on 2024-09-03 14:54_
-
----
-
-_Referenced in [astral-sh/uv#7877](../../astral-sh/uv/pulls/7877.md) on 2024-10-02 18:40_
 
 ---
 

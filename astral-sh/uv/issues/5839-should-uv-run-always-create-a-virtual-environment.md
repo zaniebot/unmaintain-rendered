@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-06T22:25:29Z
 updated_at: 2024-08-23T12:57:09Z
 url: https://github.com/astral-sh/uv/issues/5839
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Should `uv run` always create a virtual environment?
@@ -54,10 +54,6 @@ Does that seem like a good default behavior? Lately the python dev community has
 
 ---
 
-_Referenced in [astral-sh/uv#6285](../../astral-sh/uv/issues/6285.md) on 2024-08-21 17:32_
-
----
-
 _Comment by @ketozhang on 2024-08-22 02:07_
 
 Not entirely sure about this. I see it as whether or not the _base env_ (I call it _global env_) is still necessary.
@@ -89,13 +85,5 @@ Is the venv created at some temporary directory  (current behavior for `uv run e
 _Comment by @zanieb on 2024-08-23 12:56_
 
 That would be the idea, yeah. Though for `uv run example.py` I think we'll re-use a cached environment.
-
----
-
-_Referenced in [astral-sh/uv#7215](../../astral-sh/uv/issues/7215.md) on 2024-10-21 21:45_
-
----
-
-_Referenced in [astral-sh/uv#9585](../../astral-sh/uv/pulls/9585.md) on 2024-12-02 22:13_
 
 ---

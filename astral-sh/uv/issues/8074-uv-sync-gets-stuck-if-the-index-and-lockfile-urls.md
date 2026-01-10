@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-10T08:27:37Z
 updated_at: 2024-10-10T14:01:22Z
 url: https://github.com/astral-sh/uv/issues/8074
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv sync` gets stuck if the index and lockfile URLs are not reachable and there are dynamic fields in pyproject
@@ -119,10 +119,6 @@ DEBUG Adding direct dependency: hatch-vcs*
 
 ---
 
-_Referenced in [astral-sh/uv#6349](../../astral-sh/uv/issues/6349.md) on 2024-10-10 09:02_
-
----
-
 _Comment by @charliermarsh on 2024-10-10 09:32_
 
 I see a few retries there, but we should probably error after the third retry per our limits.
@@ -140,10 +136,6 @@ _Label `bug` added by @charliermarsh on 2024-10-10 09:51_
 _Comment by @charliermarsh on 2024-10-10 11:00_
 
 I see the issue here.
-
----
-
-_Referenced in [astral-sh/uv#8083](../../astral-sh/uv/pulls/8083.md) on 2024-10-10 11:32_
 
 ---
 

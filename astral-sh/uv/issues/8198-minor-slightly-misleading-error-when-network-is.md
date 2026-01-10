@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-15T07:20:32Z
 updated_at: 2024-10-15T07:20:32Z
 url: https://github.com/astral-sh/uv/issues/8198
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Minor: slightly misleading error when network is flaky
@@ -49,9 +49,5 @@ error: Failed to download cpython-3.13.0%2B20241008-x86_64-unknown-linux-gnu-fre
 ```
 and stop there.
 
-
----
-
-_Referenced in [astral-sh/uv#8525](../../astral-sh/uv/issues/8525.md) on 2024-10-24 12:12_
 
 ---

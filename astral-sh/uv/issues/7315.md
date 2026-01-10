@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-11T23:19:25Z
 updated_at: 2024-09-12T19:07:35Z
 url: https://github.com/astral-sh/uv/issues/7315
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # (docs): typo on `--build-constraints` (should be singular)
@@ -65,10 +65,6 @@ _Label `good first issue` added by @zanieb on 2024-09-12 00:35_
 ---
 
 _Label `good first issue` added by @zanieb on 2024-09-12 00:35_
-
----
-
-_Referenced in [astral-sh/uv#7330](../../astral-sh/uv/pulls/7330.md) on 2024-09-12 14:02_
 
 ---
 

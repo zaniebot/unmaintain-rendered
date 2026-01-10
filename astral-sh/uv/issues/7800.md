@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-30T02:41:42Z
 updated_at: 2024-10-03T17:02:15Z
 url: https://github.com/astral-sh/uv/issues/7800
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Empty project: Unable to install solace-pubsubplus - No solution found when resolving dependencies
@@ -245,10 +245,6 @@ _Assigned to @konstin by @konstin on 2024-09-30 14:00_
 ---
 
 _Label `bug` added by @konstin on 2024-09-30 14:00_
-
----
-
-_Referenced in [astral-sh/uv#7867](../../astral-sh/uv/pulls/7867.md) on 2024-10-02 10:48_
 
 ---
 

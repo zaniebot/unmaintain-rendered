@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-05T15:53:54Z
 updated_at: 2024-09-05T18:30:11Z
 url: https://github.com/astral-sh/uv/issues/7089
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Respect SHAs in `--constraints` and `--build-constraints` files
@@ -33,10 +33,6 @@ _Label `enhancement` added by @charliermarsh on 2024-09-05 15:54_
 ---
 
 _Label `security` added by @charliermarsh on 2024-09-05 15:54_
-
----
-
-_Referenced in [astral-sh/uv#7093](../../astral-sh/uv/pulls/7093.md) on 2024-09-05 17:57_
 
 ---
 

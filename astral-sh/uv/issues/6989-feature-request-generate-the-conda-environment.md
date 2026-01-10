@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-04T01:04:43Z
 updated_at: 2024-09-04T13:04:20Z
 url: https://github.com/astral-sh/uv/issues/6989
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Feature Request: generate the conda environment yaml based on uv.lock
@@ -53,9 +53,5 @@ I have a remote server environment where I am required to use Anaconda for train
 _Comment by @zanieb on 2024-09-04 13:04_
 
 I think it's okay to support if it works, but I'm not sure how well it will translate since Conda has, for example, different names for some packages. We can't actually perform a resolution with Conda.
-
----
-
-_Referenced in [astral-sh/uv#1703](../../astral-sh/uv/issues/1703.md) on 2024-09-10 13:38_
 
 ---

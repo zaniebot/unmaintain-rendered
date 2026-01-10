@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-08T17:02:01Z
 updated_at: 2024-10-09T13:01:54Z
 url: https://github.com/astral-sh/uv/issues/8011
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Minor: when uv tool fails to install something the environment remains dangling
@@ -46,10 +46,6 @@ _Label `uv tool` added by @zanieb on 2024-10-08 17:33_
 _Comment by @zanieb on 2024-10-08 17:33_
 
 Thanks! We should clean that up.
-
----
-
-_Referenced in [astral-sh/uv#8038](../../astral-sh/uv/pulls/8038.md) on 2024-10-09 07:58_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-22T13:45:36Z
 updated_at: 2024-08-22T23:07:32Z
 url: https://github.com/astral-sh/uv/issues/6435
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv run` doesn't work on .pyw files
@@ -66,10 +66,6 @@ _Assigned to @zanieb by @zanieb on 2024-08-22 15:54_
 _Comment by @zanieb on 2024-08-22 15:54_
 
 Does `uv run python main.pyw` work too?
-
----
-
-_Referenced in [astral-sh/uv#6453](../../astral-sh/uv/pulls/6453.md) on 2024-08-22 18:25_
 
 ---
 

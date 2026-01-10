@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-22T10:43:25Z
 updated_at: 2024-09-22T17:36:13Z
 url: https://github.com/astral-sh/uv/issues/7618
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Dependencies not installed for `python <= 3.11` after changing `requires-python`
@@ -174,10 +174,6 @@ _Label `bug` added by @charliermarsh on 2024-09-22 13:54_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-22 17:04_
-
----
-
-_Referenced in [astral-sh/uv#7624](../../astral-sh/uv/pulls/7624.md) on 2024-09-22 17:21_
 
 ---
 

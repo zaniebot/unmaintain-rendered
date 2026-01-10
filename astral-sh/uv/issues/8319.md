@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-10-18T06:31:54Z
 updated_at: 2024-10-22T19:16:11Z
 url: https://github.com/astral-sh/uv/issues/8319
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv tool run` could be more helpful when a package name and tool don't match
@@ -55,10 +55,6 @@ _Label `error messages` added by @charliermarsh on 2024-10-18 17:59_
 ---
 
 _Label `good first issue` added by @charliermarsh on 2024-10-18 17:59_
-
----
-
-_Referenced in [astral-sh/uv#8473](../../astral-sh/uv/pulls/8473.md) on 2024-10-22 18:17_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-19T03:00:22Z
 updated_at: 2024-08-29T18:11:52Z
 url: https://github.com/astral-sh/uv/issues/6196
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv-cli` recompiles unnecessarily in worktree
@@ -43,15 +43,7 @@ This occurs because a worktree's `.git` is a file, not a directory, which means 
 
 ---
 
-_Referenced in [astral-sh/uv#6197](../../astral-sh/uv/pulls/6197.md) on 2024-08-19 03:46_
-
----
-
 _Label `internal` added by @charliermarsh on 2024-08-19 13:54_
-
----
-
-_Referenced in [astral-sh/uv#6825](../../astral-sh/uv/pulls/6825.md) on 2024-08-29 18:03_
 
 ---
 

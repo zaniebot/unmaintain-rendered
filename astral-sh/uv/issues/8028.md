@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-09T00:48:52Z
 updated_at: 2024-10-09T08:44:15Z
 url: https://github.com/astral-sh/uv/issues/8028
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # FR: List and repair broken `uv tool` venvs (e.g. after a python upgrade).
@@ -122,17 +122,5 @@ _Label `enhancement` added by @zanieb on 2024-10-09 01:25_
 ---
 
 _Label `uv tool` added by @zanieb on 2024-10-09 01:25_
-
----
-
-_Referenced in [astral-sh/uv#7311](../../astral-sh/uv/issues/7311.md) on 2024-10-10 12:13_
-
----
-
-_Referenced in [astral-sh/uv#8514](../../astral-sh/uv/issues/8514.md) on 2024-10-24 12:31_
-
----
-
-_Referenced in [topgrade-rs/topgrade#1122](../../topgrade-rs/topgrade/pulls/1122.md) on 2025-04-13 08:00_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-13T22:30:38Z
 updated_at: 2024-10-21T21:53:46Z
 url: https://github.com/astral-sh/uv/issues/7380
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv pip install` does not respect `UV_PROJECT_ENVIRONMENT`. Should it? 
@@ -124,13 +124,5 @@ I would love that! ❤️
 ---
 
 _Closed by @zanieb on 2024-10-21 21:53_
-
----
-
-_Referenced in [astral-sh/uv#10807](../../astral-sh/uv/issues/10807.md) on 2025-05-14 06:56_
-
----
-
-_Referenced in [astral-sh/uv#12987](../../astral-sh/uv/issues/12987.md) on 2025-10-21 19:33_
 
 ---

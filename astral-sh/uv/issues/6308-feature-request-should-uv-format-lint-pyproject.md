@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-21T07:48:05Z
 updated_at: 2024-08-21T13:20:15Z
 url: https://github.com/astral-sh/uv/issues/6308
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # [feature request] should uv format/lint pyproject.toml?
@@ -24,9 +24,5 @@ Hello there! I was wondering if uv should do something along the lines of [valid
 ---
 
 _Label `wish` added by @charliermarsh on 2024-08-21 13:20_
-
----
-
-_Referenced in [astral-sh/uv#15006](../../astral-sh/uv/issues/15006.md) on 2025-07-31 19:35_
 
 ---

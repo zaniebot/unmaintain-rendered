@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T08:43:13Z
 updated_at: 2024-08-29T13:58:29Z
 url: https://github.com/astral-sh/uv/issues/1454
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv` fails to install nvidia package `nvidia-curand-cu12==10.3.2.106`
@@ -60,10 +60,6 @@ And I don't see any `integration-requirements.txt` file in the linked repo.
 
 ---
 
-_Referenced in [astral-sh/uv#1508](../../astral-sh/uv/issues/1508.md) on 2024-02-16 16:12_
-
----
-
 _Comment by @strickvl on 2024-02-16 19:56_
 
 The commands in order:
@@ -101,10 +97,6 @@ It sounds like that script specifically needs to be run from the root of that re
 _Comment by @charliermarsh on 2024-02-16 21:44_
 
 I can see where (in the code) this is happening, but I don't yet see how.
-
----
-
-_Referenced in [astral-sh/uv#1546](../../astral-sh/uv/pulls/1546.md) on 2024-02-16 22:02_
 
 ---
 

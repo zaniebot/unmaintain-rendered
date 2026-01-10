@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-25T05:37:58Z
 updated_at: 2024-09-25T06:15:42Z
 url: https://github.com/astral-sh/uv/issues/7679
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Dependencies Not Found in Jupyter Environment
@@ -239,9 +239,5 @@ Thanks so much
 ---
 
 _Closed by @anzhi0708 on 2024-09-25 06:15_
-
----
-
-_Referenced in [astral-sh/uv#7682](../../astral-sh/uv/issues/7682.md) on 2024-09-25 10:15_
 
 ---

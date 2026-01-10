@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-21T10:55:50Z
 updated_at: 2024-08-23T18:02:56Z
 url: https://github.com/astral-sh/uv/issues/6317
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv pip compile` does not include local package
@@ -160,9 +160,5 @@ _Closed by @charliermarsh on 2024-08-23 18:02_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-23 18:02_
-
----
-
-_Referenced in [pypa/pip#12963](../../pypa/pip/issues/12963.md) on 2024-10-26 16:03_
 
 ---

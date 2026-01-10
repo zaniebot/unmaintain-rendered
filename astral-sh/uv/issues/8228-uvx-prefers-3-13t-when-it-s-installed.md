@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-15T20:50:56Z
 updated_at: 2024-10-16T19:44:33Z
 url: https://github.com/astral-sh/uv/issues/8228
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uvx prefers 3.13t when it's installed
@@ -61,10 +61,6 @@ Annoying, I thought I fixed this in #8191 — thanks for the report!
 ---
 
 _Assigned to @zanieb by @zanieb on 2024-10-15 21:12_
-
----
-
-_Referenced in [astral-sh/uv#8239](../../astral-sh/uv/pulls/8239.md) on 2024-10-16 03:16_
 
 ---
 

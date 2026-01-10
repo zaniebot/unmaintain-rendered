@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-04T07:42:40Z
 updated_at: 2024-09-14T00:43:42Z
 url: https://github.com/astral-sh/uv/issues/6997
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # How to install audioop with uv for python3.11 ?
@@ -58,9 +58,5 @@ The audioop docs also suggest to add it via a `python_version>='3.13'` constrain
 ---
 
 _Closed by @charliermarsh on 2024-09-14 00:43_
-
----
-
-_Referenced in [kizuna-org/akari-poc#59](../../kizuna-org/akari-poc/pulls/59.md) on 2025-04-25 04:56_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-16T04:14:24Z
 updated_at: 2024-10-16T13:43:55Z
 url: https://github.com/astral-sh/uv/issues/8241
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Non-deterministic snapshot in build test
@@ -79,10 +79,6 @@ It's odd that this hasn't come up in any other test! They all use the same form.
 _Comment by @charliermarsh on 2024-10-16 12:17_
 
 Oh, it's because that test is missing a README.
-
----
-
-_Referenced in [astral-sh/uv#8250](../../astral-sh/uv/pulls/8250.md) on 2024-10-16 12:19_
 
 ---
 

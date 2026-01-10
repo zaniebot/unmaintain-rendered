@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-16T12:25:28Z
 updated_at: 2024-10-16T13:36:10Z
 url: https://github.com/astral-sh/uv/issues/8252
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv pip install` fails when building from git repo
@@ -176,9 +176,5 @@ _Closed by @DetachHead on 2024-10-16 13:35_
 _Comment by @charliermarsh on 2024-10-16 13:36_
 
 Thank you, feel free to tag me if needed.
-
----
-
-_Referenced in [lerna/lerna#4094](../../lerna/lerna/issues/4094.md) on 2024-10-16 14:05_
 
 ---

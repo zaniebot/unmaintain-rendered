@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-09-07T03:22:02Z
 updated_at: 2024-09-09T13:12:55Z
 url: https://github.com/astral-sh/uv/issues/7155
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Implicit post release version/name splitting not splitting correctly
@@ -302,10 +302,6 @@ Haha no worries. I'll give it a try and can mark you as a co-author on it.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-08 22:27_
-
----
-
-_Referenced in [astral-sh/uv#7208](../../astral-sh/uv/pulls/7208.md) on 2024-09-09 00:36_
 
 ---
 

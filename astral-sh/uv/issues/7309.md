@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-11T20:39:59Z
 updated_at: 2024-09-13T16:01:26Z
 url: https://github.com/astral-sh/uv/issues/7309
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Treat `.whl` filenames as files rather than package names
@@ -98,10 +98,6 @@ _Label `bug` added by @charliermarsh on 2024-09-12 01:53_
 ---
 
 _Renamed from "Failed to parse in Docker" to "Treat `.whl` filenames as files rather than package names" by @charliermarsh on 2024-09-12 02:41_
-
----
-
-_Referenced in [astral-sh/uv#7364](../../astral-sh/uv/pulls/7364.md) on 2024-09-13 15:38_
 
 ---
 

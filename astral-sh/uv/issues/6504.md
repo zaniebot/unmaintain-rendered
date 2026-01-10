@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-23T09:46:20Z
 updated_at: 2024-08-23T15:18:08Z
 url: https://github.com/astral-sh/uv/issues/6504
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Centralized location for virtual environments
@@ -28,10 +28,6 @@ I wonder if this is supported or planned.
 _Comment by @chrisrodrigue on 2024-08-23 14:43_
 
 Dupe of #1495 and #5229
-
----
-
-_Referenced in [astral-sh/uv#6511](../../astral-sh/uv/issues/6511.md) on 2024-08-23 14:58_
 
 ---
 

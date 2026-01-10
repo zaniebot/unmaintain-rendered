@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-21T00:15:54Z
 updated_at: 2024-08-21T01:25:40Z
 url: https://github.com/astral-sh/uv/issues/6288
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Panic when adding dev dependency in virtual workspace
@@ -49,14 +49,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-21 00:15_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-08-21 00:15_
-
----
-
-_Referenced in [astral-sh/uv#6289](../../astral-sh/uv/issues/6289.md) on 2024-08-21 00:33_
-
----
-
-_Referenced in [astral-sh/uv#6291](../../astral-sh/uv/pulls/6291.md) on 2024-08-21 00:50_
 
 ---
 

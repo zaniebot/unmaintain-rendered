@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-21T15:00:44Z
 updated_at: 2024-08-21T17:04:19Z
 url: https://github.com/astral-sh/uv/issues/6334
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Handle Ctrl-C properly in `uvx`
@@ -110,10 +110,6 @@ https://docs.astral.sh/uv/guides/tools/
 
 ---
 
-_Referenced in [astral-sh/uv#6346](../../astral-sh/uv/pulls/6346.md) on 2024-08-21 16:01_
-
----
-
 _Comment by @zanieb on 2024-08-21 16:12_
 
 @prrao87 I'm a bit confused, I don't think we switch to `uv tool run`, we switch to `uv tool install` which is different.
@@ -133,9 +129,5 @@ _Closed by @charliermarsh on 2024-08-21 16:44_
 _Comment by @prrao87 on 2024-08-21 17:04_
 
 @zanieb I now understand it much better. Thanks for clarifying!
-
----
-
-_Referenced in [astral-sh/uv#5605](../../astral-sh/uv/issues/5605.md) on 2024-08-21 17:09_
 
 ---

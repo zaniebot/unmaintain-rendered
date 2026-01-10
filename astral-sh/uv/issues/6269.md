@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-20T18:54:24Z
 updated_at: 2024-09-03T22:41:16Z
 url: https://github.com/astral-sh/uv/issues/6269
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # uv pip compile --universal gives contradictory versions of same packages
@@ -118,14 +118,6 @@ He has two clones of the repo so he can do twice as much!
 _Comment by @charliermarsh on 2024-08-20 19:01_
 
 Correct
-
----
-
-_Referenced in [astral-sh/uv#6268](../../astral-sh/uv/pulls/6268.md) on 2024-08-20 19:03_
-
----
-
-_Referenced in [astral-sh/uv#6412](../../astral-sh/uv/issues/6412.md) on 2024-08-22 06:59_
 
 ---
 

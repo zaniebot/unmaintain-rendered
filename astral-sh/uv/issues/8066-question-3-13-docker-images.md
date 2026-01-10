@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-10T02:32:35Z
 updated_at: 2024-10-10T19:39:46Z
 url: https://github.com/astral-sh/uv/issues/8066
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # [QUESTION] 3.13 docker images
@@ -59,10 +59,6 @@ _Label `enhancement` added by @charliermarsh on 2024-10-10 15:16_
 ---
 
 _Label `releases` added by @charliermarsh on 2024-10-10 15:16_
-
----
-
-_Referenced in [astral-sh/uv#8105](../../astral-sh/uv/pulls/8105.md) on 2024-10-10 19:02_
 
 ---
 

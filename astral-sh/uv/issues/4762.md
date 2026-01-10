@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-03T10:03:15Z
 updated_at: 2024-10-21T21:25:55Z
 url: https://github.com/astral-sh/uv/issues/4762
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv pip install --all-extras .` fail to locate `pyproject.toml`
@@ -134,21 +134,5 @@ It's quite convoluted, but it works.
 ---
 
 _Closed by @zanieb on 2024-10-21 21:25_
-
----
-
-_Referenced in [astral-sh/uv#8416](../../astral-sh/uv/issues/8416.md) on 2024-10-21 21:26_
-
----
-
-_Referenced in [pypa/pip#12963](../../pypa/pip/issues/12963.md) on 2024-10-26 16:03_
-
----
-
-_Referenced in [langflow-ai/langflow#6732](../../langflow-ai/langflow/pulls/6732.md) on 2025-02-21 14:48_
-
----
-
-_Referenced in [oraios/serena#9](../../oraios/serena/issues/9.md) on 2025-04-04 00:38_
 
 ---

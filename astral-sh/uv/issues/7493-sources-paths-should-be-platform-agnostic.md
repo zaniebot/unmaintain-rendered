@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-18T12:05:36Z
 updated_at: 2024-09-18T18:51:16Z
 url: https://github.com/astral-sh/uv/issues/7493
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Sources paths should be platform-agnostic
@@ -43,10 +43,6 @@ _Label `bug` added by @charliermarsh on 2024-09-18 14:47_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-18 15:21_
-
----
-
-_Referenced in [astral-sh/uv#7504](../../astral-sh/uv/pulls/7504.md) on 2024-09-18 15:21_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-16T01:00:49Z
 updated_at: 2024-09-09T13:43:59Z
 url: https://github.com/astral-sh/uv/issues/6131
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Add fast-path for `select_candidate` with singletons
@@ -38,10 +38,6 @@ _Renamed from "Add fast-path for `select_candidate` with singletones" to "Add fa
 ---
 
 _Label `internal` removed by @charliermarsh on 2024-08-16 01:06_
-
----
-
-_Referenced in [astral-sh/uv#7195](../../astral-sh/uv/pulls/7195.md) on 2024-09-08 18:05_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-16T01:07:05Z
 updated_at: 2024-09-23T22:39:52Z
 url: https://github.com/astral-sh/uv/issues/7416
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Use the lockfile as constraints when doing uv run --with
@@ -114,10 +114,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-09-22 18:55_
 
 ---
 
-_Referenced in [astral-sh/uv#7627](../../astral-sh/uv/pulls/7627.md) on 2024-09-22 20:44_
-
----
-
 _Closed by @charliermarsh on 2024-09-23 11:36_
 
 ---
@@ -129,9 +125,5 @@ _Closed by @charliermarsh on 2024-09-23 11:36_
 _Comment by @delfick on 2024-09-23 22:39_
 
 awesome, thanks for the fix!
-
----
-
-_Referenced in [delfick/extended-mypy-django-plugin#60](../../delfick/extended-mypy-django-plugin/pulls/60.md) on 2024-09-25 03:50_
 
 ---

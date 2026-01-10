@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-17T08:07:42Z
 updated_at: 2024-10-04T15:02:51Z
 url: https://github.com/astral-sh/uv/issues/1578
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # allow centralized venv storage like pyenv-virtualenv
@@ -44,10 +44,6 @@ uv venv local myvenv
 
 pyenv blurb from https://github.com/pyenv/pyenv-virtualenv?tab=readme-ov-file#activate-virtualenv:
 > If eval "$(pyenv virtualenv-init -)" is configured in your shell, pyenv-virtualenv will automatically activate/deactivate virtualenvs on entering/leaving directories which contain a .python-version file that contains the name of a valid virtual environment as shown in the output of pyenv virtualenvs (e.g., venv34 or 3.4.3/envs/venv34 in example above) . .python-version files are used by pyenv to denote local Python versions and can be created and deleted with the [pyenv local](https://github.com/pyenv/pyenv/blob/master/COMMANDS.md#pyenv-local) command.
-
----
-
-_Referenced in [astral-sh/uv#1422](../../astral-sh/uv/issues/1422.md) on 2024-02-17 08:11_
 
 ---
 
@@ -152,14 +148,6 @@ _Closed by @zanieb on 2024-02-17 19:34_
 ---
 
 _Label `duplicate` added by @zanieb on 2024-02-17 19:34_
-
----
-
-_Referenced in [astral-sh/uv#1495](../../astral-sh/uv/issues/1495.md) on 2024-02-17 22:20_
-
----
-
-_Referenced in [astral-sh/uv#6597](../../astral-sh/uv/pulls/6597.md) on 2024-08-25 08:19_
 
 ---
 

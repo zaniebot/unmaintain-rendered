@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-10-07T16:22:12Z
 updated_at: 2024-10-08T21:20:59Z
 url: https://github.com/astral-sh/uv/issues/7977
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv python install does not respect rc qualifiers
@@ -76,10 +76,6 @@ _Assigned to @trag1c by @konstin on 2024-10-07 16:56_
 _Comment by @konstin on 2024-10-07 16:57_
 
 I assigned you
-
----
-
-_Referenced in [astral-sh/uv#8020](../../astral-sh/uv/pulls/8020.md) on 2024-10-08 20:47_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-15T01:19:35Z
 updated_at: 2024-10-16T17:23:05Z
 url: https://github.com/astral-sh/uv/issues/6100
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # uv forces unrequested package updates
@@ -173,14 +173,6 @@ Indeed, recursive updates related to the listed packages - not all installed pac
 But I'm just sharing user's experience feedback - it's your project so you of course can do what makes the most sense to you. 
 
 I'm grateful for this super fast tool and looking forward to having it replace pip completely and rewrite my muscle memory to some of the flags that are different.
-
----
-
-_Referenced in [mosaicml/ci-testing#28](../../mosaicml/ci-testing/pulls/28.md) on 2024-08-30 22:22_
-
----
-
-_Referenced in [astral-sh/uv#8260](../../astral-sh/uv/issues/8260.md) on 2024-10-16 17:22_
 
 ---
 

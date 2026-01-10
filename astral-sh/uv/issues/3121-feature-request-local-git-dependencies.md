@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-18T13:48:07Z
 updated_at: 2024-09-05T06:18:45Z
 url: https://github.com/astral-sh/uv/issues/3121
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Feature request: local git dependencies
@@ -44,10 +44,6 @@ _Label `enhancement` added by @charliermarsh on 2024-04-18 13:54_
 
 ---
 
-_Referenced in [astral-sh/uv#3128](../../astral-sh/uv/issues/3128.md) on 2024-04-18 22:15_
-
----
-
 _Label `wish` added by @charliermarsh on 2024-04-23 18:17_
 
 ---
@@ -59,9 +55,5 @@ pip, poetry and pipx all support installing from a subdirectory with the followi
     pip install git+https://git@github.com/organisation/repository.git#subdirectory=package-directory
 
 But I don't know if this syntax is supported by `uv`.
-
----
-
-_Referenced in [astral-sh/uv#11425](../../astral-sh/uv/issues/11425.md) on 2025-02-11 18:25_
 
 ---

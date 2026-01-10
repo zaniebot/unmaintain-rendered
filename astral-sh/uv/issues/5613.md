@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-30T17:24:05Z
 updated_at: 2024-10-09T09:05:53Z
 url: https://github.com/astral-sh/uv/issues/5613
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `--directory` should resolve relative paths relative to current working directory
@@ -36,10 +36,6 @@ Uv run's external command is opaque (in meaning), so it's not possible to transl
 _Comment by @charliermarsh on 2024-07-30 20:07_
 
 I was thinking that we’d remove the current set_directory call, and then pass around a project directory as dictated by the directory flag.
-
----
-
-_Referenced in [astral-sh/uv#6733](../../astral-sh/uv/issues/6733.md) on 2024-08-28 13:28_
 
 ---
 
@@ -211,10 +207,6 @@ I'll do it.
 _Comment by @zanieb on 2024-09-20 20:04_
 
 Epic. Sounds good to me. The `python-version` file stuff might be easier with https://github.com/astral-sh/uv/pull/6370
-
----
-
-_Referenced in [astral-sh/uv#7603](../../astral-sh/uv/pulls/7603.md) on 2024-09-20 21:08_
 
 ---
 

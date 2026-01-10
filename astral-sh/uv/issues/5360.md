@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-23T18:09:28Z
 updated_at: 2024-08-23T15:21:48Z
 url: https://github.com/astral-sh/uv/issues/5360
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `--link-mode=symlink` and `--no-cache` are incompatible
@@ -45,10 +45,6 @@ We should actually just reject this combination, there's no way to make it work.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-28 18:07_
-
----
-
-_Referenced in [astral-sh/uv#5519](../../astral-sh/uv/pulls/5519.md) on 2024-07-28 18:13_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T16:26:50Z
 updated_at: 2024-09-04T15:23:48Z
 url: https://github.com/astral-sh/uv/issues/1510
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Expose `uv build` build frontend (`pypa/build` replacement)
@@ -71,14 +71,6 @@ I think the main reason it exists to skip the python process startup cost, which
 
 ---
 
-_Referenced in [pypa/build#733](../../pypa/build/issues/733.md) on 2024-02-18 17:08_
-
----
-
-_Referenced in [astral-sh/uv#1663](../../astral-sh/uv/issues/1663.md) on 2024-02-19 16:07_
-
----
-
 _Comment by @henryiii on 2024-02-19 16:26_
 
 What about the CLI? Here's how build works, and I'd recommend the same thing for `uv build` unless there's a good reason to do something different (build intentionally deviates from pip where a clear improvement could be made, so doing the same thing to build is valid!)
@@ -104,10 +96,6 @@ Key options:
 _Comment by @zanieb on 2024-02-19 17:07_
 
 Thanks for pushing this forward Henry. That makes sense to me, roughly. Personally, I'd be happy to review an experimental addition of this interface. We'll need to talk as a team though to figure out where this fits on our roadmap.
-
----
-
-_Referenced in [astral-sh/uv#1681](../../astral-sh/uv/issues/1681.md) on 2024-02-19 17:42_
 
 ---
 
@@ -149,39 +137,15 @@ I think this is a duplicate of #920 — it's the same idea of exposing our PEP 5
 
 ---
 
-_Referenced in [astral-sh/uv#920](../../astral-sh/uv/issues/920.md) on 2024-02-29 08:16_
-
----
-
 _Comment by @WillDuke on 2024-03-10 15:28_
 
 Echoing an earlier comment, the output from `pypa/build` is so good that I often install it just to debug failures in commands like `pip install -e .`. `build` will often provide an actionable error message (or other output) when the original command failed due to something inscrutable. It's so useful that I consider it a major feature of the tool.
 
 ---
 
-_Referenced in [hynek/build-and-inspect-python-package#83](../../hynek/build-and-inspect-python-package/issues/83.md) on 2024-03-23 13:47_
-
----
-
-_Referenced in [astral-sh/uv#6278](../../astral-sh/uv/issues/6278.md) on 2024-08-22 00:21_
-
----
-
-_Referenced in [FinanceData/FinanceDataReader#225](../../FinanceData/FinanceDataReader/issues/225.md) on 2024-08-23 08:46_
-
----
-
-_Referenced in [astral-sh/uv#5507](../../astral-sh/uv/issues/5507.md) on 2024-08-25 21:27_
-
----
-
 _Comment by @chadrik on 2024-08-27 22:45_
 
 What I'd like to see from `uv build` is recursively building all packages in nested workspaces.  I see a lot of potential in workspaces for bulk operations, but right now they're quite limited. 
-
----
-
-_Referenced in [astral-sh/uv#6739](../../astral-sh/uv/issues/6739.md) on 2024-08-28 12:34_
 
 ---
 
@@ -220,10 +184,6 @@ I have this mostly working.
 _Comment by @charliermarsh on 2024-08-31 17:43_
 
 It's good motivation to add support for streaming the build output though. Feels essential!
-
----
-
-_Referenced in [astral-sh/uv#6895](../../astral-sh/uv/pulls/6895.md) on 2024-08-31 17:53_
 
 ---
 

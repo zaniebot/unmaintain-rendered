@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-09T13:39:18Z
 updated_at: 2024-09-09T15:11:43Z
 url: https://github.com/astral-sh/uv/issues/7216
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # If we have no environment markers, choose the smallest wheel during resolution
@@ -28,9 +28,5 @@ _Label `performance` added by @charliermarsh on 2024-09-09 13:39_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-09 15:11_
-
----
-
-_Referenced in [astral-sh/uv#7220](../../astral-sh/uv/pulls/7220.md) on 2024-09-09 15:20_
 
 ---

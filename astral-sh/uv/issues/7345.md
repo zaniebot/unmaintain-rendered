@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-12T23:20:04Z
 updated_at: 2024-10-21T21:53:16Z
 url: https://github.com/astral-sh/uv/issues/7345
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Python API for `uv` and `uvx`
@@ -45,18 +45,6 @@ _Label `question` added by @zanieb on 2024-09-13 01:36_
 
 ---
 
-_Referenced in [airspeed-velocity/asv#1436](../../airspeed-velocity/asv/issues/1436.md) on 2024-10-07 00:35_
-
----
-
 _Closed by @zanieb on 2024-10-21 21:53_
-
----
-
-_Referenced in [arongergely/qgis-h3-toolkit-plugin#1](../../arongergely/qgis-h3-toolkit-plugin/issues/1.md) on 2025-02-05 10:58_
-
----
-
-_Referenced in [pytorch/pytorch#160361](../../pytorch/pytorch/pulls/160361.md) on 2025-08-18 19:54_
 
 ---

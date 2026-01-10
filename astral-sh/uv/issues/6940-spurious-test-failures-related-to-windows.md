@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-02T18:21:11Z
 updated_at: 2024-10-20T18:37:42Z
 url: https://github.com/astral-sh/uv/issues/6940
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Spurious test failures related to Windows permissions on temporary directory
@@ -90,17 +90,9 @@ _Label `testing` added by @charliermarsh on 2024-09-02 18:21_
 
 ---
 
-_Referenced in [astral-sh/uv#6939](../../astral-sh/uv/pulls/6939.md) on 2024-09-02 18:21_
-
----
-
 _Comment by @zanieb on 2024-09-03 14:47_
 
 Duplicate of https://github.com/astral-sh/uv/issues/6789 — better title though.
-
----
-
-_Referenced in [astral-sh/uv#6789](../../astral-sh/uv/issues/6789.md) on 2024-09-03 14:48_
 
 ---
 
@@ -151,10 +143,6 @@ Thats the first difference from before and after I can think about. In CI, C: dr
 
 ---
 
-_Referenced in [astral-sh/uv#7644](../../astral-sh/uv/pulls/7644.md) on 2024-09-23 16:26_
-
----
-
 _Comment by @zanieb on 2024-10-18 19:19_
 
 Another example
@@ -187,14 +175,6 @@ Another example
          37 │+  File "<frozen importlib._bootstrap_external>", line 1186, in get_data
          38 │+PermissionError: [Errno 13] Permission denied: 'E:\/uv-tmp\/[TMP]/markers.py'
 ```
-
----
-
-_Referenced in [astral-sh/uv#8347](../../astral-sh/uv/pulls/8347.md) on 2024-10-18 19:33_
-
----
-
-_Referenced in [astral-sh/uv#8348](../../astral-sh/uv/pulls/8348.md) on 2024-10-18 22:33_
 
 ---
 
@@ -507,10 +487,6 @@ Expression: snapshot
          22 │+---
 ────────────┴─────────────────────────────────────────────────────────────────
 ```
-
----
-
-_Referenced in [astral-sh/uv#8350](../../astral-sh/uv/pulls/8350.md) on 2024-10-18 23:36_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-18T18:08:33Z
 updated_at: 2024-09-04T15:23:49Z
 url: https://github.com/astral-sh/uv/issues/1663
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Consider adding `build` to the "seed" packages
@@ -77,10 +77,6 @@ Our (initial) use case for `uv` is to just have faster-but-still-compatible vers
 
 ---
 
-_Referenced in [pybamm-team/PyBaMM#3825](../../pybamm-team/PyBaMM/issues/3825.md) on 2024-02-19 06:07_
-
----
-
 _Comment by @kvelicka on 2024-02-19 08:27_
 
 > I'm curious what you mean about build never needing to end up in a venv! Do you mean that build should be invoked from the host OS directly, or that Python's build solutions should just be better about isolation in general, or do you mean something else that I'm not understanding yet?
@@ -104,10 +100,6 @@ By the way, pip/uv do this too, and all three allow you turn this off by turning
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-31 16:47_
-
----
-
-_Referenced in [astral-sh/uv#6895](../../astral-sh/uv/pulls/6895.md) on 2024-08-31 17:54_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-10-18T00:44:44Z
 updated_at: 2024-10-18T17:24:17Z
 url: https://github.com/astral-sh/uv/issues/8315
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv add --index` does not accept special characters in the index name
@@ -86,10 +86,6 @@ _Unassigned @charliermarsh by @charliermarsh on 2024-10-18 13:55_
 ---
 
 _Label `good first issue` added by @charliermarsh on 2024-10-18 14:49_
-
----
-
-_Referenced in [astral-sh/uv#8339](../../astral-sh/uv/pulls/8339.md) on 2024-10-18 16:49_
 
 ---
 

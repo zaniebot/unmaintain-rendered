@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-27T02:45:40Z
 updated_at: 2024-08-29T17:46:44Z
 url: https://github.com/astral-sh/uv/issues/6670
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Support `uv pip install -r uv.lock`
@@ -28,10 +28,6 @@ _Label `needs-decision` added by @charliermarsh on 2024-08-27 02:45_
 ---
 
 _Renamed from "Support `uv pip install -r uv.lock`?" to "Support `uv pip install -r uv.lock`" by @zanieb on 2024-08-27 11:16_
-
----
-
-_Referenced in [astral-sh/uv#6459](../../astral-sh/uv/issues/6459.md) on 2024-08-27 11:42_
 
 ---
 
@@ -76,10 +72,6 @@ _Comment by @shaunhegarty on 2024-08-27 18:04_
 > @shaunhegarty can you share more about why `uv run` is not suitable for use in GitHub Actions in your use-case?
 
 @zanieb Knowledge deficit on my part. `uv run` works for all the actions so far. Thanks!
-
----
-
-_Referenced in [astral-sh/uv#6778](../../astral-sh/uv/pulls/6778.md) on 2024-08-28 21:49_
 
 ---
 

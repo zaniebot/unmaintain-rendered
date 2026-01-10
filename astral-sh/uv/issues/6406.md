@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-22T04:33:17Z
 updated_at: 2024-08-23T05:14:28Z
 url: https://github.com/astral-sh/uv/issues/6406
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # For Docker environments, a UV_PYTHON_DOWNLOADS env variable would be useful
@@ -29,10 +29,6 @@ _Label `enhancement` added by @konstin on 2024-08-22 08:35_
 
 ---
 
-_Referenced in [astral-sh/uv#6416](../../astral-sh/uv/pulls/6416.md) on 2024-08-22 09:37_
-
----
-
 _Closed by @charliermarsh on 2024-08-22 12:52_
 
 ---
@@ -46,14 +42,6 @@ _Reopened by @zanieb on 2024-08-22 13:24_
 ---
 
 _Assigned to @zanieb by @zanieb on 2024-08-22 13:24_
-
----
-
-_Referenced in [astral-sh/uv#6432](../../astral-sh/uv/pulls/6432.md) on 2024-08-22 13:26_
-
----
-
-_Referenced in [astral-sh/uv#6436](../../astral-sh/uv/pulls/6436.md) on 2024-08-22 14:03_
 
 ---
 

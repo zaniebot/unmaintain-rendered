@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-16T16:33:34Z
 updated_at: 2024-08-29T18:37:07Z
 url: https://github.com/astral-sh/uv/issues/6150
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Ignore forks that use a Python version above the `requires-python` upper-bound
@@ -29,10 +29,6 @@ _Label `performance` added by @charliermarsh on 2024-08-16 16:33_
 
 ---
 
-_Referenced in [astral-sh/uv#5046](../../astral-sh/uv/issues/5046.md) on 2024-08-17 21:54_
-
----
-
 _Comment by @zanieb on 2024-08-29 16:02_
 
 Linking to previous discussion https://github.com/astral-sh/uv/issues/4022
@@ -40,14 +36,6 @@ Linking to previous discussion https://github.com/astral-sh/uv/issues/4022
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-29 16:54_
-
----
-
-_Referenced in [astral-sh/uv#6824](../../astral-sh/uv/pulls/6824.md) on 2024-08-29 16:59_
-
----
-
-_Referenced in [astral-sh/uv#6795](../../astral-sh/uv/issues/6795.md) on 2024-08-29 17:00_
 
 ---
 

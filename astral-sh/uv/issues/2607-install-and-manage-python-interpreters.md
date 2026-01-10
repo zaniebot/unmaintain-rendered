@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-22T04:31:29Z
 updated_at: 2024-09-11T10:24:41Z
 url: https://github.com/astral-sh/uv/issues/2607
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Install and manage Python interpreters
@@ -50,15 +50,7 @@ Also looking forward to this!
 
 ---
 
-_Referenced in [astral-sh/uv#3139](../../astral-sh/uv/issues/3139.md) on 2024-04-19 14:11_
-
----
-
 _Renamed from "install and manage python interpreter" to "Install and manage Python interpreters" by @zanieb on 2024-04-19 14:11_
-
----
-
-_Referenced in [astral-sh/uv#1850](../../astral-sh/uv/issues/1850.md) on 2024-04-20 07:52_
 
 ---
 
@@ -77,10 +69,6 @@ Whenever somebody tells me I have to use a specific version of Python, it sucks 
 So, from my perspective, as a long-time Python dev, but an occasional installer of Python, I'd love to see this! 
 
 Thank you for the great tool. Impressive stuff.
-
----
-
-_Referenced in [astral-sh/uv#3241](../../astral-sh/uv/issues/3241.md) on 2024-04-24 14:54_
 
 ---
 
@@ -105,18 +93,6 @@ It's next on my list of projects, following tool management (#3560) and rewritin
 _Comment by @gotounix on 2024-06-05 11:44_
 
 @zanieb It's been another half month, how's the progress going, is there a preview version?
-
----
-
-_Referenced in [astral-sh/uv#4120](../../astral-sh/uv/pulls/4120.md) on 2024-06-07 00:09_
-
----
-
-_Referenced in [astral-sh/uv#4121](../../astral-sh/uv/pulls/4121.md) on 2024-06-07 00:10_
-
----
-
-_Referenced in [astral-sh/uv#4138](../../astral-sh/uv/pulls/4138.md) on 2024-06-07 17:57_
 
 ---
 
@@ -173,10 +149,6 @@ Is there a way to put the `UV_FORCE_MANAGED_PYTHON` environment variable in a co
 _Comment by @zanieb on 2024-06-19 03:55_
 
 @gotounix that'll be included in #4198
-
----
-
-_Referenced in [astral-sh/uv#2917](../../astral-sh/uv/issues/2917.md) on 2024-07-02 01:41_
 
 ---
 

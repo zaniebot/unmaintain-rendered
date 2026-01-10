@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-02T16:33:04Z
 updated_at: 2024-10-03T17:45:40Z
 url: https://github.com/astral-sh/uv/issues/7873
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # cp27 wheels selected for psutil on windows
@@ -195,10 +195,6 @@ https://github.com/astral-sh/uv/blob/14507a1793f12bf884786be49d716ca8f8322340/cr
 _Comment by @charliermarsh on 2024-10-03 16:44_
 
 We would do that after https://github.com/astral-sh/uv/pull/7381. Right now we don't match on tags _at all_ in the universal resolver. All wheels are considered compatible.
-
----
-
-_Referenced in [astral-sh/uv#7902](../../astral-sh/uv/pulls/7902.md) on 2024-10-03 17:03_
 
 ---
 

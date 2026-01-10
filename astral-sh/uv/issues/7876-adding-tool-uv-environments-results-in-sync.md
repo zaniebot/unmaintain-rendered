@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-02T17:59:56Z
 updated_at: 2024-10-03T13:15:09Z
 url: https://github.com/astral-sh/uv/issues/7876
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # adding tool.uv.environments results in `sync --locked` always failing
@@ -84,10 +84,6 @@ Thanks, I'll fix this tomorrow!
 _Comment by @charliermarsh on 2024-10-02 23:17_
 
 (I see the issue.)
-
----
-
-_Referenced in [astral-sh/uv#7894](../../astral-sh/uv/pulls/7894.md) on 2024-10-03 12:51_
 
 ---
 

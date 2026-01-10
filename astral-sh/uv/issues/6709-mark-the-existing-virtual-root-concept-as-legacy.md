@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-27T17:51:35Z
 updated_at: 2024-08-27T21:36:41Z
 url: https://github.com/astral-sh/uv/issues/6709
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Mark the existing "virtual root" concept as legacy
@@ -28,10 +28,6 @@ _Label `internal` added by @charliermarsh on 2024-08-27 17:51_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-27 17:51_
-
----
-
-_Referenced in [astral-sh/uv#6717](../../astral-sh/uv/pulls/6717.md) on 2024-08-27 19:33_
 
 ---
 

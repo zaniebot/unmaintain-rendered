@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-27T06:16:59Z
 updated_at: 2024-09-28T20:02:12Z
 url: https://github.com/astral-sh/uv/issues/7731
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Depedency with the same name as the project doesn't error
@@ -103,10 +103,6 @@ It's understandable if this might be a restriction, but perhaps a note should be
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-28 19:42_
-
----
-
-_Referenced in [astral-sh/uv#7766](../../astral-sh/uv/pulls/7766.md) on 2024-09-28 19:53_
 
 ---
 

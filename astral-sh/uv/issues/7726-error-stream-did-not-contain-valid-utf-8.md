@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-26T20:02:40Z
 updated_at: 2024-09-28T12:38:43Z
 url: https://github.com/astral-sh/uv/issues/7726
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # [Error]stream did not contain valid UTF-8
@@ -39,10 +39,6 @@ Same with `uv add git+https://github.com/feldberlin/timething.git`
 
 ---
 
-_Referenced in [astral-sh/uv#7733](../../astral-sh/uv/issues/7733.md) on 2024-09-27 09:24_
-
----
-
 _Label `windows` added by @charliermarsh on 2024-09-27 12:24_
 
 ---
@@ -64,9 +60,5 @@ Should be fixed by https://github.com/astral-sh/uv/pull/7757.
 ---
 
 _Label `bug` added by @charliermarsh on 2024-09-28 12:38_
-
----
-
-_Referenced in [astral-sh/uv#8009](../../astral-sh/uv/issues/8009.md) on 2024-10-08 16:42_
 
 ---

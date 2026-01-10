@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-14T18:59:27Z
 updated_at: 2024-10-14T20:13:48Z
 url: https://github.com/astral-sh/uv/issues/8184
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # If `pip install visidata` works, shouldn't `uvx visidata`?
@@ -70,10 +70,6 @@ install-on-request: 11,833 (30 days), 29,824 (90 days), 52,612 (365 days)
 build-error: 2 (30 days)
 ```
 
-
----
-
-_Referenced in [saulpw/visidata#2560](../../saulpw/visidata/issues/2560.md) on 2024-10-14 19:00_
 
 ---
 

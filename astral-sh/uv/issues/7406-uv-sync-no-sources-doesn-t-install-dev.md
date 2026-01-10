@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-15T13:05:54Z
 updated_at: 2024-09-16T02:29:05Z
 url: https://github.com/astral-sh/uv/issues/7406
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv sync --no-sources doesn't install dev dependencies
@@ -42,10 +42,6 @@ I think I consider this a bug. Thanks for pointing it out.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-15 16:45_
-
----
-
-_Referenced in [astral-sh/uv#7408](../../astral-sh/uv/pulls/7408.md) on 2024-09-15 16:46_
 
 ---
 

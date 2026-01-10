@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-06-17T15:56:26Z
 updated_at: 2024-10-11T12:34:19Z
 url: https://github.com/astral-sh/uv/issues/4358
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Should `uv sync` remove extraneous packages?
@@ -37,10 +37,6 @@ _Label `preview` added by @zanieb on 2024-06-17 17:00_
 ---
 
 _Assigned to @ibraheemdev by @ibraheemdev on 2024-06-17 17:12_
-
----
-
-_Referenced in [astral-sh/uv#4366](../../astral-sh/uv/pulls/4366.md) on 2024-06-17 18:28_
 
 ---
 
@@ -106,13 +102,5 @@ _Closed by @zanieb on 2024-09-19 11:02_
 _Comment by @aberres on 2024-10-11 12:34_
 
 For anyone coming here after not finding the switch when looking at `--help`: It is called `--inexact`.
-
----
-
-_Referenced in [astral-sh/uv#7838](../../astral-sh/uv/issues/7838.md) on 2024-11-13 18:38_
-
----
-
-_Referenced in [astral-sh/uv#11937](../../astral-sh/uv/issues/11937.md) on 2025-03-03 23:12_
 
 ---

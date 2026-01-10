@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-29T09:40:19Z
 updated_at: 2024-08-29T16:57:14Z
 url: https://github.com/astral-sh/uv/issues/6800
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `tool.uv.pip.index-url` not working
@@ -96,18 +96,10 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-29 14:24_
 
 ---
 
-_Referenced in [astral-sh/uv#6814](../../astral-sh/uv/pulls/6814.md) on 2024-08-29 14:30_
-
----
-
 _Closed by @charliermarsh on 2024-08-29 16:57_
 
 ---
 
 _Closed by @charliermarsh on 2024-08-29 16:57_
-
----
-
-_Referenced in [astral-sh/uv#6925](../../astral-sh/uv/issues/6925.md) on 2024-09-02 08:19_
 
 ---

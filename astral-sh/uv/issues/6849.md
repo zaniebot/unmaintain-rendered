@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-30T02:56:26Z
 updated_at: 2024-09-08T18:19:35Z
 url: https://github.com/astral-sh/uv/issues/6849
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv created a new venv instead of using the one I was already in
@@ -66,10 +66,6 @@ Hi! This is a duplicate of https://github.com/astral-sh/uv/issues/6612
 ---
 
 _Label `duplicate` added by @zanieb on 2024-08-30 03:32_
-
----
-
-_Referenced in [astral-sh/uv#6834](../../astral-sh/uv/pulls/6834.md) on 2024-08-31 23:46_
 
 ---
 

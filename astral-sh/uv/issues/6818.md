@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-29T15:54:18Z
 updated_at: 2024-09-04T15:04:01Z
 url: https://github.com/astral-sh/uv/issues/6818
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv add` should roll back changes to `pyproject.toml` if the automatic sync is cancelled
@@ -57,10 +57,6 @@ _Label `projects` added by @zanieb on 2024-08-29 16:40_
 _Comment by @charliermarsh on 2024-08-29 20:02_
 
 (We correctly do this if `lock` or `sync` fail, but not if the program is interrupted.)
-
----
-
-_Referenced in [astral-sh/uv#7024](../../astral-sh/uv/pulls/7024.md) on 2024-09-04 14:41_
 
 ---
 

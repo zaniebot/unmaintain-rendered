@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-01T04:46:14Z
 updated_at: 2024-09-03T16:14:53Z
 url: https://github.com/astral-sh/uv/issues/6907
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # [Question] What is the best workaround for using uv when dependency is not resolvable? (e.g. PyTorch v2.4.0 + segment-anything-2 (sam-2) v1.0)
@@ -294,10 +294,6 @@ no-build-isolation-package = ["sam-2"]
 [tool.uv.sources]
 sam-2 = { path = "segment-anything-2", editable = true }
 ```
-
----
-
-_Referenced in [astral-sh/uv#6909](../../astral-sh/uv/issues/6909.md) on 2024-09-01 11:00_
 
 ---
 

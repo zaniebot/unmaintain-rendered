@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-21T11:53:54Z
 updated_at: 2024-08-21T14:30:03Z
 url: https://github.com/astral-sh/uv/issues/6320
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # uv init reads stray `pyproject.toml` even with --no-config
@@ -50,10 +50,6 @@ _Label `bug` added by @charliermarsh on 2024-08-21 13:31_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-21 13:57_
-
----
-
-_Referenced in [astral-sh/uv#6328](../../astral-sh/uv/pulls/6328.md) on 2024-08-21 14:14_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-30T14:56:18Z
 updated_at: 2024-09-30T16:17:27Z
 url: https://github.com/astral-sh/uv/issues/7812
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv build --all` (and `uv build --package`) should build into a top-level `./dist` directory
@@ -29,10 +29,6 @@ _Label `enhancement` added by @charliermarsh on 2024-09-30 14:56_
 ---
 
 _Label `help wanted` added by @charliermarsh on 2024-09-30 14:56_
-
----
-
-_Referenced in [astral-sh/uv#7813](../../astral-sh/uv/pulls/7813.md) on 2024-09-30 15:39_
 
 ---
 

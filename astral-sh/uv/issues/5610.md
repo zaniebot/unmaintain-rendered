@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-30T16:44:07Z
 updated_at: 2024-09-03T13:44:02Z
 url: https://github.com/astral-sh/uv/issues/5610
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Publish variants of Docker image
@@ -114,10 +114,6 @@ RUN pip install uv
 
 I will keep in mind your mentioned notes and create a PR soon
 
-
----
-
-_Referenced in [astral-sh/uv#6053](../../astral-sh/uv/pulls/6053.md) on 2024-08-13 05:29_
 
 ---
 

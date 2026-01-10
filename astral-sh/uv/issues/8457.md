@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-22T14:21:34Z
 updated_at: 2024-10-22T15:24:52Z
 url: https://github.com/astral-sh/uv/issues/8457
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv run` should accept multiple `.env` files
@@ -32,10 +32,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-10-22 14:21_
 ---
 
 _Added to milestone `v0.5.0` by @charliermarsh on 2024-10-22 14:21_
-
----
-
-_Referenced in [astral-sh/uv#8463](../../astral-sh/uv/pulls/8463.md) on 2024-10-22 15:01_
 
 ---
 

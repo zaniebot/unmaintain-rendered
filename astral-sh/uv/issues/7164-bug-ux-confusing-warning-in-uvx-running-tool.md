@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-07T11:25:16Z
 updated_at: 2024-09-09T11:05:44Z
 url: https://github.com/astral-sh/uv/issues/7164
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # BUG/UX: confusing warning in `uvx` running `<tool>@latest` with `--resolution=lowest-direct`
@@ -332,10 +332,6 @@ urllib.error.HTTPError: HTTP Error 403: SSL is required
 $ uv --version
 uv 0.4.6 (Homebrew 2024-09-05)
 ```
-
----
-
-_Referenced in [neutrinoceros/gpgi#265](../../neutrinoceros/gpgi/pulls/265.md) on 2024-09-07 11:25_
 
 ---
 

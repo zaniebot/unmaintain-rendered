@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-09-19T01:07:36Z
 updated_at: 2024-10-23T00:06:34Z
 url: https://github.com/astral-sh/uv/issues/7528
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Support `--with-editable` in `uv tool install` 
@@ -83,10 +83,6 @@ I still have the will to work on this issue, but I've been busy with work for a 
 
 If there is someone who is interested, it would be nice if that person could be in charge.
 
-
----
-
-_Referenced in [astral-sh/uv#8472](../../astral-sh/uv/pulls/8472.md) on 2024-10-22 17:43_
 
 ---
 

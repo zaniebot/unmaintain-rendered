@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-15T01:15:47Z
 updated_at: 2024-09-28T20:03:16Z
 url: https://github.com/astral-sh/uv/issues/7402
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv init --script
@@ -56,10 +56,6 @@ Thank you!
 
 ---
 
-_Referenced in [astral-sh/uv#7404](../../astral-sh/uv/pulls/7404.md) on 2024-09-15 02:58_
-
----
-
 _Comment by @zanieb on 2024-09-15 13:13_
 
 I'm supportive of this
@@ -71,14 +67,6 @@ _Label `help wanted` added by @zanieb on 2024-09-15 13:13_
 ---
 
 _Label `cli` added by @zanieb on 2024-09-15 13:13_
-
----
-
-_Referenced in [astral-sh/uv#7564](../../astral-sh/uv/pulls/7564.md) on 2024-09-20 00:14_
-
----
-
-_Referenced in [astral-sh/uv#7565](../../astral-sh/uv/pulls/7565.md) on 2024-09-20 00:40_
 
 ---
 

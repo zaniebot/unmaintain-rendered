@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-30T22:30:55Z
 updated_at: 2024-10-01T00:52:58Z
 url: https://github.com/astral-sh/uv/issues/7821
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Environments and dependency version specifiers don't work with workspaces
@@ -172,10 +172,6 @@ _Label `question` added by @charliermarsh on 2024-10-01 00:16_
 _Comment by @charliermarsh on 2024-10-01 00:19_
 
 I'll lift this restriction.
-
----
-
-_Referenced in [astral-sh/uv#7824](../../astral-sh/uv/pulls/7824.md) on 2024-10-01 00:19_
 
 ---
 

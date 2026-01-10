@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-26T18:34:52Z
 updated_at: 2024-08-27T13:02:27Z
 url: https://github.com/astral-sh/uv/issues/6647
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Read dependencies from `requires.txt` if it exists
@@ -28,10 +28,6 @@ _Label `compatibility` added by @charliermarsh on 2024-08-26 18:34_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-26 18:34_
-
----
-
-_Referenced in [astral-sh/uv#6655](../../astral-sh/uv/pulls/6655.md) on 2024-08-26 20:29_
 
 ---
 

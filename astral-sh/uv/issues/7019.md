@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-04T13:49:12Z
 updated_at: 2024-10-23T09:03:35Z
 url: https://github.com/astral-sh/uv/issues/7019
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Feature request: updating dependency version in a lockfile
@@ -92,10 +92,6 @@ _Comment by @zanieb on 2024-09-05 14:13_
 ---
 
 _Label `documentation` added by @zanieb on 2024-09-05 14:14_
-
----
-
-_Referenced in [astral-sh/uv#7083](../../astral-sh/uv/pulls/7083.md) on 2024-09-05 14:38_
 
 ---
 

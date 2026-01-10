@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-10-19T09:54:46Z
 updated_at: 2024-10-20T16:13:43Z
 url: https://github.com/astral-sh/uv/issues/8357
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv pip show missing --files option
@@ -52,10 +52,6 @@ _Label `uv pip` added by @zanieb on 2024-10-19 12:57_
 ---
 
 _Label `help wanted` added by @zanieb on 2024-10-19 12:58_
-
----
-
-_Referenced in [astral-sh/uv#8369](../../astral-sh/uv/pulls/8369.md) on 2024-10-19 18:58_
 
 ---
 

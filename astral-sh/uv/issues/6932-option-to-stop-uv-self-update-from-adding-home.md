@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-09-02T09:49:07Z
 updated_at: 2024-09-06T09:59:38Z
 url: https://github.com/astral-sh/uv/issues/6932
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Option to stop `uv self update` from adding `. $HOME/.local/share/cargo/env`?
@@ -100,10 +100,6 @@ Great — we can document that.
 ---
 
 _Label `documentation` added by @zanieb on 2024-09-05 15:35_
-
----
-
-_Referenced in [astral-sh/uv#7090](../../astral-sh/uv/pulls/7090.md) on 2024-09-05 16:01_
 
 ---
 

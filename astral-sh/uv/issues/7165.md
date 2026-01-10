@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-07T11:42:27Z
 updated_at: 2024-09-10T21:29:44Z
 url: https://github.com/astral-sh/uv/issues/7165
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Opt-into / opt-out of automatic re-sync with `uv run`?
@@ -105,10 +105,6 @@ Which seems reasonable. For `uv run` though I feel like `--no-sync` could imply 
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-08 16:34_
-
----
-
-_Referenced in [astral-sh/uv#7192](../../astral-sh/uv/pulls/7192.md) on 2024-09-08 16:43_
 
 ---
 

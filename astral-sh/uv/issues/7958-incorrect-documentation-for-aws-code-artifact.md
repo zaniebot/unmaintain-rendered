@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-07T04:10:12Z
 updated_at: 2024-10-15T16:08:20Z
 url: https://github.com/astral-sh/uv/issues/7958
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Incorrect documentation for aws code-artifact publication
@@ -55,14 +55,6 @@ _Assigned to @konstin by @charliermarsh on 2024-10-08 22:39_
 
 ---
 
-_Referenced in [astral-sh/uv#8222](../../astral-sh/uv/pulls/8222.md) on 2024-10-15 15:42_
-
----
-
 _Closed by @konstin on 2024-10-15 16:08_
-
----
-
-_Referenced in [astral-sh/uv#7839](../../astral-sh/uv/issues/7839.md) on 2024-11-03 18:09_
 
 ---

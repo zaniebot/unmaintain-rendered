@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-04T15:23:19Z
 updated_at: 2024-09-04T18:11:59Z
 url: https://github.com/astral-sh/uv/issues/7029
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Docker image tag documentation for `uv:python3.12-slim-bookworm` does not match published tag
@@ -59,10 +59,6 @@ The original intent was to match formal debian's upstream pattern which is with 
 Did I mess up the docs last minute 😅? 
 
 
-
----
-
-_Referenced in [astral-sh/uv#7041](../../astral-sh/uv/pulls/7041.md) on 2024-09-04 18:08_
 
 ---
 

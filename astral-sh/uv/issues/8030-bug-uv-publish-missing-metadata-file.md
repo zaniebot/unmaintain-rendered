@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-09T01:28:56Z
 updated_at: 2024-10-15T15:37:35Z
 url: https://github.com/astral-sh/uv/issues/8030
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Bug: `uv publish` missing `METADATA` file
@@ -53,10 +53,6 @@ error: Failed to publish `dist/seeds-0.7.6-py3-none-any.whl` to https://upload.p
 ```
 
 Any idea what's going on here? I think this is a `uv publish` bug given my change was an atomic change, and I was previously using `uv build` successfully
-
----
-
-_Referenced in [Future-House/aviary#66](../../Future-House/aviary/pulls/66.md) on 2024-10-09 01:33_
 
 ---
 
@@ -124,18 +120,6 @@ _Label `needs-mre` removed by @konstin on 2024-10-15 08:24_
 
 ---
 
-_Referenced in [pypa/setuptools#3777](../../pypa/setuptools/issues/3777.md) on 2024-10-15 08:55_
-
----
-
-_Referenced in [astral-sh/uv#8203](../../astral-sh/uv/pulls/8203.md) on 2024-10-15 09:00_
-
----
-
-_Referenced in [astral-sh/uv#8204](../../astral-sh/uv/pulls/8204.md) on 2024-10-15 09:02_
-
----
-
 _Comment by @konstin on 2024-10-15 09:02_
 
 The problem here is that the wheel filename is invalid: All `.` and `-` need to replaced with `_`, so the valid name would be `aviary_gsm8k-0.7.6-py3-none-any.whl` (https://packaging.python.org/en/latest/specifications/binary-distribution-format/#escaping-and-unicode). This is a setuptools bug: https://github.com/pypa/setuptools/issues/3777.
@@ -169,9 +153,5 @@ Did you mean to say `aviary_gsm8k-0.7.6-py3-none-any.whl`?
 _Comment by @konstin on 2024-10-15 15:37_
 
 yes, sorry
-
----
-
-_Referenced in [astral-sh/uv#7839](../../astral-sh/uv/issues/7839.md) on 2024-11-03 18:09_
 
 ---

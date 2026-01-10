@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-28T15:19:53Z
 updated_at: 2024-08-28T15:31:36Z
 url: https://github.com/astral-sh/uv/issues/6756
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Duplicate code found in `mkdocs` template file
@@ -59,10 +59,6 @@ _Comment by @Joaopeuko on 2024-08-28 15:30_
 Thank you, I already did!
 
 https://github.com/astral-sh/uv/pull/6757
-
----
-
-_Referenced in [astral-sh/uv#6757](../../astral-sh/uv/pulls/6757.md) on 2024-08-28 15:30_
 
 ---
 

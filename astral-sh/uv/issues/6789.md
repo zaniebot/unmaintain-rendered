@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-29T03:36:49Z
 updated_at: 2024-09-03T14:48:48Z
 url: https://github.com/astral-sh/uv/issues/6789
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Flaking Windows workspace tests
@@ -113,10 +113,6 @@ _Label `internal` added by @zanieb on 2024-08-29 03:36_
 ---
 
 _Label `testing` added by @zanieb on 2024-08-29 03:36_
-
----
-
-_Referenced in [astral-sh/uv#6940](../../astral-sh/uv/issues/6940.md) on 2024-09-03 14:47_
 
 ---
 

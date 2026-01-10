@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-06T06:53:50Z
 updated_at: 2024-09-05T12:26:25Z
 url: https://github.com/astral-sh/uv/issues/2231
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Best practices for using uv's cache in CI / Github Actions?
@@ -59,14 +59,6 @@ Your mileage may vary on what actually saves time, depending on what your depend
 
 ---
 
-_Referenced in [meltano/sdk#2377](../../meltano/sdk/pulls/2377.md) on 2024-04-17 23:11_
-
----
-
-_Referenced in [aiidateam/aiida-core#6363](../../aiidateam/aiida-core/pulls/6363.md) on 2024-04-22 12:39_
-
----
-
 _Comment by @alechouse97 on 2024-04-24 14:34_
 
 I've been playing with replacing pip with uv in our Gitlab CI pipeline, and it massively speeds up installing packages when you've got the cache. However, I've noticed that the uv cache is notably larger than the pip one (along with significantly more files), and the increase in Gitlab's cache time almost outweighs the shift to uv. Anyone else run into this?
@@ -85,14 +77,6 @@ _Comment by @charliermarsh on 2024-04-24 15:08_
 
 ---
 
-_Referenced in [WeblateOrg/weblate#11679](../../WeblateOrg/weblate/pulls/11679.md) on 2024-05-21 06:51_
-
----
-
-_Referenced in [pybamm-team/pybamm-cookie#9](../../pybamm-team/pybamm-cookie/pulls/9.md) on 2024-06-13 14:14_
-
----
-
 _Comment by @153957 on 2024-09-05 11:13_
 
 Perhaps the best practice is now to use https://github.com/astral-sh/setup-uv
@@ -107,9 +91,5 @@ _Comment by @zanieb on 2024-09-05 12:26_
 ---
 
 _Closed by @zanieb on 2024-09-05 12:26_
-
----
-
-_Referenced in [KyleKing/textract-py3#16](../../KyleKing/textract-py3/pulls/16.md) on 2025-11-20 04:43_
 
 ---

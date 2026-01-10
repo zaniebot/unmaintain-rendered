@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-10T15:42:36Z
 updated_at: 2024-10-11T08:26:47Z
 url: https://github.com/astral-sh/uv/issues/8097
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Inconsistent inline dependency collection when passing scripts through stdin using `uv run -`
@@ -117,10 +117,6 @@ _Label `help wanted` added by @charliermarsh on 2024-10-10 16:06_
 
 ---
 
-_Referenced in [astral-sh/uv#6375](../../astral-sh/uv/pulls/6375.md) on 2024-10-10 16:06_
-
----
-
 _Comment by @zanieb on 2024-10-10 16:52_
 
 Should we require a `--script` flag here or should this always read PEP 723 metadata?
@@ -130,10 +126,6 @@ Should we require a `--script` flag here or should this always read PEP 723 meta
 _Comment by @charliermarsh on 2024-10-10 17:36_
 
 Personally I think we should always treat it as a script if it has the metadata (and not require that flag).
-
----
-
-_Referenced in [astral-sh/uv#8111](../../astral-sh/uv/pulls/8111.md) on 2024-10-10 21:58_
 
 ---
 

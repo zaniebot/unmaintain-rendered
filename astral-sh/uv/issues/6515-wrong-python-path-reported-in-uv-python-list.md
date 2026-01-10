@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-23T14:01:23Z
 updated_at: 2024-08-23T21:06:59Z
 url: https://github.com/astral-sh/uv/issues/6515
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Wrong Python path reported in uv python list
@@ -123,10 +123,6 @@ Sorry, `VIRTUAL_ENV` and `PATH` is correct as activation in docker (it's emulati
 _Comment by @zanieb on 2024-08-23 14:51_
 
 Adding support for this in https://github.com/astral-sh/uv/pull/6521
-
----
-
-_Referenced in [astral-sh/uv#6521](../../astral-sh/uv/pulls/6521.md) on 2024-08-23 15:28_
 
 ---
 

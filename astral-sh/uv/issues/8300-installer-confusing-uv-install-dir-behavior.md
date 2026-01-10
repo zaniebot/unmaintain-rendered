@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-17T17:53:44Z
 updated_at: 2024-10-17T19:10:51Z
 url: https://github.com/astral-sh/uv/issues/8300
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # installer: confusing UV_INSTALL_DIR behavior
@@ -67,10 +67,6 @@ Another minor issue: `curl -LsSf https://astral.sh/uv/install.sh | sh -s -- --he
 ---
 
 _Renamed from "installer: wrong message when using UV_INSTALL_DIR" to "installer: confusing UV_INSTALL_DIR behavior" by @ilyagr on 2024-10-17 18:01_
-
----
-
-_Referenced in [fish-shell/fish-shell#10794](../../fish-shell/fish-shell/issues/10794.md) on 2024-10-17 18:22_
 
 ---
 

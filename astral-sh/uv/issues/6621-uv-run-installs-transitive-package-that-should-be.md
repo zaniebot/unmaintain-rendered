@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-25T23:49:53Z
 updated_at: 2024-08-26T18:00:23Z
 url: https://github.com/astral-sh/uv/issues/6621
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv run` installs transitive package that should be excluded according to markers
@@ -68,14 +68,6 @@ _Label `bug` added by @charliermarsh on 2024-08-26 00:07_
 _Comment by @charliermarsh on 2024-08-26 00:13_
 
 (Again this is specifically about 3.13 being a pre-release.)
-
----
-
-_Referenced in [reservoir-data/tap-google-play#97](../../reservoir-data/tap-google-play/pulls/97.md) on 2024-08-26 15:34_
-
----
-
-_Referenced in [astral-sh/uv#6646](../../astral-sh/uv/pulls/6646.md) on 2024-08-26 17:22_
 
 ---
 

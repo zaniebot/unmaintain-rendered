@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-04T07:54:40Z
 updated_at: 2024-09-04T17:16:32Z
 url: https://github.com/astral-sh/uv/issues/6998
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # How to configure a script path? 
@@ -30,10 +30,6 @@ With uv this can just be done via the normal `[project]` table in the `pyproject
 ---
 
 _Label `question` added by @zanieb on 2024-09-04 12:35_
-
----
-
-_Referenced in [astral-sh/uv#7010](../../astral-sh/uv/pulls/7010.md) on 2024-09-04 12:43_
 
 ---
 
@@ -61,9 +57,5 @@ Do you have a `[build-system]` defined for your project? (https://docs.astral.sh
 ---
 
 _Closed by @zanieb on 2024-09-04 17:16_
-
----
-
-_Referenced in [astral-sh/uv#7420](../../astral-sh/uv/pulls/7420.md) on 2024-09-16 10:02_
 
 ---

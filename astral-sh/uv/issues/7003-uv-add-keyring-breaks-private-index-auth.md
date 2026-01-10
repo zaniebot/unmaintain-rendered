@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-04T10:27:56Z
 updated_at: 2024-09-05T10:24:18Z
 url: https://github.com/astral-sh/uv/issues/7003
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv add keyring` breaks private index auth
@@ -92,9 +92,5 @@ I guess either:
 I originally got this because keyring was being installed implicitly by another dependency, so my developer-experience was uv stopped working in an illegible way after installing a seemingly unrelated dependency. It took me a while of fiddling with venvs etc to figure it out. Using the verbose logs of uv didn't help either.
 
 Anyway, I'm rooting for you!
-
----
-
-_Referenced in [astral-sh/uv#11130](../../astral-sh/uv/issues/11130.md) on 2025-01-31 10:44_
 
 ---

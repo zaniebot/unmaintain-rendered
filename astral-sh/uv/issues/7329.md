@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-12T13:26:21Z
 updated_at: 2024-10-11T23:30:32Z
 url: https://github.com/astral-sh/uv/issues/7329
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Project's name interferes with resolution logic
@@ -406,14 +406,6 @@ Resolver derivation tree after reduction
 
 ---
 
-_Referenced in [astral-sh/uv#7505](../../astral-sh/uv/pulls/7505.md) on 2024-09-18 15:29_
-
----
-
-_Referenced in [astral-sh/uv#7524](../../astral-sh/uv/issues/7524.md) on 2024-09-18 23:46_
-
----
-
 _Closed by @zanieb on 2024-09-20 18:07_
 
 ---
@@ -489,9 +481,5 @@ Here's what I gather:
 - uv builds my project `A` with version `x.y.z.devN+ghash`
 - then wants to install `A@x.y.z.devN+ghash`, as well as `B` which depends on `A>=x.y.z`
 - and it gets confused about the version of `A` to install :shrug: 
-
----
-
-_Referenced in [astral-sh/uv#8148](../../astral-sh/uv/issues/8148.md) on 2024-10-12 17:17_
 
 ---

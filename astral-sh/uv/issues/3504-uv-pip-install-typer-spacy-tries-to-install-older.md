@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-10T12:59:31Z
 updated_at: 2024-10-21T21:30:22Z
 url: https://github.com/astral-sh/uv/issues/3504
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv pip install typer spacy` tries to install older versions of spacy and fails on Python 3.12
@@ -252,10 +252,6 @@ _Comment by @notatallshaw on 2024-05-10 17:11_
 One solution is to use and recommend a constraint file then, this way you specify bounds on certain packages without forcing consumers to use those bounds.
 
 Apache-airflow does this to specify all the dependencies and transitive dependencies that were tested against when a particular version was released.
-
----
-
-_Referenced in [treeverse/dvclive#807](../../treeverse/dvclive/pulls/807.md) on 2024-05-11 01:59_
 
 ---
 

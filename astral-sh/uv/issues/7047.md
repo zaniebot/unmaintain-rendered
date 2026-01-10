@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-04T20:38:29Z
 updated_at: 2024-09-05T17:59:02Z
 url: https://github.com/astral-sh/uv/issues/7047
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Update GitHub Actions docs to mention `astral-sh/setup-uv`
@@ -35,10 +35,6 @@ _Label `documentation` added by @charliermarsh on 2024-09-04 20:39_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-04 20:39_
-
----
-
-_Referenced in [astral-sh/uv#7056](../../astral-sh/uv/pulls/7056.md) on 2024-09-04 23:44_
 
 ---
 

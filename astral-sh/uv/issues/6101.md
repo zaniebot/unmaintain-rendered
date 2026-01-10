@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-15T01:24:21Z
 updated_at: 2024-08-21T02:22:33Z
 url: https://github.com/astral-sh/uv/issues/6101
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # hardlinking warning -> how to silence it?
@@ -75,10 +75,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-15 01:31_
 ---
 
 _Label `error messages` added by @charliermarsh on 2024-08-15 01:31_
-
----
-
-_Referenced in [astral-sh/uv#6103](../../astral-sh/uv/pulls/6103.md) on 2024-08-15 01:36_
 
 ---
 
@@ -271,9 +267,5 @@ the mistake was all mine, as I blindly copied the suggestion from the warning an
 _Comment by @charliermarsh on 2024-08-21 02:22_
 
 Good idea: https://github.com/astral-sh/uv/pull/6294
-
----
-
-_Referenced in [astral-sh/uv#6300](../../astral-sh/uv/issues/6300.md) on 2024-08-21 12:41_
 
 ---

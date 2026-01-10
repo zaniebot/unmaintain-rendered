@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-02T10:06:37Z
 updated_at: 2024-10-17T23:56:08Z
 url: https://github.com/astral-sh/uv/issues/7866
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Git tags bug when installing dependency which uses dynamic versioning
@@ -668,15 +668,7 @@ Thanks.
 
 ---
 
-_Referenced in [astral-sh/uv#7997](../../astral-sh/uv/issues/7997.md) on 2024-10-08 09:14_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-10-16 13:56_
-
----
-
-_Referenced in [astral-sh/uv#8259](../../astral-sh/uv/pulls/8259.md) on 2024-10-16 14:45_
 
 ---
 
@@ -742,9 +734,5 @@ $ uv cache clean dynamic-version-lib
 Removed 11 files for dynamic-version-lib (2.1KiB)
 ```
 it doesn't result in the metadata getting refreshed when I add it to project again. Only `uv cache clean` works.
-
----
-
-_Referenced in [aiidateam/plumpy#329](../../aiidateam/plumpy/pulls/329.md) on 2025-10-24 00:18_
 
 ---

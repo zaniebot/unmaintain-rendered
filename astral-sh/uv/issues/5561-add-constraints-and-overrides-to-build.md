@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-29T14:24:42Z
 updated_at: 2024-09-01T16:57:23Z
 url: https://github.com/astral-sh/uv/issues/5561
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Add constraints (and overrides?) to build environments
@@ -27,10 +27,6 @@ See: https://github.com/astral-sh/uv/issues/5551#issuecomment-2256055975
 ---
 
 _Label `compatibility` added by @charliermarsh on 2024-07-29 14:24_
-
----
-
-_Referenced in [astral-sh/uv#5551](../../astral-sh/uv/issues/5551.md) on 2024-07-29 14:24_
 
 ---
 
@@ -53,10 +49,6 @@ _Label `help wanted` added by @charliermarsh on 2024-07-29 21:31_
 _Comment by @orsinium on 2024-07-30 07:00_
 
 In [DepHell](https://github.com/dephell/dephell), I used to use [ensurepip](https://docs.python.org/3/library/ensurepip.html) with [fallbacks](https://github.com/dephell/dephell_venvs/blob/master/dephell_venvs/_ensurepip.py) to bootstrap build venvs. It uses the setuptools and pip versions bundled with stdlib that are always the same and guaranteed to be stable.
-
----
-
-_Referenced in [astral-sh/uv#5639](../../astral-sh/uv/pulls/5639.md) on 2024-07-30 22:06_
 
 ---
 
@@ -93,10 +85,6 @@ A workaround that somewhat side steps this is to compile protobufs on import.
 _Comment by @charliermarsh on 2024-09-01 16:56_
 
 Yeah we should add this. I'll make a separate issue.
-
----
-
-_Referenced in [astral-sh/uv#6913](../../astral-sh/uv/issues/6913.md) on 2024-09-01 16:57_
 
 ---
 

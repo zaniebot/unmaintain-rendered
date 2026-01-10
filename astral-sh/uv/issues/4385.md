@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-18T15:14:52Z
 updated_at: 2024-08-21T06:16:56Z
 url: https://github.com/astral-sh/uv/issues/4385
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Running uv in an interactive docker container
@@ -78,10 +78,6 @@ _Comment by @hoechenberger on 2024-06-18 18:31_
 > You can also use --system and just skip the virtual environment entirely.
 
 FWIW this is what I'm doing and it works flawlessly.
-
----
-
-_Referenced in [ferrocene/ferrocene#694](../../ferrocene/ferrocene/pulls/694.md) on 2024-06-19 20:37_
 
 ---
 

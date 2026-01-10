@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-03T13:57:30Z
 updated_at: 2024-10-03T14:32:11Z
 url: https://github.com/astral-sh/uv/issues/7896
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Unable to instal cairocffi
@@ -98,13 +98,5 @@ _Closed by @peterbe on 2024-10-03 14:23_
 _Comment by @charliermarsh on 2024-10-03 14:32_
 
 Thanks for following up!
-
----
-
-_Referenced in [astral-sh/uv#8576](../../astral-sh/uv/issues/8576.md) on 2024-10-25 20:25_
-
----
-
-_Referenced in [inveniosoftware/docs-invenio-rdm#843](../../inveniosoftware/docs-invenio-rdm/pulls/843.md) on 2025-10-30 13:52_
 
 ---

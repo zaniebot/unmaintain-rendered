@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-24T13:39:19Z
 updated_at: 2024-08-24T13:43:55Z
 url: https://github.com/astral-sh/uv/issues/6582
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # [feature request] Support for explicit source/index specification on individual dependencies
@@ -77,9 +77,5 @@ _Comment by @charliermarsh on 2024-08-24 13:43_
 No prob! One thing to note: if you set your Artifactory index via `extra-index-url`, then by default, uv will _not_ look in PyPI at all if a package exists in your Artifactory index. This differs from pip's behavior but protects you from dependency confusion attacks (your first requirement).
 
 (I know it doesn't solve the second requirement of skipping your own index to save on data transfer.)
-
----
-
-_Referenced in [astral-sh/uv#10140](../../astral-sh/uv/issues/10140.md) on 2024-12-24 12:50_
 
 ---

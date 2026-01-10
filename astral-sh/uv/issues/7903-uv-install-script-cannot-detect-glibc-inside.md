@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-03T17:29:35Z
 updated_at: 2024-10-04T08:58:54Z
 url: https://github.com/astral-sh/uv/issues/7903
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Uv install script cannot detect glibc inside WolfiOS base image.
@@ -100,10 +100,6 @@ CMD ["fastapi", "--host", "0.0.0.0", "--port", "19110", "/home/nonroot/app"]
 _Comment by @KhazAkar on 2024-10-03 19:07_
 
 Interesting observation on the side - if I use `/root/.cache/uv` - step with mount works fine. If I want target cache to be in `/home/nonroot/.cache/uv` - it doesn't work with 'permission denied' error. Either I don't understand how something works, or is a bug.
-
----
-
-_Referenced in [axodotdev/cargo-dist#1439](../../axodotdev/cargo-dist/issues/1439.md) on 2024-10-03 20:51_
 
 ---
 

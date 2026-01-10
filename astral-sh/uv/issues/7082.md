@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-05T13:26:29Z
 updated_at: 2024-09-05T18:46:38Z
 url: https://github.com/astral-sh/uv/issues/7082
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Can I constraint build requirements with uv build?
@@ -56,10 +56,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-09-05 13:29_
 ---
 
 _Label `enhancement` added by @charliermarsh on 2024-09-05 13:38_
-
----
-
-_Referenced in [astral-sh/uv#7085](../../astral-sh/uv/pulls/7085.md) on 2024-09-05 15:25_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-19T08:08:45Z
 updated_at: 2024-09-28T19:38:46Z
 url: https://github.com/astral-sh/uv/issues/7535
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # UV exported requirements with editable can't be installed with `pip`
@@ -68,9 +68,5 @@ _Closed by @charliermarsh on 2024-09-28 19:38_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-28 19:38_
-
----
-
-_Referenced in [jpfolch/catechol_solvent_selection#3](../../jpfolch/catechol_solvent_selection/issues/3.md) on 2025-04-15 10:04_
 
 ---

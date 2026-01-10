@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-06T23:33:01Z
 updated_at: 2024-09-06T23:47:29Z
 url: https://github.com/astral-sh/uv/issues/7148
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # support building all packages in the workspace including all dependencies
@@ -78,9 +78,5 @@ I see now this is a duplicate of https://github.com/astral-sh/uv/issues/1681 whi
 ---
 
 _Closed by @mmerickel on 2024-09-06 23:47_
-
----
-
-_Referenced in [astral-sh/uv#1681](../../astral-sh/uv/issues/1681.md) on 2024-09-06 23:48_
 
 ---

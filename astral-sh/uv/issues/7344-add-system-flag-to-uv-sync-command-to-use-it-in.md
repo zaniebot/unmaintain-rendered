@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-12T20:49:28Z
 updated_at: 2024-09-13T01:45:51Z
 url: https://github.com/astral-sh/uv/issues/7344
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Add `--system` flag to `uv sync` command to use it in Docker
@@ -70,9 +70,5 @@ _Label `question` added by @zanieb on 2024-09-13 01:45_
 ---
 
 _Label `duplicate` added by @zanieb on 2024-09-13 01:45_
-
----
-
-_Referenced in [astral-sh/uv#8085](../../astral-sh/uv/issues/8085.md) on 2024-10-10 14:01_
 
 ---

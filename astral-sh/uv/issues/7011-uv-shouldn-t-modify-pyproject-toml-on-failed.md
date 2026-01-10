@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-04T12:41:47Z
 updated_at: 2024-09-04T14:42:16Z
 url: https://github.com/astral-sh/uv/issues/7011
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv` shouldn't modify `pyproject.toml` on failed install
@@ -64,10 +64,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-09-04 13:22_
 _Comment by @zanieb on 2024-09-04 13:25_
 
 Ah I encountered this too recently.
-
----
-
-_Referenced in [astral-sh/uv#7022](../../astral-sh/uv/pulls/7022.md) on 2024-09-04 14:27_
 
 ---
 

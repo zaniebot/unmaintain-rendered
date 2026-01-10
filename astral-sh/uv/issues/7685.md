@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-09-25T13:16:12Z
 updated_at: 2024-10-20T16:27:45Z
 url: https://github.com/astral-sh/uv/issues/7685
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # An invalid netrc file does not produce a warning
@@ -42,10 +42,6 @@ Seems reasonable, but we'd want to be careful to only display this once and only
 ---
 
 _Label `help wanted` added by @zanieb on 2024-09-25 14:41_
-
----
-
-_Referenced in [astral-sh/uv#8364](../../astral-sh/uv/pulls/8364.md) on 2024-10-19 13:47_
 
 ---
 

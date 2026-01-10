@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-02T09:29:08Z
 updated_at: 2024-10-10T07:26:57Z
 url: https://github.com/astral-sh/uv/issues/7862
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # requires-python specification not correctly resolved
@@ -91,10 +91,6 @@ The issue here is in the PubGrub conversion: we convert to a range with a hole, 
 
 ---
 
-_Referenced in [astral-sh/uv#7897](../../astral-sh/uv/pulls/7897.md) on 2024-10-03 14:01_
-
----
-
 _Closed by @charliermarsh on 2024-10-09 22:24_
 
 ---
@@ -106,9 +102,5 @@ _Closed by @charliermarsh on 2024-10-09 22:24_
 _Comment by @Wietse on 2024-10-10 07:26_
 
 Thanks for the fix!
-
----
-
-_Referenced in [astral-sh/uv#8103](../../astral-sh/uv/issues/8103.md) on 2024-10-10 18:34_
 
 ---

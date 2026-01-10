@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-15T21:00:04Z
 updated_at: 2024-10-11T19:00:47Z
 url: https://github.com/astral-sh/uv/issues/1339
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `pip install --trusted-host` support
@@ -87,28 +87,12 @@ Thank you!
 
 ---
 
-_Referenced in [astral-sh/uv#1474](../../astral-sh/uv/issues/1474.md) on 2024-02-16 13:31_
-
----
-
-_Referenced in [astral-sh/uv#1535](../../astral-sh/uv/issues/1535.md) on 2024-02-16 20:39_
-
----
-
 _Comment by @humanzz on 2024-02-16 21:03_
 
 Coming from #1535 where I originally had a request for both `PIP_INDEX_URL` and `PIP_TRUSTED_HOST`.
 Looks like setting the index via an environment variable is supported via `UV_INDEX_URL`.
 
 So, related to this request for `--trusted-host`, it'd be great to also have it configurable via an environment variable - maybe `UV_TRUSTED_HOST` which in my case I want to leverage with an non-https urls for the index e.g. `UV_TRUSTED_HOST='127.0.0.1'`
-
----
-
-_Referenced in [astral-sh/uv#1700](../../astral-sh/uv/issues/1700.md) on 2024-02-19 15:55_
-
----
-
-_Referenced in [astral-sh/uv#1842](../../astral-sh/uv/issues/1842.md) on 2024-02-22 00:44_
 
 ---
 
@@ -226,14 +210,6 @@ On Tue, Apr 2, 2024, 13:01 Jason ***@***.***> wrote:
 
 ---
 
-_Referenced in [astral-sh/uv#2817](../../astral-sh/uv/pulls/2817.md) on 2024-04-04 02:12_
-
----
-
-_Referenced in [astral-sh/uv#2851](../../astral-sh/uv/issues/2851.md) on 2024-04-06 13:59_
-
----
-
 _Comment by @inoa-jboliveira on 2024-04-09 14:50_
 
 >  but I'm not sure how we can do that per host or request.
@@ -339,18 +315,6 @@ _Comment by @zanieb on 2024-07-02 14:25_
 
 ---
 
-_Referenced in [astral-sh/uv#4534](../../astral-sh/uv/issues/4534.md) on 2024-07-02 22:45_
-
----
-
-_Referenced in [astral-sh/uv#4944](../../astral-sh/uv/pulls/4944.md) on 2024-07-09 20:41_
-
----
-
-_Referenced in [astral-sh/uv#4734](../../astral-sh/uv/pulls/4734.md) on 2024-07-15 17:47_
-
----
-
 _Comment by @jreivilo on 2024-07-17 07:28_
 
 > This is also currently a blocking feature that we need at our company. We LOVE uv and use it for a ton of our docker builds, but we have private devpi servers that we launch for testing on CI and uv won't install from them sadly.
@@ -374,10 +338,6 @@ index-url = "REGISTRY PATH"
 ```
 
 After this all commands work well.
-
----
-
-_Referenced in [astral-sh/rye#1313](../../astral-sh/rye/issues/1313.md) on 2024-08-05 07:59_
 
 ---
 
@@ -432,10 +392,6 @@ We generally don't provide ETAs for features. Please just 👍  the OP if you wa
 
 ---
 
-_Referenced in [astral-sh/uv#6591](../../astral-sh/uv/pulls/6591.md) on 2024-08-24 21:51_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-24 21:51_
 
 ---
@@ -475,10 +431,6 @@ _Closed by @charliermarsh on 2024-08-27 13:36_
 ---
 
 _Closed by @charliermarsh on 2024-08-27 13:36_
-
----
-
-_Referenced in [astral-sh/rye#1130](../../astral-sh/rye/issues/1130.md) on 2024-08-30 13:48_
 
 ---
 
@@ -572,9 +524,5 @@ Are you aware of this different behaviour?
 
 
 
-
----
-
-_Referenced in [astral-sh/uv#10366](../../astral-sh/uv/issues/10366.md) on 2025-01-07 14:46_
 
 ---

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-05-06T08:11:09Z
 updated_at: 2024-09-30T21:16:45Z
 url: https://github.com/astral-sh/uv/issues/3397
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Accept list of sources with markers in `uv.tool.sources`
@@ -59,19 +59,7 @@ _Label `enhancement` added by @zanieb on 2024-08-22 16:26_
 
 ---
 
-_Referenced in [astral-sh/uv#6447](../../astral-sh/uv/issues/6447.md) on 2024-08-22 16:31_
-
----
-
 _Renamed from "Uv sources: Accept list instead of dict" to "Accept list of sources with markers in `uv.tool.sources`" by @zanieb on 2024-08-23 15:42_
-
----
-
-_Referenced in [astral-sh/uv#5945](../../astral-sh/uv/issues/5945.md) on 2024-08-23 15:42_
-
----
-
-_Referenced in [astral-sh/uv#7245](../../astral-sh/uv/issues/7245.md) on 2024-09-10 13:42_
 
 ---
 
@@ -80,10 +68,6 @@ _Label `help wanted` added by @charliermarsh on 2024-09-10 13:47_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-27 18:29_
-
----
-
-_Referenced in [astral-sh/uv#7745](../../astral-sh/uv/pulls/7745.md) on 2024-09-27 18:29_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-14T17:12:57Z
 updated_at: 2024-10-11T09:53:26Z
 url: https://github.com/astral-sh/uv/issues/7396
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Run a file without .py extension
@@ -123,10 +123,6 @@ _Label `enhancement` added by @zanieb on 2024-09-17 19:02_
 
 ---
 
-_Referenced in [astral-sh/uv#6375](../../astral-sh/uv/pulls/6375.md) on 2024-09-17 19:02_
-
----
-
 _Comment by @slavos1 on 2024-09-22 18:41_
 
 First off, thanks for uv.
@@ -160,10 +156,6 @@ I used `uv` version `0.4.15`.
 
 ---
 
-_Referenced in [astral-sh/uv#7739](../../astral-sh/uv/pulls/7739.md) on 2024-09-27 13:47_
-
----
-
 _Comment by @charliermarsh on 2024-10-11 09:53_
 
 `--script` now exists to power this use-case.
@@ -171,13 +163,5 @@ _Comment by @charliermarsh on 2024-10-11 09:53_
 ---
 
 _Closed by @charliermarsh on 2024-10-11 09:53_
-
----
-
-_Referenced in [astral-sh/uv#9483](../../astral-sh/uv/issues/9483.md) on 2024-11-27 19:48_
-
----
-
-_Referenced in [scipy/scipy-stubs#259](../../scipy/scipy-stubs/pulls/259.md) on 2024-12-05 00:41_
 
 ---

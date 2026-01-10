@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-06-04T21:54:16Z
 updated_at: 2024-09-09T00:49:21Z
 url: https://github.com/astral-sh/uv/issues/4025
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Allow `virtual = true` to declare a workspace root as virtual
@@ -44,15 +44,7 @@ The `[project]` is for specifying the (core) metadata of a distribution, but a v
 
 ---
 
-_Referenced in [astral-sh/uv#4541](../../astral-sh/uv/issues/4541.md) on 2024-06-26 10:02_
-
----
-
 _Label `preview` removed by @zanieb on 2024-08-20 18:23_
-
----
-
-_Referenced in [astral-sh/uv#7039](../../astral-sh/uv/issues/7039.md) on 2024-09-04 17:34_
 
 ---
 

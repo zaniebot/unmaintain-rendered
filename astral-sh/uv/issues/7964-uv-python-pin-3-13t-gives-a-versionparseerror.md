@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-07T10:30:54Z
 updated_at: 2024-10-10T00:17:21Z
 url: https://github.com/astral-sh/uv/issues/7964
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv python pin 3.13t gives a VersionParseError
@@ -54,10 +54,6 @@ _Assigned to @zanieb by @zanieb on 2024-10-07 12:52_
 _Comment by @zanieb on 2024-10-07 12:52_
 
 Thanks I'll look into this.
-
----
-
-_Referenced in [astral-sh/uv#8056](../../astral-sh/uv/pulls/8056.md) on 2024-10-09 19:56_
 
 ---
 

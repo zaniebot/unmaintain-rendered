@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-04T13:59:23Z
 updated_at: 2024-10-23T09:04:06Z
 url: https://github.com/astral-sh/uv/issues/7020
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Order-dependent install failure
@@ -125,10 +125,6 @@ RuntimeError: Cannot install on Python version 3.10.12; only versions >=3.6,<3.1
 
 ---
 
-_Referenced in [pola-rs/polars#18543](../../pola-rs/polars/issues/18543.md) on 2024-09-04 13:59_
-
----
-
 _Comment by @charliermarsh on 2024-09-04 14:05_
 
 It's nuanced but this looks correct to me. If you pass `numba` first, we prioritize getting the latest version of `numba` (`0.60.0`) and then find a compatible version of NumPy (`2.0.2`). If you pass `numpy` first, we prioritize getting the last version of `numpy` (probably `2.1.1`), and then find a compatible version of Numba (presumedly `0.53.1`). However, that version of Numba has a runtime guard disallowing later versions of Python. There's no way for us to know that from the package metadata, though.
@@ -167,10 +163,6 @@ Happy to close, and we'll update our lower-bound pinning for numba.
 
 ---
 
-_Referenced in [pola-rs/polars#18555](../../pola-rs/polars/pulls/18555.md) on 2024-09-04 15:33_
-
----
-
 _Comment by @zanieb on 2024-09-04 15:42_
 
 Thanks! Eventually we may be able to explore better heuristics here but it's very challenging.
@@ -178,17 +170,5 @@ Thanks! Eventually we may be able to explore better heuristics here but it's ver
 ---
 
 _Closed by @zanieb on 2024-09-04 15:42_
-
----
-
-_Referenced in [astral-sh/uv#10302](../../astral-sh/uv/issues/10302.md) on 2025-01-10 06:43_
-
----
-
-_Referenced in [astral-sh/uv#12126](../../astral-sh/uv/issues/12126.md) on 2025-03-12 01:46_
-
----
-
-_Referenced in [basf/MolPipeline#190](../../basf/MolPipeline/issues/190.md) on 2025-07-21 15:25_
 
 ---

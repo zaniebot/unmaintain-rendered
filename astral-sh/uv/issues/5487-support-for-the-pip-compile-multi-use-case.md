@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-26T17:44:54Z
 updated_at: 2024-10-21T21:22:29Z
 url: https://github.com/astral-sh/uv/issues/5487
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Support for the `pip-compile-multi` use case?
@@ -27,10 +27,6 @@ For [Apache Superset](https://github.com/apache/superset/), we have fairly compl
 The main issue with pip-compile-multi are that 1. it's slow, 2. it's not compatible with `dependabot` and 3. I don't think it's actively maintained
 
 I'm curious whether `uv` has support for this use case and/or whether it may be on the roadmap.
-
----
-
-_Referenced in [apache/superset#28158](../../apache/superset/pulls/28158.md) on 2024-07-26 17:45_
 
 ---
 
@@ -108,10 +104,6 @@ Stepping back, it seems like this should be a very common need and arguably shou
 
 ---
 
-_Referenced in [dependabot/dependabot-core#10039](../../dependabot/dependabot-core/issues/10039.md) on 2024-10-11 17:48_
-
----
-
 _Comment by @mistercrunch on 2024-10-11 17:55_
 
 Taking a deeper look into the [PR adding uv support to dependabot](https://github.com/dependabot/dependabot-core/pull/10040/files#diff-cfdfa62e3736b300829e12892bda75558e1b396be42cd340ff0d58000b3c335dR257) (open Pr as of the time of this comment), it looks like it's set up to have dependabot run a simple `uv pip compile` command. So if we add semantics in `uv` about supporting "atomic multi-outputs", dependabot should do the right thing. Here there any existing config file or env vars we could use to make it such that `uv` would run a series of commands (as suggested in the comment above https://github.com/astral-sh/uv/issues/5487#issuecomment-2400895477)?
@@ -127,13 +119,5 @@ _Label `question` removed by @zanieb on 2024-10-21 21:22_
 ---
 
 _Label `needs-design` added by @zanieb on 2024-10-21 21:22_
-
----
-
-_Referenced in [apache/superset#30750](../../apache/superset/pulls/30750.md) on 2024-10-30 20:04_
-
----
-
-_Referenced in [dependabot/dependabot-core#10040](../../dependabot/dependabot-core/pulls/10040.md) on 2024-10-30 20:13_
 
 ---

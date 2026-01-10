@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-30T00:37:31Z
 updated_at: 2024-10-10T22:09:35Z
 url: https://github.com/astral-sh/uv/issues/6845
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Bad inline suggestion for requirements.txt
@@ -33,19 +33,11 @@ Instead, the correct flag is `uvx --with-requirements req...`
 
 ---
 
-_Referenced in [astral-sh/uv#6848](../../astral-sh/uv/pulls/6848.md) on 2024-08-30 01:17_
-
----
-
 _Label `error messages` added by @charliermarsh on 2024-08-30 12:46_
 
 ---
 
 _Assigned to @charliermarsh by @zanieb on 2024-09-03 13:53_
-
----
-
-_Referenced in [astral-sh/uv#8112](../../astral-sh/uv/pulls/8112.md) on 2024-10-10 21:59_
 
 ---
 

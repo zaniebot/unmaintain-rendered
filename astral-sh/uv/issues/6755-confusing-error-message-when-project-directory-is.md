@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-28T15:14:24Z
 updated_at: 2024-09-06T13:25:17Z
 url: https://github.com/astral-sh/uv/issues/6755
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Confusing error message when project directory is changed
@@ -127,9 +127,5 @@ error: Failed to spawn: `mypy`
 _Comment by @zanieb on 2024-09-06 13:25_
 
 @michaeloliverx please open a new issue and include the full logs.
-
----
-
-_Referenced in [astral-sh/uv#11168](../../astral-sh/uv/pulls/11168.md) on 2025-02-03 21:35_
 
 ---

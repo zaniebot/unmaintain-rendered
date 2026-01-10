@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-04T13:36:33Z
 updated_at: 2024-09-29T17:34:54Z
 url: https://github.com/astral-sh/uv/issues/2154
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # --no-binary flag not always correctly taken into acount across runs.
@@ -127,10 +127,6 @@ _Label `great writeup` added by @zanieb on 2024-03-04 14:32_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-29 01:16_
-
----
-
-_Referenced in [astral-sh/uv#7772](../../astral-sh/uv/pulls/7772.md) on 2024-09-29 01:41_
 
 ---
 

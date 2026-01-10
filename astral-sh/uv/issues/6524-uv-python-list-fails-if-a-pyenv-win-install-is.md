@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-08-23T14:56:29Z
 updated_at: 2024-08-29T20:48:23Z
 url: https://github.com/astral-sh/uv/issues/6524
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv python list` fails if a pyenv-win install is included in the windows registry
@@ -122,10 +122,6 @@ _Label `uv python` added by @zanieb on 2024-08-23 15:04_
 ---
 
 _Assigned to @konstin by @konstin on 2024-08-28 11:50_
-
----
-
-_Referenced in [astral-sh/uv#6761](../../astral-sh/uv/pulls/6761.md) on 2024-08-28 15:47_
 
 ---
 

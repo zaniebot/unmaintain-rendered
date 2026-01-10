@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-21T13:48:14Z
 updated_at: 2024-10-10T19:02:29Z
 url: https://github.com/astral-sh/uv/issues/1808
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Support URL requirements in transitive dependencies
@@ -161,14 +161,6 @@ _Renamed from "Dependency Resolution Issue: Failure to Install Inherited Require
 
 ---
 
-_Referenced in [astral-sh/uv#1932](../../astral-sh/uv/issues/1932.md) on 2024-03-04 00:13_
-
----
-
-_Referenced in [astral-sh/uv#2239](../../astral-sh/uv/issues/2239.md) on 2024-03-06 13:50_
-
----
-
 _Label `enhancement` added by @charliermarsh on 2024-03-08 20:57_
 
 ---
@@ -207,18 +199,6 @@ Since any package can have dependencies on others we can have lib1 in this examp
 I understand that uv doesn't support poetry dependencies (yet), but we're able to `pip install /path/to/a/package` and it will install properly (though not respect the pinned deps in the lockfile).
 
 What I'm noticing is that if I `uv pip install .` it complains not about the first line of deps, but about the second, eg lib2 in this toy example.
-
----
-
-_Referenced in [astral-sh/uv#2511](../../astral-sh/uv/issues/2511.md) on 2024-03-18 15:48_
-
----
-
-_Referenced in [astral-sh/uv#2635](../../astral-sh/uv/issues/2635.md) on 2024-03-25 18:50_
-
----
-
-_Referenced in [astral-sh/uv#2684](../../astral-sh/uv/pulls/2684.md) on 2024-03-27 04:02_
 
 ---
 
@@ -307,10 +287,6 @@ The second is very rare but it's mentioned in the docs because it _is_ possible 
 
 ---
 
-_Referenced in [astral-sh/uv#8080](../../astral-sh/uv/issues/8080.md) on 2024-10-10 09:51_
-
----
-
 _Comment by @charliermarsh on 2024-10-10 09:54_
 
 Created an issue to track that at: https://github.com/astral-sh/uv/issues/8080
@@ -353,9 +329,5 @@ Thanks @charliermarsh, this is more clear than the (current) documentation and a
 > We have a "good-enough-workaround" to convert the URL dependency into a proper registry dependency.
 
 @mansenfranzen does your workaround cover the case of URL dependencies in a registry package? I'm not sure there is any way to handle this with `uv`, aside from creating a local fork of the registry package and manually changing the dependencies?
-
----
-
-_Referenced in [astral-sh/uv#11179](../../astral-sh/uv/issues/11179.md) on 2025-02-04 09:23_
 
 ---

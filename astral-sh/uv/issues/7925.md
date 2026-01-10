@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-04T13:51:54Z
 updated_at: 2024-10-04T13:51:54Z
 url: https://github.com/astral-sh/uv/issues/7925
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Write timout for publishing
@@ -24,9 +24,5 @@ Currently, we use a high read timeout for reqwest in uploads (#7923) since reqwe
 ---
 
 _Label `enhancement` added by @konstin on 2024-10-04 13:51_
-
----
-
-_Referenced in [astral-sh/uv#7923](../../astral-sh/uv/pulls/7923.md) on 2024-10-04 13:52_
 
 ---

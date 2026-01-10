@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-04T06:24:32Z
 updated_at: 2024-09-14T00:46:17Z
 url: https://github.com/astral-sh/uv/issues/2145
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # uv fails to build qcore==1.10.0 on Python 3.12, but pip is happy to
@@ -62,10 +62,6 @@ Successfully installed qcore-1.10.0
 
 ---
 
-_Referenced in [python/typing_extensions#348](../../python/typing_extensions/pulls/348.md) on 2024-03-04 06:25_
-
----
-
 _Comment by @hauntsaninja on 2024-03-04 06:28_
 
 Hm, maybe this is because qcore relies on setup_requires? Not actually sure how setuptools implements that https://github.com/quora/qcore/blob/master/setup.py#L78
@@ -77,10 +73,6 @@ Either way, it would be nice if the error message `error: unknown file type '.py
 _Comment by @hauntsaninja on 2024-03-04 06:36_
 
 Hm, maybe `setup_requires` is not related, I can repro on https://github.com/quora/qcore/pull/102 as well with `uv pip install "qcore @ ."`
-
----
-
-_Referenced in [astral-sh/uv#2146](../../astral-sh/uv/issues/2146.md) on 2024-03-04 07:03_
 
 ---
 

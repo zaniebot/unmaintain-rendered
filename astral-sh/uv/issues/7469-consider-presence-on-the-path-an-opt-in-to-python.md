@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-17T15:57:07Z
 updated_at: 2024-09-18T15:19:11Z
 url: https://github.com/astral-sh/uv/issues/7469
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Consider presence on the `PATH` an opt-in to Python pre-releases
@@ -84,23 +84,11 @@ I believe https://github.com/astral-sh/uv/pull/7470 would achieve the behavior h
 
 ---
 
-_Referenced in [astral-sh/uv#7470](../../astral-sh/uv/pulls/7470.md) on 2024-09-17 16:12_
-
----
-
 _Renamed from "Consider `--system` an opt-in to Python pre-releases" to "Consider `PATH` an opt-in to Python pre-releases" by @zanieb on 2024-09-17 16:13_
 
 ---
 
 _Renamed from "Consider `PATH` an opt-in to Python pre-releases" to "Consider presence on the `PATH` an opt-in to Python pre-releases" by @zanieb on 2024-09-17 16:13_
-
----
-
-_Referenced in [neutrinoceros/gpgi#270](../../neutrinoceros/gpgi/pulls/270.md) on 2024-09-18 07:00_
-
----
-
-_Referenced in [neutrinoceros/gpgi#271](../../neutrinoceros/gpgi/issues/271.md) on 2024-09-18 10:52_
 
 ---
 

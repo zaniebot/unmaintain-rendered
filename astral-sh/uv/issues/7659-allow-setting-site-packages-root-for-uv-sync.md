@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-24T14:23:46Z
 updated_at: 2024-10-21T22:03:24Z
 url: https://github.com/astral-sh/uv/issues/7659
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Allow setting `site-packages` root for `uv sync` instead of using venv's
@@ -130,10 +130,6 @@ Note that "not great and I don't like it" isn't enough detail for us to actually
 ---
 
 _Label `question` added by @zanieb on 2024-09-24 14:37_
-
----
-
-_Referenced in [astral-sh/uv#8085](../../astral-sh/uv/issues/8085.md) on 2024-10-10 12:14_
 
 ---
 

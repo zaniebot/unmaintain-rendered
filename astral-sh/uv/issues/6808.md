@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-29T12:34:11Z
 updated_at: 2024-08-29T14:31:53Z
 url: https://github.com/astral-sh/uv/issues/6808
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `hello.py` does not pass `ruff format`
@@ -59,10 +59,6 @@ Lol, thank you. Yes. (PR welcome or we'll fix soon.)
 ---
 
 _Label `bug` added by @charliermarsh on 2024-08-29 13:00_
-
----
-
-_Referenced in [astral-sh/uv#6811](../../astral-sh/uv/pulls/6811.md) on 2024-08-29 13:06_
 
 ---
 

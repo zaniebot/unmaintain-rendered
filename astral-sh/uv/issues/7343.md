@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-12T20:28:45Z
 updated_at: 2024-09-13T07:27:37Z
 url: https://github.com/astral-sh/uv/issues/7343
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv run` spawns another process.
@@ -52,9 +52,5 @@ My main concern of running the web server as the PID 1 process can be solved wit
 ---
 
 _Closed by @pkucmus on 2024-09-13 07:27_
-
----
-
-_Referenced in [astral-sh/uv#6738](../../astral-sh/uv/pulls/6738.md) on 2024-09-13 07:55_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-01T11:00:50Z
 updated_at: 2024-09-02T11:50:02Z
 url: https://github.com/astral-sh/uv/issues/6909
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Two-step cache clean and prune needed to remove package from cache
@@ -64,10 +64,6 @@ _Label `bug` added by @charliermarsh on 2024-09-01 15:59_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-01 17:07_
-
----
-
-_Referenced in [astral-sh/uv#6915](../../astral-sh/uv/pulls/6915.md) on 2024-09-01 17:09_
 
 ---
 

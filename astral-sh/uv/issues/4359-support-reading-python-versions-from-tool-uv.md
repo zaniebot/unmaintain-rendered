@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-17T16:34:26Z
 updated_at: 2024-08-24T08:26:23Z
 url: https://github.com/astral-sh/uv/issues/4359
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Support reading Python versions from `tool.uv` 
@@ -31,15 +31,7 @@ _Label `preview` added by @zanieb on 2024-06-17 16:34_
 
 ---
 
-_Referenced in [astral-sh/uv#4335](../../astral-sh/uv/pulls/4335.md) on 2024-06-17 18:28_
-
----
-
 _Renamed from "Support reading Python versions `tool.uv` " to "Support reading Python versions from `tool.uv` " by @zanieb on 2024-07-24 02:39_
-
----
-
-_Referenced in [astral-sh/uv#4970](../../astral-sh/uv/issues/4970.md) on 2024-07-24 02:40_
 
 ---
 
@@ -66,17 +58,5 @@ _Comment by @zanieb on 2024-08-23 15:15_
 _Comment by @TommasoAmici on 2024-08-24 08:26_
 
 sure! https://github.com/astral-sh/uv/issues/6574
-
----
-
-_Referenced in [astral-sh/uv#8247](../../astral-sh/uv/issues/8247.md) on 2024-11-14 15:06_
-
----
-
-_Referenced in [astral-sh/uv#9494](../../astral-sh/uv/issues/9494.md) on 2024-11-28 10:13_
-
----
-
-_Referenced in [astral-sh/uv#11697](../../astral-sh/uv/issues/11697.md) on 2025-02-21 13:10_
 
 ---

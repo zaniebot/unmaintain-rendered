@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-21T12:42:21Z
 updated_at: 2024-10-21T21:58:38Z
 url: https://github.com/astral-sh/uv/issues/8416
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # pyproject validation messages are ambiguous
@@ -114,9 +114,5 @@ Same problem
 
 - https://github.com/astral-sh/uv/issues/4762
 - https://github.com/astral-sh/uv/issues/7845
-
----
-
-_Referenced in [pypa/pip#12963](../../pypa/pip/issues/12963.md) on 2024-10-26 16:03_
 
 ---

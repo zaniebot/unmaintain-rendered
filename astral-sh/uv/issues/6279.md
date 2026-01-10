@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-20T21:55:15Z
 updated_at: 2024-08-22T01:03:40Z
 url: https://github.com/astral-sh/uv/issues/6279
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Requirements from underscored extras are accidentally included as package dependencies
@@ -325,10 +325,6 @@ six==1.16.0
 
 ---
 
-_Referenced in [astral-sh/uv#6324](../../astral-sh/uv/issues/6324.md) on 2024-08-21 13:31_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-21 13:32_
 
 ---
@@ -495,10 +491,6 @@ Honestly it would be easier to do what setuptools does and cast it to `sqlalchem
 _Comment by @notatallshaw on 2024-08-22 00:18_
 
 You already do some "fix ups" to versions and requirements which don't conform to standards, for uv's use case of being drop in replacement, makes sense to do it for invalid extas 🙃
-
----
-
-_Referenced in [astral-sh/uv#6395](../../astral-sh/uv/pulls/6395.md) on 2024-08-22 00:34_
 
 ---
 

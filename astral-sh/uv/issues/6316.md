@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-21T10:34:58Z
 updated_at: 2024-08-21T20:24:13Z
 url: https://github.com/astral-sh/uv/issues/6316
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # uv lock specifier instability?
@@ -169,10 +169,6 @@ _Assigned to @konstin by @charliermarsh on 2024-08-21 13:23_
 _Comment by @konstin on 2024-08-21 14:17_
 
 Thank you for the great reproducer!
-
----
-
-_Referenced in [astral-sh/uv#6332](../../astral-sh/uv/pulls/6332.md) on 2024-08-21 14:41_
 
 ---
 

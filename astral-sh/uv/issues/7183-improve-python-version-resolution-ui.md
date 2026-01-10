@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-07T21:52:44Z
 updated_at: 2024-09-10T02:51:19Z
 url: https://github.com/astral-sh/uv/issues/7183
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Improve Python version resolution UI
@@ -125,10 +125,6 @@ Let me know if I haven't explained any of the setup here clearly: for reference 
 
 ---
 
-_Referenced in [astral-sh/uv#7035](../../astral-sh/uv/issues/7035.md) on 2024-09-08 00:12_
-
----
-
 _Comment by @charliermarsh on 2024-09-08 15:16_
 
 I think we should add some custom messages for `ModuleNotFoundError: No module named 'distutils' ` and similar errors, at the very least.
@@ -183,18 +179,10 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-09-09 19:04_
 
 ---
 
-_Referenced in [astral-sh/uv#7239](../../astral-sh/uv/pulls/7239.md) on 2024-09-10 01:37_
-
----
-
 _Closed by @charliermarsh on 2024-09-10 02:51_
 
 ---
 
 _Closed by @charliermarsh on 2024-09-10 02:51_
-
----
-
-_Referenced in [astral-sh/uv#8373](../../astral-sh/uv/issues/8373.md) on 2024-10-19 21:08_
 
 ---

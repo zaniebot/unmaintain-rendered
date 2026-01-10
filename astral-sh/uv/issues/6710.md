@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-27T18:10:41Z
 updated_at: 2024-09-04T13:33:27Z
 url: https://github.com/astral-sh/uv/issues/6710
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # uv run script always returns status exit 1 even if the script had a different exit code
@@ -116,10 +116,6 @@ _Comment by @charliermarsh on 2024-08-27 18:18_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-04 03:18_
-
----
-
-_Referenced in [astral-sh/uv#6994](../../astral-sh/uv/pulls/6994.md) on 2024-09-04 03:29_
 
 ---
 

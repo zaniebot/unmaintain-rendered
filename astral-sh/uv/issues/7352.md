@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-13T08:21:05Z
 updated_at: 2024-09-16T14:28:47Z
 url: https://github.com/astral-sh/uv/issues/7352
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Add additional Color Environment Variables+Values
@@ -182,10 +182,6 @@ Thanks for your awesome software and support!
 
 ---
 
-_Referenced in [astral-sh/uv#7426](../../astral-sh/uv/issues/7426.md) on 2024-09-16 13:38_
-
----
-
 _Comment by @zanieb on 2024-09-16 13:41_
 
 Created an issue for that specific problem https://github.com/astral-sh/uv/issues/7426
@@ -221,10 +217,6 @@ No we don't have a command to check. You might want to open an issue [upstream](
 ---
 
 _Label `upstream` added by @zanieb on 2024-09-16 13:52_
-
----
-
-_Referenced in [astral-sh/uv#7429](../../astral-sh/uv/issues/7429.md) on 2024-09-16 14:26_
 
 ---
 

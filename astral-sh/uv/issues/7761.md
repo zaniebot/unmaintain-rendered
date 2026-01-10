@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-28T18:08:38Z
 updated_at: 2024-10-15T22:58:16Z
 url: https://github.com/astral-sh/uv/issues/7761
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Allow users to define multiple, disjoint explicit indexes
@@ -50,10 +50,6 @@ _Label `enhancement` added by @charliermarsh on 2024-09-28 18:08_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-28 18:08_
-
----
-
-_Referenced in [astral-sh/uv#7769](../../astral-sh/uv/pulls/7769.md) on 2024-09-28 23:24_
 
 ---
 

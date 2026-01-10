@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-16T17:49:52Z
 updated_at: 2024-10-14T17:34:57Z
 url: https://github.com/astral-sh/uv/issues/7435
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv add `numpy` on legacy PyPI mirror does not respect Python version
@@ -95,14 +95,6 @@ Can we have an `only-binary` equivalent for the `uv add` workflow, and/or is the
 
 ---
 
-_Referenced in [astral-sh/uv#7816](../../astral-sh/uv/issues/7816.md) on 2024-10-01 19:18_
-
----
-
 _Closed by @cambriancoder on 2024-10-14 17:34_
-
----
-
-_Referenced in [astral-sh/uv#7703](../../astral-sh/uv/issues/7703.md) on 2025-01-14 13:33_
 
 ---

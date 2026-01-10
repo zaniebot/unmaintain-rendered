@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-10-18T23:48:52Z
 updated_at: 2024-10-18T23:48:58Z
 url: https://github.com/astral-sh/uv/issues/8351
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Show tracing output on test failure
@@ -34,17 +34,5 @@ _Label `internal` added by @zanieb on 2024-10-18 23:48_
 ---
 
 _Label `testing` added by @zanieb on 2024-10-18 23:48_
-
----
-
-_Referenced in [astral-sh/uv#9850](../../astral-sh/uv/issues/9850.md) on 2024-12-12 20:10_
-
----
-
-_Referenced in [astral-sh/uv#9873](../../astral-sh/uv/issues/9873.md) on 2024-12-13 18:34_
-
----
-
-_Referenced in [astral-sh/uv#11774](../../astral-sh/uv/pulls/11774.md) on 2025-02-25 08:51_
 
 ---

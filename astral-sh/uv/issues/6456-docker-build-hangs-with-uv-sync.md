@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-22T18:48:54Z
 updated_at: 2024-08-22T19:01:48Z
 url: https://github.com/astral-sh/uv/issues/6456
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Docker build hangs with uv sync
@@ -119,13 +119,5 @@ Alright I'm closing thanks for pointing the related issue :)
 ---
 
 _Closed by @jules-ch on 2024-08-22 19:01_
-
----
-
-_Referenced in [astral-sh/uv#6460](../../astral-sh/uv/issues/6460.md) on 2024-08-22 21:03_
-
----
-
-_Referenced in [astral-sh/uv#6462](../../astral-sh/uv/issues/6462.md) on 2024-08-22 21:08_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-26T10:28:52Z
 updated_at: 2024-08-26T23:58:18Z
 url: https://github.com/astral-sh/uv/issues/6641
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Cannot solve an environment with platform_system == Emscripten on Linux/OSX
@@ -224,10 +224,6 @@ _Comment by @maartenbreddels on 2024-08-26 17:28_
 Ah, I actually read the documentation on this part, but for some reason missed that it was TOML, so ignore the JSON/YAML request. I think the part in the documentation "There is no Python standard for lockfiles at this time, so the format of this file is specific to uv and not usable by other tools." reset my expectations that it was possible.
 
 But this is great news, that probably means we can do everything we want. Excellent tool, thanks :)
-
----
-
-_Referenced in [astral-sh/uv#6663](../../astral-sh/uv/pulls/6663.md) on 2024-08-26 23:41_
 
 ---
 

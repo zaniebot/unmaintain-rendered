@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-09T07:41:21Z
 updated_at: 2024-09-16T01:51:11Z
 url: https://github.com/astral-sh/uv/issues/7211
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # False positive warning: <dep> doesn't have extra <smth>
@@ -66,10 +66,6 @@ craft_parts-2.0.0.dist-info/METADATA
 ```
 
 ^ That package (craft-parts) is where it comes from in your specific case, but I agree that it would make sense for uv to report the package in whose dependencies the wrong extra was requested (perhaps even the whole chain of dependencies leading up the one with the wrong extra).
-
----
-
-_Referenced in [canonical/craft-parts#841](../../canonical/craft-parts/issues/841.md) on 2024-09-10 04:31_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-11T11:57:58Z
 updated_at: 2024-10-14T14:54:21Z
 url: https://github.com/astral-sh/uv/issues/8126
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Using UV to manage the system installation
@@ -59,9 +59,5 @@ You can set `UV_PROJECT_ENVIRONMENT` to a system interpreter -- see here: https:
 ---
 
 _Closed by @charliermarsh on 2024-10-14 14:54_
-
----
-
-_Referenced in [astral-sh/uv#12987](../../astral-sh/uv/issues/12987.md) on 2025-10-21 19:20_
 
 ---

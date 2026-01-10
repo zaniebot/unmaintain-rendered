@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-23T13:26:33Z
 updated_at: 2024-09-23T19:09:01Z
 url: https://github.com/astral-sh/uv/issues/7637
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv python install '>=3.11'` selects pre-release version
@@ -34,14 +34,6 @@ Also, I am new to creating issues or requests, so let me know if I am doing some
 
 _Originally posted by @Seazs in https://github.com/astral-sh/uv/issues/7429#issuecomment-2368096967_
             
-
----
-
-_Referenced in [astral-sh/uv#7429](../../astral-sh/uv/issues/7429.md) on 2024-09-23 13:26_
-
----
-
-_Referenced in [astral-sh/uv#7638](../../astral-sh/uv/pulls/7638.md) on 2024-09-23 13:36_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-06T22:56:03Z
 updated_at: 2024-10-16T00:46:56Z
 url: https://github.com/astral-sh/uv/issues/7147
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # in a workspace local package A cannot depend on local package B as a build-system requirement
@@ -177,10 +177,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-09-06 23:09_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-09-06 23:13_
-
----
-
-_Referenced in [astral-sh/uv#7172](../../astral-sh/uv/pulls/7172.md) on 2024-09-07 17:25_
 
 ---
 
@@ -371,9 +367,5 @@ Uploaded the file for you to run `uv pip install` against
 _Comment by @charliermarsh on 2024-10-16 00:46_
 
 Thank you, it's fixed here: https://github.com/astral-sh/uv/pull/8235
-
----
-
-_Referenced in [astral-sh/uv#8236](../../astral-sh/uv/issues/8236.md) on 2024-10-16 00:47_
 
 ---

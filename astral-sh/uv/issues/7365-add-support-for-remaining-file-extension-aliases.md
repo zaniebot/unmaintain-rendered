@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-13T15:54:00Z
 updated_at: 2024-09-14T19:59:08Z
 url: https://github.com/astral-sh/uv/issues/7365
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Add support for remaining file extension aliases
@@ -34,10 +34,6 @@ _Label `good first issue` added by @charliermarsh on 2024-09-13 15:54_
 
 ---
 
-_Referenced in [astral-sh/uv#7387](../../astral-sh/uv/pulls/7387.md) on 2024-09-14 08:13_
-
----
-
 _Comment by @Aditya-PS-05 on 2024-09-14 11:56_
 
 Hey Charlie, Please review my pull request. 
@@ -55,9 +51,5 @@ _Closed by @charliermarsh on 2024-09-14 19:59_
 ---
 
 _Closed by @charliermarsh on 2024-09-14 19:59_
-
----
-
-_Referenced in [gbabaisaac/mergefund-bounty-challenges#9](../../gbabaisaac/mergefund-bounty-challenges/pulls/9.md) on 2025-07-09 06:00_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-07T16:33:48Z
 updated_at: 2024-09-17T13:28:41Z
 url: https://github.com/astral-sh/uv/issues/7170
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Can not install an earlier futures version with uv
@@ -79,9 +79,5 @@ OK, thanks, did not realize the change in behavior for backtracking. We updated 
 ---
 
 _Closed by @zanieb on 2024-09-17 13:28_
-
----
-
-_Referenced in [astral-sh/uv#7563](../../astral-sh/uv/issues/7563.md) on 2024-09-19 22:13_
 
 ---

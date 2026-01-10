@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-29T22:12:47Z
 updated_at: 2024-08-30T18:33:21Z
 url: https://github.com/astral-sh/uv/issues/6833
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # src directory is not used for --app and default Projects
@@ -70,10 +70,6 @@ I'd definitely appreciate some fixes to the FastAPI docs — I gave them a quick
 ---
 
 _Label `documentation` added by @zanieb on 2024-08-29 22:19_
-
----
-
-_Referenced in [astral-sh/uv#6850](../../astral-sh/uv/pulls/6850.md) on 2024-08-30 02:56_
 
 ---
 

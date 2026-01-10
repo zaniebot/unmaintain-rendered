@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-19T22:03:04Z
 updated_at: 2024-09-29T14:54:29Z
 url: https://github.com/astral-sh/uv/issues/7562
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Unexpected python discovery rules
@@ -263,28 +263,8 @@ PS. Also working here on the `pyenv`
 
 ---
 
-_Referenced in [astral-sh/uv#7604](../../astral-sh/uv/issues/7604.md) on 2024-09-29 01:19_
-
----
-
 _Comment by @zanieb on 2024-09-29 14:54_
 
 Thanks for all the details. I'll need to dig into this more during the week, but pyenv is generally quite problematic for our caching since their shim can return any interpreter.
-
----
-
-_Referenced in [astral-sh/uv#7779](../../astral-sh/uv/issues/7779.md) on 2024-09-29 21:01_
-
----
-
-_Referenced in [astral-sh/uv#5609](../../astral-sh/uv/issues/5609.md) on 2024-11-08 17:03_
-
----
-
-_Referenced in [astral-sh/uv#12122](../../astral-sh/uv/issues/12122.md) on 2025-03-12 17:53_
-
----
-
-_Referenced in [NanmiCoder/MediaCrawler#673](../../NanmiCoder/MediaCrawler/issues/673.md) on 2025-07-24 03:52_
 
 ---

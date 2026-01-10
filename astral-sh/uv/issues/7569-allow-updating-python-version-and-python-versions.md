@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-20T02:26:12Z
 updated_at: 2024-09-23T13:41:10Z
 url: https://github.com/astral-sh/uv/issues/7569
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Allow updating `.python-version` and `.python-versions` files to latest patch version
@@ -41,9 +41,5 @@ Hey, I'm working on this [here](https://github.com/astral-sh/uv/compare/main...t
 _Comment by @zanieb on 2024-09-23 13:41_
 
 Cool! I think we'd use the latest patch version we can find in our downloads unless downloads are disabled, then we might need to use the latest version we can find on the system?
-
----
-
-_Referenced in [astral-sh/uv#7678](../../astral-sh/uv/pulls/7678.md) on 2024-09-25 05:21_
 
 ---

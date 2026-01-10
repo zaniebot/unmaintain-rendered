@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-27T07:43:35Z
 updated_at: 2024-10-09T23:03:33Z
 url: https://github.com/astral-sh/uv/issues/6676
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # exclude-newer doesn't downgrade. should it?
@@ -77,10 +77,6 @@ _Label `documentation` added by @zanieb on 2024-08-27 11:21_
 _Comment by @zanieb on 2024-08-27 11:22_
 
 If you wanted to contribute this to the documentation as a hint in https://docs.astral.sh/uv/concepts/resolution/#reproducible-resolutions that'd be greatly appreciated.
-
----
-
-_Referenced in [astral-sh/uv#6721](../../astral-sh/uv/pulls/6721.md) on 2024-08-27 20:06_
 
 ---
 

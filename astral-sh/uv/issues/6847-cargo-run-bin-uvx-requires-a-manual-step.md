@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-30T01:10:52Z
 updated_at: 2024-08-30T12:48:23Z
 url: https://github.com/astral-sh/uv/issues/6847
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # cargo run --bin uvx requires a manual step
@@ -57,10 +57,6 @@ To work around:
 - [opt] cargo clean
 - cargo run -- --help  # builds uv
 - cargo run --bin uvx -- --help  # ok!
-
----
-
-_Referenced in [astral-sh/uv#6848](../../astral-sh/uv/pulls/6848.md) on 2024-08-30 01:17_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-20T12:29:02Z
 updated_at: 2024-10-20T20:09:20Z
 url: https://github.com/astral-sh/uv/issues/8381
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # panic when sync with a related local editable package 
@@ -233,10 +233,6 @@ dependencies = [
    "anyio ; sys_platform == 'darwin'"
 ]
 ```
-
----
-
-_Referenced in [astral-sh/uv#8388](../../astral-sh/uv/pulls/8388.md) on 2024-10-20 17:44_
 
 ---
 

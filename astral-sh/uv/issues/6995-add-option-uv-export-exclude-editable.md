@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-04T03:41:09Z
 updated_at: 2024-09-06T01:01:48Z
 url: https://github.com/astral-sh/uv/issues/6995
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Add option `uv export --exclude-editable`
@@ -60,10 +60,6 @@ $ pip-audit --disable-pip --requirement <(uv export --format requirements-txt | 
 
 ---
 
-_Referenced in [astral-sh/uv#6960](../../astral-sh/uv/issues/6960.md) on 2024-09-04 08:59_
-
----
-
 _Label `enhancement` added by @zanieb on 2024-09-04 13:03_
 
 ---
@@ -73,10 +69,6 @@ _Label `cli` added by @zanieb on 2024-09-04 13:03_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-06 00:43_
-
----
-
-_Referenced in [astral-sh/uv#7110](../../astral-sh/uv/pulls/7110.md) on 2024-09-06 00:44_
 
 ---
 

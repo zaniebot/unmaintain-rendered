@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-05T02:32:53Z
 updated_at: 2024-09-05T02:34:04Z
 url: https://github.com/astral-sh/uv/issues/7064
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `--find-links` entries lack hashes in `uv.lock`
@@ -30,9 +30,5 @@ _Label `bug` added by @charliermarsh on 2024-09-05 02:32_
 _Comment by @charliermarsh on 2024-09-05 02:34_
 
 Related to the work that happened here: https://github.com/astral-sh/uv/pull/5544
-
----
-
-_Referenced in [astral-sh/uv#10987](../../astral-sh/uv/issues/10987.md) on 2025-01-27 15:08_
 
 ---

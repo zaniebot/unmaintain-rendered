@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-25T08:44:46Z
 updated_at: 2024-10-23T00:02:28Z
 url: https://github.com/astral-sh/uv/issues/7682
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `requires-python = "~=3.10"` uses docker container python 3.11 and not a managed python 3.10
@@ -144,10 +144,6 @@ _Label `needs-mre` added by @charliermarsh on 2024-09-25 12:46_
 
 ---
 
-_Referenced in [astral-sh/uv#7426](../../astral-sh/uv/issues/7426.md) on 2024-09-25 19:10_
-
----
-
 _Comment by @charliermarsh on 2024-10-23 00:02_
 
 Happy to reopen if we're able to find a reproduction.
@@ -155,9 +151,5 @@ Happy to reopen if we're able to find a reproduction.
 ---
 
 _Closed by @charliermarsh on 2024-10-23 00:02_
-
----
-
-_Referenced in [astral-sh/uv#14335](../../astral-sh/uv/pulls/14335.md) on 2025-07-01 21:24_
 
 ---

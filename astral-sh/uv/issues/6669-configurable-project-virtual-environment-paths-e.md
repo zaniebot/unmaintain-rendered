@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-27T02:45:36Z
 updated_at: 2024-09-03T17:52:20Z
 url: https://github.com/astral-sh/uv/issues/6669
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Configurable project virtual environment paths (e.g., for Docker)
@@ -175,10 +175,6 @@ Is this a dupe of #5229?
 _Comment by @zanieb on 2024-08-29 16:36_
 
 @edmorley sort of. If I put on my pedantic hat, this is about configuring the path of the project's virtual environment and the other one is about allowing `uv sync` to target arbitrary virtual environments and the discussion there seems to focus on using `VIRTUAL_ENV` to target the active environment.
-
----
-
-_Referenced in [astral-sh/uv#6834](../../astral-sh/uv/pulls/6834.md) on 2024-08-29 22:38_
 
 ---
 

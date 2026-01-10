@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-29T07:15:37Z
 updated_at: 2024-08-29T17:00:24Z
 url: https://github.com/astral-sh/uv/issues/6795
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Wrong `python_full_version` in `uv.lock`
@@ -128,9 +128,5 @@ _Closed by @TheRealBecks on 2024-08-29 14:12_
 _Comment by @zanieb on 2024-08-29 17:00_
 
 Related #6150 
-
----
-
-_Referenced in [Quantinuum/guppylang#519](../../Quantinuum/guppylang/pulls/519.md) on 2024-10-10 16:18_
 
 ---

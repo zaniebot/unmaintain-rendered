@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-09-05T13:18:11Z
 updated_at: 2024-09-08T23:09:41Z
 url: https://github.com/astral-sh/uv/issues/7081
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # [compatibility] install tgz extension
@@ -82,18 +82,10 @@ _Comment by @charliermarsh on 2024-09-08 18:33_
 
 ---
 
-_Referenced in [astral-sh/uv#7201](../../astral-sh/uv/pulls/7201.md) on 2024-09-08 22:22_
-
----
-
 _Closed by @charliermarsh on 2024-09-08 23:09_
 
 ---
 
 _Closed by @charliermarsh on 2024-09-08 23:09_
-
----
-
-_Referenced in [astral-sh/uv#13372](../../astral-sh/uv/issues/13372.md) on 2025-05-10 02:20_
 
 ---

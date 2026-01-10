@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-21T11:40:58Z
 updated_at: 2024-09-03T01:20:03Z
 url: https://github.com/astral-sh/uv/issues/6319
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Install python releases from offline registry
@@ -112,10 +112,6 @@ I expected that when I install `uv` in my "global" 3.12 venv I would be able thi
 _Comment by @zanieb on 2024-08-27 11:15_
 
 For some commands, like those that create a virtual environment, we don't look for interpreters _in_ virtual environments. Instead, you should add the interpreter to your PATH. See https://docs.astral.sh/uv/concepts/python-versions/#discovery-of-python-versions
-
----
-
-_Referenced in [astral-sh/uv#6950](../../astral-sh/uv/pulls/6950.md) on 2024-09-02 23:10_
 
 ---
 

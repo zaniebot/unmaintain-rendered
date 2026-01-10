@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-09-22T16:02:42Z
 updated_at: 2024-09-23T13:58:26Z
 url: https://github.com/astral-sh/uv/issues/7621
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv add pkg` adds extraneous new lines in `project.dependencies` if the pyproject.toml has `CRLF` ending
@@ -214,10 +214,6 @@ This bug also affects `tool.uv.dev-dependencies` in the same way.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-23 12:32_
-
----
-
-_Referenced in [astral-sh/uv#7640](../../astral-sh/uv/pulls/7640.md) on 2024-09-23 13:51_
 
 ---
 

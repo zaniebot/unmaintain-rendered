@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-17T10:15:30Z
 updated_at: 2024-09-18T12:33:02Z
 url: https://github.com/astral-sh/uv/issues/7453
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # HTTP Git credentials in `pyproject.toml` are ignored during sync
@@ -227,10 +227,6 @@ Let's call it a bug for Git credentials then. I'll take a look.
 ---
 
 _Renamed from "HTTP authentication credentials are forgotten" to "HTTP Git credentials in `pyproject.toml` are ignored during sync" by @zanieb on 2024-09-17 15:54_
-
----
-
-_Referenced in [astral-sh/uv#7474](../../astral-sh/uv/pulls/7474.md) on 2024-09-17 17:30_
 
 ---
 

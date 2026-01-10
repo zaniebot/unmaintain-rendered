@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-21T04:51:18Z
 updated_at: 2024-10-15T01:04:31Z
 url: https://github.com/astral-sh/uv/issues/3686
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Hint to "try: `--prerelease=allow`" when I already am
@@ -93,15 +93,7 @@ Not sure what to do here. I guess: don't show this at all for source builds?
 
 ---
 
-_Referenced in [pyprojectx/pyprojectx#114](../../pyprojectx/pyprojectx/issues/114.md) on 2024-08-22 07:36_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-10-15 00:33_
-
----
-
-_Referenced in [astral-sh/uv#8192](../../astral-sh/uv/pulls/8192.md) on 2024-10-15 00:46_
 
 ---
 

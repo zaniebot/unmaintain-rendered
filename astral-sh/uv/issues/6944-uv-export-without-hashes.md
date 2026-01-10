@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-02T20:38:55Z
 updated_at: 2024-09-03T02:12:30Z
 url: https://github.com/astral-sh/uv/issues/6944
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv export --without-hashes
@@ -79,10 +79,6 @@ I suppose it's reasonable to allow this given that pip doesn't have a way to tur
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-03 00:45_
-
----
-
-_Referenced in [astral-sh/uv#6954](../../astral-sh/uv/pulls/6954.md) on 2024-09-03 02:04_
 
 ---
 

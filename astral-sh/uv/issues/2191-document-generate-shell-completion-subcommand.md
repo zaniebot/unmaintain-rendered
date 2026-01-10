@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-05T00:57:13Z
 updated_at: 2024-08-21T14:35:46Z
 url: https://github.com/astral-sh/uv/issues/2191
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Document  generate-shell-completion subcommand
@@ -81,23 +81,11 @@ EDIT: I am no rust dev but I think I could add those in the appropriate places i
 
 ---
 
-_Referenced in [astral-sh/uv#6153](../../astral-sh/uv/issues/6153.md) on 2024-08-21 03:07_
-
----
-
 _Comment by @lucaspar on 2024-08-21 14:35_
 
 It seems `uv --help` and `uv help` should have the same effect.
 
 Currently, only the latter has the `generate-shell-completion` entry.
 
-
----
-
-_Referenced in [astral-sh/uv#9116](../../astral-sh/uv/issues/9116.md) on 2024-11-14 11:55_
-
----
-
-_Referenced in [astral-sh/ruff#12092](../../astral-sh/ruff/issues/12092.md) on 2025-06-26 05:59_
 
 ---

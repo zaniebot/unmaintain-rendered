@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-10-09T09:33:26Z
 updated_at: 2024-10-16T00:10:44Z
 url: https://github.com/astral-sh/uv/issues/8041
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Add `uv pip install --exact`
@@ -42,10 +42,6 @@ _Label `help wanted` added by @charliermarsh on 2024-10-09 09:33_
 ---
 
 _Label `good first issue` removed by @charliermarsh on 2024-10-09 09:33_
-
----
-
-_Referenced in [astral-sh/uv#8044](../../astral-sh/uv/pulls/8044.md) on 2024-10-09 11:25_
 
 ---
 
@@ -169,14 +165,6 @@ Sounds like you don't need logs, right?
 _Comment by @charliermarsh on 2024-10-15 13:54_
 
 Yeah no need -- we'll get it fixed.
-
----
-
-_Referenced in [astral-sh/uv#8219](../../astral-sh/uv/pulls/8219.md) on 2024-10-15 14:08_
-
----
-
-_Referenced in [apache/airflow#43056](../../apache/airflow/pulls/43056.md) on 2024-10-15 21:13_
 
 ---
 

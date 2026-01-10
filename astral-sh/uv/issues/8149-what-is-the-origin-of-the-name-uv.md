@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-12T18:47:43Z
 updated_at: 2024-10-14T14:27:55Z
 url: https://github.com/astral-sh/uv/issues/8149
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # What is the origin of the name `uv`?
@@ -50,13 +50,5 @@ Yeah for me it's short for "ultraviolet" though we liked that there were a few d
 ---
 
 _Closed by @charliermarsh on 2024-10-14 14:27_
-
----
-
-_Referenced in [astral-sh/uv#12741](../../astral-sh/uv/issues/12741.md) on 2025-04-08 12:29_
-
----
-
-_Referenced in [astral-sh/uv#2479](../../astral-sh/uv/issues/2479.md) on 2025-08-23 18:15_
 
 ---

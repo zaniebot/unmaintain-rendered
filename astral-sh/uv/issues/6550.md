@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-23T22:15:15Z
 updated_at: 2024-08-23T23:04:40Z
 url: https://github.com/astral-sh/uv/issues/6550
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # uv run --no-project fails due to missing pyproject.toml sections
@@ -45,14 +45,6 @@ _Label `bug` added by @zanieb on 2024-08-23 22:18_
 _Comment by @charliermarsh on 2024-08-23 22:18_
 
 Thanks, my bad, I'll fix that now.
-
----
-
-_Referenced in [astral-sh/uv#6552](../../astral-sh/uv/pulls/6552.md) on 2024-08-23 22:21_
-
----
-
-_Referenced in [astral-sh/uv#6554](../../astral-sh/uv/pulls/6554.md) on 2024-08-23 22:27_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-16T01:55:12Z
 updated_at: 2024-09-17T03:51:51Z
 url: https://github.com/astral-sh/uv/issues/7417
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # python -m uv no longer installs to the python specified (if prerelease)
@@ -103,10 +103,6 @@ Installed 1 package in 1ms
 
 ---
 
-_Referenced in [psf/black#4460](../../psf/black/pulls/4460.md) on 2024-09-16 06:59_
-
----
-
 _Label `bug` added by @konstin on 2024-09-16 07:43_
 
 ---
@@ -152,10 +148,6 @@ DEBUG Using Python 3.12.6 environment at /opt/homebrew/opt/python@3.12/bin/pytho
 _Comment by @zanieb on 2024-09-16 20:11_
 
 And this is because of the implementation here https://github.com/astral-sh/uv/blob/f22e5ef69ac2f3dbdcb7d6d7c68ff6d85891e0a8/crates/uv-python/src/discovery.rs#L386-L395
-
----
-
-_Referenced in [astral-sh/uv#7440](../../astral-sh/uv/pulls/7440.md) on 2024-09-16 20:22_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-19T23:48:14Z
 updated_at: 2024-08-23T13:00:40Z
 url: https://github.com/astral-sh/uv/issues/6237
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Include `bin/uv` in `uv venv`
@@ -111,10 +111,6 @@ Is this trick not included in the [docs](https://docs.astral.sh/uv/pip/environme
 _Comment by @zanieb on 2024-08-22 15:37_
 
 It's sort of mentioned in https://docs.astral.sh/uv/concepts/python-versions/#requesting-a-version — we could add a note where you linked but it's not mentioned there because that section is about _using_ the packages in the environment — not installing things into it. I can look into clarifying it though.
-
----
-
-_Referenced in [astral-sh/uv#6457](../../astral-sh/uv/pulls/6457.md) on 2024-08-22 18:50_
 
 ---
 

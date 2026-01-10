@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-14T21:55:04Z
 updated_at: 2024-10-15T12:05:20Z
 url: https://github.com/astral-sh/uv/issues/8189
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv python uninstall 3.13` does not uninstall 3.13t
@@ -47,10 +47,6 @@ Yeah interesting. This was also mentioned on Discord:
 uv run -p cpython-3.13.0-linux-x86_64-gnu python
 Python 3.13.0 experimental free-threading build
 ```
-
----
-
-_Referenced in [astral-sh/uv#8191](../../astral-sh/uv/pulls/8191.md) on 2024-10-14 22:10_
 
 ---
 

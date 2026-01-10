@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-28T19:02:19Z
 updated_at: 2024-09-28T19:39:56Z
 url: https://github.com/astral-sh/uv/issues/7765
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv pip install -e fails with spaces
@@ -75,9 +75,5 @@ _Label `bug` added by @charliermarsh on 2024-09-28 19:39_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-28 19:39_
-
----
-
-_Referenced in [pypa/hatch#1741](../../pypa/hatch/issues/1741.md) on 2024-10-02 12:51_
 
 ---

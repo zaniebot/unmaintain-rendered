@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-28T12:20:19Z
 updated_at: 2024-09-05T02:15:19Z
 url: https://github.com/astral-sh/uv/issues/6747
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # List specifier used to install a tool
@@ -77,10 +77,6 @@ _Label `good first issue` added by @charliermarsh on 2024-09-04 02:24_
 ---
 
 _Label `help wanted` added by @charliermarsh on 2024-09-04 02:24_
-
----
-
-_Referenced in [astral-sh/uv#7050](../../astral-sh/uv/pulls/7050.md) on 2024-09-04 21:31_
 
 ---
 

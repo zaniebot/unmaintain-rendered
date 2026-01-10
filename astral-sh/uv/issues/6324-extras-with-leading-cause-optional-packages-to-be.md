@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-21T13:03:33Z
 updated_at: 2024-08-21T13:47:35Z
 url: https://github.com/astral-sh/uv/issues/6324
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Extras with leading "-" cause optional packages to be installed.
@@ -107,9 +107,5 @@ I'm going to merge into https://github.com/astral-sh/uv/issues/6279 to stop dupl
 ---
 
 _Closed by @charliermarsh on 2024-08-21 13:47_
-
----
-
-_Referenced in [astral-sh/uv#6395](../../astral-sh/uv/pulls/6395.md) on 2024-08-23 10:30_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-02T22:46:09Z
 updated_at: 2024-10-03T00:17:00Z
 url: https://github.com/astral-sh/uv/issues/7881
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv sync` fails in xarray, while `pip install` succeeds
@@ -219,28 +219,8 @@ _Closed by @max-sixty on 2024-10-02 23:30_
 
 ---
 
-_Referenced in [pydata/xarray#9572](../../pydata/xarray/pulls/9572.md) on 2024-10-02 23:33_
-
----
-
 _Comment by @zanieb on 2024-10-03 00:16_
 
 Yeah we plan to improve these heuristics in the long-term but it's going to be quite the challenge
-
----
-
-_Referenced in [argilla-io/distilabel#1018](../../argilla-io/distilabel/pulls/1018.md) on 2024-10-07 09:13_
-
----
-
-_Referenced in [astral-sh/uv#7965](../../astral-sh/uv/issues/7965.md) on 2024-10-08 22:46_
-
----
-
-_Referenced in [astral-sh/uv#8157](../../astral-sh/uv/issues/8157.md) on 2024-10-13 13:03_
-
----
-
-_Referenced in [deepset-ai/haystack#8766](../../deepset-ai/haystack/issues/8766.md) on 2025-01-24 08:41_
 
 ---

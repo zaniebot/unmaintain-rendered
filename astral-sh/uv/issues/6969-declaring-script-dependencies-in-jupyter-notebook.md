@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-03T13:52:45Z
 updated_at: 2024-09-05T11:29:19Z
 url: https://github.com/astral-sh/uv/issues/6969
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Declaring script dependencies in jupyter notebook first cell
@@ -38,9 +38,5 @@ _Comment by @EtienneT on 2024-09-05 11:29_
 > [marimo](https://github.com/marimo-team/marimo/releases) implemented this in their last couple of releases, check them out
 
 Just saw that, I will definitely have a look!
-
----
-
-_Referenced in [ComPWA/report#13](../../ComPWA/report/issues/13.md) on 2024-10-03 12:25_
 
 ---

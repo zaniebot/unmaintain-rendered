@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-12T23:48:44Z
 updated_at: 2024-09-13T15:49:03Z
 url: https://github.com/astral-sh/uv/issues/7347
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Failed to install package because of CPython 
@@ -113,13 +113,5 @@ Installed 4 packages in 23ms
 ---
 
 _Closed by @charliermarsh on 2024-09-13 15:49_
-
----
-
-_Referenced in [astral-sh/uv#7450](../../astral-sh/uv/issues/7450.md) on 2024-09-17 08:32_
-
----
-
-_Referenced in [aboutcode-org/cyseq#7](../../aboutcode-org/cyseq/issues/7.md) on 2025-10-29 15:33_
 
 ---

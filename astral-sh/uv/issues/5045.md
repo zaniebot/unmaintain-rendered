@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-14T14:23:35Z
 updated_at: 2024-09-02T18:23:44Z
 url: https://github.com/astral-sh/uv/issues/5045
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Non-universal resolver should ignore requires-python upper bound
@@ -49,10 +49,6 @@ _Label `bug` added by @konstin on 2024-07-14 14:23_
 ---
 
 _Label `preview` added by @konstin on 2024-07-14 14:23_
-
----
-
-_Referenced in [astral-sh/uv#5046](../../astral-sh/uv/issues/5046.md) on 2024-07-14 14:42_
 
 ---
 
@@ -98,15 +94,7 @@ I've changed the issue to changing the regular resolver instead of the universal
 
 ---
 
-_Referenced in [astral-sh/uv#6859](../../astral-sh/uv/issues/6859.md) on 2024-08-30 13:23_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-30 17:48_
-
----
-
-_Referenced in [astral-sh/uv#6882](../../astral-sh/uv/pulls/6882.md) on 2024-08-30 18:27_
 
 ---
 

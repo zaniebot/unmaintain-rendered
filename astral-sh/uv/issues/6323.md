@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-21T12:34:06Z
 updated_at: 2024-08-21T23:52:03Z
 url: https://github.com/astral-sh/uv/issues/6323
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # uv cache populate / export cache
@@ -81,9 +81,5 @@ Would be nice.
 _Comment by @samypr100 on 2024-08-21 23:50_
 
 I'd say this is similar in the venue/spirit of https://github.com/astral-sh/uv/issues/1681 / https://github.com/astral-sh/uv/issues/3163 as populating the cache will involve downloading and possibly a build step which is a common workflow achieved with pip wheel or download.
-
----
-
-_Referenced in [astral-sh/uv#9345](../../astral-sh/uv/issues/9345.md) on 2024-11-22 05:05_
 
 ---

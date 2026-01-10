@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-28T15:42:37Z
 updated_at: 2024-09-14T20:03:49Z
 url: https://github.com/astral-sh/uv/issues/6760
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # uv tries to read `project.name` whenever the `project` table is present
@@ -69,14 +69,6 @@ I'm also reading a bit into the linked issue regarding the implicit table defini
 _Comment by @henryiii on 2024-08-28 18:00_
 
 It's invalid. Tools are supposed to error out. I really dislike that it's required, but not up to me. :) See https://github.com/pypa/cibuildwheel/issues/1064.
-
----
-
-_Referenced in [python-poetry/poetry-core#708](../../python-poetry/poetry-core/pulls/708.md) on 2024-08-28 20:49_
-
----
-
-_Referenced in [astral-sh/uv#6803](../../astral-sh/uv/pulls/6803.md) on 2024-08-29 10:54_
 
 ---
 

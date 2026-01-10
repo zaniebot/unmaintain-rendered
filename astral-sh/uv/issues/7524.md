@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-18T23:46:56Z
 updated_at: 2024-09-18T23:47:03Z
 url: https://github.com/astral-sh/uv/issues/7524
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Failure to collapse dependency clauses in no solution error message
@@ -28,9 +28,5 @@ _Assigned to @zanieb by @zanieb on 2024-09-18 23:47_
 ---
 
 _Label `error messages` added by @zanieb on 2024-09-18 23:47_
-
----
-
-_Referenced in [astral-sh/uv#7505](../../astral-sh/uv/pulls/7505.md) on 2024-09-19 00:22_
 
 ---

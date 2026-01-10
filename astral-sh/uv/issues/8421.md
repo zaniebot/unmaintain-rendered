@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-21T17:29:37Z
 updated_at: 2024-10-21T17:35:24Z
 url: https://github.com/astral-sh/uv/issues/8421
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Adding git tags to cache keys causes pyproject.toml parse error
@@ -63,10 +63,6 @@ _Label `documentation` added by @charliermarsh on 2024-10-21 17:31_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-10-21 17:34_
-
----
-
-_Referenced in [astral-sh/uv#8422](../../astral-sh/uv/pulls/8422.md) on 2024-10-21 17:34_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-19T19:33:17Z
 updated_at: 2024-09-27T22:34:04Z
 url: https://github.com/astral-sh/uv/issues/5229
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Support custom venv locations for `uv sync`
@@ -224,14 +224,6 @@ Related, re sync in dockerfile: https://github.com/astral-sh/uv/issues/4028#issu
 
 ---
 
-_Referenced in [astral-sh/uv#6339](../../astral-sh/uv/issues/6339.md) on 2024-08-21 15:12_
-
----
-
-_Referenced in [astral-sh/uv#6413](../../astral-sh/uv/issues/6413.md) on 2024-08-22 07:46_
-
----
-
 _Comment by @adiberk on 2024-08-22 19:53_
 
 > > Makes a ton of sense, thanks @tiangolo. I think this is pretty high-priority now that the release is out.
@@ -312,14 +304,6 @@ Does adding the `.venv` to your project's `.dockerignore` fix that too?
 
 ---
 
-_Referenced in [astral-sh/uv#6504](../../astral-sh/uv/issues/6504.md) on 2024-08-23 14:43_
-
----
-
-_Referenced in [astral-sh/uv#6511](../../astral-sh/uv/issues/6511.md) on 2024-08-23 14:58_
-
----
-
 _Comment by @adiberk on 2024-08-25 02:08_
 
 > Does adding the `.venv` to your project's `.dockerignore` fix that too?
@@ -337,14 +321,6 @@ uv venv /app/.venv
 ln -sf /app/.venv .venv
 uv sync
 ```
-
----
-
-_Referenced in [astral-sh/uv#6612](../../astral-sh/uv/issues/6612.md) on 2024-08-25 16:40_
-
----
-
-_Referenced in [tox-dev/tox-uv#81](../../tox-dev/tox-uv/issues/81.md) on 2024-08-26 12:18_
 
 ---
 
@@ -456,22 +432,6 @@ tl;dr the lack of this feature in my context is awkward but easy to work around.
 
 ---
 
-_Referenced in [astral-sh/uv#6746](../../astral-sh/uv/issues/6746.md) on 2024-08-28 13:11_
-
----
-
-_Referenced in [heroku/buildpacks-python#248](../../heroku/buildpacks-python/issues/248.md) on 2024-08-29 13:59_
-
----
-
-_Referenced in [astral-sh/uv#6669](../../astral-sh/uv/issues/6669.md) on 2024-08-29 14:00_
-
----
-
-_Referenced in [astral-sh/uv#6834](../../astral-sh/uv/pulls/6834.md) on 2024-08-29 22:38_
-
----
-
 _Closed by @zanieb on 2024-09-03 17:52_
 
 ---
@@ -487,9 +447,5 @@ I didn't know about Docker Compose's `watch`, that solves my problems even bette
 _Comment by @zanieb on 2024-09-22 22:59_
 
 Great to hear! Thank you!
-
----
-
-_Referenced in [johnthagen/python-blueprint#267](../../johnthagen/python-blueprint/issues/267.md) on 2025-04-10 15:03_
 
 ---

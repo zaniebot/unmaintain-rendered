@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-18T17:48:18Z
 updated_at: 2024-10-20T17:16:14Z
 url: https://github.com/astral-sh/uv/issues/8343
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv does not respect position of comments in `pyproject.toml`
@@ -100,10 +100,6 @@ _Comment by @flyaroundme on 2024-10-20 00:24_
 
 Tricky one. The fun thing is that the "current dependency line comment" in this case is becoming a next dependency `prefix`, so in case it is the comment on the last line it is becoming part of `trailing`, that's why it is in the end of the file after adding `zope`.
 I am digging into it so feel free to assign on me, but most probably can send the fix more close to the end of the weekend, so I'm totally fine if somebody solves it beforehand
-
----
-
-_Referenced in [astral-sh/uv#8384](../../astral-sh/uv/pulls/8384.md) on 2024-10-20 15:07_
 
 ---
 

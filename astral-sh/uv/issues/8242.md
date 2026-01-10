@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-16T06:46:16Z
 updated_at: 2024-10-21T13:35:25Z
 url: https://github.com/astral-sh/uv/issues/8242
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Support https://astral.sh/uv/install.sh running as Nobody
@@ -43,10 +43,6 @@ _Label `upstream` added by @charliermarsh on 2024-10-16 13:33_
 ---
 
 _Label `releases` added by @charliermarsh on 2024-10-16 13:33_
-
----
-
-_Referenced in [astral-sh/uv#8270](../../astral-sh/uv/pulls/8270.md) on 2024-10-16 19:40_
 
 ---
 

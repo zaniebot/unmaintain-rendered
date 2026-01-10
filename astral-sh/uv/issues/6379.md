@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-21T21:37:17Z
 updated_at: 2024-08-21T22:11:27Z
 url: https://github.com/astral-sh/uv/issues/6379
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `uv sync` seems to install using a different Python version than in `requires-python`
@@ -117,9 +117,5 @@ No problem, glad to hear it!
 ---
 
 _Label `question` added by @charliermarsh on 2024-08-21 22:11_
-
----
-
-_Referenced in [astral-sh/uv#6414](../../astral-sh/uv/pulls/6414.md) on 2024-08-22 08:09_
 
 ---

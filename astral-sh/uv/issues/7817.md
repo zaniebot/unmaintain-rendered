@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-30T19:30:36Z
 updated_at: 2024-10-01T15:49:07Z
 url: https://github.com/astral-sh/uv/issues/7817
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Avoid unhelpful serde error for non-matching `tool.uv.sources`
@@ -28,14 +28,6 @@ _Label `error messages` added by @charliermarsh on 2024-09-30 19:30_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-30 19:30_
-
----
-
-_Referenced in [astral-sh/uv#7822](../../astral-sh/uv/pulls/7822.md) on 2024-09-30 23:32_
-
----
-
-_Referenced in [astral-sh/uv#7823](../../astral-sh/uv/pulls/7823.md) on 2024-09-30 23:55_
 
 ---
 

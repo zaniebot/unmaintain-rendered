@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-23T02:25:32Z
 updated_at: 2024-08-23T03:09:47Z
 url: https://github.com/astral-sh/uv/issues/6485
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Respect output-file symlinks
@@ -56,10 +56,6 @@ _Label `bug` added by @charliermarsh on 2024-08-23 02:27_
 _Comment by @charliermarsh on 2024-08-23 02:27_
 
 I'll mark it as a bug.
-
----
-
-_Referenced in [astral-sh/uv#6487](../../astral-sh/uv/pulls/6487.md) on 2024-08-23 02:42_
 
 ---
 

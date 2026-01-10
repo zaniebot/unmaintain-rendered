@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-10-10T07:24:46Z
 updated_at: 2024-10-15T08:00:44Z
 url: https://github.com/astral-sh/uv/issues/8073
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv publish` interactive like twine?
@@ -59,14 +59,6 @@ _Unassigned @konstin by @konstin on 2024-10-13 08:22_
 
 ---
 
-_Referenced in [astral-sh/uv#8158](../../astral-sh/uv/pulls/8158.md) on 2024-10-13 15:55_
-
----
-
 _Closed by @konstin on 2024-10-15 08:00_
-
----
-
-_Referenced in [astral-sh/uv#7839](../../astral-sh/uv/issues/7839.md) on 2024-11-03 18:09_
 
 ---

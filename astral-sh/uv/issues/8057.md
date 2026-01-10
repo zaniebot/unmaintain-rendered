@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-09T20:12:20Z
 updated_at: 2024-10-09T23:05:52Z
 url: https://github.com/astral-sh/uv/issues/8057
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Paths not working as expected with `--find-links`
@@ -48,10 +48,6 @@ _Label `bug` added by @charliermarsh on 2024-10-09 22:39_
 _Comment by @charliermarsh on 2024-10-09 22:39_
 
 Thanks, that's a bug on my part.
-
----
-
-_Referenced in [astral-sh/uv#8061](../../astral-sh/uv/pulls/8061.md) on 2024-10-09 22:57_
 
 ---
 

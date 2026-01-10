@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-08T16:40:56Z
 updated_at: 2024-10-09T09:28:45Z
 url: https://github.com/astral-sh/uv/issues/8008
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Problem upgrading to Python 3.13
@@ -98,10 +98,6 @@ error: No download found for request: cpython-3.13-linux-aarch64-gnu
 
 **So I'm looking for further help/guidance TIA**
 
-
----
-
-_Referenced in [astral-sh/uv#7325](../../astral-sh/uv/issues/7325.md) on 2024-10-08 16:42_
 
 ---
 

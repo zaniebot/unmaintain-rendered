@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-23T12:54:55Z
 updated_at: 2024-08-23T14:28:17Z
 url: https://github.com/astral-sh/uv/issues/6509
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # ModuleNotFoundError: No module named 'distutils'
@@ -150,9 +150,5 @@ _Closed by @kdheepak on 2024-08-23 14:27_
 _Comment by @kdheepak on 2024-08-23 14:28_
 
 Thanks for the swift response!
-
----
-
-_Referenced in [astral-sh/uv#6911](../../astral-sh/uv/issues/6911.md) on 2024-09-01 11:59_
 
 ---

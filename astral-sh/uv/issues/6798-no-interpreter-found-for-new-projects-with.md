@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-29T09:17:22Z
 updated_at: 2024-08-30T15:44:15Z
 url: https://github.com/astral-sh/uv/issues/6798
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # No interpreter found for new projects with `requires-python = ">=3.13"`
@@ -79,10 +79,6 @@ Yeah it's possible `3.13.0rc1` technically does not satisfy `>=3.13`, but we mak
 ---
 
 _Label `uv python` added by @zanieb on 2024-08-29 13:42_
-
----
-
-_Referenced in [astral-sh/uv#6813](../../astral-sh/uv/pulls/6813.md) on 2024-08-29 14:22_
 
 ---
 

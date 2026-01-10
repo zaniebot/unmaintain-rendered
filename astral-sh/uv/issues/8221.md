@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-15T15:27:57Z
 updated_at: 2024-10-17T13:15:31Z
 url: https://github.com/astral-sh/uv/issues/8221
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Authentication for private registries
@@ -43,10 +43,6 @@ I've tried using the `UV_PUBLISH_TOKEN ` env var. And also using username as __t
 
 Could you please add compatibility with cloudsmith? TY!
 
-
----
-
-_Referenced in [astral-sh/uv#6278](../../astral-sh/uv/issues/6278.md) on 2024-10-15 15:31_
 
 ---
 
@@ -133,9 +129,5 @@ Thanks a lot team! closing the issue
 ---
 
 _Closed by @juan-abia on 2024-10-17 13:15_
-
----
-
-_Referenced in [astral-sh/uv#11032](../../astral-sh/uv/pulls/11032.md) on 2025-01-28 18:41_
 
 ---

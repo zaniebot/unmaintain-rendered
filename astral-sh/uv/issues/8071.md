@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-10T05:44:58Z
 updated_at: 2024-10-10T14:00:36Z
 url: https://github.com/astral-sh/uv/issues/8071
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # `uv sync`  isn't able to install dynamic extra dependencies
@@ -93,10 +93,6 @@ It took me a while to figure out why this was happening, but it does make sense 
 ---
 
 _Label `needs-decision` removed by @charliermarsh on 2024-10-10 11:34_
-
----
-
-_Referenced in [astral-sh/uv#8091](../../astral-sh/uv/pulls/8091.md) on 2024-10-10 13:43_
 
 ---
 

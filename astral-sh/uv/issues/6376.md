@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-21T20:47:16Z
 updated_at: 2024-08-22T19:58:01Z
 url: https://github.com/astral-sh/uv/issues/6376
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # importlib.metadata.distributions() doesn't surface all installed packages/endpoints, breaking pytest plugins
@@ -61,10 +61,6 @@ _Comment by @zanieb on 2024-08-21 20:59_
 Some documentation on this at https://docs.astral.sh/uv/concepts/tools/#relationship-to-uv-run
 
 We may be able to improve the documentation though, if you have any questions.
-
----
-
-_Referenced in [astral-sh/uv#6377](../../astral-sh/uv/issues/6377.md) on 2024-08-21 21:00_
 
 ---
 

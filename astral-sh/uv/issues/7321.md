@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-12T02:35:18Z
 updated_at: 2024-09-12T19:06:06Z
 url: https://github.com/astral-sh/uv/issues/7321
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Migrate cache info globbing to `globwalk`
@@ -28,10 +28,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-09-12 02:35_
 ---
 
 _Label `internal` added by @charliermarsh on 2024-09-12 02:35_
-
----
-
-_Referenced in [astral-sh/uv#7337](../../astral-sh/uv/pulls/7337.md) on 2024-09-12 18:22_
 
 ---
 

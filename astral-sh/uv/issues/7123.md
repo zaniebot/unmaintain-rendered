@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-06T11:39:37Z
 updated_at: 2024-09-08T22:33:36Z
 url: https://github.com/astral-sh/uv/issues/7123
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Behavior of `uv pip install` different from docs
@@ -64,10 +64,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-09-08 14:31_
 _Comment by @charliermarsh on 2024-09-08 14:32_
 
 Gonna fix this.
-
----
-
-_Referenced in [astral-sh/uv#7188](../../astral-sh/uv/pulls/7188.md) on 2024-09-08 14:44_
 
 ---
 

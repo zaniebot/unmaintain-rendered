@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-17T13:20:52Z
 updated_at: 2024-09-20T19:05:52Z
 url: https://github.com/astral-sh/uv/issues/7458
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Docker package page shows incorrect default suggestion
@@ -55,10 +55,6 @@ _Label `releases` added by @zanieb on 2024-09-17 16:31_
 _Comment by @samypr100 on 2024-09-18 03:59_
 
 I gave it a try and it didn't quite work as I expected, GitHub seems to sort based on when digests get pushed, so re-doing the `docker-publish` job at the end (which only updates the tags) didn't help and we'd have to rebuild a new image to have the digests change. It seems like a limitation on Github's side to not allow configurability of which tag gets featured. I'll keep thinking about it.
-
----
-
-_Referenced in [astral-sh/uv#7568](../../astral-sh/uv/pulls/7568.md) on 2024-09-20 01:25_
 
 ---
 

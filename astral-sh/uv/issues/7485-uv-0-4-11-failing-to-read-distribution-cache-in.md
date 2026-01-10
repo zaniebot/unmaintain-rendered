@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-18T06:13:42Z
 updated_at: 2024-09-18T14:55:09Z
 url: https://github.com/astral-sh/uv/issues/7485
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # uv 0.4.11 failing to read distribution cache in github actions
@@ -363,10 +363,6 @@ We can also just revert that change and re-release, it’s not a critical change
 
 ---
 
-_Referenced in [astral-sh/uv#7495](../../astral-sh/uv/pulls/7495.md) on 2024-09-18 13:04_
-
----
-
 _Comment by @MRigal on 2024-09-18 13:07_
 
 Actually, the root cause is possibly deeper. After reverting to 0.4.10, it fixes the behaviour for `uv sync` but not for `uv pip install`:
@@ -395,32 +391,12 @@ I wouldn’t expect downgrading to help. Once the cache is in a bad state, any v
 
 ---
 
-_Referenced in [astral-sh/uv#7498](../../astral-sh/uv/pulls/7498.md) on 2024-09-18 13:24_
-
----
-
 _Closed by @charliermarsh on 2024-09-18 13:33_
-
----
-
-_Referenced in [astral-sh/uv#7500](../../astral-sh/uv/pulls/7500.md) on 2024-09-18 13:36_
 
 ---
 
 _Comment by @MRigal on 2024-09-18 14:55_
 
 Thanks for the quick action! I confirm that 0.4.12 fixes the issue!
-
----
-
-_Referenced in [astral-sh/uv#7543](../../astral-sh/uv/issues/7543.md) on 2024-09-19 11:42_
-
----
-
-_Referenced in [astral-sh/uv#7728](../../astral-sh/uv/issues/7728.md) on 2024-09-27 00:22_
-
----
-
-_Referenced in [astral-sh/uv#15108](../../astral-sh/uv/issues/15108.md) on 2025-08-26 05:59_
 
 ---

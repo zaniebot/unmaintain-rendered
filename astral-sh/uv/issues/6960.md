@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-03T08:33:55Z
 updated_at: 2024-09-06T01:01:48Z
 url: https://github.com/astral-sh/uv/issues/6960
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Feature:  have 'uv export' support --only-deps
@@ -131,10 +131,6 @@ _Comment by @RomainBrault on 2024-09-04 10:03_
 I think the feature could be seen another way:
 
 Be able to do `uv pip compile uv.lock`.
-
----
-
-_Referenced in [astral-sh/uv#7110](../../astral-sh/uv/pulls/7110.md) on 2024-09-06 00:44_
 
 ---
 

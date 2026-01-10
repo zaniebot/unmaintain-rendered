@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-27T18:41:00Z
 updated_at: 2024-09-23T19:02:21Z
 url: https://github.com/astral-sh/uv/issues/5510
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Show dedicated hint for `--unsafe-first-match` with PyTorch index
@@ -64,10 +64,6 @@ I think it'd be okay to have a low-priority pool checking the subsequent indexes
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-23 14:24_
-
----
-
-_Referenced in [astral-sh/uv#7645](../../astral-sh/uv/pulls/7645.md) on 2024-09-23 16:40_
 
 ---
 

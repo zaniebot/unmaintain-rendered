@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-17T15:16:52Z
 updated_at: 2024-09-22T14:08:07Z
 url: https://github.com/astral-sh/uv/issues/7466
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # UserWarning: Attempting to work in a virtualenv. If you encounter problems, please install IPython inside the virtualenv
@@ -115,10 +115,6 @@ The issue is because of Unix paths and Windows paths being compared. Adding a `.
 
 
 
-
----
-
-_Referenced in [python/cpython#124312](../../python/cpython/issues/124312.md) on 2024-09-22 05:04_
 
 ---
 

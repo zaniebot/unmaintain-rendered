@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-20T06:58:10Z
 updated_at: 2024-08-24T07:49:50Z
 url: https://github.com/astral-sh/uv/issues/6246
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # `implementation` parameter from `pip install` missing in `uv pip install / compile`
@@ -28,19 +28,11 @@ Would be great if this could be supported in `uv` for the relevant operations as
 
 ---
 
-_Referenced in [astral-sh/uv#6198](../../astral-sh/uv/issues/6198.md) on 2024-08-20 07:00_
-
----
-
 _Label `compatibility` added by @zanieb on 2024-08-20 12:31_
 
 ---
 
 _Label `configuration` added by @zanieb on 2024-08-20 12:31_
-
----
-
-_Referenced in [astral-sh/uv#6553](../../astral-sh/uv/pulls/6553.md) on 2024-08-23 22:24_
 
 ---
 
@@ -57,13 +49,5 @@ Additionally, there is the general use case to define implementation, abi and pl
 I guess for the second part it needs more time and input from other to define a precise specification. It could require a lot of internal refactoring to select multiple abis from a command line argument.
 
 
-
----
-
-_Referenced in [posit-dev/positron#6290](../../posit-dev/positron/issues/6290.md) on 2025-02-24 16:47_
-
----
-
-_Referenced in [posit-dev/positron#6929](../../posit-dev/positron/issues/6929.md) on 2025-03-21 17:38_
 
 ---

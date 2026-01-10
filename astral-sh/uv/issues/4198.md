@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-10T14:01:25Z
 updated_at: 2024-09-14T21:56:01Z
 url: https://github.com/astral-sh/uv/issues/4198
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Add setting to manage preference for managed toolchains
@@ -44,22 +44,6 @@ We could also frame this differently, like..
 ```
 toolchain-discovery = prefer-system | prefer-managed | only-system | only-managed
 ```
-
----
-
-_Referenced in [astral-sh/uv#2607](../../astral-sh/uv/issues/2607.md) on 2024-06-11 13:12_
-
----
-
-_Referenced in [astral-sh/uv#4320](../../astral-sh/uv/issues/4320.md) on 2024-06-16 03:45_
-
----
-
-_Referenced in [astral-sh/uv#4411](../../astral-sh/uv/issues/4411.md) on 2024-06-19 14:56_
-
----
-
-_Referenced in [astral-sh/uv#4416](../../astral-sh/uv/pulls/4416.md) on 2024-06-19 16:57_
 
 ---
 

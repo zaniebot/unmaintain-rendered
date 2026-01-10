@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-10T23:36:01Z
 updated_at: 2024-10-16T12:45:27Z
 url: https://github.com/astral-sh/uv/issues/8116
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Duplicated --extra-index-url in requirements
@@ -135,10 +135,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-10-12 03:49_
 _Comment by @dabljues on 2024-10-12 15:27_
 
 It's not the end of the world, currently I went with this solution and I have these duplicated, but I also agree that this should be deduped (and after I glanced at the code it looks like it could potentially be an easy fix - not a Rust expert tho)
-
----
-
-_Referenced in [astral-sh/uv#8226](../../astral-sh/uv/pulls/8226.md) on 2024-10-15 18:14_
 
 ---
 

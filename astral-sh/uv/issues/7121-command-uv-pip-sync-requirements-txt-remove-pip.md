@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-06T10:48:48Z
 updated_at: 2024-09-15T22:27:53Z
 url: https://github.com/astral-sh/uv/issues/7121
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # Command `uv pip sync requirements.txt` remove pip in venv create with `uv venv --seed`
@@ -185,10 +185,6 @@ I can do that, not too hard.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-15 16:48_
-
----
-
-_Referenced in [astral-sh/uv#7410](../../astral-sh/uv/pulls/7410.md) on 2024-09-15 17:22_
 
 ---
 

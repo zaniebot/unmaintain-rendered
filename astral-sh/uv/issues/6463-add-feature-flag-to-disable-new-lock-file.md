@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-22T21:26:28Z
 updated_at: 2024-08-22T23:06:58Z
 url: https://github.com/astral-sh/uv/issues/6463
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Add feature flag to disable new lock file features (PEP 751)
@@ -158,14 +158,6 @@ Oh, same as rye. That solves it as a quasi-feature flag. Thank you!
 _Comment by @zanieb on 2024-08-22 21:55_
 
 Adding documentation for this in https://github.com/astral-sh/uv/pull/6465
-
----
-
-_Referenced in [astral-sh/uv#6465](../../astral-sh/uv/pulls/6465.md) on 2024-08-22 21:55_
-
----
-
-_Referenced in [astral-sh/uv#6466](../../astral-sh/uv/pulls/6466.md) on 2024-08-22 22:04_
 
 ---
 

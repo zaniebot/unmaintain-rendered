@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-27T13:48:27Z
 updated_at: 2024-08-27T13:51:44Z
 url: https://github.com/astral-sh/uv/issues/6687
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Path back to using released tl crate dependency?
@@ -56,9 +56,5 @@ Thanks! Closing this since the question is adequately answered.
 ---
 
 _Closed by @musicinmybrain on 2024-08-27 13:51_
-
----
-
-_Referenced in [astral-sh/uv#5588](../../astral-sh/uv/issues/5588.md) on 2024-10-21 22:59_
 
 ---

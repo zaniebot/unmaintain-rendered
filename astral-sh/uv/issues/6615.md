@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-25T19:46:57Z
 updated_at: 2024-08-25T22:31:08Z
 url: https://github.com/astral-sh/uv/issues/6615
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # Some packages can not be installed with uv contrary to pip, like `ziglang`
@@ -106,10 +106,6 @@ Thanks !!! I am open to anything if needed, first contribution on this awesome p
 ---
 
 _Renamed from "Some wheel can not be installed with uv contrary to pip, like `ziglang`" to "Some packages can not be installed with uv contrary to pip, like `ziglang`" by @Coruscant11 on 2024-08-25 19:47_
-
----
-
-_Referenced in [astral-sh/uv#6616](../../astral-sh/uv/pulls/6616.md) on 2024-08-25 19:56_
 
 ---
 

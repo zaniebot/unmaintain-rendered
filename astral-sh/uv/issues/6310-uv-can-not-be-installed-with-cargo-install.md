@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-21T08:13:51Z
 updated_at: 2024-08-21T08:35:43Z
 url: https://github.com/astral-sh/uv/issues/6310
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:45:09Z
 ```
 
 # uv can not be installed with "cargo install" ?
@@ -66,9 +66,5 @@ I will use the install script then, I do not absolutely want to use `cargo` :)
 ---
 
 _Closed by @konstin on 2024-08-21 08:35_
-
----
-
-_Referenced in [astral-sh/uv#6956](../../astral-sh/uv/issues/6956.md) on 2024-09-03 06:31_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-10T15:57:10Z
 updated_at: 2024-09-10T17:44:00Z
 url: https://github.com/astral-sh/uv/issues/7259
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:45:10Z
 ```
 
 # error: Expected a dependency at index 6
@@ -85,10 +85,6 @@ Definitely a bug! I reproduced once.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-10 17:14_
-
----
-
-_Referenced in [astral-sh/uv#7262](../../astral-sh/uv/pulls/7262.md) on 2024-09-10 17:28_
 
 ---
 
