@@ -1,0 +1,200 @@
+```yaml
+number: 9271
+title: Bump colored from 2.0.4 to 2.1.0
+type: pull_request
+state: merged
+author: dependabot
+labels:
+  - internal
+assignees: []
+merged: true
+base: main
+head: dependabot/cargo/colored-2.1.0
+created_at: 2023-12-25T08:22:33Z
+updated_at: 2023-12-25T13:12:29Z
+url: https://github.com/astral-sh/ruff/pull/9271
+synced_at: 2026-01-10T23:07:18Z
+```
+
+# Bump colored from 2.0.4 to 2.1.0
+
+---
+
+_Pull request opened by @dependabot on 2023-12-25 08:22_
+
+Bumps [colored](https://github.com/mackwic/colored) from 2.0.4 to 2.1.0.
+<details>
+<summary>Release notes</summary>
+<p><em>Sourced from <a href="https://github.com/mackwic/colored/releases">colored's releases</a>.</em></p>
+<blockquote>
+<h2>v2.1.0</h2>
+<h2>What's Changed</h2>
+<ul>
+<li>Impl From<!-- raw HTML omitted --> for ColoredString by <a href="https://github.com/mahor1221"><code>@​mahor1221</code></a> in <a href="https://redirect.github.com/colored-rs/colored/pull/126">colored-rs/colored#126</a></li>
+<li>Allow conversion from ColoredString to Error by <a href="https://github.com/spenserblack"><code>@​spenserblack</code></a> in <a href="https://redirect.github.com/colored-rs/colored/pull/86">colored-rs/colored#86</a></li>
+<li>Suggestion for minor documentation clarification by <a href="https://github.com/jonasbn"><code>@​jonasbn</code></a> in <a href="https://redirect.github.com/colored-rs/colored/pull/98">colored-rs/colored#98</a></li>
+<li>Remove unnecessary is_terminal dependency by <a href="https://github.com/Oakchris1955"><code>@​Oakchris1955</code></a> in <a href="https://redirect.github.com/colored-rs/colored/pull/149">colored-rs/colored#149</a></li>
+</ul>
+<h2>New Contributors</h2>
+<ul>
+<li><a href="https://github.com/mahor1221"><code>@​mahor1221</code></a> made their first contribution in <a href="https://redirect.github.com/colored-rs/colored/pull/126">colored-rs/colored#126</a></li>
+<li><a href="https://github.com/jonasbn"><code>@​jonasbn</code></a> made their first contribution in <a href="https://redirect.github.com/colored-rs/colored/pull/98">colored-rs/colored#98</a></li>
+<li><a href="https://github.com/Oakchris1955"><code>@​Oakchris1955</code></a> made their first contribution in <a href="https://redirect.github.com/colored-rs/colored/pull/149">colored-rs/colored#149</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a href="https://github.com/colored-rs/colored/compare/v2.0.4...v2.1.0">https://github.com/colored-rs/colored/compare/v2.0.4...v2.1.0</a></p>
+</blockquote>
+</details>
+<details>
+<summary>Changelog</summary>
+<p><em>Sourced from <a href="https://github.com/colored-rs/colored/blob/master/CHANGELOG.md">colored's changelog</a>.</em></p>
+<blockquote>
+<h1>Unreleased</h1>
+<ul>
+<li>
+<p>Document crate MSRV of <code>1.70</code>.</p>
+</li>
+<li>
+<p>Updated top-level docs to include a note about <code>ColoredString</code>'s role in the <code>Colorize</code> pipeline as well as link to it to suggest learning more about how to manipulate existing <code>ColoredString</code>'s.</p>
+</li>
+<li>
+<p>Changes to <code>ColoredString</code>:</p>
+<ul>
+<li>Expose fields.</li>
+<li><strong>[DEPRECATION]:</strong> Deprecated methods <code>fgcolor</code>, <code>bgcolor</code>, and <code>style</code> due to their obsolescence in the face of the exposing of their represented fields.</li>
+<li>Add methods for clearing specific elements of <code>fgcolor</code>, <code>bgcolor</code>, and <code>style</code>.</li>
+<li>Change Default implementation to be via derive as Style now implements Default (see changes to Style below).</li>
+<li>Add implementation of <code>DerefMut</code>.</li>
+<li>Updated docs to reflect the above changes as well as generally greatly expand them.</li>
+</ul>
+</li>
+<li>
+<p>Changes to <code>Style</code>:</p>
+<ul>
+<li>Implemented <code>Default</code> for <code>Style</code> (returns <code>CLEAR</code>). This exposes a method by which users can create plain <code>Style</code>'s from scratch.</li>
+<li>Implemented <code>From&lt;Styles&gt;</code> for <code>Style</code>. This lets users easily create <code>Style</code>'s from specific styles.</li>
+<li>Exposed previously private method <code>add</code>.</li>
+<li>Created method <code>remove</code> which essentially does the opposite.</li>
+<li>Added builder-style methods in the vein of <code>Colorize</code> to add stylings (e.g. <code>bold</code>, <code>underline</code>, <code>italic</code>, <code>strikethrough</code>).</li>
+<li>Implemented bitwise operators <code>BitAnd</code>, <code>BitOr</code>, <code>BitXor</code>, and <code>Not</code> as well as their representative assignment operators. You can also use a <code>Styles</code> as an operand for these.</li>
+<li>Implemented <code>FromIterator&lt;Styles&gt;</code> for Style.</li>
+</ul>
+</li>
+<li>
+<p>Changes to <code>Styles</code>:</p>
+<ul>
+<li>Implemented bitwise operators <code>BitAnd</code>, <code>BitOr</code>, <code>BitXor</code>, and <code>Not</code> which all combine <code>Styles</code>'s and output <code>Style</code>'s. These can also take a <code>Style</code> as an operand.</li>
+</ul>
+</li>
+<li>
+<p>Added additional testing for all of the above changes.</p>
+</li>
+<li>
+<p>Added methods <code>with_style</code> and <code>with_color_and_style</code> to <code>Colorize</code>.</p>
+</li>
+</ul>
+</blockquote>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href="https://github.com/colored-rs/colored/commit/c46702de80bb2b8aceaf3584dc0966136fe970e7"><code>c46702d</code></a> Release v2.1.0</li>
+<li><a href="https://github.com/colored-rs/colored/commit/e467ebb0d77c712940bd25812f5f9886a99aedb4"><code>e467ebb</code></a> Remove unnecessary is_terminal dependency (<a href="https://redirect.github.com/mackwic/colored/issues/149">#149</a>)</li>
+<li><a href="https://github.com/colored-rs/colored/commit/cfe29cd6d676d7500575020b53c8be8ad58756f2"><code>cfe29cd</code></a> Minor addition to the documentation, I could not read from the (<a href="https://redirect.github.com/mackwic/colored/issues/98">#98</a>)</li>
+<li><a href="https://github.com/colored-rs/colored/commit/884232ea21baa5e47e122e7be56f146422d4ad05"><code>884232e</code></a> Allow conversion from ColoredString to Error (<a href="https://redirect.github.com/mackwic/colored/issues/86">#86</a>)</li>
+<li><a href="https://github.com/colored-rs/colored/commit/2b886a55922f58d33a2b70575f866e752f605477"><code>2b886a5</code></a> add semver checks to CI</li>
+<li><a href="https://github.com/colored-rs/colored/commit/af53167c4a77a5777aa04ed2df40a19859a42060"><code>af53167</code></a> feat: add From&lt;String&gt; for ColoredString (<a href="https://redirect.github.com/mackwic/colored/issues/126">#126</a>)</li>
+<li>See full diff in <a href="https://github.com/mackwic/colored/compare/v2.0.4...v2.1.0">compare view</a></li>
+</ul>
+</details>
+<br />
+
+
+[![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=colored&package-manager=cargo&previous-version=2.0.4&new-version=2.1.0)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)
+
+Dependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
+
+[//]: # (dependabot-automerge-start)
+[//]: # (dependabot-automerge-end)
+
+---
+
+<details>
+<summary>Dependabot commands and options</summary>
+<br />
+
+You can trigger Dependabot actions by commenting on this PR:
+- `@dependabot rebase` will rebase this PR
+- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it
+- `@dependabot merge` will merge this PR after your CI passes on it
+- `@dependabot squash and merge` will squash and merge this PR after your CI passes on it
+- `@dependabot cancel merge` will cancel a previously requested merge and block automerging
+- `@dependabot reopen` will reopen this PR if it is closed
+- `@dependabot close` will close this PR and stop Dependabot recreating it. You can achieve the same result by closing it manually
+- `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency
+- `@dependabot ignore this major version` will close this PR and stop Dependabot creating any more for this major version (unless you reopen the PR or upgrade to it yourself)
+- `@dependabot ignore this minor version` will close this PR and stop Dependabot creating any more for this minor version (unless you reopen the PR or upgrade to it yourself)
+- `@dependabot ignore this dependency` will close this PR and stop Dependabot creating any more for this dependency (unless you reopen the PR or upgrade to it yourself)
+
+
+</details>
+
+---
+
+_Label `internal` added by @dependabot[bot] on 2023-12-25 08:22_
+
+---
+
+_Comment by @github-actions[bot] on 2023-12-25 08:39_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+ℹ️ ecosystem check **encountered linter errors**. (no lint changes; 1 project error)
+
+<details><summary><a href="https://github.com/pypa/setuptools">pypa/setuptools</a> (error)</summary>
+<p>
+
+```
+ruff failed
+  Cause: 'quote-style = preserve' is a preview only feature. Run with '--preview' to enable it.
+```
+
+</p>
+</details>
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+### Formatter (stable)
+ℹ️ ecosystem check **encountered format errors**. (no format changes; 1 project error)
+
+<details><summary><a href="https://github.com/pypa/setuptools">pypa/setuptools</a> (error)</summary>
+<p>
+
+```
+ruff failed
+  Cause: 'quote-style = preserve' is a preview only feature. Run with '--preview' to enable it.
+```
+
+</p>
+</details>
+
+### Formatter (preview)
+✅ ecosystem check detected no format changes.
+
+
+
+
+---
+
+_Merged by @charliermarsh on 2023-12-25 13:12_
+
+---
+
+_Closed by @charliermarsh on 2023-12-25 13:12_
+
+---
+
+_Branch deleted on 2023-12-25 13:12_
+
+---

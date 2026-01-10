@@ -1,0 +1,277 @@
+```yaml
+number: 8831
+title: "[`flake8-bandit`] Implement `S4XX` suspicious import rules"
+type: pull_request
+state: merged
+author: qdegraaf
+labels:
+  - rule
+  - preview
+assignees: []
+merged: true
+base: main
+head: feat/banditimports
+created_at: 2023-11-24T11:22:36Z
+updated_at: 2024-01-03T19:33:24Z
+url: https://github.com/astral-sh/ruff/pull/8831
+synced_at: 2026-01-10T23:07:18Z
+```
+
+# [`flake8-bandit`] Implement `S4XX` suspicious import rules
+
+---
+
+_Pull request opened by @qdegraaf on 2023-11-24 11:22_
+
+## Summary
+
+Adds all `S4XX` rules to the [flake8-bandit](https://github.com/tylerwince/flake8-bandit) plugin port. 
+
+There is a lot of documentation to write, some tests can be expanded and implementation can probably be refactored to be more compact. As there is some discussion on whether this is actually useful. (See: https://github.com/astral-sh/ruff/issues/1646#issuecomment-1732331441), wanted to check which rules we want to have before I go through the process of polishing this up.
+
+## Test Plan
+
+Fixtures for all rules based on `flake8-bandit` [tests](https://github.com/tylerwince/flake8-bandit/tree/main/tests)
+
+## Issue link
+
+Refers: https://github.com/astral-sh/ruff/issues/1646
+
+---
+
+_Marked ready for review by @qdegraaf on 2023-11-24 16:15_
+
+---
+
+_Comment by @qdegraaf on 2024-01-02 18:14_
+
+@charliermarsh I added basic docs for all the rules. Ready for review or for culling anything which is redundant or unwanted in the end. Either way afterwards all `S4XX` rules in the issue can be ticked off and be close to finishing the plugin.
+
+---
+
+_Comment by @github-actions[bot] on 2024-01-02 18:23_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+254 -0 violations, +0 -0 fixes in 8 projects; 33 projects unchanged)
+
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/DisnakeDev/disnake/blob/281b6ff40fd7d2b5f9ac7c2c6db4dd99d01faeb8/disnake/player.py#L10'>disnake/player.py:10:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/DisnakeDev/disnake/blob/281b6ff40fd7d2b5f9ac7c2c6db4dd99d01faeb8/docs/conf.py#L19'>docs/conf.py:19:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/DisnakeDev/disnake/blob/281b6ff40fd7d2b5f9ac7c2c6db4dd99d01faeb8/setup.py#L17'>setup.py:17:16:</a> S404 `subprocess` module is possibly insecure
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+130 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/f28643b7bdc90a61ec5bd12f8505772cd8c3bf7f/airflow/cli/commands/info_command.py#L24'>airflow/cli/commands/info_command.py:24:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/apache/airflow/blob/f28643b7bdc90a61ec5bd12f8505772cd8c3bf7f/airflow/cli/commands/internal_api_command.py#L23'>airflow/cli/commands/internal_api_command.py:23:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/apache/airflow/blob/f28643b7bdc90a61ec5bd12f8505772cd8c3bf7f/airflow/cli/commands/standalone_command.py#L22'>airflow/cli/commands/standalone_command.py:22:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/apache/airflow/blob/f28643b7bdc90a61ec5bd12f8505772cd8c3bf7f/airflow/cli/commands/webserver_command.py#L23'>airflow/cli/commands/webserver_command.py:23:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/apache/airflow/blob/f28643b7bdc90a61ec5bd12f8505772cd8c3bf7f/airflow/configuration.py#L30'>airflow/configuration.py:30:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/apache/airflow/blob/f28643b7bdc90a61ec5bd12f8505772cd8c3bf7f/airflow/executors/local_executor.py#L30'>airflow/executors/local_executor.py:30:8:</a> S404 `subprocess` module is possibly insecure
+... 89 additional changes omitted for rule S404
++ <a href='https://github.com/apache/airflow/blob/f28643b7bdc90a61ec5bd12f8505772cd8c3bf7f/airflow/models/dag.py#L28'>airflow/models/dag.py:28:8:</a> S403 `pickle`, `cPickle`, `dill`, and `shelve` modules are possibly insecure
++ <a href='https://github.com/apache/airflow/blob/f28643b7bdc90a61ec5bd12f8505772cd8c3bf7f/airflow/models/dagpickle.py#L22'>airflow/models/dagpickle.py:22:8:</a> S403 `pickle`, `cPickle`, `dill`, and `shelve` modules are possibly insecure
++ <a href='https://github.com/apache/airflow/blob/f28643b7bdc90a61ec5bd12f8505772cd8c3bf7f/airflow/models/taskinstance.py#L36'>airflow/models/taskinstance.py:36:8:</a> S403 `pickle`, `cPickle`, `dill`, and `shelve` modules are possibly insecure
++ <a href='https://github.com/apache/airflow/blob/f28643b7bdc90a61ec5bd12f8505772cd8c3bf7f/airflow/models/xcom.py#L26'>airflow/models/xcom.py:26:8:</a> S403 `pickle`, `cPickle`, `dill`, and `shelve` modules are possibly insecure
++ <a href='https://github.com/apache/airflow/blob/f28643b7bdc90a61ec5bd12f8505772cd8c3bf7f/airflow/operators/python.py#L26'>airflow/operators/python.py:26:8:</a> S403 `pickle`, `cPickle`, `dill`, and `shelve` modules are possibly insecure
++ <a href='https://github.com/apache/airflow/blob/f28643b7bdc90a61ec5bd12f8505772cd8c3bf7f/airflow/operators/python.py#L39'>airflow/operators/python.py:39:8:</a> S403 `pickle`, `cPickle`, `dill`, and `shelve` modules are possibly insecure
+... 23 additional changes omitted for rule S403
++ <a href='https://github.com/apache/airflow/blob/f28643b7bdc90a61ec5bd12f8505772cd8c3bf7f/airflow/providers/amazon/aws/hooks/base_aws.py#L338'>airflow/providers/amazon/aws/hooks/base_aws.py:338:14:</a> S410 `lxml` is vulnerable to XML attacks
++ <a href='https://github.com/apache/airflow/blob/f28643b7bdc90a61ec5bd12f8505772cd8c3bf7f/airflow/providers/ftp/hooks/ftp.py#L21'>airflow/providers/ftp/hooks/ftp.py:21:8:</a> S402 `ftplib` and related modules are considered insecure. Use SSH, SFTP, SCP, or another encrypted protocol.
++ <a href='https://github.com/apache/airflow/blob/f28643b7bdc90a61ec5bd12f8505772cd8c3bf7f/airflow/providers/ftp/operators/ftp.py#L23'>airflow/providers/ftp/operators/ftp.py:23:6:</a> S402 `ftplib` and related modules are considered insecure. Use SSH, SFTP, SCP, or another encrypted protocol.
++ <a href='https://github.com/apache/airflow/blob/f28643b7bdc90a61ec5bd12f8505772cd8c3bf7f/airflow/providers/ftp/sensors/ftp.py#L20'>airflow/providers/ftp/sensors/ftp.py:20:8:</a> S402 `ftplib` and related modules are considered insecure. Use SSH, SFTP, SCP, or another encrypted protocol.
++ <a href='https://github.com/apache/airflow/blob/f28643b7bdc90a61ec5bd12f8505772cd8c3bf7f/scripts/ci/testing/summarize_junit_failures.py#L23'>scripts/ci/testing/summarize_junit_failures.py:23:8:</a> S405 `xml.etree` methods are vulnerable to XML attacks
++ <a href='https://github.com/apache/airflow/blob/f28643b7bdc90a61ec5bd12f8505772cd8c3bf7f/scripts/in_container/check_junitxml_result.py#L21'>scripts/in_container/check_junitxml_result.py:21:8:</a> S405 `xml.etree` methods are vulnerable to XML attacks
++ <a href='https://github.com/apache/airflow/blob/f28643b7bdc90a61ec5bd12f8505772cd8c3bf7f/tests/providers/ftp/sensors/test_ftp.py#L20'>tests/providers/ftp/sensors/test_ftp.py:20:6:</a> S402 `ftplib` and related modules are considered insecure. Use SSH, SFTP, SCP, or another encrypted protocol.
++ <a href='https://github.com/apache/airflow/blob/f28643b7bdc90a61ec5bd12f8505772cd8c3bf7f/tests/test_utils/get_all_tests.py#L25'>tests/test_utils/get_all_tests.py:25:6:</a> S405 `xml.etree` methods are vulnerable to XML attacks
+... 110 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+38 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/examples/output/apis/server_document/flask_server.py#L14'>examples/output/apis/server_document/flask_server.py:14:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/release/system.py#L15'>release/system.py:15:6:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/release/util.py#L13'>release/util.py:13:8:</a> S403 `pickle`, `cPickle`, `dill`, and `shelve` modules are possibly insecure
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/scripts/hooks/install.py#L1'>scripts/hooks/install.py:1:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/scripts/hooks/protect_branches.py#L3'>scripts/hooks/protect_branches.py:3:6:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/scripts/hooks/uninstall.py#L1'>scripts/hooks/uninstall.py:1:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/scripts/sri.py#L7'>scripts/sri.py:7:6:</a> S404 `subprocess` module is possibly insecure
+... 30 additional changes omitted for rule S404
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/src/bokeh/sampledata/us_counties.py#L45'>src/bokeh/sampledata/us_counties.py:45:8:</a> S405 `xml.etree` methods are vulnerable to XML attacks
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/src/bokeh/sampledata/us_states.py#L44'>src/bokeh/sampledata/us_states.py:44:8:</a> S405 `xml.etree` methods are vulnerable to XML attacks
+... 29 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+27 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/freedomofpress/securedrop/blob/ed6142d6817c020d77398ca046e3a769628ca831/admin/bootstrap.py#L23'>admin/bootstrap.py:23:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/freedomofpress/securedrop/blob/ed6142d6817c020d77398ca046e3a769628ca831/admin/securedrop_admin/__init__.py#L33'>admin/securedrop_admin/__init__.py:33:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/freedomofpress/securedrop/blob/ed6142d6817c020d77398ca046e3a769628ca831/admin/tests/test_integration.py#L4'>admin/tests/test_integration.py:4:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/freedomofpress/securedrop/blob/ed6142d6817c020d77398ca046e3a769628ca831/admin/tests/test_securedrop-admin-setup.py#L21'>admin/tests/test_securedrop-admin-setup.py:21:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/freedomofpress/securedrop/blob/ed6142d6817c020d77398ca046e3a769628ca831/admin/tests/test_securedrop-admin.py#L23'>admin/tests/test_securedrop-admin.py:23:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/freedomofpress/securedrop/blob/ed6142d6817c020d77398ca046e3a769628ca831/builder/tests/test_ossec_package.py#L2'>builder/tests/test_ossec_package.py:2:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/freedomofpress/securedrop/blob/ed6142d6817c020d77398ca046e3a769628ca831/builder/tests/test_securedrop_deb_package.py#L2'>builder/tests/test_securedrop_deb_package.py:2:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/freedomofpress/securedrop/blob/ed6142d6817c020d77398ca046e3a769628ca831/devops/scripts/verify-mo.py#L22'>devops/scripts/verify-mo.py:22:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/freedomofpress/securedrop/blob/ed6142d6817c020d77398ca046e3a769628ca831/install_files/ansible-base/roles/tails-config/files/securedrop_init.py#L6'>install_files/ansible-base/roles/tails-config/files/securedrop_init.py:6:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/freedomofpress/securedrop/blob/ed6142d6817c020d77398ca046e3a769628ca831/journalist_gui/journalist_gui/SecureDropUpdater.py#L5'>journalist_gui/journalist_gui/SecureDropUpdater.py:5:8:</a> S404 `subprocess` module is possibly insecure
+... 17 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/milvus-io/pymilvus">milvus-io/pymilvus</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/milvus-io/pymilvus/blob/1574ae5cb9d4c7a77b1543317faf0937f30a9c28/pymilvus/client/__init__.py#L3'>pymilvus/client/__init__.py:3:8:</a> S404 `subprocess` module is possibly insecure
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+8 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/rotki/rotki/blob/b416b72f2d26e9a9d11b37fd71c86031fe09608d/package.py#L9'>package.py:9:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/rotki/rotki/blob/b416b72f2d26e9a9d11b37fd71c86031fe09608d/packaging/docker/entrypoint.py#L7'>packaging/docker/entrypoint.py:7:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/rotki/rotki/blob/b416b72f2d26e9a9d11b37fd71c86031fe09608d/rotkehlchen/tests/conftest.py#L14'>rotkehlchen/tests/conftest.py:14:6:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/rotki/rotki/blob/b416b72f2d26e9a9d11b37fd71c86031fe09608d/rotkehlchen/tests/integration/test_backend.py#L1'>rotkehlchen/tests/integration/test_backend.py:1:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/rotki/rotki/blob/b416b72f2d26e9a9d11b37fd71c86031fe09608d/tools/profiling/graph.py#L36'>tools/profiling/graph.py:36:8:</a> S403 `pickle`, `cPickle`, `dill`, and `shelve` modules are possibly insecure
++ <a href='https://github.com/rotki/rotki/blob/b416b72f2d26e9a9d11b37fd71c86031fe09608d/tools/profiling/sampler.py#L3'>tools/profiling/sampler.py:3:8:</a> S403 `pickle`, `cPickle`, `dill`, and `shelve` modules are possibly insecure
++ <a href='https://github.com/rotki/rotki/blob/b416b72f2d26e9a9d11b37fd71c86031fe09608d/tools/profiling/trace.py#L4'>tools/profiling/trace.py:4:8:</a> S403 `pickle`, `cPickle`, `dill`, and `shelve` modules are possibly insecure
++ <a href='https://github.com/rotki/rotki/blob/b416b72f2d26e9a9d11b37fd71c86031fe09608d/tools/scripts/pylint_useless_suppression.py#L17'>tools/scripts/pylint_useless_suppression.py:17:8:</a> S404 `subprocess` module is possibly insecure
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/scikit-build/scikit-build-core">scikit-build/scikit-build-core</a> (+10 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/ec415785d438e860a52ed3c8151c19255508a318/src/scikit_build_core/_shutil.py#L7'>src/scikit_build_core/_shutil.py:7:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/ec415785d438e860a52ed3c8151c19255508a318/src/scikit_build_core/builder/generator.py#L4'>src/scikit_build_core/builder/generator.py:4:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/ec415785d438e860a52ed3c8151c19255508a318/src/scikit_build_core/cmake.py#L8'>src/scikit_build_core/cmake.py:8:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/ec415785d438e860a52ed3c8151c19255508a318/src/scikit_build_core/errors.py#L7'>src/scikit_build_core/errors.py:7:12:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/ec415785d438e860a52ed3c8151c19255508a318/src/scikit_build_core/program_search.py#L5'>src/scikit_build_core/program_search.py:5:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/ec415785d438e860a52ed3c8151c19255508a318/src/scikit_build_core/resources/_editable_redirect.py#L6'>src/scikit_build_core/resources/_editable_redirect.py:6:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/ec415785d438e860a52ed3c8151c19255508a318/tests/conftest.py#L8'>tests/conftest.py:8:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/ec415785d438e860a52ed3c8151c19255508a318/tests/test_dynamic_metadata.py#L5'>tests/test_dynamic_metadata.py:5:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/ec415785d438e860a52ed3c8151c19255508a318/tests/test_name_main.py#L2'>tests/test_name_main.py:2:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/ec415785d438e860a52ed3c8151c19255508a318/tests/test_simple_pure.py#L5'>tests/test_simple_pure.py:5:8:</a> S404 `subprocess` module is possibly insecure
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+37 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/08bee0f1809a8a6a074f77d40fd67e10f665377e/scripts/lib/check_rabbitmq_queue.py#L4'>scripts/lib/check_rabbitmq_queue.py:4:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/zulip/zulip/blob/08bee0f1809a8a6a074f77d40fd67e10f665377e/scripts/lib/hash_reqs.py#L5'>scripts/lib/hash_reqs.py:5:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/zulip/zulip/blob/08bee0f1809a8a6a074f77d40fd67e10f665377e/scripts/lib/puppet_cache.py#L5'>scripts/lib/puppet_cache.py:5:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/zulip/zulip/blob/08bee0f1809a8a6a074f77d40fd67e10f665377e/scripts/lib/setup_venv.py#L4'>scripts/lib/setup_venv.py:4:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/zulip/zulip/blob/08bee0f1809a8a6a074f77d40fd67e10f665377e/scripts/lib/sharding.py#L6'>scripts/lib/sharding.py:6:8:</a> S404 `subprocess` module is possibly insecure
++ <a href='https://github.com/zulip/zulip/blob/08bee0f1809a8a6a074f77d40fd67e10f665377e/scripts/lib/supervisor.py#L5'>scripts/lib/supervisor.py:5:6:</a> S411 XMLRPC is vulnerable to remote XML attacks
++ <a href='https://github.com/zulip/zulip/blob/08bee0f1809a8a6a074f77d40fd67e10f665377e/scripts/lib/zulip_tools.py#L14'>scripts/lib/zulip_tools.py:14:8:</a> S404 `subprocess` module is possibly insecure
+... 24 additional changes omitted for rule S404
++ <a href='https://github.com/zulip/zulip/blob/08bee0f1809a8a6a074f77d40fd67e10f665377e/zerver/lib/markdown/__init__.py#L30'>zerver/lib/markdown/__init__.py:30:6:</a> S405 `xml.etree` methods are vulnerable to XML attacks
++ <a href='https://github.com/zulip/zulip/blob/08bee0f1809a8a6a074f77d40fd67e10f665377e/zerver/lib/markdown/include.py#L4'>zerver/lib/markdown/include.py:4:6:</a> S405 `xml.etree` methods are vulnerable to XML attacks
++ <a href='https://github.com/zulip/zulip/blob/08bee0f1809a8a6a074f77d40fd67e10f665377e/zerver/lib/markdown/nested_code_blocks.py#L2'>zerver/lib/markdown/nested_code_blocks.py:2:6:</a> S405 `xml.etree` methods are vulnerable to XML attacks
+... 27 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (6 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| S404 | 204 | 204 | 0 | 0 | 0 |
+| S403 | 33 | 33 | 0 | 0 | 0 |
+| S405 | 9 | 9 | 0 | 0 | 0 |
+| S402 | 4 | 4 | 0 | 0 | 0 |
+| S410 | 3 | 3 | 0 | 0 | 0 |
+| S411 | 1 | 1 | 0 | 0 | 0 |
+
+</p>
+</details>
+
+
+
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-01-03 18:18_
+
+---
+
+_Label `rule` added by @charliermarsh on 2024-01-03 18:18_
+
+---
+
+_Label `preview` added by @charliermarsh on 2024-01-03 18:18_
+
+---
+
+_@charliermarsh approved on 2024-01-03 18:18_
+
+Thanks!
+
+---
+
+_Merged by @charliermarsh on 2024-01-03 18:26_
+
+---
+
+_Closed by @charliermarsh on 2024-01-03 18:26_
+
+---
+
+_Branch deleted on 2024-01-03 19:33_
+
+---
