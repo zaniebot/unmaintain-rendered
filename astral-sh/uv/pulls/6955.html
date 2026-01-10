@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix: adjust close_handles pointer offsets to match distlib cleanup_fds - astral-sh/uv #6955</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix: adjust close_handles pointer offsets to match distlib cleanup_fds</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6955">#6955</a>
+        opened by <a href="https://github.com/samypr100">@samypr100</a>
+        on 2024-09-03 02:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/samypr100">@samypr100</a> on 2024-09-03 02:31</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves issues mentioned in comments</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/6699#issuecomment-2322515962</li>
+<li>https://github.com/astral-sh/uv/issues/6866#issuecomment-2322785906</li>
+</ul>
+<p>Further investigation on the comments revealed that the pointer arithmethic being performed in <code>let handle_start = unsafe { crt_magic.offset(1 + handle_count) };</code> from <a href="https://github.com/njsmith/posy/blob/dda22e6f90f5fefa339b869dd2bbe107f5b48448/src/trampolines/windows-trampolines/posy-trampoline/src/bounce.rs#L146">posy trampoline</a> had some slight errors.  Since <code>crt_magic</code> was a <code>*const u32</code>, doing an offset by <code>1 + handle_count</code> would offset by too much, with some possible out of bounds reads or attempts to call CloseHandle on garbage.</p>
+<p>We needed to offset differently since we want to offset by <code>handle_count</code> bytes after the initial offset as seen in <a href="https://github.com/pypa/distlib/blob/888c48b56886b03398646be1217508830427bd75/PC/launcher.c#L578">launcher.c</a>. Similarly, we needed to skip the first 3 handles, otherwise we'd still be attempting to close standard I/O handles of the parent (in this case the shell from <code>busybox.exe sh -l</code>).</p>
+<p>I also added a few extra checks available from <code>launcher.c</code> which checks if the handle value is <code>-2</code> just to match the distlib implementation more closely and minimize differences.</p>
+<h2>Test Plan</h2>
+<p>Manually compiled distlib's launcher with additional logging and replaced <code>Lib/site-packages/pip/_vendor/distlib/t64.exe</code> with the compiled one to log pointers. As a result, I was able to verify the retrieved handle memory addresses in this function actually match in both uv and distlib's implementation from within busybox.exe nested shell where this behavior can be observed and manually tested.</p>
+<p>I was also able to confirm this fixes the issues mentioned in the comments, at least with busybox's shell, but I assume this would fix the case with cmake.</p>
+<h2>Open areas</h2>
+<p><code>launcher.c</code> also <a href="https://github.com/pypa/distlib/blob/888c48b56886b03398646be1217508830427bd75/PC/launcher.c#L573-L576">checks the size</a> of <code>cbReserved2</code> before retrieving <code>handle_start</code> which this function currently doesn't do. If we wanted to, we could add the additional check here as well, but I wasn't fully sure why it wasn't added in the first place. Thoughts?</p>
+<pre><code class="language-rust">// Verify the buffer is large enough
+if si.cbReserved2 &lt; (size_of::&lt;u32&gt;() as isize + handle_count + size_of::&lt;HANDLE&gt;() as isize * handle_count) as u16 {
+    return;
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-09-03 14:25</div>
+            <div class="timeline-body"><p>CC @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2024-09-03 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @konstin on 2024-09-03 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-09-04 11:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-09-04 11:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-09-04 11:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-04 22:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:20 UTC
+    </footer>
+</body>
+</html>

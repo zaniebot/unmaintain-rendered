@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `uv publish`: Basic upload with username/password or keyring - astral-sh/uv #7475</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>uv publish</code>: Basic upload with username/password or keyring</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7475">#7475</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-09-17 18:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-09-17 18:36</div>
+            <div class="timeline-body"><p>The <code>uv publish</code> command allows uploading wheels and source distributions to PyPI or another registry. We support username/password auth, token auth and (follow-up) trusted publishing from GitHub Actions. Be default we upload files from <code>dist/*</code>, the output directory from <code>uv build</code>.</p>
+<p>This is intended to support three different workflow, ordered by relevance:</p>
+<ol>
+<li>Publishing a pure Python package from CI</li>
+</ol>
+<ul>
+<li>Call <code>uv build</code></li>
+<li>Clear the venv, install the wheel, run a smoke test</li>
+<li>Clear the venv, install the source distribution, run a smoke test</li>
+<li>Call <code>uv publish</code></li>
+</ul>
+<ol start="2">
+<li>Publishing a native module package from CI</li>
+</ol>
+<ul>
+<li>In one job, call <code>uv build</code>, clear the venv, install the source distribution, run a smoke test, upload the source distribution as artifact</li>
+<li>For each target, run a job, call <code>uv build --wheel</code>, clear the venv, install the wheel run a smoke test, upload the wheel as artifact</li>
+<li>In a final job, download all artifacts to <code>dist/*</code> and run <code>uv publish</code></li>
+</ul>
+<ol start="3">
+<li>Publishing from a developer machine</li>
+</ol>
+<ul>
+<li>Call <code>uv build</code></li>
+<li>Do a manual test routine</li>
+<li>Call <code>uv publish</code></li>
+</ul>
+<p>Since we intend for smoke tests between build and publish, there is no combined build-and-publish command.</p>
+<p>What works:</p>
+<ul>
+<li>Basic upload to PyPI with token or username/password (username must be <code>__token__</code>, but it uses the same HTTP headers)</li>
+<li>Uploads to gitlab.com (tested with a personal access token)</li>
+<li>Keyring integration. If you use scoped tokens, you need use url-string hacks such as https://github.com/pypa/twine/issues/565#issue-555219267 to differentiate the tokens, a problem we share with twine.</li>
+<li>Error messages</li>
+<li>Testing on CI. Every time something in the upload crate or its test script changes, we upload a new version of dummy packages to testpypi</li>
+</ul>
+<p>This PR has coverage for PyPI (canonical index) and gitlab.com (alternative index). Unless there are concerns for a specific other index, I wouldn't add any specific testing for them yet.</p>
+<p>Next PRs (all stacked on this one directly):</p>
+<ul>
+<li>https://github.com/astral-sh/uv/pull/7548</li>
+<li>https://github.com/astral-sh/uv/pull/7613</li>
+<li>https://github.com/astral-sh/uv/pull/7635</li>
+</ul>
+<p>Follow-ups:</p>
+<ul>
+<li>A demo repo with pure Python package that demonstrates scenario 1 in a copy&amp;paste-able GitHub actions configuration. We can only demo this live once the feature shipped.</li>
+</ul>
+<p>Not Implemented:</p>
+<ul>
+<li>Prompting for passwords.</li>
+</ul>
+<p>Best reviewed commit-by-commit</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2024-09-17 18:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-17 18:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>Cargo.lock</code>:1522 on 2024-09-17 18:37</div>
+            <div class="timeline-body"><p>Upgrading rkyv to 0.8 should deduplicate this</p>
+<pre><code>ahash v0.7.8
+└── hashbrown v0.12.3
+    └── rkyv v0.7.45
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-17 18:57</div>
+            <div class="timeline-body"><blockquote>
+<p>I have a test script for test PyPI for both username/password and keyring (next PR), but we need to run it in CI in a secure way.</p>
+</blockquote>
+<p>Does it need to be secure? Or can we just have a test user that only uploads dummy packages that we can expose the password to?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/lucab">@lucab</a> on <code>crates/uv-publish/src/lib.rs</code>:184 on 2024-09-20 08:44</div>
+            <div class="timeline-body"><p>I think this and the one above may encounter FS I/O errors and thus benefit from having the path/filename attached to the error here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/lucab">@lucab</a> on <code>crates/uv/src/commands/publish.rs</code>:46 on 2024-09-20 09:01</div>
+            <div class="timeline-body"><p>Missing filepath in error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/lucab">@lucab</a> on <code>crates/uv-publish/src/lib.rs</code>:451 on 2024-09-20 09:54</div>
+            <div class="timeline-body"><p>This is likely reqwest doing a POST-redirect-to-GET after seeing a 301, which I think is the proper behavior.
+It smells like a backend bug to redirect an unexpected POST in this way though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/lucab">@lucab</a> on <code>crates/uv/src/commands/publish.rs</code>:45 on 2024-09-20 09:55</div>
+            <div class="timeline-body"><p>Do you plan to try making parallel uploads here, or do you think that is not worth it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lucab">@lucab</a> reviewed on 2024-09-20 09:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-20 11:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/publish.rs</code>:45 on 2024-09-20 11:35</div>
+            <div class="timeline-body"><p>Currently not planning to, but i made the upload async to make it easier to do in parallel (with other uploads or something else entirely) in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-21 13:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-publish/src/lib.rs</code>:410 on 2024-09-21 13:58</div>
+            <div class="timeline-body"><p>The follow-up PR adds progress bars here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2024-09-21 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2024-09-21 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @konstin on 2024-09-21 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-cli/src/lib.rs</code>:4299 on 2024-09-23 18:58</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Paths to the files to upload. Accepts glob expressions.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 18:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-cli/src/lib.rs</code>:4303 on 2024-09-23 18:59</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// The URL of the upload endpoint.
+    ///
+    /// Note that this typically differs from the index URL.
+    ///
+    /// Defaults to PyPI's publish URL (&lt;https://upload.pypi.org/legacy/&gt;).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 18:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 19:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-cli/src/lib.rs</code>:4319 on 2024-09-23 19:00</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Using a token is equivalent to passing `__token__` as `--username` and the token as `--password`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 19:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>Cargo.lock</code>:610 on 2024-09-23 19:00</div>
+            <div class="timeline-body"><p>Where is this coming from?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 19:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>Cargo.lock</code>:2875 on 2024-09-23 19:01</div>
+            <div class="timeline-body"><p>These are some heavy dependencies. We otherwise don't depend on <code>tar</code> or <code>chumsky</code>. Can we find another way to do this part?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 19:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/publish.rs</code>:24 on 2024-09-23 19:01</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        bail!(&quot;Unable to publish files in `--offline` mode&quot;);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 19:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/lib.rs</code>:1072 on 2024-09-23 19:02</div>
+            <div class="timeline-body"><p><code>uv.sources</code> seems like a typo here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 19:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-publish/src/lib.rs</code>:178 on 2024-09-23 19:05</div>
+            <div class="timeline-body"><p>Nit: I don't think this needs to be owned, it could even be an iterator over <code>&amp;str</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 19:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-publish/src/lib.rs</code>:180 on 2024-09-23 19:06</div>
+            <div class="timeline-body"><p>Nit: <code>FxHashSet</code> by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 19:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-publish/src/lib.rs</code>:250 on 2024-09-23 19:08</div>
+            <div class="timeline-body"><p>It seems like this could still make sense in <code>uv-metadata</code>. Why not exatly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 19:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>Cargo.lock</code>:2875 on 2024-09-23 19:10</div>
+            <div class="timeline-body"><p>Honestly, I'd prefer to just copy over this struct and put it in <code>uv-metadata</code>: https://github.com/PyO3/python-pkginfo-rs/blob/main/src/metadata.rs. We don't need any of these dependencies. We already have our own pattern for mailparse headers from <code>uv-metadata</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-09-23 19:10</div>
+            <div class="timeline-body"><p>This looks great! A few nits. My only blocking feedback is that I'd like to remove the dependency on <code>python-pkginfo</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 19:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>Cargo.lock</code>:2875 on 2024-09-23 19:11</div>
+            <div class="timeline-body"><p>(I feel strongly on this one so if you disagree, let's discuss further rather than merging.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:4319 on 2024-09-23 19:11</div>
+            <div class="timeline-body"><p>Or perhaps</p>
+<pre><code>Using a token is equivalent to passing `--username '__token__' --password &lt;token&gt;`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-23 19:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-publish/src/lib.rs</code>:155 on 2024-09-23 19:14</div>
+            <div class="timeline-body"><p>Why do we say &quot;Incorrect credentials&quot; here? That seems misleading and it's not obvious where it comes from given all the above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-23 19:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-23 19:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/publish.rs</code>:24 on 2024-09-23 19:17</div>
+            <div class="timeline-body"><p>Are we always going to stylize with <code>--</code>? Couldn't <code>offline</code> have come from the config?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-23 19:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/publish.rs</code>:41 on 2024-09-23 19:18</div>
+            <div class="timeline-body"><p>Seems like we could comment on this once above instead of linking to the issue twice?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-23 19:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/publish.rs</code>:68 on 2024-09-23 19:19</div>
+            <div class="timeline-body"><p>Maybe</p>
+<pre><code class="language-suggestion">                &quot;File already exists, skipping&quot;.dimmed()
+</code></pre>
+<p>or something like &quot;Skipping {file}: already exists&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-23 19:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/settings.rs</code>:2473 on 2024-09-23 19:21</div>
+            <div class="timeline-body"><p>Nit: Should this be <code>unwrap_or_else</code> to skip the extra parse if they provide a URL?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-23 19:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/publish.rs</code>:25 on 2024-09-23 19:25</div>
+            <div class="timeline-body"><p>Why relative path in one but not for the other display?</p>
+<p>I think we might not want to wrap the index in backticks (per the styling in #7645)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-23 19:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/publish.rs</code>:49 on 2024-09-23 19:26</div>
+            <div class="timeline-body"><p>I think I'd rather see the index URL in the &quot;Publishing <n> files&quot; message rather than in the error? Wdyt?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-23 19:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/publish.rs</code>:44 on 2024-09-23 19:26</div>
+            <div class="timeline-body"><p>Should we be hitting test PyPI here instead of the real one..?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-23 19:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-publish/src/lib.rs</code>:243 on 2024-09-23 19:31</div>
+            <div class="timeline-body"><p>Why not make this async now and call <code>spawn_blocking</code> in it? Seems like a footgun later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-23 19:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:4316 on 2024-09-23 19:33</div>
+            <div class="timeline-body"><p>Could we document this in the long help? Do we need to change this to only glob sdists and wheels?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-configuration/src/preview.rs</code>:4 on 2024-09-23 19:35</div>
+            <div class="timeline-body"><p>Why was this needed now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-23 19:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-23 19:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-publish/src/lib.rs</code>:76 on 2024-09-23 19:38</div>
+            <div class="timeline-body"><p>Per my earlier comment, maybe this should be &quot;PermissionDenied&quot; instead of &quot;IncorrectCredentials&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-23 19:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-publish/src/lib.rs</code>:78 on 2024-09-23 19:38</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    #[error(&quot;The request was redirected, but publishing doesn't support redirects, please use the canonical URL: `{0}`&quot;)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-23 19:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-publish/src/lib.rs</code>:78 on 2024-09-23 19:39</div>
+            <div class="timeline-body"><p>or</p>
+<pre><code class="language-suggestion">    #[error(&quot;The request was redirected, but redirects are not supported during publish, please use the canonical URL: `{0}`&quot;)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-publish/src/lib.rs</code>:155 on 2024-09-23 19:39</div>
+            <div class="timeline-body"><p>xref https://github.com/astral-sh/uv/pull/7475/files#r1771980162</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-23 19:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-23 19:45</div>
+            <div class="timeline-body"><blockquote>
+<p>Since we intend for smoke tests between build and publish, there is no combined build-and-publish command.</p>
+</blockquote>
+<p>I don't really buy this argument. You should probably be able to  build and publish in a single command if you want e.g. <code>uv publish --build</code>. I don't see this as necessary anytime soon though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 19:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/settings.rs</code>:2473 on 2024-09-23 19:46</div>
+            <div class="timeline-body"><p>Agreed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-24 09:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cli/src/lib.rs</code>:4303 on 2024-09-24 09:20</div>
+            <div class="timeline-body"><p>People will miss this and be confused now that it's hidden from <code>--help</code>.</p>
+<p><img src="https://github.com/user-attachments/assets/d0875f26-b866-4acf-9d4b-a8252321b04e" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-24 09:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-publish/src/lib.rs</code>:250 on 2024-09-24 09:29</div>
+            <div class="timeline-body"><p>In uv-metadata, we support all the files we get from external sources, that is all kinds of tar compressions and notably <code>.zip</code> files, which are historically popular as source distributions. Here, we specifically only support <code>.tar.gz</code>, the now only officially allowed extension. If you were to reuse this function in any place outside uploading, it would do the wrong thing and reject existing source distributions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-24 09:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-publish/src/lib.rs</code>:155 on 2024-09-24 09:34</div>
+            <div class="timeline-body"><p>tbh i don't have any strong feelings about what we say here, we can't tell what the real reason is (was your password wrong? are you lacking permission for the project? did you make a typo in your trusted publishing configuration?), and the interesting part of the error is the message from the server.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-24 09:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/publish.rs</code>:49 on 2024-09-24 09:38</div>
+            <div class="timeline-body"><p>I want the error message to be self-contained</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-24 09:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/publish.rs</code>:25 on 2024-09-24 09:49</div>
+            <div class="timeline-body"><p>For the status messages, you get the pretty output with just the filename, for the error message you get the path to help you debugging what went wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-24 09:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/publish.rs</code>:44 on 2024-09-24 09:50</div>
+            <div class="timeline-body"><p>Does that make a difference?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-publish/src/lib.rs</code>:243 on 2024-09-24 09:52</div>
+            <div class="timeline-body"><p>We have no plans that would need this to be async and if you actually want to upload in parallel, you need to review the process anyway, so it's not worth the extra complexity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-24 09:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-24 09:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cli/src/lib.rs</code>:4316 on 2024-09-24 09:54</div>
+            <div class="timeline-body"><p>We're already ignoring files that are neither source dists nor wheels</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-24 09:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-configuration/src/preview.rs</code>:4 on 2024-09-24 09:54</div>
+            <div class="timeline-body"><p>Good catch, i added the flag in the wrong place initially</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/publish.rs</code>:44 on 2024-09-24 13:11</div>
+            <div class="timeline-body"><p>It just seems like good form not to hit the production instance, but 🤷‍♀️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-24 13:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-24 13:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/publish.rs</code>:49 on 2024-09-24 13:12</div>
+            <div class="timeline-body"><p>That's fair — should we display the index URL outside of errors too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-24 13:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:4316 on 2024-09-24 13:12</div>
+            <div class="timeline-body"><p>We should mention that in the reference documentation here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-24 13:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-publish/src/lib.rs</code>:155 on 2024-09-24 13:13</div>
+            <div class="timeline-body"><p>I'd prefer the more general message so we're not misleading the user</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:4303 on 2024-09-24 13:15</div>
+            <div class="timeline-body"><p>We should be keeping the short-help concise, like always &lt;1 sentence. I think you'd be better off special-casing someone providing the wrong URL at runtime and showing a nice error message or warning?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-24 13:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-24 13:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/publish.rs</code>:44 on 2024-09-24 13:58</div>
+            <div class="timeline-body"><p>fair</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-24 13:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cli/src/lib.rs</code>:4316 on 2024-09-24 13:59</div>
+            <div class="timeline-body"><p>Good point, added</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-24 14:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/publish.rs</code>:49 on 2024-09-24 14:43</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-24 15:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cli/src/lib.rs</code>:4303 on 2024-09-24 15:23</div>
+            <div class="timeline-body"><p>That's the problem, we can't show a nice error message because the index may not tell us we're at the wrong URL. If we give the user one bit of information, it's &quot;use the publish url, not the index url&quot;; the other two commonly needed option <code>--username ... --password ...</code>, users will be able to guess from context, but this one will be the number one problem with uploads.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-24 15:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>Cargo.lock</code>:2875 on 2024-09-24 15:23</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-09-24 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-09-24 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-24 15:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:35 UTC
+    </footer>
+</body>
+</html>

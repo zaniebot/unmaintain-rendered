@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provide resolution hints in case of possible local name conflicts - astral-sh/uv #7505</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Provide resolution hints in case of possible local name conflicts</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7505">#7505</a>
+        opened by <a href="https://github.com/lucab">@lucab</a>
+        on 2024-09-18 15:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/lucab">@lucab</a> on 2024-09-18 15:29</div>
+            <div class="timeline-body"><p>This enhances the hints generator in the resolver with some heuristic to detect and warn in case of failures due to version mismatches on a local package. Those may be the symptom of name conflict/shadowing with a transitive dependency.</p>
+<p>Closes: https://github.com/astral-sh/uv/issues/7329</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/lucab">@lucab</a> on <code>crates/uv-resolver/src/pubgrub/report.rs</code>:542 on 2024-09-18 16:17</div>
+            <div class="timeline-body"><p>Ugh, this logic is too weak and gets tricked into false positives, I think from the root itself appearing as a normal package down the chain even on other kind of failures.
+I think I need to enhance this heuristic in order to detect the cycle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lucab">@lucab</a> reviewed on 2024-09-18 16:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/pubgrub/report.rs</code>:732 on 2024-09-19 00:22</div>
+            <div class="timeline-body"><p>Unfortunately this heuristic doesn't work for the invocation in the original report (I tested by dropping the pin from your test). Maybe this would be helped by transforming the tree in as tracked by #7524 but I'm not sure. It looks like it might just be a bug because the tree does still contain a cycle with the same structure.</p>
+<p>Have you used the <code>UV_INTERNAL__SHOW_DERIVATION_TREE=1</code> utility? It can be helpful to display the tree in it's raw form.</p>
+<p>Without a version pin:</p>
+<pre><code>Resolver derivation tree after reduction
+  dagster==0.0.0 depends on dagster-webserver*
+    dagster-webserver==1.8.7 depends on dagster==1.8.7
+       ... an enumeration of all the versions follows
+</code></pre>
+<p>With a version pin:</p>
+<pre><code>Resolver derivation tree before reduction
+  root==0a0.dev0 depends on dagster*
+      dagster==0.0.0 depends on dagster-webserver==1.6.13
+      dagster-webserver==1.6.13 depends on dagster==1.6.13
+    no versions of dagster&lt;0.0.0 | &gt;0.0.0
+Resolver derivation tree after reduction
+  dagster==0.0.0 depends on dagster-webserver==1.6.13
+  dagster-webserver==1.6.13 depends on dagster==1.6.13
+</code></pre>
+<p>On a separate note, it's pretty hard to understand what this heuristic is doing. I know you plan to do some polish on it, and it's not your fault that the data structure is complicated, but I can't review it without some additional context on the idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-19 00:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-20 02:54</div>
+            <div class="timeline-body"><p>I took a look at this quick and I think the detection for the case we care about is complicated than it needs to be. I took a swing at a simpler heuristic in https://github.com/astral-sh/uv/commit/9bf7a70a7e1ae5c92913a9a19e3956ec7196e31e. There, we just check if there's a non-workspace member that depends on a workspace member; I think this should only occur if the workspace member is shadowing a remote package (though I'm not 100% certain). Since this is just a hint that happens when resolution fails, I think we can risk false positives here. I'd still like to add some tests for workspace members that depend on each other — it seems like a bit of a pain to construct a resolution failure with the proper shape though.</p>
+<p>Curious for your thoughts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucab">@lucab</a> on 2024-09-20 11:12</div>
+            <div class="timeline-body"><p>Thanks for taking the time for a deeper look into the tree logic.</p>
+<blockquote>
+<p>we just check if there's a non-workspace member that depends on a workspace member</p>
+</blockquote>
+<p>Recapping, we came up with several heuristics:</p>
+<ol>
+<li>detecting a dependency failure on a local package in a non-root variant (too broad, prone to false positives in several ways)</li>
+<li>detecting a dependency loop involving a local package (too strict, prone to false negatives in case of multiple available options)</li>
+<li>loop-detection (from point 2) plus a dependency failure on a local package (overly complex)</li>
+<li>a dependency failure on a local package</li>
+</ol>
+<p>Point 4 should effectively be a subset of point 3, as one of the necessary conditions in the more complex check is that &quot;there exists a failed dependency toward a local package&quot;. I think this is also a sufficient condition, so I agree that your code above is an equivalent but simpler check, and I believe it should have a similar amount of false positive. Overall, for the task at hand I prefer yours over my version.</p>
+<p>I massaged it into this PR and fixed the tests, CI is fine with both the previous and new version, as you prefer.</p>
+<blockquote>
+<p>some tests for workspace members that depend on each other</p>
+</blockquote>
+<p>The testing space around this is quite large, which scenario do you want to check? The same as existing tests but in a sub-package, or a cycle not involving an external package?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-20 13:50</div>
+            <div class="timeline-body"><blockquote>
+<p>The testing space around this is quite large, which scenario do you want to check? The same as existing tests but in a sub-package, or a cycle not involving an external package?</p>
+</blockquote>
+<p>Yeah I think we would need to have a resolution error where a workspace package depending on another workspace package is in the tree (but the error is caused by something else). We would want to see that the hint is <em>not</em> displayed. I think this might be more trouble than it's worth at the moment, it seems hard to create.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @lucab on 2024-09-20 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2024-09-20 18:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-09-20 18:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-09-20 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-09-20 18:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:36 UTC
+    </footer>
+</body>
+</html>

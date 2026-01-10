@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid selecting pre-releases for Python downloads without a version request - astral-sh/uv #7278</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid selecting pre-releases for Python downloads without a version request</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7278">#7278</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-09-10 22:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-10 22:01</div>
+            <div class="timeline-body"><p>Following #7263 the 3.13.0rc2 releases are at the top of the download list but we should not select them unless 3.13 is actually requested.</p>
+<p>Prior to this, <code>uv python install</code> would install <code>3.13.0rc2</code>.</p>
+<pre><code>❯ cargo run -- python install --no-config
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.14s
+     Running `target/debug/uv python install --no-config`
+Searching for Python installations
+Installed Python 3.12.6 in 1.33s
+ + cpython-3.12.6-macos-aarch64-none
+</code></pre>
+<pre><code>❯ cargo run -- python install --no-config 3.13
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.14s
+     Running `target/debug/uv python install --no-config 3.13`
+Searching for Python versions matching: Python 3.13
+Installed Python 3.13.0rc2 in 1.18s
+ + cpython-3.13.0rc2-macos-aarch64-none
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-10 22:12</div>
+            <div class="timeline-body"><p>This breaks <code>uv python uninstall --all</code> because it uses <code>PythonDownloadRequest</code> which needs to match here. Tweaking..</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-10 22:14</div>
+            <div class="timeline-body"><p>Okay all better</p>
+<pre><code>❯ cargo run -- python install --no-config
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.15s
+     Running `target/debug/uv python install --no-config`
+Searching for Python installations
+Installed Python 3.12.6 in 1.20s
+ + cpython-3.12.6-macos-aarch64-none
+❯ cargo run -- python install --no-config 3.13
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.14s
+     Running `target/debug/uv python install --no-config 3.13`
+Searching for Python versions matching: Python 3.13
+Installed Python 3.13.0rc2 in 1.25s
+ + cpython-3.13.0rc2-macos-aarch64-none
+❯ cargo run -- python uninstall --all
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.14s
+     Running `target/debug/uv python uninstall --all`
+Searching for Python installations
+Uninstalled 2 versions in 82ms
+ - cpython-3.12.6-macos-aarch64-none
+ - cpython-3.13.0rc2-macos-aarch64-none
+❯ cargo run -- python install --no-config 3.13
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.15s
+     Running `target/debug/uv python install --no-config 3.13`
+Searching for Python versions matching: Python 3.13
+Installed Python 3.13.0rc2 in 1.24s
+ + cpython-3.13.0rc2-macos-aarch64-none
+❯ cargo run -- python install --no-config
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.14s
+     Running `target/debug/uv python install --no-config`
+Searching for Python installations
+Found: cpython-3.13.0rc2-macos-aarch64-none
+Python is already available. Use `uv python install &lt;request&gt;` to install a specific version.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-09-10 22:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-10 22:15</div>
+            <div class="timeline-body"><p>Cancelled the #7274 release for this — will re-run after merge. Users aren't impacted by this bug since it's unreleased.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-09-10 22:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-09-10 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-09-10 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-10 22:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:29 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix metadata cache instability - astral-sh/uv #6332</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix metadata cache instability</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6332">#6332</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-08-21 14:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-08-21 14:41</div>
+            <div class="timeline-body"><p>For a path dep such as the root project, uv can read metadata statically from <code>pyproject.toml</code> or dynamically from the build backend.</p>
+<p>Python's <code>packaging</code> <a href="https://github.com/pypa/packaging/blob/cc938f984bbbe43c5734b9656c9837ab3a28191f/src/packaging/specifiers.py#L777">sorts</a> specifiers before emitting them, so all build backends built on top of it - such as hatchling - will change the specifier order compared to pyproject.toml. The core metadata spec does say &quot;If a field is not marked as Dynamic, then the value of the field in any wheel built from the sdist MUST match the value in the sdist&quot;, but it doesn't specify if &quot;match&quot; means string equivalent or semantically equivalent, so it's arguable if that spec conformant. This change means that the specifiers have a different ordering when coming from the build backend than when read statically from pyproject.toml.</p>
+<p>Previously, we tried to read path dep metadata in order:</p>
+<ul>
+<li>From the (built wheel) cache (<code>packaging</code> order)</li>
+<li>From pyproject.toml (verbatim specifier)</li>
+<li>From a fresh build (<code>packaging</code> order)</li>
+</ul>
+<p>This behaviour is unstable: On the first run, we cache is cold, so we read the verbatim specifier from <code>pyproject.toml</code>, then we build and store the metadata in the cache. On the second run, we read the <code>packaging</code> sorted specifier from the cache.</p>
+<p>Reproducer:</p>
+<pre><code class="language-shell">rm -rf newproj
+uv init -q --no-config newproj
+cd newproj/
+uv add -q &quot;anyio&gt;=4,&lt;5&quot;
+cat uv.lock | grep &quot;requires-dist&quot;
+uv sync -q
+cat uv.lock | grep &quot;requires-dist&quot;
+cd ..
+</code></pre>
+<pre><code>requires-dist = [{ name = &quot;anyio&quot;, specifier = &quot;&gt;=4,&lt;5&quot; }]
+requires-dist = [{ name = &quot;anyio&quot;, specifier = &quot;&lt;5,&gt;=4&quot; }]
+</code></pre>
+<p>A project either has static metadata, so we can read from pyproject.toml, or it doesn't, and we always read from the build through <code>packaging</code>. We can use this to stabilize the behavior by slightly switching the order.</p>
+<ul>
+<li>From pyproject.toml (verbatim specifier)</li>
+<li>From the (built wheel) cache (<code>packaging</code> order)</li>
+<li>From a fresh build (<code>packaging</code> order)</li>
+</ul>
+<p>Potentially, we still want to sort the specifiers we get anyway, after all, the is no guarantee that the specifiers from a build backend are deterministic. But our metadata reading behavior should be independent of the cache state, hence changing the order in the PR.</p>
+<p>Fixes #6316</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-08-21 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 15:08</div>
+            <div class="timeline-body"><p>Is this still strictly necessary with #6333? Or more that it's good to have consistent ordering independent of cache state?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-21 15:11</div>
+            <div class="timeline-body"><p>Both this PR and #6333 would fix #6316, but i think this behavior is more consistent, so i'd merge this independent of #6316/#6333.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-08-21 15:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-08-21 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-08-21 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-21 15:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:00:59 UTC
+    </footer>
+</body>
+</html>

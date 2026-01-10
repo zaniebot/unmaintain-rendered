@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log build output - astral-sh/uv #2156</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Log build output</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2156">#2156</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-03-04 14:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-03-04 14:46</div>
+            <div class="timeline-body"><p>Show source distribution build output in debug (<code>-v</code>) logging.</p>
+<p>Example output for <code>uv pip install --no-cache-dir --no-binary :all: -v tqdm 2&gt; stderr.txt</code>: <a href="https://gist.github.com/konstin/61758c6bd5f4294cfc048fea18d5cca3">gist</a>.</p>
+<p>I'd suggest taking hierarchical layer out of the default <code>-v</code>, i find the indentation makes it hard to read and the spans are generally not that informative compare to the actual log messages.</p>
+<p>I've also added anstream filtering to the log output after seeing ansi codes in my log files.</p>
+<p>Fixes #2146
+Partially addresses #1567 - It doesn't show output while compiling but only after. We can consider i meanwhile but this is a much larger project due to complexity around pipes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-08 21:33</div>
+            <div class="timeline-body"><p>My gut is that this needs to be streamed in order to be useful, even though it makes it much more complex. Otherwise, it still feels like uv is hanging and you don't have clarity into what's going on or why.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alex">@alex</a> on 2024-03-08 21:37</div>
+            <div class="timeline-body"><p>For the interactive use case, yes, 99% of the value is in streaming it. I do think there are some benefits to having it available for later review in contexts like CI logs, even if it's printed in batch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">tracing</span> added by @konstin on 2024-03-10 14:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-04-02 11:55</div>
+            <div class="timeline-body"><p>Can't this forward the TTY info? At least when streaming is supported, but it seems like it might make sense to do it correctly now? Scikit-build-core is careful to produce nicely colored output if printing to a console, and it works with <code>build</code>. If you direct to file, then it doesn't produce the ansi codes. <code>pip</code> processes the output and messes with it (not a fan), so it doesn't work there, it can't detect that it's a terminal or get the width. Also GHA supports ANSI codes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-04-02 12:56</div>
+            <div class="timeline-body"><p>The main challenge is that we build in parallel. We can't plain forward the output as a single tenant builder like scikit-build-core can, we need to somehow wrap them with context. I'd love to have something like <code>docker buildx</code> which gives tmux-like windows into the build process, but that seems out of scope. I agree that i would be nice to preserve colours, especially for stderr.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-04-02 14:33</div>
+            <div class="timeline-body"><p>IMO, <code>uv pip install .</code> and <code>uv pip install -e .</code> could be treated specially - you usually want the output for those. Not sure if that would help, and it wouldn't solve the general case, but just a thought. (You also don't want to cache them, which I've run into <code>uv pip install .</code> doing).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pradyunsg">@pradyunsg</a> on 2024-04-05 22:33</div>
+            <div class="timeline-body"><p>FWIW, pip's model for local package builds is that it doesn't cache anything about them -- they get rebuilt + reinstalled on every run.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-03 01:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-03 01:25</div>
+            <div class="timeline-body"><p>Should be handled by #6903.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:00:49 UTC
+    </footer>
+</body>
+</html>

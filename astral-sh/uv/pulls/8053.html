@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix bug where MarkerTree::is_disjoint was sometimes not commutative - astral-sh/uv #8053</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix bug where MarkerTree::is_disjoint was sometimes not commutative</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/8053">#8053</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-10-09 19:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-10-09 19:11</div>
+            <div class="timeline-body"><p>This PR fixes a bug where disjointness checking didn't always
+satisfy commutativity. And it <em>should</em>. The <code>is_disjoint_commutative</code>
+test added here demonstrates a regression test. Before this commit,
+its second assertion failed.</p>
+<p>That is, given <code>m1 = extra == &quot;A&quot; and extra != &quot;B&quot;</code> and
+<code>m2 = extra == &quot;A&quot;</code>, we were saying that m1 was disjoint with
+m2 (wrong) but that m2 was not disjoint with m1 (right).</p>
+<p>It turned out that this was a &quot;simple&quot; matter of not using the
+correct parent node when calling negation. Likely just a
+transcription snafu.</p>
+<p>This bug does not seem restricted in scope to extras, which is
+how I found it, so it's not clear why we haven't noticed it until
+now. I noticed it because I was formulating markers in a similar
+format for resolver forking based on conflicting extras, and this
+resulted in incorrectly filtering out dependencies due to <code>is_disjoint</code>
+returning a false positive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ibraheemdev by @BurntSushi on 2024-10-09 19:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-10-09 19:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-10-09 19:14</div>
+            <div class="timeline-body"><p>Nice find</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-10-09 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-10-09 19:17</div>
+            <div class="timeline-body"><p>It is absolutely wild to me that this bug fix has <em>zero</em> impact on any of the resolutions in our tests. I feel like I should be slightly horrified by that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> approved on 2024-10-09 19:44</div>
+            <div class="timeline-body"><p>Incredible catch. Also shocked that this managed to escape our testing, but because the <code>Edges::Boolean</code> node representation only applies to <code>extra</code> and <code>in</code> expressions.. that seems plausible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-10-09 19:44</div>
+            <div class="timeline-body"><p>I think the same issue is also present in <code>apply</code>. https://github.com/astral-sh/uv/blob/d3df97cc620110e9685e980ad9763390ebab1fc5/crates/uv-pep508/src/marker/algebra.rs#L863</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-10-10 12:03</div>
+            <div class="timeline-body"><blockquote>
+<p>but because the Edges::Boolean node representation only applies to extra and in expressions.. that seems plausible</p>
+</blockquote>
+<p>Oooooooooooo. That makes more sense and makes me feel not-horrified about our tests hah. I naively assumed the boolean node was used for more stuff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-10-10 12:19</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the same issue is also present in <code>apply</code>.</p>
+<p>https://github.com/astral-sh/uv/blob/d3df97cc620110e9685e980ad9763390ebab1fc5/crates/uv-pep508/src/marker/algebra.rs#L863</p>
+</blockquote>
+<p>Yeah nice catch. I fixed this too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-10-10 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-10-10 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-10 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-10-12 18:14</div>
+            <div class="timeline-body"><p>Good catch!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:55 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv-resolver: fix basic case of overlapping markers - astral-sh/uv #5488</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv-resolver: fix basic case of overlapping markers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5488">#5488</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-07-26 18:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-26 18:43</div>
+            <div class="timeline-body"><p>Consider the following packse scenario:</p>
+<pre><code class="language-toml">[root]
+requires = [
+  &quot;a&gt;=1.0.0 ; python_version &lt; '3.10'&quot;,
+  &quot;a&gt;=1.1.0 ; python_version &gt;= '3.10'&quot;,
+  &quot;a&gt;=1.2.0 ; python_version &gt;= '3.11'&quot;,
+]
+
+[packages.a.versions.&quot;1.0.0&quot;]
+[packages.a.versions.&quot;1.1.0&quot;]
+[packages.a.versions.&quot;1.2.0&quot;]
+</code></pre>
+<p>On current <code>main</code>, this produces a dependency on <code>a</code> that looks like
+this:</p>
+<pre><code class="language-toml">dependencies = [
+    { name = &quot;fork-overlapping-markers-basic-a&quot;, marker = &quot;python_version &lt; '3.10' or python_version &gt;= '3.11'&quot; },
+]
+</code></pre>
+<p>But the marker expression is clearly wrong here, since it implies that
+<code>a</code> isn't installed at all for Python 3.10. With this PR, the above
+dependency becomes:</p>
+<pre><code class="language-toml">dependencies = [
+    { name = &quot;fork-overlapping-markers-basic-a&quot; },
+]
+</code></pre>
+<p>That is, it's unconditional. Which is I believe correct here since there
+aren't any other constraints on which version to select.</p>
+<p>The specific bug here is that when we found overlapping dependency
+specifications for the same package <em>within</em> a pre-existing fork, we
+intersected all of their marker expressions instead of unioning them.
+That in turn resulted in incorrect marker expressions.</p>
+<p>While this doesn't fix any known bug on the issue tracker (like #4640),
+it does appear to fix a couple of our snapshot tests. And fixes a basic
+test case I came up with while working on #4732.</p>
+<p>For the packse scenario test: https://github.com/astral-sh/packse/pull/206</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-07-26 18:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-07-26 18:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-07-26 18:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-07-26 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-07-26 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-26 19:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:00:51 UTC
+    </footer>
+</body>
+</html>

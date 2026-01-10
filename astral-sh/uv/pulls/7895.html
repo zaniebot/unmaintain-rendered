@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignore `UV_CACHE_DIR` in `help` tests - astral-sh/uv #7895</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ignore <code>UV_CACHE_DIR</code> in <code>help</code> tests</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7895">#7895</a>
+        opened by <a href="https://github.com/sobolevn">@sobolevn</a>
+        on 2024-10-03 13:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sobolevn">@sobolevn</a> on 2024-10-03 13:02</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>I added a new function to push an extra filter to ignore <code>\[env: UV_CACHE_DIR=.+\]</code> line and replace it with an empty value.</p>
+<p>I also changed <code>.editorconfig</code> file, because you actually need empty lines with spaces. Other option: I can add a default filter to ignore empty lines with spaces and replace them with just empty lines.</p>
+<p>Plus, I added <code>setup-uv</code> action instead of <code>curl -LsSf https://astral.sh/uv/install.sh | sh</code>, not sure if that is planned right now, though!</p>
+<p>Closes https://github.com/astral-sh/uv/issues/7542</p>
+<h2>Test Plan</h2>
+<p>I executed this locally, it works!</p>
+<pre><code>» UV_CACHE_DIR=/tmp cargo nextest run --no-fail-fast help                   
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.22s
+------------
+ Nextest run ID f8ee686c-2fb9-49da-a657-aeeaf4dbb534 with nextest profile: default
+    Starting 13 tests across 89 binaries (1693 tests skipped)
+        PASS [   1.289s] uv::help help_flag_subsubcommand
+        PASS [   1.295s] uv::help help_with_help
+        PASS [   1.301s] uv::help help_flag_subcommand
+        PASS [   1.317s] uv::help help_short_flag
+        PASS [   1.326s] uv::help help_flag
+        PASS [   1.331s] uv::help help_with_no_pager
+        PASS [   1.333s] uv::help help_subcommand
+        PASS [   1.334s] uv::help help
+        PASS [   1.334s] uv::help help_unknown_subsubcommand
+        PASS [   1.346s] uv::help help_subsubcommand
+        PASS [   1.351s] uv::help help_with_global_option
+        PASS [   1.380s] uv::help help_unknown_subcommand
+        PASS [   0.132s] uv::help help_with_version
+------------
+     Summary [   1.422s] 13 tests run: 13 passed, 1693 skipped
+                                       
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sobolevn">@sobolevn</a> on 2024-10-03 13:16</div>
+            <div class="timeline-body"><p>I reverted the CI change, because I don't quite understand how this works ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-03 14:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/common/mod.rs</code>:409 on 2024-10-03 14:17</div>
+            <div class="timeline-body"><p>The current naming pattern for for this is <code>with_filtered_...</code>, e.g., <code>TestContext::with_filtered_exe_suffix</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-03 14:19</div>
+            <div class="timeline-body"><p>In the CI change, it looks like you dropped the <code>uv python install</code> command so tests fail. I think you want something like this:</p>
+<pre><code class="language-yaml">      - uses: astral-sh/setup-uv@v3
+        with:
+          version: &quot;latest&quot;
+          enable-cache: true
+      - name: &quot;Install required Python versions&quot;
+        run: uv python install
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sobolevn">@sobolevn</a> on 2024-10-03 15:27</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-10-04 14:03</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-10-04 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-10-04 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-04 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2024-10-04 14:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:51 UTC
+    </footer>
+</body>
+</html>

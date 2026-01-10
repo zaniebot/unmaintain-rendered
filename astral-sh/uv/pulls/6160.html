@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collapse redundant dependency clauses enumerating available versions - astral-sh/uv #6160</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Collapse redundant dependency clauses enumerating available versions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6160">#6160</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-08-16 18:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-16 18:11</div>
+            <div class="timeline-body"><p>In https://github.com/astral-sh/uv/issues/5046, we show the tautological proof:</p>
+<pre><code>  ╰─▶ Because colabfold[alphafold]==1.5.5 depends on jax&gt;=0.4.20 and only the following versions of jax are available:
+          jax&lt;=0.4.20
+          jax==0.4.21
+          jax==0.4.22
+          jax==0.4.23
+          jax==0.4.24
+          jax==0.4.25
+          jax==0.4.26
+          jax==0.4.27
+          jax==0.4.28
+          jax==0.4.29
+          jax==0.4.30
+          jax==0.4.31
+      we can conclude that colabfold[alphafold]==1.5.5 depends on jax&gt;=0.4.20.
+      And because jax&gt;=0.4.20 depends on numpy&gt;=1.26.0, we can conclude that colabfold[alphafold]==1.5.5 depends on numpy&gt;=1.26.0.
+      (1)
+</code></pre>
+<p>This is a part of the error tree because the statement <code>colabfold[alphafold]==1.5.5 depends on jax&gt;=0.4.20</code> is actually a simplification of <code>colabfold[alphafold]==1.5.5 depends on jax&gt;=0.4.20,&lt;0.5.0</code> and the no versions clause is a proof of that simplification.</p>
+<p>Without simplification, the clause looks like:</p>
+<pre><code>  ╰─▶ Because colabfold[alphafold]==1.5.5 depends on jax&gt;=0.4.20,&lt;0.5.0 and only the following versions of jax are available:
+          jax&lt;=0.4.20
+          jax==0.4.21
+          jax==0.4.22
+          jax==0.4.23
+          jax==0.4.24
+          jax==0.4.25
+          jax==0.4.26
+          jax==0.4.27
+          jax==0.4.28
+          jax==0.4.29
+          jax==0.4.30
+          jax==0.4.31
+      we can conclude that colabfold[alphafold]==1.5.5 depends on one of:
+          jax==0.4.20
+          jax==0.4.21
+          jax==0.4.22
+          jax==0.4.23
+          jax==0.4.24
+          jax==0.4.25
+          jax==0.4.26
+          jax==0.4.27
+          jax==0.4.28
+          jax==0.4.29
+          jax==0.4.30
+          jax==0.4.31
+      And because jax&gt;=0.4.20 depends on numpy&gt;=1.26.0, we can conclude that colabfold[alphafold]==1.5.5 depends on numpy&gt;=1.26.0.
+</code></pre>
+<p>I don't think we have a great way to avoid performing the simplification of the range conditionally and it makes the error simpler to just jump straight to <code>colabfold[alphafold]==1.5.5 depends on jax&gt;=0.4.20</code>.</p>
+<p>The derivation for this clause looks like:</p>
+<pre><code>          jax==0.4.20 | ==0.4.21 | ==0.4.22 | ==0.4.23 | ==0.4.24 | ==0.4.25 | ==0.4.26 | ==0.4.27 | ==0.4.28 | ==0.4.29 | ==0.4.30 | ==0.4.31 depends on numpy&gt;=1.26.0
+            no versions of jax&gt;0.4.20, &lt;0.4.21 | &gt;0.4.21, &lt;0.4.22 | &gt;0.4.22, &lt;0.4.23 | &gt;0.4.23, &lt;0.4.24 | &gt;0.4.24, &lt;0.4.25 | &gt;0.4.25, &lt;0.4.26 | &gt;0.4.26, &lt;0.4.27 | &gt;0.4.27, &lt;0.4.28 | &gt;0.4.28, &lt;0.4.29 | &gt;0.4.29, &lt;0.4.30 | &gt;0.4.30, &lt;0.4.31 | &gt;0.4.31, &lt;0.5.0
+            colabfold[alphafold]==1.5.5 depends on jax&gt;=0.4.20, &lt;0.5.0
+</code></pre>
+<p>So it looks like we can take trees of this form and drop the &quot;no versions&quot; clause <em>if</em> the ranges are compatible[*]. See <a href="https://github.com/astral-sh/uv/pull/6160#discussion_r1720280922">this comment</a> for a simpler explanation.</p>
+<p>With this pull request, the clause simplifies to</p>
+<pre><code>╰─▶ Because colabfold[alphafold]==1.5.5 depends on jax&gt;=0.4.20 and jax&gt;=0.4.20 depends on numpy&gt;=1.26.0,
+     we can conclude that colabfold[alphafold]==1.5.5 depends on numpy&gt;=1.26.0. (1)
+</code></pre>
+<p>Unfortunately, this doesn't change any snapshots in our test suite so I'm uncertain if the strategy generalizes. In some incorrect iterations of this logic, the snapshots did reveal my mistakes.</p>
+<p>[*] &quot;if the ranges are compatible&quot; includes a bit of hand-waving. I'm not 100% sure if I've chosen the correct range heuristic here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2024-08-16 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "zb/collapse no versions redundant" to "Collapse redundant resolver error clauses enumerating available versions" by @zanieb on 2024-08-16 18:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-08-16 19:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Collapse redundant resolver error clauses enumerating available versions" to "Collapse redundant dependency clauses enumerating available versions" by @zanieb on 2024-08-16 19:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-16 19:41</div>
+            <div class="timeline-body"><p>I think this is quite a bit like PubGrub's <code>collapse_no_versions</code> concept but <em>much</em> narrower.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-16 19:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/error.rs</code>:384 on 2024-08-16 19:42</div>
+            <div class="timeline-body"><p>This explainer might be easier to grok than the real-world example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-08-16 21:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2024-08-19 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/error.rs</code>:377 on 2024-08-19 16:10</div>
+            <div class="timeline-body"><p>What are first and second set referring to here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-08-19 16:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-19 16:25</div>
+            <div class="timeline-body"><p>Can you open an issue in pubgrub to make sure it's tracked upstream too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-19 17:55</div>
+            <div class="timeline-body"><p>@konstin I think we need to come up with a test scenario first. I'll open an issue for that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-08-19 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-19 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-19 18:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:00:55 UTC
+    </footer>
+</body>
+</html>

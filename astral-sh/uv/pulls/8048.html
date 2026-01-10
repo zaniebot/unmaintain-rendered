@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminate dependencies on `directores` and `dirs-sys` - astral-sh/uv #8048</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Eliminate dependencies on <code>directores</code> and <code>dirs-sys</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/8048">#8048</a>
+        opened by <a href="https://github.com/j178">@j178</a>
+        on 2024-10-09 15:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/j178">@j178</a> on 2024-10-09 15:33</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Migrate all directory related logic to <code>etcetera</code>, eliminated two dependecies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/j178">@j178</a> on 2024-10-09 17:04</div>
+            <div class="timeline-body"><p>I added a validation test in https://github.com/astral-sh/uv/pull/8048/commits/df5066d677cce04afdb656c5f6407b34948d5571, to compare the outputs of the old and new code, and it passed successfully. This confirms that this PR keeps the directories unchanged.</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    use etcetera::BaseStrategy;
+    use std::path::PathBuf;
+
+    fn dirs_before() -&gt; (PathBuf, PathBuf, PathBuf, PathBuf) {
+        let data_dir = directories::ProjectDirs::from(&quot;&quot;, &quot;&quot;, &quot;uv&quot;)
+            .unwrap()
+            .data_dir()
+            .to_path_buf();
+
+        let cache_dir = directories::ProjectDirs::from(&quot;&quot;, &quot;&quot;, &quot;uv&quot;)
+            .unwrap()
+            .cache_dir()
+            .to_path_buf();
+
+        let config_dir = {
+            // On Windows, use, e.g., C:\Users\Alice\AppData\Roaming
+            #[cfg(windows)]
+            {
+                dirs_sys::known_folder_roaming_app_data()
+            }
+            // On Linux and macOS, use, e.g., /home/alice/.config.
+            #[cfg(not(windows))]
+            {
+                std::env::var_os(&quot;XDG_CONFIG_HOME&quot;)
+                    .and_then(dirs_sys::is_absolute_path)
+                    .or_else(|| dirs_sys::home_dir().map(|path| path.join(&quot;.config&quot;)))
+            }
+        };
+
+        let home_dir = {
+            #[cfg(windows)]
+            {
+                dirs_sys::known_folder_profile()
+            }
+            #[cfg(not(windows))]
+            {
+                dirs_sys::home_dir()
+            }
+        };
+
+        (data_dir, cache_dir, config_dir.unwrap(), home_dir.unwrap())
+    }
+
+    fn dirs_after() -&gt; (PathBuf, PathBuf, PathBuf, PathBuf) {
+        let data_dir = etcetera::base_strategy::choose_native_strategy()
+            .unwrap()
+            .data_dir()
+            .join(&quot;uv&quot;);
+        let data_dir = if cfg!(windows) {
+            data_dir.join(&quot;data&quot;)
+        } else {
+            data_dir
+        };
+
+        let cache_dir = etcetera::base_strategy::choose_native_strategy()
+            .unwrap()
+            .cache_dir()
+            .join(&quot;uv&quot;);
+        let cache_dir = if cfg!(windows) {
+            cache_dir.join(&quot;cache&quot;)
+        } else {
+            cache_dir
+        };
+
+        let config_dir = etcetera::base_strategy::choose_base_strategy()
+            .unwrap()
+            .config_dir();
+        let home_dir = etcetera::home_dir().unwrap();
+
+        (data_dir, cache_dir, config_dir, home_dir)
+    }
+
+    #[test]
+    fn ensure_directory_not_changed() {
+        let before = dirs_before();
+        let after = dirs_after();
+        assert_eq!(before, after);
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @j178 on 2024-10-09 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-09 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-09 17:40</div>
+            <div class="timeline-body"><p>Thanks! I can review, I'm responsible for some of the mess.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2024-10-09 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-09 21:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-settings/src/lib.rs</code>:173 on 2024-10-09 21:23</div>
+            <div class="timeline-body"><p>I think this isn't quite the same. It looks like etcetera will use local <code>AppData</code> and then falls back to Roaming <code>AppData</code>, whereas the above always uses the Roaming version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-09 21:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-tool/src/lib.rs</code>:389 on 2024-10-09 21:25</div>
+            <div class="timeline-body"><p>This seems to be <em>mostly</em> the same except that it defers to <code>USERPROFILE</code> first?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/j178">@j178</a> reviewed on 2024-10-10 01:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/j178">@j178</a> on <code>crates/uv-settings/src/lib.rs</code>:173 on 2024-10-10 01:35</div>
+            <div class="timeline-body"><p><code>dirs-sys</code> uses the <a href="https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid"><code>KnownFolderID</code></a> <code>FOLDERID_RoamingAppData</code>, while <code>etcetera</code> uses the <a href="https://learn.microsoft.com/en-us/windows/win32/shell/csidl"><code>CSIDL</code></a> <code>CSIDL_APPDATA</code>. And <code>FOLDERID_RoamingAppData</code> is equivalent to <code>CSIDL_APPDATA</code> in CSIDL.</p>
+<p>If the <code>SHGetFolderPathW</code> call fails, etcetera will fall back to use <code>self.home_dir.join(&quot;AppData&quot;).join(&quot;Roaming&quot;)</code>.  So it seems etcetera always uses the Roaming APPDATA too, they should be the same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/j178">@j178</a> reviewed on 2024-10-10 01:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/j178">@j178</a> on <code>crates/uv-tool/src/lib.rs</code>:389 on 2024-10-10 01:43</div>
+            <div class="timeline-body"><p>Yeah, that's unfortunate. What's your suggestion?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-10 09:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-tool/src/lib.rs</code>:389 on 2024-10-10 09:22</div>
+            <div class="timeline-body"><p>It looks like we already depend on <code>homedirs</code> via <code>axoupdater</code>... So in theory we could call <code>homedirs::my_home</code> here at least on Windows, which does seem to use <code>FOLDERID_Profile</code>. Or we could just inline our own <code>home_dir</code> impl for Windows here, and add a TODO to move to <code>etcetera</code> on the next breaking release (0.5.0). <em>Or</em> we could just ship this whole thing in 0.5.0.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-tool/src/lib.rs</code>:389 on 2024-10-10 09:41</div>
+            <div class="timeline-body"><p>@zanieb -- I think my preference here is just to ship this as part of 0.5.0 in the near-ish future, and accept that we now respect non-empty <code>USERPROFILE</code> on Windows (which seems fine).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-10 09:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.5.0" by @charliermarsh on 2024-10-16 19:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-21 18:22</div>
+            <div class="timeline-body"><p>Gonna merge into v0.5.0.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-10-21 18:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-10-21 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-21 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-24 14:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:55 UTC
+    </footer>
+</body>
+</html>

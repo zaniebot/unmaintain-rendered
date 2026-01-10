@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix: replace std::fs::canonicalize with Simplified::simple_canonicaliz… - astral-sh/uv #6776</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix: replace std::fs::canonicalize with Simplified::simple_canonicaliz…</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6776">#6776</a>
+        opened by <a href="https://github.com/cning112">@cning112</a>
+        on 2024-08-28 21:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/cning112">@cning112</a> on 2024-08-28 21:18</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR addresses an issue on Windows where <code>std::fs::canonicalize</code> can fail or panic when resolving paths on mapped network drives. By replacing it with <code>Simplified::simple_canonicalize</code>, we aim to improve the robustness and cross-platform compatibility of path resolution.</p>
+<h3>Changes</h3>
+<ul>
+<li>Updated <code>CANONICAL_CWD</code> in <code>path.rs</code> to use <code>Simplified::simple_canonicalize</code> instead of <code>std::fs::canonicalize</code>.</li>
+</ul>
+<h3>Why</h3>
+<ul>
+<li><code>std::fs::canonicalize</code> has known issues with resolving paths on mapped network drives on Windows, which can lead to panics or incorrect path resolution.</li>
+<li><code>Simplified::simple_canonicalize</code> internally uses <code>dunce::canonicalize</code>, which handles these cases more gracefully, ensuring better stability and reliability.</li>
+</ul>
+<h2>Test Plan</h2>
+<p>Since <code>simple_canonicalize</code> has already been tested in a prior PR, this change is expected to work without introducing any new issues. No additional tests are necessary beyond ensuring existing tests pass, which will confirm the correctness of the change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "fix: replace std::fs::canonicalize with Simplifed::simple_canonicaliz…" to "fix: replace std::fs::canonicalize with Simplified::simple_canonicaliz…" by @cning112 on 2024-08-29 06:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-08-29 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-29 19:45</div>
+            <div class="timeline-body"><p>Interesting. But doesn't <code>dunce::canonicalize</code> just call <code>fs::canonicalize</code> under the hood? My read of the code is it's just <code>fs::canonicalize</code> with a post-processing step to remove the prefixes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cning112">@cning112</a> on 2024-08-30 00:01</div>
+            <div class="timeline-body"><p>Absolutely true. Paths that can't be canonicalized by <code>fs:: canonicalize</code> are also beyond the capability of <code>dunce:: canonicalize</code>.</p>
+<p>In the latest commit, I updated the <code>Simplified::simple_canonicalize</code> for paths that can't be canonicalised on Windows: it falls back on <code>std::path::absolute</code> and verifies if the path exists.</p>
+<p>I've tested it locally on a mapped network drive on Windows, where the latest version of <code>uv pip compile</code> panicked as the path can't be canonicalized. But I am not sure how to add a unit test for this 😬</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-01 17:59</div>
+            <div class="timeline-body"><p>Ok, I think something like this is reasonable, but I may follow-up to reduce the scope a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-09-01 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-01 17:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:15 UTC
+    </footer>
+</body>
+</html>

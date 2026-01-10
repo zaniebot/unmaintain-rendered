@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uvx/uv tool run: Add context message before listing available tools when no arguments are provided - astral-sh/uv #7641</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uvx/uv tool run: Add context message before listing available tools when no arguments are provided</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7641">#7641</a>
+        opened by <a href="https://github.com/kakkoyun">@kakkoyun</a>
+        on 2024-09-23 14:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/kakkoyun">@kakkoyun</a> on 2024-09-23 14:24</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Adds a helpful context message when <code>uvx</code> is run without arguments
+To clarify, it is displaying the installed tools.</p>
+<p>This addresses confusion, such as the one highlighted in issue #7348,
+by making the output more user-friendly and informative.</p>
+<p>Related #4024</p>
+<h2>Test Plan</h2>
+<p>Updated the test snapshots to include the new output.
+Running the tests locally with <code>cargo nextest run</code> confirms that the tests pass.
+The CI pipeline should also pass.</p>
+<h3>Manuel Testing</h3>
+<p><strong>uvx</strong></p>
+<pre><code class="language-shell"># Make sure you have the updated version of uv installed on your path.
+# cargo install --path ./crates/uv --force
+❯ uvx
+Provide a command to invoke with `uvx &lt;command&gt;` or `uvx --from &lt;package&gt; &lt;command&gt;`.
+
+The following tools are already installed:
+
+black v24.8.0
+- black
+- blackd
+ruff v0.6.7
+- ruff
+
+See `uvx --help` for more information.
+</code></pre>
+<p><strong>uv tool list</strong></p>
+<pre><code class="language-shell"># Make sure you have the updated version of uv installed on your path.
+# cargo install --path ./crates/uv --force
+❯ uv tool list
+black v24.8.0
+- black
+- blackd
+ruff v0.6.7
+- ruff
+</code></pre>
+<p><strong>uv tool run</strong></p>
+<pre><code class="language-shell"># Make sure you have the updated version of uv installed on your path.
+# cargo install --path ./crates/uv --force
+❯ uv tool run
+Provide a command to invoke with `uv tool run &lt;command&gt;` or `uv tool run --from &lt;package&gt; &lt;command&gt;`.
+
+The following tools are already installed:
+
+black v24.8.0
+- black
+- blackd
+ruff v0.6.7
+- ruff
+
+See `uv tool run --help` for more information.
+</code></pre>
+<hr />
+<p>Signed-off-by: Kemal Akkoyun <a href="mailto:kakkoyun@gmail.com">kakkoyun@gmail.com</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @kakkoyun on 2024-09-23 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-23 16:22</div>
+            <div class="timeline-body"><p>I think you can be a bit more verbose here, like:</p>
+<pre><code>Provide a tool to invoke with `uvx &lt;name&gt;`. The following tools are already installed:
+
+ruff v0.1.0:
+- ruff
+black v0.5.0:
+- black
+- blackd
+</code></pre>
+<p>There's a bit of awkwardness in the formatting of the list following the <code>:</code>.  I usually expect something like:</p>
+<pre><code>This is a list of things:
+- a
+- b
+- c
+</code></pre>
+<p>This deviates a bit from the initial scope of this change, but trying to construct a prompt that puts the list in context reveals a problem with the list itself. <code>uvx</code> takes the package as a target not the executable so some of the things we're listing here aren't actually valid arguments. For example, for <code>blackd</code>:</p>
+<pre><code>
+❯ uv tool install black
+Resolved 6 packages in 259ms
+Installed 6 packages in 7ms
+ + black==24.8.0
+ + click==8.1.7
+ + mypy-extensions==1.0.0
+ + packaging==24.1
+ + pathspec==0.12.1
+ + platformdirs==4.3.6
+Installed 2 executables: black, blackd
+
+❯ uvx blackd
+  × No solution found when resolving tool dependencies:
+  ╰─▶ Because blackd was not found in the package registry and you require blackd, we can conclude that your requirements are unsatisfiable.                                           
+</code></pre>
+<p>You actually need <code>uvx --from black blackd</code> to use <code>blackd</code>. I'm left wondering how we can convey this to the user in this listing?</p>
+<p>For example, should we omit the executables:</p>
+<pre><code>Provide a tool to invoke with `uvx &lt;name&gt;`. The following tools are already installed:
+- ruff 
+- black
+</code></pre>
+<p>Should we just suggest using <code>uv tool list</code> to see already installed tools? etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kakkoyun">@kakkoyun</a> on 2024-09-23 17:21</div>
+            <div class="timeline-body"><p>@zanieb Thanks for the feedback. I will have another iteration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kakkoyun">@kakkoyun</a> on 2024-09-23 17:26</div>
+            <div class="timeline-body"><p>I also like your suggestion on omitting the details on the bare run and referring to the <code>uv tool list</code> for additional information.</p>
+<p>Let me see what I can do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-23 17:53</div>
+            <div class="timeline-body"><p>Another solution would be to change the behavior itself, e.g., allow <code>uvx blackd</code> to invoke the installed <code>blackd</code> from <code>black</code> without opt-in — then the current output makes sense. I don't really want to burden you with that user-experience concern since it requires a lot of context on how <code>uv run</code> and <code>uv tool run</code> work today, but I figure it's worth pointing out while we're here. I think we can improve the current message regardless and revisit possible changes to behavior later / separately. cc @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kakkoyun">@kakkoyun</a> on 2024-09-23 19:58</div>
+            <div class="timeline-body"><p>@zanieb I made the context message more descriptive. As a follow-up to this PR, I can create another to improve the error message when the user searches for an executable and fails.</p>
+<p>Let me know what you think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/tool_list.rs</code>:76 on 2024-09-23 21:13</div>
+            <div class="timeline-body"><p>Did you mean to change <code>uv tool list</code> behavior? I don't think we should.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-23 21:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-23 21:26</div>
+            <div class="timeline-body"><p>So, taking a deeper look at this... we're getting closer to just showing something like what Clap would show. For example, if we just make the command required Clap will show the help menu:</p>
+<pre><code class="language-diff">diff --git a/crates/uv-cli/src/lib.rs b/crates/uv-cli/src/lib.rs
+index 84614fab3..913df97b8 100644
+--- a/crates/uv-cli/src/lib.rs
++++ b/crates/uv-cli/src/lib.rs
+@@ -3205,7 +3205,7 @@ pub struct ToolRunArgs {
+     ///
+     /// WARNING: The documentation for [`Self::command`] is not included in help output
+     #[command(subcommand)]
+-    pub command: Option&lt;ExternalCommand&gt;,
++    pub command: ExternalCommand,
+ 
+     /// Use the given package to provide the command.
+     ///
+diff --git a/crates/uv/src/commands/tool/run.rs b/crates/uv/src/commands/tool/run.rs
+index 1a120f633..3ba74c656 100644
+--- a/crates/uv/src/commands/tool/run.rs
++++ b/crates/uv/src/commands/tool/run.rs
+@@ -63,7 +63,7 @@ impl Display for ToolRunCommand {
+ 
+ /// Run a command.
+ pub(crate) async fn run(
+-    command: Option&lt;ExternalCommand&gt;,
++    command: ExternalCommand,
+     from: Option&lt;String&gt;,
+     with: &amp;[RequirementsSource],
+     show_resolution: bool,
+@@ -80,9 +80,9 @@ pub(crate) async fn run(
+     printer: Printer,
+ ) -&gt; anyhow::Result&lt;ExitStatus&gt; {
+     // treat empty command as `uv tool list`
+-    let Some(command) = command else {
+-        return tool_list(false, false, &amp;cache, printer).await;
+-    };
++    // let Some(command) = command else {
++    //     return tool_list(false, false, &amp;cache, printer).await;
++    // };
+ 
+     let (target, args) = command.split();
+     let Some(target) = target else {
+diff --git a/crates/uv/src/settings.rs b/crates/uv/src/settings.rs
+index 641e780a7..60fcd5600 100644
+--- a/crates/uv/src/settings.rs
++++ b/crates/uv/src/settings.rs
+@@ -287,7 +287,7 @@ impl RunSettings {
+ #[allow(clippy::struct_excessive_bools)]
+ #[derive(Debug, Clone)]
+ pub(crate) struct ToolRunSettings {
+-    pub(crate) command: Option&lt;ExternalCommand&gt;,
++    pub(crate) command: ExternalCommand,
+     pub(crate) from: Option&lt;String&gt;,
+     pub(crate) with: Vec&lt;String&gt;,
+     pub(crate) with_editable: Vec&lt;String&gt;,
+</code></pre>
+<pre><code>❯ cargo run -q -- tool run
+
+Run a command provided by a Python package
+
+Usage: uv tool run [OPTIONS] &lt;COMMAND&gt;
+
+Options:
+   ...
+</code></pre>
+<p>I think we actually do lose something by not listing the installed tools there. So I do think there's something to be said about having a message here, but we need to balance the content — e.g., we can suggest the help menu for more details.</p>
+<p>I think I'd do something like:</p>
+<pre><code>Provide a command to invoke with `uvx &lt;command&gt;` or `uvx --from &lt;package&gt; &lt;command&gt;`.
+
+The following tools are already installed:
+
+black v24.8.0
+- black
+- blackd
+
+See `uvx --help` for more information.
+</code></pre>
+<p>I'd consider indenting or changing the formatting of the list output but that will require some sort of flag for the <code>tool_list</code> function and I'd rather avoid that here and just keep it simple.</p>
+<p>As another note, you'll need to customize the output based on the <code>ToolRunCommand</code> variant (i.e. <code>uvx</code> or <code>uv tool run</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2024-09-23 21:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kakkoyun">@kakkoyun</a> on 2024-09-24 11:41</div>
+            <div class="timeline-body"><p>@zanieb I agree that we should use more than just the same functionality provided by Clap. The users could have already used the <code>help</code> command or the <code>--help</code> flag to explain the functionality. Suggesting the existing help commands makes perfect sense. I will make sure to keep it concise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-24 12:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/list.rs</code>:46 on 2024-09-24 12:49</div>
+            <div class="timeline-body"><p>I'd move this to just the <code>tool/run.rs</code> implementation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-24 12:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/list.rs</code>:110 on 2024-09-24 12:50</div>
+            <div class="timeline-body"><p>I'd also move this to the <code>tool/run.rs</code> implementation and show &quot;See <code>uv tool run --help</code>&quot; when <code>uv tool run</code> is used instead of <code>uvx</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @kakkoyun on 2024-09-24 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-24 16:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/tool_list.rs</code>:124 on 2024-09-24 16:39</div>
+            <div class="timeline-body"><p>I think these could be displayed on the same line. Should we be changing this in this pull request though? It seems like a separate change.</p>
+<p>Similarly, we'll need to discuss if we should say &quot;No tools installed&quot; when there are malformed tools installed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-24 16:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/tool_list.rs</code>:174 on 2024-09-24 16:40</div>
+            <div class="timeline-body"><p>Are we adding a trailing newline to the output?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-24 16:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/tool_list.rs</code>:170 on 2024-09-24 16:40</div>
+            <div class="timeline-body"><p>I don't think we should say this in <code>uv tool list</code>, it's implied by the purpose of the command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/tool_list.rs</code>:124 on 2024-09-24 16:42</div>
+            <div class="timeline-body"><p>You could probably move all the changes to <code>uv tool list</code> behavior out of this and into a separate pull request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-24 16:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kakkoyun">@kakkoyun</a> reviewed on 2024-09-24 17:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/kakkoyun">@kakkoyun</a> on <code>crates/uv/tests/tool_list.rs</code>:174 on 2024-09-24 17:25</div>
+            <div class="timeline-body"><p>This is probably slipped through the cracks. I will remove it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kakkoyun">@kakkoyun</a> reviewed on 2024-09-24 17:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/kakkoyun">@kakkoyun</a> on <code>crates/uv/tests/tool_list.rs</code>:124 on 2024-09-24 17:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Similarly, we'll need to discuss if we should say &quot;No tools installed&quot; when there are malformed tools installed.</p>
+</blockquote>
+<p>Shall we display a different message? Basically, I want to avoid the case where all the tools are malformed and say here are the installed tools, but they are empty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/tool_list.rs</code>:124 on 2024-09-24 17:39</div>
+            <div class="timeline-body"><p>Ah I see. Now I understand why you're tweaking <code>uv tool list</code>. We probably don't want to see information about malformed tools in the <code>uv tool run</code> help at all. This sort of suggests we need to stop calling the <code>uv tool list</code> implementation directly? I think generally that will make things easier, i.e. if there are no installed tools the <code>uv tool run</code> implementation can handle that directly instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-24 17:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-24 18:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/tool_list.rs</code>:124 on 2024-09-24 18:02</div>
+            <div class="timeline-body"><p>(this probably requires some refactor to <code>uv tool list</code> so we can avoid duplicating most of what it does?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kakkoyun">@kakkoyun</a> reviewed on 2024-09-24 18:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/kakkoyun">@kakkoyun</a> on <code>crates/uv/tests/tool_list.rs</code>:124 on 2024-09-24 18:33</div>
+            <div class="timeline-body"><p>Yes, this makes sense now. Let me try to refactor the code a little.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kakkoyun">@kakkoyun</a> on 2024-09-24 19:58</div>
+            <div class="timeline-body"><p>@zanieb I hope that with the 903c77ad92438cc0b5fcbb31f5ee76ec0f07dbfb, I finally captured what you have in mind 😅 For some reason, I was under the impression that we want to keep the behavior in sync with <code>uv tool list.</code> Now that I think about it, it's because the code reuse was already in place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add context message before listing available tools when no arguments are provided" to "uvx/uv tool run: Add context message before listing available tools when no arguments are provided" by @kakkoyun on 2024-09-25 17:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @kakkoyun on 2024-09-25 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-09-26 20:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-09-26 20:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-09-26 20:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-27 09:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kakkoyun">@kakkoyun</a> on 2024-09-27 09:45</div>
+            <div class="timeline-body"><p><img src="https://media3.giphy.com/media/NtGCjwhjdwJcEWNnxc/giphy.gif"/></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:41 UTC
+    </footer>
+</body>
+</html>

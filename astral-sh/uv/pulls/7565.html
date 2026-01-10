@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for `uv init --script` - astral-sh/uv #7565</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for <code>uv init --script</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7565">#7565</a>
+        opened by <a href="https://github.com/tfsingh">@tfsingh</a>
+        on 2024-09-20 00:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/tfsingh">@tfsingh</a> on 2024-09-20 00:40</div>
+            <div class="timeline-body"><p>This PR adds support for <code>uv init --script</code>, as defined in issue #7402 (started working on this before I saw jbvsmo's PR). Wanted to highlight a few decisions I made that differ from the existing PR:</p>
+<ol>
+<li><code>--script</code> takes a path, instead of a path/name. This potentially leads to a little ambiguity (I can certainly elaborate  in the docs, lmk!), but strictly allowing <code>uv init --script path/to/script.py</code> felt a little more natural than allowing for <code>uv init --script path/to --name script.py</code> (which I also thought would prompt more questions for users, such as should the name include the .py extension?)</li>
+<li>The request is processed immediately in the <code>init</code> method, sharing logic in resolving which python version to use with <code>uv add --script</code>. This made more sense to me — since scripts are meant to operate in isolation, they shouldn't consider the context of an encompassing package should one exist (I also think this decision makes the relative codepaths for scripts/packages easier to follow).</li>
+<li>No readme — readme felt a little excessive for a script, but I can of course add it in!</li>
+</ol>
+<p>@jbvsmo – hope it's okay I'm using the documentation you wrote!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tfsingh">@tfsingh</a> reviewed on 2024-09-20 00:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tfsingh">@tfsingh</a> on <code>crates/uv/src/commands/project/init.rs</code>:650 on 2024-09-20 00:41</div>
+            <div class="timeline-body"><p>Using try_exists here in line with a comment on the previous PR, but should we potentially use <code>fs_err::tokio::metadata</code> so it's async? (Although I don't suspect it's an expensive operation)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @tfsingh on 2024-09-20 01:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @tfsingh on 2024-09-20 01:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @tfsingh on 2024-09-20 01:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-cli/src/lib.rs</code>:2335 on 2024-09-24 01:59</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// A script is a standalone file which adheres to the PEP 723 specification.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-24 01:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-24 02:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/init.rs</code>:47 on 2024-09-24 02:00</div>
+            <div class="timeline-body"><p>A bit more natural as a <code>let-else</code>:</p>
+<pre><code class="language-rust">let Some(script) = explicit_path else { anyhow::bail!(...) };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-24 02:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/init.rs</code>:644 on 2024-09-24 02:01</div>
+            <div class="timeline-body"><p>I sort of think it could be okay to accept an existing file. And if the file exists, and doesn't contain a PEP 723 script tag, we add it, but otherwise don't modify the script.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-24 02:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-scripts/src/lib.rs</code>:118 on 2024-09-24 02:01</div>
+            <div class="timeline-body"><p>Let's add <code>-&gt; None</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-24 02:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-scripts/src/lib.rs</code>:98 on 2024-09-24 02:02</div>
+            <div class="timeline-body"><p>Lets call this <code>create</code> and rename the method above to <code>init</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-scripts/src/lib.rs</code>:198 on 2024-09-24 02:03</div>
+            <div class="timeline-body"><p>Lets include the script path in this error message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-24 02:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-24 02:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/add.rs</code>:51 on 2024-09-24 02:03</div>
+            <div class="timeline-body"><p>I'd suggest moving this to <code>project/mod.rs</code>. We can also omit <code>new</code> from the name, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-24 02:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/init.rs</code>:668 on 2024-09-24 02:04</div>
+            <div class="timeline-body"><p>Same feedback as in the other PR around <code>&amp;Option&lt;T&gt;</code>. In this case, best would be <code>Option&lt;&amp;str&gt;</code>, since you can always go from <code>Option&lt;&amp;String&gt;</code> to <code>Option&lt;&amp;str&gt;</code>, but not the other way around.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/init.rs</code>:427 on 2024-09-24 02:05</div>
+            <div class="timeline-body"><p>I think we should use two nested enums here, to make the <code>anyhow::bail!(&quot;Error during script initialization&quot;)</code> below impossible. So, something like:</p>
+<pre><code class="language-rust">#[derive(Debug, Copy, Clone, Default)]
+pub(crate) enum InitKind {
+    #[default]
+    Project(InitProjectKind),
+    Script,
+}
+
+#[derive(Debug, Copy, Clone, Default)]
+pub(crate) enum InitProjectKind {
+    #[default]
+    Application,
+    Library,
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-24 02:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-24 02:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/guides/scripts.md</code>:130 on 2024-09-24 02:05</div>
+            <div class="timeline-body"><p>We stylize as <code>Python</code> (here, in the body, etc.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-24 02:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2024-09-24 02:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-09-24 02:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2024-09-24 02:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/init.rs</code>:650 on 2024-09-24 02:07</div>
+            <div class="timeline-body"><p>Yeah let's do that as a best practice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-24 02:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-24 02:07</div>
+            <div class="timeline-body"><p>Thanks! Left some feedback, not far off though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tfsingh">@tfsingh</a> reviewed on 2024-09-24 18:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tfsingh">@tfsingh</a> on <code>crates/uv-cli/src/lib.rs</code>:2335 on 2024-09-24 18:56</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tfsingh">@tfsingh</a> reviewed on 2024-09-24 18:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tfsingh">@tfsingh</a> on <code>crates/uv/src/commands/project/init.rs</code>:47 on 2024-09-24 18:58</div>
+            <div class="timeline-body"><p>Didn't make this change as I switched the outer expression to a match given the new enum (and each arm requires custom logic depending on the value of explicit_path)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tfsingh">@tfsingh</a> reviewed on 2024-09-24 19:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tfsingh">@tfsingh</a> on <code>crates/uv/src/commands/project/init.rs</code>:644 on 2024-09-24 19:00</div>
+            <div class="timeline-body"><p>That makes sense, implemented this + modified the test to reflect the new behavior</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tfsingh">@tfsingh</a> reviewed on 2024-09-24 19:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tfsingh">@tfsingh</a> on <code>crates/uv-scripts/src/lib.rs</code>:118 on 2024-09-24 19:00</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tfsingh">@tfsingh</a> reviewed on 2024-09-24 19:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tfsingh">@tfsingh</a> on <code>crates/uv-scripts/src/lib.rs</code>:98 on 2024-09-24 19:01</div>
+            <div class="timeline-body"><p>Yes sounds great, done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tfsingh">@tfsingh</a> reviewed on 2024-09-24 19:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tfsingh">@tfsingh</a> on <code>crates/uv-scripts/src/lib.rs</code>:198 on 2024-09-24 19:01</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tfsingh">@tfsingh</a> reviewed on 2024-09-24 19:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tfsingh">@tfsingh</a> on <code>crates/uv/src/commands/project/add.rs</code>:51 on 2024-09-24 19:03</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tfsingh">@tfsingh</a> reviewed on 2024-09-24 19:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tfsingh">@tfsingh</a> on <code>crates/uv/src/commands/project/init.rs</code>:668 on 2024-09-24 19:03</div>
+            <div class="timeline-body"><p>Done, thanks for the tip!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tfsingh">@tfsingh</a> reviewed on 2024-09-24 19:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tfsingh">@tfsingh</a> on <code>crates/uv/src/commands/project/init.rs</code>:427 on 2024-09-24 19:04</div>
+            <div class="timeline-body"><p>Agreed, this change made many things much cleaner :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tfsingh">@tfsingh</a> reviewed on 2024-09-24 19:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tfsingh">@tfsingh</a> on <code>docs/guides/scripts.md</code>:130 on 2024-09-24 19:04</div>
+            <div class="timeline-body"><p>Fixed, won't happen again</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tfsingh">@tfsingh</a> on 2024-09-24 19:17</div>
+            <div class="timeline-body"><p>This is ready for another pass, thanks for the review!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-09-25 22:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-25 22:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/init.rs</code>:155 on 2024-09-25 22:43</div>
+            <div class="timeline-body"><p>You generally want to avoid <code>&amp;PathBuf</code>, similar to how you would avoid <code>&amp;String</code>. The reasoning is similar to the previous comments around <code>&amp;Option&lt;T&gt;</code> vs. <code>Option&lt;&amp;T&gt;</code>. If you have a <code>PathBuf</code>, you can always get an <code>&amp;Path</code>; but if you have a <code>Path</code>, you can't convert to <code>&amp;PathBuf</code> without allocating.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-25 22:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/init.rs</code>:204 on 2024-09-25 22:44</div>
+            <div class="timeline-body"><p>I refactored this to do a single I/O operation -- so, we try to read the script, and then we handle appropriate errors. It goes against the idea of using error handling for control flow somewhat, but it avoids race conditions are <a href="https://en.wikipedia.org/wiki/Time-of-check_to_time-of-use">TOCTOU</a> errors: in the previous implementation, between the time you checked the file metadata and the time you actually read the file, the file could be removed or replaced.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add support for uv init --script" to "Add support for `uv init --script`" by @charliermarsh on 2024-09-25 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-09-25 22:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-25 22:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-25 22:48</div>
+            <div class="timeline-body"><p>Thanks @tfsingh! I also added @jbvsmo as a co-author.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tfsingh">@tfsingh</a> on <code>crates/uv/src/commands/project/init.rs</code>:155 on 2024-09-25 23:19</div>
+            <div class="timeline-body"><p>I see, <code>Path</code> is to <code>PathBuf</code> what <code>&amp;str</code> is to <code>String</code> clarifies this well, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tfsingh">@tfsingh</a> reviewed on 2024-09-25 23:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tfsingh">@tfsingh</a> on <code>crates/uv/src/commands/project/init.rs</code>:204 on 2024-09-25 23:19</div>
+            <div class="timeline-body"><p>This makes sense — this operation felt a little like a &quot;conversational&quot; transaction of sorts, the new implementation is much cleaner</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tfsingh">@tfsingh</a> reviewed on 2024-09-25 23:19</div>
+            <div class="timeline-body"></div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:38 UTC
+    </footer>
+</body>
+</html>

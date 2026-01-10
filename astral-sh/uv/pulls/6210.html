@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow user to constrain supported lock environments - astral-sh/uv #6210</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow user to constrain supported lock environments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6210">#6210</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-08-19 16:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-19 16:31</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The strategy here is: if the user provides supported environments, we use those as the initial forks when resolving. As a result, we never add or explore branches that are disjoint with the supported environments. (If the supported environments change, we ignore the lockfile entirely, so we don't have to worry about any interactions between supported environments and the preference forks.)</p>
+<p>Closes https://github.com/astral-sh/uv/issues/6184.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-19 16:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/lock.rs</code>:983 on 2024-08-19 16:32</div>
+            <div class="timeline-body"><p>I am tempted to rename these to: <code>resolution-markers</code> and <code>supported-markers</code> (i.e., rename <code>environment-markers</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-08-19 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-08-19 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-08-19 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-08-19 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-08-19 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">lock</span> added by @charliermarsh on 2024-08-19 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-19 16:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/lock.rs</code>:9980 on 2024-08-19 16:33</div>
+            <div class="timeline-body"><p>I think there's another solution where we don't treat the <code>supported-markers</code> as the input forks, and instead just test for disjointness everywhere (which would avoid having to write these markers on dependencies). But this is much simpler to implement, and we can always change the strategy later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/lock.rs</code>:9955 on 2024-08-19 16:50</div>
+            <div class="timeline-body"><p>Do the filters change anything about the lockfile we snapshot?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-workspace/src/environments.rs</code>:23 on 2024-08-19 16:55</div>
+            <div class="timeline-body"><p>Is the difference from the auto-derive here that we drop empty markers that the user may have written?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-workspace/src/environments.rs</code>:84 on 2024-08-19 16:56</div>
+            <div class="timeline-body"><p>This code is dead, is it supposed to be used above?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/project/lock.rs</code>:650 on 2024-08-19 16:58</div>
+            <div class="timeline-body"><p>Can we not reuse the preferences still?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-08-19 17:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/project/lock.rs</code>:513 on 2024-08-19 17:05</div>
+            <div class="timeline-body"><p>This is actually critical: iirc the resolver currently assumes these are non-overlapping, and if they aren't we can create a conflicting resolution</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-08-19 17:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-19 17:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/lock.rs</code>:650 on 2024-08-19 17:07</div>
+            <div class="timeline-body"><p>Would we ignore the fork preferences though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-19 17:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/lock.rs</code>:513 on 2024-08-19 17:08</div>
+            <div class="timeline-body"><p>Wait, what? Is that true? Where does that assumption come into play?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-08-19 17:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/project/lock.rs</code>:650 on 2024-08-19 17:08</div>
+            <div class="timeline-body"><p>I think we should ignore fork preferences but reuse the package preferences</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-19 17:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/lock.rs</code>:513 on 2024-08-19 17:51</div>
+            <div class="timeline-body"><p>I think you're right that they need to be disjoint. We can either (1) require that the user provides disjoint markers, or (2) <code>and</code> with the negation of the preceding markers when constructing this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-19 17:52</div>
+            <div class="timeline-body"><p>Ideally would be documented in the project or resolver concept document too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/commands/project/lock.rs</code>:513 on 2024-08-19 17:56</div>
+            <div class="timeline-body"><p>I somewhat favor (1), since it makes the behavior a little more explicit and we can give a good error message. I also suspect it would be easier to move from (1) to (2) than it would be to move from (2) to (1).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/lock.rs</code>:9980 on 2024-08-19 17:59</div>
+            <div class="timeline-body"><p>Yeah that was how I was thinking this would be implemented. But I think this is probably fine for now? I agree it's simpler.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-08-19 18:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-20 03:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-workspace/src/environments.rs</code>:23 on 2024-08-20 03:45</div>
+            <div class="timeline-body"><p>We support providing a string or a list of strings -- either is fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-20 04:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/lock.rs</code>:9955 on 2024-08-20 04:14</div>
+            <div class="timeline-body"><p>No, shouldn't be.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-20 04:15</div>
+            <div class="timeline-body"><p>Ok, modified the behavior to <em>require</em> disjoint forks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-20 04:19</div>
+            <div class="timeline-body"><p>Also added docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-08-20 08:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/project/lock.rs</code>:513 on 2024-08-20 08:53</div>
+            <div class="timeline-body"><p>Putting this here also for reference: The problem is: If we resolve foo==1 for <code>(sys_platform == &quot;linux&quot; or sys_platform == &quot;darwin&quot;)</code> and foo==2 for <code>(sys_platform == &quot;linux&quot; or sys_platform == &quot;nt&quot;)</code>, which one would we install on linux?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-20 13:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/concepts/projects.md</code>:72 on 2024-08-20 13:04</div>
+            <div class="timeline-body"><p>Any note that these need to be disjoint?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-20 13:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/concepts/projects.md</code>:72 on 2024-08-20 13:04</div>
+            <div class="timeline-body"><p>(and what that means)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-08-20 13:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-08-20 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-20 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-20 13:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:00:57 UTC
+    </footer>
+</body>
+</html>

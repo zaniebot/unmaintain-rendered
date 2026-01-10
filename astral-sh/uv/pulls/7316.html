@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add reachability markers to every lockfile node - astral-sh/uv #7316</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add reachability markers to every lockfile node</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7316">#7316</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-09-12 00:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-12 00:56</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR explores writing the fully-resolved markers to every node in the lockfile, rather than <em>just</em> the node edges.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-12 01:01</div>
+            <div class="timeline-body"><p>These are pretty small. I need to do more validation to understand whether they're <em>correct</em>. For example:</p>
+<pre><code class="language-toml">[[package]]
+name = &quot;datasets&quot;
+version = &quot;2.20.0&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+resolution-markers = [
+    &quot;python_full_version &lt; '3.10' and platform_machine == 'aarch64' and platform_system == 'Linux'&quot;,
+    &quot;(python_full_version &lt; '3.10' and platform_machine != 'aarch64' and platform_machine != 'arm64') or (python_full_version &lt; '3.10' and platform_machine == 'aarch64' and platform_system != 'Linux') or (python_full_version &lt; '3.10' and platform_machine == 'arm64' and platform_system != 'Darwin')&quot;,
+    &quot;python_full_version == '3.10.*' and platform_system == 'Darwin'&quot;,
+    &quot;python_full_version == '3.10.*' and platform_machine == 'aarch64' and platform_system == 'Linux'&quot;,
+    &quot;(python_full_version == '3.10.*' and platform_machine != 'aarch64' and platform_system != 'Darwin') or (python_full_version == '3.10.*' and platform_system != 'Darwin' and platform_system != 'Linux')&quot;,
+    &quot;python_full_version == '3.11.*' and platform_system == 'Darwin'&quot;,
+    &quot;python_full_version == '3.11.*' and platform_machine == 'aarch64' and platform_system == 'Linux'&quot;,
+    &quot;(python_full_version == '3.11.*' and platform_machine != 'aarch64' and platform_system != 'Darwin') or (python_full_version == '3.11.*' and platform_system != 'Darwin' and platform_system != 'Linux')&quot;,
+    &quot;python_full_version == '3.12.*' and platform_system == 'Darwin'&quot;,
+    &quot;python_full_version == '3.12.*' and platform_machine == 'aarch64' and platform_system == 'Linux'&quot;,
+    &quot;(python_full_version == '3.12.*' and platform_machine != 'aarch64' and platform_system != 'Darwin') or (python_full_version == '3.12.*' and platform_system != 'Darwin' and platform_system != 'Linux')&quot;,
+    &quot;python_full_version &gt;= '3.13' and platform_system == 'Darwin'&quot;,
+    &quot;python_full_version &gt;= '3.13' and platform_machine == 'aarch64' and platform_system == 'Linux'&quot;,
+    &quot;(python_full_version &gt;= '3.13' and platform_machine != 'aarch64' and platform_system != 'Darwin') or (python_full_version &gt;= '3.13' and platform_system != 'Darwin' and platform_system != 'Linux')&quot;,
+]
+markers = &quot;platform_machine != 'arm64' or platform_system != 'Darwin' or python_full_version &gt;= '3.10'&quot;
+</code></pre>
+<p>I <em>think</em> <code>markers</code> should be the simplified <code>OR</code> of <code>resolution-markers</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-12 01:01</div>
+            <div class="timeline-body"><p>Just scanning visually, the largest I see is:</p>
+<pre><code class="language-toml">markers = &quot;(python_full_version &lt; '3.13' and platform_machine == 'AMD64') or (python_full_version &lt; '3.13' and platform_machine == 'WIN32') or (python_full_version &lt; '3.13' and platform_machine == 'aarch64') or (python_full_version &lt; '3.13' and platform_machine == 'amd64') or (python_full_version &lt; '3.13' and platform_machine == 'ppc64le') or (python_full_version &lt; '3.13' and platform_machine == 'win32') or (python_full_version &lt; '3.13' and platform_machine == 'x86_64')&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-12 01:06</div>
+            <div class="timeline-body"><p>I think this doesn't <em>actually</em> buy us much because we support multiple root nodes in the graph. So the simplified expression doesn't quite tell you exactly when a package will be included.</p>
+<p>For example... say workspace member A depends on <code>black</code> when <code>sys_platform == 'win32'</code>. Meanwhile, member B depends on <code>black</code> for <code>sys_platform == 'darwin'</code>. The combined marker would be <code>sys_platform == 'win32' or sys_platform == 'darwin'</code>. But... the package would only be included on <code>sys_platform == 'darwin'</code> <em>if</em> we're installing member B.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:1910 on 2024-09-12 13:50</div>
+            <div class="timeline-body"><p>Ah interesting. I think I was naively expecting that the &quot;full&quot; markers would just be written in place of the markers we're writing already, instead of adding a new field.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-09-12 13:51</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this doesn't actually buy us much because we support multiple root nodes in the graph. So the simplified expression doesn't quite tell you exactly when a package will be included.</p>
+<p>For example... say workspace member A depends on black when sys_platform == 'win32'. Meanwhile, member B depends on black for sys_platform == 'darwin'. The combined marker would be sys_platform == 'win32' or sys_platform == 'darwin'. But... the package would only be included on sys_platform == 'darwin' if we're installing member B.</p>
+</blockquote>
+<p>Yeah I think I agree. If this doesn't enable us to do a &quot;linear scan&quot; then it might not be worth doing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-23 23:31</div>
+            <div class="timeline-body"><p>We decided this wasn't worthwhile right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-23 23:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:30 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respect hashes in constraints files - astral-sh/uv #7093</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Respect hashes in constraints files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7093">#7093</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-09-05 17:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-05 17:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Like pip, if hashes are present on both the requirement and the constraint, we prefer the requirement.</p>
+<p>Closes #7089.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-09-05 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">security</span> added by @charliermarsh on 2024-09-05 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-05 17:59</div>
+            <div class="timeline-body"><p>@alex -- Do you have an opinion on what's correct, if both a requirement and a constraint for a given package-version include <code>--hash</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alex">@alex</a> on 2024-09-05 18:03</div>
+            <div class="timeline-body"><p>I guess there's three cases:</p>
+<ol>
+<li>They have the same hashes, that's fine, that's ok.</li>
+<li>One of them has a subset of the others' hashes. If constraint has a subset of requirements' hashes, I think that should act as a &quot;filter&quot; -- effectively it's constraining the set of valid hashes. If requirements' hashes are a subset of constraints hashes, error?</li>
+<li>If they just disagree: Error.</li>
+</ol>
+<p>But that seems kind of complicated: So really: same == fine, different == error is probably sufficient.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-09-05 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-05 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-05 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-05 18:40</div>
+            <div class="timeline-body"><p>For now, I went with what I observe from pip's behavior, but I may change prior to merging. I see some pip issues that suggest they want to be using the intersection, but I don't see that behavior locally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alex">@alex</a> on 2024-09-05 18:42</div>
+            <div class="timeline-body"><p>Sounds good. Thanks</p>
+<p>On Thu, Sep 5, 2024 at 2:41 PM Charlie Marsh <em><strong>@</strong></em>.***&gt;
+wrote:</p>
+<blockquote>
+<p>For now, I went with what I observe from pip's behavior, but I may change
+prior to merging. I see some pip issues that suggest they want to be using
+the intersection, but I don't see that behavior locally.</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/pull/7093#issuecomment-2332405605">https://github.com/astral-sh/uv/pull/7093#issuecomment-2332405605</a>, or
+unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AAAAGBEQ37FR3BDFFJAMROLZVCQUFAVCNFSM6AAAAABNXAJTGGVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDGMZSGQYDKNRQGU">https://github.com/notifications/unsubscribe-auth/AAAAGBEQ37FR3BDFFJAMROLZVCQUFAVCNFSM6AAAAABNXAJTGGVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDGMZSGQYDKNRQGU</a>
+.
+You are receiving this because you were mentioned.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+<p>--
+All that is necessary for evil to succeed is for good people to do nothing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-09-05 19:25</div>
+            <div class="timeline-body"><blockquote>
+<p>For now, I went with what I observe from pip's behavior, but I may change prior to merging. I see some pip issues that suggest they want to be using the intersection, but I don't see that behavior locally.</p>
+</blockquote>
+<p>The latest discussion is about dropping support for hashes in constraints: https://github.com/pypa/pip/issues/12942#issuecomment-2332158690</p>
+<p>In practise hashes in constraints files don't really work in pip as they imply require hashes, but the requires hashes errors  out unless the hash is in the requirements file.</p>
+<p>So I think uv has quite a bit of leeway here to choose what it thinks is best.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-05 19:29</div>
+            <div class="timeline-body"><p>What's the motivation for dropping support there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-09-05 19:39</div>
+            <div class="timeline-body"><blockquote>
+<p>What's the motivation for dropping support there?</p>
+</blockquote>
+<p>As I understand it (and I've not spent time reviewing the code, I'm just basing this on what I've read in comments) constraints are implemented as a collection filter where hashes are not checked, and are not part of resolution verification where hashes can be checked.</p>
+<p>Currently pip only allows hashes to be specified if you pin the requirement, and adding a hash implies requiring hashes, this leads to the behaviour of:</p>
+<ol>
+<li>Create <code>constraints.txt</code> with the contents:</li>
+</ol>
+<pre><code>setuptools==74.1.1 --hash=sha256:fc91b5f89e392ef5b77fe143b17e32f65d3024744fba66dc3afe07201684d766
+</code></pre>
+<ol start="2">
+<li>Run <code>pip install setuptools==74.1.1 -c constraints.txt</code>, and get error:</li>
+</ol>
+<pre><code>ERROR: Hashes are required in --require-hashes mode, but they are missing from some requirements. Here is a list of those requirements along with the hashes their downloaded archives actually had. Add lines like these to your requirements files to prevent tampering. (If you did not enable --require-hashes manually, note that it turns on automatically when any package has a hash.)
+	setuptools==74.1.1 --hash=sha256:fc91b5f89e392ef5b77fe143b17e32f65d3024744fba66dc3afe07201684d766
+</code></pre>
+<p>I would love for pip to support this use case (and hence also uv), but I'm not going to be the one to drive large architectural changes on the pip side.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-05 19:42</div>
+            <div class="timeline-body"><p>Ahh ok I see. Yeah we can support it, it's structured slightly differently here. Not sure what's best though: union, intersection, ignroing one or the other, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-09-05 19:48</div>
+            <div class="timeline-body"><p>IMO a constraint should &quot;constrain&quot; the solution. Which I think would be an intersection?</p>
+<p>A requirements of:</p>
+<pre><code>foo==1.0.0 --hash=sha256:{hashA} --hash=sha256:{hashB}
+bar==1.0.0 
+baz
+</code></pre>
+<p>With a constraints file of:</p>
+<pre><code>foo==1.0.0 --hash=sha256:{hashB} --hash=sha256:{hashC}
+bar==1.0.0 --hash=sha256:{hashD}
+baz==1.0.0 --hash=sha256:{hashE}
+</code></pre>
+<p>For those packages the solution (assuming one exists) should only be able to have:</p>
+<pre><code>foo==1.0.0 --hash=sha256:{hashB}
+bar==1.0.0 --hash=sha256:{hashD}
+baz==1.0.0 --hash=sha256:{hashE}
+</code></pre>
+<p>Does that make sense?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:24 UTC
+    </footer>
+</body>
+</html>

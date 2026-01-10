@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow multiple source entries for each package in `tool.uv.sources` - astral-sh/uv #7745</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow multiple source entries for each package in <code>tool.uv.sources</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7745">#7745</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-09-27 18:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-27 18:29</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR enables users to provide multiple source entries in <code>tool.uv.sources</code>, e.g.:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+httpx = [
+  { git = &quot;https://github.com/encode/httpx&quot;, tag = &quot;0.27.2&quot;, marker = &quot;sys_platform == 'darwin'&quot; },
+  { git = &quot;https://github.com/encode/httpx&quot;, tag = &quot;0.24.1&quot;, marker = &quot;sys_platform == 'linux'&quot; },
+]
+</code></pre>
+<p>The implementation is relatively straightforward: when we lower the requirement, we now return an iterator rather than a single requirement. In other words, the above is transformed into two requirements:</p>
+<pre><code class="language-txt">httpx @ git+https://github.com/encode/httpx@0.27.2 ; sys_platform == 'darwin'
+httpx @ git+https://github.com/encode/httpx@0.24.1 ; sys_platform == 'linux'
+</code></pre>
+<p>We verify (at deserialization time) that the markers are non-overlapping.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/3397.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-09-27 23:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-09-27 23:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-09-27 23:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-09-27 23:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-09-27 23:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-27 23:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-workspace/src/pyproject.rs</code>:509 on 2024-09-27 23:24</div>
+            <div class="timeline-body"><p>@BurntSushi -- I'd love your eyes on this file in particular. Should I be enforcing these at deserialization time? I could easily enforce them when we actually <em>use</em> the lowered requirement. I'm not certain what's best.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-workspace/src/pyproject.rs</code>:517 on 2024-09-27 23:24</div>
+            <div class="timeline-body"><p>@ibraheemdev -- Is it correct to use <code>Option&lt;MarkerTreeContents&gt;</code> for this? It's a field that users can provide in TOML.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-27 23:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-27 23:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/metadata/lowering.rs</code>:60 on 2024-09-27 23:25</div>
+            <div class="timeline-body"><p>I find this slightly awkward: we return an iterator, but if the &quot;overall&quot; requirement fails, we use once with an error. Perhaps the return type should more truthfully be: <code>Result&lt;impl Iterator&lt;Item = Result&lt;LoweredRequirement, LoweringError&gt;&gt;, LoweringError&gt;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/metadata/lowering.rs</code>:292 on 2024-09-27 23:25</div>
+            <div class="timeline-body"><p>This file is mostly just the code being indented and put under an iterator. Very minimal changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-27 23:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-27 23:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep508-rs/src/marker/tree.rs</code>:1645 on 2024-09-27 23:27</div>
+            <div class="timeline-body"><p>\cc @ibraheemdev -- Does this make sense for a user-provided marker field?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-27 23:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>uv.schema.json</code>:1437 on 2024-09-27 23:29</div>
+            <div class="timeline-body"><p>I think this is wrong (it thinks it <em>has</em> to be a list).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/concepts/dependencies.md</code>:263 on 2024-09-28 14:22</div>
+            <div class="timeline-body"><p>In these expressions, do we accept extras and support the following (assuming index api has landed)?</p>
+<pre><code class="language-toml">[project.optional-dependencies]
+cu118 = []
+cu121 = []
+cu124 = []
+
+[tool.uv.sources]
+torch = [
+    { index = &quot;torch-cu118&quot;, marker = &quot;extra == 'cu118'&quot;},
+    { index = &quot;torch-cu124&quot;, marker = &quot;extra == 'cu124'&quot;},
+    # cu121 is on pypi
+]
+
+[[tool.uv.index]]
+name = &quot;torch-cu118&quot;
+url = &quot;https://download.pytorch.org/whl/cu118&quot;
+
+[[tool.uv.index]]
+name = &quot;torch-cu124&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>uv.schema.json</code>:1437 on 2024-09-28 14:44</div>
+            <div class="timeline-body"><p>It looks correct to and check-jsonschema does only complain about &quot;tree&quot; below:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+tqdm = { git = &quot;https:/github.com/tqdm/tqdm&quot; }
+httpx = [
+  { git = &quot;https://github.com/encode/httpx&quot;, tag = &quot;0.27.2&quot;, marker = &quot;sys_platform == 'darwin'&quot; },
+  { git = &quot;https://github.com/encode/httpx&quot;, tag = &quot;0.24.1&quot;, marker = &quot;sys_platform == 'linux'&quot; },
+]
+foo = &quot;tree&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/project/run.rs</code>:208 on 2024-09-28 14:51</div>
+            <div class="timeline-body"><p>nit:</p>
+<pre><code class="language-suggestion">                    .map_ok(move |requirement| requirement.into_inner())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/lock.rs</code>:13459 on 2024-09-28 14:55</div>
+            <div class="timeline-body"><p>powerful</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution/src/metadata/lowering.rs</code>:60 on 2024-09-28 14:58</div>
+            <div class="timeline-body"><p>We lower only for workspace packages, there are few items and the iterator looks too complex for this use case, should we collect into a <code>Result&lt;Vec&lt;LoweredRequirement&gt;, LoweringError&gt;</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/concepts/dependencies.md</code>:226 on 2024-09-28 15:13</div>
+            <div class="timeline-body"><p>The is one big catch we need to mention (and should check in code): The metadata needs to consistent between the sources, otherwise it's UB.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-09-28 15:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-28 16:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/concepts/dependencies.md</code>:226 on 2024-09-28 16:02</div>
+            <div class="timeline-body"><p>I think different metadata is totally fine, no?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-28 16:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>uv.schema.json</code>:1437 on 2024-09-28 16:02</div>
+            <div class="timeline-body"><p>(I think I fixed it between the time I wrote this comment and your testing. Thanks so much for testing it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-28 16:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/metadata/lowering.rs</code>:60 on 2024-09-28 16:04</div>
+            <div class="timeline-body"><p>I suppose that's true -- this does only apply to workspace packages. I'd like @BurntSushi opinion on it too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-28 16:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/concepts/dependencies.md</code>:226 on 2024-09-28 16:16</div>
+            <div class="timeline-body"><p>Given:</p>
+<pre><code class="language-toml">
+        [tool.uv.sources]
+        iniconfig = [
+            { url = &quot;https://files.pythonhosted.org/packages/ef/a6/62565a6e1cf69e10f5727360368e451d4b7f58beeac6173dc9db836a5b46/iniconfig-2.0.0-py3-none-any.whl&quot;, marker = &quot;sys_platform != 'win32'&quot; },
+            { url = &quot;https://files.pythonhosted.org/packages/d7/4b/cbd8e699e64a6f16ca3a8220661b5f83792b3017d0f79807cb8708d33913/iniconfig-2.0.0.tar.gz&quot;, marker = &quot;sys_platform == 'win32'&quot; },
+        ]
+</code></pre>
+<p>do we check the metadata for both packages individually?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/concepts/dependencies.md</code>:263 on 2024-09-28 16:17</div>
+            <div class="timeline-body"><p>We definitely can't support the above since we don't support disjoint extras, and those markers are overlapping. I talk about this at length here: https://www.notion.so/astral-sh/PyTorch-10a48797e1ca803ea593c456e9bf23f8?pvs=4#10a48797e1ca80f4ab5af90ebcd77000.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-28 16:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-28 16:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/concepts/dependencies.md</code>:263 on 2024-09-28 16:19</div>
+            <div class="timeline-body"><p>I need to see if we already propagate extras here though. I.e., this should probably work, right?</p>
+<pre><code class="language-toml">[project.optional-dependencies]
+cu118 = []
+
+[tool.uv.sources]
+torch = [
+    { index = &quot;torch-cu118&quot;, marker = &quot;extra == 'cu118'&quot;},
+]
+
+[[tool.uv.index]]
+name = &quot;torch-cu118&quot;
+url = &quot;https://download.pytorch.org/whl/cu118&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-28 16:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/concepts/dependencies.md</code>:226 on 2024-09-28 16:36</div>
+            <div class="timeline-body"><p>Yeah. It’s just like if you had the same direct URL requirement defined twice, with disjoint markers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-28 16:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/concepts/dependencies.md</code>:226 on 2024-09-28 16:57</div>
+            <div class="timeline-body"><p>cool!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-28 17:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/concepts/dependencies.md</code>:263 on 2024-09-28 17:06</div>
+            <div class="timeline-body"><p>I do think we <em>need</em> to support it once we support disjoint extras. It makes the mixed CPU/GPU stuff <em>so</em> much better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/lock.rs</code>:13768 on 2024-09-28 18:35</div>
+            <div class="timeline-body"><p>This test is wrong (it doesn't include <code>iniconfig</code> outside of the optional dependencies, but it should). I think it's because the negation of <code>extra == 'cpu'</code> is <code>extra != 'cpu'</code>, but when we resolve, we assume all extras are enabled, so that's false? It's like I want the negation of <code>extra == 'cpu'</code> to be, like, just omitting that marker. \cc @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-28 18:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-09-28 21:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/pep508-rs/src/marker/tree.rs</code>:1645 on 2024-09-28 21:26</div>
+            <div class="timeline-body"><p>Hmm I'm not sure if this (and <code>Option&lt;MarkerTreeContents&gt;</code>) works. If the user wrote <code>x or not x</code>, we simplify to <code>MarkerTree::TRUE</code>, so this deserialize would fail? I don't think serde falls back to <code>None</code> in that case without serde(default).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-29 00:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep508-rs/src/marker/tree.rs</code>:1645 on 2024-09-29 00:42</div>
+            <div class="timeline-body"><p>What would you suggest? Just use <code>String</code> and parse these as needed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-09-29 06:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/pep508-rs/src/marker/tree.rs</code>:1645 on 2024-09-29 06:07</div>
+            <div class="timeline-body"><p>Why not use <code>Option&lt;MarkerTree&gt;</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-29 12:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep508-rs/src/marker/tree.rs</code>:1645 on 2024-09-29 12:10</div>
+            <div class="timeline-body"><p>I need both serialize and deserialize, and neither of those types implement both.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-09-29 19:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/pep508-rs/src/marker/tree.rs</code>:1645 on 2024-09-29 19:27</div>
+            <div class="timeline-body"><p>You can use the helpers like here: https://github.com/astral-sh/uv/blob/66d7ec541a7e3750ea4f66b432efe605c963678d/crates/pypi-types/src/requirement.rs#L51</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-distribution/src/metadata/lowering.rs</code>:60 on 2024-09-30 13:16</div>
+            <div class="timeline-body"><p>I would have probably written this as a <code>Result&lt;Vec, LoweringError&gt;</code> personally. Or a <code>SmallVec</code> if you're concerned about the alloc (although it seems marginal here since I see other allocs below, although I don't know their relative frequency), since I think the vast majority of these would be a single element <code>Vec</code> right?</p>
+<p>But I think the nested <code>Result</code> would be totally fine. Logically, it makes sense: you have an iterator of results, and building that iterator may fail.</p>
+<p>In a &quot;real&quot; library, I might try to take the approach you have here in order to simplify the API. But it depends on some other factors that probably aren't relevant here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-distribution/src/metadata/requires_dist.rs</code>:267 on 2024-09-30 13:18</div>
+            <div class="timeline-body"><p>These errors are kind of a bummer (and they were before too). Like end users shouldn't be faced with Serde goop like &quot;variant of untagged enum.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-workspace/src/pyproject.rs</code>:509 on 2024-09-30 13:34</div>
+            <div class="timeline-body"><p>I guess to me, it makes a lot of sense to enforce this at deserialization time. It seems much better to fail early here. And if possible, I'd take these error cases and turn them into documented invariants on the relevant types so that consumers know what they can and can't rely on. I think that probably go on <code>Sources::iter</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-workspace/src/pyproject.rs</code>:517 on 2024-09-30 13:34</div>
+            <div class="timeline-body"><p>I think @ibraheemdev's other comment applies here too right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-09-30 13:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-30 17:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-workspace/src/pyproject.rs</code>:517 on 2024-09-30 17:12</div>
+            <div class="timeline-body"><p>Yes!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-30 17:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep508-rs/src/marker/tree.rs</code>:1645 on 2024-09-30 17:13</div>
+            <div class="timeline-body"><p>Perfect, thanks! That's what I was looking for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-30 17:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/metadata/requires_dist.rs</code>:267 on 2024-09-30 17:32</div>
+            <div class="timeline-body"><p>I agree. We should fix this. I actually looked at adding https://github.com/dtolnay/serde-untagged but it looked non-trivial. How else could we do it? Could we add a variant that has no fields...? Then show a custom message?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-distribution/src/metadata/requires_dist.rs</code>:267 on 2024-09-30 17:37</div>
+            <div class="timeline-body"><p>My approach would be to <code>cargo expand</code> the derive and copy that into a custom <code>Deserialize</code> impl. Then modify it as appropriate.</p>
+<p>If the <code>cargo expand</code> output isn't reasonable, then yeah, I'd start just trying to hand-write a custom impl.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-09-30 17:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/metadata/lowering.rs</code>:60 on 2024-09-30 19:29</div>
+            <div class="timeline-body"><p>Ok, I left it as an iterator for now... I may look into rewriting it. I feel like an iterator is actually a simpler API, despite being more complicated &quot;internally&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-30 19:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-30 19:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/metadata/lowering.rs</code>:60 on 2024-09-30 19:29</div>
+            <div class="timeline-body"><p>(This method is run for all dependencies declared in the workspace. It returns a single entry the vast majority of the time.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-30 19:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution/src/metadata/requires_dist.rs</code>:267 on 2024-09-30 19:44</div>
+            <div class="timeline-body"><p>We can also turn it into a struct with all variants and do our own matching on top, like we do for the git reference variants already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-09-30 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-30 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-30 21:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:45 UTC
+    </footer>
+</body>
+</html>

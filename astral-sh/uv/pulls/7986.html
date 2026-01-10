@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Check consistency between prepare and build step  - astral-sh/uv #7986</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Check consistency between prepare and build step</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7986">#7986</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-10-07 18:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-10-07 18:29</div>
+            <div class="timeline-body"><p>PEP 517 mandates that the metadata must be consistent between <code>prepare_metadata_for_build_wheel</code> and <code>build_wheel</code> by passing the directory written in the prepare step to the build step (https://peps.python.org/pep-0517/#build-wheel). There is no reason why we would violate this guarantee, but we are prudent and check that <code>METADATA</code> and <code>entry_points.txt</code> (the main metadata files) actually match.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-10-07 18:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2024-10-07 18:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-build-backend/src/lib.rs</code>:368 on 2024-10-08 14:21</div>
+            <div class="timeline-body"><p>Nit: I'd put the LHS in a local variable since this is a mouthful to fit in an <code>if</code>. And then tweak the names, e.g., <code>pyproject_metadata</code> and <code>direct_metadata</code> or some such.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-build-backend/src/lib.rs</code>:391 on 2024-10-08 14:22</div>
+            <div class="timeline-body"><p>If we expect this to actually happen, it would be more useful for the error to indicate where the mismatch is. But I'm fine with merging as-is and only adding that if it proves useful. (Since it's probably somewhat annoying to implement.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-build-backend/src/lib.rs</code>:409 on 2024-10-08 14:26</div>
+            <div class="timeline-body"><p>How come there's asymmetry  between the <code>entry_points.txt</code> checks and <code>METADATA</code>? For <code>METADATA</code>, you check for content equivalence, and error if the file doesn't exist. But here, an error is returned if the file does exist.</p>
+<p>OK, maybe writing that out helped me understand. It looks like creating entry points from <code>pyproject_toml</code> might return <code>None</code>, but that case doesn't exist for <code>to_metadata</code>?</p>
+<p>Apologies for the meandering comment. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-10-08 14:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/lib.rs</code>:409 on 2024-10-08 15:20</div>
+            <div class="timeline-body"><p>I've added inline comments: METADATA is mandatory and always written, <code>entry_points.txt</code> is not written if it would be empty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-10-08 15:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-10-08 15:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/lib.rs</code>:391 on 2024-10-08 15:22</div>
+            <div class="timeline-body"><p>I see these more as <code>debug_assert!</code> (i don't see a way how we could violate this invariant), so I've kept the reporting minimal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-10-08 15:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-build-backend/src/lib.rs</code>:391 on 2024-10-08 15:26</div>
+            <div class="timeline-body"><p>Yeah that makes sense!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-10-08 15:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-build-backend/src/lib.rs</code>:409 on 2024-10-08 15:26</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-10-08 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-10-08 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-08 16:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:54 UTC
+    </footer>
+</body>
+</html>

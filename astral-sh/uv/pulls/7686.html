@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clean up &quot;performance allocators&quot; and &quot;performance flate2&quot; backends - astral-sh/uv #7686</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Clean up &quot;performance allocators&quot; and &quot;performance flate2&quot; backends</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7686">#7686</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-09-25 14:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-09-25 14:29</div>
+            <div class="timeline-body"><p>Rebased version of #7000, description copied below.</p>
+<p>Closes #7000</p>
+<hr />
+<h2>Summary</h2>
+<p>@charliermarsh has long suspected local builds could be made faster by disabling things like: tikv-jemalloc/mimalloc, zlibng etc.</p>
+<p>I'm going through the cargo dep tree looking at things that can be disabled locally.</p>
+<h2>Methodology:</h2>
+<p><code>production</code> cargo flag enables all the production stuff (good allocators, fast compression libs, etc.)</p>
+<p>I measure fresh <code>cargo check</code> runs, like so:</p>
+<pre><code class="language-shell">rm -rf /tmp/timings; CARGO_TARGET_DIR=/tmp/timings cargo check -F production-memory-allocator --timings
+</code></pre>
+<p>Varying the <code>-F</code> to enable/disable the features</p>
+<h2>FAQ</h2>
+<p>Q: Why only check <code>check</code>?</p>
+<p>A: The benefits will trickle down to other subcommands (including test/nextest etc.) — check/clippy are super common while iterating. We can do larger checks near the end.</p>
+<p>Q: Why only check cold builds?</p>
+<p>A: Warm builds depend on a lot on which part of the code is touched — I'll optimize typical interactions later on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2024-09-25 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-09-25 14:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fasterthanlime">@fasterthanlime</a> on 2024-09-25 15:31</div>
+            <div class="timeline-body"><p>Windows CI is being flaky again :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-09-25 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-09-25 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-25 15:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:43 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Install `ca-certificates` in docker and use pipefail - astral-sh/uv #6208</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Install <code>ca-certificates</code> in docker and use pipefail</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6208">#6208</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-08-19 14:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-08-19 14:45</div>
+            <div class="timeline-body"><p>A dockerfile using <code>ubuntu</code> instead of <code>python</code> as base image currently silently fails to install.</p>
+<pre><code class="language-dockerfile">FROM ubuntu
+RUN apt-get update &amp;&amp; apt-get install -y curl --no-install-recommends
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+RUN uv --version
+</code></pre>
+<pre><code class="language-console">$ docker buildx build --progress plain --no-cache .
+[...]
+#6 [3/4] RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+#6 0.144 curl: (77) error setting certificate file: /etc/ssl/certs/ca-certificates.crt
+#6 DONE 0.2s
+
+#7 [4/4] RUN uv --version
+#7 0.113 /bin/sh: 1: uv: not found
+#7 ERROR: process &quot;/bin/sh -c uv --version&quot; did not complete successfully: exit code: 127
+</code></pre>
+<p>There's two underlying problems: Pipefail, and missing <code>ca-certificates</code>.</p>
+<p>In most shells, the source of a pipe erroring doesn't fail the entire command, so <code>curl -LsSf https://astral.sh/uv/install.sh | sh</code> passes even if the curl part fails. In bash, you can prefix the command with <code>set -o pipefail &amp;&amp;</code> to change this behavior. But in the <code>ubuntu</code> docker container, dash is the default shell, not bash. dash doesn't have a pipefail option (in the version in ubuntu), so the <a href="https://docs.docker.com/build/building/best-practices/#using-pipes">best practice</a> is <code>RUN [&quot;/bin/bash&quot;, &quot;-c&quot;, &quot;set -o pipefail &amp;&amp; curl -LsSf https://astral.sh/uv/install.sh | sh&quot;]</code>. That's not very readable, so i'm going for <code>RUN curl -LsSf https://astral.sh/uv/install.sh &gt; /tmp/uv-installer.sh &amp;&amp; sh /tmp/uv-installer.sh &amp;&amp; rm /tmp/uv-installer.sh</code> instead.</p>
+<pre><code class="language-dockerfile">FROM ubuntu
+RUN apt-get update &amp;&amp; apt-get install -y curl --no-install-recommends
+RUN curl -LsSf https://astral.sh/uv/install.sh &gt; /tmp/uv-installer.sh &amp;&amp; sh /tmp/uv-installer.sh &amp;&amp; rm /tmp/uv-installer.sh \
+RUN uv --version
+</code></pre>
+<pre><code class="language-console">$ docker buildx build --progress plain --no-cache .
+[...]
+#6 [3/3] RUN curl -LsSf https://astral.sh/uv/install.sh &gt; /tmp/uv-installer.sh &amp;&amp; sh /tmp/uv-installer.sh &amp;&amp; rm /tmp/uv-installer.sh RUN uv --version
+#6 0.179 curl: (77) error setting certificate file: /etc/ssl/certs/ca-certificates.crt
+#6 ERROR: process &quot;/bin/sh -c curl -LsSf https://astral.sh/uv/install.sh &gt; /tmp/uv-installer.sh &amp;&amp; sh /tmp/uv-installer.sh &amp;&amp; rm /tmp/uv-installer.sh RUN uv --version&quot; did not complete successfully: exit code: 77
+</code></pre>
+<p>The source for this error is <code>ca-certificates</code> missing, which is a recommended package. We need to drop <code>--no-install-recommends</code> and the installation passes again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @konstin on 2024-08-19 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-19 14:52</div>
+            <div class="timeline-body"><p>Should we just actually request the packages we need alongside <code>curl</code> instead of installing all recommended packages?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-19 14:53</div>
+            <div class="timeline-body"><p>Yeah I think <code>--no-install-recommends</code> is a best practice in Docker.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-19 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/integration/docker.md</code>:26 on 2024-08-19 14:54</div>
+            <div class="timeline-body"><p>Can we just <code>ADD</code> the file from the remote URL if we're doing this? Does that even require <code>curl</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-08-19 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/guides/integration/docker.md</code>:26 on 2024-08-19 14:56</div>
+            <div class="timeline-body"><p>I tried that, but cargo-dist requires curl or wget to download the uv archive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-19 14:57</div>
+            <div class="timeline-body"><p>Do we know what the packages we're unselecting and do we know that unlike <code>ca-certificates</code>, we don't need them? I've also checked with https://docs.docker.com/build/building/best-practices/#apt-get and they don't feature <code>--no-install-recommends</code> (but do add <code>&amp;&amp; rm -rf /var/lib/apt/lists/*</code> which we're missing).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-19 14:59</div>
+            <div class="timeline-body"><p>I mean... as described the image works fine — you changed the base image and it failed. I agree we could do better though.</p>
+<p><code>--no-install-recommends</code> is included in Hadolint: https://github.com/hadolint/hadolint/wiki/DL3015</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @konstin on 2024-08-19 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-08-19 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-08-19 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-19 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-19 17:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:00:57 UTC
+    </footer>
+</body>
+</html>

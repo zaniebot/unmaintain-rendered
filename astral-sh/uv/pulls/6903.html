@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream build backend output to `debug!` - astral-sh/uv #6903</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Stream build backend output to <code>debug!</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6903">#6903</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-08-31 23:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-31 23:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>We need to decide whether we want this in <code>debug!</code> or <code>tracing!</code>. We also <em>probably</em> (?) want to show this by default in <code>uv build</code>.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/1567.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/5893.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">tracing</span> added by @charliermarsh on 2024-08-31 23:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-08-31 23:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-08-31 23:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-08-31 23:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-31 23:51</div>
+            <div class="timeline-body"><p><img src="https://github.com/user-attachments/assets/e984ae52-11c4-45c1-a2be-08b72da96aba" alt="Screenshot 2024-08-31 at 7 48 30 PM" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-01 16:19</div>
+            <div class="timeline-body"><p>Confusingly these failing tests pass on my machine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build/src/lib.rs</code>:1031 on 2024-09-02 08:47</div>
+            <div class="timeline-body"><p>We need to forward that error</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-09-02 08:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-09-02 08:51</div>
+            <div class="timeline-body"><p>Do we need to prefix builds when multiple ones are running in parallel, or generally to identify which one is which?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-09-02 08:52</div>
+            <div class="timeline-body"><p>Tests are also passing on my linux machine</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-02 18:22</div>
+            <div class="timeline-body"><blockquote>
+<p>Do we need to prefix builds when multiple ones are running in parallel, or generally to identify which one is which?</p>
+</blockquote>
+<p>I thought about this, but if you run <code>-vvv</code>, the tree structure seems fine to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-02 18:52</div>
+            <div class="timeline-body"><p>Ok, figured it out -- I was dropping output from one stream as soon as the other completed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-09-02 19:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-02 19:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-02 19:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-09-03 06:34</div>
+            <div class="timeline-body"><blockquote>
+<p>We also probably (?) want to show this by default in uv build.</p>
+</blockquote>
+<p>Remember, this is the <em>only</em> way for a build backend like scikit-build-core, maturin, hatching, etc. to communicate with the user. Modern build backends are fairly careful with output, trying to just display useful information to the user, like compiler warnings, enabled components, etc. In my opinion, <code>uv build .</code> and <code>uv pip install .</code> should show output. I even think <code>uv pip install numpy</code> should show output <strong>if</strong> it's building a wheel, but that's probably too large a departure from pip and what people know.  (Remember, most of the time it won't build!)</p>
+<p>I think the reason it's hidden by default is a) setuptools produces a ton of pretty useless output, like every file it copies, b) pip was designed in a time when pre-compiled wheels for everything didn't exist, which meant every install produced stuff, while today most packages have wheels, and c) dependency output could get confusing. Very little of this makes sense, though, in the modern most-packages-have-wheels world, where most SDist-only packages are compiled packages where output is both helpful and keeps the terminal from just sitting idle for seconds to minutes (to hours in rare cases). But in the case of building from a source directory, I think it's easy to say hiding the build-backend output is never helpful. And again, this is the <em>only</em> way to see the build-backend produce output. You only interact to build backend via <code>pip install .</code> and <code>build .</code>!</p>
+<p>Two issues with this as well, by the way. It looks like every line gets a ~~long~~ prefix with logging info (Correction: it appears to just be &quot;DEBUG&quot;, which isn't bad), and it looks like the build backend can't tell things like the terminal width and color support. scikit-build-core, cmake, and most compilers all support color output, but it's gone with <code>uv</code>. What about also providing a flag that disables capturing the subprocess output? Pip has the same problem, but it only adds a couple of spaces as a prefix. This is why build's output is so much better than pips, as it doesn't buffer it and modify it.</p>
+<p>Here's an example of build's output for boost-histogram, with scikit-build-core's logging enabled:</p>
+<p><img src="https://github.com/user-attachments/assets/6f2284a4-a00c-47dd-b965-07b84f629b42" alt="Screenshot 2024-09-03 at 2 14 28 AM" /></p>
+<p>Now here's uv's current support:</p>
+<p><img src="https://github.com/user-attachments/assets/0251e5b2-d3d2-46fc-98f4-6d8794578a86" alt="Screenshot 2024-09-03 at 2 17 42 AM" />
+<img src="https://github.com/user-attachments/assets/23ce0f03-b209-4dc1-a7f1-8f89a873064a" alt="Screenshot 2024-09-03 at 2 18 20 AM" /></p>
+<p>There's about two pages of uv logging before the build backend info starts, it's got a DEBUG prefix on everything, and all color is gone.</p>
+<p>Also, I noticed another problem. Without scikit-build-core's logging enabled, this is the entire output from <code>pipx run build --wheel</code>:</p>
+<p><img src="https://github.com/user-attachments/assets/25f303c1-8411-4b1e-926f-3397c5d93868" alt="Screenshot 2024-09-03 at 2 32 22 AM" /></p>
+<p>Notice that Ninja is rewriting its output if each file is successfully compiled, keeping the log short, because it knows it's writing to a terminal. However, you can't do that when you buffer! Here's the output part from uv:</p>
+<p><img src="https://github.com/user-attachments/assets/9deab271-cde9-4720-949d-3c2737548915" alt="Screenshot 2024-09-03 at 2 27 19 AM" /></p>
+<p>Having a special flag to disable capturing the output would fix that too.</p>
+<p>Edit: https://github.com/astral-sh/uv/pull/6912 looks better, not sure about it supporting terminal detection though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-09-05 05:30</div>
+            <div class="timeline-body"><p>Actually, this is what it looks like for me now with 0.4.5:</p>
+<p><img src="https://github.com/user-attachments/assets/db2c62d0-5270-4524-9030-9c7ea8d45c1b" alt="Screenshot 2024-09-05 at 1 28 10 AM" /></p>
+<p>Every line is three lines, two of them with DEBUG prefixes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-05 11:52</div>
+            <div class="timeline-body"><p>That’s strange, I’ll take a look. I don’t see that for other backends.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:19 UTC
+    </footer>
+</body>
+</html>

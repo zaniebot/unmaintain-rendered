@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add --script option to uv init - astral-sh/uv #7404</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add --script option to uv init</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7404">#7404</a>
+        opened by <a href="https://github.com/jbvsmo">@jbvsmo</a>
+        on 2024-09-15 02:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jbvsmo">@jbvsmo</a> on 2024-09-15 02:56</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>This is a partial implementation of #7402
+Since there was no discussion yet, I didn't get much further than adding the command line option and writing the .py file</p>
+<p>Feel free to use this PR (or not). I am unsure if I will have time to finish it.</p>
+<p>There is one opinionated bit which is the readme &quot;type&quot; which is <a href="https://packaging.python.org/en/latest/specifications/inline-script-metadata/#specification">part of the pep 723 spec</a> but you may want to think about it before introducing any such thing</p>
+<p>Missing:</p>
+<ul>
+<li>The PackageName converts dots into dashes. I did not check how to fix it. You will see it when you run the command as the hello will show foo-py instead of foo.py</li>
+<li>Add to the docs to teach people how to create scripts <a href="https://docs.astral.sh/uv/guides/scripts/">here</a></li>
+<li>Combine python_request and requires_python as there is no standalone .python-version file</li>
+<li>possibly add a shebang and make the file executable</li>
+<li>Test cases</li>
+</ul>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>uv init --script foo.py</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @jbvsmo on 2024-09-15 02:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-15 14:47</div>
+            <div class="timeline-body"><p>Sweet! Can you add a test case to <code>crates/uv/tests/init.rs</code> so we can see what the output looks like and iterate from there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbvsmo">@jbvsmo</a> on 2024-09-15 17:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Sweet! Can you add a test case to <code>crates/uv/tests/init.rs</code> so we can see what the output looks like and iterate from there?</p>
+</blockquote>
+<p>Sure, I did that. Observe how the cli parses the file name into the package converting something.py into something-py instead of just &quot;something&quot;. But that is also something you guys might want to decide.</p>
+<p>A file without extension is also supported, which is common for executable scripts with a shebang.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/uv/tests/init.rs</code>:495 on 2024-09-15 18:51</div>
+            <div class="timeline-body"><p>could avoid these lines?
+I think most script authors won't go versioning the scripts, and they prefer to use module-docstring instead of description. the name field also inferred from filename usually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/uv/tests/init.rs</code>:478 on 2024-09-15 18:52</div>
+            <div class="timeline-body"><p>could strip file extension when set the project name?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2024-09-15 18:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jbvsmo">@jbvsmo</a> reviewed on 2024-09-15 19:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jbvsmo">@jbvsmo</a> on <code>crates/uv/tests/init.rs</code>:495 on 2024-09-15 19:29</div>
+            <div class="timeline-body"><p>These are the kinds of opinion based decisions that are better chosen by the uv team, so feel free to perform them. I just wanted to kickstart the feature. I copied the same defaults from the --app solution.</p>
+<p>IMO though, versioning scripts is quite common and encouraged in the literature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jbvsmo">@jbvsmo</a> reviewed on 2024-09-15 19:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jbvsmo">@jbvsmo</a> on <code>crates/uv/tests/init.rs</code>:478 on 2024-09-15 19:30</div>
+            <div class="timeline-body"><p>Yes, I would like so. I was afraid to break something regarding parsing package names since it is done automatically at the cli step</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2024-09-15 19:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/uv/tests/init.rs</code>:490 on 2024-09-15 19:45</div>
+            <div class="timeline-body"><p>Can you also add no-readme tests to prevent extra newlines?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2024-09-15 19:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/uv/tests/init.rs</code>:495 on 2024-09-15 19:45</div>
+            <div class="timeline-body"><p>IMO, it'd be good to have minimal header metadata (just like PEP 723's <a href="https://peps.python.org/pep-0723/#example">mentioned example</a>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-15 23:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/init.rs</code>:495 on 2024-09-15 23:18</div>
+            <div class="timeline-body"><p>I would definitely omit the name here, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-15 23:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/init.rs</code>:478 on 2024-09-15 23:18</div>
+            <div class="timeline-body"><p>I'd special case this entirely to say something like &quot;Initialized script at <code>{path}</code>&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/init.rs</code>:495 on 2024-09-15 23:19</div>
+            <div class="timeline-body"><p>(Seems like the easiest way to deal with your package name problems too)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-15 23:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jbvsmo">@jbvsmo</a> reviewed on 2024-09-16 00:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jbvsmo">@jbvsmo</a> on <code>crates/uv/tests/init.rs</code>:495 on 2024-09-16 00:23</div>
+            <div class="timeline-body"><p>Ok, that is really good advice @zanieb . I believe I was complicating things trying to change how package names are parsed when in this case there is really no package
+I pushed a commit with these changes and also @T-256 requests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jbvsmo">@jbvsmo</a> reviewed on 2024-09-16 00:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jbvsmo">@jbvsmo</a> on <code>crates/uv/tests/init.rs</code>:478 on 2024-09-16 00:24</div>
+            <div class="timeline-body"><p>Done too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jbvsmo">@jbvsmo</a> reviewed on 2024-09-16 00:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jbvsmo">@jbvsmo</a> on <code>crates/uv/tests/init.rs</code>:490 on 2024-09-16 00:24</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbvsmo">@jbvsmo</a> on 2024-09-16 00:28</div>
+            <div class="timeline-body"><p>I think the only thing really missing now after the changes above are the docs update to tell people how to create scripts.</p>
+<p>I decided against a shebang because posix does not really support multiple arguments and &quot;#!/usr/bin/env uv run&quot; would fail in some systems.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @jbvsmo on 2024-09-16 00:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-16 12:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/init.rs</code>:52 on 2024-09-16 12:36</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            anyhow::bail!(&quot;Missing script name to initialize&quot;);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-16 12:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/init.rs</code>:54 on 2024-09-16 12:36</div>
+            <div class="timeline-body"><p>Should we use <code>try_exists</code> here?</p>
+<p>Should we add metadata to the front of the script if it doesn't exist? Or should we tackle that in a separate pull request? I think we already have machinery for this for <code>uv add</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-16 12:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/init.rs</code>:56 on 2024-09-16 12:37</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                &quot;Script already exists at `{}`&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-16 12:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/init.rs</code>:100 on 2024-09-16 12:37</div>
+            <div class="timeline-body"><p>Generally, I'd use <code>matches!</code> instead of <code>!=</code> here. I'm not sure why. cc @BurntSushi</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-16 12:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/init.rs</code>:113 on 2024-09-16 12:39</div>
+            <div class="timeline-body"><p>Perhaps we should have a match on <code>project_kind</code> above this? If we change something around path handling in the future, we could easily miss the <code>Script</code> case with this structure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-16 12:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/init.rs</code>:51 on 2024-09-16 12:42</div>
+            <div class="timeline-body"><p>Best practice is to do something like <code>let Some(path) = explicit_path else { bail }</code>.  However, similar to https://github.com/astral-sh/uv/pull/7404/files#r1761072383, you may want to just match on <code>project_kind</code> above on L44 when determining the <code>path</code> variable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-16 12:43</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>Lots of small comments on the implementation. If you would rather we just finished, let us know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-09-16 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2024-09-16 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbvsmo">@jbvsmo</a> on 2024-09-16 13:43</div>
+            <div class="timeline-body"><p>@zanieb sure, go ahead thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-09-16 13:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/commands/project/init.rs</code>:100 on 2024-09-16 13:53</div>
+            <div class="timeline-body"><p><code>matches!</code> is strictly more flexible since you don't need a <code>PartialEq</code> impl to have it work. But for this specific instance, I don't think there's any meaningful advantage to one over the other. I don't mind the <code>!=</code> here personally, especially if you aren't adding <code>PartialEq</code> impls just to make it work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-25 22:49</div>
+            <div class="timeline-body"><p>Merged as https://github.com/astral-sh/uv/pull/7565. I added @jbvsmo as a co-author on that change, hope that's ok.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-25 22:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-25 22:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:33 UTC
+    </footer>
+</body>
+</html>

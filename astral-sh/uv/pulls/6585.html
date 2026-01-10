@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for virtual projects - astral-sh/uv #6585</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for virtual projects</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6585">#6585</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-08-24 16:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-24 16:03</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The basic idea here is: any project can either be a package, or not (&quot;virtual&quot;).</p>
+<p>If a project is virtual, we don't build or install it.</p>
+<p>A project is virtual if either of the following are true:</p>
+<ul>
+<li><code>tool.uv.virtual = true</code> is set.</li>
+<li><code>[build-system]</code> is absent.</li>
+</ul>
+<p>The concept of &quot;virtual projects&quot; only applies to workspace member right now; it doesn't apply to <code>path</code> dependencies which are treated like arbitrary Python source trees.</p>
+<p>TODOs that should be resolved prior to merging:</p>
+<ul>
+<li>[ ] Documentation</li>
+<li>[ ] How do we reconcile this with &quot;virtual workspace roots&quot; which are a little different -- they omit <code>[project]</code> entirely and don't even have a name?</li>
+<li>[x] <code>uv init --virtual</code> should create a virtual project rather than a virtual workspace.</li>
+<li>[x] Running <code>uv sync</code> in a virtual project after <code>uv init --virtual</code> shows <code>Audited 0 packages in 0.01ms</code>, which is awkward. (See: https://github.com/astral-sh/uv/pull/6588.)</li>
+</ul>
+<p>Closes https://github.com/astral-sh/uv/issues/6511.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-08-24 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-24 16:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/sync.rs</code>:65 on 2024-08-24 16:04</div>
+            <div class="timeline-body"><p>Unfortunately, we do need to set an explicit build backend for our test projects now. This is fine and correct, we were just omitting it before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-24 16:05</div>
+            <div class="timeline-body"><p>This needs documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-24 16:07</div>
+            <div class="timeline-body"><p>I wonder if we should use different terminology here to differentiate from a &quot;virtual workspace root&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-24 16:13</div>
+            <div class="timeline-body"><p>We might be better off with a concept of &quot;applications&quot; vs. &quot;libraries&quot; here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-24 16:13</div>
+            <div class="timeline-body"><p>Or, even better, we remove virtual workspace roots entirely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-24 16:21</div>
+            <div class="timeline-body"><p>I feel pretty good about this apart from the use of &quot;virtual&quot; here and the fact that a &quot;virtual workspace root&quot; is slightly different.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkniewallner">@mkniewallner</a> on 2024-08-24 18:42</div>
+            <div class="timeline-body"><p>&quot;virtual&quot; seems a bit abstract to me, and not really self-explanatory about what it does.</p>
+<p>Some background on this:</p>
+<ul>
+<li>PDM uses a <a href="https://pdm-project.org/en/latest/usage/project/#library-or-application"><code>distribution</code></a> boolean</li>
+<li>Poetry uses a <a href="https://python-poetry.org/docs/basic-usage/#operating-modes"><code>package-mode</code></a> boolean</li>
+</ul>
+<p>From those two, I find Poetry's one to be a better fit, as &quot;distribution&quot; seems like this is only about preventing publishing a package.</p>
+<p>What about using something a bit more explicit like <code>project-type</code> that could either be <code>application</code> or <code>package</code> (or <code>library</code>)? I personally find those concepts closer to what people are used to when creating Python projects. Using an enum also make it possible to add more values in the future (although I don't really see what else we could have).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-24 18:53</div>
+            <div class="timeline-body"><p>My preferred framing here is application vs. library (in Rust it’s “binary” vs. “library”), but curious to hear from @zanieb on it when they’re back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/a-reich">@a-reich</a> on 2024-08-25 13:21</div>
+            <div class="timeline-body"><p>IIUC, [project] still must have name and version for virtual projects/applications - does it make sense to make them optional?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-25 13:42</div>
+            <div class="timeline-body"><p>No, I still plan to require those. Otherwise, it’s not clear how to identify a given package in the lockfile.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/a-reich">@a-reich</a> on 2024-08-25 13:50</div>
+            <div class="timeline-body"><p>Hmm ok, I guess I misunderstood the mental model, as it hadn’t occurred to me that a project was allowed to depend on an application.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-25 13:54</div>
+            <div class="timeline-body"><p>Just depends on the semantics we want to allow!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/philgyford">@philgyford</a> on 2024-08-25 15:11</div>
+            <div class="timeline-body"><blockquote>
+<p>No, I still plan to require those. Otherwise, it’s not clear how to identify a given package in the lockfile.</p>
+</blockquote>
+<p>Fair enough if there’s no technical way around it, but it feels very odd to require it for something like a website.</p>
+<p>Even on my solo, personal sites I might commit and deploy several times a day, and having to decide on a version number every time (and remember to change it) would be a real pain.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/z3z1ma">@z3z1ma</a> on 2024-08-25 17:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Even on my solo, personal sites I might commit and deploy several times a day, and having to decide on a version number every time (and remember to change it) would be a real pain.</p>
+</blockquote>
+<p>You dont need to. Set the fields once in pyproject toml. Since you are not building a package with a build backend, the values are moot. Just use them as metadata for your app.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/keysmashes">@keysmashes</a> on 2024-08-27 13:31</div>
+            <div class="timeline-body"><p>I'm not sure that the &quot;library&quot;/&quot;application&quot; framing necessarily corresponds well to &quot;should/should not be installable&quot;. You want a library to be an installable package, so that it can be depended upon; but you also (sometimes?) want an application to be an installable package, so that you can install and run it (say, <code>pipx install uv</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/minkooseo">@minkooseo</a> on 2024-08-27 16:16</div>
+            <div class="timeline-body"><p>What about &quot;non package&quot; or &quot;not a package&quot; then? Not sure if it's a good flag name, but it's something we can use to explain what this is about. It's also a term used in #6578.</p>
+<p>Coming from the experience of always putting sources at the top, 'git push' and then 'git pull' at the server to serve web traffic, it was quite new to me that I should put code under src/project_name. I learned that I build a package and publish it that way, and I can create a package and install it on the server.</p>
+<p>It is still a project for me, so I was searching the doc to understand what's a project then if mine is <em>virtual</em>. (I still don't know)</p>
+<p>It is an application and not a library, but it is now clear to me that application can still be an installable package. It may create confusion for people with knowledge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-27 16:18</div>
+            <div class="timeline-body"><p>That's actually what we're using in this PR. The flag is <code>package = false</code> etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-27 16:27</div>
+            <div class="timeline-body"><p>@minkooseo might be helpful to look at #6689 too, but we're going to push out a bunch of changes around this soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-08-27 16:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-08-27 17:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-27 17:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-27 17:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:07 UTC
+    </footer>
+</body>
+</html>

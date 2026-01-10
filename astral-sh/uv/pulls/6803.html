@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hint at missing `project.name` - astral-sh/uv #6803</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Hint at missing <code>project.name</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6803">#6803</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-08-29 10:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-08-29 10:54</div>
+            <div class="timeline-body"><p>We got user reports where users were confused about why they can't use <code>[project.urls]</code> in <code>pyproject.toml</code> (i think that's from poetry?). This PR adds a hint that (according to PEP 621), you need to set <code>project.name</code> when using any <code>project</code> fields. (PEP 621 also requires <code>project.version</code> xor <code>dynamic = [&quot;version&quot;]</code>, but we check that later.)</p>
+<p>The intermediate parsing layer to tell apart syntax errors from schema errors doesn't incur a performance penalty according to epage (https://github.com/toml-rs/toml/issues/778#issuecomment-2310369253).</p>
+<p>Closes #6419
+Closes #6760</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-08-29 10:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build/src/lib.rs</code>:86 on 2024-08-29 10:56</div>
+            <div class="timeline-body"><p>We only have <code>name</code>/<code>version</code>/<code>dynamic</code> here with the last two being optional, so we skip the check that's it's actually <code>name</code> here (in the other case we have to check for name to not confuse it with e.g. invalid <code>project.dependencies</code>; it's only a heuristic but imho good enough for the error hinting path)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2024-08-29 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @zanieb on 2024-08-29 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jooon">@jooon</a> on 2024-08-29 22:54</div>
+            <div class="timeline-body"><p>This hint seems to only be shown when a project is explicitly built.</p>
+<pre><code>$ cat pyproject.toml
+[project.urls]
+repository = 'https://github.com/octocat/octocat-python'
+$ cargo run -- pip install .
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.20s
+     Running `/home/jon/src/github.com/astral-sh/uv/target/debug/uv pip install .`
+error: Failed to extract static metadata from `pyproject.toml`
+  Caused by: `pyproject.toml` is using the `[project]` table, but the required `project.name` is not set.
+  Caused by: TOML parse error at line 1, column 2
+  |
+1 | [project.urls]
+  |  ^^^^^^^
+missing field `name`
+</code></pre>
+<p>Not, when it is just parsed because of uv run.</p>
+<pre><code>$ cargo run -- run python
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.20s
+     Running `/home/jon/src/github.com/astral-sh/uv/target/debug/uv run python`
+error: Failed to parse: `pyproject.toml`
+  Caused by: TOML parse error at line 1, column 2
+  |
+1 | [project.urls]
+  |  ^^^^^^^
+missing field `name`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-30 07:06</div>
+            <div class="timeline-body"><p>This is modelled after #6419 and #6760, where the failing cases were dependencies, not the project itself</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-30 13:03</div>
+            <div class="timeline-body"><p>@konstin -- Do you think we can also add this for the workspace discovery errors?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-09-14 19:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-09-14 20:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-14 20:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-14 20:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 20:20</div>
+            <div class="timeline-body"><p>I extended it to <code>uv run</code> in https://github.com/astral-sh/uv/pull/7399.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:16 UTC
+    </footer>
+</body>
+</html>

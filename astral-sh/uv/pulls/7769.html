@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow multiple pinned indexes in `tool.uv.sources` - astral-sh/uv #7769</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow multiple pinned indexes in <code>tool.uv.sources</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7769">#7769</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-09-28 23:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-28 23:24</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR lifts the restriction that a package must come from a single index. For example, you can now do:</p>
+<pre><code class="language-toml">[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;jinja2&quot;]
+
+[tool.uv.sources]
+jinja2 = [
+    { index = &quot;torch-cu118&quot;, marker = &quot;sys_platform == 'darwin'&quot;},
+    { index = &quot;torch-cu124&quot;, marker = &quot;sys_platform != 'darwin'&quot;},
+]
+
+[[tool.uv.index]]
+name = &quot;torch-cu118&quot;
+url = &quot;https://download.pytorch.org/whl/cu118&quot;
+
+[[tool.uv.index]]
+name = &quot;torch-cu124&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+</code></pre>
+<p>The construction is very similar to the way we handle URLs today: you can have multiple URLs for a given package, but they must appear in disjoint forks. So most of the code is just adding that abstraction to the resolver, following our handling of URLs.</p>
+<p>Closes #7761.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-09-28 23:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-09-28 23:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-09-28 23:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-09-28 23:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/lock.rs</code>:14693 on 2024-09-29 00:15</div>
+            <div class="timeline-body"><p>This one actually fails:</p>
+<pre><code class="language-toml">[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;jinja2&gt;=3&quot;]
+
+[tool.uv.sources]
+jinja2 = [
+    { index = &quot;torch-cu118&quot;, marker = &quot;sys_platform == 'win32'&quot;},
+]
+
+[[tool.uv.index]]
+name = &quot;torch-cu118&quot;
+url = &quot;https://download.pytorch.org/whl/cu118&quot;
+</code></pre>
+<p>(It succeeds if you use <code>explicit = true</code> on the index.)</p>
+<p>The issue is that the <code>sys_platform == 'win32'</code> branch uses the <code>torch-cu118</code> index explicitly, but then the implied <code>sys_platform != 'win32'</code> branch <em>also</em> resolves to that same index.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-29 00:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:878 on 2024-09-30 09:44</div>
+            <div class="timeline-body"><p>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/fork_indexes.rs</code>:45 on 2024-09-30 09:48</div>
+            <div class="timeline-body"><p>nit:</p>
+<pre><code class="language-suggestion">        if let Some(previous) = self.0.insert(package_name.clone(), index.clone()) {
+            if &amp;previous != index {
+                let mut conflicts = vec![previous.to_string(), index.to_string()];
+                conflicts.sort();
+                return match fork_markers {
+                    ResolverMarkers::Universal { .. } | ResolverMarkers::SpecificEnvironment(_) =&gt; {
+                        Err(ResolveError::ConflictingIndexesUniversal(
+                            package_name.clone(),
+                            conflicts,
+                        ))
+                    }
+                    ResolverMarkers::Fork(fork_markers) =&gt; {
+                        Err(ResolveError::ConflictingIndexesFork {
+                            package_name: package_name.clone(),
+                            indexes: conflicts,
+                            fork_markers: fork_markers.clone(),
+                        })
+                    }
+                };
+            }
+        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-09-30 09:48</div>
+            <div class="timeline-body"><p>YES</p>
+<p>Mark this bold in the release notes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-10-01 14:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-01 14:01</div>
+            <div class="timeline-body"><p>Looks like this needs a docs update though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chitralverma">@chitralverma</a> on 2024-10-03 08:52</div>
+            <div class="timeline-body"><p>would love to use this. looking forward to a release with this and some updated docs!
+any ideas on when we can expect this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-03 11:53</div>
+            <div class="timeline-body"><p>Probably next week just because I'm traveling right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chitralverma">@chitralverma</a> on 2024-10-12 04:54</div>
+            <div class="timeline-body"><p>Hi @charliermarsh any updates on this one, anything I can help with?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-12 04:56</div>
+            <div class="timeline-body"><p>No, it’ll ship on Monday.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chitralverma">@chitralverma</a> on 2024-10-14 05:14</div>
+            <div class="timeline-body"><p>@charliermarsh can we also publish some new docs for torch installation with this PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-10-15 22:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-15 22:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-15 22:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:46 UTC
+    </footer>
+</body>
+</html>

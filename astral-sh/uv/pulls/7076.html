@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove propagate_markers - astral-sh/uv #7076</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove propagate_markers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7076">#7076</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-09-05 10:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-09-05 10:54</div>
+            <div class="timeline-body"><p>Follow-up to #6959 and #6961: Use the reachability computation instead of <code>propagate_markers</code> everywhere.</p>
+<p>With <code>marker_reachability</code>, we have a function that computes for each node the markers under which it is (<code>requirements.txt</code>, no markers provided on installation) or can be (<code>uv.lock</code>, depending on the markers provided on installation) included in the installation. Put differently: If the marker computed by <code>marker_reachability</code> is not fulfilled for the current platform, the package is never required on the current platform.</p>
+<p>We compute the markers for each package in the graph, this includes the virtual extra packages and the base packages. Since we know that each virtual extra package depends on its base package (<code>foo[bar]</code> implied <code>foo</code>), we only retain the base package marker in the <code>requirements.txt</code> graph.</p>
+<p>In #6959/#6961 we were only using it for pruning packages in <code>uv.lock</code>, now we're also using it for the markers in <code>requirements.txt</code>.</p>
+<p>I think this closes #4645, CC @bluss.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @konstin on 2024-09-05 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2024-09-05 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2024-09-05 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-05 10:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/graph_ops.rs</code>:15 on 2024-09-05 10:55</div>
+            <div class="timeline-body"><p>This function only moved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @konstin on 2024-09-05 11:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2024-09-05 11:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/graph_ops.rs</code>:15 on 2024-09-05 13:09</div>
+            <div class="timeline-body"><p>If possible I might suggest splitting these moves out into separate commits in the future. Otherwise it can be a little tricky to see which parts of the diff are &quot;uninteresting moves&quot; versus what is an interesting change.</p>
+<p>(It can be hard to always do this though, especially if you do the move mid-refactor.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/lock/requirements_txt.rs</code>:204 on 2024-09-05 13:19</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolution/display.rs</code>:339 on 2024-09-05 13:22</div>
+            <div class="timeline-body"><p>This seems like an interesting insight that might be worth copying over to the docs on <code>PubGrubPackage</code>. Specifically, is it a guaranteed invariant that for any package <code>foo</code>, if there is both a <code>PubGrubPackage::Package</code> and a <code>PubGrubPackage::Marker</code> for it, then the former is always a superset of the latter?</p>
+<p>(I'd love to start collecting invariants in the docs for <code>PubGrubPackage</code> because I find that type somewhat difficult to reason about. But I don't have the full shape in my head yet to propose something better.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-09-05 13:23</div>
+            <div class="timeline-body"><p>This makes sense to me.</p>
+<blockquote>
+<p>Since we know that each virtual extra package depends on its base package (foo[bar] implied foo), we only retain the base package marker in the requirements.txt graph.</p>
+</blockquote>
+<p>Does this lead to any bug fixes? Or is it &quot;just&quot; a simplification?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-09-05 13:57</div>
+            <div class="timeline-body"><p>Happy with this as long as tests pass. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/graph_ops.rs</code>:15 on 2024-09-05 16:37</div>
+            <div class="timeline-body"><p>Good call: #7091</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-05 16:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-09-05 16:40</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Since we know that each virtual extra package depends on its base package (foo[bar] implied foo), we only retain the base package marker in the requirements.txt graph.</p>
+</blockquote>
+<p>Does this lead to any bug fixes? Or is it &quot;just&quot; a simplification?</p>
+</blockquote>
+<p>This is intrinsic to how we handle markers and to marker propagation. This property held true before and after, though the algorithm we arrived at it changed and i made it more explicit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-05 16:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolution/display.rs</code>:339 on 2024-09-05 16:44</div>
+            <div class="timeline-body"><p>I have a hard time documenting this because &quot;the base package is always selected when one of its virtual packages is selected&quot; seems so fundamental to me. Do we have a good place to put overall resolver things? Because I think it would be valuable to write some of them up, we bet we come across some improvements to uv by this way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-09-05 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-09-05 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-05 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-09-05 17:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolution/display.rs</code>:339 on 2024-09-05 17:26</div>
+            <div class="timeline-body"><p>I'm not sure that was always even true, was it? The way virtual packages get added has shifted around a lot I think. Particularly in <code>get_dependencies</code> in the resolver. I don't think anything fundamental has changed in ~months, but I know @charliermarsh did a lot of work there.</p>
+<p>I would start by adding these sorts of things to <code>PubGrubPackage</code> I think. It is a very key data type in the resolver and I <em>think</em> there are a lot of interesting invariants around it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:23 UTC
+    </footer>
+</body>
+</html>

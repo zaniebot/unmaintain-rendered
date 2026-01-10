@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>docs: separate project from configuration settings - astral-sh/uv #7053</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>docs: separate project from configuration settings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7053">#7053</a>
+        opened by <a href="https://github.com/mkniewallner">@mkniewallner</a>
+        on 2024-09-04 22:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mkniewallner">@mkniewallner</a> on 2024-09-04 22:08</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Part of https://github.com/astral-sh/uv/issues/7007.</p>
+<p>Settings documentation reference currently doesn't separate &quot;project metadata&quot; and &quot;configuration&quot; options, implying that it's possible to set things like <code>dev-dependencies</code> in <code>uv.toml</code> while it's not. This is an attempt at better separating those options, by having 2 different sections:</p>
+<ul>
+<li><code>Project metadata</code>, that holds configuration that can only be set in <code>pyproject.toml</code></li>
+<li><code>Configuration</code>, that holds configuration that can be set both in <code>pyproject.toml</code> and <code>uv.toml</code></li>
+</ul>
+<p>Here are some screenshots to show what this looks like (note that I don't have code highlighting in the right navigation, which makes them clunky, as first item is always bigger because of the missing &quot;span&quot; -- I think that's because it's an <code>mkdocs-material</code> insider feature, since I have the same thing on <code>main</code> branch):</p>
+<ul>
+<li>Right side navigation:</li>
+</ul>
+<img width="241" alt="Screenshot 2024-09-05 at 01 19 50" src="https://github.com/user-attachments/assets/012f64a4-8d34-4e34-a506-8d02dc1fbf98">
+
+<img width="223" alt="Screenshot 2024-09-05 at 01 20 01" src="https://github.com/user-attachments/assets/0b0fb71d-c9c3-4ee3-8f6e-cf35180b1a99">
+
+<ul>
+<li>An option from &quot;Project metadata&quot; section that only applies to <code>pyproject.toml</code>:</li>
+</ul>
+<img width="788" alt="Screenshot 2024-09-05 at 01 20 11" src="https://github.com/user-attachments/assets/64349fbb-8623-4b81-a475-d6ff38c658f1">
+
+<ul>
+<li>An option from &quot;Configuration&quot; section that applies both to <code>pyproject.toml</code> and <code>uv.toml</code>:</li>
+</ul>
+<img width="787" alt="Screenshot 2024-09-05 at 01 20 33" src="https://github.com/user-attachments/assets/732e43d3-cc64-4f5a-8929-23a5555d4c53">
+
+<h2>Test Plan</h2>
+<p>Local run of the documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @mkniewallner on 2024-09-04 23:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkniewallner">@mkniewallner</a> on 2024-09-04 23:31</div>
+            <div class="timeline-body"><p>Not sure about the naming btw, went with &quot;Project metadata&quot; and &quot;Configuration&quot; but this might not be ideal. We might also consider adding a small description at the top of &quot;Project metadata&quot; section, to make it even more explicit why it's only possible to set those specific options in <code>pyproject.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-10 13:35</div>
+            <div class="timeline-body"><p>One oddity here that I need to resolve is that in the pip interface (<code>uv pip</code>), we <em>will</em> respect those settings in <code>uv.toml</code> (at least, <code>constraints-dependencies</code> etc., but not <code>dev-dependencies</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkniewallner">@mkniewallner</a> on 2024-09-10 20:49</div>
+            <div class="timeline-body"><blockquote>
+<p>One oddity here that I need to resolve is that in the pip interface (<code>uv pip</code>), we <em>will</em> respect those settings in <code>uv.toml</code> (at least, <code>constraints-dependencies</code> etc., but not <code>dev-dependencies</code>).</p>
+</blockquote>
+<p>Until we find a way to properly reflect that in the documentation, wouldn't it still be preferable to move forward with the changes? I feel that this is less problematic to only show <code>pyproject.toml</code> for options where it's also possible to use <code>uv.toml</code> in <code>pip</code> interface than showing <code>uv.toml</code> where it doesn't work for either both resolvers, or the universal one.</p>
+<p>Worst case, obviously far from great, but if too complex for now, maybe we can &quot;hack&quot; around the issue by adding specific note on options where <code>uv.toml</code> only works for <code>pip</code> interface, e.g. either:</p>
+<ul>
+<li>adding a note like &quot;If using <code>pip</code> interface, it's also possible to set the option in <code>uv.toml</code> like so: <example>&quot;</li>
+<li>using <code>uv.toml (pip interface only)</code> in the file header</li>
+<li>in the example, adding a comment &quot;# This will only work for <code>pip</code> interface&quot;</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-10 21:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Until we find a way to properly reflect that in the documentation, wouldn't it still be preferable to move forward with the changes?</p>
+</blockquote>
+<p>I agree, it doesn't need to be blocking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-10 21:39</div>
+            <div class="timeline-body"><p>What's the motivation for increasing the header size for the options? Is it because there are now two levels of nesting (&quot;Project&quot; -&gt; &quot;Workspace&quot; -&gt; &quot;Members&quot;)? I wonder if we should use <code>workspace.members</code> there (as an example).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkniewallner">@mkniewallner</a> on 2024-09-10 21:55</div>
+            <div class="timeline-body"><blockquote>
+<p>What's the motivation for increasing the header size for the options? Is it because there are now two levels of nesting (&quot;Project&quot; -&gt; &quot;Workspace&quot; -&gt; &quot;Members&quot;)? I wonder if we should use <code>workspace.members</code> there (as an example).</p>
+</blockquote>
+<p>That's mostly the reason yes. Basically today we hack a bit things to have <code>pip</code> and <code>workspace</code> at the same level as <code>Global</code>, but now that we have 2 main categories (&quot;Project&quot; and &quot;Configuration&quot;), we want to add one more header level.</p>
+<p>This is not really easy to see without digging into the HTML, but this is what we currently have:
+<img width="270" alt="Screenshot 2024-09-10 at 23 49 20" src="https://github.com/user-attachments/assets/39599a2d-ba29-4fa1-8663-25eec7de582c">
+<img width="198" alt="Screenshot 2024-09-10 at 23 49 51" src="https://github.com/user-attachments/assets/8999b29c-e26e-490e-bb6e-b8e02c8e25ac">
+<img width="252" alt="Screenshot 2024-09-10 at 23 50 23" src="https://github.com/user-attachments/assets/6b588e12-e58a-4ddc-949b-8f3a0591d501"></p>
+<p>Now we'll have:
+<img width="293" alt="Screenshot 2024-09-10 at 23 50 41" src="https://github.com/user-attachments/assets/e2e2f3fd-0933-4a47-bc1b-280d835c6f83">
+<img width="256" alt="Screenshot 2024-09-10 at 23 50 58" src="https://github.com/user-attachments/assets/259835a2-c476-47ef-a153-08c3e806e85a"></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-09-14 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-14 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2024-09-14 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-14 08:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:23 UTC
+    </footer>
+</body>
+</html>

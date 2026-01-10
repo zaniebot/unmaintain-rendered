@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Doc] Fix using uv temporarily on docker - astral-sh/uv #6657</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Doc] Fix using uv temporarily on docker</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6657">#6657</a>
+        opened by <a href="https://github.com/2xyo">@2xyo</a>
+        on 2024-08-26 20:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/2xyo">@2xyo</a> on 2024-08-26 20:34</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>The following Dockerfile command fails:</p>
+<pre><code>[...]
+RUN --mount=from=uv,source=/uv,target=/bin/uv \
+    cd /opt/opencti-connector-webhook &amp;&amp; \
+    uv pip install --system -r requirements.txt &amp;&amp; \
+    apk del git build-base
+[...]
+</code></pre>
+<p>Result</p>
+<pre><code>yo@opencti:~/connectors/stream/webhook$ docker build -t opencti/connector-webhook:d .
+[+] Building 1.0s (3/3) FINISHED                                                                                                                                            docker:default
+ =&gt; [internal] load build definition from Dockerfile                                                                                                                                  0.1s
+ =&gt; =&gt; transferring dockerfile: 557B                                                                                                                                                  0.1s
+ =&gt; ERROR [internal] load metadata for docker.io/library/uv:latest                                                                                                                    0.8s
+ =&gt; [internal] load metadata for docker.io/library/python:3.11-alpine                                                                                                                 0.8s
+------
+ &gt; [internal] load metadata for docker.io/library/uv:latest:
+------
+ERROR: failed to solve: uv: failed to resolve source metadata for docker.io/library/uv:latest: pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed
+</code></pre>
+<p>Fix:</p>
+<pre><code>[...]
+RUN --mount=from=ghcr.io/astral-sh/uv,source=/uv,target=/bin/uv \
+    cd /opt/opencti-connector-webhook &amp;&amp; \
+    uv pip install --system -r requirements.txt &amp;&amp; \
+    apk del git build-base
+[...]
+</code></pre>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<pre><code>$ docker --version
+Docker version 26.0.0, build 2ae903e
+$ date
+Mon Aug 26 20:31:53 UTC 2024
+
+$ docker build -t opencti/connector-webhook:e .
+[+] Building 41.8s (13/13) FINISHED                                                                                                                                         docker:default
+ =&gt; [internal] load build definition from Dockerfile                                                                                                                                  0.0s
+ =&gt; =&gt; transferring dockerfile: 587B                                                                                                                                                  0.0s
+ =&gt; [internal] load metadata for ghcr.io/astral-sh/uv:latest                                                                                                                          0.5s
+ =&gt; [internal] load metadata for docker.io/library/python:3.11-alpine                                                                                                                 0.5s
+ =&gt; [internal] load .dockerignore                                                                                                                                                     0.1s
+ =&gt; =&gt; transferring context: 2B                                                                                                                                                       0.0s
+ =&gt; [stage-0 1/6] FROM docker.io/library/python:3.11-alpine@sha256:700b4aa84090748aafb348fc042b5970abb0a73c8f1b4fcfe0f4e3c2a4a9fcca                                                   0.0s
+ =&gt; [internal] load build context                                                                                                                                                     0.1s
+ =&gt; =&gt; transferring context: 130B                                                                                                                                                     0.0s
+ =&gt; CACHED FROM ghcr.io/astral-sh/uv:latest@sha256:f6b18f4a7408c5244374b00c8832089258d130f7a77a38807348072e714ffa0c                                                                   0.0s
+ =&gt; CACHED [stage-0 2/6] COPY src /opt/opencti-connector-webhook                                                                                                                      0.0s
+ =&gt; CACHED [stage-0 3/6] RUN apk --no-cache add git build-base libmagic libffi-dev libxml2-dev libxslt-dev                                                                            0.0s
+ =&gt; [stage-0 4/6] RUN --mount=from=ghcr.io/astral-sh/uv,source=/uv,target=/bin/uv     cd /opt/opencti-connector-webhook &amp;&amp;     uv pip install --system -r requirements.txt    38.3s
+ =&gt; [stage-0 5/6] COPY entrypoint.sh /                                                                                                                                                0.1s
+ =&gt; [stage-0 6/6] RUN chmod +x /entrypoint.sh                                                                                                                                         0.8s
+ =&gt; exporting to image                                                                                                                                                                1.7s
+ =&gt; =&gt; exporting layers                                                                                                                                                               1.6s
+ =&gt; =&gt; writing image sha256:aa6810f883d104c838f35e848c0d7d8b4df5c7c3929f18a88b7139d0ec892a0b                                                                                          0.0s
+ =&gt; =&gt; naming to docker.io/opencti/connector-webhook:e                                                                                                                                0.0s
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-08-26 20:36</div>
+            <div class="timeline-body"><p>Thank you! I presume this worked in my testing because it was cached locally?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2024-08-26 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-08-26 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-26 20:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:10 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pep508: add requires-python simplification/complexification to `MarkerTree` - astral-sh/uv #7134</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>pep508: add requires-python simplification/complexification to <code>MarkerTree</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7134">#7134</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-09-06 18:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-06 18:29</div>
+            <div class="timeline-body"><p>In #6268, we refactored how we handled <code>requires-python</code>. Before
+that PR, we simplified markers inside resolution in lock-step with
+requires-python version narrowing. But this turns out to be quite hard
+to do correctly. After that PR, we now generally only simplify markers
+when we write the lock file.</p>
+<p>So for example, if a package has this marker:</p>
+<pre><code>python_full_version &gt;= '3.8' and python_full_version &lt;= '3.10'
+</code></pre>
+<p>And we have <code>requires-python = &quot;&gt;=3.8&quot;</code>, then its simplified form is this:</p>
+<pre><code>python_full_version &lt;= '3.10'
+</code></pre>
+<p>The problem is that if we use the simplified form in a place where we
+shouldn't, perhaps in a place where we don't handle the context of
+<code>requires-python</code> correctly or if it changes, then the marker can lead
+to incorrect results.</p>
+<p>So #6268 fixed this, but there was a hiccup: previously, in order to
+actually do the simplification, we did this:</p>
+<ol>
+<li>Asked <code>MarkerTree</code> to &quot;restrict&quot; any Python version expressions
+such that they were limited to the intersection of what was in the
+marker and whas was provided by <code>requires-python</code>. 2. When printing
+a <code>MarkerTree</code>, we specifically set the lower and upper bounds to
+negative and positive infinity, respectively.</li>
+</ol>
+<p>The end result is that we had a simplified marker, but it relied on a
+subtle trick during printing to work. This made it difficult to reason
+about markers since they might internally have finite lower/upper
+bounds, but when printed, they had non-finite lower/upper bounds.</p>
+<p>In order to access the simplified marker, #6268 would run the
+&quot;restrict&quot; operation, print the marker as a string and then parse it.
+This removed any &quot;hidden&quot; state and made the internal representation of
+the marker match its printed form.</p>
+<p>But this is bad juju to do, and having the hidden state when we don't
+need it any more makes things very difficult to reason about. So in
+this PR, we essentially port the old restrict+print approach to one
+routine, and then also add a dedicated routine to do the reverse
+operation as well (instead of relying on marker conjunction, as we did
+before).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-09-06 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-09-06 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ibraheemdev by @BurntSushi on 2024-09-06 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-09-07 01:00</div>
+            <div class="timeline-body"><p>This generally makes sense to me, though may want @ibraheemdev to look too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-07 17:45</div>
+            <div class="timeline-body"><p>I've been chatting loosely with @ibraheemdev about this, so I feel pretty good about this being a generally good approach. (Although I do think we discussed some alternative implementations of <code>complexify</code>.) In any case, I'd be happy to address any feedback in a follow-up PR!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-09-07 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-09-07 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-07 17:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:25 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add PyPI cache to test runs - astral-sh/uv #5726</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add PyPI cache to test runs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5726">#5726</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-08-02 13:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-02 13:34</div>
+            <div class="timeline-body"><p>Part of #5713</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @zanieb on 2024-08-02 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-02 13:44</div>
+            <div class="timeline-body"><p>Not hooked up yet, need to set the proxy variable.</p>
+<p>Running into SSL errors locally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-08-02 23:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>.github/workflows/ci.yml</code>:183 on 2024-08-02 23:27</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">          export UV_INDEX_URL=&quot;http://localhost/simple&quot;
+</code></pre>
+<p>Shouldn't be a need to specify the port in this case</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2024-08-06 21:17</div>
+            <div class="timeline-body"><p>Can I help here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-06 21:23</div>
+            <div class="timeline-body"><p>Feel free yeah. Though I'm not sure how we'll handle the test changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-06 21:23</div>
+            <div class="timeline-body"><p>I presume using <code>ALL_PROXY</code> instead of <code>UV_INDEX_URL</code> will help, but not sure how to make https behave.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2024-08-06 21:26</div>
+            <div class="timeline-body"><blockquote>
+<p>Though I'm not sure how we'll handle the test changes.</p>
+</blockquote>
+<p>I was thinking of just filtering pypi/localhost url to [PYPI_SERVER].</p>
+<blockquote>
+<p>Running into SSL errors locally.</p>
+</blockquote>
+<p>It works for me locally</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-06 21:28</div>
+            <div class="timeline-body"><p>I don't think that'll be sufficient, but it may be worth a try.</p>
+<p>I run into SSL errors when using <code>HTTPS_PROXY</code>, not when using the index URL.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-06 21:30</div>
+            <div class="timeline-body"><p>Before putting a lot of effort into snapshot correctness, you should probably see if this actually helps performance on the tests that <em>do</em> pass.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2024-08-06 21:56</div>
+            <div class="timeline-body"><pre><code>❯ hyperfine -r 3 'cargo test -p uv --test pip_compile' 'UV_INDEX_URL=http://localhost/simple cargo test -p uv --test pip_compile'
+Benchmark 1: cargo test -p uv --test pip_compile
+  Time (mean ± σ):     29.200 s ±  1.987 s    [User: 76.855 s, System: 25.140 s]
+  Range (min … max):   27.788 s … 31.472 s    3 runs
+
+Benchmark 2: UV_INDEX_URL=http://localhost/simple cargo test -p uv --test pip_compile
+  Time (mean ± σ):     23.838 s ±  0.740 s    [User: 77.656 s, System: 27.261 s]
+  Range (min … max):   23.085 s … 24.566 s    3 runs
+
+Summary
+  UV_INDEX_URL=http://localhost/simple cargo test -p uv --test pip_compile ran
+    1.22 ± 0.09 times faster than cargo test -p uv --test pip_compile
+</code></pre>
+<p>What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-06 22:01</div>
+            <div class="timeline-body"><p>I was hoping for much more than that, though it's still nice. I wonder where we're spending all of our time in that case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2024-08-06 22:19</div>
+            <div class="timeline-body"><p>The git dependencies seem to be the slowest to me, which could be cached too but that'd require some changes in the nginx server.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-08-06 22:47</div>
+            <div class="timeline-body"><blockquote>
+<pre><code>❯ hyperfine -r 3 'cargo test -p uv --test pip_compile' 'UV_INDEX_URL=http://localhost/simple cargo test -p uv --test pip_compile'
+Benchmark 1: cargo test -p uv --test pip_compile
+  Time (mean ± σ):     29.200 s ±  1.987 s    [User: 76.855 s, System: 25.140 s]
+  Range (min … max):   27.788 s … 31.472 s    3 runs
+
+Benchmark 2: UV_INDEX_URL=http://localhost/simple cargo test -p uv --test pip_compile
+  Time (mean ± σ):     23.838 s ±  0.740 s    [User: 77.656 s, System: 27.261 s]
+  Range (min … max):   23.085 s … 24.566 s    3 runs
+
+Summary
+  UV_INDEX_URL=http://localhost/simple cargo test -p uv --test pip_compile ran
+    1.22 ± 0.09 times faster than cargo test -p uv --test pip_compile
+</code></pre>
+<p>What do you think?</p>
+</blockquote>
+<p>Curious, was this after the requests got cached in nginx? (all nginx hits)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-08-06 22:55</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think that'll be sufficient, but it may be worth a try.</p>
+<p>I run into SSL errors when using <code>HTTPS_PROXY</code>, not when using the index URL.</p>
+</blockquote>
+<p>Might be better to use an actual http proxy (e.g. squid) if we want to leverage <code>HTTPS_PROXY</code> / <code>HTTP_PROXY</code> env vars, although I haven't tried it. Will try to do some local tests sometime to see if it's any better than the nginx cache solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2024-08-07 10:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Curious, was this after the requests got cached in nginx? (all nginx hits)</p>
+</blockquote>
+<p>Yes tried it a few times.</p>
+<blockquote>
+<p>git dependencies seem to be the slowest to me</p>
+</blockquote>
+<p>Local caching didn't help too much here.</p>
+<pre><code> hyperfine 'uv pip install &quot;flask @ git+http://localhost:1234/github.com/pallets/flask.git@735a4701d6d5e848241e7d7535db898efb62d400&quot; --no-cache --reinstall' 'uv pip install &quot;flask @ git+https://github.com/pallets/flask.git@735a4701d6d5e848241e7d7535db898efb62d400&quot; --no-cache --reinstall'
+Benchmark 1: uv pip install &quot;flask @ git+http://localhost:1234/github.com/pallets/flask.git@735a4701d6d5e848241e7d7535db898efb62d400&quot; --no-cache --reinstall
+  Time (mean ± σ):      2.904 s ±  0.084 s    [User: 0.866 s, System: 0.411 s]
+  Range (min … max):    2.804 s …  3.034 s    10 runs
+
+Benchmark 2: uv pip install &quot;flask @ git+https://github.com/pallets/flask.git@735a4701d6d5e848241e7d7535db898efb62d400&quot; --no-cache --reinstall
+  Time (mean ± σ):      3.327 s ±  0.183 s    [User: 1.300 s, System: 0.581 s]
+  Range (min … max):    3.148 s …  3.647 s    10 runs
+
+Summary
+  uv pip install &quot;flask @ git+http://localhost:1234/github.com/pallets/flask.git@735a4701d6d5e848241e7d7535db898efb62d400&quot; --no-cache --reinstall ran
+    1.15 ± 0.07 times faster than uv pip install &quot;flask @ git+https://github.com/pallets/flask.git@735a4701d6d5e848241e7d7535db898efb62d400&quot; --no-cache --reinstall
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-07 20:58</div>
+            <div class="timeline-body"><p>FWIW I tried to setup squid today and it's non-trivial because you still need to have it support SSL, which requires a self-signed cert etc. Annoyingly the image at <code>ubuntu/squid</code> doesn't support SSL so you need a custom build.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-07 21:35</div>
+            <div class="timeline-body"><p>And for posterity, I tried using Caddy and Nginx but both are not really designed for caching a forward proxy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-08-08 02:07</div>
+            <div class="timeline-body"><p>Agreed, SSL support is still non-trivial in this situation for transparent proxy cases. We'd need an action that generates a set of certs for you and make them trusted in every job.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-08 02:21</div>
+            <div class="timeline-body"><p>I used this one-liner for a self-signed cert</p>
+<pre><code>openssl req -x509 -out localhost.crt -keyout localhost.key \
+  -newkey rsa:2048 -nodes -sha256 \
+  -subj '/CN=localhost' -extensions EXT -config &lt;( \
+   printf &quot;[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-08-08 02:41</div>
+            <div class="timeline-body"><blockquote>
+<p>I used this one-liner for a self-signed cert</p>
+<pre><code>openssl req -x509 -out localhost.crt -keyout localhost.key \
+  -newkey rsa:2048 -nodes -sha256 \
+  -subj '/CN=localhost' -extensions EXT -config &lt;( \
+   printf &quot;[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth&quot;)
+</code></pre>
+</blockquote>
+<p>Makes sense, I use <a href="https://github.com/FiloSottile/mkcert">mkcert</a> these days which makes a Root CA for you as well and helps make specific certs for specific hosts (including client certs). This then allows you do transparent proxying with SSL interception as needed. At least locally it's great, CI maybe not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-08-08 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/johnslavik">@johnslavik</a> on <code>.github/workflows/ci.yml</code>:183 on 2024-08-09 00:36</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">          export UV_INDEX_URL=&quot;http://127.0.0.1:80/simple&quot;
+</code></pre>
+<p>https://www.youtube.com/watch?v=98SYTvNw1kw</p>
+<p>and with @samypr100 suggestion</p>
+<pre><code class="language-suggestion">          export UV_INDEX_URL=&quot;http://127.0.0.1/simple&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/johnslavik">@johnslavik</a> requested changes on 2024-08-09 00:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/matthiask">@matthiask</a> reviewed on 2024-08-12 06:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/matthiask">@matthiask</a> on <code>.github/workflows/ci.yml</code>:148 on 2024-08-12 06:20</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">      pypi-cache:
+</code></pre>
+<p>Probably a typo?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-08-13 02:52</div>
+            <div class="timeline-body"><p>Is disabling ssl verification an option?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-13 03:41</div>
+            <div class="timeline-body"><p>Does that switch to using HTTP instead of HTTPS? I sort of don't think so, it just ignores bad certificates.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-08-13 04:03</div>
+            <div class="timeline-body"><blockquote>
+<p>Does that switch to using HTTP instead of HTTPS? I sort of don't think so, it just ignores bad certificates.</p>
+</blockquote>
+<p>I primarily focus on the git dependencies. Here are a couple of options I've been exploring lately:</p>
+<ol>
+<li>Prepare a local repository pool and fetch from <code>file://</code> (requires URL replacement in <code>uv-git</code>).<ul>
+<li>Since we use <code>git fetch</code> instead of <code>git clone</code>, we cannot leverage the <code>--reference-if-able</code> option.</li>
+</ul>
+</li>
+<li>Prepare a local repository pool, host it locally with a lb and <code>git-http-backend</code>, then configure git with something similar to this:</li>
+</ol>
+<pre><code>[url &quot;https://git.example.com/&quot;]
+insteadOf = https://github.com/
+sslVerify = false
+</code></pre>
+<p>This way, we don't need to make any further changes, and requests from <code>github.com</code> should be redirected to <code>git.example.com</code> transparently in the background. (You can even use url &quot;file:///path-to-pool&quot; if that's acceptable.)</p>
+<ol start="3">
+<li>Similar to option 2, but configure with <code>sslCAInfo = cert file</code> instead of <code>sslVerify = false</code>.</li>
+</ol>
+<p>Note: I haven't yet tested options 2 and 3 with authentication-related scenarios. More research is needed.
+Additional note: The <code>git clone</code> command doesn't respect url rewrite rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-01 22:44</div>
+            <div class="timeline-body"><p>This continues to look quite challenging, though I think it would be very valuable I don't think there's a clear path forward for this pull request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-01 22:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:00:53 UTC
+    </footer>
+</body>
+</html>

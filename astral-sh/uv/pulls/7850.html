@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display the target virtual environment path if non-default - astral-sh/uv #7850</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Display the target virtual environment path if non-default</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7850">#7850</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-10-01 16:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-01 16:47</div>
+            <div class="timeline-body"><p>Supersedes https://github.com/astral-sh/uv/pull/4835</p>
+<p>Closes https://github.com/astral-sh/uv/issues/2155</p>
+<p>e.g.</p>
+<pre><code>❯ cargo run -q -- pip install --python ../../example httpx
+Using Python 3.12.1 environment at /Users/zb/example
+Resolved 7 packages in 561ms
+Prepared 4 packages in 62ms
+Installed 4 packages in 13ms
+ + certifi==2024.8.30
+ + h11==0.14.0
+ + httpcore==1.0.5
+ + httpx==0.27.2
+
+❯ cargo run -q -- pip install httpx
+Resolved 7 packages in 17ms
+Installed 4 packages in 10ms
+ + certifi==2024.8.30
+ + h11==0.14.0
+ + httpcore==1.0.5
+ + httpx==0.27.2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2024-10-01 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-01 16:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_install.rs</code>:1154 on 2024-10-01 16:48</div>
+            <div class="timeline-body"><p>We see this in some tests because they change the working directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-01 16:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:571 on 2024-10-01 16:56</div>
+            <div class="timeline-body"><p>These guard against cases seen in #4835 but that implementation was in <code>operations::install</code> which is used far more broadly. In contrast, here we target the <code>uv pip</code> interface only and display a message way earlier, not during install. I think it's important to display the message earlier, as it's relevant for the resolution and audit. I think these guards are okay to retain here, though they're not used now. Willing to remove them if someone feels strongly though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-10-01 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-01 21:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/pip/check.rs</code>:15 on 2024-10-01 21:26</div>
+            <div class="timeline-body"><p>Can we avoid <code>super</code>? We tend not to use that elsewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:573 on 2024-10-01 21:27</div>
+            <div class="timeline-body"><p>Missing a word here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-01 21:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-01 21:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:554 on 2024-10-01 21:27</div>
+            <div class="timeline-body"><p>We should really avoid using canonicalize IMO. I've tried to remove as many of these calls as I can.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-01 21:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:554 on 2024-10-01 21:28</div>
+            <div class="timeline-body"><p>What is this case? The env doesn't exist?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-01 21:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/pip/check.rs</code>:15 on 2024-10-01 21:37</div>
+            <div class="timeline-body"><p>Yeah sorry that's the auto-import by rust-analyzer</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-01 21:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:554 on 2024-10-01 21:41</div>
+            <div class="timeline-body"><p>We're canonicalizing for comparison, which I think is the correct way to compare paths? We don't display the canonicalized path and we don't fail if it fails. Why should we not here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:554 on 2024-10-01 21:42</div>
+            <div class="timeline-body"><p>We're preparing for this comparison</p>
+<pre><code class="language-rust">    // Do not report a default environment path
+    if let Ok(default) = PathBuf::from(&quot;.venv&quot;).canonicalize() {
+        if target == default {
+           ...
+</code></pre>
+<p>as well as the other <code>starts_with</code> comparisons, I guess.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-01 21:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-02 00:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:554 on 2024-10-02 00:21</div>
+            <div class="timeline-body"><p>Does it do the right thing on Windows? For example, if this gets resolved to a <code>?\\</code> path, does <code>target.starts_with(cache.root())</code> return true if <code>cache.root()</code> is not a <code>?\\</code> path?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-02 00:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:554 on 2024-10-02 00:23</div>
+            <div class="timeline-body"><p>(Asking genuinely, I don't know how that behaves.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-02 02:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:554 on 2024-10-02 02:54</div>
+            <div class="timeline-body"><p>I'm not sure, I'd need to try it. Basically, I think for this sort of comparison to be &quot;generally robust&quot; we need to be sure we're comparing paths that have been normalized the same way, ideally canonicalized but we need to fall back to absolutized paths when the path does not exist. Maybe I should just write a utility for it? I could try not canonicalizing here and see what happens, but it feels likely to be wrong? If we're avoiding storing canonicalized paths anywhere I guess it has a decent chance of being right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-02 03:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:554 on 2024-10-02 03:08</div>
+            <div class="timeline-body"><p>We'll see what CI says https://github.com/astral-sh/uv/pull/7850/commits/ec07503c667f69f873ff2904d7c8aa9176c65e5d</p>
+<p>I think since this is just a log we can easily iterate if this is wrong in practice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-10-02 09:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-02 09:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:554 on 2024-10-02 09:22</div>
+            <div class="timeline-body"><p>Ok understood. I'm only pushing on it because every time I use canonicalize, I end up having to fix a bug later on!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-10-02 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-02 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-02 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2024-10-16 17:12</div>
+            <div class="timeline-body"><p>Can this be disabled with a flag? In my case it creates a ton of noise.</p>
+<p>When I use my wrapper to, for example, list installed versions of the 64 Python apps I have installed, I get 64 extra lines of this.</p>
+<p><img src="https://github.com/user-attachments/assets/dd2d6983-a86f-4053-9d04-65321ebb9249" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-16 17:16</div>
+            <div class="timeline-body"><p>@AndydeCleyre there's a <code>-q</code> flag, does that work for you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2024-10-16 17:28</div>
+            <div class="timeline-body"><p>Thanks for the quick response.</p>
+<p>No for two reasons:</p>
+<ul>
+<li>pip list is just one of the bulk operations I do, and for others I want to see some output (which packages are upgraded, for example).</li>
+<li>it completely hides the info I need:</li>
+</ul>
+<pre><code class="language-console">$ uv pip list --format json
+Using Python 3.12.2 environment at /home/andy/.local/share/venvs/d9521a6e560469d0860c4ddb9c9baaa9/venv
+[{&quot;name&quot;:&quot;brotli&quot;,&quot;version&quot;:&quot;1.1.0&quot;},{&quot;name&quot;:&quot;certifi&quot;,&quot;version&quot;:&quot;2024.8.30&quot;},{&quot;name&quot;:&quot;charset-normalizer&quot;,&quot;version&quot;:&quot;3.3.2&quot;},{&quot;name&quot;:&quot;idna&quot;,&quot;version&quot;:&quot;3.10&quot;},{&quot;name&quot;:&quot;mutagen&quot;,&quot;version&quot;:&quot;1.47.0&quot;},{&quot;name&quot;:&quot;pycryptodomex&quot;,&quot;version&quot;:&quot;3.21.0&quot;},{&quot;name&quot;:&quot;requests&quot;,&quot;version&quot;:&quot;2.32.3&quot;},{&quot;name&quot;:&quot;urllib3&quot;,&quot;version&quot;:&quot;2.2.3&quot;},{&quot;name&quot;:&quot;websockets&quot;,&quot;version&quot;:&quot;13.1&quot;},{&quot;name&quot;:&quot;yt-dlp&quot;,&quot;version&quot;:&quot;2024.9.27&quot;}]
+
+$ uv -q pip list --format json  # (no output here)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 17:31</div>
+            <div class="timeline-body"><p>I think it's a bug if <code>-q</code> is silencing the <code>pip list</code> output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 17:31</div>
+            <div class="timeline-body"><p>But if you're wrapping uv I feel like you almost certainly do want <code>-q</code>? Who knows what we'll print in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2024-10-16 17:32</div>
+            <div class="timeline-body"><blockquote>
+<p>Who knows what we'll print in the future.</p>
+</blockquote>
+<p>Even for the json-formatted output of <code>uv pip list</code>? I thought it was meant to match the json-formatted output of regular <code>pip list</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 17:35</div>
+            <div class="timeline-body"><p>Ah no, that should definitely follow an API contract! I'm more referring to the kind of output we'd suppress with <code>-q</code>, which wouldn't be covered by any API contract (it's just peripheral logging).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 18:16</div>
+            <div class="timeline-body"><p>(Like, anything that's machine readable should still be shown under <code>-q</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2024-10-18 15:12</div>
+            <div class="timeline-body"><p>FWIW I found I can solve my issue by directing stderr to /dev/null. 👍🏼</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:49 UTC
+    </footer>
+</body>
+</html>

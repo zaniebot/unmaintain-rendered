@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow local date for inline exclude newer - astral-sh/uv #6562</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow local date for inline exclude newer</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6562">#6562</a>
+        opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a>
+        on 2024-08-23 23:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-08-23 23:36</div>
+            <div class="timeline-body"><p>Resolves #6555</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-08-23 23:40</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-23 23:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/exclude_newer.rs</code>:70 on 2024-08-23 23:41</div>
+            <div class="timeline-body"><p>cc @BurntSushi I remember some recent discussion about local dates?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @zanieb on 2024-08-23 23:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2024-08-23 23:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-08-23 23:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-27 02:00</div>
+            <div class="timeline-body"><p>@hauntsaninja on further thought, isn't it <em>wrong</em> to allow a local date for <code>exclude-newer</code> in files that are intended to be version controlled and distributed? It seems like a bit of a correctness problem to have the script resolve to different dependencies depending on who is running it. It might make sense to require people to use a proper timestamp here that will be correct regardless of the execution timezone.</p>
+<p>I think this notably differs from <code>UV_EXCLUDE_NEWER</code> which is configured on a single machine and not easily distributed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-08-27 04:32</div>
+            <div class="timeline-body"><p>It's a fair concern! The use case I'm thinking of is &quot;I wrote a script a few years ago and I want it to mostly run the same, maximising convenience / bang for buck&quot;. My guess is this use case will be much more common than inter-timezone distribution. We could also resolve different dependencies for different people depending on arch or python version as well, it's why I phrased this as &quot;improving&quot; reproducibility.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-27 11:13</div>
+            <div class="timeline-body"><p>I feel like if we want to maximize convenience we should allow emitting an exclude newer pin (in UTC) via a command or, even better, we should be able to write a lock to scripts. Hm.</p>
+<p>If you're willing to separate the change from the docs, we can merge the docs right away. I think we'll wait for @BurntSushi to be back from vacation to make a decision on the local dates.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @zanieb on 2024-08-29 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-08-29 16:26</div>
+            <div class="timeline-body"><p>I think this is making the <code>serde::Deserialize</code> trait implementation on <code>ExcludeNewer</code> consistent with its <code>FromStr</code> trait implementation.</p>
+<p>I am still pretty iffy on supporting local dates here though. When I added support for it to <code>ExcludeNewer</code>, I was thinking about its use on the command line or in user-specific configuration files. But this seems to be expanding its scope to a point where I think it actually becomes problematic. If, for example, <code>exclude-newer = &quot;2023-10-16&quot;</code> is put into a script and then shared with someone else, that date may be interpreted as an entirely different instant than is intended. It might be better to just keep it restricted to RFC 3339 timestamps. Although, the difference in the <code>Deserialize</code> and <code>FromStr</code> trait implementation seems like a footgun.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-08-29 16:32</div>
+            <div class="timeline-body"><p>For completeness, one alternative here is to parse an RFC 9557 timestamp (an extension to RFC 3339). So you could write something like <code>2024-08-28[America/New_York]</code>. That would let you write something &quot;local&quot; that would still (almost certainly) translate to the same instant on anyone else's machine. But it's a bit of a heavier tool to leverage and technically relies on a time zone database and so on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-08-29 16:34</div>
+            <div class="timeline-body"><p>Related: https://github.com/astral-sh/uv/issues/6820</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-08-29 20:12</div>
+            <div class="timeline-body"><p>Actually one possibly silly thought, should we make the short form just be a UTC timestamp? In the short form I think it's arguably already a little unclear what the boundary semantics are (e.g. <code>--exclude-newer 2024-08-28</code> does kind of read like <code>2024-08-28T23:59:59</code> to me).</p>
+<p>This is also nice if you have a cloud machine on UTC time and you want to reproduce a command using the short form on your local machine. It's technically a breaking change, but it seems maybe saner, and I have a hard time thinking about the user profile who would be broken by it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-08-29 20:12</div>
+            <div class="timeline-body"><p>Anyway, sounds like I should split the PRs regardless: https://github.com/astral-sh/uv/pull/6831 for docs!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add docs for inline exclude newer, allow local date" to "Allow local date for inline exclude newer" by @hauntsaninja on 2024-08-29 21:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-08-29 23:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Actually one possibly silly thought, should we make the short form just be a UTC timestamp?</p>
+</blockquote>
+<p>This is what it was originally, but I changed it. It's generally bad juju to just assume UTC for an unadorned date. I think we either don't support an unadorned date or we assume it's in the user's local time zone. But in this case, &quot;user's local time zone&quot; creates a configuration that isn't self-contained.</p>
+<p>In terms of the time for a date without a time, it's common practice to interpret it as the first instant on that date (which, interestingly, <a href="https://docs.rs/jiff/latest/jiff/struct.Zoned.html#method.start_of_day">may not be midnight</a>).</p>
+<p>It's probably best to just required an RFC 3339 timestamp here. <code>2024-08-28</code> verus <code>2024-08-28T00:00:00Z</code> isn't too onerous for persistent configuration I think. On the CLI, it's nice to support <code>2024-08-28</code> since it's easier to type, and in that context, it's perhaps more justifiable to assume the user's system time zone (and which can even be overridden by setting the <code>TZ</code> environment variable).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @hauntsaninja on 2024-08-30 03:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-30 03:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-08-30 03:16</div>
+            <div class="timeline-body"><p>Sounds good!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:06 UTC
+    </footer>
+</body>
+</html>

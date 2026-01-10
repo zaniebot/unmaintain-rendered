@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drop Python version range enforcement from `PythonVersion::from_str` - astral-sh/uv #7264</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Drop Python version range enforcement from <code>PythonVersion::from_str</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7264">#7264</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-09-10 17:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-10 17:42</div>
+            <div class="timeline-body"><p>This caused some problems earlier, as it prevented us from <em>listing</em> Python versions &lt;3.7 which seems weird (see https://github.com/astral-sh/uv/pull/7131#issuecomment-2334929000)</p>
+<p>I'm worried that without this the changes to installation key parsing in https://github.com/astral-sh/uv/pull/7263 would otherwise be too restrictive.</p>
+<p>I think if we want to enforce these ranges, we should do so separately from the parse step.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-10 18:02</div>
+            <div class="timeline-body"><p>@konstin looking to add this validation somewhere but not sure where it belongs</p>
+<p>It looks like this error variant is never used?</p>
+<p>https://github.com/astral-sh/uv/blob/4f2349119cf341eedf738d06a50ed136a5f207db/crates/uv-python/src/interpreter.rs#L560-L561</p>
+<p>We probably need to check this during version requests too?</p>
+<p>For future reference, explicit validation looks like this</p>
+<pre><code class="language-diff">diff --git a/crates/uv-python/src/python_version.rs b/crates/uv-python/src/python_version.rs
+index 6c4a99487..db83bb4ac 100644
+--- a/crates/uv-python/src/python_version.rs
++++ b/crates/uv-python/src/python_version.rs
+@@ -165,6 +165,18 @@ impl PythonVersion {
+         Self::from_str(format!(&quot;{}.{}&quot;, self.major(), self.minor()).as_str())
+             .expect(&quot;dropping a patch should always be valid&quot;)
+     }
++
++    /// Returns an error if the Python version is not supported.
++    pub fn check_supported(&amp;self) -&gt; Result&lt;(), String&gt; {
++        if version.version &lt; Version::new([3, 7]) {
++            return Err(format!(&quot;Python version `{s}` must be &gt;= 3.7&quot;));
++        }
++        if version.version &gt;= Version::new([4, 0]) {
++            return Err(format!(&quot;Python version `{s}` must be &lt; 4.0&quot;));
++        }
++
++        Ok(())
++    }
+ }
+ 
+ #[cfg(test)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-09-10 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-09-10 18:22</div>
+            <div class="timeline-body"><p>We should be filtering out too old interpreters at https://github.com/astral-sh/uv/blob/c9774e9c435b49e19cba54c6bdeb458849a7f5cd/crates/uv-python/python/get_interpreter_info.py#L446</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-09-10 18:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-10 18:34</div>
+            <div class="timeline-body"><p>Ah okay so it's constructed by the deserializer. Lgtm then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-09-10 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-09-10 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-10 18:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:29 UTC
+    </footer>
+</body>
+</html>

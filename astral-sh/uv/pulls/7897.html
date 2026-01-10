@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix handling of != intersections in `requires-python` - astral-sh/uv #7897</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix handling of != intersections in <code>requires-python</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7897">#7897</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-10-03 14:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-03 14:01</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The issue here is that, if you user has a <code>requires-python</code> like <code>&gt;= 3.7, != 3.8.5</code>, this gets expanded to the following bounds:</p>
+<ul>
+<li><code>[3.7, 3.8.5)</code></li>
+<li><code>(3.8.5, ...</code></li>
+</ul>
+<p>We then convert this to the specific <code>&gt;= 3.7, &lt; 3.8.5, &gt; 3.8.5</code>. But the commas in that expression are conjunctions... So it's impossible to satisfy? No version is both <code>&lt; 3.8.5</code> and <code>&gt; 3.8.5</code>.</p>
+<p>Instead, we now preserve the input <code>requires-python</code> and just concatenate the terms, only using PubGrub to compute the <em>bounds</em>.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/7862.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-10-03 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2024-10-03 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-03 14:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/lock.rs</code>:3939 on 2024-10-03 14:24</div>
+            <div class="timeline-body"><p>We now retain this more-or-less verbatim. I think this is ok since we'll ignore these anywhere that it matters when we actually <em>use</em> it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-10-03 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-10-03 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/requires_python.rs</code>:99 on 2024-10-03 14:24</div>
+            <div class="timeline-body"><p>This isn't quite correct -- we can't just AND these, since a <code>!=</code> specifier gets converted to <code>&lt;</code> and <code>&gt;</code> the value. So instead we retain the actual specifiers now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-03 14:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @zanieb on 2024-10-03 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-03 17:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/sync.rs</code>:381 on 2024-10-03 17:59</div>
+            <div class="timeline-body"><p>This is a pain. Maybe we do want to apply <em>some</em> simplifications here...? Like ignoring redundant clauses?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-03 18:00</div>
+            <div class="timeline-body"><p>@ibraheemdev -- You may be interested in this too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-03 18:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/sync.rs</code>:381 on 2024-10-03 18:03</div>
+            <div class="timeline-body"><p>I guess we could do something like: only add the specifier if it changes the computed bounds? That could work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/sync.rs</code>:381 on 2024-10-03 18:45</div>
+            <div class="timeline-body"><p>Can you use <code>Range::subset_of</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-03 18:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-08 22:09</div>
+            <div class="timeline-body"><p>Can I get review on this one?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-08 22:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/requires_python.rs</code>:103 on 2024-10-08 22:38</div>
+            <div class="timeline-body"><p>Does the doc comment for this function (<code>intersection</code>) need to be updated?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-10-08 23:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-08 23:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/sync.rs</code>:381 on 2024-10-08 23:16</div>
+            <div class="timeline-body"><p>Here's a POC of using <code>subset_of</code>. I'm guessing this can be done in a simpler way?</p>
+<p>https://github.com/astral-sh/uv/pull/8026</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/sync.rs</code>:381 on 2024-10-09 12:39</div>
+            <div class="timeline-body"><p>Good idea. I will do something like that to at least avoid these common cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-09 12:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-10-09 12:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/sync.rs</code>:381 on 2024-10-09 12:51</div>
+            <div class="timeline-body"><p>My expectation is that we should be able to represent <code>RequiresPython</code> as a single pubgrub range, extracting the range's lower or upper bound as needed; My quick attempt at that failed though because there seem other constraints too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-10-09 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-09 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-09 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-09 22:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/sync.rs</code>:381 on 2024-10-09 22:27</div>
+            <div class="timeline-body"><p>I ended up writing a routine to convert to an &quot;optimal&quot; PEP 440 specifier using similar logic to the existing method, but for multiple bounds. It's kind of tedious but does work as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-09 22:42</div>
+            <div class="timeline-body"><p>I didn't mean to merge this as-is; I thought I had pushed https://github.com/astral-sh/uv/pull/8060 but apparently I'm tired.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:51 UTC
+    </footer>
+</body>
+</html>

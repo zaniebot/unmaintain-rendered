@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warn when patch version in `requires-python` is implicitly `0` - astral-sh/uv #7959</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Warn when patch version in <code>requires-python</code> is implicitly <code>0</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7959">#7959</a>
+        opened by <a href="https://github.com/ianpaul10">@ianpaul10</a>
+        on 2024-10-07 06:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ianpaul10">@ianpaul10</a> on 2024-10-07 06:35</div>
+            <div class="timeline-body"><p>When patch version isn't specified and a matching version is referenced, it will default patch to 0 which could be unclear/confusing. This PR warns the user of that default.</p>
+<!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>The first part of this issue https://github.com/astral-sh/uv/issues/7426. Will tackle the second part mentioned (<code>~=</code>) in a separate PR once I know this is the correct way to warn users.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>Unit tests were added</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-10-08 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-08 19:00</div>
+            <div class="timeline-body"><p>I'll need to take a closer look, but I was originally thinking we'd only do this for <code>requires-python</code> and that we'd enforce it when we read that value. It'd be nice to add it for other requirements too, but I think we could add those incrementally. If you implement the warning here, there's no way to describe the associated package / field we've read the version from which seems important for having a good message.</p>
+<p>You'll also want to use <code>warn_user_once!</code>.</p>
+<p>Does that make sense?</p>
+<p>cc @BurntSushi would you be interested in being a primary reviewer for this one?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ianpaul10">@ianpaul10</a> on 2024-10-09 09:22</div>
+            <div class="timeline-body"><p>Ah yes that makes sense, my mistake. So by &quot;enforce it when we read that value&quot;, do you mean check it somewhere in <a href="https://github.com/ianpaul10/uv/blob/feat/warn-on-pin-py-ver/crates/uv-resolver/src/requires_python.rs">requires_python.rs</a>? I couldn't see exactly where it's being read for a given project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @BurntSushi on 2024-10-09 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2024-10-09 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @zanieb by @BurntSushi on 2024-10-09 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-10-10 16:44</div>
+            <div class="timeline-body"><p>@ianpaul10 I don't think we want to do it at a super low level like on <code>RequiresPython</code> itself. It's hard to say exactly when that will get used and whether a warning in all such cases would be appropriate. It's probably better to go higher level. I can see two different spots for this. One is every time we load a pyproject.toml:</p>
+<p>https://github.com/astral-sh/uv/blob/7b80b1816693f7d30b0614206ac9447fafbbea35/crates/uv-workspace/src/pyproject.rs#L56-L70</p>
+<p>Another spot is only when the user runs <code>uv lock</code>, which is also where we have some other warnings related to <code>requires-python</code>:</p>
+<p>https://github.com/astral-sh/uv/blob/7b80b1816693f7d30b0614206ac9447fafbbea35/crates/uv/src/commands/project/lock.rs#L332-L346</p>
+<p>I think I would go the latter option. And if you add the warning there, it should show up when running <code>uv sync</code> as well, automatically (among any other commands that try and do a lock). Otherwise, we'd be issuing this warning for almost all <code>uv</code> commands, and I'm not sure we want to go that route.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ianpaul10">@ianpaul10</a> on 2024-10-11 08:40</div>
+            <div class="timeline-body"><p>Thanks a ton for the in-depth comment. That all makes sense, I didn't really know the best place to put it so that colour is helpful. I took your advice and added it into the lock.rs file.</p>
+<p>Let me know if that's different than what you had in mind, and if the tests I included are appropriate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/requires_python.rs</code>:804 on 2024-10-11 12:16</div>
+            <div class="timeline-body"><p>Can you move this to the group of non-std crate-external imports below? With <code>uv_pep440</code> and <code>uv_distribution_filename</code>.</p>
+<p>The general pattern in the ecosystem is to put imports in three groups, in this order: std imports, non-<code>crate</code> imports, <code>crate</code> imports. (I also usually separate <code>core</code> and <code>alloc</code> imports too, but that's only for <code>no_std</code> libraries.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/requires_python.rs</code>:924 on 2024-10-11 12:20</div>
+            <div class="timeline-body"><p>I know we're using this macro in at least one other place too, but I'd skip on this and just write out the code instead.</p>
+<pre><code class="language-rust">#[test]
+fn is_matching_without_patch() {
+    let test_cases = [
+        (&quot;==3.12&quot;, true),
+        (&quot;==2.7&quot;, true),
+        (&quot;3.12.1&quot;, false),
+        // ...
+    ];
+    for (version, expected) in test_cases {
+        let version_specifiers = VersionSpecifiers::from_str(version).unwrap();
+        let requires_python = RequiresPython::from_specifiers(&amp;version_specifiers).unwrap();
+        assert_eq!(requires_python.is_matching_without_patch(), expected, &quot;version: {version}&quot;);
+    }
+}
+</code></pre>
+<p>The main reason for this is that it would be great to reduce our dependence on proc macros in service of helping compile times.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/commands/project/lock.rs</code>:340 on 2024-10-11 12:23</div>
+            <div class="timeline-body"><p>The phrasing seems a touch off here. Maybe this instead? Not totally sure.</p>
+<pre><code class="language-suggestion">            warn_user_once!(&quot;The workspace `requires-python` value does not have a patch version: `{requires_python}`. It will be interpreted as `{requires_python}.0`. Did you mean `{requires_python}.*`?&quot;);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/requires_python.rs</code>:923 on 2024-10-11 12:26</div>
+            <div class="timeline-body"><p>Perhaps an odd case, but this makes me think of something like, <code>==3.10, &lt;3.11</code>. I think that should return <code>true</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> had review dismissed on 2024-10-11 12:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ianpaul10">@ianpaul10</a> on 2024-10-14 12:47</div>
+            <div class="timeline-body"><p>Ok thanks for all the comments, I believe I addressed them all, let me know if there's anything I missed.</p>
+<p>Also, I'm not sure what's happening with the windows tests and mkdocs, but it appears to be happening on other PRs 🤔 Are they normally flaky or should I investigate further?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-14 13:21</div>
+            <div class="timeline-body"><p>I'll look into that, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @ianpaul10 on 2024-10-16 02:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-10-16 04:07</div>
+            <div class="timeline-body"><p>Thank you and nice work!</p>
+<p>I made some minor tweaks, let me know if you have any questions or concerns.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Warn when patch isn't specified" to "Warn when patch version in `requires-python` is implicitly `0`" by @zanieb on 2024-10-16 04:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ianpaul10">@ianpaul10</a> on 2024-10-16 04:13</div>
+            <div class="timeline-body"><p>Thanks for reviewing and improving the language! Those all make sense to me 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-10-16 04:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-16 04:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:53 UTC
+    </footer>
+</body>
+</html>

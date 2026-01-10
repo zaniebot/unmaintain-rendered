@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve Python executable name discovery when using alternative implementations - astral-sh/uv #7649</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve Python executable name discovery when using alternative implementations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7649">#7649</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-09-23 20:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-23 20:17</div>
+            <div class="timeline-body"><p>There are two parts to this.</p>
+<p>The first is a restructuring and refactoring. We had some debt around expected executable name generation, which we address here by consolidating into a single function that generates a combination of names. This includes a bit of extra code around free-threaded variants because this was written on top of #7431 — I'll rebase that on top of this.</p>
+<p>The second addresses some bugs around alternative implementations. Notably, <code>uv python list</code> does not discovery executables with alternative implementation names. Now, we properly generate all of the executable names for <code>VersionRequest::Any</code> (originally implemented in https://github.com/astral-sh/uv/pull/7508) to properly show all the implementations we can find:</p>
+<pre><code>❯ cargo run -q -- python list --no-python-downloads
+cpython-3.12.6-macos-aarch64-none     /opt/homebrew/opt/python@3.12/bin/python3.12 -&gt; ../Frameworks/Python.framework/Versions/3.12/bin/python3.12
+cpython-3.11.10-macos-aarch64-none    /opt/homebrew/opt/python@3.11/bin/python3.11 -&gt; ../Frameworks/Python.framework/Versions/3.11/bin/python3.11
+cpython-3.9.6-macos-aarch64-none      /Library/Developer/CommandLineTools/usr/bin/python3 -&gt; ../../Library/Frameworks/Python3.framework/Versions/3.9/bin/python3
+pypy-3.10.14-macos-aarch64-none       /opt/homebrew/bin/pypy3 -&gt; ../Cellar/pypy3.10/7.3.17/bin/pypy3
+</code></pre>
+<p>While doing both of these changes, I ended up changing the priority of interpreter discovery slightly. For example, given that the executables are in the same directory, do we query <code>python</code> or <code>python3.10</code> first when you request <code>--python 3.10</code>? Previously, we'd check <code>python3.10</code> but I think that was an incorrect optimization. I think we should always prefer the bare name (i.e. <code>python</code>) first. Similarly, this applies to <code>python</code> and an executable for an alternative implementation like <code>pypy</code>. If it's not compatible with the request, we'll skip it anyway. We might have to query more interpreters with this approach but it seems rare.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/7286 superseding https://github.com/astral-sh/uv/pull/7508</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2024-09-23 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Refactore `VersionRequest::executable_names`" to "Refactor `VersionRequest::executable_names`" by @zanieb on 2024-09-23 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-09-23 20:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 20:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-python/src/discovery.rs</code>:2541 on 2024-09-23 20:26</div>
+            <div class="timeline-body"><p>Are these intentionally repeated?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-23 20:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/discovery.rs</code>:2541 on 2024-09-23 20:26</div>
+            <div class="timeline-body"><p>No that's one of the cases I need to fix quick</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 20:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-python/src/discovery.rs</code>:1609 on 2024-09-23 20:26</div>
+            <div class="timeline-body"><p>Confirming my understanding: given the logic right above this, does that mean <code>--python 3.12a0</code> will major <code>3.12.1</code> (stable), as an example?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-09-23 20:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-23 20:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/discovery.rs</code>:1609 on 2024-09-23 20:34</div>
+            <div class="timeline-body"><p>Sorry I don't follow, I think there's something missing from your comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Refactor `VersionRequest::executable_names`" to "Improve Python executable name discovery when using alternative implementations" by @zanieb on 2024-09-23 20:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> removed by @zanieb on 2024-09-23 20:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-09-23 20:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2024-09-23 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 21:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-python/src/discovery.rs</code>:1609 on 2024-09-23 21:13</div>
+            <div class="timeline-body"><p>Will <code>--python 3.12a0</code> match a Python interpreter with version <code>3.12.0</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-23 21:15</div>
+            <div class="timeline-body"><p>So if the user runs <code>--python 3.10</code>, we query <code>python</code> for its metadata, and if it's a different version, we continue checking the next interpreter, etc.? I assume this was already true, and this PR just inverts the order such that <code>python</code> is first, per the summary. What's the motivation for that, though? When would it be incorrect?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 21:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-python/src/discovery.rs</code>:1618 on 2024-09-23 21:17</div>
+            <div class="timeline-body"><p>I don't know if the borrow checker will let you, but if so, it might be a bit easier to write this with an iterator (like <code>names.extend(...)</code>) so that it's guaranteed that it doesn't loop infinitely (despite modifying <code>names</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 21:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-python/src/implementation.rs</code>:33 on 2024-09-23 21:18</div>
+            <div class="timeline-body"><p>What's the motivation for splitting these up? (Is it functional?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 21:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-python/src/implementation.rs</code>:33 on 2024-09-23 21:19</div>
+            <div class="timeline-body"><p>Oh I see, you use <code>long_names</code> elsewhere (per PR summary, to find <code>pypy</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 21:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-python/src/discovery.rs</code>:1634 on 2024-09-23 21:20</div>
+            <div class="timeline-body"><p>So this adds... <code>pypy</code>, <code>pypy3</code>, etc.?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-23 21:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/discovery.rs</code>:1609 on 2024-09-23 21:30</div>
+            <div class="timeline-body"><p>There should be no changes to interpreter match checks here, just the executable names we consider when querying. So yeah <code>--python 3.12a0</code> will result in us querying a Python executable with the name <code>python3.12</code> and <code>python3.12.0</code> etc. but I don't think we will use it if its version isn't actually <code>3.12.0a0</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-23 21:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/implementation.rs</code>:33 on 2024-09-23 21:31</div>
+            <div class="timeline-body"><p>Yeah, e.g., we don't want to look for interpreters with executables named <code>cp</code> but <code>cp</code> is a valid request name when parsing so I had to separate them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/discovery.rs</code>:1634 on 2024-09-23 21:32</div>
+            <div class="timeline-body"><p>Yep! For each implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-23 21:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-23 21:38</div>
+            <div class="timeline-body"><blockquote>
+<p>So if the user runs --python 3.10, we query python for its metadata, and if it's a different version, we continue checking the next interpreter, etc.? I assume this was already true, and this PR just inverts the order such that python is first, per the summary. What's the motivation for that, though? When would it be incorrect?</p>
+</blockquote>
+<p>Yes, this was already true. The things that's changing here is the order of interpreters queried within a single directory. The motivation is consistency and simplicity. It's more complicated to explain and to implement if we want to change the ordering depending on the request given, especially as we add more variants of requests. Here, the ordering is consistent across all requests, we just include more names depending on the request. The motivation for having the original ordering was that it could be more performant to check <code>python3.10</code> before <code>python</code> if Python 3.10 was requested.</p>
+<p>As an elucidating case, if you have <code>python</code> which is Python 3.10.1 and <code>python3.10</code> which is Python 3.10.2 and ran <code>python</code> in your shell you'd get 3.10.1. Generally the feedback we've gotten is that we should do our best to prioritize matching the experience of running <code>python</code> from the shell so I think it's more &quot;correct&quot; to use check <code>python</code> first but it's pretty ambiguous what the proper resolution order is there so I want to do what's simplest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-23 21:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/discovery.rs</code>:1618 on 2024-09-23 21:41</div>
+            <div class="timeline-body"><p>I think I could rewrite some of these as iterators, but I fought with the borrow checker a lot in here and I'd prefer to keep it simple. <code>for i in 0..names.len()</code> seems guaranteed to never loop infinitely since the range is evaluated at the start.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-23 22:17</div>
+            <div class="timeline-body"><p>I'm going to merge because it's blocking some other work, but if you have any concerns following this I'm happy to talk through them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-09-23 22:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-09-23 22:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-23 22:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:41 UTC
+    </footer>
+</body>
+</html>

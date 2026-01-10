@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitLab Integration documentation - astral-sh/uv #6857</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>GitLab Integration documentation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6857">#6857</a>
+        opened by <a href="https://github.com/jvacek">@jvacek</a>
+        on 2024-08-30 09:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jvacek">@jvacek</a> on 2024-08-30 09:53</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Documentation for GitLab integration, reliant on the new tags introduced in https://github.com/astral-sh/uv/pull/6053</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2024-08-30 12:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-08-30 12:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-30 12:18</div>
+            <div class="timeline-body"><p>Thanks! I'll be on vacation until Tuesday but will review this then. Exciting to see it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @jvacek on 2024-09-04 11:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jvacek">@jvacek</a> on 2024-09-04 11:56</div>
+            <div class="timeline-body"><p>Compared to the GitHub guide, I've removed stuff that I believe is irrelevant to a GitLab deployment. Features like Matrices are well documented in GitLab docs, and using <code>uv</code> inside of a container should be pretty evident from the first example.</p>
+<p>I did leave in the caching, as that seemed like an obvious &quot;default&quot; thing to have implemented.</p>
+<p>I also had to add the md file to the ignore of prettier, as it kept trying to re-format my yaml codeblocks, which would not work if someone wanted to copy-paste them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paatre">@paatre</a> on 2024-09-04 20:55</div>
+            <div class="timeline-body"><p>Great to see this being documented.</p>
+<p>That said, I tried your documented example in my GitLab CI configuration:</p>
+<pre><code class="language-yaml">variables:
+  UV_VERSION: 0.4
+  PYTHON_VERSION: 3.12
+  BASE_LAYER: alpine
+
+stages:
+  - foo
+
+bar:
+  stage: foo
+  image: 
+    name: ghcr.io/astral-sh/uv:$UV_VERSION-python$PYTHON_VERSION-$BASE_LAYER
+  script: 
+    - run main.py
+</code></pre>
+<p>But the job still fails on the <code>sh</code> not being recognized by the container:</p>
+<pre><code>Using docker image sha256:f92e1aa098053d32da4d6ff0a0bc60ca74454153fac4b72ac501f95370e3f4a4 for ghcr.io/astral-sh/uv:0.4-python3.12-alpine with digest ghcr.io/astral-sh/uv@sha256:71a178e0a86e3cd35f55e22a854ec862ceecdb36e9d6664c90e6e9df7f714965 ...
+error: unrecognized subcommand 'sh'
+Usage: uv [OPTIONS] &lt;COMMAND&gt;
+For more information, try '--help'.
+</code></pre>
+<p>Is there something I'm doing wrong or what?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 20:59</div>
+            <div class="timeline-body"><p>The container entrypoint is set to <code>uv</code> xref #7030</p>
+<p>Looks like it's trying to run <code>uv sh</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paatre">@paatre</a> on 2024-09-04 21:12</div>
+            <div class="timeline-body"><blockquote>
+<p>The container entrypoint is set to <code>uv</code> xref #7030</p>
+<p>Looks like it's trying to run <code>uv sh</code>.</p>
+</blockquote>
+<p>Yeah, that was it. I continued to read the docs and there's two occations regarding the shell:</p>
+<ol>
+<li>Image requirements: https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#image-requirements</li>
+<li>Explanation of how the runner starts with Docker containers: https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#override-the-entrypoint-of-an-image.</li>
+</ol>
+<p>It's pretty obvious now that <code>uv</code> is the default <code>ENTRYPOINT</code> for the container and <code>sh</code> is the default <code>CMD</code> by GitLab. So the <code>script</code> is given to <code>sh</code> and it's being passed to <code>uv</code>, and that leads to problems.</p>
+<p>I just need to override the entrypoint as you've also described in #7030. I kind of understand both sides of the coin:</p>
+<ul>
+<li>I want to have consistent experience on all images</li>
+<li>I want to use images easily without extra container configurations on CI</li>
+</ul>
+<p>So yeah, which one is the main driver here is a good question.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paatre">@paatre</a> on 2024-09-04 21:33</div>
+            <div class="timeline-body"><p>Lol, why didn't I think of this: https://github.com/astral-sh/uv/issues/7030#issuecomment-2329443719</p>
+<p>That would have been an even better solution, at least in my very simple use case. The downside with using <code>CMD</code> with the default <code>uv</code> entrypoint is that the <code>script</code> doesn't work if you need or want it in the pipeline.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-09-05 00:00</div>
+            <div class="timeline-body"><p>@paatre 0.4.6 (once released) will have the behavior you were looking for</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidfritzsche">@davidfritzsche</a> on <code>docs/guides/integration/gitlab.md</code>:1 on 2024-09-05 21:03</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"># Using uv in GitLab CI/CD
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidfritzsche">@davidfritzsche</a> reviewed on 2024-09-05 21:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jvacek">@jvacek</a> reviewed on 2024-09-10 09:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jvacek">@jvacek</a> on <code>docs/guides/integration/gitlab.md</code>:1 on 2024-09-10 09:11</div>
+            <div class="timeline-body"><p>😅 thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jvacek">@jvacek</a> on 2024-09-13 09:43</div>
+            <div class="timeline-body"><p>Re-tested with 0.4.9, did I miss any to-dos?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BaconPancakes">@BaconPancakes</a> reviewed on 2024-09-16 20:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BaconPancakes">@BaconPancakes</a> on <code>docs/guides/integration/gitlab.md</code>:33 on 2024-09-16 20:53</div>
+            <div class="timeline-body"><p>are you missing a &quot;cache&quot; key here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jvacek">@jvacek</a> on <code>docs/guides/integration/gitlab.md</code>:33 on 2024-09-23 12:17</div>
+            <div class="timeline-body"><p>Fixed, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jvacek">@jvacek</a> reviewed on 2024-09-23 12:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-10-01 18:25</div>
+            <div class="timeline-body"><p>Thanks! Sorry about the delay here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-10-01 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-01 18:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:17 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set `LC_ALL=C` in test commands - astral-sh/uv #8606</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Set <code>LC_ALL=C</code> in test commands</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/8606">#8606</a>
+        opened by <a href="https://github.com/vivienm">@vivienm</a>
+        on 2024-10-27 10:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/vivienm">@vivienm</a> on 2024-10-27 10:41</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The output of some programs used in uv tests depends on the OS language. In particular, git error messages are localized.</p>
+<p>As a consequence, the following tests fail if run on a non-US environment:</p>
+<pre><code>pip_compile::git_source_missing_tag
+pip_install::install_git_private_https_pat_not_authorized
+pip_install::install_git_public_https_missing_branch_or_tag
+pip_install::install_git_public_https_missing_commit
+</code></pre>
+<p>Example error:</p>
+<pre><code>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot: install_git_public_https_missing_branch_or_tag
+Source: crates/uv/tests/it/pip_install.rs:1600
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Expression: snapshot
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+    7     7 │   Caused by: failed to clone into: [CACHE_DIR]/git-v0/db/8dab139913c4b566
+    8     8 │   Caused by: failed to fetch branch or tag `2.0.0`
+    9     9 │   Caused by: process didn't exit successfully: `git fetch [...]` (exit code: 128)
+   10    10 │ --- stderr
+   11       │-fatal: couldn't find remote ref refs/tags/2.0.0
+         11 │+fatal : impossible de trouver la référence distante refs/tags/2.0.0
+────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+</code></pre>
+<p>On Unix-like platforms, a simple workaround is to set the environment variable <code>LC_ALL=C</code> (there are variants e.g. <code>LANG=en_US.UTF-8</code>, but they are likely less robust).</p>
+<p>My proposal here is to set this variable directly in tests, to avoid developers having to configure their environment before running tests.</p>
+<h2>Test Plan</h2>
+<p>Tests listed above no longer fail with this workaround.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-27 13:46</div>
+            <div class="timeline-body"><p>Thanks! Can you add this to <a href="https://github.com/astral-sh/uv/blob/main/crates/uv/tests/it/common/mod.rs#L458"><code>add_shared_args</code></a> instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2024-10-27 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vivienm">@vivienm</a> on 2024-10-27 14:17</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks! Can you add this to <a href="https://github.com/astral-sh/uv/blob/main/crates/uv/tests/it/common/mod.rs#L458"><code>add_shared_args</code></a> instead?</p>
+</blockquote>
+<p>:+1: Done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @zanieb on 2024-10-27 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-10-27 14:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-10-27 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-27 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-27 14:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:02:11 UTC
+    </footer>
+</body>
+</html>

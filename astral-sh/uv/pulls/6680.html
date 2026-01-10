@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ci: Make Windows tests ~27% faster by putting temp folder in dev drive - astral-sh/uv #6680</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ci: Make Windows tests ~27% faster by putting temp folder in dev drive</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6680">#6680</a>
+        opened by <a href="https://github.com/fasterthanlime">@fasterthanlime</a>
+        on 2024-08-27 09:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/fasterthanlime">@fasterthanlime</a> on 2024-08-27 09:30</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR makes <code>cargo test | windows</code> faster in CI.</p>
+<h3>Before</h3>
+<p><img src="https://github.com/user-attachments/assets/8dd9c619-9b7b-4ebd-a027-56e7967b6d34" alt="Windows tests take 5m44s" /></p>
+<h3>After</h3>
+<p><img src="https://github.com/user-attachments/assets/7702fdba-3034-4db8-b211-85207a1feffa" alt="Windows tests take 5m12s" /></p>
+<h2>Also</h2>
+<p>This PR disables the <code>brotli</code> feature of <code>async-compression</code> since it's not strictly needed, but this has little to do with the improvements (it's still less code to build).</p>
+<p>This PR introduces additional code in uv tool uninstall to ignore errors (that only seem to happen on ReFS, ie. on Dev Drives) akin to &quot;the thing we're trying to delete cannot be deleted because it's already being deleted&quot;.</p>
+<p>If <code>raw_os_error</code> was stable we could do u32 matching instead of that <code>.to_string().contains()</code> abomination.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "WIP: ci tests (Disable brotli for now)" to "ci: Make Windows tests ~27% faster" by @fasterthanlime on 2024-08-27 20:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ci: Make Windows tests ~27% faster" to "ci: Make Windows tests ~27% faster by putting temp folder in dev drive" by @fasterthanlime on 2024-08-27 20:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2024-08-27 20:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-08-27 20:24</div>
+            <div class="timeline-body"><p>Awesome! This looks great.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-08-27 20:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-27 20:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-08-27 21:25</div>
+            <div class="timeline-body"><p>@fasterthanlime Curious, it seems <code>tempfile::tempdir</code> seems to ultimately leverage <a href="https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-gettemppath2a">GetTempPath2</a> which has the following rules:</p>
+<blockquote>
+<p>For non-system processes, the GetTempPath2 function checks for the existence of environment variables in the following order and uses the first path found:
+The path specified by the TMP environment variable.
+The path specified by the TEMP environment variable.
+The path specified by the USERPROFILE environment variable.
+The Windows directory.</p>
+</blockquote>
+<p>Would this have work if <code>TEMP</code> env var was set instead to a directory inside the dev drive location? I wonder if that approach may simplify this by quite a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-05 00:32</div>
+            <div class="timeline-body"><p>Part of https://github.com/astral-sh/uv/issues/5713</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:11 UTC
+    </footer>
+</body>
+</html>

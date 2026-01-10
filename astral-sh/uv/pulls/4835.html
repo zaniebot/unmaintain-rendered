@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print Installation Path if not in working directory - astral-sh/uv #4835</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Print Installation Path if not in working directory</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4835">#4835</a>
+        opened by <a href="https://github.com/danielenricocahall">@danielenricocahall</a>
+        on 2024-07-05 20:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danielenricocahall">@danielenricocahall</a> on 2024-07-05 20:16</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Addressing the issue detailed <a href="https://github.com/astral-sh/uv/issues/2155">here</a> regarding the visibility of the Python path when doing <code>uv install</code>.</p>
+<h2>Test Plan</h2>
+<p>TBD - can't quite reproduce the errors I'm seeing in CI locally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-06 03:18</div>
+            <div class="timeline-body"><p>Don't spend too much time on the snapshot filtering, I can futz with that part.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielenricocahall">@danielenricocahall</a> on 2024-07-06 04:06</div>
+            <div class="timeline-body"><blockquote>
+<p>Don't spend too much time on the snapshot filtering, I can futz with that part.</p>
+</blockquote>
+<p>Thank you! My hero - I’ve been wrestling with that and can’t quite reproduce this last failure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-10 01:08</div>
+            <div class="timeline-body"><p>Sorry lost track of this one! I'll give this a look tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-07-10 01:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielenricocahall">@danielenricocahall</a> on 2024-07-10 01:36</div>
+            <div class="timeline-body"><blockquote>
+<p>Sorry lost track of this one! I'll give this a look tomorrow.</p>
+</blockquote>
+<p>No worries and thank you!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-10 14:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/run.rs</code>:236 on 2024-07-10 14:31</div>
+            <div class="timeline-body"><p>I'm hesitant to display these as user-facing messages for these internal environments — I wonder if there's a good way to avoid that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-10 14:57</div>
+            <div class="timeline-body"><p>I think the additional filters in https://github.com/astral-sh/uv/pull/4787 will be helpful here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-10 14:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_install.rs</code>:1092 on 2024-07-10 14:58</div>
+            <div class="timeline-body"><p>Shouldn't we be showing <code>[VENV]</code> not <code>[VENV]/bin/python3</code>? It seems a bit weird to show the path to the interpreter executable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/danielenricocahall">@danielenricocahall</a> reviewed on 2024-07-13 00:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/danielenricocahall">@danielenricocahall</a> on <code>crates/uv/tests/pip_install.rs</code>:1092 on 2024-07-13 00:03</div>
+            <div class="timeline-body"><p>Ah yeah, we could do that - something like:</p>
+<pre><code class="language-rust">        if is_outside_working_directory {
+            if let Some(parent_dir) = python_executable.parent().and_then(|p| p.parent()) {
+                writeln!(
+                    printer.stderr(),
+                    &quot;{}&quot;,
+                    format!(
+                        &quot;Installing to environment at {}&quot;,
+                        parent_dir.user_display()
+                    )
+                        .dimmed()
+                )?;
+            }
+        }
+</code></pre>
+<p>? This yields <code>[VENV]/</code> instead of <code>[VENV]/bin/python</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielenricocahall">@danielenricocahall</a> on 2024-07-13 00:07</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the additional filters in #4787 will be helpful here.</p>
+</blockquote>
+<p>Hm are you thinking we use them before the parent dir evaluation step?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/danielenricocahall">@danielenricocahall</a> reviewed on 2024-07-13 00:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/danielenricocahall">@danielenricocahall</a> on <code>crates/uv/tests/run.rs</code>:236 on 2024-07-13 00:11</div>
+            <div class="timeline-body"><p>Ah so revert the <code>[RANDOM]</code> filter and have an additional conditional to ensure we don't print in the event it's an internal environment e.g; <code>[CACHE]/environments-v1...</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielenricocahall">@danielenricocahall</a> on 2024-07-19 01:08</div>
+            <div class="timeline-body"><p>Hi @zanieb ! Just wanted to follow-up here if/when you have a moment 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/run.rs</code>:236 on 2024-07-19 17:04</div>
+            <div class="timeline-body"><p>Yeah I think so. I'm curious for @charliermarsh's opinion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-19 17:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-19 17:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_install.rs</code>:1092 on 2024-07-19 17:05</div>
+            <div class="timeline-body"><p>I think you just want <code>PythonEnvironment::root()</code>, i.e., <code>venv.root()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-19 17:06</div>
+            <div class="timeline-body"><p>Thanks for the nudge! Sorry I'm stretched a little thin on contributions :) Let me know if you have more questions!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-19 17:07</div>
+            <div class="timeline-body"><p>I don't actually think you'll need the new test filters if you're not displaying the Python executable anymore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-01 16:51</div>
+            <div class="timeline-body"><p>Continuing this in https://github.com/astral-sh/uv/pull/7850</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-01 16:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:00:50 UTC
+    </footer>
+</body>
+</html>

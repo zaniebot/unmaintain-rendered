@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix infinite recursion by sniffing the shebang - astral-sh/uv #6711</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix infinite recursion by sniffing the shebang</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6711">#6711</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-08-27 18:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-08-27 18:10</div>
+            <div class="timeline-body"><p>When we see <code>#!/usr/bin/env -S uv run&quot;</code>, treat the input as a python file to avoid infinite recursion.</p>
+<p>Tested manually.</p>
+<p>Fixes #6360</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-08-27 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2024-08-27 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @konstin on 2024-08-27 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/teroshan">@teroshan</a> reviewed on 2024-08-28 13:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/teroshan">@teroshan</a> on <code>crates/uv/src/commands/project/run.rs</code>:887 on 2024-08-28 13:10</div>
+            <div class="timeline-body"><p>This wouldn't take into account for cases where e.g. <code>env -S</code> isn't supported (older version of coreutils), where some black magic or custom script (e.g. named <code>uv-run</code> in my case) is used in the shebang.</p>
+<p>Also it wouldn't be completely alien to want to hardcode a path to <code>uv</code> instead of relying to <code>env</code>.</p>
+<p>In both of these cases the shebang wouldn't match, and this heuristic would not completely fix the infinite recursion issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-28 13:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/run.rs</code>:887 on 2024-08-28 13:36</div>
+            <div class="timeline-body"><p>I also worry this heuristic is too brittle. I'm not sure what the solution is without peeking. Some sort of environment variable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/teroshan">@teroshan</a> reviewed on 2024-08-28 13:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/teroshan">@teroshan</a> on <code>crates/uv/src/commands/project/run.rs</code>:887 on 2024-08-28 13:47</div>
+            <div class="timeline-body"><p>My two cents as I'm still discovering and playing with <code>uv</code>, I'd be happy with an alternative entry point (e.g. <code>uv exec</code>) which would only accept files as input.</p>
+<p>It seems to me that this whole issue is made complex by <code>uv run</code> also being expected to run 'scripts' declared in <code>pyproject.toml</code> (I think?), and being bent to also work like a standalone script runner.</p>
+<p>EDIT: I feel like a CLI flag to force a file to be executed would also be acceptable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-28 13:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/run.rs</code>:887 on 2024-08-28 13:53</div>
+            <div class="timeline-body"><p>We also have something like... #3097 — maybe we just need a <code>--script</code> flag here to force us to treat something as a script? We should still have a way to detect recursion and bail instead of looping though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-28 13:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/run.rs</code>:887 on 2024-08-28 13:54</div>
+            <div class="timeline-body"><p>(i.e. a <code>UV_INTERNAL__RECURSION</code> variable that we bump on every recursive subprocess and bail after some limit is hit)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-08-28 14:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/project/run.rs</code>:887 on 2024-08-28 14:38</div>
+            <div class="timeline-body"><p>A <code>--script</code> flag plus a <code>UV_INTERNAL_RECURSION</code> for better error reporting would work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-08-28 14:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/project/run.rs</code>:887 on 2024-08-28 14:39</div>
+            <div class="timeline-body"><p>A more resilient solution would be not running binaries, but only running python scripts and <code>python</code> from <code>uv run</code>, this seems to be done by e.g. <code>bash</code> to avoid infinite recursion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-28 14:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/run.rs</code>:887 on 2024-08-28 14:40</div>
+            <div class="timeline-body"><p>I'm pretty unwilling to change that part of the user experience — running binaries from <code>uv run</code> is important. I think a separate command or opt-in to that experience via <code>--script</code> makes the most sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-10-17 09:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:12 UTC
+    </footer>
+</body>
+</html>

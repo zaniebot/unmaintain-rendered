@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv/tests: filter out link mode warning in one test - astral-sh/uv #7012</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv/tests: filter out link mode warning in one test</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7012">#7012</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-09-04 12:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-04 12:44</div>
+            <div class="timeline-body"><p>In the <code>lock_redact_https</code> test specifically, it prompts a link mode
+warning from <code>uv</code> on my system. Debugging seems to suggest it is
+provoked by attempting to hardlink between <code>/tmp</code> and <code>~/.local</code>. Since
+these are on different file systems for me (with <code>/tmp</code> being a
+ramdisk), it provokes the warning, and this turn spoils the snapshot
+when running tests locally.</p>
+<p>This PR adds a test specific filter rule to fix this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-04 13:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/lock.rs</code>:5840 on 2024-09-04 13:36</div>
+            <div class="timeline-body"><p>That's weird. What are we placing in <code>/tmp</code>? We should be avoiding most use of <code>/tmp</code> in tests now. I don't see anything particular about this test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-04 14:07</div>
+            <div class="timeline-body"><p>If I set <code>RUST_LOG=debug</code> for the offending command and disable all filters, then these are the relevant lines I think:</p>
+<pre><code>        258 │+DEBUG Failed to hardlink `/home/andrew/.local/share/uv/tests/.tmpYOH182/temp/.venv/lib/python3.12/site-packages/iniconfig/__init__.py` to `/tmp/.tmp0UsfkF/archive-v0/A3TQjfa4sxc0QPCeXeRsz/iniconfig/__init__.py`, attempting to copy files as a fallback
+        259 │+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+        260 │+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+        261 │+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+        262 │+DEBUG Extracting file name=PackageName(&quot;foo&quot;)
+        263 │+DEBUG Extracted 9 files name=PackageName(&quot;iniconfig&quot;)
+        264 │+DEBUG Failed to hardlink `/home/andrew/.local/share/uv/tests/.tmpYOH182/temp/.venv/lib/python3.12/site-packages/__editable___foo_0_1_0_finder.py` to `/tmp/.tmp0UsfkF/archive-v0/HsLf3qhPZUp3lFYZabmDn/__editable___foo_0_1_0_finder.py`, attempting to copy files as a fallback
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 14:18</div>
+            <div class="timeline-body"><p>Ah, it's because we set <code>--no-cache</code> so we don't use the test context cache location. Awkward. Hm. cc @charliermarsh / @fasterthanlime — I guess we'll need to add a way to configure the <code>--no-cache</code> temporary directory location during testing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-09-04 14:20</div>
+            <div class="timeline-body"><p>Happy to unblock you here — but we should fix the root cause. Can you update the comment to reflect my findings?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-09-04 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-09-04 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-04 14:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:22 UTC
+    </footer>
+</body>
+</html>

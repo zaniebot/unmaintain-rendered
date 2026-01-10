@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for `trusted-host` pip option - astral-sh/uv #4944</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for <code>trusted-host</code> pip option</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4944">#4944</a>
+        opened by <a href="https://github.com/fkapsahili">@fkapsahili</a>
+        on 2024-07-09 20:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/fkapsahili">@fkapsahili</a> on 2024-07-09 20:41</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The goal of this PR is to enable the <code>trusted-host</code> option like pip and to make it possible to bypass SSL validation when resolving and installing packages. With the <code>trusted-host</code> option it should be possible to specify a list of hosts that are ignored during validation. This option can be especially helpful when installing packages from private registries and behind corporate proxies.</p>
+<p>@zanieb Can you take a look at the draft to see if I'm on the right track, especially with regard to the request handling of &quot;secure&quot; and &quot;insecure&quot; requests? Or do you see a possibility here with less refactoring involved? Currently I see no other option than setting <code>danger_accept_invalid_certs</code> to <code>true</code> when instantiating the <code>BaseClient</code>, but this would lead to two clients being maintained, as in my draft, since the request URL obviously cannot be determined at client build time.</p>
+<p>Please note that this PR is still at an early stage and I would like to get early feedback on the possible implementation as I have very limited experience with Rust, but would love to help add this option to <code>uv</code>! 🙂</p>
+<p>References: https://github.com/astral-sh/uv/issues/1339</p>
+<h2>Test Plan</h2>
+<ul>
+<li>[ ] We should probably add tests to test the behavior where we normally get an SSL verification error with a self-signed certificate</li>
+<li>[ ] Add tests to make sure that the <code>trusted-host</code> option is correctly applied to all existing configuration options</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-07-09 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-07-10 01:11</div>
+            <div class="timeline-body"><p>Curious, would the option mentioned in https://github.com/astral-sh/uv/issues/1339#issuecomment-2045458189 be more feasible and help avoid having to maintain two clients or would a small change be needed upstream in reqwest to support passing such configuration? I haven't looked into it too much but found the references of where its being used in reqwest. Ideally all it takes is one configuration to pass a NoVerifier-style impl to a selected set of hosts, that way only one client config would be needed.</p>
+<ul>
+<li>https://github.com/rustls/rustls/blob/main/rustls/src/webpki/server_verifier.rs#L35</li>
+<li>https://github.com/seanmonstar/reqwest/blob/master/src/tls.rs</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timvink">@timvink</a> on 2024-07-11 07:10</div>
+            <div class="timeline-body"><p>Looking forward to this one! We can promote the new feature in the README also:</p>
+<p>https://github.com/astral-sh/uv/blob/42cb2541b513a9d53d9c677610fd478e27162a74/README.md?plain=1#L111-L113</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-11 14:36</div>
+            <div class="timeline-body"><p>Thanks you for contributing! No worries that you don't have Rust experience we're happy to help out.</p>
+<p>Did you explore the comment @samypr100 noted? I think we're all on the same page that it'd be ideal not to maintain multiple clients.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fkapsahili">@fkapsahili</a> on 2024-07-12 07:14</div>
+            <div class="timeline-body"><blockquote>
+<p>Curious, would the option mentioned in <a href="https://github.com/astral-sh/uv/issues/1339#issuecomment-2045458189">#1339 (comment)</a> be more feasible and help avoid having to maintain two clients or would a small change be needed upstream in reqwest to support passing such configuration? I haven't looked into it too much but found the references of where its being used in reqwest. Ideally all it takes is one configuration to pass a NoVerifier-style impl to a selected set of hosts, that way only one client config would be needed.</p>
+<ul>
+<li>https://github.com/rustls/rustls/blob/main/rustls/src/webpki/server_verifier.rs#L35</li>
+<li>https://github.com/seanmonstar/reqwest/blob/master/src/tls.rs</li>
+</ul>
+</blockquote>
+<p>Thanks for pointing this out!
+Since the NoVerifier struct is responsible for disabling the certificate checks, I think we would need to add a method in the <code>ClientBuilder</code> to configure a <code>NoVerifier</code> for specific hosts, store these verifiers in a <code>HashMap</code>, and modify the connection logic to use these custom verifiers when making requests to the specified hosts. This would allow us to skip certificate checks for specific hosts and would allow us to continue to maintain only one client in uv:
+https://github.com/seanmonstar/reqwest/blob/master/src/async_impl/client.rs</p>
+<p>If this makes sense, I'll try to setup a PR in the <code>reqwest</code> library.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-19 17:08</div>
+            <div class="timeline-body"><p>Do you mind if I close this so it's not in my review stack?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fkapsahili">@fkapsahili</a> on 2024-07-21 18:11</div>
+            <div class="timeline-body"><p>I am closing this as I am currently unable to continue working on this PR or the upstream changes in the <code>reqwest</code> library, although I would love to support the UV community with this! 😕</p>
+<p>I also found that setting the <code>SSL_CERT_FILE</code> environment variable to the path of the corresponding root certificate solved my problem with an internal registry.</p>
+<p>I hope this helps someone who has similar problems!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @fkapsahili on 2024-07-21 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-27 17:19</div>
+            <div class="timeline-body"><p>Hey @fkapsahili just wanted to say thanks — we ended up pursuing a multi-client approach in https://github.com/astral-sh/uv/pull/6591 :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:00:50 UTC
+    </footer>
+</body>
+</html>

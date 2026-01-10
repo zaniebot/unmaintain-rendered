@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix(venv.relocatable): script entrypoints should work if symlinked to - astral-sh/uv #8079</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix(venv.relocatable): script entrypoints should work if symlinked to</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/8079">#8079</a>
+        opened by <a href="https://github.com/paveldikov">@paveldikov</a>
+        on 2024-10-10 09:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-10-10 09:48</div>
+            <div class="timeline-body"><p>Fixes: #8058</p>
+<h2>Test Plan</h2>
+<p>Integration test (but only for Unix, because symlinks on Windows require admin privs. Plus, they are not really all that idiomatic on Windows)</p>
+<hr />
+<p>© 2024 Morgan Stanley.</p>
+<p>THIS SOFTWARE IS CONTRIBUTED SUBJECT TO THE TERMS OF THE APACHE LICENSE V.2.0.</p>
+<p>THIS SOFTWARE IS LICENSED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE AND ANY WARRANTY OF NON-INFRINGEMENT, ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. THIS SOFTWARE MAY BE REDISTRIBUTED TO OTHERS ONLY BY EFFECTIVELY USING THIS OR ANOTHER EQUIVALENT DISCLAIMER IN ADDITION TO ANY OTHER REQUIRED LICENSE TERMS.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-10 09:52</div>
+            <div class="timeline-body"><p>This seems reasonable to me based on your prior comments. What other testing would you want to see prior to merging?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-10-10 09:53</div>
+            <div class="timeline-body"><blockquote>
+<p>This seems reasonable to me based on your prior comments. What other testing would you want to see prior to merging?</p>
+</blockquote>
+<p>It's MacOS that I worry about primarily, but I expect the automated test suite to cover that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-10 09:53</div>
+            <div class="timeline-body"><p>We do have a concept of &quot;system tests&quot; that test across a variety of operating systems... You could add a test to <code>scripts/check_system_python.py</code> to get coverage there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-10 09:53</div>
+            <div class="timeline-body"><p>Do you have any concerns about other POSIX systems, e.g., rare Linux distros etc.?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-10 09:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-10-10 09:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-10-10 10:41</div>
+            <div class="timeline-body"><blockquote>
+<p>We do have a concept of &quot;system tests&quot; that test across a variety of operating systems... You could add a test to scripts/check_system_python.py to get coverage there.</p>
+</blockquote>
+<p>Turns out past-me did in fact write an integration test to ensure that the entrypoint works. So I just added another check in the same test case to ensure that the entrypoint keeps working if symlinked to (in an arbitrary directory with no <code>python</code> inside)</p>
+<blockquote>
+<p>Do you have any concerns about other POSIX systems, e.g., rare Linux distros etc.?</p>
+</blockquote>
+<p>Yes, which is why I used <code>realpath</code> instead of <code>readlink -f</code>. From my current research it seems that <code>realpath</code> is ubiquitous enough (thanks to MacOS 12's recent EOL) but I could certainly do with a second check.</p>
+<p>Right now the hardest part is that I am developing from my home PC which is Windows :-( so I am fully reliant on the CI run + ad hoc experimentation in a separate Unix environment (which, OTOH, has no Rust)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-10-10 11:58</div>
+            <div class="timeline-body"><p>Ok, tests are green and my research w.r.t. <code>realpath</code> availability suggests that:</p>
+<ul>
+<li>RedHat and friends: available from el7+. &lt;=el6 and below are EOL anyway.</li>
+<li>MacOS: available from 13+. &lt;=12 are EOL.</li>
+<li>Debian and derivatives appear to have had <code>realpath</code> for decades.</li>
+<li>FreeBSD appears to have had <code>realpath</code> for decades.</li>
+<li>Busybox/Alpine appears to have <code>realpath</code>.</li>
+<li>Cygwin/MINGW has <code>realpath</code>.</li>
+</ul>
+<p>Also of note that GNU <code>coreutils</code> has had <code>realpath</code> since 2011. So realistically all recent GNU/Linux (yes, the 'GNU' part is important here), beyond perhaps a few relict enterprise near-EOL versions, should have <code>realpath</code>.</p>
+<p><code>readlink -f</code> appears to remain non-portable.</p>
+<p>For the record, I am still not 100% dead certain about compatibility, but I am inclined to make the risk calculation that:</p>
+<ul>
+<li>relocatable venvs are a fairly recent feature, therefore not likely to be used together with EOL operating systems</li>
+<li>common off-the-shelf OSs appear to ship <code>realpath</code> in their currently-supported versions</li>
+<li>less common OSs are far less end-user-centric, so we'd have all the more reason to expect <code>coreutils</code> installed.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-10-10 12:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-10 12:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-10 12:01</div>
+            <div class="timeline-body"><p>Okay thanks for the thorough research here. Appreciate it!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:56 UTC
+    </footer>
+</body>
+</html>

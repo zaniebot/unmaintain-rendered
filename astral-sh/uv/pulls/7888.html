@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add shellcheck CI - astral-sh/uv #7888</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add shellcheck CI</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7888">#7888</a>
+        opened by <a href="https://github.com/sobolevn">@sobolevn</a>
+        on 2024-10-03 07:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sobolevn">@sobolevn</a> on 2024-10-03 07:52</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>I started learning <code>uv</code> by inspecting the source code.
+I've noticed that your shell scripts are very good! Which is rare!</p>
+<h2>Test Plan</h2>
+<p>I propose to add <code>shellcheck</code> to the CI.
+It is a great tool to help finding bugs and style issues in shell code.</p>
+<p>Techincal details:</p>
+<ul>
+<li>This CI job will only run when any <code>.sh</code> files are changed (or the job definition file)</li>
+<li>It takes just several seconds even on local machine:</li>
+</ul>
+<pre><code>» time shellcheck -S style **/*.sh
+shellcheck -S style **/*.sh  0.02s user 0.05s system 61% cpu 0.123 total
+</code></pre>
+<ul>
+<li>It is easy to use, for example: I just fixed the single problem you had in your code with <code># shellcheck disable=SC1091</code></li>
+<li>I am using this tool for around 8 years now and didn't have any issues. Examples: https://github.com/sobolevn/git-secret/blob/ca899f3b694187f9027161f537414422ee99c483/.github/workflows/test.yml#L22-L27 and https://github.com/wemake-services/wemake-django-template/blob/master/.github/workflows/shellcheck.yml</li>
+</ul>
+<p>But, I understand that build / lint tools are very subjective. So, feel free to close :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-03 14:36</div>
+            <div class="timeline-body"><p>I <em>do</em> really like shellcheck but given it didn't find any actual problems here I'm not sure if it's worth adding to CI?</p>
+<p>If we do add it, it'd probably make sense at https://github.com/astral-sh/uv/blob/14507a1793f12bf884786be49d716ca8f8322340/.github/workflows/ci.yml#L47 with our other lint jobs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sobolevn">@sobolevn</a> on 2024-10-03 16:39</div>
+            <div class="timeline-body"><p>@zanieb this is exactly right time to add a tool, when there are no complaints! 😄
+Because in other cases - it would be a much harder case, since it would require a refactoring of existing problems.</p>
+<p>I added this a separate file, because I can specify to only run this on <code>*.sh</code> files to save some extra computation, when regular PRs don't touch shell scripts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-03 16:43</div>
+            <div class="timeline-body"><p>How long does it take to run on the full repository? Seconds right? I'm not sure it's worth the time saving — spinning up GitHub Actions runners has significant overhead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sobolevn">@sobolevn</a> on 2024-10-03 17:07</div>
+            <div class="timeline-body"><p>Locally it takes <code>0.02s user 0.05s system 61% cpu 0.123 total</code>, sure, will change to work in <code>lint:</code> job 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mkniewallner">@mkniewallner</a> reviewed on 2024-10-03 18:07</div>
+            <div class="timeline-body"><p>It would probably be nice to pin a specific <code>shellcheck</code> version to use, per https://github.com/ludeeus/action-shellcheck?tab=readme-ov-file#run-a-specific-version-of-shellcheck. Otherwise if new versions that update or add rules are published, CI could break out of the blue.</p>
+<p>By enabling https://docs.renovatebot.com/presets-customManagers/#custommanagersgithubactionsversions preset <a href="https://github.com/astral-sh/uv/blob/312eeb8f573d36f6df658f85ecadc52799647bb3/.github/renovate.json5#L5">here</a> and setting something like:</p>
+<pre><code class="language-yaml">env:
+  # renovate: datasource=github-tags depName=koalaman/shellcheck
+  SHELLCHECK_VERSION: &quot;v0.10.0&quot;
+</code></pre>
+<p>in the GitHub Actions workflow, it should even be possible to have Renovate regularly update <code>shellcheck</code> version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sobolevn">@sobolevn</a> on 2024-10-03 19:33</div>
+            <div class="timeline-body"><p>Awesome! I didn't know that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mkniewallner">@mkniewallner</a> on <code>.github/workflows/ci.yml</code>:90 on 2024-10-03 20:21</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        with:
+          version: ${{ env.SHELLCHECK_VERSION }}
+</code></pre>
+<p>otherwise the env var itself will not do anything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mkniewallner">@mkniewallner</a> reviewed on 2024-10-03 20:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mkniewallner">@mkniewallner</a> approved on 2024-10-03 20:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-10-08 18:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-10-08 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-08 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2024-10-08 18:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:51 UTC
+    </footer>
+</body>
+</html>

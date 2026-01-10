@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metadata transformation for the build backend - astral-sh/uv #7781</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Metadata transformation for the build backend</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7781">#7781</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-09-29 15:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-09-29 15:46</div>
+            <div class="timeline-body"><p>Implement the validation and transformation from <code>pyproject.toml</code> to <code>METADATA</code> and <code>entry_points.txt</code>. There is some incomplete plumbing code in <code>crates/uv-build-backend/src/lib.rs</code> to actually write <code>METADATA</code> and <code>entry_points.txt</code> into a stub wheel or dist-info directory, the logic lives in <code>crates/uv-build-backend/src/metadata.rs</code>.</p>
+<p>The code is a translation of the relevant specs:</p>
+<ul>
+<li><a href="https://packaging.python.org/en/latest/guides/writing-pyproject-toml/">https://packaging.python.org/en/latest/guides/writing-pyproject-toml/</a></li>
+<li><a href="https://packaging.python.org/en/latest/specifications/pyproject-toml/">https://packaging.python.org/en/latest/specifications/pyproject-toml/</a></li>
+<li><a href="https://packaging.python.org/en/latest/specifications/core-metadata/">https://packaging.python.org/en/latest/specifications/core-metadata/</a></li>
+</ul>
+<p>The code is a translation of these with some contextual knowledge. While there are tests, we will only have real coverage once we do the entire wheel writing process and can use them with other tools.</p>
+<p>The feature is still hidden. Reference docs for <code>pyproject.toml</code> are in the next branch, to avoid publishing them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-09-29 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-30 21:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/lib.rs</code>:35 on 2024-09-30 21:05</div>
+            <div class="timeline-body"><p>This trait will gain a method to add files</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-30 21:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/lib.rs</code>:66 on 2024-09-30 21:06</div>
+            <div class="timeline-body"><p>I've been considering making the build backend sync to switch to the sync zip crate</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2024-09-30 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2024-09-30 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-build-backend/src/lib.rs</code>:66 on 2024-10-04 15:40</div>
+            <div class="timeline-body"><p>cc @ibraheemdev</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-10-04 15:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-build-backend/src/lib.rs</code>:13 on 2024-10-04 17:50</div>
+            <div class="timeline-body"><p>I usually like to write imports in three distinct groups, separated by a line break: std imports, non-crate imports, crate imports. (I mention this because this is greenfield code and maybe we can start with this convention. :P)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-build-backend/src/metadata.rs</code>:501 on 2024-10-04 17:59</div>
+            <div class="timeline-body"><p>Maybe a dumb question (and this is for my own edification probably because I trust you're doing the right thing here), but do we have code somewhere else for parsing <code>pyproject.toml</code>? Why can't we use that here?</p>
+<p>(Putting an answer to that question in the comments might be useful.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-build-backend/src/pep639_glob.rs</code>:78 on 2024-10-04 18:04</div>
+            <div class="timeline-body"><p>How does one write a glob that matches <code>]</code> and only <code>]</code>?</p>
+<p>(I ask this because I notice there is no handling of escaping here. You can escape most things via brackets, e.g., <code>[*]</code>, but I don't think <code>]</code> can be matched literally here?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-10-04 18:06</div>
+            <div class="timeline-body"><p>This all looks like a reasonable start to me.</p>
+<p>For async, I would bias toward not doing it. @ibraheemdev might have some thoughts here. My understanding is that a build backend is mostly CPU bound anyway, so using async for it might not make a ton of sense?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-build-backend/src/lib.rs</code>:66 on 2024-10-04 19:16</div>
+            <div class="timeline-body"><p>My intuition would be for the build backend to be synchronous. Unless you see some usefulness out of asynchronous control flow, async will likely just be additional complexity (and worse performance).</p>
+<p>The other factor is, how will uv be interfacing with the build backend? If uv needs to call out to the build backend from an asynchronous context, we incur a <code>spawn_blocking</code> call if the build backend is synchronous. On the other hand, if the build backend is always spawned as a separate process, then async doesn't provide any benefit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-10-04 19:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-10-07 08:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/metadata.rs</code>:501 on 2024-10-07 08:09</div>
+            <div class="timeline-body"><p>That's a question for @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-10-07 08:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/pep639_glob.rs</code>:78 on 2024-10-07 08:11</div>
+            <div class="timeline-body"><p>I don't think you can - If you consider this a concern, best add it to the <a href="https://discuss.python.org/t/pep-639-round-3-improving-license-clarity-with-better-package-metadata/53020/121">discourse thread</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/lib.rs</code>:66 on 2024-10-07 08:38</div>
+            <div class="timeline-body"><p>Thanks for the input, follow-up at: https://github.com/astral-sh/uv/pull/7961</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-10-07 08:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-10-07 08:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-10-07 08:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-07 08:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-10-07 12:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-build-backend/src/pep639_glob.rs</code>:78 on 2024-10-07 12:55</div>
+            <div class="timeline-body"><p>Aye, done: https://discuss.python.org/t/pep-639-round-3-improving-license-clarity-with-better-package-metadata/53020/122</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:46 UTC
+    </footer>
+</body>
+</html>

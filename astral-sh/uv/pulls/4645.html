@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use cycle aware algorithm for propagating markers - astral-sh/uv #4645</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use cycle aware algorithm for propagating markers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4645">#4645</a>
+        opened by <a href="https://github.com/bluss">@bluss</a>
+        on 2024-06-29 09:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/bluss">@bluss</a> on 2024-06-29 09:14</div>
+            <div class="timeline-body"><p>This is my attempt at this - I don't exactly have much prior experience with
+Uv's codebase and w.r.t graph algorithms I'm pretty rusty.
+Let's look at this critically and try to find out if it does the right thing.</p>
+<p>The strongly connected components algorithm both finds all cyclic
+subgraphs, and a topological order of them. This seems to be a good
+way to replace Topo with something cycle-aware.</p>
+<p>The new algorithm uses the fact that in a strongly connected component,
+all vertices reach each other through some edge. That means we can
+combine markers of all internal edges in a component.</p>
+<p>As an optimization, only outgoing edges pointing out of the current
+component are updated. I didn't look outside this function, so don't
+know if that's a reasonable choice.</p>
+<p>There are useful pictures in this article:
+https://en.wikipedia.org/wiki/Strongly_connected_component</p>
+<h2>Test Plan</h2>
+<p>Using existing tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Peiffap">@Peiffap</a> on 2024-06-29 17:02</div>
+            <div class="timeline-body"><p>Any reason in particular you chose Kosaraju's algorithm over Tarjan's? I thought the latter was faster.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-29 17:04</div>
+            <div class="timeline-body"><p>Thank you for looking at this -- I really appreciate it! I'm trying to reason through this with examples... Given this graph:</p>
+<p><img src="https://github.com/astral-sh/uv/assets/1309177/d1ea1696-3cd7-4a2b-ba71-19a7f8f6bdb2" alt="Screenshot 2024-06-29 at 1 02 43 PM" /></p>
+<p>I think we <em>want</em> the marker on the blue node to be <code>A and B and E</code>, but with this strategy, would it be... <code>(A or B or C or D) and E</code>? Since we'd <code>OR</code> the edges into the scc along with all the edges within the scc?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-06-29 17:16</div>
+            <div class="timeline-body"><p>Oops, I haven't given and/or any thought at all, just moved existing code around, so you're probably right.</p>
+<p>If we take that picture, but you had two edge at the start, A and A', both with the same target.</p>
+<ul>
+<li>Then you want to start with A or A'?</li>
+<li>Then you update with the cycle  (A or A') and B and C and D</li>
+<li>Then you update E to the following: (A or A') and B and C and D and E?</li>
+<li>Is this what you mean? Then I'd again need to make a difference between edge incoming to scc and edge inside the scc, which is easy to do.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-29 17:21</div>
+            <div class="timeline-body"><p>Same picture but more colors:</p>
+<p><img src="https://github.com/astral-sh/uv/assets/1309177/957addde-9fda-4958-8e19-1e2bac44476b" alt="Screenshot 2024-06-29 at 1 19 34 PM" /></p>
+<p>Each edge is a marker condition, and we want each node to have the complete marker condition required for it to be included in a a resolution... So I think the desired end state here is:</p>
+<ul>
+<li>Yellow: A</li>
+<li>Red: A and B</li>
+<li>Green: A and B and C</li>
+<li>Blue: A and B and E</li>
+</ul>
+<p>Yellow could also be written as: A or (A and B and C and D), but that just simplifies to A. In general, what I was trying to do was: edges into a node are <code>OR</code>'d, edges out of a node are <code>AND</code>'d.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-06-29 17:27</div>
+            <div class="timeline-body"><p>@Peiffap the reason was that this implementation is non-recursive so I know it don't have any stack issues. Don't know if it matters, though :slightly_smiling_face:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-06-29 17:32</div>
+            <div class="timeline-body"><p>Thanks. So I'm trying to find the rule for the cycle.</p>
+<p>Before we propagate, what's the node weight for Yellow, it's already A? And for Red, already B?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-29 17:34</div>
+            <div class="timeline-body"><p>It starts off as <code>None</code> actually. Coming into the propagation, all the nodes have a <code>None</code> marker -- the markers only exist on the edges, but we want to compute the &quot;full&quot; marker for each node.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-06-29 21:23</div>
+            <div class="timeline-body"><p>There is no nice property for each component/cyclic part as a unit. I think the current code (feedback arc set) seems ok so far then. I don't know how it selects edges to remove, so if it makes the wrong choice the result could be incorrect?</p>
+<p>Based on two cases I've looked at, reverse postorder seems to work well, it would skip the edges we want to skip? (No definition - probably doesn't hold up) I think your graph has exactly one initial node (one root), which makes this easier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Peiffap">@Peiffap</a> on 2024-06-29 22:42</div>
+            <div class="timeline-body"><p>I'm trying to follow along and understand what you are trying to do here (both with this particular implementation and the general propagation problem you are attempting to solve).</p>
+<p>If I understand correctly, you are trying to find, for each node N in the graph, all possible paths starting from a root node (i.e. a node with no incoming edges) and ending in N, and then you want to combine the markers found along the various paths. Is that right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-29 23:23</div>
+            <div class="timeline-body"><blockquote>
+<p>If I understand correctly, you are trying to find, for each node N in the graph, all possible paths starting from a root node (i.e. a node with no incoming edges) and ending in N, and then you want to combine the markers found along the various paths. Is that right?</p>
+</blockquote>
+<p>Yes, that's right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Peiffap">@Peiffap</a> on 2024-06-29 23:41</div>
+            <div class="timeline-body"><p>Thanks for confirming.
+Okay. What's stopping us from simply doing the following?</p>
+<p>DFS from the root nodes, propagating markers along as long as there is no cycle; when there is a cycle, you simply backtrack without propagating (because the propagation would lead to something like (markers to A) or ((markers to A) and (markers in cycle)), which simplifies to (markers to A)).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-06-30 08:22</div>
+            <div class="timeline-body"><p>I was looking at this graph. It had to be a bit complicated to show that the simple approaches I was thinking of didn't work. (You could hope this graph is not realistic but I think it's a possible graph?)</p>
+<p>Finding all paths without cycles in the path sounds right. For example, to the node 3 I think all these are valid:</p>
+<ul>
+<li>A, D</li>
+<li>B, C, F, G</li>
+<li>B, C, F, H, J, D</li>
+</ul>
+<p>You could imagine the two last paths being realistic and relevant when the marker A is inactive?</p>
+<p>It's probably an optimization to run the all paths search in each SCC separately. I think the cycle-free thing means that we can ask for that no path has a prefix that is another complete path (to that node). It's only necessary to find paths starting with the incident edges to the SCC (we should always have some edge incident, because the root is never in a cycle, hopefully?)</p>
+<p>@Peiffap So if we run dfs from both node 2 and 4, then we find all the required paths from 2 and 4 to 3. I think that the dfs from the root (0) would not find all the required paths to 3.</p>
+<p><img src="https://github.com/astral-sh/uv/assets/3209739/7f563393-aa5a-410b-8024-4003db387199" width="500" /></p>
+<details>
+<summary>graph in Rust</summary>
+
+<pre><code class="language-rust">    let mut gr = petgraph::Graph::new();
+    let n0 = gr.add_node(&quot;0&quot;);
+    let n1 = gr.add_node(&quot;1&quot;);
+    let n2 = gr.add_node(&quot;2&quot;);
+    let n3 = gr.add_node(&quot;3&quot;);
+    let n4 = gr.add_node(&quot;4&quot;);
+    let n5 = gr.add_node(&quot;5&quot;);
+    let n6 = gr.add_node(&quot;6&quot;);
+    let n7 = gr.add_node(&quot;7&quot;);
+    let n8 = gr.add_node(&quot;8&quot;);
+    gr.add_edge(n0, n2, &quot;A&quot;);
+    gr.add_edge(n0, n1, &quot;B&quot;);
+    gr.add_edge(n2, n3, &quot;D&quot;);
+    gr.add_edge(n3, n6, &quot;I&quot;);
+    gr.add_edge(n3, n4, &quot;E&quot;);
+    gr.add_edge(n1, n4, &quot;C&quot;);
+    gr.add_edge(n4, n5, &quot;F&quot;);
+    gr.add_edge(n5, n6, &quot;H&quot;);
+    gr.add_edge(n6, n2, &quot;J&quot;);
+    gr.add_edge(n5, n7, &quot;K&quot;);
+    gr.add_edge(n6, n8, &quot;L&quot;);
+    gr.add_edge(n5, n3, &quot;G&quot;);
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Peiffap">@Peiffap</a> on 2024-06-30 11:14</div>
+            <div class="timeline-body"><blockquote>
+<p>(You could hope this graph is not realistic but I think it's a possible graph?)</p>
+</blockquote>
+<p>I'm not sure, Charlie should have a clearer picture of the kinds of graphs we can run into here.</p>
+<blockquote>
+<p>Finding all paths without cycles in the path sounds right. For example, to the node 3 I think all these are valid:</p>
+<ul>
+<li>A, D</li>
+<li>B, C, F, G</li>
+<li>B, C, F, H, J, D</li>
+</ul>
+<p>You could imagine the two last paths being realistic and relevant when the marker A is inactive?</p>
+</blockquote>
+<p>I agree, they should all be considered I think.</p>
+<blockquote>
+<p>It's probably an optimization to run the all paths search in each SCC separately. I think the cycle-free thing means that we can ask for that no path has a prefix that is another complete path (to that node).</p>
+</blockquote>
+<p>Yes, that's how I'm interpreting cycle-free too. Knowing an SCC basically allows us to say that node <code>N</code> in the SCC can be reached through <code>OR</code>ing all possible paths to any of the nodes in the SCC, where each path represents an <code>AND</code>ing of the edges in it, then from that node to <code>N</code>.
+For example (SCC with nodes <code>A</code>, <code>B</code>, <code>N</code>): if we know all the paths to <code>A</code> and <code>B</code> and we know that there is an SCC, we can already add</p>
+<pre><code>((path 1 to `A`) or (path 2 to `A`) ... (path n_a to `A`) and `A -&gt; N`) or 
+((path 1 to `B`) or (path 2 to `B`) ... (path n_b to `B`) and `B -&gt; N`)</code></pre>
+<p>to <code>N</code>.
+The thing I'm not sure about is that you <em>need</em> to do this -- as I see it, a proper DFS search (more on that later) should take care of discovering this already.</p>
+<p>It's only necessary to find paths starting with the incident edges to the SCC (we should always have some edge incident, because the root is never in a cycle, hopefully?)</p>
+<p>As I understand it, a node is a root node if and only if it has no incident edges. You shouldn't have any root nodes in cycles.</p>
+<blockquote>
+<p>So if we run dfs from both node 2 and 4, then we find all the required paths from 2 and 4 to 3. I think that the dfs from the root (0) would not find all the required paths to 3.</p>
+<img alt="" width="500" src="https://private-user-images.githubusercontent.com/3209739/344451575-7f563393-aa5a-410b-8024-4003db387199.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTk3NDQxMjcsIm5iZiI6MTcxOTc0MzgyNywicGF0aCI6Ii8zMjA5NzM5LzM0NDQ1MTU3NS03ZjU2MzM5My1hYTVhLTQxMGItODAyNC00MDAzZGIzODcxOTkucG5nP1gtQW16LUFsZ29yaXRobT1BV1M0LUhNQUMtU0hBMjU2JlgtQW16LUNyZWRlbnRpYWw9QUtJQVZDT0RZTFNBNTNQUUs0WkElMkYyMDI0MDYzMCUyRnVzLWVhc3QtMSUyRnMzJTJGYXdzNF9yZXF1ZXN0JlgtQW16LURhdGU9MjAyNDA2MzBUMTAzNzA3WiZYLUFtei1FeHBpcmVzPTMwMCZYLUFtei1TaWduYXR1cmU9NGRiYjE4Y2NhMmQ2Mzc2NDM4MDQ5OTM1MDMwNWE2NzJmODYyZjViMWNiMGE5ODIyNzBjMWEyMzA2YjYzMzZkMyZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QmYWN0b3JfaWQ9MCZrZXlfaWQ9MCZyZXBvX2lkPTAifQ.I2E0BaKZ0dzCbirlgUYBcRR9lSO9LEeVwjXUn7vn_HI">
+
+</blockquote>
+<p>Thanks for making the example. I meant to use a modified version of DFS that only backtracks when a node is visited twice <em>in the current path</em>. I believe that would work, i.e. it would <em>eventually</em> get the right answer, but I'm not sure what implications it has for complexity (we are effectively looking at all possible simple paths which is O(n!) for complete graphs... but that's kind of what we need to do?).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-06-30 16:24</div>
+            <div class="timeline-body"><p>I looked at computing all non repeating paths here: https://github.com/petgraph/petgraph/pull/650  It can be used on the whole graph or a subgraph (intention: used on one strongly connected component at a time.) I'm not sure if it does the useful thing we need, but it might.</p>
+<p>I wanted to write the algorithm separately from the uv logic, I think it's better that way and easier to understand the code. (Not saying the code has to live in petgraph.)
+In this case, paths are useful as <code>Vec&lt;EdgeId&gt;</code> (does this have a different name than path?) but in some other graph algorithms, paths are <code>Vec&lt;NodeId&gt;</code>.</p>
+<blockquote>
+<p>As I understand it, a node is a root node if and only if it has no incident edges. You shouldn't have any root nodes in cycles.</p>
+</blockquote>
+<p>I meant the root of the graph in uv's code - the white node in @charliermarsh's picture and node 0 in my picture. IIUC, this is always present and it means any nontrivial SCC (has more than one node) does not contain the root and always has edges incident to the SCC (from the root or from other predecessor scc). This is useful in my example - we know that there are incident edges, we only need to compute paths from 2 and 4 in the scc?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-30 20:51</div>
+            <div class="timeline-body"><p>@bluss - did you determine that doing what we did previously but with reverse-postorder rather than topo <em>doesn't</em> work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Peiffap">@Peiffap</a> on 2024-06-30 23:10</div>
+            <div class="timeline-body"><p>That PR looks nice! I'll give it a more detailed look later, but it makes a lot of sense to me to focus on trails (i.e. no repeated edges) rather than paths (no repeated nodes).</p>
+<p>I think you can make the assumption that the starting node never has incident edges; I believe it just represents a starting state, i.e. with no propagated markers. If that isn't the case yet for some reason, you should still be able to extend the graph by adding a new &quot;root&quot; node with no incident edges?</p>
+<p>I think you're right about incident edges; for the example graph, 2 and 4 are the only possible entry points to the SCC, so you could limit yourself to computing the trails to those and then computing the trails starting in those to the rest of the SCC. Perhaps it also makes sense to only compute trails <em>to</em> nodes that have outgoing edges from the SCC (i.e. 5 and 6), since all the &quot;internal&quot; nodes (only 3 in your example) in the SCC will be covered by the trails from (2 or 4) to (5 or 6)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-30 23:11</div>
+            <div class="timeline-body"><p>(One slight hitch is that we want to remove markers if you have an inbound edge that doesn't have any markers. Right now that's represented by <code>None</code>, but I'm considering using <code>MarkerTree::And(vec![])</code> (the <code>true</code> marker) so that I can differentiate between &quot;nodes we haven't visited yet&quot; and &quot;nodes that have the <code>true</code> marker).)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Peiffap">@Peiffap</a> on 2024-06-30 23:27</div>
+            <div class="timeline-body"><blockquote>
+<p>if you have an inbound edge that doesn't have any markers</p>
+</blockquote>
+<p>Do you mean an inbound edge from the root node, or any inbound edge? If it's the former and you apply the change you're discussing, wouldn't you end up with <code>true or ...</code> (where the ellipsis is all the other trails to that node) which should get simplified to just <code>true</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-30 23:34</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you mean an inbound edge from the root node, or any inbound edge? If it's the former and you apply the change you're discussing, wouldn't you end up with true or ... (where the ellipsis is all the other trails to that node) which should get simplified to just true?</p>
+</blockquote>
+<p>Yes that's right -- inbound edge from the root node (propagated outward), so we could simplify at the end.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-07-01 17:11</div>
+            <div class="timeline-body"><p>@charliermarsh yes I think with my example graph it doesn't work to visit in that order.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-07-16 17:35</div>
+            <div class="timeline-body"><p>The complexity of the solution doesn't feel right, it feels unproportionally complicated. :slightly_smiling_face:</p>
+<p>I think we have an algorithm to do it now, using all_simple_paths_from https://github.com/petgraph/petgraph/pull/650</p>
+<p>The choices for how to use node vs edge weights doesn't matter so much (can be changed?) but I think it would be good to use edge weights as read-only inputs and only update node weights.</p>
+<ul>
+<li>Visit each scc from an <a href="https://en.wikipedia.org/wiki/Strongly_connected_component">SCCs</a> algorithm in topological sort order.</li>
+<li>If it's a single node scc, Update node weight = OR[incoming_weight(E) for incoming edges E]</li>
+<li>incoming_weight(E) = Source node of E's weight AND E weight</li>
+<li>If it's a nontrivial scc<ul>
+<li>Nodes with incoming edges (not from this scc) are input nodes.</li>
+<li>We know this is not the graph root, so it has input nodes</li>
+<li>Use <code>all_simple_paths_from</code>, restricted to the scc, starting from each input node<ul>
+<li>For each node N in the scc update node weight = OR[ path_weight(P)  for all paths P to N ]</li>
+<li>path weight(P) = path_start(I) AND AND[edge weights in path P] where I is input node P started in</li>
+<li>path_start(I) = OR[incoming_weight(E) for incoming edge E to input node I]</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Example</p>
+<ul>
+<li>0 and 1 are trivial single node sccs</li>
+<li>2, 3, 4 is a scc (all nodes in this group can reach each other)</li>
+</ul>
+<p><img src="https://github.com/user-attachments/assets/ffefb6e5-a57f-4539-9a32-4a75a5d66e91" alt="Small example graph" /></p>
+<p>Compute</p>
+<ul>
+<li>Node 0 = A</li>
+<li>Node 1 = B</li>
+<li>Input nodes for SCC are 2, 3</li>
+<li>All paths from 2 are<ul>
+<li>To 3: [E]. To 4: [E, F]   (*)</li>
+</ul>
+</li>
+<li>All paths from 3 are<ul>
+<li>To 4: [F]. To 2: [F, G]   (**)</li>
+</ul>
+</li>
+<li>Now we do all the scc nodes.</li>
+<li>Node 2 = ((Node 0) AND C) OR ((Node 1) AND D) AND F AND G)<ul>
+<li>Note including path from (**)</li>
+</ul>
+</li>
+<li>Node 3 = ((Node 1) and D) OR ((Node 0) AND C AND E)<ul>
+<li>Note including path from (*)</li>
+</ul>
+</li>
+<li>Node 4 = ((Node 0) AND C AND E AND F) OR ((Node 1) AND D AND F)</li>
+</ul>
+<p>We process all paths from all input nodes together because all input nodes to an scc need to be considered in parallel. If there never was more than one input node, most of the complexity would be gone.</p>
+<p>We have the following rules for how 'no marker'/None combines I believe: None OR X = None;  None AND X = X;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @bluss on 2024-07-16 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-09-05 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-09-05 16:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:00:50 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: Support remote scripts with `uv run` - astral-sh/uv #6375</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: Support remote scripts with <code>uv run</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6375">#6375</a>
+        opened by <a href="https://github.com/manzt">@manzt</a>
+        on 2024-08-21 20:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/manzt">@manzt</a> on 2024-08-21 20:15</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<p>First off, congratulations on the 0.3 release! The PEP 723 standalone scripts support is awesome, and I can already imagine a long tail of little scripts of my own that would benefit from this functionality.</p>
+<h2>Background</h2>
+<p>I really like the Deno CLI's support for running and installing remote scripts.</p>
+<pre><code>deno run &lt;url&gt;
+</code></pre>
+<pre><code>deno install --name foo &lt;url&gt;
+</code></pre>
+<p>I can see parallels with <code>uv run</code> and <code>uvx</code>. After mentioning this on Discord, @zanieb suggested I could take a stab at a PR to implement similar functionality for uv.</p>
+<h2>Summary</h2>
+<p>This PR attempts to add support for executing remote standalone scripts directly with <code>uv run</code>. While this is already possible by downloading the script (i.e., via curl/wget) and then using uv run, having direct support would be convenient.</p>
+<p>The proposed functionality is:</p>
+<pre><code class="language-sh">uv run &lt;url&gt;
+</code></pre>
+<p>Another addition/alternative could be to support running scripts via stdin:</p>
+<pre><code class="language-sh">curl -sL &lt;url&gt; | uv run -
+</code></pre>
+<p>But that is not implemented in this PR.</p>
+<h2>Test Plan</h2>
+<p>I noticed that GitHub and <code>files.pythonhosted.org</code> URLs are used in some of the tests. I've created a personal <a href="https://gist.github.com/manzt/cb24f3066c32983672025b04b9f98d1f">GitHub Gist</a> with the example from PEP 723 for now to test this functionality.</p>
+<p>~However, I couldn't figure out how to get the <code>with_snapshot</code> config filter to filter out the tempfile path, so the test is currently failing. Any assistance with this would be appreciated.~</p>
+<h2>Notes</h2>
+<p>I'm not totally pleased with the implementation of this PR. I think it would be better to handle the case earlier (and probably reuse the cache), and avoid mutation, but since run command requires a local path this was the simplest implementation I could come up with.</p>
+<p>I know that performance is paramount with uv so I totally understand if this requires a different approach or something more explicit to avoid &quot;inferring&quot; the path. I'm just taking this as an opportunity to learn a little more Rust and acquaint myself with the code base. cheers!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-21 20:22</div>
+            <div class="timeline-body"><p>Awesome! Thanks for putting this up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-08-21 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-08-21 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/manzt">@manzt</a> reviewed on 2024-08-21 20:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/uv/tests/run.rs</code>:2139 on 2024-08-21 20:36</div>
+            <div class="timeline-body"><p>Just copied the example from <a href="https://peps.python.org/pep-0723/">PEP 723</a>, but realizing now the snapshot will likely change over time (with new versions of deps). Probably better to have a more simple test / and simple dependency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-21 20:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/run.rs</code>:2139 on 2024-08-21 20:37</div>
+            <div class="timeline-body"><p>We'll probably create something in the Astral org anyway, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mgaitan">@mgaitan</a> on 2024-08-23 18:53</div>
+            <div class="timeline-body"><p>Amazing feature. Imagine this with #6283</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-17 04:15</div>
+            <div class="timeline-body"><p>Sorry for the delay, I've been stretched thin on reviews.</p>
+<p>@BurntSushi would you be able to take over review of this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/lib.rs</code>:61 on 2024-09-17 16:50</div>
+            <div class="timeline-body"><p>You should be able to move this in the function definition. Parameters are actually themselves patterns, they just have to be irrefutable patterns. So, <code>async fn run(mut cli: Cli)</code> should be fine here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/lib.rs</code>:152 on 2024-09-17 16:58</div>
+            <div class="timeline-body"><p>This is pretty deeply nested. I might suggest moving this to a helper function where you can use early returns to clean this up a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-09-17 18:49</div>
+            <div class="timeline-body"><p>Before getting into the weeds of how this is implemented, I wanted to pop-up a level and think about this feature more holistically. And I think I do have a significant concern here.</p>
+<p>My main concern is that it is technically possible for a valid URL to also be a valid file path. For example:</p>
+<pre><code>$ mkdir 'https:'
+$ echo wat 'https:/example.com'
+$ cat https://example.com
+wat
+</code></pre>
+<p>If <code>uv run https://example.com</code> were used, then I believe this PR would result in <code>uv</code> doing an HTTP request instead of using the file path on disk.</p>
+<p>Now, I'm not especially worried about this happening in normal usage. The double slash for example is clearly a bit of subterfuge to provoke the ambiguity. So I think the thing where I'm worried is if someone somehow causes a <code>uv run</code> command to run where the end user <em>thinks</em> it's hitting a local file but it's actually hitting a URL. I had a bug similarish to this in ripgrep a while back where end users thought the system <code>gzip</code> executable was being used, but if they cloned a repository containing a <code>gzip.exe</code> on Windows and ran <code>rg</code> from that same directory, then a quirk of Windows would result in executing the <code>gzip.exe</code> in the clone instead.</p>
+<p>There are a lot of different possible mitigations to this. Or perhaps this isn't as much of a problem as I think. For example:</p>
+<ul>
+<li>This could be a feature that requires some opt-in flag to be enabled in our config.</li>
+<li>The default mode could be to show the Python script that will be executed on stdout first and then provide a prompt confirming it. And then add a <code>--no-confirm</code> (or whatever) flag to make it non-interactive.</li>
+<li>We could look for a file path matching the URL, and if it exists, either use the local file or report an error.</li>
+</ul>
+<p>Maybe there's another idea I haven't thought of.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @zanieb by @zanieb on 2024-09-17 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @zanieb on 2024-09-17 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-17 18:53</div>
+            <div class="timeline-body"><p>I generally have a preference for the &quot;We could look for a file path matching the URL, and if it exists, either use the local file or report an error.&quot; option rather than prompting. Opt-in might make sense, but via a <code>--remote</code> flag rather than a persistent configuration option (maybe that's what you meant though).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-17 19:02</div>
+            <div class="timeline-body"><p>See also https://github.com/astral-sh/uv/issues/7396#issuecomment-2351129628</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-18 13:31</div>
+            <div class="timeline-body"><p>If we go the route of prioritizing a local file when given a URL when a file exists, then I think that probably satisfies me. I can't think of a way for that to go wrong from a &quot;accidentally executed a remote script instead of the intended local file&quot; perspective.</p>
+<p>There may still be an argument in favor of a <code>--remote</code> flag, but more in a vague &quot;otherwise it's too easy to run remote scripts&quot; sense. I don't feel as strongly about that personally.</p>
+<p>@manzt What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-09-18 17:03</div>
+            <div class="timeline-body"><p>Thank you for raising this concern. I agree it's a valid issue I hadn't considered.</p>
+<p>My preference aligns with @zanieb's suggestion to prioritize checking for a local file path matching the URL first, erroring if a match is found. For context, I checked your example with deno, which always makes the HTTP request (though it operates in a more sandboxed environment than Python, not sure why they decided on this behavior).</p>
+<p>Regarding a <code>--remote</code> flag, while I don't have strong arguments for or against it, I appreciate its explicitness. The common use case I envision is sharing links to Gists or GitHub, where adding <code>--remote</code> before execution seems a reasonable safeguard (especially if the readme just has a copy link).</p>
+<p>It's worth noting that with #6467, I believe scripts can already be executed via <code>curl &lt;url&gt; | uv run -</code> (though last time I checked the script metadata wasn't parsed from stdin). However, handling this directly in uv does seem really nice UX.</p>
+<p>Apologies for the delayed response!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-19 13:53</div>
+            <div class="timeline-body"><p>All righty, let's go with checking for whether a local file exists or not.</p>
+<p>@charliermarsh Do you have any opinions here? Do you think <code>uv run https://example.com/foo.py</code> should &quot;just work,&quot; or do you think there should be an extra step needed, e.g., <code>uv run --remote https://example.com/foo.py</code>? (Above we discussed mitigating the case where <code>https://example.com/foo.py</code> actually refers to a valid file path, in which case, we would just read the local file instead.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-19 14:41</div>
+            <div class="timeline-body"><p>I sort of prefer &quot;just works&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-19 14:48</div>
+            <div class="timeline-body"><p>Same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-19 15:00</div>
+            <div class="timeline-body"><p>Same. Whatever we do, it would be nice to align the behavior of requirements.txt files, which can also be either remote or local.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-09-19 21:36</div>
+            <div class="timeline-body"><p>Seems like agreement, I’ll start addressing the prior comments and handle the file behavior!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/uv/src/lib.rs</code>:61 on 2024-09-24 20:39</div>
+            <div class="timeline-body"><p>TIL, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/uv/src/lib.rs</code>:152 on 2024-09-25 18:35</div>
+            <div class="timeline-body"><p>Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-09-25 18:37</div>
+            <div class="timeline-body"><p>Thanks for your patience. I think I was able to achieve the desired behavior and added another test.</p>
+<p>I'm not sure how we should plan on testing the remote behavior (right now still depends on a gist with a fixture of my own).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/lib.rs</code>:50 on 2024-09-26 12:23</div>
+            <div class="timeline-body"><p>There should be another line break here. Otherwise this all runs together as one paragraph when rendered.</p>
+<p>For Rust APIs that appear on the summary page of a module (types, functions, modules), the first &quot;Markdown paragraph&quot; is shown as a brief summary on that page. To keep things clean, it's best to limit this to one line/sentence. Your first sentence here is perfect, but because there's no line break, that summary will also include the text below too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/run.rs</code>:2139 on 2024-09-26 12:28</div>
+            <div class="timeline-body"><p>How about this:</p>
+<ul>
+<li>Submit a separate PR with a new Python program in the <code>scripts</code> directory. Name it, <code>uv-run-remote-script-test.py</code> and include a comment in the file explaining why it exists.</li>
+<li>Make it do something stupidly simple. Like just print a string or something.</li>
+</ul>
+<p>Then once that PR is merged, we should have a stable URL for it. And then you can use it in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/lib.rs</code>:177 on 2024-09-26 13:11</div>
+            <div class="timeline-body"><p>Why does this start with an underscore? I think you should be able to remove it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/lib.rs</code>:58 on 2024-09-26 13:20</div>
+            <div class="timeline-body"><p>I think you should be using <a href="https://doc.rust-lang.org/std/path/struct.Path.html#method.try_exists"><code>Path::try_exists</code></a> here. If it's result is anything other than <code>Ok(true)</code>, then you bail.</p>
+<p>The idea here is that I think we want to be pretty conservative: we should only execute a remote script if we can <em>absolutely confirm</em> there is no corresponding local file path. Otherwise, you open yourself up to other vectors where by an end user unintentionally runs a remote script.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/lib.rs</code>:64 on 2024-09-26 13:23</div>
+            <div class="timeline-body"><p>What happens if there is more than one positional argument? I think this means we ignore it? Should we return <code>Ok(None)</code> instead? (I'm actually not quite sure about this one.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/lib.rs</code>:63 on 2024-09-26 13:23</div>
+            <div class="timeline-body"><p>I would use an early return here. So if the target <em>doesn't</em> look like a URL, then <code>return Ok(None);</code>. This keeps rightward drift in check and makes it easy to see under what conditions the function bails.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> requested changes on 2024-09-26 13:24</div>
+            <div class="timeline-body"><p>Nice work! This is coming along. :-) I've requested another round of changes and suggested a way forward with respect to testing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/uv/src/lib.rs</code>:177 on 2024-09-26 14:12</div>
+            <div class="timeline-body"><p>Must Rust knowledge isn't that great, but it seems the <code>Drop</code> implementation for <code>NamedTempFile</code> unlinks the temporary file. MRE:</p>
+<pre><code class="language-rust">use tempfile::NamedTempFile;
+
+fn main() {
+    let path = {
+        let tmpfile = NamedTempFile::new().unwrap();
+        tmpfile.path().to_str().unwrap().to_string()
+    };
+    assert!(std::path::Path::new(&amp;path).exists()); // panics!
+}
+</code></pre>
+<p>The only way I could figure out how to keep it around is to have <code>resolve_script_target</code> return the owned temp file and hoist it into a higher scope (then clippy yelled at me for an unused variable, hence the underscore).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/uv/src/lib.rs</code>:50 on 2024-09-26 14:13</div>
+            <div class="timeline-body"><p>Awesome, thanks for taking the time to explain that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/uv/src/lib.rs</code>:58 on 2024-09-26 14:26</div>
+            <div class="timeline-body"><blockquote>
+<p>I think you should be using <code>Path::try_exists</code> here.</p>
+</blockquote>
+<p>Thanks for the pointer!</p>
+<blockquote>
+<p>If it's result is anything other than <code>Ok(true)</code>, then you bail.</p>
+</blockquote>
+<p>Maybe I'm having a hard time thinking this through, but right we &quot;bail&quot; from this function if a file exists. I think we want to bail for anything that is not <code>Ok(false)</code>? (I went ahead and made these changes, sorry if I'm missing something).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/uv/src/lib.rs</code>:63 on 2024-09-26 14:34</div>
+            <div class="timeline-body"><p>Good idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/manzt">@manzt</a> reviewed on 2024-09-26 14:35</div>
+            <div class="timeline-body"><p>Thanks for the review! Learning a lot.</p>
+<p>Just a clarifying question about Path::try_exists.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/uv/src/lib.rs</code>:64 on 2024-09-26 14:40</div>
+            <div class="timeline-body"><blockquote>
+<p>What happens if there is more than one positional argument?</p>
+</blockquote>
+<p>if there is more than one, we don't change them (so they are forwarded down to the python program). E.g., it would be nice to support:</p>
+<pre><code class="language-sh">uv run &lt;url&gt; [python program flags]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/manzt">@manzt</a> reviewed on 2024-09-26 14:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/manzt">@manzt</a> reviewed on 2024-09-26 15:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/uv/tests/run.rs</code>:2139 on 2024-09-26 15:06</div>
+            <div class="timeline-body"><p>should we point to main here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-09-26 15:10</div>
+            <div class="timeline-body"><p>hmm</p>
+<pre><code class="language-sh">cargo run run https://raw.githubusercontent.com/astral-sh/uv/main/scripts/uv-run-remote-script-test.py CI
+</code></pre>
+<p>seems to be working on this branch, but the test suite is having trouble resolving the version of <code>rich</code>. Maybe I'm missing something in the setup of the <code>TestContext</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-09-26 15:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/run.rs</code>:2139 on 2024-09-26 15:32</div>
+            <div class="timeline-body"><p>No I think the commit revision like you have it here is the right way to go. But I would use the full revision hash.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-26 15:34</div>
+            <div class="timeline-body"><blockquote>
+<p>hmm</p>
+<pre><code class="language-shell">cargo run run https://raw.githubusercontent.com/astral-sh/uv/main/scripts/uv-run-remote-script-test.py CI
+</code></pre>
+<p>seems to be working on this branch, but the test suite is having trouble resolving the version of <code>rich</code>. Maybe I'm missing something in the setup of the <code>TestContext</code>.</p>
+</blockquote>
+<p>Ah right my bad! Our tests set <code>--exclude-newer</code> to avoid new releases of packages changing resolutions. Really sorry (especially since I'm the one who asked for a version pin!), but this means we'll need another PR to change the script we just merged to use an older version of <code>rich</code>. I think <code>13.7.0</code> should be old enough since that was published before our <code>EXCLUDE_NEWER</code> value:</p>
+<p>https://github.com/astral-sh/uv/blob/c8357b7bf23b4ade3b98be74bd7a469c05e6ec02/crates/uv/tests/common/mod.rs#L29-L30</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/lib.rs</code>:64 on 2024-09-26 15:35</div>
+            <div class="timeline-body"><p>Perfect. SGTM.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/lib.rs</code>:72 on 2024-09-26 15:38</div>
+            <div class="timeline-body"><p>I think you can just do:</p>
+<pre><code class="language-rust">if !matches!(Path::new(target).try_exists(), Ok(false)) {
+    return Ok(None);
+}
+</code></pre>
+<p>There are actually a lot of different ways to write this, but I think I like this one the best. But the <code>if</code> with the empty body is a bit odd. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-09-26 15:39</div>
+            <div class="timeline-body"><p>No worries, I opened https://github.com/astral-sh/uv/pull/7713</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-09-26 15:46</div>
+            <div class="timeline-body"><p>Test is working now, pointing to #7713. Will switch to hash on main once merged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/lib.rs</code>:90 on 2024-09-26 15:47</div>
+            <div class="timeline-body"><p>Will this result in <code>script.py.py</code> if the <code>script.py</code> fallback is used above?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/lib.rs</code>:177 on 2024-09-26 15:53</div>
+            <div class="timeline-body"><p>Ahhhh yes okay, I didn't realize it wasn't actually being used below. This is kind of interesting because I'm not sure there is actually a guarantee that <code>_maybe_tempfile</code> won't just be dropped right away. The way to fix that for sure would be this patch:</p>
+<pre><code class="language-rust">diff --git a/crates/uv/src/lib.rs b/crates/uv/src/lib.rs
+index 6c21f243..c6096124 100644
+--- a/crates/uv/src/lib.rs
++++ b/crates/uv/src/lib.rs
+@@ -174,10 +174,10 @@ async fn run(mut cli: Cli) -&gt; Result&lt;ExitStatus&gt; {
+     };
+ 
+     // Parse the external command, if necessary.
+-    let mut _maybe_tempfile: Option&lt;tempfile::NamedTempFile&gt; = None;
++    let mut maybe_tempfile: Option&lt;tempfile::NamedTempFile&gt; = None;
+     let run_command = if let Commands::Project(command) = &amp;mut *cli.command {
+         if let ProjectCommand::Run(uv_cli::RunArgs { command, .. }) = &amp;mut **command {
+-            _maybe_tempfile = resolve_script_target(command).await?;
++            maybe_tempfile = resolve_script_target(command).await?;
+             Some(RunCommand::try_from(&amp;*command)?)
+         } else {
+             None
+@@ -298,7 +298,7 @@ async fn run(mut cli: Cli) -&gt; Result&lt;ExitStatus&gt; {
+     // Configure the cache.
+     let cache = Cache::from_settings(cache_settings.no_cache, cache_settings.cache_dir)?;
+ 
+-    match *cli.command {
++    let result = match *cli.command {
+         Commands::Help(args) =&gt; commands::help(
+             args.command.unwrap_or_default().as_slice(),
+             printer,
+@@ -1185,7 +1185,9 @@ async fn run(mut cli: Cli) -&gt; Result&lt;ExitStatus&gt; {
+                 commands::build_backend::prepare_metadata_for_build_editable(&amp;wheel_directory)
+             }
+         },
+-    }
++    };
++    drop(maybe_tempfile);
++    result
+ }
+ 
+ /// Run a [`ProjectCommand`].
+</code></pre>
+<p>But this brings up an interesting point: what happens if executing the downloaded Python script fails? I guess it would show the temporary file path and not the URL, which is potentially confusing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-09-26 15:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-09-26 15:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/lib.rs</code>:58 on 2024-09-26 15:53</div>
+            <div class="timeline-body"><p>Yes, you're 100% right. I got the logic flipped around! Whoops.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/manzt">@manzt</a> reviewed on 2024-09-26 15:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/uv/src/lib.rs</code>:72 on 2024-09-26 15:55</div>
+            <div class="timeline-body"><p>ooo, I like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/manzt">@manzt</a> reviewed on 2024-09-26 16:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/uv/src/lib.rs</code>:177 on 2024-09-26 16:08</div>
+            <div class="timeline-body"><p>Thanks! I applied the patch.</p>
+<blockquote>
+<p>But this brings up an interesting point: what happens if executing the downloaded Python script fails? I guess it would show the temporary file path and not the URL, which is potentially confusing.</p>
+</blockquote>
+<p>There is already some indication of the tempfile location with the summary of parsing script 723 metadata:</p>
+<pre><code class="language-sh">    Reading inline script metadata from: [TEMP_PATH].py
+</code></pre>
+<p>Perhaps we could add some context/logging that says &quot;Downloading [URL] to [TEMP_PATH]?&quot;</p>
+<p>thus tracebacks from a failed Python script would have more context?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/manzt">@manzt</a> reviewed on 2024-09-26 16:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/uv/tests/run.rs</code>:2139 on 2024-09-26 16:09</div>
+            <div class="timeline-body"><p>Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-09-26 16:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/lib.rs</code>:177 on 2024-09-26 16:11</div>
+            <div class="timeline-body"><blockquote>
+<p>Perhaps we could add some context/logging that says &quot;Creating a tempfile for [URL] in [TEMP_PATH]?</p>
+</blockquote>
+<p>I like this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/manzt">@manzt</a> reviewed on 2024-09-26 16:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/uv/src/lib.rs</code>:90 on 2024-09-26 16:18</div>
+            <div class="timeline-body"><p>Ah yeah, you are right. tempfile adds a hash and a suffix to the prefix.</p>
+<pre><code class="language-sh">cargo run run https://raw.githubusercontent.com/astral-sh/uv/main/scripts/uv-run-remote-script-test.py CI
+# Reading inline script metadata from: /var/folders/gs/j5y7yv816z71dzy18r4qmy3h0000gq/T/uv-run-remote-script-test.pyznxLtC.py
+# Installed 4 packages in 21ms
+# Hello CI, from uv!
+</code></pre>
+<p>It might be easiest to:</p>
+<pre><code class="language-rust">    let temp_file = tempfile::Builder::new()
+        .suffix(&quot;.py&quot;)
+        .tempfile?;
+</code></pre>
+<p>Depends on how useful it is to try for the file name. It's only used to report to the end user and would show up in traceback messages from Python errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/lib.rs</code>:90 on 2024-09-26 16:22</div>
+            <div class="timeline-body"><p>I think including the file name in there as a prefix is fine.  Especially if we add a log message saying that the remote script was written to the temp file.</p>
+<p>I think my issue here is the case where the <code>script.py</code> <em>fallback name</em> is used (from above). Does that result in a double <code>.py</code> suffix?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-09-26 16:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/manzt">@manzt</a> reviewed on 2024-09-26 16:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/uv/src/lib.rs</code>:90 on 2024-09-26 16:34</div>
+            <div class="timeline-body"><p>I think the issue also happens if the file has as <code>.py</code>. For example:</p>
+<p>https://raw.githubusercontent.com/astral-sh/uv/main/scripts/uv-run-remote-script-test.py</p>
+<p>results in:</p>
+<p>uv-run-remote-script-test.pyznxLtC.py</p>
+<p>So <code>script.py</code> would similarly result in <code>script.py[hash].py</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/lib.rs</code>:90 on 2024-09-26 16:36</div>
+            <div class="timeline-body"><p>Yeah, so I think you want to strip the <code>.py</code> suffix from the file name, but keep the <code>.py</code> suffix in the temp file builder.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-09-26 16:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/manzt">@manzt</a> reviewed on 2024-09-26 16:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/uv/src/lib.rs</code>:90 on 2024-09-26 16:41</div>
+            <div class="timeline-body"><p>Ah, much more simple. Done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/manzt">@manzt</a> reviewed on 2024-09-26 16:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/uv/src/lib.rs</code>:177 on 2024-09-26 16:49</div>
+            <div class="timeline-body"><p>I've added a test and added the reporting:</p>
+<pre><code>Downloading remote script to: [TEMP_PATH]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-27 14:54</div>
+            <div class="timeline-body"><p>The CI failure looks legitimate. My guess is that the file path is just totally invalid on Windows, which in turn causes <code>Path::new(...).try_exists()</code> to fail and thus bail out of the remote logic. So I think I would change the <code>if</code> to this:</p>
+<pre><code class="language-rust">    // Only continue if we are absolutely certain no local file exists.
+    //
+    // We don't do this check on Windows since the file path would
+    // be invalid anyway, and thus couldn't refer to a local file.
+    if cfg!(unix) &amp;&amp; !matches!(Path::new(target).try_exists(), Ok(false)) {
+        return Ok(None);
+    }
+</code></pre>
+<p>Also, I think we need to add docs to <code>uv run</code> mentioning this feature. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-09-27 15:14</div>
+            <div class="timeline-body"><p>Thanks for the tips!</p>
+<blockquote>
+<p>Also, I think we need to add docs to uv run mentioning this feature. :)</p>
+</blockquote>
+<p>I took a stab at updating the docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-27 15:16</div>
+            <div class="timeline-body"><p>I think you need to run <code>cargo dev generate-cli-reference</code>. Basically, changes to the docs need to be propagated out to other places.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-09-27 15:21</div>
+            <div class="timeline-body"><p>Ah, sorry... wasn't sure what the source of truth was. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-09-27 15:30</div>
+            <div class="timeline-body"><p>Any thoughts on how to update the test checking for the local file? Is there a way to mark that a test <em>should</em> fail on windows for example?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/lib.rs</code>:89 on 2024-09-27 16:06</div>
+            <div class="timeline-body"><p>Hmmmm. This is an issue I think. We should be using a <code>Printer</code> here derived from config settings. Otherwise this message won't be squashed when, e.g., <code>--quiet</code> is passed. I'm not quite sure how to solve that. Another approach would be to emit this message after a <code>Printer</code> is constructed below. See:</p>
+<pre><code>    // Configure the `Printer`, which controls user-facing output in the CLI.
+    let printer = if globals.quiet {
+        Printer::Quiet
+    } else if globals.verbose &gt; 0 {
+        Printer::Verbose
+    } else if globals.no_progress {
+        Printer::NoProgress
+    } else {
+        Printer::Default
+    };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>docs/reference/cli.md</code>:57 on 2024-09-27 16:06</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">When used with a file ending in `.py` or an HTTP(S) URL, the file will be treated as a script and run with a Python interpreter, i.e., `uv run file.py` is equivalent to `uv run python file.py`. For URLs, the script is downloaded to a temporary file before execution. If the script contains inline dependency metadata, it will be installed into an isolated, ephemeral environment. When used with `-`, the input will be read from stdin, and treated as a Python script.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-09-27 16:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Any thoughts on how to update the test checking for the local file? Is there a way to mark that a test should fail on windows for example?</p>
+</blockquote>
+<p>I don't think it should fail though? It looks like it's failing because it can't write a temp file? I'm not sure what the issue is there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/manzt">@manzt</a> reviewed on 2024-09-27 16:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/uv/src/lib.rs</code>:89 on 2024-09-27 16:50</div>
+            <div class="timeline-body"><p>I updated the script to check whether the tempfile exists and report that a file was downloaded (reusing the <code>Printer</code>).</p>
+<p>I think this is the most minimal way to respect <code>--quiet</code>. From an end user perspective, it would probably be nicer to report when we are actually starting to download the script, but I'm not quite should how to solve that without a bigger refactor.</p>
+<p>One idea would be to create the temp file immediately and kick off the download, but await a future for the download/writing after eprinting &quot;Downloading remote script...&quot;. Maybe too complicated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-09-27 16:54</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think it should fail though? It looks like it's failing because it can't write a temp file? I'm not sure what the issue is there.</p>
+</blockquote>
+<p>I think on Windows we skip checking for a local file, which would result in requesting<code>https://example.com/path/to/main.py</code></p>
+<blockquote>
+<p>It looks like it's failing because it can't write a temp file?</p>
+</blockquote>
+<p>Right, I'm also not sure of this error... but if we were to write the tempfile I think it would still fail. Maybe I'm missing something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-27 16:58</div>
+            <div class="timeline-body"><blockquote>
+<p>I think on Windows we skip checking for a local file, which would result in requestinghttps://example.com/path/to/main.py</p>
+</blockquote>
+<p>OK, so you're referring to the <code>run_url_like_with_local_file_priority</code> test here. I was looking at <code>run_remote_pep723_script</code>.</p>
+<p>For <code>run_remote_pep723_script</code>, I think the test should pass.</p>
+<p>For <code>run_url_like_with_local_file_priority</code>, right, the thing being tested doesn't make sense on Windows. So I would probably just add a <code>#[cfg(unix)]</code> on that test with a comment explaining why that's there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-09-27 16:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/lib.rs</code>:89 on 2024-09-27 16:59</div>
+            <div class="timeline-body"><p>I think what you have is fine for now. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-09-27 17:08</div>
+            <div class="timeline-body"><blockquote>
+<p>OK, so you're referring to the <code>run_url_like_with_local_file_priority</code> test here. I was looking at <code>run_remote_pep723_script</code>.</p>
+</blockquote>
+<p>Yes, apologies for the confusion. I added the <code>#[cfg(unix)]</code> with a comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-09-27 17:08</div>
+            <div class="timeline-body"><blockquote>
+<p>For run_remote_pep723_script, I think the test should pass.</p>
+</blockquote>
+<p>Agreed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-10-01 20:00</div>
+            <div class="timeline-body"><p>I wonder if the issue on Windows is related to some behavior behind how <a href="https://docs.rs/tempfile/latest/tempfile/struct.NamedTempFile.html#windows"><code>NamedTempFile</code></a> works on Windows. Are we &quot;Opening a named temporary file in a world-writable directory.&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-10 13:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/lib.rs</code>:86 on 2024-10-10 13:04</div>
+            <div class="timeline-body"><p>I think this needs to go through the uv client. Otherwise, it won't respect <code>--offline</code>, SSL certs, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-10-10 13:49</div>
+            <div class="timeline-body"><blockquote>
+<p>I wonder if the issue on Windows is related to some behavior behind how <a href="https://docs.rs/tempfile/latest/tempfile/struct.NamedTempFile.html#windows"><code>NamedTempFile</code></a> works on Windows. Are we &quot;Opening a named temporary file in a world-writable directory.&quot;?</p>
+</blockquote>
+<p>I'm not sure. It seems like it's <a href="https://docs.rs/tempfile/latest/tempfile/struct.NamedTempFile.html#method.persist"><code>NamedTempFile::persist</code></a> that's failing.</p>
+<p>Oh, I think I see the problem. You're using <code>write_atomic</code> and passing the path of the temporary file you just created to it. And <code>write_atomic</code> tries to create another temporary file at that same path and persists it. Specifically, I think this is where the error is coming from:</p>
+<p>https://github.com/astral-sh/uv/blob/c07000718aa8eb3321f5d46bd454ae863ffc1963/crates/uv-fs/src/lib.rs#L147-L156</p>
+<p>I don't think you need <code>write_atomic</code> here. Can you say more about why you used it? I think just a <a href="https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all"><code>write_all</code></a> on the <code>NamedTempFile</code> itself is sufficient.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-10-10 14:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh, I think I see the problem.</p>
+</blockquote>
+<p>Thanks for explanation. I've learned a lot from this PR.</p>
+<blockquote>
+<p>I don't think you need write_atomic here. Can you say more about why you used it? I think just a write_all on the NamedTempFile itself is sufficient.</p>
+</blockquote>
+<p>It was naive of me. I was looking for how files were written (async) in other parts of the project, but for a tempfile I realize we really don't need. Replaced with <code>write_all</code>!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/manzt">@manzt</a> reviewed on 2024-10-10 14:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/uv/src/lib.rs</code>:86 on 2024-10-10 14:40</div>
+            <div class="timeline-body"><p>Ok, using the client builder now. I went with re-resolving the global args locally since the contents of file downloaded by this script updates the resolution later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-10 14:49</div>
+            <div class="timeline-body"><p>Do we need a file for this? Could we just read into memory and pass the contents over stdin?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-10 14:50</div>
+            <div class="timeline-body"><p>(I could also look into that separately, but I'm wondering if it would remove a lot of the complexity around tempfiles, drop, etc.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-10-10 14:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Do we need a file for this? Could we just read into memory and pass the contents over stdin</p>
+</blockquote>
+<p>Definitely! However, I went this direction because writing to a tempfile was the easiest way to support PEP 723 metadata and passing down arguments to the Python script. IIRC PEP 723 is only parsed (currently) from <code>RunCommand::PythonScript | RunCommand::PythonGuiScript</code> (not stdin):</p>
+<p>https://github.com/astral-sh/uv/blob/7bac708b97bcd032fa8b03cf34b45938f4933469/crates/uv/src/lib.rs#L150-L172</p>
+<p>and using stdin resolves to <code>python -c &lt;contents&gt;</code> and doesn't capture other addtional arguments/flags for the python script.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-10 15:25</div>
+            <div class="timeline-body"><p>Okay, makes sense. I think we should follow-up by changing that -- it seems like an oversight that we don't detect scripts there!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-10 16:06</div>
+            <div class="timeline-body"><p>Funnily enough: https://github.com/astral-sh/uv/issues/8097</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-10 16:06</div>
+            <div class="timeline-body"><p>I defer to @BurntSushi to merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-10-10 16:06</div>
+            <div class="timeline-body"><p>I think this LGTM now! Amazing work @manzt. Thank you for sticking with this. I know there was a lot of back-and-forth to get this merged, but I think it's in a good state now!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-10-10 16:07</div>
+            <div class="timeline-body"><p>I think you just need to rebase this on <code>main</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-10-10 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-10-10 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-10-10 18:11</div>
+            <div class="timeline-body"><blockquote>
+<p>I think you just need to rebase this on <code>main</code>.</p>
+</blockquote>
+<p>Nope that was wrong! I usually do rebase &amp; merge for my PRs, so that was selected (even though I was always planning to squash this PR) and <em>that</em> way greyed out. But squash &amp; merge was fine. Interesting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-10-10 18:13</div>
+            <div class="timeline-body"><p>Ok good! I tried rebasing and it was scary :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-10 21:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-10-11 10:38</div>
+            <div class="timeline-body"><p>Downloading has some semantic advantages, <code>__file__</code> is meaningful, tracebacks are better, etc</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-11 10:40</div>
+            <div class="timeline-body"><p>Yeah I looked into it and agree that downloading is actually better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/afeblot">@afeblot</a> on 2024-10-16 22:13</div>
+            <div class="timeline-body"><p>Was coming here to suggest/ask for this feature, and found it just released already. I love you :-)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:01 UTC
+    </footer>
+</body>
+</html>

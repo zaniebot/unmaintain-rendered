@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix link-mode=clone on linux - astral-sh/uv #7620</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix link-mode=clone on linux</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7620">#7620</a>
+        opened by <a href="https://github.com/aroig">@aroig</a>
+        on 2024-09-22 14:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/aroig">@aroig</a> on 2024-09-22 14:48</div>
+            <div class="timeline-body"><ul>
+<li><strong>Do not attempt to reflink directories on linux</strong></li>
+<li><strong>Refactor clone_recursive</strong></li>
+</ul>
+<h2>Summary</h2>
+<p>On linux, reflink does not work on a directory. Currently, we first attempt to reflink directory, and only if it fails with <code>AlreadyExists</code> we attempt to reflink recursively.</p>
+<p>This has the effect that, on linux, <code>uv pip install --link-mode=clone</code> would always fall back to <code>copy</code>.</p>
+<p>We resolve this by only attempting to reflink directories on macos. In the process, we refactored <code>clone_recursive</code> in an attempt to make it easier to reason about its logic.</p>
+<h2>Test Plan</h2>
+<p>I tested that after this change, <code>uv pip install --link-mode=clone numpy</code> would behave as expected in the following cases:</p>
+<ul>
+<li>linux, btrfs filesystem, venv on the same filesystem as cache (correctly reflinked)</li>
+<li>linux, btrfs filesystem, venv on a different filesystem than cache (fallback to copy)</li>
+</ul>
+<p>I have not tested it on macos or windows, as I currently don't have access to any macos or windows machines, unfortunately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aroig">@aroig</a> on 2024-09-22 15:52</div>
+            <div class="timeline-body"><p>I pushed a couple of extra commits to make the linter happy, and close a gap for a race condition I missed initially, and caused a CI failure on macos.</p>
+<p>This is ready for review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-22 16:13</div>
+            <div class="timeline-body"><p>Oh smart, thank you. Will review. I’ll admit I’ve never actually tested this on btrfs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-22 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2024-09-22 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-09-22 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-22 16:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/install-wheel-rs/src/linker.rs</code>:375 on 2024-09-22 16:59</div>
+            <div class="timeline-body"><p>Why would it not be sufficient to extend this to Linux?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/aroig">@aroig</a> reviewed on 2024-09-22 17:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/aroig">@aroig</a> on <code>crates/install-wheel-rs/src/linker.rs</code>:375 on 2024-09-22 17:14</div>
+            <div class="timeline-body"><p>It is. This is the first commit in the PR, actually.</p>
+<p>I then tried to decouple a bit this code for the next person who needs to touch it. I found it a bit difficult to reason about because it was handling 2 separate fallback logic, plus the windows and linux special case in <code>clone_recursive</code>.</p>
+<p>I do think this makes it easier to follow, but I understand this is somewhat subjective. If you prefer, I can stick with the minimal change that fixes the bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-22 17:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/install-wheel-rs/src/linker.rs</code>:375 on 2024-09-22 17:23</div>
+            <div class="timeline-body"><p>While I definitely appreciate the intent, I would prefer to use the minimal change, since this function is <em>so</em> critical and making large changes to it requires extensive testing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/aroig">@aroig</a> reviewed on 2024-09-22 17:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/aroig">@aroig</a> on <code>crates/install-wheel-rs/src/linker.rs</code>:375 on 2024-09-22 17:31</div>
+            <div class="timeline-body"><p>Ok. I updated the branch with a minimal change to fix the bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-09-22 17:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-22 17:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/install-wheel-rs/src/linker.rs</code>:375 on 2024-09-22 17:40</div>
+            <div class="timeline-body"><p>Thanks. This I can easily and confidently merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-09-22 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-22 17:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:40 UTC
+    </footer>
+</body>
+</html>

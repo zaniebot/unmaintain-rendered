@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support `uv run --script` - astral-sh/uv #7739</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support <code>uv run --script</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7739">#7739</a>
+        opened by <a href="https://github.com/tfsingh">@tfsingh</a>
+        on 2024-09-27 13:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/tfsingh">@tfsingh</a> on 2024-09-27 13:47</div>
+            <div class="timeline-body"><p>This PR adds support for executing a script with <code>uv run</code>, even when the script does not have a <code>.py</code> extension. Addresses #7396.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tfsingh">@tfsingh</a> on <code>crates/uv-cli/src/lib.rs</code>:2555 on 2024-09-27 13:50</div>
+            <div class="timeline-body"><p>Not sure what the best approach to arg parsing is here — we could explicitly enumerate conflicts (such as <code>--extra</code> and <code>--all-extras</code>), but we don't even warn for these as is when running a script (implicitly) so not sure if it's worth doing. Happy to either way!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tfsingh">@tfsingh</a> on <code>crates/uv/src/lib.rs</code>:140 on 2024-09-27 13:51</div>
+            <div class="timeline-body"><p>This was lifted from RunCommand::try_from, I thought it best to not meddle with that API by adding a <code>script</code> parameter</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tfsingh">@tfsingh</a> reviewed on 2024-09-27 13:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @tfsingh on 2024-09-27 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-01 19:45</div>
+            <div class="timeline-body"><p>I think I'd explore something like this instead?</p>
+<pre><code class="language-diff">diff --git a/crates/uv/src/commands/project/run.rs b/crates/uv/src/commands/project/run.rs
+index 2dc660e34..a375d126e 100644
+--- a/crates/uv/src/commands/project/run.rs
++++ b/crates/uv/src/commands/project/run.rs
+@@ -862,6 +862,17 @@ impl RunCommand {
+         }
+     }
+ 
++    pub(crate) fn force_python_script(self) -&gt; anyhow::Result&lt;Self&gt; {
++        match self {
++            Self::Empty =&gt; Ok(self),
++            Self::PythonScript(..) | Self::PythonGuiScript(..) =&gt; Ok(self),
++            Self::PythonPackage(..) =&gt; {
++                bail!(&quot;Target is a directory and cannot be executed as a script&quot;)
++            }
++            _ =&gt; todo!(),
++        }
++    }
++
+     /// Convert a [`RunCommand`] into a [`Command`].
+     fn as_command(&amp;self, interpreter: &amp;Interpreter) -&gt; Command {
+         match self {
+diff --git a/crates/uv/src/lib.rs b/crates/uv/src/lib.rs
+index 68efb85b1..b0de789fc 100644
+--- a/crates/uv/src/lib.rs
++++ b/crates/uv/src/lib.rs
+@@ -135,17 +135,12 @@ async fn run(cli: Cli) -&gt; Result&lt;ExitStatus&gt; {
+             command, script, ..
+         }) = &amp;**command
+         {
+-            if *script {
+-                let (target, args) = command.split();
+-                if let Some(target) = target {
+-                    let path = PathBuf::from(&amp;target);
+-                    Some(RunCommand::PythonScript(path, args.to_vec()))
+-                } else {
+-                    anyhow::bail!(&quot;Script path must be supplied when using `uv run --script`&quot;);
+-                }
++            let command = RunCommand::try_from(command)?;
++            Some(if *script {
++                command.force_python_script()?
+             } else {
+-                Some(RunCommand::try_from(command)?)
+-            }
++                command
++            })
+         } else {
+             None
+         }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-01 19:57</div>
+            <div class="timeline-body"><p>Looks like <code>RunComand::from_args</code> was added for <code>--module</code> support, which is also a pretty reasonable approach and simplifies your problem here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-01 23:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/run.rs</code>:2170 on 2024-10-01 23:27</div>
+            <div class="timeline-body"><p>Can you add test cases for <code>--script</code> with a file that does not exist and a directory?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tfsingh">@tfsingh</a> reviewed on 2024-10-01 23:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tfsingh">@tfsingh</a> on <code>crates/uv/tests/run.rs</code>:2170 on 2024-10-01 23:40</div>
+            <div class="timeline-body"><p>Done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-10-01 23:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2024-10-02 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-10-02 14:51</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-10-02 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-02 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Support uv run --script" to "Support `uv run --script`" by @charliermarsh on 2024-10-11 09:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:44 UTC
+    </footer>
+</body>
+</html>

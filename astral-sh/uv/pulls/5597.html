@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv-resolver: fix marker propagation - astral-sh/uv #5597</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv-resolver: fix marker propagation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5597">#5597</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-07-30 12:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-30 12:42</div>
+            <div class="timeline-body"><p>This PR represents a different approach to marker propagation in an
+attempt to unblock #5583. In particular, instead of propagating markers
+when forks are created, we wait until resolution is complete to
+propagate all markers to all dependencies in each fork. This ends up
+being both more robust (we should never miss anything) and simpler to
+implement because it doesn't require mutating a <code>PubGrubPackage</code> (which
+was pretty annoying). I think the main downside here is that this can
+sometimes add markers where they aren't needed.</p>
+<p>This actually winds up making quite a few snapshot changes. I went
+through each of them. Some of them look like legitimate bug fixes. Some
+of them look like superfluous additions. And some of them look like they
+would be removed if we had perfect marker normalization. But I don't
+think any of the changes are <em>wrong</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-07-30 12:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/branching_urls.rs</code>:236 on 2024-07-30 12:44</div>
+            <div class="timeline-body"><p>I think these are superfluous because the dependency on <code>anyio</code> from <code>a</code> above is already gated on marker expressions.</p>
+<p>(I think this change overall brings us closer to &quot;write out the full marker expressions for each distribution&quot; that could potentially obviate the need for a DAG traversal.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/lock.rs</code>:2926 on 2024-07-30 12:45</div>
+            <div class="timeline-body"><p>I believe these are all correct simplifications from what was here previously.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/lock_scenarios.rs</code>:585 on 2024-07-30 12:47</div>
+            <div class="timeline-body"><p>I think this one and the one above are superfluous (again, assuming a DAG traversal).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-07-30 12:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/lock_scenarios.rs</code>:2752 on 2024-07-30 12:51</div>
+            <div class="timeline-body"><p>This one looks like a legitimate bug fix, since previous we had unconditional dependencies on two different versions of <code>package-foo</code> here. I filed https://github.com/astral-sh/uv/issues/5598 in reaction to this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/pip_compile.rs</code>:6615 on 2024-07-30 12:52</div>
+            <div class="timeline-body"><p>I believe the extra term added here is strictly redundant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/pip_compile.rs</code>:6929 on 2024-07-30 12:52</div>
+            <div class="timeline-body"><p>This looks like another legitimate bug fix, where previously we could install two different versions of <code>torch</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/pip_compile.rs</code>:7733 on 2024-07-30 12:52</div>
+            <div class="timeline-body"><p>Another bug fix!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-30 12:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-07-30 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-07-30 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-30 13:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:00:52 UTC
+    </footer>
+</body>
+</html>

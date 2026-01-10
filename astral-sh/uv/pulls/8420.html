@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use XDG (i.e. `~/.local/bin`) instead of the Cargo home directory in the installer - astral-sh/uv #8420</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use XDG (i.e. <code>~/.local/bin</code>) instead of the Cargo home directory in the installer</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/8420">#8420</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-10-21 17:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 17:19</div>
+            <div class="timeline-body"><p>Reviving https://github.com/astral-sh/uv/pull/2236</p>
+<p>Basically implements https://github.com/axodotdev/cargo-dist/issues/287</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @zanieb on 2024-10-21 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 17:59</div>
+            <div class="timeline-body"><p>I don't really know how to test this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 18:09</div>
+            <div class="timeline-body"><p>Okay so... testing this out</p>
+<pre><code>cargo dist build
+npx http-server -o ./target/distrib
+</code></pre>
+<p>then edit the installer to use <code>ARTIFACT_DOWNLOAD_URL=&quot;http://127.0.0.1:8080/target/distrib/&quot;</code></p>
+<p>give a happy installation at the new location</p>
+<pre><code>❯ ./target/distrib/uv-installer.sh
+downloading uv 0.4.25 aarch64-apple-darwin
+installing to /Users/zb/.local/bin
+  uv
+  uvx
+everything's installed!
+</code></pre>
+<p>unfortunately uv is not at the front of the path</p>
+<pre><code>❯ which uv
+/Users/zb/.cargo/bin/uv
+</code></pre>
+<p>after restarting my shell it is though</p>
+<pre><code># Restart shell
+❯ which uv
+/Users/zb/.local/bin/uv
+</code></pre>
+<p>using <code>XDG_BIN_HOME</code> works</p>
+<pre><code>❯ XDG_BIN_HOME=/tmp/test ./target/distrib/uv-installer.sh
+downloading uv 0.4.25 aarch64-apple-darwin
+installing to /tmp/test
+  uv
+  uvx
+everything's installed!
+
+To add /tmp/test to your PATH, either restart your shell or run:
+
+    source /tmp/test/env (sh, bash, zsh)
+    source /tmp/test/env.fish (fish)
+❯ ls /tmp/test
+env		env.fish	uv		uvx
+</code></pre>
+<p>using <code>XDG_DATA_HOME</code> works</p>
+<pre><code>❯ XDG_DATA_HOME=/tmp/test ./target/distrib/uv-installer.sh
+downloading uv 0.4.25 aarch64-apple-darwin
+installing to /tmp/test/../bin
+  uv
+  uvx
+everything's installed!
+
+To add /tmp/test/../bin to your PATH, either restart your shell or run:
+
+    source /tmp/test/../bin/env (sh, bash, zsh)
+    source /tmp/test/../bin/env.fish (fish)
+❯ ls /tmp/test
+❯ ls /tmp/bin
+env		env.fish	uv		uvx
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 18:13</div>
+            <div class="timeline-body"><p>Some pain points:</p>
+<ol>
+<li><p>There's no warning if the newly installed <code>uv</code> is not first on the path, i.e., another uv binary will be used instead of the one I just installed.</p>
+</li>
+<li><p>The installer adds <code>env</code> files to the bin — is that what we want? They're not overridden, which is nice, but I presume that could also lead to confusing behavior?</p>
+<pre><code>❯ touch /tmp/test/env
+❯ XDG_BIN_HOME=/tmp/test ./target/distrib/uv-installer.sh
+downloading uv 0.4.25 aarch64-apple-darwin
+installing to /tmp/test
+  uv
+  uvx
+everything's installed!
+❯ cat /tmp/test/env
+</code></pre>
+</li>
+<li><p>Relative paths don't display as absolute, i.e., for <code>XDG_DATA_HOME</code> the installer displays <code>/tmp/test/../bin/env</code></p>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">releases</span> added by @zanieb on 2024-10-21 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-10-21 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 18:19</div>
+            <div class="timeline-body"><p>Requires some docs changes still</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.5.0" by @zanieb on 2024-10-22 02:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2024-10-22 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-10-22 12:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-24 19:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>Cargo.toml</code>:334 on 2024-10-24 19:10</div>
+            <div class="timeline-body"><p>Are these checked in order?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-24 19:12</div>
+            <div class="timeline-body"><p>Agree, per Discord, that (3) seems fixable in cargo-dist. I could PR it if needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-24 19:13</div>
+            <div class="timeline-body"><p>For my own understanding, where does <code>$XDG_DATA_HOME/../bin</code> come from? (I know we check this already.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-24 19:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>Cargo.toml</code>:334 on 2024-10-24 19:14</div>
+            <div class="timeline-body"><p>Nevermind, all clear! https://opensource.axo.dev/cargo-dist/book/reference/config.html#install-path</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-24 19:17</div>
+            <div class="timeline-body"><p>It's interesting that the env files are added <em>within</em> the install directory? For Cargo it looks like it's <code>/Users/crmarsh/.cargo/bin/uv</code> and then <code>/Users/crmarsh/.cargo/env</code> (one level up).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-24 19:19</div>
+            <div class="timeline-body"><p>The <code>env</code> file thing seems like the most unfortunate to me... Should we ask for a way to disable that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-24 19:20</div>
+            <div class="timeline-body"><p>It seems kind of problematic because now <code>env</code> will be a binary on <code>PATH</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-24 19:26</div>
+            <div class="timeline-body"><blockquote>
+<p>For my own understanding, where does <code>$XDG_DATA_HOME/../bin</code> come from? (I know we check this already.)</p>
+</blockquote>
+<p><code>XDG_BIN_HOME</code> isn't officially a part of the standard. So it's sort of a &quot;next best&quot; approximation of where we should put binaries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-24 19:28</div>
+            <div class="timeline-body"><p>Regarding <code>env</code> — yeah it's not great, but it doesn't shadow the <code>env</code> executable because it's not executable</p>
+<pre><code>❯ PATH=&quot;/tmp/bin:$PATH&quot; which env
+/usr/bin/env
+❯ /tmp/bin/env
+zsh: permission denied: /tmp/bin/env
+</code></pre>
+<p>I think it's ~okay.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-24 19:30</div>
+            <div class="timeline-body"><p>Is it worth trying to get it removed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-24 19:31</div>
+            <div class="timeline-body"><p>In favor of what? It still needs to go somewhere for activation purposes right? My main concern is that it could collide with another <code>env</code> file in that directory, but at least it doesn't overwrite it. I think that probably won't be common anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-24 19:32</div>
+            <div class="timeline-body"><p>Sorry, why is it necessary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-24 19:33</div>
+            <div class="timeline-body"><p>Is it sourced from <code>.zshrc</code> or similar?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-24 19:34</div>
+            <div class="timeline-body"><p>It's what they use for adding the install directory to the <code>PATH</code> in shells without duplicating the entry, e.g., in my <code>.zshrc</code>:</p>
+<pre><code>. &quot;$HOME/.cargo/env&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-24 19:35</div>
+            <div class="timeline-body"><p>So if you run <code>XDG_BIN_HOME=/tmp/test ./target/distrib/uv-installer.sh</code>, does it add <code>. /tmp/test/env</code> to your <code>.zshrc</code>? (Just making sure I understand.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-24 19:36</div>
+            <div class="timeline-body"><p>Does it always do that, or only if it's not on <code>PATH</code> already?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-24 19:54</div>
+            <div class="timeline-body"><p>As far as I understand, it's the same as the existing behavior (just in a flat directory, which honestly makes more sense to me anyway).</p>
+<pre><code>❯ export XDG_BIN_HOME=/tmp/example-bin-home
+❯ ./target/distrib/uv-installer.sh
+downloading uv 0.4.25 aarch64-apple-darwin
+installing to /tmp/example-bin-home
+  uv
+  uvx
+everything's installed!
+
+To add /tmp/example-bin-home to your PATH, either restart your shell or run:
+
+    source /tmp/example-bin-home/env (sh, bash, zsh)
+    source /tmp/example-bin-home/env.fish (fish)
+❯ cat /tmp/example-bin-home/env
+#!/bin/sh
+# add binaries to PATH if they aren't added yet
+# affix colons on either side of $PATH to simplify matching
+case &quot;:${PATH}:&quot; in
+    *:&quot;/tmp/example-bin-home&quot;:*)
+        ;;
+    *)
+        # Prepending path in case a system-installed binary needs to be overridden
+        export PATH=&quot;/tmp/example-bin-home:$PATH&quot;
+        ;;
+esac
+❯ cat ~/.zshrc | grep &quot;example-bin-home&quot;
+. &quot;/tmp/example-bin-home/env&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-10-24 20:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-24 20:09</div>
+            <div class="timeline-body"><p>Sorry to repeat, but does it add to <code>.zshrc</code> if the directory is already on PATH?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-24 20:12</div>
+            <div class="timeline-body"><p>Ah I thought you meant did the <code>env</code> script duplicate the entry. No, it looks skips creating the <code>env</code> files and modifying the shell config at all:</p>
+<pre><code>❯ export XDG_BIN_HOME=&quot;/tmp/example-3&quot;
+❯ export PATH=&quot;/tmp/example-3:$PATH&quot;
+❯ ./target/distrib/uv-installer.sh
+downloading uv 0.4.25 aarch64-apple-darwin
+installing to /tmp/example-3
+  uv
+  uvx
+everything's installed!
+❯ cat ~/.zshrc | grep &quot;example-3&quot;
+❯ ls /tmp/example-3
+uv	uvx
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-24 20:13</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-10-24 20:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-24 20:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-24 20:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:02:07 UTC
+    </footer>
+</body>
+</html>

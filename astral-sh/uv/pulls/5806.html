@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migrate to XDG and Linux strategy for macOS directories - astral-sh/uv #5806</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Migrate to XDG and Linux strategy for macOS directories</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5806">#5806</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-08-06 01:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-06 01:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR moves us to the Linux strategy for our global directories on macOS. We both feel on the team <em>and</em> have received feedback (in Issues and Polls) that the <code>Application Support</code> directories are more intended for GUIs, and CLI tools are correct to respect the XDG variables and use the same directory paths on Linux and macOS.</p>
+<p>Namely, we now use:</p>
+<ul>
+<li><code>/Users/crmarsh/.local/share/uv/tools</code> (for tools)</li>
+<li><code>/Users/crmarsh/.local/share/uv/python</code> (for Pythons)</li>
+<li><code>/Users/crmarsh/.cache/uv</code> (for the cache)</li>
+</ul>
+<p>The strategy is such that if the <code>/Users/crmarsh/Library/Application Support/uv</code> already exists, we keep using it -- same goes for <code>/Users/crmarsh/Library/Caches/uv</code>, so <strong>it's entirely backwards compatible</strong>.</p>
+<p>If you want to force a migration to the new schema, you can run:</p>
+<ul>
+<li><code>uv cache clean</code></li>
+<li><code>uv tool uninstall --all</code></li>
+<li><code>uv python uninstall --all</code></li>
+</ul>
+<p>Which will clean up the macOS-specific directories, paving the way for the above paths. In other words, once you run those commands, subsequent <code>uv</code> operations will automatically use the <code>~/.cache</code> and <code>~/.local</code> variants.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/4411.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-08-06 01:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-08-06 01:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2024-08-06 01:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-06 01:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/python/uninstall.rs</code>:47 on 2024-08-06 01:49</div>
+            <div class="timeline-body"><p>This is a little bit more manual than I'd like.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-06 01:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/tool/uninstall.rs</code>:41 on 2024-08-06 01:49</div>
+            <div class="timeline-body"><p>We clean up the directories, if empty, such that if you <code>uninstall --all</code>, we remove <code>/Users/crmarsh/Library/Application Support/uv/tools</code>, and then <code>/Users/crmarsh/Library/Application Support/uv</code> if <em>that</em> directory is empty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cache/src/cli.rs</code>:46 on 2024-08-06 08:19</div>
+            <div class="timeline-body"><p>This needs a comment about existing only for backwards compatibility</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-08-06 08:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-06 14:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-fs/src/lib.rs</code>:309 on 2024-08-06 14:02</div>
+            <div class="timeline-body"><p>I need to check this on Windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.3.0" by @charliermarsh on 2024-08-06 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-06 17:50</div>
+            <div class="timeline-body"><p>We're gonna bundle this with v0.3.0. Technically we could ship it now, but it could impact users that rely on the cache location &quot;manually&quot; on macOS. We say that's <em>never</em> safe to do in the docs, but this change is breaking in spirit, so lets just make it part of the next minor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-08-19 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-19 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-19 19:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:00:53 UTC
+    </footer>
+</body>
+</html>

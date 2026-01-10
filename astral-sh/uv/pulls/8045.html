@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publish: Password requires username - astral-sh/uv #8045</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Publish: Password requires username</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/8045">#8045</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-10-09 12:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-10-09 12:20</div>
+            <div class="timeline-body"><p>You can't use a password without a username in <code>uv publish</code>, which we can catch in clap directly.</p>
+<p>New error when using only a password:</p>
+<pre><code class="language-console">$ uv publish --password dummy
+error: the following required arguments were not provided:
+  --username &lt;USERNAME&gt;
+
+Usage: uv.exe publish --username &lt;USERNAME&gt; --password &lt;PASSWORD&gt; [FILES]...
+
+For more information, try '--help'.
+</code></pre>
+<p>Fixes #8023</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-10-09 12:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-10-09 12:46</div>
+            <div class="timeline-body"><p>This looks like a good change, but I'm still wondering if we can guide people to success here. Can we add a custom hint about tokens?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-09 12:52</div>
+            <div class="timeline-body"><p>What about adding it in the docstring of <code>--password</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-09 13:34</div>
+            <div class="timeline-body"><p>It would probably be best to include the hint in the error message, which would mean checking later manually instead of using Clap.</p>
+<p>The short help won't show it if it's in the docstring.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-09 17:42</div>
+            <div class="timeline-body"><p>Yeah can we just add a hint when we see <code>Failed to publish...</code> with a password but no username? You can even use Miette if you want to make it a bit easier to render the hint. See <code>crates/uv/src/commands/diagnostics.rs</code> for an example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-09 18:31</div>
+            <div class="timeline-body"><p>I think actually some indexes don't even require a username, just a password — this was an annoyance with <code>twine</code> in <code>packse</code> where I was forced to provide a dummy username — so we probably shouldn't enforce this until there's a failure?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-10 07:07</div>
+            <div class="timeline-body"><p>Do you have an example for such an index?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-10 09:07</div>
+            <div class="timeline-body"><p>@konsti -- Is there any objection to adding a real hint to the error trace? Can we just do that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-10-15 08:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-10-15 08:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-15 08:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-15 11:53</div>
+            <div class="timeline-body"><p>@konstin -- What about Zanie's concern above? I thought the conversation was veering towards only showing this when we hit a failure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-15 11:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/publish.rs</code>:79 on 2024-10-15 11:56</div>
+            <div class="timeline-body"><p>I think we should suggest <code>--user</code> and <code>--token</code>, and note the env vars since it's common in GHA:</p>
+<blockquote>
+<p>Attempted to publish with a password, but no username. Either provide a username with <code>--user</code> (<code>UV_PUBLISH_USERNAME</code>), or use <code>--token</code> (<code>UV_PUBLISH_TOKEN</code>) in lieu of a password.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-15 11:56</div>
+            <div class="timeline-body"><p>I thought the concern was that we should tell users about tokens?</p>
+<p>We definitely can't support password-only without an example of an index and how that index would encode this in the HTTP message, the current serialization always requires a username.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-15 12:02</div>
+            <div class="timeline-body"><p>Maybe @zanieb can provide an example then. If it's true then this could break users as-is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-15 12:13</div>
+            <div class="timeline-body"><p>There may be other use cases we need to support, but it is not a regression due to: https://github.com/astral-sh/uv/blob/01c44af3c3ffc9f5e78ef4b415305350c029d1e0/crates/uv-publish/src/lib.rs#L541</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-10-15 12:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/publish.rs</code>:79 on 2024-10-15 12:18</div>
+            <div class="timeline-body"><p>This case only appears when you use only a password and not a username, despite token vs username/password are clearly documented in the pypi docs and our docs, and other indexes that i have tested providing clear guidance on username and password values. This is a fringe case and I'd rather spend our efforts on more impactful UX aspects, such as showing good messages after 403 errors, guiding users to the correct github actions trusted publishing settings, skip-existing/retries, etc.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:55 UTC
+    </footer>
+</body>
+</html>

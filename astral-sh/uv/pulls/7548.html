@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement trusted publishing - astral-sh/uv #7548</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement trusted publishing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7548">#7548</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-09-19 13:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-09-19 13:26</div>
+            <div class="timeline-body"><p>Trusted publishing allows uploading to PyPI from GitHub actions without setting a (long-lived) secret token. Instead, you configure a GitHub Actions workflow as trusted publisher. With the <code>id-token: write</code> permission, GitHub Actions then allows us to obtain an OpenID Connect (OIDC) token, with which we can ask PyPI for a short lived upload token just for this session. The user experiences this as credentials-free upload. See https://docs.pypi.org/trusted-publishers/ for details and https://github.com/pypa/gh-action-pypi-publish for the reference implementation.</p>
+<p>When we are in GitHub Actions and there are no explicit credentials, we try to obtain trusted publishing credentials. This can be controlled with <code>--trusted-publishing</code> (<code>automatic</code>, <code>always</code>, <code>never</code>)</p>
+<p>The auth middleware gained a new option that allows us to selectively turn off request-cloning only (for uploads) or the entire middleware (for OIDC, which determines credentials through network requests), while still sharing the client once initialized.</p>
+<p>Since we can't do testing offline, we upload <code>astral-test-trusted-publishing</code> in the test github action.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/lucab">@lucab</a> on <code>.github/workflows/ci.yml</code>:446 on 2024-09-20 06:55</div>
+            <div class="timeline-body"><p>I guess this is going to disappear in the final form of the PR, but I'm curious why this was needed. Was this only a paid-plan restriction, or is there something more subtle behind?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/lucab">@lucab</a> on <code>docs/reference/settings.md</code>:1288 on 2024-09-20 07:23</div>
+            <div class="timeline-body"><p>UX feedback: this is slightly confusing because here the default &quot;use trusted-publishing: no&quot; in config corresponds to the default &quot;use trusted-publishing: yes, automatically&quot; in the code logic (if I understood correctly).
+The fact that there is also a negative config-key which can be doubly-negated (<code>no-trusted-publishing = false</code>) does not help either.</p>
+<p>I wonder if this can be re-arranged into some kind of enum <code>trusted-publishing-mode: auto | none | only-github | during-blue-moons</code>.
+That would also leave some room for other future providers as listed in https://docs.pypi.org/trusted-publishers/security-model/#provider-specific-considerations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/lucab">@lucab</a> on <code>crates/uv-publish/src/trusted_publishing.rs</code>:60 on 2024-09-20 07:39</div>
+            <div class="timeline-body"><p>I suspect you'll actually encounter network failures to both GH and PyPI, action runners are very noisy-neighbor environments at time.
+I think each individual HTTP call here would benefit from having its own timeout and retries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/lucab">@lucab</a> on <code>crates/uv-publish/src/trusted_publishing.rs</code>:76 on 2024-09-20 07:41</div>
+            <div class="timeline-body"><p>This is probably fine now but may become a future hazard if more providers get added. It should be cheap to re-verify the sentinel flag in the env, or directly let the caller pass this information to here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/lucab">@lucab</a> on <code>crates/uv-cli/src/lib.rs</code>:4352 on 2024-09-20 08:02</div>
+            <div class="timeline-body"><p>Self-note: this sets the default flow of the publishing logic in a way that doesn't require the user to opt-in into it, and I was wondering whether this a security surprise/hazard.
+I convinced myself that this should be fine because, although this starts automatically using ambient capabilities that are provided (by default?) by GH and that the users may not be fully aware of, completing a proper authentication loop requires a setup with an explicit opt-in step by the user on the <a href="https://docs.pypi.org/trusted-publishers/adding-a-publisher/">PyPi side</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lucab">@lucab</a> reviewed on 2024-09-20 08:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/lucab">@lucab</a> on <code>crates/uv-publish/src/trusted_publishing.rs</code>:60 on 2024-09-20 08:08</div>
+            <div class="timeline-body"><p>As a datapoint, the last CI run on <code>main</code> is failing due to a network hang on a GH-to-GH fetch, during the setup of job environment itself.
+Their client implements the following timeout-and-retry approach:</p>
+<pre><code>Download action repository 'actions/checkout@v4' (SHA:692973e3d937129bcbf40652eb9f2f61becf3332)
+Download action repository 'actions/download-artifact@v4' (SHA:fa0a91b85d4f404e444e00e005971372dc801d16)
+Warning: Failed to download action 'https://api.github.com/repos/actions/download-artifact/tarball/fa0a91b85d4f404e444e00e005971372dc801d16'. Error: The request was canceled due to the configured HttpClient.Timeout of 100 seconds elapsing.
+Warning: Back off 12.296 seconds before retry.
+Warning: Failed to download action 'https://api.github.com/repos/actions/download-artifact/tarball/fa0a91b85d4f404e444e00e005971372dc801d16'. Error: The request was canceled due to the configured HttpClient.Timeout of 100 seconds elapsing.
+Warning: Back off 11.758 seconds before retry.
+Error: Action 'https://api.github.com/repos/actions/download-artifact/tarball/fa0a91b85d4f404e444e00e005971372dc801d16' download has timed out. Error: The request was canceled due to the configured HttpClient.Timeout of 100 seconds elapsing.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lucab">@lucab</a> reviewed on 2024-09-20 08:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-20 08:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>.github/workflows/ci.yml</code>:446 on 2024-09-20 08:33</div>
+            <div class="timeline-body"><p>This was just because i was testing in my personal fork to avoid messing with permissions on astral-sh/uv while i figure it out so i blanket removed everything custom</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-20 09:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-publish/src/trusted_publishing.rs</code>:60 on 2024-09-20 09:12</div>
+            <div class="timeline-body"><p>That's good to know</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2024-09-21 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @konstin on 2024-09-21 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2024-09-21 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2024-09-21 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 19:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>.github/workflows/ci.yml</code>:984 on 2024-09-23 19:12</div>
+            <div class="timeline-body"><p>This is dubious, no?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 19:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/publish.rs</code>:39 on 2024-09-23 19:14</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    //   retries.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 19:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/publish.rs</code>:45 on 2024-09-23 19:14</div>
+            <div class="timeline-body"><p>Yeah painful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 19:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-publish/src/trusted_publishing.rs</code>:58 on 2024-09-23 19:16</div>
+            <div class="timeline-body"><p>Can we create a wrapper type for the token?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 19:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-publish/src/trusted_publishing.rs</code>:93 on 2024-09-23 19:17</div>
+            <div class="timeline-body"><p>Should we check the env var again to confirm that we're in GHA?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 19:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-publish/src/trusted_publishing.rs</code>:105 on 2024-09-23 19:17</div>
+            <div class="timeline-body"><p>Nit: you could DRY up this URL builder which is also used below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-publish/src/trusted_publishing.rs</code>:118 on 2024-09-23 19:17</div>
+            <div class="timeline-body"><p>Probably worth a dedicated error message if the env var is missing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 19:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-23 19:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-settings/src/settings.rs</code>:1651 on 2024-09-23 19:18</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Configure trusted publishing via GitHub Actions.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-09-23 19:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-23 19:18</div>
+            <div class="timeline-body"><p>How was this tested? Can you include a test plan in the summary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-24 10:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>.github/workflows/ci.yml</code>:984 on 2024-09-24 10:02</div>
+            <div class="timeline-body"><p>It's from the docs:</p>
+<p><img src="https://github.com/user-attachments/assets/ffbc48c7-5a17-4fcc-a14f-ec8e220b2abc" alt="image" /></p>
+<p>https://docs.pypi.org/trusted-publishers/using-a-publisher/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-publish/src/trusted_publishing.rs</code>:93 on 2024-09-24 10:06</div>
+            <div class="timeline-body"><p>We can only enter the function if we're in github actions and the process can only succeed when we're in github actions (i.e. we can't obtain the token and execute this line without running in github actions), so it's save to assume we are in github actions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-24 10:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-24 10:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-publish/src/trusted_publishing.rs</code>:105 on 2024-09-24 10:08</div>
+            <div class="timeline-body"><p>I had looked for this, but i couldn't find anything in the url crate that would allow me to build an url from an authority.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-24 10:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-publish/src/trusted_publishing.rs</code>:118 on 2024-09-24 10:09</div>
+            <div class="timeline-body"><p>Where would that error message be displayed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-24 10:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-publish/src/trusted_publishing.rs</code>:58 on 2024-09-24 10:27</div>
+            <div class="timeline-body"><p>The token we get gets used as the password later. We currently store the password as <code>Option&lt;String&gt;</code>, both in publish and the index api. Should we introduce a new <code>Redacted</code> type and use it for all password? (By using a newtype just for the token, we just have to turn it back to a string two functions down)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-24 12:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-publish/src/trusted_publishing.rs</code>:118 on 2024-09-24 12:13</div>
+            <div class="timeline-body"><p>Like, here, instead of <code>env::var(&quot;ACTIONS_ID_TOKEN_REQUEST_URL&quot;)?</code>, was my thinking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-24 12:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-publish/src/trusted_publishing.rs</code>:93 on 2024-09-24 12:15</div>
+            <div class="timeline-body"><p>Why is it a problem to check the env var again? Otherwise we risk printing the unmasked token in other environments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-24 12:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-publish/src/trusted_publishing.rs</code>:58 on 2024-09-24 12:15</div>
+            <div class="timeline-body"><p>Still worth it to have a dedicated <code>Token</code> type from my perspective. Less <code>String</code> is always better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-24 13:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>.github/workflows/ci.yml</code>:984 on 2024-09-24 13:31</div>
+            <div class="timeline-body"><p>It seems like it still may be dubious to run in our public CI, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-09-24 14:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>.github/workflows/ci.yml</code>:984 on 2024-09-24 14:59</div>
+            <div class="timeline-body"><p>We of course need to review all changes to the code called here, but the risk is otherwise the same as if someone makes a PR that adds <code>id-token: write</code>. The permission in testpypi itself is clearly scoped to allow only this package and only this environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-09-24 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-09-24 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-24 16:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:37 UTC
+    </footer>
+</body>
+</html>

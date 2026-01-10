@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>switch to jiff from chrono - astral-sh/uv #6205</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>switch to jiff from chrono</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6205">#6205</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-08-19 13:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-08-19 13:58</div>
+            <div class="timeline-body"><p>This PR migrates uv's use of <code>chrono</code> to <code>jiff</code>.</p>
+<p>I did most of this work a while back as one of my tests to ensure Jiff
+could actually be used in a real world project. I decided to revive
+this because I noticed that <code>reqwest-retry</code> dropped its Chrono dependency,
+which is I believe the only other thing requiring Chrono in uv.
+(Although, we use a fork of <code>reqwest-middleware</code> at present, and that
+hasn't been updated to latest upstream yet. I wasn't quite sure of the
+process we have for that.)</p>
+<p>In course of doing this, I actually made two changes to uv:</p>
+<p>First is that the lock file now writes an RFC 3339 timestamp for
+<code>exclude-newer</code>. Previously, we were using Chrono's <code>Display</code>
+implementation for this which is a non-standard but &quot;human readable&quot;
+format. I think the right thing to do here is an RFC 3339 timestamp.</p>
+<p>Second is that, in addition to an RFC 3339 timestamp, <code>--exclude-newer</code>
+used to accept a &quot;UTC date.&quot; But this PR changes it to a &quot;local date.&quot;
+That is, a date in the user's system configured time zone. I think
+this makes more sense than a UTC date, but one alternative is to drop
+support for a date and just rely on an RFC 3339 timestamp. The main
+motivation here is that automatically assuming UTC is often somewhat
+confusing, since just writing an unqualified date like <code>2024-08-19</code> is
+often assumed to be interpreted relative to the writer's &quot;local&quot; time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-08-19 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-08-19 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-08-19 14:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @BurntSushi on 2024-08-19 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-19 14:05</div>
+            <div class="timeline-body"><p>Since e change interpretation of exclude newer times this is &quot;breaking&quot;, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-08-19 14:06</div>
+            <div class="timeline-body"><blockquote>
+<p>Since e change interpretation of exclude newer times this is &quot;breaking&quot;, right?</p>
+</blockquote>
+<p>Yup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @BurntSushi on 2024-08-19 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-08-19 14:08</div>
+            <div class="timeline-body"><p>This is also breaking because uv won't parse old lock files either, since the datetime formats won't match.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-19 14:11</div>
+            <div class="timeline-body"><p>Let's just group it into 0.3.0, we might start merging things for that today? I'll let you know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-08-19 14:28</div>
+            <div class="timeline-body"><p>OK, with #6206 merged, Chrono is now removed from <code>uv</code>'s dependency tree:</p>
+<pre><code>$ cargo tree -e normal | rg chrono
+$
+</code></pre>
+<p><code>chrono</code> does still appear in the lock file, but I think that's from
+<code>axoupdater-&gt;homedir-&gt;wmi-&gt;chrono</code>.</p>
+<blockquote>
+<p>Let's just group it into 0.3.0, we might start merging things for that today? I'll let you know.</p>
+</blockquote>
+<p>SGTM.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-08-19 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-19 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-19 17:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:00:56 UTC
+    </footer>
+</body>
+</html>

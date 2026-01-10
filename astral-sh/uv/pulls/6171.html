@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respect release-only semantics of python_full_version when constructing markers - astral-sh/uv #6171</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Respect release-only semantics of python_full_version when constructing markers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6171">#6171</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-08-17 17:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-17 17:26</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>In the resolver, we use release-only semantics to normalize <code>python_full_version</code>. So, if we see <code>python_full_version &lt; '3.13'</code>, we treat that as <code>(Unbounded, Exclude(3.13))</code>. <code>3.13b0</code> evaluates as <code>true</code> to that range, so we were accepting pre-releases for these markers.</p>
+<p>Instead, we need to exclude pre-release segments when performing these evaluations.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/6169.</p>
+<h2>Test Plan</h2>
+<p>Hard to write a test for this because you need a pre-release Python locally... so:</p>
+<p><code>echo &quot;sqlalchemy==2.0.32&quot; | cargo run pip compile - --python 3.13 -n</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-08-17 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">resolver</span> added by @charliermarsh on 2024-08-17 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ibraheemdev by @charliermarsh on 2024-08-17 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-resolver/src/resolver/resolver_markers.rs</code>:26 on 2024-08-17 17:38</div>
+            <div class="timeline-body"><p>Can we guarantee pre-releases are stripped in <code>MarkerEnvironment</code> instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-17 17:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/resolver_markers.rs</code>:26 on 2024-08-17 17:39</div>
+            <div class="timeline-body"><p>I don't think they should be... I think <code>MarkerEnvironment</code> should be capable of representing the true markers. Otherwise, we'll misreport (for example) when we send telemetry up to PyPI about the user's Python version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-17 17:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-17 17:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/resolver_markers.rs</code>:26 on 2024-08-17 17:40</div>
+            <div class="timeline-body"><p>(I did consider that.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-17 17:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/resolver_markers.rs</code>:26 on 2024-08-17 17:46</div>
+            <div class="timeline-body"><p>(Do you disagree?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-17 17:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-resolver/src/resolver/resolver_markers.rs</code>:26 on 2024-08-17 17:52</div>
+            <div class="timeline-body"><p>Hmm okay that makes sense. I guess <code>ResolverMarkers</code> is the correct place to put this then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> approved on 2024-08-17 17:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-17 19:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/resolver_markers.rs</code>:26 on 2024-08-17 19:17</div>
+            <div class="timeline-body"><p>I'll add distinct type to enforce this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-08-17 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-17 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-17 19:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:00:55 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`python pin` now finds workspace root folder when called in subfolder - astral-sh/uv #5035</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>python pin</code> now finds workspace root folder when called in subfolder</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5035">#5035</a>
+        opened by <a href="https://github.com/silvanocerza">@silvanocerza</a>
+        on 2024-07-13 09:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/silvanocerza">@silvanocerza</a> on 2024-07-13 09:23</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #4971.</p>
+<p>This PR changes <code>python pin</code> behaviour when called in a workspace subfolder. Previously it would only read or create a <code>.python-version</code> file in the current working directory, now instead it will first search for the workspace root folder and read or create the <code>.python-version</code> file in that folder.</p>
+<p>We assume the root folder contains a valid <code>pyproject.toml</code> file.</p>
+<p>If we're not in a workspace use the previous behaviour and creates or reads <code>.python-version</code> in the current working directory.</p>
+<h2>Test Plan</h2>
+<p>I added a new test to verify this new behaviour, and run all tests locally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-13 15:38</div>
+            <div class="timeline-body"><p>We might want to make this asymmetric per https://github.com/astral-sh/uv/issues/4971#issuecomment-2226958546 and <em>read</em> from the workspace root by default but, when <em>writing</em>, require an opt-in via  <code>--workspace</code> otherwise we write to the current directory. Or should we require an opt-out via <code>--isolated</code> to ignore the workspace and write to the working directory? What do you think? I'm not 100% certain what the best UX is yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-07-13 15:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Or should we use <code>--isolated</code> to ignore the workspace and write to the working directory?</p>
+</blockquote>
+<p>IMO this is more correct to me, since pinned python version is usually used for venv creation/recreation and venv is in workspace root.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/silvanocerza">@silvanocerza</a> on 2024-07-13 17:36</div>
+            <div class="timeline-body"><p>I would agree with @T-256 here, it makes sense to me using the <code>--isolated</code> option to ignore the workspace.
+Should I got with that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/silvanocerza">@silvanocerza</a> on 2024-07-14 15:08</div>
+            <div class="timeline-body"><p>Rebased to bring in CI fix from #5034 and remove some commented out code that I missed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-07-14 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-14 16:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/python_pin.rs</code>:242 on 2024-07-14 16:18</div>
+            <div class="timeline-body"><p>Can we add a message noting where we pinned when it differs from the pwd?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-14 16:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/pin.rs</code>:32 on 2024-07-14 16:18</div>
+            <div class="timeline-body"><p>We may want to call this <code>target_dir</code> or something to avoid confusion with the current working directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-14 16:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/version_files.rs</code>:105 on 2024-07-14 16:19</div>
+            <div class="timeline-body"><p>Why this change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/version_files.rs</code>:71 on 2024-07-14 16:19</div>
+            <div class="timeline-body"><p>Should we just use <code>Path::join</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-14 16:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-14 16:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/version_files.rs</code>:69 on 2024-07-14 16:20</div>
+            <div class="timeline-body"><p>This can be <code>impl AsRef&lt;Path&gt;</code> or <code>&amp;Path</code> instead of <code>&amp;PathBuf</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-14 16:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/version_files.rs</code>:105 on 2024-07-14 16:20</div>
+            <div class="timeline-body"><p>Is this supposed to be <code>requests_from_versions_file</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-14 16:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/version_files.rs</code>:54 on 2024-07-14 16:20</div>
+            <div class="timeline-body"><p>Can you add some simple docstrings to these?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-14 16:22</div>
+            <div class="timeline-body"><p>Sure let's just make <code>--isolated</code> ignore the workspace to start and we can tackle more complex behavior separately?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/silvanocerza">@silvanocerza</a> on <code>crates/uv-python/src/version_files.rs</code>:105 on 2024-07-15 08:36</div>
+            <div class="timeline-body"><p>Yes, the docstring was wrong, <code>requests_from_version_files</code> doesn't exist.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/silvanocerza">@silvanocerza</a> reviewed on 2024-07-15 08:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/silvanocerza">@silvanocerza</a> on 2024-07-15 15:04</div>
+            <div class="timeline-body"><p>Ready for review again. 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/silvanocerza">@silvanocerza</a> reviewed on 2024-07-15 15:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/silvanocerza">@silvanocerza</a> on <code>crates/uv/src/commands/python/pin.rs</code>:98 on 2024-07-15 15:06</div>
+            <div class="timeline-body"><p>I'm not sure about this part, would something like this be better? 🤔</p>
+<pre><code>    let message = if exists {
+        format!(&quot;Replaced existing pin with `{output}`&quot;)
+    } else {
+        format!(&quot;Pinned to `{output}`&quot;)
+    };
+
+    let message = if target_dir != std::env::current_dir()? {
+        // Print the version file use to pin only
+        // if it's not in the current working directory
+        format!(&quot;{message} in `{}`&quot;, version_file.display())
+    } else {
+        message
+    };
+
+    writeln!(printer.stdout(), &quot;{message}&quot;)?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-19 18:12</div>
+            <div class="timeline-body"><p>Going to be lots of conflicts with #5215 and https://github.com/astral-sh/uv/pull/4989 — I'll own resolving them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-19 19:14</div>
+            <div class="timeline-body"><p>Okay I resolved the conflicts but then realized we need to make a lot of other changes here, e.g. every other command needs to respect pins in the workspace. Kind of complicated, I need to think about it before moving forward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-19 19:44</div>
+            <div class="timeline-body"><p>Here's where I left off https://github.com/astral-sh/uv/compare/zb/pin-find</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/silvanocerza">@silvanocerza</a> on 2024-07-20 08:45</div>
+            <div class="timeline-body"><p>If you can give me a list of the commands that actually needs to respect the pin I should be able to handle that, I'm just unsure about all the commands.</p>
+<p>Also probably we need to isolate the logic that finds the pin location, it would simplify implementing it for the other commands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-20 16:10</div>
+            <div class="timeline-body"><p>I think we need to walk up the directory tree looking for a version file like we do with <code>pyproject.toml</code> files for project roots. Then, every command that needs a Python interpreter needs to respect the version file when determining the default. We don't need to do it all at once, I think outside the preview commands only <code>venv</code> supports version files right now and it's gated by preview.</p>
+<p>We may or may not want to stop searching at a boundary where we find a <code>pyproject.toml</code>. If we don't, then we need to check if the version is pinned to something incompatible with the current project's Python requirement. If the pin comes from a directory above the project, then we probably need to warn and use the <code>Requires-Python</code> value instead.</p>
+<p>It seems simplest to do something like:</p>
+<ul>
+<li>Add a utility to the version file module that finds the nearest version file. We probably want a struct for this so we can store the path as state and allow read / write.</li>
+<li>Add a utility to the workspace / project abstractions to reconcile the discovered version file with the project, e.g. we can check if it's location is a prefix of the project or if it's inside the project and check compatibility with the project Python requirement.</li>
+<li>Use in <code>uv venv</code> under preview mode</li>
+<li>Use in all the new preview commands where we currently respect version files</li>
+<li>Add a tracking issue enumerating the remaining commands</li>
+</ul>
+<p>How does that sound? Kind of figuring this out as I go :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-16 22:21</div>
+            <div class="timeline-body"><p>I'm taking this on in https://github.com/astral-sh/uv/pull/6370</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-09-16 22:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:00:50 UTC
+    </footer>
+</body>
+</html>

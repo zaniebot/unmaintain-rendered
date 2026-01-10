@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respect `--no-build-isolation-package` in `uv sync` - astral-sh/uv #6605</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Respect <code>--no-build-isolation-package</code> in <code>uv sync</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6605">#6605</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-08-25 13:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-25 13:59</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This was an oversight. The existing test was (correctly) failing, but for the wrong reason (failing to build the package during <em>resolution</em>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-08-25 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-08-25 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-25 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-25 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kabouzeid">@kabouzeid</a> on 2024-08-25 18:12</div>
+            <div class="timeline-body"><p>Still doesn't work for me. <code>--no-build-isolation</code> works, <code>--no-build-isolation-package</code> doesn't. Not only with <code>sync</code>, but also <code>add</code>, <code>pip</code>, and config files.</p>
+<pre><code class="language-console">➜ uv --version
+uv 0.3.3 (1c580723c 2024-08-25)
+
+➜ cat pyproject.toml
+[project]
+name = &quot;6605&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;source-distribution @ https://files.pythonhosted.org/packages/10/1f/57aa4cce1b1abf6b433106676e15f9fa2c92ed2bd4cf77c3b50a9e9ac773/source_distribution-0.0.1.tar.gz&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+➜ uv sync
+Resolved 2 packages in 2ms
+error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: 6605 @ file:///tmp/6605
+  Caused by: Build backend failed to build wheel through `build_editable()` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 11, in &lt;module&gt;
+  File &quot;/home/abou_zeid/.cache/uv/builds-v0/.tmp10Vbaz/lib/python3.12/site-packages/hatchling/build.py&quot;, line 83, in build_editable
+    return os.path.basename(next(builder.build(directory=wheel_directory, versions=['editable'])))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/abou_zeid/.cache/uv/builds-v0/.tmp10Vbaz/lib/python3.12/site-packages/hatchling/builders/plugin/interface.py&quot;, line 90, in build
+    self.metadata.validate_fields()
+  File &quot;/home/abou_zeid/.cache/uv/builds-v0/.tmp10Vbaz/lib/python3.12/site-packages/hatchling/metadata/core.py&quot;, line 266, in validate_fields
+    self.core.validate_fields()
+  File &quot;/home/abou_zeid/.cache/uv/builds-v0/.tmp10Vbaz/lib/python3.12/site-packages/hatchling/metadata/core.py&quot;, line 1376, in validate_fields
+    getattr(self, attribute)
+  File &quot;/home/abou_zeid/.cache/uv/builds-v0/.tmp10Vbaz/lib/python3.12/site-packages/hatchling/metadata/core.py&quot;, line 1230, in dependencies
+    self._dependencies = list(self.dependencies_complex)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/abou_zeid/.cache/uv/builds-v0/.tmp10Vbaz/lib/python3.12/site-packages/hatchling/metadata/core.py&quot;, line 1215, in dependencies_complex
+    raise ValueError(message)
+ValueError: Dependency #1 of field `project.dependencies` cannot be a direct reference unless field `tool.hatch.metadata.allow-direct-references` is set to `true`
+---
+
+➜ uv sync --no-build-isolation-package source-distribution
+Resolved 2 packages in 2ms
+error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: 6605 @ file:///tmp/6605
+  Caused by: Build backend failed to build wheel through `build_editable()` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 11, in &lt;module&gt;
+  File &quot;/home/abou_zeid/.cache/uv/builds-v0/.tmpUBzU1v/lib/python3.12/site-packages/hatchling/build.py&quot;, line 83, in build_editable
+    return os.path.basename(next(builder.build(directory=wheel_directory, versions=['editable'])))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/abou_zeid/.cache/uv/builds-v0/.tmpUBzU1v/lib/python3.12/site-packages/hatchling/builders/plugin/interface.py&quot;, line 90, in build
+    self.metadata.validate_fields()
+  File &quot;/home/abou_zeid/.cache/uv/builds-v0/.tmpUBzU1v/lib/python3.12/site-packages/hatchling/metadata/core.py&quot;, line 266, in validate_fields
+    self.core.validate_fields()
+  File &quot;/home/abou_zeid/.cache/uv/builds-v0/.tmpUBzU1v/lib/python3.12/site-packages/hatchling/metadata/core.py&quot;, line 1376, in validate_fields
+    getattr(self, attribute)
+  File &quot;/home/abou_zeid/.cache/uv/builds-v0/.tmpUBzU1v/lib/python3.12/site-packages/hatchling/metadata/core.py&quot;, line 1230, in dependencies
+    self._dependencies = list(self.dependencies_complex)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/abou_zeid/.cache/uv/builds-v0/.tmpUBzU1v/lib/python3.12/site-packages/hatchling/metadata/core.py&quot;, line 1215, in dependencies_complex
+    raise ValueError(message)
+ValueError: Dependency #1 of field `project.dependencies` cannot be a direct reference unless field `tool.hatch.metadata.allow-direct-references` is set to `true`
+---
+
+➜ uv sync --no-build-isolation
+Resolved 2 packages in 3ms
+error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: 6605 @ file:///tmp/6605
+  Caused by: Build backend failed to build wheel through `build_editable()` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 8, in &lt;module&gt;
+ModuleNotFoundError: No module named 'hatchling'
+---
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-25 20:04</div>
+            <div class="timeline-body"><p>This is not necessarily incorrect... If you set <code>--no-build-isolation</code>, then the failure is probably a failure to build <code>6605</code> itself due to missing <code>hatchling</code>. But if you set <code>--no-build-isolation-package source-distribution</code>, then the failure is in building <code>6605</code> but due to an error in <em>how you've packaged it</em>, so it never even gets to the part where it needs to build <code>source-distribution</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-25 20:04</div>
+            <div class="timeline-body"><p>Here's a working example:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;source-distribution @ https://files.pythonhosted.org/packages/10/1f/57aa4cce1b1abf6b433106676e15f9fa2c92ed2bd4cf77c3b50a9e9ac773/source_distribution-0.0.1.tar.gz&quot;
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.metadata]
+allow-direct-references = true
+</code></pre>
+<pre><code>❯ cargo run sync --no-build-isolation-package source-distribution
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.15s
+     Running `/Users/crmarsh/workspace/uv/target/debug/uv sync --no-build-isolation-package source-distribution`
+Resolved 2 packages in 8ms
+error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: source-distribution @ https://files.pythonhosted.org/packages/10/1f/57aa4cce1b1abf6b433106676e15f9fa2c92ed2bd4cf77c3b50a9e9ac773/source_distribution-0.0.1.tar.gz
+  Caused by: Build backend failed to build wheel through `build_wheel()` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 8, in &lt;module&gt;
+ModuleNotFoundError: No module named 'hatchling'
+---
+</code></pre>
+<p>Though I'd recommend using <code>tool.uv.sources</code> instead so you don't have to fight <code>hatchling</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;source-distribution&quot;]
+
+[tool.uv.sources]
+source-distribution = { url = &quot;https://files.pythonhosted.org/packages/10/1f/57aa4cce1b1abf6b433106676e15f9fa2c92ed2bd4cf77c3b50a9e9ac773/source_distribution-0.0.1.tar.gz&quot; }
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kabouzeid">@kabouzeid</a> on 2024-08-26 08:00</div>
+            <div class="timeline-body"><p>When I add</p>
+<pre><code class="language-toml">[tool.hatch.metadata]
+allow-direct-references = true
+</code></pre>
+<p>from your example, it always builds successfully no matter what, even with build isolation enabled.</p>
+<p>I still could not find a single case where <code>--no-build-isolation-package</code> did have any effect at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tdejager">@tdejager</a> on 2024-08-26 08:03</div>
+            <div class="timeline-body"><p>@charliermarsh I made some similar changes in: https://github.com/astral-sh/uv/pull/6517 where I also found that the options were not passed around correctly. I think the changes are the same and I'll merge this PR in there. I think the other changes would still be relevant, I hope.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 12:23</div>
+            <div class="timeline-body"><p>@kabouzeid -- Are you running from source? None of those changes are released yet. Given:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;source-distribution @ https://files.pythonhosted.org/packages/10/1f/57aa4cce1b1abf6b433106676e15f9fa2c92ed2bd4cf77c3b50a9e9ac773/source_distribution-0.0.1.tar.gz&quot;
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.metadata]
+allow-direct-references = true
+</code></pre>
+<p>Here's my running the exact sequence of commands -- not sure how else to help!</p>
+<pre><code>❯ cargo run sync --no-build-isolation-package source-distribution
+Using Python 3.12.1
+Creating virtualenv at: .venv
+Resolved 2 packages in 13ms
+error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: source-distribution @ https://files.pythonhosted.org/packages/10/1f/57aa4cce1b1abf6b433106676e15f9fa2c92ed2bd4cf77c3b50a9e9ac773/source_distribution-0.0.1.tar.gz
+  Caused by: Build backend failed to build wheel through `build_wheel()` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 8, in &lt;module&gt;
+ModuleNotFoundError: No module named 'hatchling'
+---
+
+❯ cargo run sync
+Resolved 2 packages in 7ms
+   Built foo @ file:///Users/crmarsh/workspace/puffin/foo
+   Built source-distribution @ https://files.pythonhosted.org/packages/10/1f/57aa4cce1b1abf6b433106676e15f9fa2c92ed2bd4cf77c3b50a9e9ac773/source_distribution-0.0.1.tar.gz
+Prepared 2 packages in 400ms
+Installed 2 packages in 1ms
+ + foo==0.1.0 (from file:///Users/crmarsh/workspace/puffin/foo)
+ + source-distribution==0.0.1 (from https://files.pythonhosted.org/packages/10/1f/57aa4cce1b1abf6b433106676e15f9fa2c92ed2bd4cf77c3b50a9e9ac773/source_distribution-0.0.1.tar.gz)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kabouzeid">@kabouzeid</a> on 2024-08-26 13:36</div>
+            <div class="timeline-body"><p>Yes from source. Commit is shown in uv --version of my console log above. I will check again later today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 13:37</div>
+            <div class="timeline-body"><p>Do you have the build cached?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kabouzeid">@kabouzeid</a> on 2024-08-26 17:01</div>
+            <div class="timeline-body"><p>No, I also tried with <code>export UV_NO_CACHE=1</code> during the whole time to be sure. I'm not sure we were talking about the same thing, because I don't understand the example.</p>
+<p>However, I just tried, and it seems that https://github.com/astral-sh/uv/pull/6517 fixes my issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 17:18</div>
+            <div class="timeline-body"><p>Ok. I'm very confused, because it's the exact same example that you provided in https://github.com/astral-sh/uv/pull/6605#issuecomment-2308946848. And that change should have absolutely no effect on the <code>source-distribution</code> package. Were you testing with a <em>different</em> package?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kabouzeid">@kabouzeid</a> on 2024-08-26 17:45</div>
+            <div class="timeline-body"><p>I pulled that example out of the uv tests because I assumed something must be wrong with the tests as well, since they don't catch the bug. I tested with a few different packages, and also with <code>source-distribution</code>. I don't really know what source-distribution and allow-direct-references = true do. In the example I posted <code>--no-build-isolation-package</code> had no effect. Maybe you tried with a newer commit, because I got the same result as you with the newest commit <code>uv 0.3.3 (622053237 2024-08-26)</code>.</p>
+<p>For the other packages (eg flash-attn and minkowskiengine), it works now with --no-build-isolation-package , while it had no effect before. This PR didn't fix the issue for me, but it did work with <code>uv 0.3.3 (622053237 2024-08-26)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 17:48</div>
+            <div class="timeline-body"><p>Okay, thanks. It sounds like you <em>were</em> testing with a different package then. (<code>source-distribution</code> is just a PyPI package that we publish to test source distributions, like <code>requests</code> or any other PyPI package.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:08 UTC
+    </footer>
+</body>
+</html>

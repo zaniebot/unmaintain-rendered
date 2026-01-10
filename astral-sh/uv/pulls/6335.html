@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preserve Git username for SSH dependencies - astral-sh/uv #6335</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Preserve Git username for SSH dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6335">#6335</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-08-21 15:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 15:01</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>We're gonna work on a more comprehensive review of whether we should preserve the username here, but for now, <code>git@</code> is effectively a convention for GitHub and GitLab etc.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/6305.</p>
+<h2>Test Plan</h2>
+<p>I guess we don't have infrastructure for testing SSH private keys right now, but...</p>
+<pre><code>❯ cargo run init foo
+❯ cd foo
+❯ cargo run add git+ssh://git@github.com/astral-sh/mkdocs-material-insiders.git
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-08-21 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 15:01</div>
+            <div class="timeline-body"><p>Adding tests...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pypi-types/src/requirement.rs</code>:773 on 2024-08-21 15:03</div>
+            <div class="timeline-body"><p>This seems weird, shouldn't we always drop the password and conditionally drop the username? Or is this just for SSH credentials? A comment would be helpful if so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-21 15:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-21 15:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pypi-types/src/requirement.rs</code>:773 on 2024-08-21 15:04</div>
+            <div class="timeline-body"><p>The password is required to be <code>None</code> in the return case though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-08-21 15:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-08-21 15:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-21 15:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pypi-types/src/requirement.rs</code>:773 on 2024-08-21 15:06</div>
+            <div class="timeline-body"><p>Yes.. I expect:</p>
+<pre><code>let _ = url.set_password(None);
+if url.username() != &quot;git&quot; {
+    let _ = url.set_username(&quot;&quot;);
+}
+</code></pre>
+<p>or for the documentation to properly declare that we only allow <code>git</code> if it doesn't have an associated password. Otherwise.. <code>git:foo@github.com</code> would redact both <code>git</code> and <code>foo</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-21 15:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pypi-types/src/requirement.rs</code>:773 on 2024-08-21 15:06</div>
+            <div class="timeline-body"><p>Added a comment + <code>ssh</code> guard.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-21 15:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pypi-types/src/requirement.rs</code>:764 on 2024-08-21 15:08</div>
+            <div class="timeline-body"><p>Can you mention SSH here too? Sorry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-21 15:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pypi-types/src/requirement.rs</code>:764 on 2024-08-21 15:09</div>
+            <div class="timeline-body"><p>Ofc</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-08-21 15:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-08-21 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-21 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-21 15:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:00:59 UTC
+    </footer>
+</body>
+</html>

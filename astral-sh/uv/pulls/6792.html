@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix: adjust trampoline close_handles invalid to be safer - astral-sh/uv #6792</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix: adjust trampoline close_handles invalid to be safer</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6792">#6792</a>
+        opened by <a href="https://github.com/samypr100">@samypr100</a>
+        on 2024-08-29 04:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/samypr100">@samypr100</a> on 2024-08-29 04:38</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes https://github.com/astral-sh/uv/issues/6699</p>
+<p>On cases like the ones described in https://github.com/astral-sh/uv/issues/6699, <code>lpReserved2</code> somehow seems to report multiple file descriptors that were not tied to any valid handles. The previous implementation was faulting as it would try to dereference these invalid handles. This change moves to using <code>HANDLE</code> directly and check if its is_invalid instead before attempting to close them.</p>
+<h2>Test Plan</h2>
+<p>Manually tested and verified using <code>busybox-w32</code> like described in the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "feat: adjust trampoline close_handles invalid handle handling" to "fix: adjust trampoline close_handles invalid handle handling" by @samypr100 on 2024-08-29 05:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "fix: adjust trampoline close_handles invalid handle handling" to "fix: adjust trampoline close_handles invalid to be safer" by @samypr100 on 2024-08-29 05:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-08-29 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-08-29 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/petermbauer">@petermbauer</a> on 2024-08-30 07:05</div>
+            <div class="timeline-body"><p>I wanted to check if this fixes #6464 but it crashes for me with a Stack Overflow. Used the Windows binary produced by the CI (https://github.com/astral-sh/uv/actions/runs/10608916295/artifacts/1868167042 from https://github.com/astral-sh/uv/actions/runs/10608916295/job/29422114640?pr=6792).</p>
+<pre><code>λ uv --version
+uv 0.4.0 (d2f70e3b2 2024-08-29)
+
+λ uv venv .venv --python  C:\Users\bauepete\AppData\Local\Programs\Python\Python310\python.exe
+Using Python 3.10.9 interpreter at: C:\Users\bauepete\AppData\Local\Programs\Python\Python310\python.exe
+Creating virtualenv at: .venv
+Activate with: .venv\Scripts\activate
+
+λ uv pip install --python .venv cmake
+⠙ cmake==3.30.2
+thread 'main' has overflowed its stack
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-08-30 08:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-30 08:49</div>
+            <div class="timeline-body"><p>@petermbauer For builds in debug mode, you need to set <code>$Env:UV_STACK_SIZE = '2000000'</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-08-30 08:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-08-30 08:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/petermbauer">@petermbauer</a> on 2024-08-30 11:24</div>
+            <div class="timeline-body"><blockquote>
+<p>@petermbauer For builds in debug mode, you need to set <code>$Env:UV_STACK_SIZE = '2000000'</code></p>
+</blockquote>
+<p>thx! <code>uv pip install</code> works with this but it seems the issue has not been fixed. I will add repro steps to #6464.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-08-30 13:37</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>@petermbauer For builds in debug mode, you need to set <code>$Env:UV_STACK_SIZE = '2000000'</code></p>
+</blockquote>
+<p>thx! <code>uv pip install</code> works with this but it seems the issue has not been fixed. I will add repro steps to #6464.</p>
+</blockquote>
+<p>A repro for the separate case in #6464 would be appreciated, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-30 13:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/petermbauer">@petermbauer</a> on 2024-08-30 13:55</div>
+            <div class="timeline-body"><blockquote>
+<p>A repro for the separate case in #6464 would be appreciated, thanks.</p>
+</blockquote>
+<p>Thanks a lot for looking into it!
+Created #6866 and added repro instructions there as it may be a different reason after all.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:15 UTC
+    </footer>
+</body>
+</html>

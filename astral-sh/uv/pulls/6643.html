@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detect musl and error for musl pbs builds - astral-sh/uv #6643</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Detect musl and error for musl pbs builds</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6643">#6643</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-08-26 12:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-08-26 12:47</div>
+            <div class="timeline-body"><p>As described in #4242, we're currently incorrectly downloading glibc python-build-standalone on musl target, but we also can't fix this by using musl python-build-standalone on musl targets since the musl builds are effectively broken.</p>
+<p>We reintroduce the libc detection previously removed in #2381, using it to detect which libc is the current one before we have a python interpreter. I changed the strategy a big to support an empty <code>PATH</code> which we use in the tests.</p>
+<p>For simplicity, i've decided to just filter out the musl python-build-standalone archives from the list of available archive, given this is temporary. This means we show the same error message as if we don't have a build for the platform. We could also add a dedicated error message for musl.</p>
+<p>Fixes #4242</p>
+<h2>Test Plan</h2>
+<p>Tested manually.</p>
+<p>On my ubuntu host, python downloads continue to pass:</p>
+<pre><code>target/x86_64-unknown-linux-musl/debug/uv python install
+</code></pre>
+<p>On alpine, we fail:</p>
+<pre><code>$ docker run -it --rm -v .:/io alpine /io/target/x86_64-unknown-linux-musl/debug/uv python install
+  Searching for Python installations
+  error: No download found for request: cpython-any-linux-x86_64-musl
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @konstin on 2024-08-26 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-08-26 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">musl</span> added by @konstin on 2024-08-26 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-08-26 18:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-26 18:08</div>
+            <div class="timeline-body"><p>Can you add a note to https://docs.astral.sh/uv/concepts/python-versions/#managed-python-distributions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-27 00:00</div>
+            <div class="timeline-body"><p>Added docs, merging...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-08-27 00:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-27 00:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-27 00:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:10 UTC
+    </footer>
+</body>
+</html>

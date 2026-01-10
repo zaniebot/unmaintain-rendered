@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respect `PAGER` env var when paging in `uv help` command - astral-sh/uv #5511</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Respect <code>PAGER</code> env var when paging in <code>uv help</code> command</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5511">#5511</a>
+        opened by <a href="https://github.com/krishnan-chandra">@krishnan-chandra</a>
+        on 2024-07-27 21:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/krishnan-chandra">@krishnan-chandra</a> on 2024-07-27 21:24</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes https://github.com/astral-sh/uv/issues/4931.</p>
+<h2>Test Plan</h2>
+<p>Tried running the following commands locally to make sure that all cases work:</p>
+<pre><code>unset PAGER
+cargo run -- help venv
+</code></pre>
+<p>With no pager set, <code>uv</code> correctly finds <code>less</code> on the system as it did before and passes the help output to it.</p>
+<hr />
+<pre><code>PAGER= cargo run -- help venv
+</code></pre>
+<p>This correctly prints out to stdout and does not use any pager.</p>
+<hr />
+<pre><code>PAGER=most cargo run -- help venv
+</code></pre>
+<p>This correctly opens the <code>most</code> pager as shown below:</p>
+<img width="1917" alt="Screenshot 2024-07-27 at 5 14 42 PM" src="https://github.com/user-attachments/assets/dfaa5a83-b47e-4f5c-9be1-b0b1e9818932">
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-27 21:31</div>
+            <div class="timeline-body"><p>Thanks for taking this on!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Respect PAGER env var when paging in help command" to "Respect `PAGER` env var when paging in `uv help` command" by @krishnan-chandra on 2024-07-27 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-07-30 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-30 15:31</div>
+            <div class="timeline-body"><p>Is it valid to set <code>PAGER</code> to a path or a pager program with arguments e.g. <code>foo -x</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/krishnan-chandra">@krishnan-chandra</a> on 2024-07-30 15:46</div>
+            <div class="timeline-body"><p>Looks like paths are valid, but args are not:</p>
+<img width="688" alt="Screenshot 2024-07-30 at 11 45 28 AM" src="https://github.com/user-attachments/assets/a5ffe9de-92b5-4ed1-a74c-7442c10cbae4">
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-30 15:58</div>
+            <div class="timeline-body"><p>Thanks for checking! Seems like we'll need to support parsing it as a path and checking the final component name to see if it's <code>less</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/krishnan-chandra">@krishnan-chandra</a> on 2024-07-30 20:12</div>
+            <div class="timeline-body"><p>Turns out I was testing the wrong thing earlier - the output failed because the Rust code didn't parse the pager args correctly, not because they were invalid. It turns out that you can pass args as part of <code>PAGER</code>, because this works:</p>
+<pre><code>PAGER='less -R' man wc
+</code></pre>
+<p>So I added in parsing for both paths and args; in the special case where the pager command is <code>less</code> and <code>PAGER</code> already contains the args for it, we use the provided args rather than trying to inject defaults (which seems sensible to me?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @zanieb on 2024-08-01 20:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-01 17:44</div>
+            <div class="timeline-body"><p>I refactored the implementation in https://github.com/astral-sh/uv/pull/5511/commits/bbefd11ee1e133c2b01fb76f0be2eb12a2d8d622 in the hopes it will be easier to maintain.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2024-10-01 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-10-01 17:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-10-01 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-01 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-01 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/krishnan-chandra">@krishnan-chandra</a> on 2024-10-01 19:39</div>
+            <div class="timeline-body"><p>Got it, thanks for the refactor and merge!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-01 19:45</div>
+            <div class="timeline-body"><p>Yeah sorry for the delay! Been on my backburner for a while. Let me know if you have any thoughts or questions on the changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/twmr">@twmr</a> on 2024-10-23 20:41</div>
+            <div class="timeline-body"><p>@krishnan-chandra For me <code>PAGER='less' uv help</code> doesn't work, but <code>PAGER='less' git log</code> does.
+Tested with both 0.4.25 and 0.4.26.
+Should I create a new ticket for that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/krishnan-chandra">@krishnan-chandra</a> on 2024-10-23 22:22</div>
+            <div class="timeline-body"><p>Can you elaborate on what &quot;doesn't work&quot; means in this context? What is the issue that you're seeing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/twmr">@twmr</a> on 2024-10-24 05:33</div>
+            <div class="timeline-body"><p>Sure, for me the output is not paged at all. So it looks like if no pager is set.
+As I said above it works with <code>git</code>. (OS: Ubuntu 24.04 and zsh)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-24 12:19</div>
+            <div class="timeline-body"><p><code>uv help</code> doesn't page because it's really short. Does <code>PAGER='less' uv help run</code> page?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/twmr">@twmr</a> on 2024-10-24 17:57</div>
+            <div class="timeline-body"><p>Thx @zanieb! The output of <code>uv help run</code> is indeed paged.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:00:52 UTC
+    </footer>
+</body>
+</html>

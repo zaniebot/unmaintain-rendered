@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for system-level `uv.toml` configuration - astral-sh/uv #7851</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for system-level <code>uv.toml</code> configuration</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7851">#7851</a>
+        opened by <a href="https://github.com/amjith">@amjith</a>
+        on 2024-10-01 17:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/amjith">@amjith</a> on 2024-10-01 17:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Look for a system level uv.toml config file under <code>/etc/uv/uv.toml</code> or <code>C:\ProgramData</code>.</p>
+<p>This PR is to address #6742 and start a conversation.</p>
+<h2>Test Plan</h2>
+<p>This was tested locally manually on MacOS. I am happy to contribute tests once we settle on the approach.</p>
+<p>cc @thatch</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-01 17:48</div>
+            <div class="timeline-body"><p>Thanks for contributing :) Why not use the XDG defaults?</p>
+<p>I'm not sure if we'll need to address https://github.com/astral-sh/uv/issues/6742#issuecomment-2383897018</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thatch">@thatch</a> on 2024-10-01 18:21</div>
+            <div class="timeline-body"><p>The code change to follow XDG isn't all that complex (split on colon, take first matching one), but I'm a fan of simpler docs as a metric of measuring whether you're writing your best code.  The use of <code>.config</code> on mac instead of <code>Application Support</code> seemed to be an indicator in this direction, which is why the first attempt is this way.  If this needs a try 2 because XDG gives value, would like some advice on what the <code>Err</code> ought to look like when a dir (not the last one) doesn't exist, or if that promotion to a more specific <code>Err</code> in <code>user()</code> isn't really necessary here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-10-02 11:19</div>
+            <div class="timeline-body"><p>The code looks good to me, assuming we're happy with the paths! I'll defer to @zanieb on the choice of path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2024-10-02 11:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-02 11:19</div>
+            <div class="timeline-body"><p>\cc @pradyunsg</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amjith">@amjith</a> on 2024-10-02 13:27</div>
+            <div class="timeline-body"><blockquote>
+<p>Why not use the XDG defaults?</p>
+</blockquote>
+<p>From reading the XDG docs it seemed like <code>/etc/xdg/uv/uv.toml</code> is the path in linux and MacOS doesn't really have an equivalent but we could use <code>~/Library/Preferences /Library/Application Support /Library/Preferences</code>.</p>
+<p>I decided to go with a stable location that is shorter and the same between Linux and MacOS. I'm happy to check for the env var and use that if it exists and fallback to <code>/etc/uv/uv.toml</code> if it doesn't exist.</p>
+<p>Let me know your preference and I can adjust this accordingly.</p>
+<p>Testing:
+I'm new to rust hence not too familiar with the testing story. Are there relevant tests I should update or add?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-10-02 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-12 15:11</div>
+            <div class="timeline-body"><blockquote>
+<p>Why not use the XDG defaults?</p>
+</blockquote>
+<p>What <em>are</em> the XDG defaults for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-12 15:21</div>
+            <div class="timeline-body"><blockquote>
+<p>$XDG_CONFIG_DIRS defines the preference-ordered set of base directories to search for configuration files in addition to the $XDG_CONFIG_HOME base directory. The directories in $XDG_CONFIG_DIRS should be separated with a colon ':'.</p>
+<p>If $XDG_CONFIG_DIRS is either not set or empty, a value equal to <code>/etc/xdg</code> should be used.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-12 15:24</div>
+            <div class="timeline-body"><p>Basically, at the very least, we need to respect <code>XDG_CONFIG_DIRS</code> and look in all of the directories given there. If not set, we should also look in <code>/etc/xdg</code>. I'm down to read <code>/etc/uv</code> in addition to all of the XDG paths, but we need to decide if it's lower or higher priority than the XDG ones. I think we should do the same thing on macOS as we do on Linux.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-12 21:09</div>
+            <div class="timeline-body"><p>Okay cool, makes sense. How's this for a proposal:</p>
+<ol>
+<li>If <code>XDG_CONFIG_DIRS</code> is defined and non-empty, check each <code>${DIR}/uv/uv.toml</code>.</li>
+<li>If it's not defined or empty, check <code>/etc/xdg/uv/uv.toml</code>.</li>
+<li>Check <code>/etc/uv/uv.toml</code>.</li>
+</ol>
+<p>For rationale, we store in <code>/etc/uv/uv.toml</code> rather than <code>/etc/uv.toml</code> based on (<a href="https://refspecs.linuxfoundation.org/FHS_3.0/fhs/ch03s07.html">ref</a>):</p>
+<blockquote>
+<p>It is recommended that files be stored in subdirectories of /etc rather than directly in /etc.</p>
+</blockquote>
+<p>(This is actually counter to what pip and npm do, but oh well.)</p>
+<p>Additionally, we check <code>/etc/uv/uv.toml</code> <em>last</em> (rather than first) so that users can override configuration by adding to <code>XDG_CONFIG_DIRS</code>, rather than <code>/etc/uv/uv.toml</code> always taking precedent (rare, but we have to decide one way or the other).</p>
+<hr />
+<p>How does this sound? @amjith -- are you interested in implementing these changes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amjith">@amjith</a> on 2024-10-16 20:57</div>
+            <div class="timeline-body"><p>Yes. I'm happy to do that. I'll take a stab at it this Friday.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-16 20:59</div>
+            <div class="timeline-body"><p>And we combine each config we find?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amjith">@amjith</a> on 2024-10-16 21:51</div>
+            <div class="timeline-body"><p>Should it combine them all or should it stop at the first one it finds?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amjith">@amjith</a> on 2024-10-16 21:52</div>
+            <div class="timeline-body"><p>The current behavior is to combine project + system + user. If we choose to combine config from <code>XDG_CONFIG_DIRS</code> and <code>/etc/uv/uv.toml</code> and call that the system config that could get confusing. Especially since <code>XDG_CONFIG_DIRS</code> can have multiple folders and each one could have a uv.toml file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 22:07</div>
+            <div class="timeline-body"><p>I'd probably assume that we only take the first one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-16 22:08</div>
+            <div class="timeline-body"><p>XDG says you can do either :)</p>
+<blockquote>
+<p>A specification that refers to $XDG_DATA_DIRS or $XDG_CONFIG_DIRS should define what the behaviour must be when a file is located under multiple base directories. It could, for example, define that only the file under the most important base directory should be used or, as another example, it could define rules for merging the information from the different files.</p>
+</blockquote>
+<p>We should probably choose one. Not merging seems simpler, I agree. Are there other tools that respect these that we can refer to though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thatch">@thatch</a> reviewed on 2024-10-18 19:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thatch">@thatch</a> on <code>crates/uv-settings/src/lib.rs</code>:204 on 2024-10-18 19:29</div>
+            <div class="timeline-body"><p>I went to re-read the spec, which says</p>
+<blockquote>
+<p>If $XDG_CONFIG_DIRS is either not set or empty, a value equal to /etc/xdg should be used.</p>
+</blockquote>
+<p>I think this means don't fall back to /etc/xdg if the env var contains even just <code>:</code></p>
+<p>If that's true you should handle the &quot;/etc/xdg&quot; default here and not in <code>system_config_file()</code>.  To make things easier you could pass in the env var (so you don't have to set it in the test), since this is only used internally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thatch">@thatch</a> reviewed on 2024-10-18 19:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thatch">@thatch</a> on <code>crates/uv-settings/src/lib.rs</code>:63 on 2024-10-18 19:40</div>
+            <div class="timeline-body"><p>You can use the same pattern here as from line 37, to save some indent by putting the None up top.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thatch">@thatch</a> on <code>crates/uv-settings/src/lib.rs</code>:64 on 2024-10-18 19:42</div>
+            <div class="timeline-body"><p>Now that the 3rd case (not a dir) is removed, you can just <code>let options = read_file(&amp;file)?</code> I think.</p>
+<p>See https://doc.rust-lang.org/beta/book/ch09-02-recoverable-errors-with-result.html#a-shortcut-for-propagating-errors-the--operator</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thatch">@thatch</a> reviewed on 2024-10-18 19:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thatch">@thatch</a> on <code>crates/uv/src/lib.rs</code>:131 on 2024-10-18 19:46</div>
+            <div class="timeline-body"><p>Can you double-check the order of the <code>combine</code> calls?  It looks like <code>project.combine(user)</code> is in decreasing order, so I'd expect <code>system</code> to come last?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thatch">@thatch</a> reviewed on 2024-10-18 19:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thatch">@thatch</a> reviewed on 2024-10-18 19:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thatch">@thatch</a> on <code>crates/uv-settings/src/lib.rs</code>:272 on 2024-10-18 19:54</div>
+            <div class="timeline-body"><p>fixtureS</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amjith">@amjith</a> on 2024-10-18 22:50</div>
+            <div class="timeline-body"><p>I'm happy with the code changes in the PR. Let me know your feedback.</p>
+<p>Unfortunately the compilation fails in windows and I could use a hint on how to resolve that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amjith">@amjith</a> on 2024-10-19 03:52</div>
+            <div class="timeline-body"><p>I'm stuck on the Windows test failing. I don't have a windows laptop to try this out and somehow the env vars in Windows aren't working as I assumed it would.</p>
+<p>If you you folks have any suggestions, I'm all ears.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-19 14:26</div>
+            <div class="timeline-body"><p>No worries — I can take a look tomorrow (when I’m back home) on my Windows machine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Dominik50111">@Dominik50111</a> approved on 2024-10-19 22:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-20 23:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-settings/src/lib.rs</code>:204 on 2024-10-20 23:00</div>
+            <div class="timeline-body"><p>Does <code>env::split_paths</code> work here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-20 23:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-settings/src/lib.rs</code>:204 on 2024-10-20 23:30</div>
+            <div class="timeline-body"><p>Empirically, appears not!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-20 23:50</div>
+            <div class="timeline-body"><p>I think the Windows test is failing because you're expecting a <code>ProgramData</code> child that doesn't exist in the fixture. I'm gonna refactor the fixtures slightly to write the files within the tests themselves.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-20 23:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-settings/src/lib.rs</code>:204 on 2024-10-20 23:59</div>
+            <div class="timeline-body"><p>Really? That's pretty surprising.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-21 00:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-settings/src/lib.rs</code>:204 on 2024-10-21 00:04</div>
+            <div class="timeline-body"><p>Yeah. It returns <code>&quot;&quot;</code> in the iterator, which then resolves to the current working directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-21 00:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-settings/src/lib.rs</code>:204 on 2024-10-21 00:06</div>
+            <div class="timeline-body"><p>(We could filter empty string I guess.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-21 00:11</div>
+            <div class="timeline-body"><p>Should we be using <code>%ProgramData%</code> rather than <code>${SYSTEMDRIVE}/ProgramData</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-21 00:34</div>
+            <div class="timeline-body"><p>This looks good to me -- tests are passing, and I added some docs. I'll give @zanieb some time to review too though before merging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-21 00:35</div>
+            <div class="timeline-body"><p>I sort of think we should use <code>SHGetKnownFolderPath(FOLDERID_ProgramData)</code> instead of the current approach on Windows, but I may do it as a separate change and it's not blocking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-10-21 00:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-settings/src/lib.rs</code>:204 on 2024-10-21 13:37</div>
+            <div class="timeline-body"><p>Oh interesting. Yeah I guess it seems more correct to handle the empty string separately. I don't feel strongly since it's already platform-specific code though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-21 13:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-settings/src/lib.rs</code>:217 on 2024-10-21 14:39</div>
+            <div class="timeline-body"><p>It seems like this could use a little touchup for readability.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-21 14:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-21 14:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-settings/src/lib.rs</code>:291 on 2024-10-21 14:41</div>
+            <div class="timeline-body"><p>Why is this in a block?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-21 14:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-settings/src/lib.rs</code>:304 on 2024-10-21 14:42</div>
+            <div class="timeline-body"><p>This isn't thread-safe and our tests run concurrently.</p>
+<p>Unfortunately this isn't easy to solve. In the Python discovery tests, we use this pattern:</p>
+<p>https://github.com/astral-sh/uv/blob/01c44af3c3ffc9f5e78ef4b415305350c029d1e0/crates/uv-python/src/lib.rs#L44-L55</p>
+<p>https://github.com/astral-sh/uv/blob/01c44af3c3ffc9f5e78ef4b415305350c029d1e0/crates/uv-python/src/tests.rs#L78-L105</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-21 14:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-settings/src/lib.rs</code>:348 on 2024-10-21 14:42</div>
+            <div class="timeline-body"><p>Same as https://github.com/astral-sh/uv/pull/7851/files#r1808963874</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-21 14:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/configuration/files.md</code>:44 on 2024-10-21 14:44</div>
+            <div class="timeline-body"><p>We should clarify that we'll take the first system-level configuration file we find, not merge them all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-21 14:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/configuration/files.md</code>:44 on 2024-10-21 14:44</div>
+            <div class="timeline-body"><p>Maybe below in the merging paragraph?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-settings/src/lib.rs</code>:304 on 2024-10-21 14:44</div>
+            <div class="timeline-body"><p>Why do we even need this? The tests pass without changing the directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-21 14:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-21 14:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-settings/src/lib.rs</code>:291 on 2024-10-21 14:45</div>
+            <div class="timeline-body"><p>To clarify the scope.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-21 14:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/configuration/files.md</code>:44 on 2024-10-21 14:45</div>
+            <div class="timeline-body"><p>Feel free to push edits if you'd like, otherwise I can get to them later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-settings/src/lib.rs</code>:348 on 2024-10-21 14:46</div>
+            <div class="timeline-body"><p>This is different than the above. The above is changing the current directory. This is changing an env var. (The same critiques may apply, I just wanted to point it out.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-21 14:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-21 14:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-settings/src/lib.rs</code>:304 on 2024-10-21 14:48</div>
+            <div class="timeline-body"><p>I'm not sure. Seems like we don't then? I don't know why we'd read the current directory for this? Maybe if you have <code>XDG_CONFIG_PATHS=foo::bar</code> and we parse something relative to the working directory? Seems weird.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-21 14:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-settings/src/lib.rs</code>:348 on 2024-10-21 14:49</div>
+            <div class="timeline-body"><p>Yeah thanks for clarifying, the same problem is true unfortunately. If there's another test that reads <code>SYSTEMDRIVE</code> we can encounter a race condition and the tests will be flaky. The solution is to use the <code>run_vars</code> utility, you don't need the <code>current_dir</code> from <code>PWD</code> hack.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-21 16:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-settings/src/lib.rs</code>:348 on 2024-10-21 16:03</div>
+            <div class="timeline-body"><p>Okay cool, got it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-21 16:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-settings/src/lib.rs</code>:348 on 2024-10-21 16:17</div>
+            <div class="timeline-body"><p>Unfortunately I think this may still be a problem even if you use <code>with_vars</code> because <a href="https://crates.io/crates/temp-env">temp-env</a> creates a mutex to prevent concurrent conflicts between variables but if we're not using <code>temp-env</code> elsewhere we can still end up mutating their state. This isn't a big problem now because there aren't tests that rely on reading the environment that we're mutating in the Python discovery tests. The same is true of this test now, but it may not be true forever.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-21 16:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-settings/src/lib.rs</code>:291 on 2024-10-21 16:18</div>
+            <div class="timeline-body"><p>The scope of changing the current directory? I think it's misleading because it's not like <code>set_current_dir</code> reverts when the scope exits.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-21 16:20</div>
+            <div class="timeline-body"><p>I'll tweak and merge this today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add system level uv.toml config." to "Add support for system-level `uv.toml` configuration" by @charliermarsh on 2024-10-21 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-10-21 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-21 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-21 17:33</div>
+            <div class="timeline-body"><p>Thanks @amjith and @thatch!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaby">@gaby</a> on 2024-10-22 14:22</div>
+            <div class="timeline-body"><p>@charliermarsh Is this in the latest release or the next one?</p>
+<p>Thanks for this, looking forward to automating <code>uv</code> using ansible</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-22 14:25</div>
+            <div class="timeline-body"><p>It's not released yet, maybe today :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wimglenn">@wimglenn</a> on 2024-10-30 03:32</div>
+            <div class="timeline-body"><p>sysadmin note - if you arrived here looking for system-level uv config in /etc, the minimum uv version needed is <a href="https://github.com/astral-sh/uv/releases/tag/0.4.26">0.4.26</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaby">@gaby</a> on 2024-10-30 11:35</div>
+            <div class="timeline-body"><p>@wimglenn Great start but its missing all the ENV fields from uv. There's no way to setup a proxy via uv.toml either</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-30 12:43</div>
+            <div class="timeline-body"><p>@gaby -- Can I kindly request that you refrain from reposting that comment across multiple issues / PRs? You've mentioned it in a few places already, and it's best tracked elsewhere. Thanks.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:49 UTC
+    </footer>
+</body>
+</html>

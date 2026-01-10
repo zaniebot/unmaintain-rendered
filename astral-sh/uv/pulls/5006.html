@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make `BuildDispatch` an `Arc` and box early to remove `UV_STACK_SIZE` hack - astral-sh/uv #5006</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make <code>BuildDispatch</code> an <code>Arc</code> and box early to remove <code>UV_STACK_SIZE</code> hack</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5006">#5006</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-07-12 12:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-07-12 12:14</div>
+            <div class="timeline-body"><p>When looking into the stack size problems with debug mode windows, i saw two things:</p>
+<ul>
+<li>Our stack grows deep (&gt;200 frames) when recursively resolving and installing requirements.</li>
+<li>Our early methods (<code>main</code>, <code>run</code>, etc.) use exceedingly much stack.</li>
+</ul>
+<p>For the first problem, i made <code>BuildDispatch</code> an <code>Arc</code> and spawned the recursive resolution and installation with <code>tokio::task::spawn</code>. It has the nice side effect that most async functions become <code>Send</code> and it allows us to spawn arbitrary other futures if we want.</p>
+<p>For the second problem, i aggressively boxed futures, in the current diff somewhat arbitrarily.</p>
+<p>Together, the test suite passes with 1MB of stack on my linux machine. It should allows us remove the <code>UV_STACK_SIZE</code> hack on windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/bench/benches/uv.rs</code>:162 on 2024-07-12 12:18</div>
+            <div class="timeline-body"><p><a href="https://smallcultfollowing.com/babysteps/blog/2024/06/21/claim-auto-and-otherwise/">auto-claim when?</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-12 12:21</div>
+            <div class="timeline-body"><p>Nice! I think the main thing that bothers me here is boxing futures everywhere. Not so much because I'm worried about it impacting perf necessarily, but like, for someone else editing code, how do they know when a future should be boxed? Do we have any feedback mechanism other than &quot;stack exceeded&quot; in CI on Windows?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-12 12:27</div>
+            <div class="timeline-body"><p>Yeah i forgot that in the PR description: If we commit to changing this i will prune down the boxing. Unfortunately i don't think we have a good measuring system. The best approach would be to have less locals in the high level functions, instead group them and then box the group, but otherwise it comes down to checking the type size and boxing the largest future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-12 13:11</div>
+            <div class="timeline-body"><p>Yeah that makes sense. What I figured.</p>
+<p>@ibraheemdev Do you have thoughts on this change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-07-12 15:28</div>
+            <div class="timeline-body"><p>We actually don't need to introduce the <code>Send</code> requirement here if we use <a href="https://docs.rs/tokio/latest/tokio/task/fn.spawn_local.html"><code>tokio::spawn_local</code></a> and wrap <code>run</code> in a <a href="https://docs.rs/tokio/latest/tokio/task/struct.LocalSet.html#method.run_until"><code>LocalSet</code></a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-09-24 10:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:00:50 UTC
+    </footer>
+</body>
+</html>

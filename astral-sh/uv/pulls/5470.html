@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reframe use of `--isolated` in `tool run` - astral-sh/uv #5470</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Reframe use of <code>--isolated</code> in <code>tool run</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5470">#5470</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-07-26 00:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-26 00:31</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR gets rid of the global <code>--isolated</code> flag (which serves a bunch of independent responsibilities right now) on <code>uv tool run</code> in favor of a dedicated <code>--isolated</code> flag, which tells uv to avoid re-using an existing tool environment for this invocation. We'll add the same thing to <code>uv run</code>, to avoid using the base project environment.</p>
+<p>This will become a bit clearer in #5466, when we deprecate the <code>--isolated</code> flag on the preview APIs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-07-26 00:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-07-26 00:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-07-26 00:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2024-07-26 00:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-07-26 09:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-30 13:37</div>
+            <div class="timeline-body"><p>What's the idea behind &quot;isolate&quot; vs &quot;isolated&quot;? What tense do we want to use in our CLI?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 13:38</div>
+            <div class="timeline-body"><p>I suppose we could use <code>--isolated</code>. I wanted to have a hard break with the deprecated flag, otherwise in a vacuum I would've just used <code>--isolated</code>. Let me skim our CLI and see if we have examples either way...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-30 13:39</div>
+            <div class="timeline-body"><p>Yeah I worry about using a different name than we would have just for the deprecation :/ it makes some sense pragmatically but I am also genuinely curious which tense we should use in general.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 13:39</div>
+            <div class="timeline-body"><p>It looks like we tend to use imperative: <code>--refresh</code>, <code>--reinstall</code>, <code>--annotate</code>, <code>--generate-hashes</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 13:40</div>
+            <div class="timeline-body"><p>On the other hand, we have <code>--locked</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 13:41</div>
+            <div class="timeline-body"><p>Although <code>--locked</code> isn't an action (it's not telling you to lock something), it's a description... Whereas <code>--isolate</code> is telling uv to add isolation. I don't know if I'm smart enough to describe the distinction accurately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-30 14:11</div>
+            <div class="timeline-body"><p>I think I feel the gist of what you're getting at.</p>
+<p>I think if we consider <code>--locked</code> (and similar) as &quot;descriptions of how to act&quot; rather than &quot;doing another action&quot; (as would be implied by <code>--lock</code>), I think <code>--isolated</code> actually makes more sense because we're doing the same <em>action</em> just in a different way?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 14:13</div>
+            <div class="timeline-body"><p>Yeah that's a good description. Ok, should we just reuse <code>--isolated</code> here? It's not a huge problem since <code>--isolated</code> already <em>meant</em> this in these contexts. It just makes the deprecation and warnings more difficult to implement...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-30 14:22</div>
+            <div class="timeline-body"><p>I think we would use it if not for the existing flag; and, since it's the same as before and mostly in preview, I think we should go for it. Sorry it adds complexity 😬 hopefully the deprecation is short-lived? I'm also okay with no-deprecation in the preview commands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 18:05</div>
+            <div class="timeline-body"><p>I'm not 100% sure how to make it work since we'll now have <code>--isolated</code> as both a global and an argument on a dedicated command (assuming we want it to show up in <code>help</code>). I'll try though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 18:57</div>
+            <div class="timeline-body"><p>Oh interesting, Clap lets commands override global arguments. Ok, that's easier...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Remove use of `--isolated` in `tool run`" to "Reframe use of `--isolated` in `tool run`" by @charliermarsh on 2024-07-30 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-07-30 19:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-30 19:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-30 19:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:00:51 UTC
+    </footer>
+</body>
+</html>

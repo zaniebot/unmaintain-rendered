@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate shell completion for `uvx` - astral-sh/uv #7388</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Generate shell completion for <code>uvx</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7388">#7388</a>
+        opened by <a href="https://github.com/bluss">@bluss</a>
+        on 2024-09-14 09:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/bluss">@bluss</a> on 2024-09-14 09:30</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Generate shell completion for uvx.</p>
+<p>Create a <code>uvx</code> toplevel command just for completion by combining <code>uv tool uvx</code> (hidden alias for <code>uv tool run</code>) with global arguments. This explicit combination is needed otherwise global arguments are missing (if they are missing, clap debug assertions fail when <code>uv tool run</code> arguments refer to global arguments in directives like conflicts with).</p>
+<p>The command <code>uv generate-shell-completion</code> now generates completion for both <code>uv</code> and <code>uvx</code> in the same output.</p>
+<p>Fixes #7258</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Tested using bash using <code>eval &quot;$(cargo run --bin uv generate-shell-completion bash)&quot;</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-09-14 09:34</div>
+            <div class="timeline-body"><p>Some issues that need to be resolved</p>
+<ul>
+<li>~~I removed global deprecated <code>--isolated</code>, otherwise it conflicts with <code>uvx --isolated</code> and this trips a runtime error. This part of the PR is (as is evident) just a placeholder, needs to be resolved~~<ul>
+<li>Not removed anymore. Just skipping the conflicting thing when we do shell completion.</li>
+</ul>
+</li>
+<li>~~Currently the method is uvx subcommand + TopLevelArgs. I think the better layer order would be TopLevelArgs + uvx subcommand. But I don't know clap enough to know if this makes a difference.~~<ul>
+<li>Resolved? because uvx + TopLevelArgs layering reproduces current <code>uv tool run</code> argument sort order</li>
+</ul>
+</li>
+<li>Do all shells support combining uv and uvx completions in the same stream or file? Bash and fish (see #7323) support this.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-09-14 09:36</div>
+            <div class="timeline-body"><p>Normal way to install completion for a command in bash:</p>
+<pre><code class="language-bash">BASH_COMPLETION_DIR=&quot;$HOME/.local/share/bash-completion/completions&quot;
+mkdir -p &quot;$BASH_COMPLETION_DIR&quot;
+uv generate-shell-completion bash &gt; &quot;$BASH_COMPLETION_DIR&quot;/uv
+</code></pre>
+<p>bash lazy loads completion for the command <code>uv</code> from a file called <code>uv</code>. To support lazy loading for uvx, another file for <code>uvx</code> is needed. The recommended solution is to use a symlink from <code>uvx</code> -&gt; <code>uv</code></p>
+<pre><code>ln -sf &quot;$BASH_COMPLETION_DIR&quot;/uv &quot;$BASH_COMPLETION_DIR&quot;/uvx
+</code></pre>
+<p>The documented way to install shell completion by uv is to use this, which will continue to work unchanged:</p>
+<pre><code>eval &quot;$(uv generate-shell-completion bash)&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/bluss">@bluss</a> on <code>crates/uv/src/lib.rs</code>:71 on 2024-09-14 09:38</div>
+            <div class="timeline-body"><p>This point needs a better solution for the deprecated <code>--isolated</code> - need your input.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bluss">@bluss</a> reviewed on 2024-09-14 09:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bluss">@bluss</a> reviewed on 2024-09-14 09:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/bluss">@bluss</a> on <code>crates/uv-cli/src/lib.rs</code>:85 on 2024-09-14 09:38</div>
+            <div class="timeline-body"><p>This was admittedly quickly thrown together and the attributes are probably overdone here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bluss">@bluss</a> reviewed on 2024-09-14 10:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/bluss">@bluss</a> on <code>crates/uv/src/lib.rs</code>:803 on 2024-09-14 10:14</div>
+            <div class="timeline-body"><p>We can use layer order TopLevelArgs + uvx instead like this:</p>
+<pre><code class="language-rust">            // Create uvx as a combination of top level arguments and the uv tool uvx subcommand
+            let mut uvx = TopLevelArgs::command().name(&quot;uvx&quot;).bin_name(&quot;uvx&quot;).version(&quot;dummy_for_completion&quot;);
+            uvx = ToolRunArgs::augment_args(uvx);
+</code></pre>
+<p>But that's not in the change right now, because the layer order uvx + TopLevelArgs is what produces the same argument sort order as <code>uv tool run</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ilyagr">@ilyagr</a> reviewed on 2024-09-16 01:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ilyagr">@ilyagr</a> on <code>crates/uv/src/lib.rs</code>:803 on 2024-09-16 01:35</div>
+            <div class="timeline-body"><p>I haven't tested this, but I was thinking of the following, which might be slightly easier:</p>
+<pre><code class="language-rust">#[derive(Parser)]
+#[command(name = &quot;uvx&quot;, author, long_version = crate::version::version())]
+// Not all of these might be neccessary
+#[command(about = &quot;An alias for `uv tool run`.&quot;)]
+#[command(
+    after_help = &quot;Use `uv help tool run` for a few more details.&quot;,
+)]
+pub struct UvxCli {
+    #[command(flatten)]
+    pub args: ToolRunArgs,
+
+    #[command(flatten)]
+    pub top_level: TopLevelArgs,
+}
+</code></pre>
+<p>Then, you can use <code>args.shell.generate(&amp;mut UvxCommand::command(), ...)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/bluss">@bluss</a> on <code>crates/uv/src/lib.rs</code>:803 on 2024-09-16 18:17</div>
+            <div class="timeline-body"><p>This looks good, but I went with the other way because I can't resolve the <code>--isolated</code> argument name clash in this version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bluss">@bluss</a> reviewed on 2024-09-16 18:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bluss">@bluss</a> reviewed on 2024-09-16 18:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/bluss">@bluss</a> on <code>crates/uv/src/lib.rs</code>:793 on 2024-09-16 18:19</div>
+            <div class="timeline-body"><p>These three lines together look strange, but without, there are duplicate help and version. And we should really get the help and version from TopLevelArgs, because they are explicitly defined there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Generate shell completion for `uvx` (WIP)" to "Generate shell completion for `uvx`" by @bluss on 2024-09-16 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-09-16 18:20</div>
+            <div class="timeline-body"><p>Not WIP anymore because it's in shipshape - if reviewers agree, of course.</p>
+<p>I had previously removed global <code>--isolated</code> because it tripped a debug assertion when conflicting with a different argument with the same name. But that change is now reverted in the PR, I just skip that arg when creating the synthetic <code>Uvx</code> <code>Command</code> for shell completion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ilyagr">@ilyagr</a> reviewed on 2024-09-16 19:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ilyagr">@ilyagr</a> on <code>crates/uv/src/lib.rs</code>:793 on 2024-09-16 19:54</div>
+            <div class="timeline-body"><p>Minor, optional nit: I would put the key parts of this information (e.g. a quick explanation of why the duplication happens without these lines) into the code as a comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bluss">@bluss</a> reviewed on 2024-09-16 22:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/bluss">@bluss</a> on <code>crates/uv/src/lib.rs</code>:793 on 2024-09-16 22:06</div>
+            <div class="timeline-body"><p>I think it's better now with a comment..</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-16 23:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-09-17 03:15</div>
+            <div class="timeline-body"><p>This looks great, thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2024-09-17 03:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-09-17 03:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-17 03:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ilyagr">@ilyagr</a> on 2024-09-17 03:59</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ilyagr">@ilyagr</a> reviewed on 2024-09-17 04:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ilyagr">@ilyagr</a> on <code>docs/getting-started/installation.md</code>:184 on 2024-09-17 04:07</div>
+            <div class="timeline-body"><p>I'm not the author, but my understanding is that <code>uv generate-shell-completion bash</code> currently generates the completions for both <code>uv</code> and <code>uvx</code>. I'm not sure that <code>uvx generate-shell-completion bash</code> will work at all.</p>
+<p>If my understanding is correct, these docs are misleading, and there isn't really need for docs. The existing instructions will cause completion to work for both <code>uv</code> and <code>uvx</code>.</p>
+<p>It wouldn't be hard to modify this code to generate the completions separately, e.g. something like <code>uv generate-shell-completion --uvx-only bash</code>. <strong>Update:</strong> (But I don't think there's a real need for this until somebody asks for it)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-17 04:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/getting-started/installation.md</code>:184 on 2024-09-17 04:11</div>
+            <div class="timeline-body"><p>You’re right, I misread the instructions in the summary. Will revert in the morning (or anyone is welcome to PR).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bluss">@bluss</a> reviewed on 2024-09-17 06:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/bluss">@bluss</a> on <code>docs/getting-started/installation.md</code>:184 on 2024-09-17 06:41</div>
+            <div class="timeline-body"><p>We could expand the docs with the statement that uv and uvx completions are included in the same output.</p>
+<p>Not sure if it's worth providing further hints, like if you use a per command file for completions, duplicate the output in both files or symlink uvx -&gt; uv. Could be discussed in future docs changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-17 08:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:32 UTC
+    </footer>
+</body>
+</html>

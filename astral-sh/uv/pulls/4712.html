@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fork resolution when Python requirement is narrowed - astral-sh/uv #4712</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fork resolution when Python requirement is narrowed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4712">#4712</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-07-01 21:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-01 21:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is similar to #4707, but in this case, we don't actually fork, because there are no divergent requirements. Consider:</p>
+<pre><code class="language-text">uv ; python_version &gt;= &quot;3.8&quot;
+</code></pre>
+<p>With <code>-p 3.7</code>. In this case, there's no version of <code>uv</code> that satisfies Python 3.7, but it's only required on Python 3.8 anyway.</p>
+<p>The solution I settled on here is to... fork anyway? I'd like to get some input before setting it out, but it makes some sense to me: we want to solve with a different set of constraints than in the rest of the resolution.</p>
+<p>Initially, I tried to just merge the fork markers with the requirement markers (i.e., the <code>python_version &gt;= &quot;3.8&quot;</code> on the requirement itself) -- but that's insufficient. Imagine if instead we had a package <code>foo</code> that depended on <code>uv</code>, and <code>foo ; python_version &gt;= &quot;3.8&quot;</code>.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/4668.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-07-01 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-07-01 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-07-01 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-07-01 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-01 22:11</div>
+            <div class="timeline-body"><p>I'm honestly not sure if this is sound.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/branching_urls.rs</code>:400 on 2024-07-01 22:28</div>
+            <div class="timeline-body"><p>Ok yeah this is just wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-01 22:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-01 22:28</div>
+            <div class="timeline-body"><p>Open to better ideas here. I think what I have in this PR is wrong actually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-02 11:16</div>
+            <div class="timeline-body"><p>I think the splitting can work, but we must only split when there the python marker is stricter than the current requires-python and be mindful if we're already splitting on the python version marker, which is happening <code>root_package_splits_other_dependencies_too</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-20 11:50</div>
+            <div class="timeline-body"><p>Is this still applicable with #6143?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> removed by @zanieb on 2024-08-20 19:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-27 18:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:00:50 UTC
+    </footer>
+</body>
+</html>

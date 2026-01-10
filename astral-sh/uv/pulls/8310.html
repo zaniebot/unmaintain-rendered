@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patch Python executable name for Windows free-threaded builds - astral-sh/uv #8310</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Patch Python executable name for Windows free-threaded builds</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/8310">#8310</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-10-17 22:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-17 22:21</div>
+            <div class="timeline-body"><p>A temporary fix for https://github.com/astral-sh/uv/issues/8298 while we wait for my slower upstream fix at https://github.com/indygreg/python-build-standalone/pull/373</p>
+<p>I think we'll want this machinery anyway to ensure that the various executable names are available? Otherwise we need to special-case all the <code>python</code> names in <code>uv run</code>?</p>
+<p>We don't have unit test coverage of managed downloads, so I added an <a href="https://github.com/astral-sh/uv/actions/runs/11394150653/job/31703956805?pr=8310">integration test</a> similar to what we have for Linux.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-10-17 22:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-17 22:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-fs/src/lib.rs</code>:111 on 2024-10-17 22:42</div>
+            <div class="timeline-body"><p>Bitten (once again) by the fact that <code>replace_symlink</code> is only valid for directories on Windows, so I've added a new method for files. I plan to do some sort of refactor following this to make it hard to call the wrong thing here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-10-17 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/uv-fs/src/lib.rs</code>:110 on 2024-10-17 22:46</div>
+            <div class="timeline-body"><p>This doesn't seem to describe what the function below does. (The first sentence does, though.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/uv-python/src/managed.rs</code>:340 on 2024-10-17 22:48</div>
+            <div class="timeline-body"><p>Is it &quot;missing the standard Python executable on Windows&quot; or &quot;missing the standard Python executable for free-threaded builds on Windows&quot;?</p>
+<p>If the former, then the code below seems like an incomplete workaround.</p>
+<p>If the latter, maybe clarify the comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/uv-python/src/managed.rs</code>:335 on 2024-10-17 22:49</div>
+            <div class="timeline-body"><p>For non-free-threaded Windows builds, <code>python.exe</code> already will exist? We don't need to copy over a versioned executable?</p>
+<p>In this case where the expected Python executable doesn't exist, and we have no intention to do anything about it, are we just silently creating a broken experience down the line? Should we error here and warn the user?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/uv-python/src/managed.rs</code>:353 on 2024-10-17 22:52</div>
+            <div class="timeline-body"><p>What if this executable doesn't exist? Should we explicitly test that and error if not?</p>
+<p>I assume the symlink/copy below will fail, but will it fail with a comprehensible error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-10-17 22:53</div>
+            <div class="timeline-body"><p>(insert &quot;I have no idea what I'm doing&quot; dog-science meme here)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-17 23:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/managed.rs</code>:340 on 2024-10-17 23:03</div>
+            <div class="timeline-body"><p>It's missing <code>python.exe</code>, instead it has <code>python3.13t.exe</code> which... I think is the former? What am I missing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-17 23:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/managed.rs</code>:335 on 2024-10-17 23:04</div>
+            <div class="timeline-body"><p>Yeah <code>python.exe</code> exists in every existing Python distribution <em>except</em> the free-threaded ones.</p>
+<blockquote>
+<p>In this case where the expected Python executable doesn't exist, and we have no intention to do anything about it, are we just silently creating a broken experience down the line? Should we error here and warn the user?</p>
+</blockquote>
+<p>Hm. Good question. Yeah we can't <em>fix</em> things here but we sure can complain. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/managed.rs</code>:353 on 2024-10-17 23:07</div>
+            <div class="timeline-body"><p>Yeah I thought about testing it but was okay with the failure. It should &quot;never occur&quot; and we should get some error context but we could probably add more. I'll try to do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-17 23:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-17 23:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-fs/src/lib.rs</code>:110 on 2024-10-17 23:14</div>
+            <div class="timeline-body"><p>I believe I've addressed this by tweaking the wording.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-17 23:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/managed.rs</code>:335 on 2024-10-17 23:15</div>
+            <div class="timeline-body"><p>We will throw an error now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-17 23:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/managed.rs</code>:353 on 2024-10-17 23:15</div>
+            <div class="timeline-body"><p>We have a couple error variants for this now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-17 23:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/managed.rs</code>:340 on 2024-10-17 23:19</div>
+            <div class="timeline-body"><p>Oh I misread what you said, definitely the latter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-10-17 23:23</div>
+            <div class="timeline-body"><p>Looks great to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-10-17 23:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-17 23:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-17 23:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:02:03 UTC
+    </footer>
+</body>
+</html>

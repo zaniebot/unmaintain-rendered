@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `uv build --all` option - astral-sh/uv #7724</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>uv build --all</code> option</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7724">#7724</a>
+        opened by <a href="https://github.com/blueraft">@blueraft</a>
+        on 2024-09-26 19:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/blueraft">@blueraft</a> on 2024-09-26 19:24</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #7705</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code> and tested locally.</p>
+<p>The snapshots were unstable due to the packages being built in a non-deterministic order, so I used the quiet flag to suppress the output.</p>
+<p>Another question is whether we should label the build output to indicate which package it belongs to?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2024-09-26 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-26 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-09-26 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-26 19:36</div>
+            <div class="timeline-body"><p>Wondering if we should call this <code>--workspace</code> to follow Cargo's convention?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2024-09-26 19:44</div>
+            <div class="timeline-body"><p><code>--all</code> is a bit more intuitive to me, but <code>--workspace</code> sounds good too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-26 19:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/build.rs</code>:286 on 2024-09-26 19:44</div>
+            <div class="timeline-body"><p>You could also sort the results for determinism here right? Generally I'm pretty into having deterministic output if it's not high-cost.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-26 19:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/build.rs</code>:286 on 2024-09-26 19:55</div>
+            <div class="timeline-body"><p>I think the build output itself would be interleaved even if sorted. We'd need <code>--no-build-output</code> from your prior PR... then we could make the <em>asset names</em> deterministic, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-26 19:56</div>
+            <div class="timeline-body"><p>I guess <code>--all</code> is fine since it's consistent with Rye.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-26 19:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/build.rs</code>:153 on 2024-09-26 19:56</div>
+            <div class="timeline-body"><p>Is <code>anyhow::Error</code> necessary? I think that's the default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-26 19:57</div>
+            <div class="timeline-body"><p>This generally looks good to me though it may be worth reviving #7675 so that we can get better snapshot tests (just the artifact output, rather than the build output). Wdyt @zanieb?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-26 23:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/build.rs</code>:286 on 2024-09-26 23:08</div>
+            <div class="timeline-body"><p>We would need that.. wouldn't we :p I feel like in this case it'd probably make sense to do something else with the build output by default instead of interleaving it... like show progress bars for each build and write the output to a file per project or something. Anyway, that doesn't need to be in scope here.</p>
+<p>Cross-linking for reference #7675</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-26 23:09</div>
+            <div class="timeline-body"><p>I'd be down to restore https://github.com/astral-sh/uv/pull/7675 as a hidden option so we can use it here and consider if we want it in the long run?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-26 23:22</div>
+            <div class="timeline-body"><p>Sounds good. I re-opened and approved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-27 01:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/build.rs</code>:1307 on 2024-09-27 01:47</div>
+            <div class="timeline-body"><p>I think we should prefix these with the member name (like <code>[member_a] Building source distribution...</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-27 01:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/build.rs</code>:1330 on 2024-09-27 01:47</div>
+            <div class="timeline-body"><p>Should every member write to a single top-level <code>./dist</code>? I'm actually not sure. What does Rye do? In this PR, you're writing to <code>./dist</code> relative to each member.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/build.rs</code>:249 on 2024-09-27 01:50</div>
+            <div class="timeline-body"><p>I think we need to omit virtual packages, and probably fail if there are no members to build.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-27 01:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-09-27 02:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-27 02:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/build.rs</code>:249 on 2024-09-27 02:23</div>
+            <div class="timeline-body"><p>Added this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-27 02:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/build.rs</code>:1330 on 2024-09-27 02:23</div>
+            <div class="timeline-body"><p>I guess this is fine. I'm not sure what's best. Rye writes to a single <code>./dist</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-09-27 02:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-27 02:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-27 02:46</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-27 07:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:01:44 UTC
+    </footer>
+</body>
+</html>
