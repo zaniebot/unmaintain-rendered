@@ -12,7 +12,7 @@ head: zb/blue-rooster
 created_at: 2025-09-11T13:10:48Z
 updated_at: 2025-09-29T09:47:16Z
 url: https://github.com/zanieb/rooster/pull/80
-synced_at: 2026-01-09T23:57:07Z
+synced_at: 2026-01-10T00:06:37Z
 ---
 
 # Drop the `-blue` suffix

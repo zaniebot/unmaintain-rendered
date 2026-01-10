@@ -13,7 +13,7 @@ head: update-hishel
 created_at: 2024-03-23T17:19:41Z
 updated_at: 2024-03-24T16:51:12Z
 url: https://github.com/zanieb/rooster/pull/25
-synced_at: 2026-01-09T23:57:07Z
+synced_at: 2026-01-10T00:06:37Z
 ---
 
 # Simplify caching

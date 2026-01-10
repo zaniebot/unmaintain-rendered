@@ -12,7 +12,7 @@ head: zb/drop-commands
 created_at: 2025-05-03T14:53:40Z
 updated_at: 2025-05-03T21:48:32Z
 url: https://github.com/zanieb/rooster/pull/53
-synced_at: 2026-01-09T23:57:07Z
+synced_at: 2026-01-10T00:06:37Z
 ---
 
 # Drop all of the commands but `release`

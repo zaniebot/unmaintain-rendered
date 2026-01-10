@@ -12,7 +12,7 @@ head: zb/changelog-fix
 created_at: 2024-06-11T20:36:01Z
 updated_at: 2024-06-11T20:36:39Z
 url: https://github.com/zanieb/rooster/pull/44
-synced_at: 2026-01-09T23:57:07Z
+synced_at: 2026-01-10T00:06:37Z
 ---
 
 # Fix handling of empty changelog files

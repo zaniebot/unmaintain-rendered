@@ -11,7 +11,7 @@ head: release/changelog-0.0.3
 created_at: 2024-03-24T17:54:04Z
 updated_at: 2024-03-24T17:57:36Z
 url: https://github.com/zanieb/rooster/pull/38
-synced_at: 2026-01-09T23:57:07Z
+synced_at: 2026-01-10T00:06:37Z
 ---
 
 # release/changelog 0.0.3

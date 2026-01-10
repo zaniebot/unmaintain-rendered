@@ -12,7 +12,7 @@ head: cache-json
 created_at: 2025-07-14T18:00:51Z
 updated_at: 2025-07-14T19:27:21Z
 url: https://github.com/zanieb/rooster/pull/71
-synced_at: 2026-01-09T23:57:07Z
+synced_at: 2026-01-10T00:06:37Z
 ---
 
 # Properly parse JSON in caching logic

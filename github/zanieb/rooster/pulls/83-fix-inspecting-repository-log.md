@@ -12,7 +12,7 @@ head: zb/inspecting-fix
 created_at: 2025-09-23T14:47:22Z
 updated_at: 2025-09-23T22:07:42Z
 url: https://github.com/zanieb/rooster/pull/83
-synced_at: 2026-01-09T23:57:07Z
+synced_at: 2026-01-10T00:06:37Z
 ---
 
 # Fix inspecting repository log

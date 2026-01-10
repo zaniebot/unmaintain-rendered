@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-11-08T17:40:14Z
 updated_at: 2024-02-22T20:47:33Z
 url: https://github.com/zanieb/rooster/issues/9
-synced_at: 2026-01-09T23:57:07Z
+synced_at: 2026-01-10T00:06:37Z
 ---
 
 # Publish to PyPI

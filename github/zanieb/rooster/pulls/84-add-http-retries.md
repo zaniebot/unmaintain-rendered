@@ -12,7 +12,7 @@ head: zb/retry
 created_at: 2025-09-25T13:29:24Z
 updated_at: 2025-09-25T13:40:13Z
 url: https://github.com/zanieb/rooster/pull/84
-synced_at: 2026-01-09T23:57:07Z
+synced_at: 2026-01-10T00:06:37Z
 ---
 
 # Add HTTP retries

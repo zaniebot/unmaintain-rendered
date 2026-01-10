@@ -12,7 +12,7 @@ head: ci
 created_at: 2023-10-13T18:30:31Z
 updated_at: 2023-10-13T18:44:12Z
 url: https://github.com/zanieb/rooster/pull/1
-synced_at: 2026-01-09T23:57:07Z
+synced_at: 2026-01-10T00:06:37Z
 ---
 
 # Add CI check job

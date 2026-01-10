@@ -12,7 +12,7 @@ head: zb/fix-order
 created_at: 2025-05-05T13:21:27Z
 updated_at: 2025-05-05T13:31:36Z
 url: https://github.com/zanieb/rooster/pull/60
-synced_at: 2026-01-09T23:57:07Z
+synced_at: 2026-01-10T00:06:37Z
 ---
 
 # Use deterministic ordering for PRs
