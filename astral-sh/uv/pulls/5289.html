@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match wheel tags against `Requires-Python` major-minor - astral-sh/uv #5289</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Match wheel tags against <code>Requires-Python</code> major-minor</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5289">#5289</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-07-22 14:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 14:13</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Given <code>Requires-Python: &quot;&gt;=3.12.3&quot;</code>, we were rejecting wheels like <code>dearpygui-1.11.1-cp312-cp312-win_amd64.whl</code>, since <code>3.12.0</code> is not included in <code>&gt;=3.12.3</code>. We instead need to test against the major-minor version of <code>Requires-Python</code>.</p>
+<p>The easiest way to do this, I think, is the use the <code>RequiresPython</code> struct, which has a single bound that we can truncate the major-minor. This also means that we now allow <code>dearpygui-1.11.1-cp312-cp312-win_amd64.whl</code> for specifiers like <code>Requires-Python: &quot;==3.10.*&quot;</code>. This is incorrect on the surface, but it does match our semantics for <code>Requires-Python</code> elsewhere: we treat it as a lower bound.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/5287.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-07-22 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-07-22 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-22 14:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/requires_python.rs</code>:174 on 2024-07-22 14:13</div>
+            <div class="timeline-body"><p>This is strange but I think correct...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/requires_python.rs</code>:174 on 2024-07-22 14:16</div>
+            <div class="timeline-body"><p>Yeah <code>&gt;3.10</code> is a footgun because it does actually include <code>3.10</code> version, this is basically PYI006</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-22 14:24</div>
+            <div class="timeline-body"><blockquote>
+<p>This also means that we now allow dearpygui-1.11.1-cp312-cp312-win_amd64.whl for specifiers like Requires-Python: &quot;==3.10.*&quot;</p>
+</blockquote>
+<p>For warehouse with <code>==3.11.*</code>, this increases the lockfile from 4161 lines to 4466 lines (+7%).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-07-22 14:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 14:25</div>
+            <div class="timeline-body"><blockquote>
+<p>For warehouse with ==3.11.*, this increases the lockfile from 4161 lines to 4466 lines (+7%).</p>
+</blockquote>
+<p>Yeah, unfortunately I think we kinda have to do this, unless we want to change our <code>Requires-Python</code> semantics. But we should do that holistically if so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-22 14:33</div>
+            <div class="timeline-body"><p>The most correct solution is probably computing an upper bound the same way we compute the lower bound, incl. widening to the next full major-minor version/discarding the patch version, and then only applying the lower bound for matching dependencies' requires-python, but applying the lower and the upper bound for selecting their wheels. (Giving us requires-python semantic #3, i think).</p>
+<p>Improving this isn't schema-breaking or badly breaking backwards compatibility (the wheels can never be selected anyway), so we can move this post-release-ready.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-07-22 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-22 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-22 14:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:37:38 UTC
+    </footer>
+</body>
+</html>

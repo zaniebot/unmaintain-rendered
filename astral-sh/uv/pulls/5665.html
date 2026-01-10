@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add help sections for global options - astral-sh/uv #5665</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add help sections for global options</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5665">#5665</a>
+        opened by <a href="https://github.com/eth3lbert">@eth3lbert</a>
+        on 2024-07-31 17:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-31 17:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Part of #4454 .</p>
+<h2>Test Plan</h2>
+<p>test cases included.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-31 17:53</div>
+            <div class="timeline-body"><p>Currently with proposed:</p>
+<pre><code class="language-shell-session">(devshell) :)  uv help
+An extremely fast Python package manager.
+
+Usage: uv [OPTIONS] &lt;COMMAND&gt;
+
+Commands:
+  pip      Resolve and install Python packages
+  tool     Run and manage executable Python packages
+  python   Manage Python installations
+  venv     Create a virtual environment
+  cache    Manage the cache
+  version  Display uv's version
+  help     Display documentation for a command
+
+Options:
+  -n, --no-cache                   Avoid reading from or writing to the cache, instead using a temporary directory for the duration of the operation [env: UV_NO_CACHE=]
+      --cache-dir &lt;CACHE_DIR&gt;      Path to the cache directory [env: UV_CACHE_DIR=]
+      --config-file &lt;CONFIG_FILE&gt;  The path to a `uv.toml` file to use for configuration [env: UV_CONFIG_FILE=]
+      --no-config                  Avoid discovering configuration files (`pyproject.toml`, `uv.toml`) in the current directory, parent directories, or user configuration directories [env:
+                                   UV_NO_CONFIG=]
+  -h, --help                       Print help
+  -V, --version                    Print version
+
+Global Options:
+  -q, --quiet                                  Do not print any output
+  -v, --verbose...                             Use verbose output
+      --color &lt;COLOR_CHOICE&gt;                   Control colors in output [default: auto] [possible values: auto, always, never]
+      --native-tls                             Whether to load TLS certificates from the platform's native certificate store [env: UV_NATIVE_TLS=]
+      --offline                                Disable network access, relying only on locally cached data and locally available files
+      --python-preference &lt;PYTHON_PREFERENCE&gt;  Whether to prefer using Python installations that are already present on the system, or those that are downloaded and installed by uv [possible values:
+                                               only-managed, managed, system, only-system]
+      --python-fetch &lt;PYTHON_FETCH&gt;            Whether to automatically download Python when required [possible values: automatic, manual]
+      --no-progress                            Hides all progress outputs when set
+
+Use `uv help &lt;command&gt;` for more information on a specific command.
+</code></pre>
+<p>@zanieb Do we have any expected output or a specific order?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-31 18:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:90 on 2024-07-31 18:02</div>
+            <div class="timeline-body"><p>Nit: I don't think we use title case</p>
+<pre><code class="language-suggestion">#[command(mut_args(|arg| arg.help_heading(&quot;Global options&quot;)))]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-31 18:04</div>
+            <div class="timeline-body"><p>Hm are those other ones not global options too?</p>
+<p>Ordering within the group seems okay to leave as-is for now. I think I want to group everything e.g. a &quot;Resolver options&quot; section then deal with within-group ordering afterwards <em>if needed</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-31 18:10</div>
+            <div class="timeline-body"><blockquote>
+<p>Hm are those other ones not global options too?</p>
+</blockquote>
+<p>They are, but I'm not sure if we want e.g. <code>CacheArgs</code> to be placed under a dedicated heading or shared with the <code>Global options</code> heading.</p>
+<blockquote>
+<p>Ordering within the group seems okay to leave as-is for now. I think I want to group everything e.g. a &quot;Resolver options&quot; section then deal with within-group ordering afterwards <em>if needed</em>.</p>
+</blockquote>
+<p>So, do you want a dedicated heading for each separate flatten command?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-31 18:13</div>
+            <div class="timeline-body"><blockquote>
+<p>They are, but I'm not sure if we want e.g. CacheArgs to be placed under a dedicated heading or shared with the Global options heading.</p>
+</blockquote>
+<p>Fair, but <code>--help</code> and <code>--version</code> probably should be?</p>
+<blockquote>
+<p>So, do you want a dedicated heading for each separate flatten command?</p>
+</blockquote>
+<p>Not quite. Like... we don't want a &quot;Resolver installer options&quot; group or a &quot;Refresh options&quot; group, instead we want &quot;Resolver options&quot;, &quot;Installer options&quot;, and &quot;Cache options&quot; groups :) I was planning on looking at <em>every</em> option and figuring out categories. If you're interested in it, you're definitely welcome to and I can help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-31 18:19</div>
+            <div class="timeline-body"><blockquote>
+<p>Fair, but <code>--help</code> and <code>--version</code> probably should be?</p>
+</blockquote>
+<p><code>mut_args</code> does not affect the built-in <code>--help</code> or <code>--version</code> arguments.
+Ref: https://docs.rs/clap/4.5.11/clap/struct.Command.html#method.mut_args</p>
+<p>I'll how to make this work later.</p>
+<p>Another question, If we use <code>Cache options</code> will it cause ambiguity when running <code>uv help cache</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-31 18:22</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>So, do you want a dedicated heading for each separate flatten command?</p>
+</blockquote>
+<p>Not quite. Like... we don't want a &quot;Resolver installer options&quot; group or a &quot;Refresh options&quot; group, instead we want &quot;Resolver options&quot;, &quot;Installer options&quot;, and &quot;Cache options&quot; groups :) I was planning on looking at <em>every</em> option and figuring out categories. If you're interested in it, you're definitely welcome to and I can help.</p>
+</blockquote>
+<p>Okay, then I suppose we could separate this part into follow-up PRs and focus this PR solely on the global options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-31 18:27</div>
+            <div class="timeline-body"><blockquote>
+<p>Another question, If we use Cache options will it cause ambiguity when running uv help cache?</p>
+</blockquote>
+<p>I don't think so (without trying it)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-31 19:55</div>
+            <div class="timeline-body"><p>Back :)</p>
+<p>Are these what you expected?</p>
+<pre><code class="language-shell-session">(devshell) :)  uv -h
+An extremely fast Python package manager.
+
+Usage: uv [OPTIONS] &lt;COMMAND&gt;
+
+Commands:
+  pip      Resolve and install Python packages
+  tool     Run and manage executable Python packages
+  python   Manage Python installations
+  venv     Create a virtual environment
+  cache    Manage the cache
+  version  Display uv's version
+  help     Display documentation for a command
+
+Global options:
+  -q, --quiet                                  Do not print any output
+  -v, --verbose...                             Use verbose output
+      --color &lt;COLOR_CHOICE&gt;                   Control colors in output [default: auto] [possible values: auto, always, never]
+      --native-tls                             Whether to load TLS certificates from the platform's native certificate store [env: UV_NATIVE_TLS=]
+      --offline                                Disable network access, relying only on locally cached data and locally available files
+      --python-preference &lt;PYTHON_PREFERENCE&gt;  Whether to prefer using Python installations that are already present on the system, or those that are downloaded and installed by uv [possible values:
+                                               only-managed, managed, system, only-system]
+      --python-fetch &lt;PYTHON_FETCH&gt;            Whether to automatically download Python when required [possible values: automatic, manual]
+      --no-progress                            Hides all progress outputs when set
+      --config-file &lt;CONFIG_FILE&gt;              The path to a `uv.toml` file to use for configuration [env: UV_CONFIG_FILE=]
+      --no-config                              Avoid discovering configuration files (`pyproject.toml`, `uv.toml`) in the current directory, parent directories, or user configuration directories [env:
+                                               UV_NO_CONFIG=]
+  -h, --help                                   Print help
+  -V, --version                                Print version
+
+Cache options:
+  -n, --no-cache               Avoid reading from or writing to the cache, instead using a temporary directory for the duration of the operation [env: UV_NO_CACHE=]
+      --cache-dir &lt;CACHE_DIR&gt;  Path to the cache directory [env: UV_CACHE_DIR=]
+
+Use `uv help` for more details.
+</code></pre>
+<pre><code class="language-shell-session">(devshell) :)  uv cache prune -h
+Prune all unreachable objects from the cache
+
+Usage: uv cache prune [OPTIONS]
+
+Options:
+      --ci  Optimize the cache for persistence in a continuous integration environment, like GitHub Actions
+
+Global options:
+  -q, --quiet                                  Do not print any output
+  -v, --verbose...                             Use verbose output
+      --color &lt;COLOR_CHOICE&gt;                   Control colors in output [default: auto] [possible values: auto, always, never]
+      --native-tls                             Whether to load TLS certificates from the platform's native certificate store [env: UV_NATIVE_TLS=]
+      --offline                                Disable network access, relying only on locally cached data and locally available files
+      --python-preference &lt;PYTHON_PREFERENCE&gt;  Whether to prefer using Python installations that are already present on the system, or those that are downloaded and installed by uv [possible values:
+                                               only-managed, managed, system, only-system]
+      --python-fetch &lt;PYTHON_FETCH&gt;            Whether to automatically download Python when required [possible values: automatic, manual]
+      --no-progress                            Hides all progress outputs when set
+      --config-file &lt;CONFIG_FILE&gt;              The path to a `uv.toml` file to use for configuration [env: UV_CONFIG_FILE=]
+      --no-config                              Avoid discovering configuration files (`pyproject.toml`, `uv.toml`) in the current directory, parent directories, or user configuration directories [env:
+                                               UV_NO_CONFIG=]
+  -h, --help                                   Print help
+  -V, --version                                Print version
+
+Cache options:
+  -n, --no-cache               Avoid reading from or writing to the cache, instead using a temporary directory for the duration of the operation [env: UV_NO_CACHE=]
+      --cache-dir &lt;CACHE_DIR&gt;  Path to the cache directory [env: UV_CACHE_DIR=]
+</code></pre>
+<p>(Maybe placing <code>Global options</code> last?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-31 20:12</div>
+            <div class="timeline-body"><p>Yeah that's roughly what I'd expect. Annoying the indentation isn't the same, I wonder if that'll be a problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-31 20:15</div>
+            <div class="timeline-body"><p>We probably want to have a <code>Python options</code> for <code>--python</code>, <code>--python-fetch</code>, etc. too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-31 20:19</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah that's roughly what I'd expect. Annoying the indentation isn't the same, I wonder if that'll be a problem.</p>
+</blockquote>
+<p>Could you show me about this part you are refering to?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-31 20:30</div>
+            <div class="timeline-body"><p>e.g. &quot;Avoid reading from or writing to the cache&quot; is not at the same level as &quot;Print version&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-31 20:39</div>
+            <div class="timeline-body"><blockquote>
+<p>e.g. &quot;Avoid reading from or writing to the cache&quot; is not at the same level as &quot;Print version&quot;</p>
+</blockquote>
+<p>Got it, but I currently don't know how to handle it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-31 20:49</div>
+            <div class="timeline-body"><p>Yeah let's deal with that separately haha seems hard</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-08-01 03:36</div>
+            <div class="timeline-body"><p>Rebased and updated the snapshots. You should be able to see the changes in the snapshots now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @eth3lbert on 2024-08-01 03:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-08-01 15:01</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2024-08-01 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-08-01 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-01 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-01 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Grouping `GlobalArgs` to dedicated heading" to "Add help sections for global options" by @zanieb on 2024-08-01 16:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:37:39 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capture portable path serialization in a struct - astral-sh/uv #5652</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Capture portable path serialization in a struct</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5652">#5652</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-07-31 13:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-31 13:56</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I need to reuse this in #5494, so want to abstract it out and make it reusable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2024-07-31 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-07-31 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-07-31 13:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-07-31 13:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-07-31 14:06</div>
+            <div class="timeline-body"><p>I think there a couple uses of this pattern in workspaces and tools, presume you'll be updating those though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-31 14:18</div>
+            <div class="timeline-body"><p>@zanieb -- Thanks, updated! I missed those.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock.rs</code>:1707 on 2024-07-31 15:13</div>
+            <div class="timeline-body"><p>Commented out code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-07-31 15:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-fs/src/path.rs</code>:311 on 2024-07-31 15:34</div>
+            <div class="timeline-body"><p>I think this is mostly fine. But the big caveat here is that this implementation assumes the file path is valid UTF-8. We generally already assume this everywhere in <code>uv</code>, and undoing that assumption would be annoying (but possible). In any case, because we assume UTF-8 everywhere already, assuming it here seems fine too. But I would definitely put a mention of it in the docs. (And that somewhat makes the name &quot;portable&quot; a little suspicious, although I see why you chose that name.)</p>
+<p>In terms of the actual &quot;wrapper type&quot; mechanics, I think the main alternative in this design space would be to define <code>PortablePath</code> as a DST like <code>Path</code> is. But doing so requires <code>unsafe</code> and IDK if it's worth doing here. The nice thing about the DST approach is that the lifetime specifier gets elevated to the borrow and removed from the type. So you'd have <code>&amp;'a PortablePath</code> instead of <code>PortablePath&lt;'a&gt;</code>. That in turn makes it possible to implement certain traits like <code>AsRef&lt;PortablePath&gt;</code>. You could even have a <code>impl AsRef&lt;PortablePath&gt; for Path</code>.</p>
+<p>The extent to which the &quot;wrapper type&quot; mechanics matters depends a lot on how it's intended to use this type. If it's mostly just intended to be used in a few places, then keeping its API slim and devoted to the integration points makes sense. If instead we wanted to use this everywhere we use <code>Path</code>, then we'd want something more elaborate probably.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-31 15:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-31 15:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/uv-fs/src/path.rs</code>:311 on 2024-07-31 15:39</div>
+            <div class="timeline-body"><p>For some more elaborate examples that use DSTs like <code>Path</code> (and therefore require <code>#repr(transparent)</code> and unsafe code in the constructors), you can check out what we've been doing in red-knot:</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/blob/main/crates/ruff_db/src/system/path.rs</li>
+<li>https://github.com/astral-sh/ruff/blob/main/crates/ruff_db/src/vendored/path.rs</li>
+</ul>
+<p>(I've no idea if that's the way you want to go or not)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-fs/src/path.rs</code>:311 on 2024-07-31 15:46</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-31 15:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-07-31 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/uv-fs/src/path.rs</code>:311 on 2024-07-31 15:50</div>
+            <div class="timeline-body"><p>Oh, and with regards to the UTF-8 problem that @BurntSushi mentions above -- in red-knot we make our <code>Path</code> and <code>PathBuf</code> structs wrappers around <code>camino::Utf8Path</code> and <code>camino::Utf8PathBuf</code> (respectively), rather than <code>std::path::Path</code> and <code>std::path::PathBuf</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-31 15:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-fs/src/path.rs</code>:311 on 2024-07-31 15:51</div>
+            <div class="timeline-body"><p>Yeah we need to do something similar at some point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-07-31 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-31 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-31 16:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:37:39 UTC
+    </footer>
+</body>
+</html>

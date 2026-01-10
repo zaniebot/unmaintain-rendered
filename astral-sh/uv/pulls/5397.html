@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve copy of console command examples - astral-sh/uv #5397</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve copy of console command examples</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5397">#5397</a>
+        opened by <a href="https://github.com/eth3lbert">@eth3lbert</a>
+        on 2024-07-24 04:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-24 04:36</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR improves the copy of the console command example by:</p>
+<ul>
+<li>Preventing the selection of generic prompts and generic output</li>
+<li>Lazily setting copy content by leveraging intersection observer</li>
+</ul>
+<p>Most of the changes are inspired by https://github.com/opensafely/documentation/pull/1461</p>
+<p>Some other useful refs:</p>
+<ul>
+<li>https://github.com/squidfunk/mkdocs-material/issues/3647</li>
+<li>https://mkdocstrings.github.io/recipes/#prevent-selection-of-prompts-and-output-in-python-code-blocks</li>
+</ul>
+<p>Resolves #5355</p>
+<h2>Test Plan</h2>
+<ul>
+<li><pre><code class="language-shell-session">mkdocs serve -f mkdocs.public.yml
+</code></pre>
+</li>
+<li>Navigate to http://localhost:8000/uv/first-steps/#viewing-the-version</li>
+<li>Try clicking the copy button</li>
+<li>Try copying by selecting the content</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/eth3lbert">@eth3lbert</a> reviewed on 2024-07-24 04:42</div>
+            <div class="timeline-body"><p>Noted: The current implementation is not restricted to <code>console</code> code blocks at this time.
+If we find it too general, we could restrict it to specific languages by following the warning guidelines in https://mkdocstrings.github.io/recipes/#prevent-selection-of-prompts-and-output-in-python-code-blocks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-07-24 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-24 14:42</div>
+            <div class="timeline-body"><p>Thanks! I'll play with this a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-24 14:52</div>
+            <div class="timeline-body"><p>Huh this isn't working for me on Vivaldi, it's working for you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-24 14:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Huh this isn't working for me on Vivaldi, it's working for you?</p>
+</blockquote>
+<p>Oh, really? I've tested it on Firefox and Arc without any issues.
+I'll get Vivaldi and see what's going on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-24 15:01</div>
+            <div class="timeline-body"><p>Vivaldi is Chromium based fwiw. I can try Firefox too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-24 15:05</div>
+            <div class="timeline-body"><p>Doesn't work on Firefox for me either, let me see if it's something in my setup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-24 15:06</div>
+            <div class="timeline-body"><p>It's not my ad-blocker (uBlock Origin)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-24 16:06</div>
+            <div class="timeline-body"><blockquote>
+<p>Vivaldi is Chromium based fwiw. I can try Firefox too.</p>
+</blockquote>
+<p>Yes, I can reproduce the issue as well and have found a solution.</p>
+<p>Instead of using</p>
+<pre><code class="language-js">document.addEventListener(&quot;DOMContentLoaded&quot;, () =&gt; {
+  setCopyText();
+});
+</code></pre>
+<p>we should use the following instead</p>
+<pre><code class="language-js">document$.subscribe(function() {
+  setCopyText();
+})
+</code></pre>
+<p>Follow the <code>How to integrate with third-party JavaScript libraries</code> guideline: https://squidfunk.github.io/mkdocs-material/customization/?h=javascript#additional-javascript</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-30 19:18</div>
+            <div class="timeline-body"><p>@zanieb A friendly ping, in case you missed the fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-30 19:49</div>
+            <div class="timeline-body"><p>I was on vacation :) I'll take a look at it this week though!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2024-07-30 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-07-30 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-30 20:09</div>
+            <div class="timeline-body"><p>This still doesn't work for me in Vivaldi or Firefox on macOS :/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-30 20:21</div>
+            <div class="timeline-body"><blockquote>
+<p>This still doesn't work for me in Vivaldi or Firefox on macOS :/</p>
+</blockquote>
+<p>Weird, I just tested it in Vivaldi (6.8.3381.48), Firefox (128.0.3) and Arc (1.52.0) on macOS without any issue.</p>
+<p>Have you seen any js errors in the developer tools?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-30 20:27</div>
+            <div class="timeline-body"><p>Weird.. no errors in the developer tools console, just the &quot;Enabled live reload&quot; message. I can see <code>extra.js</code> was loaded in the network tab.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-30 20:35</div>
+            <div class="timeline-body"><p>(Sorry I don't have the extra time to dig into what's going on right now)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-30 20:53</div>
+            <div class="timeline-body"><p>No worries, we can revisit this later anytime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-31 05:11</div>
+            <div class="timeline-body"><p>The following is a non-lazy patch that has been modified to allow work with instant mode, which you might also like to try:</p>
+<pre><code class="language-js">function getTextWithoutPromptAndOutput(targetSelector) {
+  const targetElement = document.querySelector(targetSelector);
+
+  // exclude &quot;Generic Prompt&quot; and &quot;Generic Output&quot; spans from copy
+  const excludedClasses = [&quot;gp&quot;, &quot;go&quot;];
+
+  const clipboardText = [];
+  [...targetElement.childNodes].map((node) =&gt; {
+    // If the element does not contain the matching class,
+    // add to the clipboard text array
+    if (
+      !excludedClasses.some((className) =&gt; node?.classList?.contains(className))
+    ) {
+      return clipboardText.push(node.textContent);
+    }
+
+    return null;
+  });
+
+  return clipboardText.join(&quot;&quot;).trim();
+}
+
+function patchCopyCodeButtons() {
+  // select all &quot;copy&quot; buttons whose target selector is a &lt;code&gt; element
+  [
+    ...document.querySelectorAll(
+      `button.md-clipboard[data-clipboard-target$=&quot;code&quot;]`,
+    ),
+  ].map((btn) =&gt;
+    btn.setAttribute(
+      &quot;data-clipboard-text&quot;,
+      getTextWithoutPromptAndOutput(btn.dataset.clipboardTarget),
+    ),
+  );
+}
+
+document$.subscribe(function () {
+  patchCopyCodeButtons();
+});
+</code></pre>
+<p>Although both lazy and non-lazy work for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-31 13:28</div>
+            <div class="timeline-body"><p>Hey so uhh have we been talking about different things the whole time?</p>
+<p>I'm pressing the &quot;copy text&quot; button (which includes the &quot;$&quot; in the clipboard).</p>
+<p>I just realized if I try to <em>highlight</em> and copy the text it works as described here (&quot;$&quot; is excluded) :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-31 13:36</div>
+            <div class="timeline-body"><p>Hmmm, the results are not as expected.
+The expected behavior would be to enable both regardless of whether</p>
+<ol>
+<li>the user selects and copies the text. (css part)</li>
+<li>clicks the copy button. (js part)</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-31 13:39</div>
+            <div class="timeline-body"><p>Ah tragic. I don't understand why the JS isn't working for me... I'll see if someone else on our side can reproduce.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-31 13:54</div>
+            <div class="timeline-body"><p>Oh, and I think there's one more thing we could check first. Check the data attribute <code>data-clipboard-text</code> of the copy button. It's supposed to have the text without the <code>$</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-31 14:01</div>
+            <div class="timeline-body"><p>I don't see that attribute. I feel like I'm doing something wrong 😭</p>
+<pre><code class="language-html">&lt;button class=&quot;md-code__button&quot; title=&quot;Copy to clipboard&quot; data-clipboard-target=&quot;#__code_0 &gt; code&quot; data-md-type=&quot;copy&quot;&gt;&lt;/button&gt;
+</code></pre>
+<p>If I add</p>
+<pre><code class="language-diff">diff --git a/docs/js/extra.js b/docs/js/extra.js
+index a8058688..8b08034c 100644
+--- a/docs/js/extra.js
++++ b/docs/js/extra.js
+@@ -25,6 +25,7 @@ function setCopyText() {
+   const elements = document.querySelectorAll(
+     'button.md-clipboard[data-clipboard-target$=&quot;code&quot;]',
+   );
++  console.log(elements);
+   const observer = new IntersectionObserver((entries) =&gt; {
+     entries.forEach((entry) =&gt; {
+       // target in the viewport that have not been patched
+</code></pre>
+<p>I see <code>NodeList []</code> in the console.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-31 14:04</div>
+            <div class="timeline-body"><p>Doing something sloppy like this makes it work</p>
+<pre><code class="language-diff">diff --git a/docs/js/extra.js b/docs/js/extra.js
+index a8058688..dd49ab48 100644
+--- a/docs/js/extra.js
++++ b/docs/js/extra.js
+@@ -23,8 +23,9 @@ function setCopyText() {
+   const attr = &quot;clipboardText&quot;;
+   // all &quot;copy&quot; buttons whose target selector is a &lt;code&gt; element
+   const elements = document.querySelectorAll(
+-    'button.md-clipboard[data-clipboard-target$=&quot;code&quot;]',
++    &quot;#__code_0 &gt; nav &gt; button&quot;
+   );
++  console.log(elements);
+   const observer = new IntersectionObserver((entries) =&gt; {
+     entries.forEach((entry) =&gt; {
+       // target in the viewport that have not been patched
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-31 14:07</div>
+            <div class="timeline-body"><p>(Is it possible it's a difference from the insiders build?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-31 14:08</div>
+            <div class="timeline-body"><p>Indeed, I can reproduce the issue on https://docs.astral.sh/uv/. There is also no button with the <code>md-clipboard</code> class.  I'll change the class name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-31 14:14</div>
+            <div class="timeline-body"><p>Victory!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-31 14:14</div>
+            <div class="timeline-body"><p>Thanks :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/eth3lbert">@eth3lbert</a> reviewed on 2024-07-31 14:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on <code>docs/js/extra.js</code>:26 on 2024-07-31 14:15</div>
+            <div class="timeline-body"><p>Could also consider just use</p>
+<pre><code class="language-suggestion"> 'button[data-clipboard-target$=&quot;code&quot;]',
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-31 14:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/js/extra.js</code>:26 on 2024-07-31 14:16</div>
+            <div class="timeline-body"><p>Seems reasonable too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-31 14:16</div>
+            <div class="timeline-body"><p>Thanks for your time and the review :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-31 14:27</div>
+            <div class="timeline-body"><p>Is there a compelling argument for the more complicated lazy-version or should we do the second patch you suggested?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-31 14:40</div>
+            <div class="timeline-body"><p>The lazy version only patches elements within the viewport via <code>IntersectionObserver</code>, while the non-lazy version patches all elements. Therefore, for long pages or pages with a large number of copy buttons and content, the lazy version would be preferable.</p>
+<p>The only drawback of the lazy version is browser compatibility.</p>
+<p>You can find more information on browser compatibility here: https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/IntersectionObserver#browser_compatibility</p>
+<p>Currently, <code>IntersectionObserver</code> enjoys baseline wide availability.  If you have concerns and need to support even older browsers, then I would suggest using the non-lazy version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-07-31 14:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-31 14:47</div>
+            <div class="timeline-body"><p>@zanieb Could you also indent the suggestion before merging :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-31 14:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/js/extra.js</code>:26 on 2024-07-31 14:48</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">   'button[data-clipboard-target$=&quot;code&quot;]',
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/js/extra.js</code>:26 on 2024-07-31 14:49</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">     'button[data-clipboard-target$=&quot;code&quot;]',
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-31 14:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-31 14:50</div>
+            <div class="timeline-body"><p>Thanks !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-07-31 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-07-31 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-31 14:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:37:39 UTC
+    </footer>
+</body>
+</html>

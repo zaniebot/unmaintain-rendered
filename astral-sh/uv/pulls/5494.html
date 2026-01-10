@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use full requirement when serializing receipt - astral-sh/uv #5494</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use full requirement when serializing receipt</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5494">#5494</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-07-26 21:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-26 21:01</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The current receipt doesn't capture quite enough information. For example, it doesn't differentiate between editable and non-editable requirements. This PR instead uses the full <code>Requirement</code> type. I think we should use a custom representation like we do in the lockfile, but I'm just using the default representation to demonstrate the idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-07-26 21:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-07-26 21:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-26 21:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/tool_install.rs</code>:401 on 2024-07-26 21:02</div>
+            <div class="timeline-body"><p>This was the motivating example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-26 22:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/tool_install.rs</code>:383 on 2024-07-26 22:18</div>
+            <div class="timeline-body"><p>If we're comfortable with the general idea here, I will iron out the actual requirement schema.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-07-29 22:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-29 22:06</div>
+            <div class="timeline-body"><p>Please just focus on the concept here (<a href="https://github.com/astral-sh/uv/pull/5494/files#r1693648630">example</a>) and ignore the code and exact representation for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-30 13:33</div>
+            <div class="timeline-body"><p>I think this makes sense to me. My only concern is that I want users to be able to declare tools declaratively eventually. I don't think that's in conflict though — I think the receipt can be considered &quot;machine read / write&quot; and &quot;human inspectable&quot; like the lock file. We can iron out a separate schema for users to declaratively request tools later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-30 14:55</div>
+            <div class="timeline-body"><p>I'm not terribly familiar with tool receipts yet. Can you say more at a high level about what problem this is trying to solve?</p>
+<p>(Insomuch as I understand what this PR is doing, I think it LGTM.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 15:00</div>
+            <div class="timeline-body"><p>Copying my response from Discord:</p>
+<pre><code>Yes sorry
+When a user installs a tool (like cargo install), we save a receipt alongside it enumerating the input requirements
+When they run uv tool upgrade, we respect those input requirements
+...
+It was using PEP 508 so...
+If a user did tool install -e ./black, we didn't capture that it was installed as editable, for example
+Since that can't be expressed in PEP 508
+But our requirement type is richer
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-31 14:20</div>
+            <div class="timeline-body"><p>Ok happy with how this turned out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-31 14:26</div>
+            <div class="timeline-body"><p>Ready for review @zanieb @BurntSushi at your convenience.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pypi-types/src/requirement.rs</code>:660 on 2024-07-31 15:17</div>
+            <div class="timeline-body"><p>If we're using a Git URL here, perhaps we should in the lock file too? Then I could just close https://github.com/astral-sh/uv/pull/4631.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-07-31 15:17</div>
+            <div class="timeline-body"><p>LGTM</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-31 15:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pypi-types/src/requirement.rs</code>:660 on 2024-07-31 15:19</div>
+            <div class="timeline-body"><p>That seems ok to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-31 15:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pypi-types/src/requirement.rs</code>:660 on 2024-07-31 15:20</div>
+            <div class="timeline-body"><p>Let me re-review that quickly, I think I lost it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-31 15:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pypi-types/src/requirement.rs</code>:660 on 2024-07-31 15:21</div>
+            <div class="timeline-body"><p>Honestly, I'm fine with either!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-07-31 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-31 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-31 16:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:37:39 UTC
+    </footer>
+</body>
+</html>

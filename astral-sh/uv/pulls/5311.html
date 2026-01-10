@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omit interpreter path during `uv venv` with managed Python - astral-sh/uv #5311</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Omit interpreter path during <code>uv venv</code> with managed Python</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5311">#5311</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-07-22 21:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-22 21:08</div>
+            <div class="timeline-body"><p>e.g.</p>
+<pre><code>❯ cargo run -q -- venv --preview
+Using Python 3.12.1
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+</code></pre>
+<p>instead of</p>
+<pre><code>❯ cargo run -q -- venv --preview
+Using Python 3.12.1 interpreter at: /Users/zb/Library/Application Support/uv/python/cpython-3.12.1-macos-aarch64-none/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2024-07-22 21:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-07-22 21:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-22 21:09</div>
+            <div class="timeline-body"><p>I went back and forth on saying &quot;Using managed Python XXX&quot; but am leaning no.</p>
+<p>There will be follow-ups to do this elsewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-22 21:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/venv.rs</code>:155 on 2024-07-22 21:13</div>
+            <div class="timeline-body"><p>Alternatively we could check if this is a child of the managed Python directory but that seems more brittle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-22 21:16</div>
+            <div class="timeline-body"><p>I think there should be no test changes here since we find all the interpreters on the PATH during tests — if a managed interpreter is found on the PATH instead of via a managed Python directory scan we'll still show the path as before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-07-23 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-07-23 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @zanieb on 2024-07-23 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-07-23 18:47</div>
+            <div class="timeline-body"><p>At first I was sad that the path to the interpreter was going away, but then I realized that it was only going away in the case of managed Python (which, of course, you said, but it didn't register for me). And then I was happy again.</p>
+<p>I like this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-23 18:56</div>
+            <div class="timeline-body"><p>:) I could have included that in the pull request body too — a little lazy of me.</p>
+<p>Here's the verbose output fwiw:</p>
+<pre><code>❯ cargo run -q -- venv -v --preview
+DEBUG uv 0.2.27
+DEBUG Reading requests from `.python-versions`
+DEBUG Using the first version from `.python-versions`
+DEBUG Searching for Python 3.12.1 in managed installations or system path
+DEBUG Searching for managed installations at `/Users/zb/Library/Application Support/uv/python`
+DEBUG Found managed Python `cpython-3.12.1-macos-aarch64-none`
+DEBUG Found cpython 3.12.1 at `/Users/zb/Library/Application Support/uv/python/cpython-3.12.1-macos-aarch64-none/bin/python3` (managed installations)
+Using Python 3.12.1
+Creating virtualenv at: .venv
+INFO Removing existing directory
+Activate with: source .venv/bin/activate
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-23 18:58</div>
+            <div class="timeline-body"><p>That's awesome. (I have so many ancient scars from using a different <code>python</code> than I thought I was using.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-07-23 19:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-07-23 19:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-23 19:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:37:39 UTC
+    </footer>
+</body>
+</html>

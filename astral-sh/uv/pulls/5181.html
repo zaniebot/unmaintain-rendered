@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merge extras in lockfile - astral-sh/uv #5181</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Merge extras in lockfile</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5181">#5181</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-07-18 10:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-07-18 10:48</div>
+            <div class="timeline-body"><p>As user, you specify a list of extras. Internally, we decompose this into one virtual package per extra. We currently leak this abstraction by writing one entry per extra to the lockfile:</p>
+<pre><code class="language-toml">[[distribution]]
+name = &quot;foo&quot;
+version = &quot;4.39.0.dev0&quot;
+source = { editable = &quot;.&quot; }
+dependencies = [
+    { name = &quot;pandas&quot; },
+    { name = &quot;pandas&quot;, extra = &quot;excel&quot; },
+    { name = &quot;pandas&quot;, extra = &quot;hdf5&quot; },
+    { name = &quot;pandas&quot;, extra = &quot;html&quot;, marker = &quot;os_name != 'posix'&quot; },
+    { name = &quot;pandas&quot;, extra = &quot;output-formatting&quot;, marker = &quot;os_name == 'posix'&quot; },
+    { name = &quot;pandas&quot;, extra = &quot;plot&quot;, marker = &quot;os_name == 'posix'&quot; },
+]
+</code></pre>
+<p>Instead, we should merge the extras into a list of extras, creating a more concise lockfile:</p>
+<pre><code class="language-toml">[[distribution]]
+name = &quot;foo&quot;
+version = &quot;4.39.0.dev0&quot;
+source = { editable = &quot;.&quot; }
+dependencies = [
+    { name = &quot;pandas&quot;, extra = [&quot;excel&quot;, &quot;hdf5&quot;] },
+    { name = &quot;pandas&quot;, extra = [&quot;html&quot;], marker = &quot;os_name != 'posix'&quot; },
+    { name = &quot;pandas&quot;, extra = [&quot;output-formatting&quot;, &quot;plot&quot;], marker = &quot;os_name == 'posix'&quot; },
+]
+</code></pre>
+<p>The base package is now implicitly included, as it is in PEP 508.</p>
+<p>Fixes #4888</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2024-07-18 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-07-18 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2024-07-18 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-18 17:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/lock.rs</code>:606 on 2024-07-18 17:50</div>
+            <div class="timeline-body"><p>This makes <code>add_dependency</code> quadratic, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-07-18 17:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-18 18:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/lock.rs</code>:606 on 2024-07-18 18:03</div>
+            <div class="timeline-body"><p>I can't figure out a clean way around this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-07-18 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-18 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-18 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/lock.rs</code>:606 on 2024-07-23 14:14</div>
+            <div class="timeline-body"><p>This is only called from <code>Lock::from_resolution_graph</code> and it's un-exported, so it should be fine to build up some intermediate state that replaces this loop with a <code>O(1)</code> or <code>O(logn)</code> check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-23 14:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-23 14:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/lock.rs</code>:606 on 2024-07-23 14:19</div>
+            <div class="timeline-body"><p>Totally agree. I briefly tried but had some trouble making it work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-07-23 14:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock.rs</code>:606 on 2024-07-23 14:32</div>
+            <div class="timeline-body"><p>For the large resolution transformers with all extras, this is the distribution of the number of iterations for the loop:</p>
+<p><img src="https://github.com/user-attachments/assets/2a9d4bf3-2a68-44fd-bb7e-4c294165bac9" alt="image" /></p>
+<p>We run the code inside the loop 2762 times.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:37:38 UTC
+    </footer>
+</body>
+</html>

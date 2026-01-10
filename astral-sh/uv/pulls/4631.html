@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv-resolver: make source=git more structured - astral-sh/uv #4631</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv-resolver: make source=git more structured</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4631">#4631</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-06-28 17:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-06-28 17:18</div>
+            <div class="timeline-body"><p>This splits out the git fields into an inline table instead of smushing
+them into a single URL.</p>
+<p>I'm unsure about this change, because it seems like we are using the git
+URLs in other user facing ways. For example, some of the snapshot diffs
+look like this:</p>
+<pre><code>     Installed 2 packages in [TIME]
+      - project==0.1.0 (from file://[TEMP_DIR]/)
+      + project==0.1.0 (from file://[TEMP_DIR]/)
+-     + uv-public-pypackage==0.1.0 (from git+https://github.com/astral-test/uv-public-pypackage@0dacfd662c64cb4ceb16e6cf65a157a8b715b979?rev=0.0.1#0dacfd662c64cb4ceb16e6cf65a157a8b715b979)
++     + uv-public-pypackage==0.1.0 (from git+https://github.com/astral-test/uv-public-pypackage@0dacfd662c64cb4ceb16e6cf65a157a8b715b979)</code></pre>
+<p>which seems non-ideal. It should be possible to make the lock file use
+structured fields while keeping the URL for terser output as above, but
+I'm not sure that it's worth it.</p>
+<p>This builds on top of #4627</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-06-28 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @charliermarsh removed by @BurntSushi on 2024-06-28 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-06-28 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-06-28 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-07-01 07:59</div>
+            <div class="timeline-body"><p>The new snapshot looks more correct to me, losing the duplication it had</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-01 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-01 16:33</div>
+            <div class="timeline-body"><p>I can own this one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/lock.rs</code>:1431 on 2024-07-01 16:43</div>
+            <div class="timeline-body"><p>Why was <code>Rev</code> removed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-01 16:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-08 11:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/lock.rs</code>:1431 on 2024-07-08 11:56</div>
+            <div class="timeline-body"><p>Because, at least in this change, &quot;rev&quot; is no longer a distinct kind. It is strictly duplicative with the fact that the lock file always records a revision regardless of what the underlying kind is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-08 13:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/lock.rs</code>:1431 on 2024-07-08 13:02</div>
+            <div class="timeline-body"><p>But how does it record the revision that was <em>requested</em> by the user?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-08 13:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/lock.rs</code>:1431 on 2024-07-08 13:25</div>
+            <div class="timeline-body"><p>Ah I see. I <em>believe</em> that is exactly the thing I am unsure about here. As in, I don't think I grok why we need to keep track of what the user requested specifically in the lock file, since it is presumably in <code>pyproject.toml</code>. But yeah, if we do need to keep track of what the user requested in the lock file, specifically for git (but notably not for other things), then we will indeed need to capture some extra state here somehow. Ideally without duplication the revision hash.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-08 14:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/lock.rs</code>:1431 on 2024-07-08 14:07</div>
+            <div class="timeline-body"><p>So if the user has <code>rev = &quot;refs/foo&quot;</code> in their requirements, and we lock with that request, and then they re-lock with the same requirements... We want to know that the locked requirement matches <code>rev = &quot;refs/foo&quot;</code> <em>even if</em> the commit that maps to that ref has changed (unless the user passed <code>--upgrade</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-09 13:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/lock.rs</code>:1431 on 2024-07-09 13:01</div>
+            <div class="timeline-body"><p>OK, so my mistake here is assuming that &quot;revision&quot; and &quot;precise sha1&quot; were equivalent. They aren't, because a revision might be a named reference to something. I'll add this back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-09 13:34</div>
+            <div class="timeline-body"><p>@charliermarsh OK, I've updated this PR to include the <code>revision</code> in the lock file so that doesn't get dropped.</p>
+<p>I think the main issue remaining here is that some of the snapshot diffs for <code>uv pip compile</code> output look wrong due to the URLs changing. I think the root cause is that, since the lock file no longer uses a single URL string to represent all of the git information, things external to the lock data structure can't reuse it. So we might need a step that flattens the new structured representation to the URL format for <code>uv pip compile</code>?</p>
+<p>We could also just keep the URL representation in the lock file and not use structured data. I wouldn't mind that personally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-09 20:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/lock.rs</code>:1468 on 2024-07-09 20:54</div>
+            <div class="timeline-body"><p>Maybe we use <code>commit</code> instead of <code>precise</code> for this, since it's somewhat user-facing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-09 20:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/branching_urls.rs</code>:606 on 2024-07-09 20:55</div>
+            <div class="timeline-body"><p>Should we omit the revision if they <em>are</em> the same?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-10 14:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/lock.rs</code>:1468 on 2024-07-10 14:50</div>
+            <div class="timeline-body"><p>Yeah I like it. Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-10 14:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/branching_urls.rs</code>:606 on 2024-07-10 14:53</div>
+            <div class="timeline-body"><p>So I am in favor of this, but I think it then becomes ambiguous. Specifically, I'm thinking about this part in the code:</p>
+<p>https://github.com/astral-sh/uv/blob/65cbeb9fe670d829ef3fd92a437bd75d4d4968bf/crates/uv-resolver/src/lock.rs#L1372-L1396</p>
+<p>Namely, this is where we deserialize our structured git data back into a <code>Source</code>. Currently, when <code>branch</code>, <code>tag</code> and <code>revision</code> are all missing, we assume &quot;default branch&quot; semantics. Which means that if we drop <code>revision = &quot;...&quot;</code> when it's identical to <code>commit = &quot;...&quot;</code>, we won't be able to distinguish between &quot;user specified a specific revision&quot; and &quot;user asked for the default branch.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-07-31 15:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/edit.rs</code>:189 on 2024-07-31 15:24</div>
+            <div class="timeline-body"><p>@charliermarsh Other than preference, I think this was the main issue preventing me from merging this PR. I'm not sure that this is correct.</p>
+<p>(I do kinda prefer the URL approach since it's consistent with what we do in other places.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-31 15:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-31 15:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/edit.rs</code>:189 on 2024-07-31 15:26</div>
+            <div class="timeline-body"><p>Ok, let's run with URL. It seems fine to me. Feel free to close.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-07-31 15:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:37:38 UTC
+    </footer>
+</body>
+</html>

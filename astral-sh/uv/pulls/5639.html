@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support build constraints - astral-sh/uv #5639</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support build constraints</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5639">#5639</a>
+        opened by <a href="https://github.com/blueraft">@blueraft</a>
+        on 2024-07-30 22:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/blueraft">@blueraft</a> on 2024-07-30 22:06</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Partially resolves #5561. Haven't added overrides support yet but I can add it tomorrow if the current approach for constraints is ok.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+<p>Manually checked trace logs after changing the constraints.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueraft">@blueraft</a> reviewed on 2024-07-30 22:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blueraft">@blueraft</a> on <code>crates/uv/tests/pip_install.rs</code>:6295 on 2024-07-30 22:07</div>
+            <div class="timeline-body"><p>I wasn't sure how to check if the built constraints were being respected for the compatible versions - this just check if the package gets resolved correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2024-07-30 22:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/uv/tests/pip_install.rs</code>:6295 on 2024-07-30 22:45</div>
+            <div class="timeline-body"><p>isn't there anything via verbose flag?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueraft">@blueraft</a> reviewed on 2024-07-31 09:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blueraft">@blueraft</a> on <code>crates/uv/tests/pip_install.rs</code>:6295 on 2024-07-31 09:50</div>
+            <div class="timeline-body"><p>It's there in the verbose logs, but I don't know if we should use the verbose logs for snapshot tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @zanieb on 2024-07-31 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-07-31 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-31 17:28</div>
+            <div class="timeline-body"><p>Thanks! Will review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2024-08-01 16:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv/src/commands/pip/compile.rs</code>:1 on 2024-08-01 16:56</div>
+            <div class="timeline-body"><p>Does <code>uv pip compile</code> now include build dependencies in its output? Or do <code>--build-constraints</code> files have to be generated separately (how?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-01 18:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/pip/compile.rs</code>:1 on 2024-08-01 18:46</div>
+            <div class="timeline-body"><p>I don't believe this PR adds any way to lock the build resolution, only to constrain it, but we want to add that to <code>uv.lock</code> eventually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-08-01 19:30</div>
+            <div class="timeline-body"><p>Not using <code>UV_CONSTRAINT</code> for build constraints should probably listed in the pip compatibility docs. Something like:</p>
+<p>For constraining build time dependencies:</p>
+<ul>
+<li>pip lets you use <code>PIP_CONSTRAINT</code> environment variable to point to a constraints file. There is no CLI argument</li>
+<li>uv lets you use <code>UV_BUILD_CONSTRAINT</code> environment variable or a <code>--build-constraint</code> CLI argument</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-01 19:30</div>
+            <div class="timeline-body"><p>Makes sense, good call @hauntsaninja.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueraft">@blueraft</a> reviewed on 2024-08-01 19:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blueraft">@blueraft</a> on <code>crates/uv/src/commands/pip/compile.rs</code>:1 on 2024-08-01 19:43</div>
+            <div class="timeline-body"><p>Related issue #5190</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-01 21:32</div>
+            <div class="timeline-body"><p>This overall looks good but I have to find a way to fix the stack size issues on Windows (nothing wrong with the PR specifically, it's an ongoing problem) -- and update the docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-08-02 02:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-08-02 02:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-02 02:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-02 07:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:37:39 UTC
+    </footer>
+</body>
+</html>

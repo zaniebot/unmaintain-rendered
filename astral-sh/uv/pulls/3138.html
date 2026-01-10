@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement `--index-strategy unsafe-best-match` - astral-sh/uv #3138</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement <code>--index-strategy unsafe-best-match</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3138">#3138</a>
+        opened by <a href="https://github.com/yorickvP">@yorickvP</a>
+        on 2024-04-19 10:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/yorickvP">@yorickvP</a> on 2024-04-19 10:24</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This index strategy resolves every package to the latest possible version across indexes. If a version is in multiple indexes, the first available index is selected.</p>
+<p>Implements #3137</p>
+<p>This closely matches pip.</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p>Good question. I'm hesitant to use my certifi example here, since that would inevitably break when torch removes this package. Please comment!</p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-19 21:09</div>
+            <div class="timeline-body"><p>I don't mind adding this behavior, but we'll need to reach consensus as a team. Thanks for contributing!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-20 01:32</div>
+            <div class="timeline-body"><p>I suppose I'm open to the behavior itself, but I think the current behavior will be quadratic? Since for every version we select, we're now iterating over all versions to create the merged version map.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-04-20 01:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sergeykolosov">@sergeykolosov</a> on 2024-04-20 17:57</div>
+            <div class="timeline-body"><p>In use-cases of my concern, this one is the last missing piece to be able to switch to uv.</p>
+<p>There's ≈10 internal indexes with pretty much every possible package contained in more than one of those, versions randomly scattered across indexes (so currently the <code>--index-strategy unsafe-any-match</code> is being used).</p>
+<p>So for a requirement of <code>some-internal-package&gt;=0.1.0</code> in every production environment previously provisioned by <code>pip install -U</code>, after running <code>uv pip install -U --index-strategy unsafe-any-match</code> both the package and its dependencies get downgraded to some “random”-ish versions found in the available indexes:</p>
+<pre><code class="language-sh">Installed 3 packages in 5ms
+ - other-internal-package==0.9.0.post2
+ + other-internal-package==0.9.0a1
+ - six==1.16.0
+ + six==1.11.0
+ - some-internal-package==0.1.22
+ + some-internal-package==0.1.20
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-24 18:15</div>
+            <div class="timeline-body"><p>I need to think on how to implement this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-26 01:59</div>
+            <div class="timeline-body"><p>I'm working on this now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Implement --index-strategy unsafe-highest" to "Implement `--index-strategy unsafe-closest-match`" by @charliermarsh on 2024-04-26 02:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-04-26 02:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-04-26 02:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-26 02:44</div>
+            <div class="timeline-body"><p>Okay, this seems reasonable to me now. Assuming we consider the number of indexes to be a small constant factor, this should still be linear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-26 02:44</div>
+            <div class="timeline-body"><p>Adding some other reviewers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-04-26 02:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-26 02:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-04-26 08:33</div>
+            <div class="timeline-body"><p>Benchmarks:</p>
+<p>Jupyter, an easy but very common use case:</p>
+<pre><code>Benchmark 1: target/profiling/uv-branch pip compile scripts/requirements/jupyter.in
+  Time (mean ± σ):      14.0 ms ±   0.6 ms    [User: 14.4 ms, System: 16.0 ms]
+  Range (min … max):    12.6 ms …  16.4 ms    202 runs
+ 
+Benchmark 2: target/profiling/uv-branch pip compile scripts/requirements/jupyter.in --index-strategy unsafe-closest-match
+  Time (mean ± σ):      14.0 ms ±   0.7 ms    [User: 14.2 ms, System: 16.2 ms]
+  Range (min … max):    12.5 ms …  17.5 ms    211 runs
+ 
+Summary
+  target/profiling/uv-branch pip compile scripts/requirements/jupyter.in --index-strategy unsafe-closest-match ran
+    1.00 ± 0.07 times faster than target/profiling/uv-branch pip compile scripts/requirements/jupyter.in
+</code></pre>
+<p>Airflow with all extra, a hard case with a bunch of backtracking:</p>
+<pre><code>Benchmark 1: target/profiling/uv-branch pip compile airflow.in
+  Time (mean ± σ):     153.4 ms ±   2.8 ms    [User: 142.2 ms, System: 129.7 ms]
+  Range (min … max):   149.1 ms … 159.5 ms    19 runs
+ 
+Benchmark 2: target/profiling/uv-branch pip compile airflow.in --index-strategy unsafe-closest-match
+  Time (mean ± σ):     153.1 ms ±   2.2 ms    [User: 141.6 ms, System: 132.6 ms]
+  Range (min … max):   148.4 ms … 158.0 ms    19 runs
+ 
+Summary
+  target/profiling/uv-branch pip compile airflow.in --index-strategy unsafe-closest-match ran
+    1.00 ± 0.02 times faster than target/profiling/uv-branch pip compile airflow.in
+</code></pre>
+<p>Boto3, the hardest pathological use case we have user hit:</p>
+<pre><code>Benchmark 1: target/profiling/uv-branch pip compile scripts/requirements/boto3.in
+  Time (mean ± σ):     359.2 ms ±   1.6 ms    [User: 316.3 ms, System: 54.2 ms]
+  Range (min … max):   357.5 ms … 362.3 ms    10 runs
+ 
+Benchmark 2: target/profiling/uv-branch pip compile scripts/requirements/boto3.in --index-strategy unsafe-closest-match
+  Time (mean ± σ):     391.2 ms ±   3.4 ms    [User: 358.5 ms, System: 43.9 ms]
+  Range (min … max):   387.1 ms … 396.4 ms    10 runs
+ 
+Summary
+  target/profiling/uv-branch pip compile scripts/requirements/boto3.in ran
+    1.09 ± 0.01 times faster than target/profiling/uv-branch pip compile scripts/requirements/boto3.in --index-strategy unsafe-closest-match
+</code></pre>
+<p>This looks much better than i had expected</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-26 08:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-26 08:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-26 13:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-26 13:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-26 13:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-26 13:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-26 13:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-26 14:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-26 14:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-26 14:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-26 14:29</div>
+            <div class="timeline-body"><p>@zanieb @BurntSushi - any feedback on the name of the option, the docs, exposing this? (As opposed to the implementation which seems ok.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-26 14:54</div>
+            <div class="timeline-body"><p>+1 to exposing, I can review the docs too.</p>
+<p>For naming, we have...</p>
+<ul>
+<li>First match: Only versions from the first index with the package name are considered (makes sense to me)</li>
+<li>Any match: Versions from the indexes are exhausted in-order (not very clear?)</li>
+<li>Closest match: The version is taken from the index with the closest version (makes sense to me)</li>
+</ul>
+<p>I think this name makes sense in the context of the others. Although &quot;any match&quot; confuses the naming scheme a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-04-26 15:19</div>
+            <div class="timeline-body"><p>Yeah this LGTM. Another possible name is <code>unsafe-best-match</code>. In particular, the docs use the word &quot;best&quot; instead of &quot;closest&quot; to describe its behavior. I don't have a strong opinion on what the right word to choose here, but I loosely prefer &quot;best.&quot; In my view, &quot;closest&quot; raises the question of &quot;closest to what?&quot; Where as &quot;best&quot; I think can be cast as &quot;best matching version for the chosen resolution strategy.&quot; But I think this is probably a quibble.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-26 17:04</div>
+            <div class="timeline-body"><p>What about...</p>
+<ul>
+<li><code>single-index</code> (only consider versions from a single index for each package)</li>
+<li><code>unsafe-first-match</code> (use the first index with a compatible version)</li>
+<li><code>unsafe-best-match</code> (use the index with the &quot;best&quot; version)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-26 17:13</div>
+            <div class="timeline-body"><p>That's an improvement.</p>
+<p>Should <code>single-index</code> be <code>first-index</code> — i.e. use the first index with the package regardless of whether or not a version match exists?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-26 18:32</div>
+            <div class="timeline-body"><p>I will make these changes (and add aliases for the existing values), revisit the merge implementation, then ship it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-04-27 01:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Implement `--index-strategy unsafe-closest-match`" to "Implement `--index-strategy unsafe-best-match`" by @charliermarsh on 2024-04-27 01:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-04-27 01:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-27 01:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-27 01:51</div>
+            <div class="timeline-body"><p>Thanks @yorickvP !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yorickvP">@yorickvP</a> on 2024-07-22 12:54</div>
+            <div class="timeline-body"><p>Looking closer, the behaviour implemented in the PR is subtly different from the behaviour I intended. I bisected it to the <code>kmerge_by</code> commit. It seems to be picking the package from pypi instead of my index if they have the same version. In this case, the pypi package fails to build.</p>
+<pre><code class="language-console">$ git checkout 67b8389aa7579befaa7e6cc64afba58b89d9556b
+$ cargo build
+$ echo 'tensorrt-llm==0.11.0' | ./target/debug/uv pip compile - --extra-index-url https://pypi.nvidia.com --python-version=3.10 --index-strategy=unsafe-best-match --annotation-style=line
+[..]
+tensorrt-llm==0.11.0
+</code></pre>
+<p>vs</p>
+<pre><code class="language-console">$ git checkout 275f1503721f4a04639279d6f065de86c5075c6e
+$ cargo build
+$ echo 'tensorrt-llm==0.11.0' | ./target/debug/uv pip compile - --extra-index-url https://pypi.nvidia.com --python-version=3.10 --index-strategy=unsafe-best-match --annotation-style=line
+error: Failed to download and build `tensorrt-llm==0.11.0`
+  Caused by: Failed to build: `tensorrt-llm==0.11.0`
+  Caused by: Build backend failed to build wheel through `build_wheel()` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 11, in &lt;module&gt;
+  File &quot;/home/yorick/.cache/uv/.tmpZbNSch/.venv/lib/python3.11/site-packages/nvidia_stub/buildapi.py&quot;, line 29, in build_wheel
+    return download_wheel(pathlib.Path(wheel_directory), config_settings)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/yorick/.cache/uv/.tmpZbNSch/.venv/lib/python3.11/site-packages/nvidia_stub/wheel.py&quot;, line 175, in download_wheel
+    report_install_failure(distribution, version, None)
+  File &quot;/home/yorick/.cache/uv/.tmpZbNSch/.venv/lib/python3.11/site-packages/nvidia_stub/error.py&quot;, line 63, in report_install_failure
+    raise InstallFailedError(
+nvidia_stub.error.InstallFailedError:
+*******************************************************************************
+
+The installation of tensorrt-llm for version 0.11.0 failed.
+
+This is a special placeholder package which downloads a real wheel package
+from https://pypi.nvidia.com. If https://pypi.nvidia.com is not reachable, we
+cannot download the real wheel file to install.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 13:02</div>
+            <div class="timeline-body"><p>Sounds like a problem with breaking ties / stable ordering. Want to open an issue? Interested in working on it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yorickvP">@yorickvP</a> on 2024-07-22 14:08</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/5288</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:37:38 UTC
+    </footer>
+</body>
+</html>

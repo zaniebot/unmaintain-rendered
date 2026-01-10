@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `--target` support to `sync` and `install` - astral-sh/uv #3257</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>--target</code> support to <code>sync</code> and <code>install</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3257">#3257</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-04-25 00:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-25 00:16</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The approach taken here is to model <code>--target</code> as an install scheme in which all the directories are just subdirectories of the <code>--target</code>. From there, everything else... just works? Like, upgrade, uninstalls, editables, etc. all &quot;just work&quot;.</p>
+<p>Closes #1517.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-04-25 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-04-25 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-25 00:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_sync.rs</code>:4907 on 2024-04-25 00:50</div>
+            <div class="timeline-body"><p>Can we include some sort of file system assertions here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-25 00:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/pip_sync.rs</code>:4907 on 2024-04-25 00:54</div>
+            <div class="timeline-body"><p>E.g., that the packages are inside the target directory?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-04-25 02:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-04-25 02:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-04-25 02:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-25 03:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_sync.rs</code>:4907 on 2024-04-25 03:20</div>
+            <div class="timeline-body"><p>Yeah</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-04-25 07:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-25 14:28</div>
+            <div class="timeline-body"><p>This is different than pip right? Want to note this in the compatibility doc?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-25 15:27</div>
+            <div class="timeline-body"><p>Hmm, I don't think the <em>user experience</em> actually differs from pip in significant ways, or at least in ways that would work in pip but wouldn't work in uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-04-25 23:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-25 23:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-25 23:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-04-26 03:11</div>
+            <div class="timeline-body"><p>Hmm, I tried this out:</p>
+<pre><code class="language-console">$ cargo run --release --bin uv -- pip install importlib_metadata --target tmpdir
+$ ls
+bin/                                importlib_metadata-7.1.0.dist-info/ zipp/
+importlib_metadata/                 include/                            zipp-3.18.1.dist-info/
+</code></pre>
+<p>This looks close to what I'd expect, though the <code>bin</code> and <code>include</code> (empty) directories were unexpected. I would not expect to be able to <code>import bin</code> or <code>import include</code> :).</p>
+<p>At least for the use case of building zipapps, which is what I use <code>--target</code> for, and seems to be a popular usage, you only want platlib/purelib (in the same folder) and don't want data/scripts/headers, which can't be used from a zipapp.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-26 03:13</div>
+            <div class="timeline-body"><p>Yeah, but if you <code>pip install black --target tmpdir</code>, you will get a <code>tmpdir/bin</code> that contains <code>black</code> and <code>blackd</code> -- this follows pip. We're just creating those directories upfront rather than lazily. Does it have a material impact?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-26 03:14</div>
+            <div class="timeline-body"><blockquote>
+<p>At least for the use case of building zipapps, which is what I use --target for, and seems to be a popular usage, you only want platlib/purelib (in the same folder) and don't want data/scripts/headers, which can't be used from a zipapp.</p>
+</blockquote>
+<p>Yes, but pip adds all of these, as far as I can tell? It just adds them to the top-level. If you <code>pip install jupyter --target foo</code>, you will see <code>foo/share</code> which contains a bunch of icons and such for Jupyter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-26 03:15</div>
+            <div class="timeline-body"><p>I understand that you don't need these things for a zipapp. What I'm trying to understand is why it's a problem to include them, if it matches pip's behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-04-26 03:17</div>
+            <div class="timeline-body"><p>I think it's just surprising that these were here; I've not bundled a library with scripts or headers in a zipapp before so have never seen them and didn't know pip would stick them there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-26 03:17</div>
+            <div class="timeline-body"><p>Perhaps I can change it to create those directories lazily so it's less surprising (since they typically would not be created at all in that case).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-26 03:29</div>
+            <div class="timeline-body"><p>Okay, https://github.com/astral-sh/uv/pull/3274 should give you something closer to what you're used to :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-04-26 03:33</div>
+            <div class="timeline-body"><p>Nice, that feels a lot more pip-like. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Pixel-Minions">@Pixel-Minions</a> on 2024-04-27 18:00</div>
+            <div class="timeline-body"><p>Works great! Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mpderbec">@mpderbec</a> on 2024-04-27 22:23</div>
+            <div class="timeline-body"><p>Just tried it out... With <code>--target</code> support, I wouldn't expect to have to create a virtual environment, correct?</p>
+<p>(I'm getting this error:)</p>
+<pre><code>C:\WINDOWS\system32\cmd.exe /c &quot;uv pip install --target=&quot;C:\GitHub\crab\site-packages\x64\prod&quot; -r &quot;C:\GitHub\crab\requirements.prod.txt&quot; &quot;
+error: Failed to locate a virtualenv or Conda environment (checked: `VIRTUAL_ENV`, `CONDA_PREFIX`, and `.venv`). Run `uv venv` to create a virtualenv.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-27 22:42</div>
+            <div class="timeline-body"><p>Mmm, I could see arguments either way given our stance on environments, but probably shouldn't be required, no. You can run with <code>--system</code> in the meantime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Pixel-Minions">@Pixel-Minions</a> on 2024-04-27 23:22</div>
+            <div class="timeline-body"><p>You can use --python and pass thr path to the interpreter, it works great
+even with embedded versions of python with no venv</p>
+<p>On Sat, Apr 27, 2024, 6:42 p.m. Charlie Marsh <em><strong>@</strong></em>.***&gt;
+wrote:</p>
+<blockquote>
+<p>Mmm, I could see arguments either way given our stance on environments,
+but probably shouldn't be required, no. You can run with --system in the
+meantime.</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/pull/3257#issuecomment-2081220303">https://github.com/astral-sh/uv/pull/3257#issuecomment-2081220303</a>, or
+unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AAIXWF6KKNYFQXXREELY5CLY7QSVPAVCNFSM6AAAAABGX3QPZOVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDAOBRGIZDAMZQGM">https://github.com/notifications/unsubscribe-auth/AAIXWF6KKNYFQXXREELY5CLY7QSVPAVCNFSM6AAAAABGX3QPZOVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDAOBRGIZDAMZQGM</a>
+.
+You are receiving this because you commented.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mpderbec">@mpderbec</a> on 2024-04-28 00:14</div>
+            <div class="timeline-body"><p><code>--system</code> works great.</p>
+<p>Success story: Our package install time went from 4m27s to 0m8s!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:37:38 UTC
+    </footer>
+</body>
+</html>

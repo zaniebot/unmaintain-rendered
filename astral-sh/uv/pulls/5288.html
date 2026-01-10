@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>If multiple indices contain the same version, use the first index - astral-sh/uv #5288</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>If multiple indices contain the same version, use the first index</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5288">#5288</a>
+        opened by <a href="https://github.com/yorickvP">@yorickvP</a>
+        on 2024-07-22 14:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/yorickvP">@yorickvP</a> on 2024-07-22 14:08</div>
+            <div class="timeline-body"><p>This fixes resolving packages that publish an invalid stub to pypi, such as tensorrt-llm.</p>
+<!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>In https://github.com/astral-sh/uv/pull/3138 , we implemented <code>unsafe-best-match</code>. However, it seems to not quite work as expected. When multiple indices contain the same version, it's not clear which index the current code uses. This PR fixes that to use the first index the package is in.</p>
+<h2>Test Plan</h2>
+<pre><code class="language-console">$ echo 'tensorrt-llm==0.11.0' | ./target/debug/uv pip compile - --extra-index-url https://pypi.nvidia.com --python-version=3.10 --index-strategy=unsafe-best-match --annotation-style=line
+</code></pre>
+<p>cc: @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-22 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-07-22 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 16:04</div>
+            <div class="timeline-body"><p>Yeah interesting, contrary to my expectation <code>kmerge</code> isn't &quot;stable&quot; by iterator:</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    use itertools::Itertools;
+
+    #[test]
+    fn kmerge_reverse() {
+        let a = vec![('a', 1), ('b', 2), ('c', 3)];
+        let b = vec![('d', 1), ('e', 2), ('f', 3)];
+
+        let its = [a, b];
+        let its = its.iter().kmerge_by(|a, b| a.1 &lt; b.1);
+
+        let actual = its.collect::&lt;Vec&lt;_&gt;&gt;();
+        let expected = vec![&amp;('a', 1), &amp;('d', 1), &amp;('b', 2), &amp;('e', 2), &amp;('c', 3), &amp;('f', 3)];
+
+        // This fails; left is: `[('a', 1), ('d', 1), ('e', 2), ('b', 2), ('c', 3), ('f', 3)]`
+        assert_eq!(actual, expected);
+    }
+}
+</code></pre>
+<p>I didn't have any basis for expecting that so I don't think it's a bug, I just assumed it was true.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 16:16</div>
+            <div class="timeline-body"><p>@yorickvP - I tweaked to avoid re-comparing. Can you test that it's still passing on your test case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2024-07-22 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yorickvP">@yorickvP</a> on 2024-07-22 17:52</div>
+            <div class="timeline-body"><p>Still works!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-07-22 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-22 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 18:03</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:37:38 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>propagate markers to sibling dependencies of forks - astral-sh/uv #5163</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>propagate markers to sibling dependencies of forks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5163">#5163</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-07-17 18:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-17 18:22</div>
+            <div class="timeline-body"><p>When a fork occurs, we divide not just the dependencies that
+provoked a fork into distinct groups, but we also add the
+corresponding sibling dependencies to each fork. Previously,
+while we track markers on the fork itself, the individual
+dependencies that had markers only corresponded to markers
+written from the dependency specification.</p>
+<p>This meant that the sibling dependencies that got added to
+each fork would not themselves have markers attached to them.
+This in turn meant they would not have markers associated with
+them in the lock file.</p>
+<p>In many cases, this is actually okay, because the resolver will
+pick a version that is &quot;universal&quot; across all forks in most
+cases. But in some cases, this just simply isn't possible as
+the marker expressions in the fork can and do influence resolution.
+In which case, it is possible for the same package with different
+versions to show up in the lock file unconditionally. Which is a
+big no-no.</p>
+<p>So in this commit, after we determine the forks, we intersect the
+markers on each fork with each of its dependencies.</p>
+<p>This does seem to balloon the marker expressions in some cases.
+I plucked one low hanging fruit to avoid doing <code>x and x</code> in
+trivial cases. (And this eliminated a portion of the snapshot
+diffs.) But some pretty gnarly diffs remain. So we will likely
+want to invest more in marker simplification.</p>
+<p>Fixes #5086, Fixes #5162</p>
+<p>Partially addresses #4732</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-07-17 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-07-17 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/pubgrub/package.rs</code>:48 on 2024-07-17 18:23</div>
+            <div class="timeline-body"><p>I am unsure if this is actually true.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-17 18:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-17 18:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/pubgrub/package.rs</code>:163 on 2024-07-17 18:23</div>
+            <div class="timeline-body"><p>I am unsure of what to do in this case. I haven't given it too much thought yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-17 18:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/lock.rs</code>:2906 on 2024-07-17 18:24</div>
+            <div class="timeline-body"><p>Brutal</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-17 18:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/pip_compile.rs</code>:6983 on 2024-07-17 18:24</div>
+            <div class="timeline-body"><p>I am unsure if this new snapshot is correct. The marker expressions look awfully suspicious here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/lock_scenarios.rs</code>:1922 on 2024-07-17 18:24</div>
+            <div class="timeline-body"><p>This test (and the one below) is what inspired me to find #5161 and #5162.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-17 18:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/lock_scenarios.rs</code>:1922 on 2024-07-17 18:25</div>
+            <div class="timeline-body"><p>Unfortunately, the status quo is <em>correct</em>, because this update leaves a &quot;hole&quot; (e.g., on Windows) where previously <code>a</code> would be installed but now it isn't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-17 18:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/pubgrub/dependencies.rs</code>:33 on 2024-07-18 07:38</div>
+            <div class="timeline-body"><p>Can we make those <code>Fn(Self, T) -&gt; Self</code> instead? iirc we don't pass <code>&amp;mut PubGrubDependency</code> around, so only the owner can mutate them anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/pubgrub/package.rs</code>:142 on 2024-07-18 07:41</div>
+            <div class="timeline-body"><p>We should be doing those changes directly after instance creation and before passing it pubgrub (which clones the package), so this should hold true</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/pubgrub/package.rs</code>:163 on 2024-07-18 07:44</div>
+            <div class="timeline-body"><p>I could happen if you fork at the root and that determines whether to use a workspace package which has dev deps</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/lock.rs</code>:2906 on 2024-07-18 07:46</div>
+            <div class="timeline-body"><p>Is it time for some resolution</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2024-07-18 08:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-07-18 08:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @konstin on 2024-07-18 08:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-24 17:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/pubgrub/dependencies.rs</code>:33 on 2024-07-24 17:50</div>
+            <div class="timeline-body"><p>Yes, but <code>MarkerTree::and</code> takes <code>&amp;mut Self</code>.</p>
+<p>I think either way can work where we avoid cloning <code>MarkerTree</code>. This way, it means using <code>Arc::make_mut</code>. If we took ownership, it would be <code>Arc::unwrap_or_clone</code>. But, in the <code>make_mut</code> case where there is only one reference, we don't need to re-create the <code>Arc</code>.</p>
+<p>How much this matters, I dunno. But I opted for the option that I thought was less costly. (And there are assuredly designs that are even less costly than what I have, but I think it would be a bigger refactor.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/pubgrub/package.rs</code>:142 on 2024-07-24 17:51</div>
+            <div class="timeline-body"><p>Great, thank you. I added that to this comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-24 17:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/pip_compile.rs</code>:7962 on 2024-07-25 14:13</div>
+            <div class="timeline-body"><p>This is a regression test for #5086.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-25 14:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @BurntSushi on 2024-07-25 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">resolver</span> added by @BurntSushi on 2024-07-25 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-07-25 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:2738 on 2024-07-25 15:47</div>
+            <div class="timeline-body"><p>Shouldn't this be a single fork that we build by using the original deps and removing all that are disjoint with this fork's markers?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-07-25 15:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-25 16:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:2738 on 2024-07-25 16:00</div>
+            <div class="timeline-body"><p>I don't think so. That was how I had originally done it (except without adding original deps). Crucially, this new &quot;remaining universe&quot; partitioning is added in the same way as other partitionings are. That is, it needs to be considered in the context of any extant forks. Basically, when a fork is created, it starts by copying all extant forks at the time the partitioning was determined, adding dependencies corresponding to the fork along with the markers.</p>
+<p>Let me see if I can come up with an example using packse.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-25 16:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:2738 on 2024-07-25 16:40</div>
+            <div class="timeline-body"><p>OK, I <em>think</em> I came up with an example here: https://github.com/astral-sh/packse/pull/204</p>
+<p>For that scenario, I believe your suggestion would lead to the &quot;remaining universe&quot; fork created by <code>b</code> in the dependencies of <code>a</code> having a marker expression of just <code>os_name != 'linux' and os_name != 'darwin'</code>. But it actually should be combined with the marker expressions of every parent fork.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-07-26 10:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:2738 on 2024-07-26 10:05</div>
+            <div class="timeline-body"><p>The scenario doesn't seem to use that code path, it looks like with it we're only doing one iteration with the parent universal fork:</p>
+<pre><code class="language-rust">if let Some(markers) = fork_groups.remaining_universe() {
+    trace!(&quot;Adding split to cover possibly incomplete markers: {markers}&quot;);
+    println!(
+        &quot;forks: {} {}&quot;,
+        forks.len(),
+        forks
+            .iter()
+            .map(|fork| format!(&quot;({})&quot;, fork.markers))
+            .join(&quot; || &quot;)
+    );
+    let mut new_forks_for_remaining_universe = forks.clone();
+    for fork in &amp;mut new_forks_for_remaining_universe {
+        fork.markers.and(markers.clone());
+        fork.dependencies.retain(|dep| {
+            let Some(dep_marker) = dep.package.marker() else {
+                return true;
+            };
+            // After we constrain the markers on an existing
+            // fork, we should ensure that any existing
+            // dependencies that are no longer possible in this
+            // fork are removed. This mirrors the check we do in
+            // `add_nonfork_package`.
+            !crate::marker::is_disjoint(&amp;fork.markers, dep_marker)
+        });
+    }
+    println!(
+        &quot;new_forks_for_remaining_universe: {} {}&quot;,
+        new_forks_for_remaining_universe.len(),
+        new_forks_for_remaining_universe
+            .iter()
+            .map(|fork| format!(&quot;({})&quot;, fork.markers))
+            .join(&quot; || &quot;)
+    );
+    new_forks.extend(new_forks_for_remaining_universe);
+}
+</code></pre>
+<pre><code class="language-console">$ rm -f uv.lock &amp;&amp; cargo run lock -v 2&gt; a.txt
+forks: 1 ()
+new_forks_for_remaining_universe: 1 (sys_platform != 'illumos' and sys_platform != 'windows')
+forks: 1 ()
+new_forks_for_remaining_universe: 1 (os_name != 'darwin' and os_name != 'linux')
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-07-26 14:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:2738 on 2024-07-26 14:09</div>
+            <div class="timeline-body"><p>We will merge this as-is and follow-up on it later, overlapping markers are more important to fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-26 14:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:2738 on 2024-07-26 14:15</div>
+            <div class="timeline-body"><p>You're 100% correct. It doesn't! I even had my own debug prints and was not careful in looking at what they were telling me. I spent some time trying to up with a better example, but failed. I filed https://github.com/astral-sh/uv/issues/5482 to track investigation into this possible issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-07-26 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-07-26 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-26 14:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:37:38 UTC
+    </footer>
+</body>
+</html>
