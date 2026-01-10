@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow passing a virtual environment to `ruff analyze graph` - astral-sh/ruff #17743</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow passing a virtual environment to <code>ruff analyze graph</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17743">#17743</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-04-30 17:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-30 17:26</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #16598 by adding the <code>--python</code> flag to <code>ruff analyze graph</code>, which adds a <code>PythonPath</code> to the <code>SearchPathSettings</code> for module resolution. For the <a href="https://github.com/astral-sh/uv/tree/aa629c4a54c31d6132ab1655b90dd7542c17d120/scripts/workspaces/albatross-virtual-workspace">albatross-virtual-workspace</a> example from the uv repo, this updates the output from the initial issue:</p>
+<pre><code class="language-shell">&gt; ruff analyze graph packages/albatross
+{
+  &quot;packages/albatross/check_installed_albatross.py&quot;: [
+    &quot;packages/albatross/src/albatross/__init__.py&quot;
+  ],
+  &quot;packages/albatross/src/albatross/__init__.py&quot;: []
+}
+</code></pre>
+<p>To include both the the workspace <code>bird_feeder</code> import <em>and</em> the third-party <code>tqdm</code> import in the output:</p>
+<pre><code class="language-shell">&gt; myruff analyze graph packages/albatross --python .venv
+{
+  &quot;packages/albatross/check_installed_albatross.py&quot;: [
+    &quot;packages/albatross/src/albatross/__init__.py&quot;
+  ],
+  &quot;packages/albatross/src/albatross/__init__.py&quot;: [
+    &quot;.venv/lib/python3.12/site-packages/tqdm/__init__.py&quot;,
+    &quot;packages/bird-feeder/src/bird_feeder/__init__.py&quot;
+  ]
+}
+</code></pre>
+<p>Note the hash in the uv link! I was temporarily very confused why my local tests were showing an <code>iniconfig</code> import instead of <code>tqdm</code> until I realized that the example has been updated on the uv main branch, which I had locally.</p>
+<h2>Test Plan</h2>
+<p>A new integration test with a stripped down venv based on the <code>albatross</code> example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">analyze</span> added by @ntBre on 2025-04-30 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-30 17:33</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-04-30 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-04-30 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-04-30 17:37</div>
+            <div class="timeline-body"><p>Neat!</p>
+<p>Can you test what happens if you provide an invalid path?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-30 18:55</div>
+            <div class="timeline-body"><p>Ah good idea, I ran into a couple of these while trying to set up the working test. Is this what you expected?</p>
+<pre><code>----- stderr -----                                                                                                     
+ruff failed                                                                                                            
+  Cause: Invalid search path settings                                                                                  
+  Cause: Failed to discover the site-packages directory: Invalid `--python` argument: `none` could not be canonicalized
+</code></pre>
+<p>I think that looks pretty reasonable. Something like <code>venv dir `none` does not exist</code> could possibly be nicer, but I think the <code>canonicalized</code> message is bubbling up from red-knot. I could try to check manually a bit earlier if we wanted, though.</p>
+<p>It's also important that the flag name matches red-knot, which I'm guessing you were also thinking about here!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-01 06:07</div>
+            <div class="timeline-body"><p>I mainly wanted to make sure that ruff doesn't panic (I wasn't sure if there are any unwraps). I assume <code>none</code> was what you provided on the CLI. This looks good.</p>
+<blockquote>
+<p>It's also important that the flag name matches red-knot, which I'm guessing you were also thinking about here!</p>
+</blockquote>
+<p>You give me too much credit 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-05-01 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-05-01 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-01 15:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:30 UTC
+    </footer>
+</body>
+</html>

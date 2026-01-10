@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove f-string `UnclosedLbrace` error checking from the lexer - astral-sh/ruff #10372</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove f-string <code>UnclosedLbrace</code> error checking from the lexer</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10372">#10372</a>
+        opened by <a href="https://github.com/LaBatata101">@LaBatata101</a>
+        on 2024-03-12 20:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2024-03-12 20:57</div>
+            <div class="timeline-body"><p>This error check is already handled by the new parser. For some reason the parser gets stuck when parsing f-strings with an unclosed brace, e.g. <code>f'{'</code>.</p>
+<p>CC: @dhruvmanila</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @LaBatata101 on 2024-03-12 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @zanieb on 2024-03-12 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/resources/invalid/expressions/unclosed_fstring_lbrace.py</code>:5 on 2024-03-13 06:58</div>
+            <div class="timeline-body"><p>Can you tell me why are these commented out? I guess it's because the parser is panicking otherwise? If so, then even the first one should be commented out for now, right? We can add a <code>TODO</code> comment on top to fix these.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-03-13 06:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-03-13 07:05</div>
+            <div class="timeline-body"><p>Thanks, I agree that this is now redundant.</p>
+<blockquote>
+<p>For some reason the parser gets stuck when parsing f-strings with an unclosed brace, e.g. <code>f'{'</code>.</p>
+</blockquote>
+<p>It's because of the same problem as I mentioned on Discord. The lexer is emitting two errors on the same location - unexpected end of file and unterminated f-string. The former is coming from <code>consume_end</code> function. while the latter is occurring because the f-string is still on the stack. We try to parse a f-string middle token but we've already reached end of file, so the lexer thinks it's an unterminated f-string.</p>
+<p>I think the solution for this would be to not emit the unexpected EOF error as you mentioned but another solution, which is specific to f-string lexing, would be to not emit the unterminated f-string error if it encountered an EOF token and the nesting level is &gt; 0.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-03-13 07:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LaBatata101">@LaBatata101</a> reviewed on 2024-03-13 12:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on <code>crates/ruff_python_parser/resources/invalid/expressions/unclosed_fstring_lbrace.py</code>:5 on 2024-03-13 12:17</div>
+            <div class="timeline-body"><p>Oh, I forgot to uncomment 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-03-13 14:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/resources/invalid/expressions/unclosed_fstring_lbrace.py</code>:5 on 2024-03-13 14:04</div>
+            <div class="timeline-body"><p>Do you expect them to pass with the current state of the parser? I think it'll panic considering that there will be two <code>Unknown</code> tokens emitted corresponding to the two errors and it will seem that the parser isn't progressing.</p>
+<p>I'm fine with merging with a TODO comment to fix them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LaBatata101">@LaBatata101</a> reviewed on 2024-03-13 19:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on <code>crates/ruff_python_parser/resources/invalid/expressions/unclosed_fstring_lbrace.py</code>:5 on 2024-03-13 19:37</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you expect them to pass with the current state of the parser?</p>
+</blockquote>
+<p>No, it will still get stuck because of the EOF error returned by the lexer, but if we remove the line that returns that error from the lexer, then it works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2024-03-13 19:41</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the solution for this would be to not emit the unexpected EOF error as you mentioned but another solution, which is specific to f-string lexing, would be to not emit the unterminated f-string error if it encountered an EOF token and the nesting level is &gt; 0.</p>
+</blockquote>
+<p>It's better not to emit the unexpected EOF error since this error is redundant now with the new parser.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-03-14 03:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-03-14 03:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-14 03:35</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-08 21:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:29 UTC
+    </footer>
+</body>
+</html>

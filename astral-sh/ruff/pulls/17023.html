@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Allow explicit specialization of generic classes - astral-sh/ruff #17023</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Allow explicit specialization of generic classes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17023">#17023</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-03-27 20:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-03-27 20:25</div>
+            <div class="timeline-body"><p>This PR lets you explicitly specialize a generic class using a subscript expression. It introduces three new Rust types for representing classes:</p>
+<ul>
+<li><code>NonGenericClass</code></li>
+<li><code>GenericClass</code> (not specialized)</li>
+<li><code>GenericAlias</code> (specialized)</li>
+</ul>
+<p>and two enum wrappers:</p>
+<ul>
+<li><code>ClassType</code> (a non-generic class or generic alias, represents a class <em>type</em> at runtime)</li>
+<li><code>ClassLiteralType</code> (a non-generic class or generic class, represents a class body in the AST)</li>
+</ul>
+<p>We also add internal support for specializing callables, in particular function literals.  (That is, the internal <code>Type</code> representation now attaches an optional specialization to a function literal.) This is used in this PR for the methods of a generic class, but should also give us most of what we need for specializing generic <em>functions</em> (which this PR does not yet tackle).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dcreager on 2025-03-27 20:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-27 20:32</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">async-utils (https://github.com/mikeshardmind/async-utils)
+- error[lint:non-subscriptable] /tmp/mypy_primer/projects/async-utils/src/async_utils/scheduler.py:75:38: Cannot subscript object of type `Literal[_Task]` with no `__class_getitem__` method
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/async-utils/src/async_utils/scheduler.py:148:30: Object of type `T` cannot be assigned to parameter 3 (`payload`) of bound method `__init__`; expected type `T`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/async-utils/_misc/_queue_testing.py:131:24: Object of type `None` cannot be assigned to parameter 2 (`item`) of bound method `sync_put`; expected type `T`
+- error[lint:non-subscriptable] /tmp/mypy_primer/projects/async-utils/src/async_utils/_qs.py:510:16: Cannot subscript object of type `Literal[BaseQueue]` with no `__class_getitem__` method
+- error[lint:non-subscriptable] /tmp/mypy_primer/projects/async-utils/src/async_utils/_qs.py:538:20: Cannot subscript object of type `Literal[BaseQueue]` with no `__class_getitem__` method
+- error[lint:non-subscriptable] /tmp/mypy_primer/projects/async-utils/src/async_utils/_qs.py:566:24: Cannot subscript object of type `Literal[BaseQueue]` with no `__class_getitem__` method
+- Found 38 diagnostics
++ Found 32 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/classes.md</code>:84 on 2025-04-07 22:32</div>
+            <div class="timeline-body"><p>The diagnostics look like this because I'm reusing the call binding mechanism to match parameters and check types. It would be nice for this diagnostic to talk about <em>type</em> parameters, but would prefer to do that as a follow-on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/properties.md</code>:201 on 2025-04-07 22:36</div>
+            <div class="timeline-body"><p>This depends on https://github.com/salsa-rs/salsa/pull/741</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:273 on 2025-04-07 22:45</div>
+            <div class="timeline-body"><p>Most of these methods exist on both <code>ClassType</code> and <code>ClassLiteralType</code>.  The &quot;real&quot; implementations are on <code>ClassLiteralType</code>, since that's what represents a class body in the AST.  The <code>ClassType</code> methods wrap that, applying the specialization in the case of a generic alias.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-04-07 22:46</div>
+            <div class="timeline-body"><p>Other than the tracked structs Salsa bug, this is ready for review!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-04-07 22:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-04-07 22:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-04-07 22:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-04-07 22:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-08 13:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/classes.md</code>:104 on 2025-04-08 13:21</div>
+            <div class="timeline-body"><p>I guess it's not that important (it's an error anyway), but <code>Constrained[Unknown]</code> might be a better fallback?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-08 13:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/scoping.md</code>:105 on 2025-04-08 13:25</div>
+            <div class="timeline-body"><p>I don't think we necessarily have to do something about this, but it's interesting that this does not work at runtime (raises <code>AttributeError</code>). Probably because <code>type(C[int])</code> is a <code>_GenericAlias</code>, so the static lookup on the meta type does not find the <code>f</code> attribute.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-08 13:36</div>
+            <div class="timeline-body"><blockquote>
+<p>and two enum wrappers:</p>
+<pre><code>* `ClassType` (a non-generic class or generic alias, represents a class _type_ at runtime)</code></pre>
+</blockquote>
+<p>Minor comment: is this outdated or am I misunderstanding something? Are you talking about <code>Type</code> enum variants here? If so, should it be <code>Type::GenericAlias</code>?</p>
+<p>If this interpretation is correct, that would mean that non-generic class types also fall under <code>Type::GenericAlias</code> (which might be fine, I'm just trying to understand).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-08 13:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Minor comment: is this outdated or am I misunderstanding something? Are you talking about <code>Type</code> enum variants here? If so, should it be <code>Type::GenericAlias</code>?</p>
+<p>If this interpretation is correct, that would mean that non-generic class types also fall under <code>Type::GenericAlias</code> (which might be fine, I'm just trying to understand).</p>
+</blockquote>
+<p>No, it (and <code>ClassLiteralType</code>) are new enums defined in <code>types/class.rs</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/43554e2ac9d7d7c0084bc34b56cb573370fecbdb/crates/red_knot_python_semantic/src/types/class.rs#L170-L173</p>
+<p><code>Type::ClassLiteral</code> wraps <code>ClassLiteralType</code>.  <code>ClassType</code> doesn't have a <code>Type</code> variant itself; instead it's used in e.g. <code>Type::Instance</code> and <code>Type::SubclassOf</code>, since an object is an instance of a non-generic class or of a specialized generic alias.</p>
+<p>So a non-generic class (i.e. the class itself, not an instance of it) would be a</p>
+<pre><code class="language-rust">Type::ClassLiteral(ClassLiteralType::NonGeneric(NonGenericClass { .. }))
+</code></pre>
+<p>A generic class that hasn't been specialized would be a</p>
+<pre><code class="language-rust">Type::ClassLiteral(ClassLiteralType::Generic(GenericClass { .. }))
+</code></pre>
+<p>and a generic class that has been specialized would be a</p>
+<pre><code class="language-rust">Type::GenericAlias(GenericAlias { .. })
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/scoping.md</code>:105 on 2025-04-08 14:37</div>
+            <div class="timeline-body"><p>There's a lot of magic in the runtime implementation of generics in the <code>typing</code> module, and there will be some judgment calls about how much to model this precisely and how much to maintain the ideal fiction that <code>_GenericAlias</code> attempts to approximate with its proxying behavior.</p>
+<p>The main purpose of our special handling of <code>getattr_static</code> is for our own tests, and for that purpose I think it's more useful for it to reflect the &quot;ideal&quot; specialized generic class, not the real runtime behavior of <code>getattr_static</code>. There could be an argument that we should make our own function in <code>knot_extensions</code> for our test purposes instead of reusing <code>inspect.getattr_static</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:100 on 2025-04-08 14:42</div>
+            <div class="timeline-body"><p>I think we are trying to move away from these bracketed type displays and towards more Pythonish syntax, see discussion in https://github.com/astral-sh/ruff/pull/17294. I think the natural choice here would be e.g. <code>foo[int]</code> instead of <code>&lt;foo specialized with T = int&gt;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/properties.md</code>:201 on 2025-04-08 14:48</div>
+            <div class="timeline-body"><p>If we want to unblock this PR on the salsa fix, the other thing we can do is temporarily revert the change that makes mdtests reuse the same Salsa db, and live with slow mdtests until the Salsa fix lands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/stubs/class.md</code>:14 on 2025-04-08 14:51</div>
+            <div class="timeline-body"><p><code>Foo[Bar]</code> should be the type of an <em>instance</em> of the specialized generic class <code>Foo[Bar]</code>, not the class-literal type that should appear in the MRO. I think we should see <code>Literal[Foo[Bar]]</code> here? (At least until/unless we change our display of class literal types to something other than <code>Literal[C]</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-08 15:05</div>
+            <div class="timeline-body"><p>This is fantastic!</p>
+<p>Haven't reviewed nearly all of it yet, but I'm going to switch focus to the Salsa bug, so submitting the comments I have.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/generics.rs</code>:52 on 2025-04-08 21:37</div>
+            <div class="timeline-body"><p>What is your longer-term thinking about the reuse of <code>Signature</code> and call-binding for specialization? It seems to me that it maybe doesn't buy us very much, since type params are always positional-only, meaning we don't need most of the interesting code from call binding, and it will be hard to integrate e.g. correct handling of constrained typevars, and better diagnostics. (I guess what I'm saying here is I can see why this was a quick way to get something working, but I'm not convinced this is a path we want to go down, vs just writing separate custom code for specialization.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/generics.rs</code>:70 on 2025-04-08 21:40</div>
+            <div class="timeline-body"><p>And also not the union of them.</p>
+<p>(We wouldn't necessarily need a &quot;new type variant&quot; to handle this if we had bespoke code for specialization instead of reusing call binding.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4175 on 2025-04-09 02:19</div>
+            <div class="timeline-body"><p>Can we add a comment here explaining why we don't need to apply specialization to the <code>self_instance</code> type of the bound method?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3979 on 2025-04-09 02:23</div>
+            <div class="timeline-body"><p>I think it would also be useful to have explicit comments here (or in the doc comment above) about why the <code>apply_specialization</code> operation doesn't apply to <code>ClassLiteral</code>, <code>SubclassOf</code>, or <code>Instance</code> types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:5339 on 2025-04-09 02:31</div>
+            <div class="timeline-body"><p>If we have a generic method in a generic class, say</p>
+<pre><code class="language-py">class C[T]:
+    def method[U](self, t: T, u: U) -&gt; U: ...
+</code></pre>
+<p>If we access the method off of an instance of <code>C[int]</code>, we'd apply the specialization <code>T = int</code> to the returned bound method, and then at the call site we would apply a further specialization of, say, <code>U = str</code>? And then check the actual call against it with a specialization of <code>T = int, U = str</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:501 on 2025-04-09 03:34</div>
+            <div class="timeline-body"><p>I'm not sure this is correct/safe. If we have a narrowing predicate <code>type(x) is C</code> and <code>C</code> is a generic class, that does not necessarily mean that <code>x</code> is an instance of the default specialization of <code>C</code>. It means that <code>x</code> is an instance of <em>some</em> specialization of <code>C</code>, but I don't think we can glean any information from the predicate expression about which one.</p>
+<p>If the default specialization is simply <code>Unknown</code> for all typevars, maybe this works out OK? Since <code>C[Unknown]</code> expresses &quot;an instance of some specialization of <code>C</code>, but we don't know which one.&quot; But if any of the typevars of <code>C</code> actually have defaults, it's not clear to me that we should apply those defaults in this case. Typevar defaults are intended to save unnecessary typing when spelling a type in a type expression, not to make unsafe assumptions when interpreting runtime narrowing from the use of the generic class as a value expression.</p>
+<p>We can just add a TODO from this for now, but I suspect we should have a variant of &quot;default specialization&quot; which ignores typevar defaults and uses <code>Unknown</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/property_tests/type_generation.rs</code>:172 on 2025-04-09 03:36</div>
+            <div class="timeline-body"><p>Probably we should have a TODO for better coverage of generic types (including non-default specializations) in the property tests?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1738 on 2025-04-09 03:47</div>
+            <div class="timeline-body"><p>I think this TODO should at least be updated in light of the code below (sort of) handling this case now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1741 on 2025-04-09 03:53</div>
+            <div class="timeline-body"><p>Can be a TODO for now, but I suspect that deferring <em>all</em> inference of class bases if any of them contain any string literal is too big a hammer here, and we will need to do something more complex. In a case like this:</p>
+<pre><code class="language-py">class B[T]: pass
+
+class C(B[&quot;Forward&quot;]): pass
+
+class Forward: pass
+
+B = &quot;oops&quot;
+</code></pre>
+<p>We have to infer the type of <code>B</code> at the point of use (and not pick up the later binding of <code>B</code>), but we have to use a deferred lookup for <code>&quot;Forward&quot;</code>. This will be a bit awkward, as it means we have to keep track of unspecialized <code>B</code> somewhere, until we actually resolve <code>&quot;Forward&quot;</code> and can specialize.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-09 03:59</div>
+            <div class="timeline-body"><p>This is great!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/classes.md</code>:104 on 2025-04-09 13:47</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/scoping.md</code>:105 on 2025-04-09 13:51</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/issues/17312</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/stubs/class.md</code>:14 on 2025-04-09 13:53</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4175 on 2025-04-09 14:00</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3979 on 2025-04-09 14:04</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:5339 on 2025-04-09 14:08</div>
+            <div class="timeline-body"><p>Yes, that's the intent! I can only verify the correct behavior as part of #17301, but I've added an xfail test for it here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:100 on 2025-04-09 14:24</div>
+            <div class="timeline-body"><p>Done (ditto for <code>bound method</code> and <code>method-wrapper</code> below)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/generics.rs</code>:52 on 2025-04-09 14:31</div>
+            <div class="timeline-body"><p>That's a good point, though my original thinking was to make it lean on the existing call binding mechanism <em>more</em>:</p>
+<p>https://github.com/astral-sh/ruff/blob/43554e2ac9d7d7c0084bc34b56cb573370fecbdb/crates/red_knot_python_semantic/src/types/infer.rs#L5692-L5695</p>
+<p>i.e. explicit specialization would happen in a custom callable, which <code>__getitem__</code> would resolve to on generic classes. Though that would require adding hooks to <code>Signature</code> to allow customized diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/generics.rs</code>:70 on 2025-04-09 14:33</div>
+            <div class="timeline-body"><p>Done.  And that's a good point in favor of special logic instead of a custom callable for <code>__getitem__</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1738 on 2025-04-09 14:35</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1741 on 2025-04-09 14:36</div>
+            <div class="timeline-body"><p>Added a TODO. I'll have to learn more about the deferral mechanism to be able to tackle that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:501 on 2025-04-09 15:05</div>
+            <div class="timeline-body"><p>Done. This also made me realize that we weren't narrowing when comparing against a generic alias, which I also fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/property_tests/type_generation.rs</code>:172 on 2025-04-09 15:07</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-04-09 15:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-04-09 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-04-09 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-09 15:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:29 UTC
+    </footer>
+</body>
+</html>

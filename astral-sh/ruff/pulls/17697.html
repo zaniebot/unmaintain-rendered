@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Add --config CLI arg - astral-sh/ruff #17697</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Add --config CLI arg</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17697">#17697</a>
+        opened by <a href="https://github.com/thejchap">@thejchap</a>
+        on 2025-04-29 03:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/thejchap">@thejchap</a> on 2025-04-29 03:09</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>astral-sh/ty#218</p>
+<ul>
+<li>Add a <code>--config</code> CLI arg. Accepts many, where each passed value is a TOML string</li>
+</ul>
+<h2>Test Plan</h2>
+<p>Snapshot tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-29 03:12</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-04-29 03:22</div>
+            <div class="timeline-body"><p>@MichaReiser pausing here for some early feedback. in particular:</p>
+<ul>
+<li>can you clarify what you meant by structural representation <a href="https://github.com/astral-sh/ty/issues/218">here</a>? i see the ordered list of (rule, level) pairs - do you mean we end up with a list of (setting, value) pairs or something else?</li>
+<li>because we already have <code>Options::from_toml_str</code> with <code>ValueSource</code> for either CLI/file, my thought had been to have clap return a list of parsed <code>Options</code> objects from <a href="https://github.com/thejchap/ruff/blob/cceba489d4c7f5f64a1cfaee07731fb783c932ec/crates/red_knot/src/args.rs#L312">from_arg_matches</a>, which then get applied in <code>ProjectMetadata::apply_cli_options</code> - related to the first bullet, let me know if you had something else in mind</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-29 06:00</div>
+            <div class="timeline-body"><p>@thejchap what you have here looks good to me. I wasn't aware that Ruff already uses <code>FromArgs</code></p>
+<blockquote>
+<p>because we already have Options::from_toml_str with ValueSource for either CLI/file, my thought had been to have clap return a list of parsed Options</p>
+</blockquote>
+<p>We could try to fold those <code>Options</code> objects eagerly by calling <code>combine</code> instead of collecting a <code>Vec</code> but that's a minor detail. That, overall, sounds good to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2025-04-29 06:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-04-29 06:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-01 04:59</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/mesonbuild/meson-python">mesonbuild/meson-python</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to read tests/packages/symlinks/baz.py: No such file or directory (os error 2)
+error: Failed to read tests/packages/symlinks/qux.py: No such file or directory (os error 2)
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/mesonbuild/meson-python">mesonbuild/meson-python</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to read tests/packages/symlinks/baz.py: No such file or directory (os error 2)
+error: Failed to read tests/packages/symlinks/qux.py: No such file or directory (os error 2)
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thejchap">@thejchap</a> reviewed on 2025-05-03 04:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thejchap">@thejchap</a> on <code>crates/red_knot/src/args.rs</code>:24 on 2025-05-03 04:47</div>
+            <div class="timeline-body"><p>appears to be <a href="https://github.com/thejchap/ruff/blob/cc78133632470eff8a2e4f208291a4981480aa79/crates/ruff/src/args.rs#L96">allowed in ruff as well</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @thejchap on 2025-05-03 05:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @thejchap on 2025-05-03 05:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @thejchap on 2025-05-03 05:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @thejchap on 2025-05-03 05:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @thejchap on 2025-05-03 05:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @thejchap on 2025-05-03 05:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/args.rs</code>:314 on 2025-05-03 13:29</div>
+            <div class="timeline-body"><p><code>--config</code> should only accept configuration arguments. We'll use <code>--config-file</code> to allow overriding a configuration file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/args.rs</code>:324 on 2025-05-03 13:30</div>
+            <div class="timeline-body"><p>Hmm. It's a bit awkward that we have to create a <code>system</code> out of the blue but I see why it's necessary. The only alternative would be is if we expose it using a thread local.</p>
+<p>I think this is fine for now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/args.rs</code>:317 on 2025-05-03 13:31</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">pub(crate) struct ConfigsArg(Option&lt;Options&gt;);
+
+impl clap::FromArgMatches for ConfigsArg {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/args.rs</code>:382 on 2025-05-03 13:32</div>
+            <div class="timeline-body"><p>Nit: Some blank lines between different functions and impl blocks can help readers to parse the code more easily</p>
+<pre><code class="language-suggestion">    }
+    
+    fn update_from_arg_matches(&amp;mut self, matches: &amp;ArgMatches) -&gt; Result&lt;(), Error&gt; {
+        self.0 = Self::from_arg_matches(matches)?.0;
+        Ok(())
+    }
+}
+
+impl clap::Args for ConfigsArg {
+    fn augment_args(cmd: clap::Command) -&gt; clap::Command {
+        cmd.arg(
+            clap::Arg::new(&quot;config&quot;)
+                .short('c')
+                .long(&quot;config&quot;)
+                .value_name(&quot;CONFIG_OPTION&quot;)
+                .help(&quot;Either a path to a configuration file or a TOML `&lt;KEY&gt; = &lt;VALUE&gt;` pair&quot;)
+                .action(ArgAction::Append),
+        )
+    }
+    
+    fn augment_args_for_update(cmd: clap::Command) -&gt; clap::Command {
+        Self::augment_args(cmd)
+    }
+}
+
+impl ConfigsArg {
+    pub(crate) fn into_options(self) -&gt; Option&lt;Options&gt; {
+        self.0
+    }
+    
+    /// Attempts to load the configuration argument, first as a file, then as a TOML string
+    fn load_single_config(arg: &amp;str, system: &amp;dyn System) -&gt; Result&lt;Options, Error&gt; {
+        if let Some(options) = Self::load_single_config_from_file(arg, system)? {
+            return Ok(options);
+        }
+        Options::from_toml_str(arg, ValueSource::Cli)
+            .map_err(|err| Error::raw(ErrorKind::InvalidValue, err.to_string()))
+    }
+    
+    /// If the argument is a valid path, we attempt to load config from it and error if we can't.
+    /// Otherwise, return None
+    fn load_single_config_from_file(
+        arg: &amp;str,
+        system: &amp;dyn System,
+    ) -&gt; Result&lt;Option&lt;Options&gt;, Error&gt; {
+        let Ok(path) = SystemPathBuf::from_path_buf(arg.into()) else {
+            return Ok(None);
+        };
+        if !system.is_file(path.as_path()) {
+            return Ok(None);
+        }
+        let config_file = ConfigurationFile::from_path(path, system)
+            .map_err(|err| Error::raw(ErrorKind::Io, err.to_string()))?;
+        Ok(Some(config_file.options))
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/main.rs</code>:129 on 2025-05-03 13:35</div>
+            <div class="timeline-body"><p>We can only have one <code>cli_options</code> struct because it gets passed down to the <code>MainLoop</code> which applies the same options again when reloading the configuration in watch mode.</p>
+<p>I'd suggest to combine the <code>Options</code> inside <code>args.into_options</code> (which should be easily possible because <code>args</code> has access to <code>args.config</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2025-05-03 13:36</div>
+            <div class="timeline-body"><p>Nice. I should have been more clear that we don't want the &quot;overloaded&quot; semantics from Ruff where <code>--config</code> can be used to supply both a configuration file and configuration options. For ty, we want to have two options <code>--config &lt;value&gt;</code> and <code>--config-file &lt;path&gt;</code>.</p>
+<p>I'll leave it up to you if you want to split the PR or implement both options in this one PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @carljm on 2025-05-03 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-03 17:51</div>
+            <div class="timeline-body"><p>@thejchap I'll rebase your changes ontop of my renaming PR. Just make sure to pull before making new commits</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thejchap">@thejchap</a> on <code>crates/red_knot/src/args.rs</code>:324 on 2025-05-03 21:30</div>
+            <div class="timeline-body"><p>@MichaReiser had a similar thought on instantiating <code>system</code> a second time there - agree it's awkward. one thought that crossed my mind was to separate out parsing the passed arguments from actually reading/parsing the config files so that could happen a bit further downstream and we could use the existing <code>system</code> instance. leaning towards leaving it as is like you say but if you have any strong feelings the other way happy to refactor</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thejchap">@thejchap</a> reviewed on 2025-05-03 21:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thejchap">@thejchap</a> reviewed on 2025-05-03 21:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thejchap">@thejchap</a> on <code>crates/red_knot/src/main.rs</code>:129 on 2025-05-03 21:40</div>
+            <div class="timeline-body"><p>Helpful context - thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-03 21:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/args.rs</code>:324 on 2025-05-03 21:41</div>
+            <div class="timeline-body"><p>There's a good chance this gets solved if we introduce the --config-file option because Args could then simply store a string and the loading and processing can happen later</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Add --config CLI arg" to "[red-knot] Add --config and --config-file CLI args" by @thejchap on 2025-05-04 02:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thejchap">@thejchap</a> reviewed on 2025-05-06 02:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thejchap">@thejchap</a> on <code>crates/ty_project/src/db/changes.rs</code>:179 on 2025-05-06 02:29</div>
+            <div class="timeline-body"><p>@MichaReiser one thing this leaves undone is supporting config files passed in the cli via <code>--config-file</code> in watch mode - it seems like this would either require</p>
+<ul>
+<li>adding a <code>cli_config_files</code> property on <code>MainLoop</code> that gets passed through to <code>ProjectDatabase::apply_changes</code> then <code>ProjectMetadata::apply_configuration_files</code><ul>
+<li>this made the most sense to me but looks like it requires a larger refactor</li>
+</ul>
+</li>
+<li>reading the configuration files in <code>Options::into_options</code></li>
+</ul>
+<p>could use some design input there - also let me know your thoughts on potentially doing that in a separate pr</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @thejchap on 2025-05-06 02:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-06 06:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/db/changes.rs</code>:179 on 2025-05-06 06:38</div>
+            <div class="timeline-body"><blockquote>
+<p>could use some design input there - also let me know your thoughts on potentially doing that in a separate pr</p>
+</blockquote>
+<p>I think it would make sense to split the options into different PRs, considering that <code>--config</code> is done (as far as I can tell) and <code>--config-file </code>requires quiet some more work.</p>
+<blockquote>
+<p>adding a cli_config_files property on MainLoop that gets passed through to ProjectDatabase::apply_changes then ProjectMetadata::apply_configuration_files</p>
+</blockquote>
+<p>I'm more inclined to have a wrapper struct that wraps <code>Options</code> and an optional configuration path. Simply to reduce the number of floating arguments).</p>
+<p>Reading thef file could still happen outside of <code>ProjectMetadata::apply_configuration_files</code>. I think the challenge with this is that we also need to pass the path to the file watcher somehow. This makes me wonder if we should store the path on <code>ProjectMetadata</code> instead where it has an <code>Option&lt;SystemPathBuf&gt;</code> for when the configuration should be overriden because <code>--config-file</code> has some more semantic differences:</p>
+<blockquote>
+<p>path to a knot.toml configuration file (pyproject.toml files are not accepted). When provided, this file will be used in place of any discovered configuration (including user-level configuration). Red Knot will skip project discovery and default to the current working directory. Paths are anchored at the current working directory.</p>
+</blockquote>
+<p>(this was written from before the ty rename)</p>
+<p>And I'm sorry, I should probably have shared this earlier. I sort of assumed this semantics but I can see how this wasn't obvious.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thejchap">@thejchap</a> reviewed on 2025-05-07 19:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thejchap">@thejchap</a> on <code>crates/ty_project/src/db/changes.rs</code>:179 on 2025-05-07 19:56</div>
+            <div class="timeline-body"><p>@MichaReiser shall I reopen this against the new ty repo?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-07 20:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/db/changes.rs</code>:179 on 2025-05-07 20:01</div>
+            <div class="timeline-body"><p>No. We still use this repo for all the code. It makes it easier to share different components</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Add --config and --config-file CLI args" to "[red-knot] Add --config CLI arg" by @thejchap on 2025-05-09 01:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thejchap">@thejchap</a> reviewed on 2025-05-09 01:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thejchap">@thejchap</a> on <code>crates/ty_project/src/db/changes.rs</code>:179 on 2025-05-09 01:42</div>
+            <div class="timeline-body"><blockquote>
+<p>I think it would make sense to split the options into different PRs</p>
+</blockquote>
+<p>sounds good, i agree</p>
+<blockquote>
+<p>I'm more inclined to have a wrapper struct that wraps Options</p>
+</blockquote>
+<p>also makes sense</p>
+<blockquote>
+<p>...path to a knot.toml configuration file (pyproject.toml files are not accepted)....</p>
+</blockquote>
+<p>ah interesting - i think i missed this documentation somewhere initially - where was this from? and that sounds good - so more of an &quot;override&quot; for a single <code>ty.toml</code> that gets used, rather than an arbitrary number of config files that get treated like the <code>--config</code> option</p>
+<p>i'll spin up a separate issue for <code>--config-file</code> and link back to this discussion - may work on some other things before coming back to that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Add --config CLI arg" to "[ty] Add --config CLI arg" by @thejchap on 2025-05-09 03:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-05-09 06:38</div>
+            <div class="timeline-body"><p>This is great. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-05-09 06:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-09 06:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:30 UTC
+    </footer>
+</body>
+</html>

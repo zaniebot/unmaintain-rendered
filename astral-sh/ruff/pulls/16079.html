@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Resolve references in eager nested scopes eagerly - astral-sh/ruff #16079</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Resolve references in eager nested scopes eagerly</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16079">#16079</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-02-10 14:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-10 14:54</div>
+            <div class="timeline-body"><p>We now resolve references in &quot;eager&quot; scopes correctly — using the bindings and declarations that are visible at the point where the eager scope is created, not the &quot;public&quot; type of the symbol (typically the bindings visible at the end of the scope).</p>
+<p>Co-authored by @AlexWaygood</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dcreager on 2025-02-10 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dcreager by @dcreager on 2025-02-10 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs</code>:56 on 2025-02-11 22:23</div>
+            <div class="timeline-body"><p>This returns an <code>Option</code> because we only register an eager nested scope in a (containing) scope if there are references that resolve there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs</code>:329 on 2025-02-11 22:24</div>
+            <div class="timeline-body"><p>We use this pattern so that when building, we don't have to worry about whether we've already registered the eager nested scope in any particular containing scope</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:239 on 2025-02-11 22:25</div>
+            <div class="timeline-body"><p>Here is where we might record the eager nested scope more than once, if there are multiple uses that resolve in this particular containing scope</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3358 on 2025-02-11 22:27</div>
+            <div class="timeline-body"><p>I update the flag for the next iteration here, up front, so that I don't have to remember to copy this line at each <code>continue</code> point</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-02-11 22:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-02-11 22:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dcreager on 2025-02-11 22:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-02-11 22:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-02-11 22:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-11 22:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comprehensions/basic.md</code>:69 on 2025-02-11 22:40</div>
+            <div class="timeline-body"><p>This looks right, seems like the TODO comment was wrong to suggest <code>tuple[int, int]</code> here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/eager.md</code>:1 on 2025-02-11 22:46</div>
+            <div class="timeline-body"><p>These tests look great!</p>
+<p>One edge case interaction it might be worth testing is type annotations when <code>from __future__ import annotations</code> is on (or we are in a stub file), which are always lazy (even when looking up a name in the local scope) and eager scopes. For example:</p>
+<pre><code class="language-py">from __future__ import annotations
+
+x = int
+
+class C:
+    var: x
+
+reveal_type(C.var)  # revealed: str
+
+x = str
+</code></pre>
+<p>Perhaps with a pair of comparison tests showing that the same is true in a stub file (even without the <code>__future__</code> import) but that in a <code>.py</code> without the <code>__future__</code> import we get a type of <code>int</code> for <code>C.var</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:231 on 2025-02-11 23:21</div>
+            <div class="timeline-body"><p>I see why we need this logic here, even though it's a partial duplication of the logic in <code>TypeInferenceBuilder::infer_name_load</code>, which is a bit unfortunate. But it will be important that they stay in sync. One thing I don't see here is the special case for class scopes, which are never visible to nested function-like scopes. So even if there is a binding for <code>x</code> in a class scope, a reference to <code>x</code> in a nested comprehension should not snapshot <code>x</code> in the class scope, but rather in some ancestor scope of the class scope. Maybe we need some tests around this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:237 on 2025-02-11 23:25</div>
+            <div class="timeline-body"><p>I'm not sure about the <code>is_declared()</code> here. It looks to me like we only snapshot bindings, not declarations, and the corresponding logic in <code>TypeInferenceBuilder::infer_name_load</code> only checks <code>is_bound()</code>, so it seems like including <code>is_declared</code> is a discrepancy here.</p>
+<p>It seems to me that in general we want to treat an eager nested scope as if it were a reference in that enclosing scope, not a &quot;public&quot; reference, which would suggest that only considering bindings is correct, and we shouldn't consult <code>is_declared()</code> here. But I think we should have a test where a nonlocal eager reference goes &quot;through&quot; a scope where a name is declared but not bound, to confirm the desired behavior here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:238 on 2025-02-11 23:27</div>
+            <div class="timeline-body"><p>Another bit of logic that we handle in <code>infer_name_load</code> but I don't see here is the bit about how once we pass through an ancestor lazy scope, we are now a lazy reference, no matter what eager scope we originated in. Perhaps the only consequence of this is that we take a snapshot in some enclosing scope that we'll never use? But it still seems like it would be better to avoid doing that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/symbol.rs</code>:394 on 2025-02-11 23:30</div>
+            <div class="timeline-body"><p>Hmm, given that <code>self.table</code> on a <code>SymbolTableBuilder</code> is a potentially incomplete symbol table, it seems a little risky to me to implement this transparent <code>Deref</code>. Where in this diff do we rely on that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:404 on 2025-02-11 23:33</div>
+            <div class="timeline-body"><p>I think the <code>Scoped</code> part of <code>ScopedEagerNestedScopeId</code> means that it is an ID for the eager nested scope which is particular to this outer scope; that seems worth being clear about here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:337 on 2025-02-11 23:34</div>
+            <div class="timeline-body"><p>perhaps a name like <code>eager_nested_scope</code> would be clearer than <code>scope</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:228 on 2025-02-11 23:39</div>
+            <div class="timeline-body"><p>It seems like we might unnecessarily snapshot a fair few symbols in some nested scope that are actually bound in the eager nested scope itself? If I'm understanding correctly, this wouldn't break anything (we'd just never use the snapshot in the outer scope), but it is needless extra work and memory usage. So should we check if the symbol is bound in the eager nested scope, and if so, not bother doing any outer-scope walk for it?</p>
+<p>I think this might apply only to eager nested scopes that are function-like (that is, comprehensions), since those scopes are strict about non-local references, in that if a name is locally bound anywhere in the scope it can never reference an outer scope. But in a class scope it is possible for a name to be bound in the class scope but a particular reference (that occurs e.g. before the binding) to still fall back to an outer scope. (See existing discussion of this in <code>infer_name_load</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:410 on 2025-02-11 23:43</div>
+            <div class="timeline-body"><p>I think the way Alex and I had originally envisioned <code>ScopedEagerNestedScopeId</code> was that we'd just snapshot all symbols. I think what you've done in this diff instead makes sense: in particular, the fact that a nonlocal reference might not be to the nearest enclosing scope means that we really need to walk up scopes and identify the binding enclosing scope for each reference, which in turn means that we do need to do things per-symbol or it will be quite inefficient (we'd otherwise have to snapshot all symbols in every enclosing scope.)</p>
+<p>But: the original vision would have allowed us to use an <code>IndexVec</code> by <code>ScopedEagerNestedScopeId</code> here, rather than a hashmap. That is really the main purpose of having &quot;scoped&quot; IDs like <code>ScopedEagerNestedScopeId</code>. If we are going to use a hashmap here anyway, couldn't it just be keyed off &quot;(eager nested scope node ref, symbol)&quot; and we could avoid the separate step of looking up the eager nested scope ID?</p>
+<p>I wonder if it would be worth either doing that, or else having <code>ScopedEagerNestedScopeId</code> instead be <code>ScopedEagerNestedScopeReferenceId</code> and have a new one per nested-scope/symbol combo, so that we could still use an <code>IndexVec</code> here. Obviously we'd still need a hashmap in the semantic index to map a nested scope key and symbol to a <code>ScopedEagerNestedScopeReferenceId</code>, but one hashmap and one indexvec is better than two hashmaps!</p>
+<p>Edit: I think the benefit of addressing this is even more than suggested above, since this is an extra hashmap per-scope, whereas I think we could instead have an IndexVec here and just one hashmap per file in the semantic index.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3503 on 2025-02-11 23:48</div>
+            <div class="timeline-body"><p>Nice catch! Shouldn't ever cause a correctness problem, but definitely meant we were doing unnecessary work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:35 on 2025-02-11 23:50</div>
+            <div class="timeline-body"><p>Where do we end up needing to use this from outside the semantic index in this PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3392 on 2025-02-11 23:52</div>
+            <div class="timeline-body"><p>not critical, but this might be worth extracting into a standalone function? It's just going to a different level of abstraction (in terms of direct access to a use-def map and getting visible bindings for it) than the rest of this function currently does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-11 23:52</div>
+            <div class="timeline-body"><p>Very nice! A few comments to consider.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:330 on 2025-02-12 08:40</div>
+            <div class="timeline-body"><p>Nit: We could move the clone into <code>descendents</code>. Range is just a tuple of <code>Idx</code> and the <code>Range</code> returned uses a <code>u32</code> as <code>Idx</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs</code>:29 on 2025-02-12 08:49</div>
+            <div class="timeline-body"><p>We can do this in a separate PR but I think it could make sense if we rename this struct to <code>ScopedIds</code> to make it clear how the ids stored here are different from the ids stored on <code>SemanticIndex</code>. For example, the <code>SemanticIndex</code> has a very similar map  <code>definitions_by_node</code> which maps definition nodes to their <code>Definition</code>.</p>
+<p>The reason why <code>definitions_by_node</code> can be stored on the <code>SemanticIndex</code> is because salsa ensures that the &quot;same&quot; <code>Definition</code> (created in the same order, belong to the same scoipe) get stable ids between revisions but we have to do this ourselves for <code>ScopedEagerNestedScopeId</code> because they aren't salsa tracked structs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs</code>:35 on 2025-02-12 08:50</div>
+            <div class="timeline-body"><p>Somewhat annoying that we have to use a <code>NodeKey</code> here only to support classes. It would have been great if we could have used an <code>IndexVec</code> over <code>ScopedExpressionId</code> instead.</p>
+<p>That makes me wonder if we should instead add a <code>classes: IndexVec</code> here and make <code>ScopedEagerNestedScopeId</code> an enum that's a thin wrapper around <code>ScopedExpressionId</code> and <code>ScopedClassId</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs</code>:56 on 2025-02-12 08:51</div>
+            <div class="timeline-body"><p>It might be helpful to docomment this on the field.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:139 on 2025-02-12 08:55</div>
+            <div class="timeline-body"><p>Thanks for improving my message. If we're at it. Rust recommends saying why it is expected to be set. e.g. builder should have created a root scope: <a href="https://doc.rust-lang.org/std/result/enum.Result.html#recommended-message-style">docs</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:219 on 2025-02-12 08:57</div>
+            <div class="timeline-body"><p>Using <code>std::mem::take</code> here doesn't seem necessary. It compiles just fine if I replace all <code>scopes</code> usages with <code>self.scopes</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:226 on 2025-02-12 09:02</div>
+            <div class="timeline-body"><p>Nit: You could reduce the nesting here by using <code>let Some(eager_nested_scope) = ... else { return scope_id }</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:410 on 2025-02-12 09:06</div>
+            <div class="timeline-body"><p>I wonder if a newtype wrapper would be more useful here that exposes a <code>get(eager_nested_scoipe, symbol)</code> and <code>insert</code> method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-12 09:08</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-12 09:13</div>
+            <div class="timeline-body"><p>Thanks so much for driving this forward, @dcreager!!</p>
+<p>I haven't looked deeply at the code yet, but one missing piece here -- which you may already be aware of -- is that this doesn't yet handle eager scopes that are directly nested inside the global scope, without any intermediate lazy scopes. E.g. running this branch on the following snippet gives these results, which all look correct:</p>
+<pre><code class="language-py">from typing_extensions import reveal_type
+
+
+def _():
+    A = 42
+    
+    class Foo:
+        [reveal_type(A) for _ in []]  # revealed: Literal[42]
+        
+        B = A
+        reveal_type(B)  # revealed: Literal[42]
+
+    reveal_type(Foo.B)  # revealed: Unknown | Literal[42]
+</code></pre>
+<p>But if I put the code directly in the global scope instead of inside a function, I get these results:</p>
+<pre><code class="language-py">from typing_extensions import reveal_type
+
+X = 42
+
+class Foo:
+    [reveal_type(X) for _ in ()]  # revealed: Unknown | Literal[42]
+    
+    Y = X
+    reveal_type(Y)  # revealed: Unknown | Literal[42]
+
+
+reveal_type(Foo.Y)  # revealed: Unknown | Literal[42]
+</code></pre>
+<p>I think the first two of those should be <code>Literal[42]</code> rather than <code>Unknown | Literal[42]</code>, the same as if the code was all inside a function scope. The problematic bit is here, where we fallback to the symbol's <em>public type</em> in the global scope if we can't find it in the local scope or any enclosing scopes: https://github.com/astral-sh/ruff/blob/a63c6e658059cc6b4126201dff3c04f67310a32d/crates/red_knot_python_semantic/src/types/infer.rs#L3408-L3416</p>
+<p>Probably the best solution here is to add a new query that gets the type of the global symbol at the point the eager scope was created, rather than to add a new parameter to the <code>global_scope()</code> query.</p>
+<p>It might actually be okay to push this issue to a followup PR! But I'd prefer to at least add some failing tests, since at the moment the behaviour here is a little inconsistent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/symbol.rs</code>:394 on 2025-02-12 10:45</div>
+            <div class="timeline-body"><p>I think this is probably my fault 😶</p>
+<p>IIRC, I added this as a &quot;quick and easy solution&quot; to get a scrappy version working, intending to remove it later. But I think I forgot to tell Doug that. Sorry @dcreager!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-12 10:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-12 10:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/symbol.rs</code>:394 on 2025-02-12 10:47</div>
+            <div class="timeline-body"><p>(It looks like this patch <em>does</em> rely on a couple of the methods from the <code>SymbolTable</code> in <code>builder.rs</code> currently, though)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-12 11:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/eager.md</code>:278 on 2025-02-12 11:07</div>
+            <div class="timeline-body"><p>I wondered briefly if an even better type here would be <code>Unknown | Literal[1, 2]</code>. <code>Unknown | Literal[2]</code> is the public type of <code>x</code>, and <code>Literal[1]</code> is the inferred type of <code>x</code> at the time when the function is defined. <code>Unknown | Literal[2]</code> isn't inaccurate at all, but <code>Unknown | Literal[1, 2]</code> (the union of the public type and the inferred type at the point the scope is defined) would reflect the fact that there's a chance that the function is called as soon as it's defined. E.g. you could do</p>
+<pre><code class="language-py">def _():
+    x = 1
+
+    def f():
+        [reveal_type(x) for a in range(0)]
+
+    f()
+    x = 2
+</code></pre>
+<p>But this is tangential to your PR because I think this is a general question of whether the public type is the &quot;best we can do&quot; for outer-scope symbols as perceived by lazy inner scopes. And my idea of unioning the public type with the &quot;eager inferred type&quot; also wouldn't be perfect, because you could also have things like this:</p>
+<pre><code class="language-py">def _():
+    x = 1
+
+    def f():
+        [reveal_type(x) for a in range(0)]
+
+    x = 3
+    f()
+    x = 2
+</code></pre>
+<p>TL;DR: probably best to leave this as-is for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-12 12:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3393 on 2025-02-12 12:41</div>
+            <div class="timeline-body"><p>Would it be safe to do this? All tests seem to pass</p>
+<pre><code class="language-suggestion">                    let eager_scope_id = scope
+                        .scoped_eager_nested_scope_id(db, enclosing_scope_id)
+                        .expect(&quot;Expected all eager scopes to have an `EagerNestedScopeId`&quot;);
+                    let enclosing_scope_use_def = self.index.use_def_map(enclosing_scope_file_id);
+                    if let Some(bindings_at_nested_scope_definition) = enclosing_scope_use_def
+                        .bindings_at_eager_nested_scope_definition(
+                            eager_scope_id,
+                            enclosing_symbol_id,
+                        )
+                    {
+                        return symbol_from_bindings(db, bindings_at_nested_scope_definition);
+                    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-12 15:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs</code>:35 on 2025-02-12 15:30</div>
+            <div class="timeline-body"><p>I'm not sure an <code>IndexVec</code> over <code>ScopedExpressionId</code> makes sense here; it would be an extremely sparse <code>IndexVec</code>, since only a tiny minority of all expressions are comprehensions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-12 15:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/eager.md</code>:278 on 2025-02-12 15:32</div>
+            <div class="timeline-body"><p>This is https://github.com/astral-sh/ruff/issues/15777 -- I do think we should address that (and I think I agree that using all definitions is probably the right way to go) but I also think it's separate from this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-12 15:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs</code>:35 on 2025-02-12 15:38</div>
+            <div class="timeline-body"><p>I'm not suggesting that <code>eager_nested_scopes</code> is an <code>IndexVec</code>. Instead, we would have scoped ids for classes and <code>ScopedEagerNestedScopeId</code> is then a thin wrapper around <code>ScopedExpressionId</code> and <code>ScopedClassId</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-12 16:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs</code>:35 on 2025-02-12 16:07</div>
+            <div class="timeline-body"><p>I see, that makes sense! As mentioned in a different comment, I think it would be good if we could avoid the extra hashmap in the use-def map for each scope and instead use an IndexVec there, which requires that we replace <code>ScopedEagerNestedScopeId</code> with a newtype-index that is also per-symbol. But I think that is compatible with this idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/symbol.rs</code>:394 on 2025-02-18 14:23</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:35 on 2025-02-18 14:24</div>
+            <div class="timeline-body"><p>We don't!  Removed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3393 on 2025-02-18 14:25</div>
+            <div class="timeline-body"><p>This is now moot with the new eager bindings representation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3392 on 2025-02-18 14:53</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:337 on 2025-02-18 15:25</div>
+            <div class="timeline-body"><p>No longer relevant</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:238 on 2025-02-18 18:53</div>
+            <div class="timeline-body"><p>This logic has now been moved over to the semantic index builder.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:237 on 2025-02-18 19:24</div>
+            <div class="timeline-body"><p>I've removed the <code>is_declared</code> part, but haven't been able to construct a test case for it yet.  I'm not sure how to construct a declaration-that-isn't-a-binding in an eager scope.  (Class definitions are eager scopes, but a declaration in the class body is explicitly not visible to nested scopes.  Comprehensions are eager scopes, but those contain an <em>expression</em>, not a suite of statements, and there isn't a declaration expression.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:239 on 2025-02-18 19:24</div>
+            <div class="timeline-body"><p>No longer relevant</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs</code>:56 on 2025-02-18 19:25</div>
+            <div class="timeline-body"><p>This is no longer relevant now that I've changed how we store eager bindings</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3358 on 2025-02-18 19:25</div>
+            <div class="timeline-body"><p>No longer relevant</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:231 on 2025-02-18 19:27</div>
+            <div class="timeline-body"><p>As part of reworking how we store eager bindings, this logic now lives entirely here in the semantic index builder.  It handles stopping as soon as we encounter a lazy enclosing scope.  Type inference uses the presence of an eager bindings snapshot to indicate that the name resolution should be done eagerly in that enclosing scope.</p>
+<blockquote>
+<p>One thing I don't see here is the special case for class scopes, which are never visible to nested function-like scopes. So even if there is a binding for <code>x</code> in a class scope, a reference to <code>x</code> in a nested comprehension should not snapshot <code>x</code> in the class scope, but rather in some ancestor scope of the class scope. Maybe we need some tests around this?</p>
+</blockquote>
+<p>Added a test for this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:404 on 2025-02-18 19:31</div>
+            <div class="timeline-body"><p>No longer relevant</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:410 on 2025-02-18 19:32</div>
+            <div class="timeline-body"><p>Done!  The new approach is that we create a <code>ScopedEagerBindingsId</code> for each <code>(enclosing scope, symbol, nested scope)</code> tuple.  That is, for each enclosing scope where we see any bindings for a symbol that appears in a nested scope.  They are &quot;scoped&quot; within the enclosing scope.  That allows us to have a single <code>HashMap</code> per file (mapping the tuple to the scoped ID), and an <code>IndexVec</code> within each scope's use-def map.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:410 on 2025-02-18 19:33</div>
+            <div class="timeline-body"><p>I think with the change to <code>IndexVec</code> this is now clear enough as a type alias.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:226 on 2025-02-18 19:37</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs</code>:29 on 2025-02-18 19:39</div>
+            <div class="timeline-body"><blockquote>
+<p>The reason why <code>definitions_by_node</code> can be stored on the <code>SemanticIndex</code> is because salsa ensures that the &quot;same&quot; <code>Definition</code> (created in the same order, belong to the same scoipe) get stable ids between revisions but we have to do this ourselves for <code>ScopedEagerNestedScopeId</code> because they aren't salsa tracked structs.</p>
+</blockquote>
+<p>Ah I didn't realize that!  As part of reworking the eager bindings storage I've backed out all changes to this file, but that's a good suggestion re renaming the type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs</code>:35 on 2025-02-18 19:40</div>
+            <div class="timeline-body"><p>See other comment; we don't do anything here in <code>AstIds</code> anymore, and now have a single <code>HashMap</code> per file and a new <code>IndexVec</code> for each scope</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:139 on 2025-02-18 19:42</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:219 on 2025-02-18 19:42</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-18 19:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-18 19:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:330 on 2025-02-18 19:45</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-18 19:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:228 on 2025-02-18 19:48</div>
+            <div class="timeline-body"><blockquote>
+<p>So should we check if the symbol is bound in the eager nested scope, and if so, not bother doing any outer-scope walk for it?</p>
+</blockquote>
+<p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-18 19:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/eager.md</code>:1 on 2025-02-18 19:59</div>
+            <div class="timeline-body"><p>I've added tests for these three cases, though in the non-deferred case we're currently still resolving the type reference lazily:</p>
+<pre><code class="language-py">x = int
+
+class C:
+    var: x
+
+# TODO: int
+reveal_type(C.var)  # revealed: Unknown | str
+
+x = str
+</code></pre>
+<p>(<a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=59ce4575f59b4daa78104c84b938e678">mypy</a> and <a href="https://pyright-play.net/?strict=true&amp;code=B4AgvCCWB2AuBQ8DGAbAhgZwyAwgLnhCJADc0AnPEYRcgUxLrRQH1YBPABzoAocA6MuQCURAMQh6jZnQAmVDLHKJQEReSA">pyright</a> both disallow using a variable as a type reference.  mypy allows it for <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=ad3f04fc11512aeb3d7bd0623a490ec9">type aliases</a>, but then disallows the reassignment of the alias to a different type.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:333 on 2025-02-18 20:00</div>
+            <div class="timeline-body"><p>This probably doesn't need a <code>[track_caller]</code> or is it possible that <code>bindings_iterator</code> panics? I otherwise don't see a method that might panic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-18 20:01</div>
+            <div class="timeline-body"><p>This is great. I haven't reviewed the semantic changes but I do like it a lot that we moved the state to the <code>UseDefMap</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-18 20:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Probably the best solution here is to add a new query that gets the type of the global symbol at the point the eager scope was created, rather than to add a new parameter to the <code>global_scope()</code> query.</p>
+<p>It might actually be okay to push this issue to a followup PR! But I'd prefer to at least add some failing tests, since at the moment the behaviour here is a little inconsistent.</p>
+</blockquote>
+<p>Added some failing tests for this.  I think I can get the fix onto this PR as well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-18 20:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:333 on 2025-02-18 20:54</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-18 20:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Added some failing tests for this. I think I can get the fix onto this PR as well</p>
+</blockquote>
+<p>This is fixed!  This fix also affected the deferred expressions tests that @carljm suggested.  (We were always showing lazy results because we weren't hitting the global scope, not because of how we were handling deferred expressions)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/eager.md</code>:1 on 2025-02-18 22:01</div>
+            <div class="timeline-body"><blockquote>
+<p>I've added tests for these three cases, though in the non-deferred case we're currently still resolving the type reference lazily:</p>
+</blockquote>
+<p>Per above, these three tests are now all passing with the correct results once I handled global scopes and deferred expressions correctly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-18 22:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:234 on 2025-02-19 00:21</div>
+            <div class="timeline-body"><p>I added this locally and all tests passed. I think it's correct and could save on recording some class-scope bindings? Though only in relatively unusual cases, when a class or comprehension is nested directly in a class scope. So I suppose it's possible the cost of doing this check isn't actually worth it? One reason to do it regardless is just that it makes the comment in <code>TypeInferenceBuilder::infer_name_load</code> that &quot;the semantic index builder takes care of only registering eager bindings for nested scopes that are actually eager, and for enclosing scopes that actually contain bindings that we should use when resolving the reference&quot; more fully true. (Although it works even without being fully true because <code>infer_name_load</code> skips class scopes before checking for an eager binding.)</p>
+<pre><code class="language-suggestion">            let enclosing_scope_id = enclosing_scope_info.file_scope_id;
+            // Names bound in class scopes are never visible to nested scopes, so we never need to
+            // save eager scope bindings in a class scope.
+            if matches!(self.scopes[enclosing_scope_id].kind(), ScopeKind::Class) {
+                continue;
+            }
+</code></pre>
+<p>(If we actually do this we should probably make it a bit nicer with an <code>is_class()</code> method on <code>ScopeKind</code>, and perhaps consolidate the two different <code>self.scopes[enclosing_scope_id]</code> lookups, here and below where we check eager-ness.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-19 00:32</div>
+            <div class="timeline-body"><p>Big fan of this implementation! Really nice and clean, avoids duplicating eager-lookup logic between semantic index and type inference. Thank you!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/eager.md</code>:43 on 2025-02-19 11:38</div>
+            <div class="timeline-body"><p>tiny tiny nitpick for these comprehension tests: just from the point of view of being able to copy-and-paste these functions directly into the REPL to check that they work as expected, it would be quite nice if these were non-empty iterables</p>
+<pre><code class="language-suggestion">    [reveal_type(x) for a in range(1)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/eager.md</code>:83 on 2025-02-19 11:51</div>
+            <div class="timeline-body"><p>I wonder if it might be good to explicitly include an example of a generator-expression scope that does <em>not</em> run eagerly? It might be good to document that yes, this causes some incorrect assumptions from us in some edge cases, but that this is a cost we accept because (as you say) generator expressions nearly always run eagerly in practice. One example might be something like this: we report the revealed type of <code>z</code> is <code>Literal[42]</code>:</p>
+<pre><code class="language-py">from typing_extensions import reveal_type
+
+def _(flag: bool):
+    y = (0,)
+    z = 42
+    gen = (x + reveal_type(z) for x in y)
+    if flag:
+        z = 56
+    print(next(gen))
+</code></pre>
+<p>but at runtime, the <code>print()</code> call reveals that the runtime value of <code>z</code> can actually be 56 when the scope of <code>gen()</code> is actually evaluated:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from typing import reveal_type
+... 
+... def _(flag: bool):
+...     y = (0,)
+...     z = 42
+...     gen = (x + reveal_type(z) for x in y)
+...     if flag:
+...         z = 56
+...     print(next(gen))
+...     
+&gt;&gt;&gt; _(True)
+Runtime type is 'int'
+56
+</code></pre>
+<p>(Again, I'm not saying we should try to account for this -- generator expressions are almost always evaluated eagerly, and it would be hard to detect cases like this when they're not! Just suggesting we could add a test to explicitly document the shortcoming.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/eager.md</code>:104 on 2025-02-19 11:53</div>
+            <div class="timeline-body"><p>Is it worth also testing that <code>Literal[2]</code> does not become part of the public type in cases like this?</p>
+<pre><code class="language-suggestion">class A:
+    reveal_type(x)  # revealed: Literal[1]
+    y = x
+
+x = 2
+
+reveal_type(A.y)  # revealed: Unknown | Literal[1]
+</code></pre>
+<p>I can't think of a reason why it would behave differently, just think it might be worth explicitly testing/documenting</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-02-19 12:01</div>
+            <div class="timeline-body"><p>Excellent -- thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:234 on 2025-02-19 14:52</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/eager.md</code>:43 on 2025-02-19 14:52</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/eager.md</code>:104 on 2025-02-19 14:52</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/eager.md</code>:83 on 2025-02-19 15:05</div>
+            <div class="timeline-body"><p>Done.  I also added a test for how the &quot;first iterable&quot; <em>is</em> evaluated eagerly, even if the generator itself is not used immediately.</p>
+<p>This example tells me that we'd want to handle generators the same as functions, if we ever start tracking where they're called as part of the public types work (https://github.com/astral-sh/ruff/pull/16079#pullrequestreview-2611577721).  After all, that's precisely the weirdness that's happening here — the generator includes a <code>__next__</code> method that might be called at any arbitrary place, just like the <code>f</code> function in your linked comment might be called at any arbitrary place.  If we start tracking that, we should use the same mechanism for both.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-19 15:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/eager.md</code>:125 on 2025-02-19 15:07</div>
+            <div class="timeline-body"><p>these are excellent, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-02-19 15:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-02-19 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-02-19 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-19 15:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:29 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Avoid creating `UnionBuilder`s unnecessarily - astral-sh/ruff #16218</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Avoid creating <code>UnionBuilder</code>s unnecessarily</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16218">#16218</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-02-17 17:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-17 17:38</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p><code>UnionBuilder::from_elements</code> is called very frequently. Let's see if short-circuiting in the case where <code>elements</code> is zero or one elements
+long helps improve perf.</p>
+<h2>Test Plan</h2>
+<p>This should not change behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-02-17 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-02-17 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-02-17 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-02-17 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @MichaReiser on 2025-02-17 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-18 11:46</div>
+            <div class="timeline-body"><p>This looks great to me, and codspeed's reporting a 1% speedup. Another optimisation idea could be to pre-size the <code>UnionBuilder</code>, e.g.</p>
+<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/types.rs b/crates/red_knot_python_semantic/src/types.rs
+index 4601543d4..6df55b467 100644
+--- a/crates/red_knot_python_semantic/src/types.rs
++++ b/crates/red_knot_python_semantic/src/types.rs
+@@ -4695,7 +4695,13 @@ impl&lt;'db&gt; UnionType&lt;'db&gt; {
+             return first.into();
+         };
+ 
+-        let mut builder = UnionBuilder::new(db).add(first.into()).add(second.into());
++        let iterator_length = elements.size_hint().1.and_then(|size| size.checked_add(2));
++
++        let mut builder = iterator_length
++            .map(|num_elements| UnionBuilder::with_capacity(db, num_elements))
++            .unwrap_or_else(|| UnionBuilder::new(db))
++            .add(first.into())
++            .add(second.into());
+ 
+         for element in elements {
+             builder = builder.add(element.into());
+diff --git a/crates/red_knot_python_semantic/src/types/builder.rs b/crates/red_knot_python_semantic/src/types/builder.rs
+index 45be6ac48..c5cdf294d 100644
+--- a/crates/red_knot_python_semantic/src/types/builder.rs
++++ b/crates/red_knot_python_semantic/src/types/builder.rs
+@@ -43,6 +43,13 @@ impl&lt;'db&gt; UnionBuilder&lt;'db&gt; {
+         }
+     }
+ 
++    pub(crate) fn with_capacity(db: &amp;'db dyn Db, capacity: usize) -&gt; Self {
++        Self {
++            db,
++            elements: Vec::with_capacity(capacity),
++        }
++    }
++
+     /// Collapse the union to a single type: `object`.
+     fn collapse_to_object(mut self) -&gt; Self {
+         self.elements.clear();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Avoid creating `UnionBuilder`s unnecessary" to "[red-knot] Avoid creating `UnionBuilder`s unnecessarily" by @AlexWaygood on 2025-02-18 11:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-28 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-03 17:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:29 UTC
+    </footer>
+</body>
+</html>

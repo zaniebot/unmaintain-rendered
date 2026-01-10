@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Narrowing For Truthiness Checks (`if x` or `if not x`) - astral-sh/ruff #14687</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Narrowing For Truthiness Checks (<code>if x</code> or <code>if not x</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14687">#14687</a>
+        opened by <a href="https://github.com/cake-monotone">@cake-monotone</a>
+        on 2024-11-30 07:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2024-11-30 07:21</div>
+            <div class="timeline-body"><p>This turned out to be a really interesting but much trickier task than I expected. I thought this would be straightforward, but it was not.
+While I am unsure if this PR will ultimately be merged, I believe it offers valuable insights.</p>
+<p><strong>Before diving in, I recommend reading the comment organized by Carljm</strong> (<a href="https://github.com/astral-sh/ruff/issues/13694#issuecomment-2438438759">link to the comment</a>).<br />
+Most of the content in this document comes from the ideas outlined in that comment.</p>
+<hr />
+<h3><strong>Notation</strong></h3>
+<p>We often use the terms &quot;Truthy&quot; and &quot;Falsy,&quot; but I think we might interpret them a little differently.
+To make sure we’re all on the same page, let’s start by defining these terms. I’ll also include some basic set theory here, but don’t panic—grab a towel, and I’ll keep it as simple as possible.</p>
+<ul>
+<li><strong>Truthy:</strong> Instances that pass <code>if x</code>.</li>
+<li><strong>Falsy:</strong> Instances that pass <code>if not x</code>.</li>
+</ul>
+<p>These sets can include a infinite number of elements. But here are two key takeaways:</p>
+<h4><strong>1. AmbiguousTruthiness Exists</strong></h4>
+<p>There are instances that can pass both <code>if x</code> and <code>if not x</code>. Mutable objects like <code>list</code> and <code>set</code> are good examples.</p>
+<p>We can define <strong>AmbiguousTruthiness</strong> as:</p>
+<ul>
+<li>The set of instances that can pass both <code>if x</code> and <code>if not x</code>.</li>
+</ul>
+<h4><strong>2. <code>int &amp; Falsy != Literal[0, False]</code></strong></h4>
+<p>Surprisingly, the intersection of <code>int</code> and <code>Falsy</code> cannot be represented by <code>{0, False}</code>.
+Why? Because the <code>int</code> also includes instances of subclasses, and these subclasses can override <code>__bool__</code>. Some of them can even return random results. For example:</p>
+<pre><code class="language-py">class RandomBooleanInt(int):
+    def __bool__(self) -&gt; bool:
+        import random
+        return bool(random.randint(0, 1))
+</code></pre>
+<hr />
+<h3><strong>Derived Sets</strong></h3>
+<p>We can use operations on <code>Truthy</code>, <code>Falsy</code>, and <code>AmbiguousTruthiness</code> to define some useful sets:</p>
+<ul>
+<li><strong>AlwaysTruthy</strong> = Truthy &amp; ~AmbiguousTruthiness</li>
+<li><strong>AlwaysFalsy</strong> = Falsy &amp; ~AmbiguousTruthiness</li>
+</ul>
+<p>These definitions reinforce our intuition</p>
+<ul>
+<li><strong>Truthy</strong> = AlwaysTruthy | AmbiguousTruthiness</li>
+<li><strong>Falsy</strong> = AlwaysFalsy | AmbiguousTruthiness</li>
+</ul>
+<p>Also:</p>
+<ul>
+<li><strong>Truthy &amp; Falsy</strong> = AmbiguousTruthiness</li>
+<li><strong>Truthy | Falsy</strong> = U (U is the Universal Set in set theory)</li>
+</ul>
+<p>And:</p>
+<ul>
+<li><strong>~Truthy</strong> = AlwaysFalsy</li>
+<li><strong>~Falsy</strong> = AlwaysTruthy</li>
+</ul>
+<hr />
+<h3><strong>Key Takeaways</strong></h3>
+<h4><strong>1. Truthy &amp; Falsy Isn’t Empty</strong></h4>
+<p>The intersection of <code>Truthy</code> and <code>Falsy</code> isn’t an empty set. For example, while <code>if x and not x</code> might look like it should reject everything, it can still pass with types like <code>RandomBooleanInt</code>.<br />
+Here’s another example:</p>
+<pre><code class="language-py">x = [1]
+
+if x and (x.clear() is None) and not x:
+    ...
+</code></pre>
+<h4><strong>2. ~Truthy ≠ Falsy</strong></h4>
+<p>The complement of <code>Truthy</code> isn’t the same as <code>Falsy</code>.<br />
+This is because <code>Truthy</code> includes ambiguous instances, so the complement of <code>Truthy</code> is <strong>AlwaysFalsy</strong>.</p>
+<p>This might feel counterintuitive. It even looks like it conflicts with Python code:</p>
+<pre><code class="language-py">x = list()
+if x:
+    reveal_type(x)  # revealed: list
+else:
+    reveal_type(x)  # revealed: list
+</code></pre>
+<p>But actually, there’s no conflict. Python’s <code>not</code> keyword flips the boolean value of an object; it doesn’t mean the set-theoretic complement.</p>
+<p>Here’s how it works instead:</p>
+<ul>
+<li>For any ambiguous <code>x</code>, <code>(not x)</code> is also ambiguous.</li>
+<li>For any Truthy <code>x</code>, <code>(not x)</code> is Falsy.</li>
+</ul>
+<p>If we think of <code>not</code> as applying to every element of a set, it works like this:</p>
+<pre><code class="language-text">A = {1, 2, 3, ...}
+not A = {not 1, not 2, not 3, ...}
+</code></pre>
+<p>So:</p>
+<ul>
+<li><strong>not Truthy</strong> = Falsy</li>
+<li><strong>not Ambiguous</strong> = Ambiguous</li>
+</ul>
+<p>Just be careful to distinguish between complements and the <code>not</code> operator.</p>
+<hr />
+<h3><strong>On Implementation</strong></h3>
+<p>The theory sounds great, but it’s not that easy to implement in practice.</p>
+<p>For example, instead of directly extracting <code>int &amp; Falsy</code>, it’s easier to focus on <code>(int &amp; ~AlwaysTruthy)</code>—removing the AlwaysTruthy elements from int. A simpler approach is to use Truthy and Falsy Literals.
+To calculate <code>A &amp; Truthy</code>, we can try this:</p>
+<pre><code class="language-text">A &amp; ~FalsyLiterals = A &amp; ~(AlwaysFalsy &amp; Literals)
+                    = A &amp; (~AlwaysFalsy | ~Literals)
+                    = A &amp; (Truthy | ~Literals)
+                    = (A &amp; Truthy) | (A &amp; ~Literals)
+</code></pre>
+<p>This shows that <code>A &amp; Truthy</code> is a subset of <code>(A &amp; ~FalsyLiterals)</code>. While <code>(A &amp; ~Literals)</code> might add some extra elements, that’s not a big problem since we can’t fully determine the boolean behavior of non-literal objects anyway.</p>
+<hr />
+<h3><strong>Limitations</strong></h3>
+<ul>
+<li>Adding <code>Truthy</code> and <code>Falsy</code> directly as variants in <code>Type</code> would make the system unnecessarily complicated. As Carljm pointed out, it’s best to keep their use limited to the Narrowing phase.</li>
+<li>Sometimes, evaluating <code>(A &amp; Falsy)</code> as <code>(A &amp; ~TruthyLiterals)</code> isn’t even possible. <strong>TruthyLiterals</strong> is basically an infinite set, Without encountering a proper A, we cannot clearly represent <code>(A &amp; ~TruthyLiterals)</code> as a type enum. For example, something like <code>~Literal[0] &amp; Falsy</code> = <code>(~Literal[0] &amp; ~TruthyLiterals)</code> is just too tricky to represent as a simple variant in Type.
+More generally, negative-only intersections because <code>(~B &amp; ~TruthyLiterals)</code> = <code>~(B | TruthyLiterals)</code> essentially requires you to union together all the TruthyLiterals. Thankfully, if we stick to using this only during the Narrowing phase, it won’t be a huge problem since the type we’re narrowing will not be negative-only intersections.</li>
+</ul>
+<hr />
+<h3><strong>What This PR Includes</strong></h3>
+<ol>
+<li>Expanded <code>NarrowingConstraints</code> to handle Truthy and Falsy.</li>
+<li>Deferred evaluation of Truthy and Falsy constraints until they’re applied to <code>binding_ty</code>.</li>
+<li>Added <code>Type::exclude_always_truthy()</code> and <code>Type::exclude_always_falsy()</code> to implement Truthy and Falsy logic.</li>
+<li>Supporting Narrowing for <code>if x</code> and <code>if not x</code></li>
+</ol>
+<hr />
+<h3><strong>Areas to Review Carefully</strong></h3>
+<ol>
+<li>My understanding of <code>salsa</code> is limited, so I’d appreciate careful reviews of salsa-related code.</li>
+<li>I used <code>DeferredType</code> for lazy evaluation, along with <code>NarrowingUnion</code> and <code>NarrowingIntersection</code>. If you have ideas for a better approach, let’s discuss!<br />
+2 - 1. Another option could be to pass <code>base_type</code> directly when creating <code>NarrowingConstraintsBuilder::new</code>, which would let us evaluate Truthy or Falsy eagerly. This would eliminate the need for <code>DeferredType</code>, <code>Union</code>, and <code>Intersection</code>, but it might significantly hurt performance by changing the cache key from <code>(expression)</code> to <code>(base_type, expression)</code>.</li>
+</ol>
+<h2>Test Plan</h2>
+<ul>
+<li>New Markdown test for truthiness narrowing <code>narrow/truthiness.md</code></li>
+<li>unit tests in <code>types.rs</code> and <code>builders.rs</code>  (<code>cargo test --package red_knot_python_semantic --lib -- types</code>)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @cake-monotone on 2024-11-30 07:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @cake-monotone on 2024-11-30 07:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @cake-monotone on 2024-11-30 07:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @cake-monotone on 2024-11-30 07:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-30 07:26</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2024-11-30 07:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1780 on 2024-11-30 07:41</div>
+            <div class="timeline-body"><p>I’m not sure if this is the correct way to represent <code>()</code>.<br />
+It also seems like <code>()</code> hasn’t been considered yet in <code>is_disjoint_from</code>.</p>
+<p>I think it make sense to implement support for <code>()</code> first. Adding this code as-is makes the mdtest results much harder to read.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-11-30 11:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @AlexWaygood on 2024-11-30 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-30 11:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1780 on 2024-11-30 11:55</div>
+            <div class="timeline-body"><blockquote>
+<p>I’m not sure if this is the correct way to represent <code>()</code>.</p>
+</blockquote>
+<p>I think it is!</p>
+<blockquote>
+<p>It also seems like <code>()</code> hasn’t been considered yet in <code>is_disjoint_from</code>.</p>
+</blockquote>
+<p>That's very possible</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1782 on 2024-11-30 22:43</div>
+            <div class="timeline-body"><p>In the vast majority of cases, you want to use <code>UnionType::from_elements()</code> or <code>UnionBuilder</code> when you're constructing a union, like you do here. The reason why is that it's a smart constructor that takes care to deduplicate elements and remove overlapping subtypes before creating the <code>UnionType</code> object. However, in this specific case, we <em>know</em> the types are not overlapping, so we can avoid some indirection here, and use <code>UnionType::new()</code> directly:</p>
+<pre><code class="language-suggestion">    pub fn falsy_literals(db: &amp;'db dyn Db) -&gt; Type&lt;'db&gt; {
+        let elements = Box::from([
+            Type::none(db),
+            Type::BooleanLiteral(false),
+            Type::IntLiteral(0),
+            Type::string_literal(db, &quot;&quot;),
+            Type::bytes_literal(db, b&quot;&quot;),
+            // TODO: tuple literal should be included
+            // .add(Type::tuple(db, &amp;[]))
+        ]);
+        Type::Union(UnionType::new(db, elements))
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1797 on 2024-11-30 22:44</div>
+            <div class="timeline-body"><p>nit</p>
+<pre><code class="language-suggestion">        if let Truthiness::AlwaysFalse = self.bool(db) {
+            Type::Never
+        } else {
+            IntersectionBuilder::new(db)
+                .add_positive(self)
+                .add_negative(Type::falsy_literals(db))
+                .build()
+        }
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:137 on 2024-11-30 22:49</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                Box::from([left, right]),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:165 on 2024-11-30 22:50</div>
+            <div class="timeline-body"><p>(this needs an import of <code>UnionType</code> from <code>crate::types</code>)</p>
+<pre><code class="language-suggestion">            (NarrowingType::Eager(eager_left), NarrowingType::Eager(eager_right)) =&gt; {
+                NarrowingType::Eager(UnionType::from_elements(db, [eager_left, eager_right]))
+            }
+            (left, right) =&gt; {
+                NarrowingType::Union(NarrowingUnionType::new(db, Box::from([left, right])))
+            }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:185 on 2024-11-30 22:52</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                let elements = union
+                    .elements(db)
+                    .iter()
+                    .map(|element| element.evaluate(db, base_type));
+                UnionType::from_elements(db, elements)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:231 on 2024-11-30 22:52</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    Box::from([
+                        NarrowingType::Deferred(self),
+                        NarrowingType::Deferred(other),
+                    ]),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-30 22:54</div>
+            <div class="timeline-body"><p>Not a full review yet, sorry -- just some simplification opportunites I spotted from skimming through!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2024-12-01 13:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1780 on 2024-12-01 13:43</div>
+            <div class="timeline-body"><p>Got it! Ah, my point was that the current implementation without TupleLiteral produces clean results like <code>A | B</code>. However, if we uncomment the TupleLiteral, it results like <code>A &amp; ~Tuple[()] | B &amp; ~Tuple[()]</code>, which makes the tests harder to read.</p>
+<p>I’ll try to resolve this in a different PR before we uncomment Tuple Literal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2024-12-01 13:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:137 on 2024-12-01 13:51</div>
+            <div class="timeline-body"><p>Oh !!! Looks more great..! Thanks for fixing it 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-01 16:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1757 on 2024-12-01 16:44</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            Type::Union(union) =&gt; union.map(db, |element| element.exclude_always_truthy(db)),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/truthiness.md</code>:94 on 2024-12-02 23:40</div>
+            <div class="timeline-body"><p>Small preference for just using <code>class A: ...</code>, <code>class B: ...</code> here, so these tests don't need updating when we add generics support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/truthiness.md</code>:111 on 2024-12-02 23:45</div>
+            <div class="timeline-body"><p>I think we <em>could</em> respect a case where a class has a metaclass with a <code>__bool__</code> method that returns <code>Literal[True]</code> or <code>Literal[False]</code>. Class literal types don't include subclasses, and even with subclasses included (the <code>Type::SubclassOf</code> case), the metaclass of a subclass must be a subclass of the metaclass of the base class, which can't override <code>__bool__</code> in an incompatible way.</p>
+<p>That said, I think this case is likely extremely rare and I don't think it's important that we handle it; I think it's fine to treat all class literals as ambiguously truthy. But it might be worth updating this comment to recognize that we <em>could</em> be more precise in some cases, we just haven't chosen to bother.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1746 on 2024-12-03 02:04</div>
+            <div class="timeline-body"><p>This seems brittle (it's the responsibility of every caller to ensure we never call this method on a negation type?) and unnecessary. The result of calling this method on a negation type is not wrong, it's just imprecise; we don't actually exclude anything.</p>
+<pre><code class="language-suggestion">
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1719 on 2024-12-03 02:06</div>
+            <div class="timeline-body"><p>This line is confusing because we don't have an <code>include_always_truthy()</code> method, and it's not self-evident what it would do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-03 02:43</div>
+            <div class="timeline-body"><p>Thank you!! This PR, and writeup, is indeed very clarifying.</p>
+<p>Submitting a partial review here because something occurred to me mid-review: I think perhaps we can simplify this by going back to <code>Type::Truthy</code> and <code>Type::Falsy</code> types, but with a better definition? That is, define <code>Type::Truthy</code> as what you've called <code>AlwaysTruthy</code> (the set of all objects known to always be truthy, or in other words, the super-set of all types whose <code>bool()</code> method returns <code>Truthiness::AlwaysTrue</code>) and <code>Type::Falsy</code> as <code>AlwaysFalsy</code> (the set of all objects known to always be falsy, the super-set of all types whose <code>bool()</code> method returns <code>Truthiness::AlwaysFalse</code>).</p>
+<p>It seems like if we do that, and define the appropriate handling in <code>Type::is_subtype_of</code> (any type whose <code>.bool()</code> evaluates to <code>AlwaysFalsy</code> is a subtype of <code>Falsy</code>, and any type whose <code>.bool()</code> evaluates to <code>AlwaysTruthy</code> is a subtype of <code>Truthy</code>) and <code>Type::is_disjoint_from</code> (<code>Truthy</code> is disjoint from <code>Falsy</code> or any subtype of it; <code>Falsy</code> is disjoint from <code>Truthy</code> or any subtype of it), we can get the same behavior as in this PR, but with many fewer new codepaths. It will just reuse the existing implementation of union and intersection simplification, and we don't need to add all the additional machinery of <code>DeferredType</code> etc.</p>
+<p>The unsafety in the previous attempt to define <code>Falsy</code> and <code>Truthy</code> types arose because we defined those types too broadly: we tried to include any object that evaluates as truthy at any time in the <code>Truthy</code> type (e.g.  a non-empty list, which could become falsy at any time), and we tried to narrow with positive intersections (that is, <code>if x</code> would narrow by intersecting with <code>Truthy</code>), which results in conclusions that can easily become unsound due to mutation.</p>
+<p>But if we define the <code>Truthy</code> and <code>Falsy</code> types in the minimal way (only objects known to always be truthy/falsy), and we intersect negatively (<code>if x:</code> narrows by intersecting with <code>~Falsy</code>), that's sound. And it allows us to do even a bit more than we can in this PR, because we can safely preserve the intersection with <code>Truthy</code> or <code>Falsy</code> (for instance, <code>if not x:</code> when <code>x</code> is of an ambiguously-truthy type X can be typed as <code>X &amp; ~Truthy</code>.</p>
+<p>Perhaps it will be clearer if we actually name these types <code>Type::AlwaysTruthy</code> and <code>Type::AlwaysFalsy</code>.</p>
+<p>In most cases not involving truthiness (<code>Type::member</code>, for example), these two types should both be treated as if they were <code>object</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2024-12-05 18:07</div>
+            <div class="timeline-body"><p>That is a very clear approach!  I realised my understanding of <code>Type</code> was a bit limited. This is really interesting, and it makes sense. If I've understood correctly, we wouldn’t even need <code>Type::exclude_always_truthy()</code>, right? <code>is_subtype_of</code> and <code>is_disjoint_from</code> would work properly within the <code>Union</code> and automatically remove all <code>Truthy</code> or <code>Falsy</code> Literals.</p>
+<p>Ok! I'll try implementing it using the approach you suggested.</p>
+<h3>Terminology Issues</h3>
+<p>I think the terms Truthy and Falsy are too easy to misunderstand.</p>
+<p>Perhaps it would be better to drop the term Truthy altogether and instead use terms like:</p>
+<ul>
+<li><code>CanBeTruthy</code> (passes <code>if x</code>)</li>
+<li><code>AlwaysTruthy</code> (<code>bool()</code> is always True)</li>
+<li><code>RandomTruthiness</code> (<code>bool()</code> is undecidable)</li>
+</ul>
+<p>This might help reduce confusion. So, I think it would be better to define  <code>Type::AlwaysTruthy</code> instead of <code>Type::Truthy</code> in this context.</p>
+<p>I also think the name <code>AmbiguousTruthiness</code> wasn’t the quite right. I think <code>RandomTruthiness</code> would be a better fit.<br />
+The word &quot;Ambiguous&quot; is already used in <code>Truthiness::Ambiguous</code> within <code>Type::bool()</code> to represent the union of <code>Truthiness::AlwaysTruthy</code>, <code>Truthiness::AlwaysFalsy</code>, and <code>RandomTruthiness</code>. But actually, <code>RandomTruthiness</code> is the intersection of <code>CanBeTruthy</code> and <code>CanBeFalsy</code>.</p>
+<hr />
+<h3>A Slightly Unrelated Question</h3>
+<p>With this approach, it looks like we could have an intersection like <code>A &amp; ~AlwaysTruthy &amp; ~AlwaysFalsy</code> for a type <code>A</code>.<br />
+Would it be correct to bind such a Negative Intersection type directly to a symbol?<br />
+If a new user encounters this type, they might not immediately understand its meaning.</p>
+<pre><code class="language-py">class A: ...
+
+x = A()
+
+if x and not x:
+    y = x
+    reveal_type(y)  # revealed: A &amp; ~Falsy &amp; ~Truthy
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2024-12-05 18:30</div>
+            <div class="timeline-body"><p>Due to some unexpected events where I live 😢 , PR updates might be delayed by 4–6 days.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-12-05 22:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Due to some unexpected events where I live 😢 , PR updates might be delayed by 4–6 days.</p>
+</blockquote>
+<p>No problem, please take all the time you need! Really appreciate your excellent contributions. Whatever is going on, I hope you are safe and out of harm's way.</p>
+<blockquote>
+<p>If I've understood correctly, we wouldn’t even need <code>Type::exclude_always_truthy()</code>, right? <code>is_subtype_of</code> and <code>is_disjoint_from</code> would work properly within the <code>Union</code> and automatically remove all <code>Truthy</code> or <code>Falsy</code> Literals.</p>
+</blockquote>
+<p>Yes, that's the idea!</p>
+<p>Regarding terminology, I mostly agree with your comments (in particular, that it will be clearer to use <code>Type::AlwaysTruthy</code> and <code>Type::AlwaysFalsy</code> instead of <code>Type::Truthy</code> and <code>Type::Falsy</code>). I don't love the term <code>RandomTruthiness</code>; would probably prefer <code>MutableTruthiness</code>. But I don't think we necessarily will need to use any term for this &quot;set of objects whose truthiness can change over time&quot; -- it's probably sufficient to call it <code>object &amp; ~AlwaysTruthy &amp; ~AlwaysFalsy</code> if we need to refer to it. I also don't think we'll need to use the term <code>CanBeTruthy</code> or <code>CanBeFalsy</code> in the code, though I don't mind those terms.</p>
+<blockquote>
+<p>With this approach, it looks like we could have an intersection like A &amp; ~AlwaysTruthy &amp; ~AlwaysFalsy for a type A.
+Would it be correct to bind such a Negative Intersection type directly to a symbol?</p>
+</blockquote>
+<p>It is possible that we'll need to improve our display of some intersection types, if they occur frequently. This includes both negative intersections with <code>AlwaysTruthy</code> and <code>AlwaysFalsy</code>, as well as possibly intersections with <code>Any/Unknown</code>. I'd rather leave this as a separate topic for future improvement in a holistic way. For now let's just focus on getting the core semantics right, and not worry about seeing some complex types in tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2024-12-14 09:05</div>
+            <div class="timeline-body"><p>Thanks for waiting!</p>
+<p>I had to follow up on some merged changes, so this took a bit longer than expected. Additionally, besides the mdtest, tests have also been added in <code>builder.rs</code> and <code>types.rs</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/truthiness.md</code>:9 on 2024-12-16 17:37</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">def foo() -&gt; Literal[0, -1, True, False, &quot;&quot;, &quot;foo&quot;, b&quot;&quot;, b&quot;bar&quot;, None] | tuple[()]:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/truthiness.md</code>:102 on 2024-12-16 18:17</div>
+            <div class="timeline-body"><p>Nit: I would put this paragraph, and lines 103-110 below, under a separate heading (or sub-heading) &quot;truthiness of types&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/truthiness.md</code>:66 on 2024-12-16 18:22</div>
+            <div class="timeline-body"><p>In general, now that we have function parameter annotation support, I think many tests like this are easier to read if we put them inside a function:</p>
+<pre><code class="language-suggestion">def a(): ...
+def b(): ...
+
+def f(x: a | b):
+    if x:
+        reveal_type(x)  # revealed: Literal[a, b]
+    else:
+        reveal_type(x)  # revealed: Never
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/truthiness.md</code>:8 on 2024-12-16 18:23</div>
+            <div class="timeline-body"><p>This doesn't seem to be used in this test?</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/truthiness.md</code>:106 on 2024-12-16 18:25</div>
+            <div class="timeline-body"><p>Similarly here we could get rid of <code>flag()</code> entirely and just put this test inside <code>def f(x: A | B):</code>. I don't feel strongly though, what you have here is OK too, up to you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/truthiness.md</code>:1 on 2024-12-16 18:34</div>
+            <div class="timeline-body"><p>Can we also add some tests in here for instances of classes whose <code>__bool__</code> method is annotated to return <code>Literal[True]</code> or <code>Literal[False]</code>? These instance types should be subtypes of <code>AlwaysTruthy</code> and <code>AlwaysFalsy</code>, respectively.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/truthiness.md</code>:187 on 2024-12-16 18:55</div>
+            <div class="timeline-body"><p>I filed https://github.com/astral-sh/ruff/issues/15023</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1572 on 2024-12-16 19:10</div>
+            <div class="timeline-body"><p>I think this TODO really falls under the existing TODO for <code>Type::Intersection</code> above. I think we can correctly just fall back to member access on <code>object</code> here. The only exception would be that for <code>__bool__</code> we <em>could</em> synthesize and return a callable type that returns <code>Literal[True]</code> or <code>Literal[False]</code>, but the latter would need to be a TODO for now, since we don't have general Callable types yet (just function literal types.)</p>
+<pre><code class="language-suggestion">                // TODO return `Callable[[], Literal[True/False]]` for `__bool__` access
+                KnownClass::Object.to_instance(db).member(db, name)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2052 on 2024-12-16 19:12</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            Type::AlwaysTruthy | Type::AlwaysFalsy =&gt; KnownClass::Type.to_instance(db),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3782 on 2024-12-16 19:13</div>
+            <div class="timeline-body"><p>I think it would be good to also test here that an instance of some builtin type (<code>str</code> is fine) is not a subtype of either <code>AlwaysTruthy</code> or <code>AlwaysFalsy</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3919 on 2024-12-16 19:14</div>
+            <div class="timeline-body"><p>Can we also test below in <code>is_not_disjoint_from</code> that e.g. <code>Instance(&quot;str&quot;)</code> is not disjoint from either <code>AlwaysTruthy</code> or <code>AlwaysFalsy</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-16 19:21</div>
+            <div class="timeline-body"><p>This is excellent, thank you so much! Really no substantive notes, just suggestions of a few testing additions, and a couple additional operations we can support easily.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2024-12-17 11:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/truthiness.md</code>:66 on 2024-12-17 11:55</div>
+            <div class="timeline-body"><p>I tried this approach, but I found that annotations don't work properly for FunctionLiteral.</p>
+<p>For example, in the suggested code, the type of x is revealed as:</p>
+<pre><code>revealed type is `@Todo(Unsupported or invalid type in a type expression)`
+</code></pre>
+<p>Therefore, since the test is currently not working as expected, I reverted to using flag for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @cake-monotone on 2024-12-17 12:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @cake-monotone on 2024-12-17 12:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-17 15:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/truthiness.md</code>:66 on 2024-12-17 15:36</div>
+            <div class="timeline-body"><p>Oh, of course, that was dumb of me :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-17 16:34</div>
+            <div class="timeline-body"><p>Great work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-12-17 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-12-17 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-18 14:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:29 UTC
+    </footer>
+</body>
+</html>

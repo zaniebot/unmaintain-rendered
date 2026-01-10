@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Separate 'infer_expression_type' query - astral-sh/ruff #15942</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Separate 'infer_expression_type' query</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15942">#15942</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-02-04 15:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-04 15:46</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>As a follow-up to <a href="https://github.com/astral-sh/ruff/pull/15811#discussion_r1939617368">the discussion here</a>, this changeset adds a new salsa query</p>
+<pre><code class="language-rs">fn infer_expression_type&lt;'db&gt;(db: &amp;'db dyn Db, expression: Expression&lt;'db&gt;) -&gt; Type&lt;'db&gt;
+</code></pre>
+<p>which is similar to <code>infer_expression_types</code> (plural), but returns the type of the expression directly instead of returning a <code>TypeInference</code> object. We can use this in a few places. Notably, it can't be used here:</p>
+<p>https://github.com/astral-sh/ruff/blob/9d83e76a3b57bbd8788535cd968376587fb3ec38/crates/red_knot_python_semantic/src/types/narrow.rs#L500-L504</p>
+<p>because that uses <code>self.scope()</code>, not <code>cls.scope()</code>.</p>
+<h2>Test Plan</h2>
+<p>—</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-02-04 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-02-04 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2025-02-04 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-02-04 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-04 15:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:46 on 2025-02-04 15:52</div>
+            <div class="timeline-body"><p>I just noticed that this is not semantically equivalent (uses <code>self.scope</code>, not <code>value.expression().scope()</code>). Will check if that's okay.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-02-04 15:52</div>
+            <div class="timeline-body"><p>Lovely!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-04 15:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:46 on 2025-02-04 15:55</div>
+            <div class="timeline-body"><p>It seems to me that this should be the same? But someone familiar with this code should probably double-check.</p>
+<p>I added a</p>
+<pre><code class="language-rs">assert_eq!(value.expression().scope(self.db()), self.scope);
+</code></pre>
+<p>assertion locally and all tests passed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:46 on 2025-02-04 15:56</div>
+            <div class="timeline-body"><p>@dhruvmanila probably has the most context on this module?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-04 15:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:199 on 2025-02-04 17:36</div>
+            <div class="timeline-body"><p>We may want to add a note that it isn't necessary to use this query in <code>TypeInferenceBuilder</code> or anywhere else where it's known that the <code>expression</code> belongs to the current file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:46 on 2025-02-04 17:37</div>
+            <div class="timeline-body"><p>I don't think it's necessary to use <code>infer_expression_type</code> here because <code>value</code> always belongs to the same file (<code>Unpacker</code> never does any cross-module type inference).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:394 on 2025-02-04 17:39</div>
+            <div class="timeline-body"><p>I'm not 100% if we should use <code>infer_expression_type</code> here. We should only use it if <code>analyze_single</code> can be reached from another module than where <code>test_expr</code> is defined.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-04 17:41</div>
+            <div class="timeline-body"><p>Whether we want to use <code>infer_expression_type</code> or not is slightly more subtle. The way you changed it in this PR isn't incorrect but it means that we pay for an extra salsa queries even in cases where the isolation isn't necessary.</p>
+<p>We should only use <code>infer_expression_type</code> if it isn't guaranteed that <code>expression</code> belongs to the same file as the enclosing query. This, for example, isn't the case in the <code>TypeInferenceBuilder</code> or <code>Unpacker</code> where all ast nodes are guaranteed to be from the same file. We do want the isolation in <code>Type::own_member</code> because there's no guarantee from which file (if any) the method is called.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-04 17:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:394 on 2025-02-04 17:43</div>
+            <div class="timeline-body"><p>Hmm, the new API is much more convenient and ergonomic. If we expect it to be slower in many cases, it feels like we're adding a footgun (making something that we should only do in very specific cases easy to do in all cases)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-04 17:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:394 on 2025-02-04 17:49</div>
+            <div class="timeline-body"><p>We can have two different methods for it but it's important that we use the right method in the right context. I do think <code>infer_expression_type</code> as a query will be useful in other situations too, but it's not a &quot;fits all&quot; solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-04 19:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:46 on 2025-02-04 19:13</div>
+            <div class="timeline-body"><p>In general, an expression node can only be part of one scope, and that scope is the only possible correct scope to pass to <code>scoped_expression_id</code> for that expression. So I believe that in any case where we are doing this pattern, either you could use <code>infer_expression_types</code> instead with no change in behavior, or the existing code was buggy. I think the only reason existing code wouldn't use the scope of the expression itself was just because that code happened to already have that same scope stored in a more convenient place. I think this is also true for the narrowing code you linked in the PR summary.</p>
+<p>(Note this comment is just about semantic correctness, and independent of the whole question of whether we should introduce another layer of Salsa query in all of these places.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-04 19:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:394 on 2025-02-04 19:21</div>
+            <div class="timeline-body"><p>It seems to me that this is sufficiently useful on ergonomic grounds, that it might even be worth having two variants of it, a Salsa-cached one and a non-Salsa-cached one. (The Salsa-cached one could just call the non-Salsa-cached one.)</p>
+<p>I think it would also be very valuable if we could implement (via some combination of types, visibility, and code organization) a clearer distinction between &quot;code that can be called across files&quot; (mostly I think this code should live in <code>types.rs</code> and on <code>Type</code> today? Because <code>Type</code> is how type information travels between files) and &quot;code that exclusively operates on only one file&quot;, and ensure that the former code can never see an AST directly. This might be a non-trivial refactor, but I think it would be worth it. Maybe worth creating an issue for, at least?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-04 20:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:394 on 2025-02-04 20:56</div>
+            <div class="timeline-body"><p>I created https://github.com/astral-sh/ruff/issues/15949 to follow up on the latter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:46 on 2025-02-05 08:00</div>
+            <div class="timeline-body"><p>I think the current implementation (as is on <code>main</code>) could be incorrect when this will be used to unpack in comprehensions. The reason being that the value expression of the first generator comes from the outer scope and not the comprehension scope where the unpacking would belong to once implemented (https://github.com/astral-sh/ruff/issues/15369).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-05 08:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-05 16:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:46 on 2025-02-05 16:34</div>
+            <div class="timeline-body"><p>@dhruvmanila I could be remembering wrong, but I would think we should give that &quot;value expression of the first generator&quot; an expression ID in the scope where it should be evaluated, maintaining the invariant that every expression belongs to exactly one scope, which I think would mean the current implementation of this helper is correct?</p>
+<p>Sounds like this case deserves some investigation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-06 08:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:46 on 2025-02-06 08:36</div>
+            <div class="timeline-body"><blockquote>
+<p>I could be remembering wrong, but I would think we should give that &quot;value expression of the first generator&quot; an expression ID in the scope where it should be evaluated, maintaining the invariant that every expression belongs to exactly one scope, which I think would mean the current implementation of this helper is correct?</p>
+</blockquote>
+<p>Oh, I think you're correct. This means the previous implementation would've been probably incorrect for comprehensions because the unpacking would happen in the comprehension scope while the expression is in the outer scope but the previous implementation would try to get the expression from the comprehension scope where it doesn't exist.</p>
+<p>We should be giving the expression of the first generator in the scope where it should be evaluated:</p>
+<p>https://github.com/astral-sh/ruff/blob/17245b21a6d7142dd9df5e283f30b2fc7320f60e/crates/red_knot_python_semantic/src/semantic_index/builder.rs#L627-L631</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-20 11:40</div>
+            <div class="timeline-body"><p>I tried to incorporate this change into https://github.com/astral-sh/ruff/pull/16268</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-02-21 09:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:29 UTC
+    </footer>
+</body>
+</html>

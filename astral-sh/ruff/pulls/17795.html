@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Distinguish fully static protocols from non-fully-static protocols - astral-sh/ruff #17795</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Distinguish fully static protocols from non-fully-static protocols</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17795">#17795</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-05-02 18:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-02 18:35</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR teaches red-knot to differentiate between fully-static and non-fully-static protocol types. This fixes several TODOs in the test suite, but the main motivation here is that it's an excuse to start collecting the types of protocol members as well as the names of those members -- these will be very important for a proper implementation of assignability and subtyping down the road.</p>
+<p>This is best reviewed commit by commit:</p>
+<ol>
+<li>The first commit implements the substantive changes of this PR</li>
+<li>The second commit doesn't implement any substantive changes; it <em>only</em> moves the protocol-related infrastructure out of <code>class.rs</code> and into a new submodule</li>
+<li>The third commit just cleans up some documentation.</li>
+</ol>
+<h2>Test Plan</h2>
+<p>Existing mdtest assertions updated, and some new ones added</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-05-02 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-02 18:37</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:1 on 2025-05-02 19:22</div>
+            <div class="timeline-body"><p>the new tests in this PR were part of me debugging an error surfaced by primer on an earlier version of this PR. I wasn't sure whether the bug was in the support for protocols or the support for generics. It was in the support for protocols! But, we don't have enough tests for the interactions between generics and protocols, so I left them in the PR anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/protocol_class.rs</code>:93 on 2025-05-02 19:23</div>
+            <div class="timeline-body"><p>I'd like for <code>ProtocolInterface</code> to wrap an <code>FxOrderMap&lt;Name, ProtocolMemberData&lt;'db&gt;&gt;</code> rather than a <code>Box&lt;[ProtocolMember&lt;'db&gt;]&gt;</code> -- then this wouldn't need to be <code>O(n^2)</code> in complexity. But <code>FxOrderMap</code> needs to have <code>salsa::Update</code> derived for it, which can only be done from the Salsa repo due to the Orphan rule for traits (thanks @MichaReiser for helping me debug that earlier!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-02 19:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-05-02 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-05-02 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-05-02 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-05-02 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-02 19:30</div>
+            <div class="timeline-body"><p>the primer results are just a bunch of unions that we no longer simplify into a single type, because we see that there is an assignability relation but we no longer recognise a subtype relation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-02 19:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/protocol_class.rs</code>:93 on 2025-05-02 19:33</div>
+            <div class="timeline-body"><p>Could we use a <code>BTreeMap</code> isntead of an <code>FxOrderedMap</code>. Salsa implements <code>Update</code> for BTeeMap and BTreeSet (see <a href="https://github.com/salsa-rs/salsa/blob/2c041763b75c774916b8912a50035578e6fd59a2/src/update.rs#L343-L351">here</a> and <code>BTreeMap</code> has nice <code>difference</code> methods which I think <code>OrderedMap</code> doesn't have</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-02 19:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/protocol_class.rs</code>:93 on 2025-05-02 19:35</div>
+            <div class="timeline-body"><p>Oh, and we want it to be sorted anyway, so a <code>BTreeMap</code> makes a lot of sense. Of course, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-02 19:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/protocol_class.rs</code>:93 on 2025-05-02 19:38</div>
+            <div class="timeline-body"><p>Oh, it doesn't have a difference method. Is that only available for sets. But you can compare the <code>keys</code> iterator respectively.</p>
+<p>Another possibility is to keep using <code>Box&lt;[...]&gt;</code>, but sort the entries before returning (I would probably use some wrapper type there). Unless we have operations where we need to get an element by name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/protocol_class.rs</code>:93 on 2025-05-02 19:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Unless we have operations where we need to get an element by name.</p>
+</blockquote>
+<p>we do, and we'll have more in the future</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-02 19:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-05-02 22:48</div>
+            <div class="timeline-body"><p>Looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-05-03 10:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-03 10:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-03 10:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:30 UTC
+    </footer>
+</body>
+</html>

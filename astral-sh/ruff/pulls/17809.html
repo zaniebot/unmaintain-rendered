@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Synthesize a `__call__` attribute for Callable types - astral-sh/ruff #17809</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Synthesize a <code>__call__</code> attribute for Callable types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17809">#17809</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-05-03 11:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-03 11:59</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Currently this assertion fails on <code>main</code>, because we do not synthesize a <code>__call__</code> attribute for Callable types:</p>
+<pre><code class="language-py">from typing import Protocol, Callable
+from knot_extensions import static_assert, is_assignable_to
+
+class Foo(Protocol):
+    def __call__(self, x: int, /) -&gt; str: ...
+
+static_assert(is_assignable_to(Callable[[int], str], Foo))
+</code></pre>
+<p>This PR fixes that.</p>
+<p>See previous discussion about this in https://github.com/astral-sh/ruff/pull/16493#discussion_r1985098508 and https://github.com/astral-sh/ruff/pull/17682#issuecomment-2839527750</p>
+<h2>Test Plan</h2>
+<p>Existing mdtests updated; a couple of new ones added.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-05-03 11:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-05-03 11:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-05-03 11:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-05-03 11:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "synthesize a `__call__` attribute for Callable types" to "[red-knot] Synthesize a `__call__` attribute for Callable types" by @AlexWaygood on 2025-05-03 11:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-03 12:12</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">jinja (https://github.com/pallets/jinja)
+- error[lint:unresolved-attribute] src/jinja2/runtime.py:280:35: Type `(...) -&gt; Any` has no attribute `__call__`
+- error[lint:unresolved-attribute] src/jinja2/runtime.py:282:21: Type `(...) -&gt; Any` has no attribute `__call__`
+- Found 396 diagnostics
++ Found 394 diagnostics
+
+poetry (https://github.com/python-poetry/poetry)
+- error[lint:invalid-return-type] tests/conftest.py:697:12: Return type does not match returned value: Expected `SetProjectContext`, found `(...) -&gt; Unknown`
+- Found 1153 diagnostics
++ Found 1152 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
+- error[lint:unresolved-attribute] scrapy/utils/python.py:269:39: Type `(...) -&gt; Any` has no attribute `__call__`
+- Found 1711 diagnostics
++ Found 1710 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
+- error[lint:invalid-argument-type] mesonbuild/rewriter.py:36:91: Argument to this function is incorrect: Expected `_FormatterClass`, found `(str, /) -&gt; HelpFormatter`
+- error[lint:invalid-argument-type] mesonbuild/rewriter.py:46:82: Argument to this function is incorrect: Expected `_FormatterClass`, found `(str, /) -&gt; HelpFormatter`
+- error[lint:invalid-argument-type] mesonbuild/rewriter.py:55:119: Argument to this function is incorrect: Expected `_FormatterClass`, found `(str, /) -&gt; HelpFormatter`
+- error[lint:invalid-argument-type] mesonbuild/rewriter.py:61:109: Argument to this function is incorrect: Expected `_FormatterClass`, found `(str, /) -&gt; HelpFormatter`
+- Found 1812 diagnostics
++ Found 1808 diagnostics
+
+bokeh (https://github.com/bokeh/bokeh)
+- error[lint:invalid-argument-type] src/bokeh/resources.py:603:19: Argument to this function is incorrect: Expected `UrlsFn`, found `(components, kind) -&gt; Unknown`
+- error[lint:invalid-assignment] src/bokeh/resources.py:617:9: Object of type `(components, kind) -&gt; Unknown` is not assignable to attribute `hashes` of type `HashesFn | None`
+- error[lint:invalid-argument-type] src/bokeh/resources.py:637:17: Argument to this function is incorrect: Expected `UrlsFn`, found `(components, kind) -&gt; Unknown`
+- Found 1927 diagnostics
++ Found 1924 diagnostics
+
+jax (https://github.com/google/jax)
+- error[lint:invalid-argument-type] jax/_src/ad_checkpoint.py:816:32: Argument to this function is incorrect: Expected `LoweringRule`, found `(ctx, x, *, name) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/cudnn/fused_attention_stablehlo.py:1086:25: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/cudnn/fused_attention_stablehlo.py:1093:25: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/cudnn/fused_attention_stablehlo.py:1673:25: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/cudnn/fused_attention_stablehlo.py:1680:25: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/cudnn/scaled_matmul_stablehlo.py:304:5: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/custom_batching.py:355:39: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/custom_dce.py:442:19: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/custom_derivatives.py:952:49: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/custom_derivatives.py:1497:39: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/custom_derivatives.py:1805:37: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/custom_transpose.py:243:5: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/error_check.py:272:5: Argument to this function is incorrect: Expected `_SerializeAuxData`, found `(x) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/error_check.py:275:5: Argument to this function is incorrect: Expected `_DeserializeAuxData`, found `(x) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/export/_export.py:504:5: Argument to this function is incorrect: Expected `_DeserializeAuxData`, found `(b) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/interpreters/mlir.py:2559:44: Argument to this function is incorrect: Expected `LoweringRule`, found `(ctx, x) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/interpreters/mlir.py:3058:33: Argument to this function is incorrect: Expected `LoweringRule`, found `(ctx, *x, *, axes, axis_index_groups) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/control_flow/for_loop.py:278:31: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/control_flow/loops.py:1392:24: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/control_flow/solves.py:493:21: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/lax.py:4193:24: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/lax.py:4351:24: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/lax.py:4970:37: Argument to this function is incorrect: Expected `LoweringRule`, found `(_, x, **__) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/lax.py:5005:39: Argument to this function is incorrect: Expected `LoweringRule`, found `(_, x, **__) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/lax.py:6309:24: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/lax.py:8457:32: Argument to this function is incorrect: Expected `LoweringRule`, found `(ctx, x) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/lax.py:8875:31: Argument to this function is incorrect: Expected `LoweringRule`, found `(ctx, x, y) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/linalg.py:907:5: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/linalg.py:1260:13: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/linalg.py:1550:30: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/linalg.py:1690:5: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/linalg.py:1883:30: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/linalg.py:2304:5: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/linalg.py:2668:45: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/special.py:661:3: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/special.py:682:34: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/special.py:687:24: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/special.py:694:24: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/special.py:704:24: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/windowed_reductions.py:817:50: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/windowed_reductions.py:821:50: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/windowed_reductions.py:825:50: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/lax/windowed_reductions.py:1066:49: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/pallas/fuser/fusible.py:80:35: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/pallas/primitives.py:345:42: Argument to this function is incorrect: Expected `LoweringRule`, found `(_, x, **__) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/pallas/primitives.py:359:39: Argument to this function is incorrect: Expected `LoweringRule`, found `(_, x, **__) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/prng.py:960:21: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/random.py:1302:40: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/random.py:1305:40: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/random.py:2738:40: Argument to this function is incorrect: Expected `LoweringRule`, found `(_, k) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/state/discharge.py:607:37: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/_src/state/primitives.py:763:21: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/key_reuse/_core.py:243:5: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/key_reuse/_core.py:256:5: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/api.py:114:35: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/bcoo.py:233:40: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/bcoo.py:362:42: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/bcoo.py:495:40: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/bcoo.py:599:42: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/bcoo.py:923:44: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/bcoo.py:928:27: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/bcoo.py:931:27: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/bcoo.py:1085:5: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/bcoo.py:1293:46: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/bcoo.py:1378:45: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/bcoo.py:1564:47: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/bcsr.py:303:42: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/bcsr.py:380:40: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/bcsr.py:454:40: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/bcsr.py:790:25: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/coo.py:258:39: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/coo.py:371:41: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/coo.py:495:38: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/coo.py:615:38: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/csr.py:281:39: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/csr.py:401:41: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/csr.py:507:38: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/csr.py:614:38: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- error[lint:invalid-argument-type] jax/experimental/sparse/nm.py:243:35: Argument to this function is incorrect: Expected `LoweringRule`, found `(...) -&gt; Unknown`
+- Found 5566 diagnostics
++ Found 5487 diagnostics
+
+zulip (https://github.com/zulip/zulip)
+- error[lint:invalid-argument-type] zerver/tests/test_decorators.py:128:25: Argument to this function is incorrect: Expected `_GetResponseCallable`, found `(request) -&gt; Unknown`
+- error[lint:invalid-argument-type] zerver/tests/test_decorators.py:1609:25: Argument to this function is incorrect: Expected `_GetResponseCallable`, found `(request) -&gt; Unknown`
+- error[lint:invalid-argument-type] zerver/tests/test_middleware.py:247:25: Argument to this function is incorrect: Expected `_GetResponseCallable`, found `(_) -&gt; Unknown`
+- error[lint:invalid-argument-type] zerver/tests/test_middleware.py:256:25: Argument to this function is incorrect: Expected `_GetResponseCallable`, found `(_) -&gt; Unknown`
+- error[lint:invalid-argument-type] zerver/tests/test_middleware.py:265:25: Argument to this function is incorrect: Expected `_GetResponseCallable`, found `(_) -&gt; Unknown`
+- Found 5926 diagnostics
++ Found 5921 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-03 12:16</div>
+            <div class="timeline-body"><p>Primer results all look as expected! Here's what the <code>jax</code> hits look like: <code>LoweringRule</code> is a callback protocol defined here:</p>
+<ul>
+<li>https://github.com/jax-ml/jax/blob/43b784c3c7b961134bbdb2fdaa56a168540926cc/jax/_src/interpreters/mlir.py#L838-L843</li>
+<li>The <code>register_lowering</code> function has a parameter annotated as accepting an instance of <code>LoweringRule</code> here: https://github.com/jax-ml/jax/blob/43b784c3c7b961134bbdb2fdaa56a168540926cc/jax/_src/interpreters/mlir.py#L851-L852</li>
+<li>And <code>jax</code> usually passes <code>lambda</code> functions into that parameter at callsites. We currently just infer a plain <code>Callable</code> type for <code>lambda</code>s, so we previously complained about that, but we now understand that the lambda has a type consistent with the callback protocol: https://github.com/jax-ml/jax/blob/43b784c3c7b961134bbdb2fdaa56a168540926cc/jax/_src/ad_checkpoint.py#L816</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/protocols.md</code>:1491 on 2025-05-03 15:38</div>
+            <div class="timeline-body"><p>It's obviously fine to leave these as TODO for now -- but I'm not sure I understand where our implementation is lacking that makes them not pass yet?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-05-03 15:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-03 15:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/protocols.md</code>:1491 on 2025-05-03 15:42</div>
+            <div class="timeline-body"><p>We still don't consider the types of protocol members at all when doing assignability or subtyping checks between any type <code>T</code> (a protocol type or otherwise) and a protocol type <code>P</code>. We still only check whether <code>T</code> <em>has</em> the members specified by <code>P</code>; we do not yet check whether the types of the members on <code>T</code> are correct. This leads to many false negatives, such as the ones that are TODO'd here.</p>
+<p>I'm working on it! Still not totally sure what the best design is when it comes to property members and method members, though. And want to add more tests first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-05-03 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-03 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-03 15:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:30 UTC
+    </footer>
+</body>
+</html>

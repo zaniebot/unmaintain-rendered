@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Update call binding to return all matching overloads - astral-sh/ruff #17618</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Update call binding to return all matching overloads</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17618">#17618</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-04-24 22:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-24 22:38</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates the existing overload matching methods to return an iterator of all the matched overloads instead.</p>
+<p>This would be useful once the overload call evaluation algorithm is implemented which should provide an accurate picture of all the matched overloads. The return type would then be picked from either the only matched overload or the first overload from the ones that are matched.</p>
+<p>In an earlier version of this PR, it tried to check if using an intersection of return types from the matched overload would help reduce the false positives but that's not enough. <a href="https://github.com/astral-sh/ruff/pull/17618#issuecomment-2842891696">This comment</a> keep the ecosystem analysis for that change for prosperity.</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>The best way to review this PR is by hiding the whitespace changes because there are two instances where a large match expression is indented to be inside a loop over matching overlods</p>
+<p><img width="1207" alt="Screenshot 2025-04-28 at 15 12 16" src="https://github.com/user-attachments/assets/e06cbfa4-04fa-435f-84ef-4e5c3c5626d1" /></p>
+</blockquote>
+<h2>Test Plan</h2>
+<p>Make sure existing test cases are unaffected and no ecosystem changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2025-04-24 22:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-24 22:43</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-04-28 20:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @dhruvmanila on 2025-04-28 20:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-28 20:29</div>
+            <div class="timeline-body"><p>I'm marking this as ready for review mainly to ask for feedback on the changes and the effect it has on the ecosystem changes. The PR description has my ecosystem analysis and it does reveal that this change would remove ~300 false positives by &quot;hiding&quot; it via intersection or <code>Never</code> type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-04-28 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-04-28 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-04-28 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-04-28 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-04-28 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-29 23:18</div>
+            <div class="timeline-body"><p>Thank you, that's a super-thorough analysis of the ecosystem impacts!</p>
+<p>My main conclusion from looking at it is that it's hard to evaluate at this point. In particular, there are a lot of overloads in typeshed defined with protocol arguments, and so we are evaluating a lot of overloads as matching that really shouldn't be.</p>
+<p>But I am seeing enough cases that would give counter-intuitive or wrong behavior (due to people relying on being able to silence an overlapping-overload error and count on the type checker picking the first matching overload) that I'm pretty convinced we will need to implement the full specced overload matching algorithm, in order to achieve sufficiently compatible behavior with the ecosystem. So I don't think we should merge this as-is.</p>
+<p>I do think that in order to implement the full matching algorithm, we will still need to check all overloads and preserve all bindings, not short-circuit, and it seems like that was the bulk of the code changes here? So I think we should modify the <code>return_type</code> method (where the intersection is currently implemented) to instead return the return type of the first matching overload, with a TODO to implement proper overload matching, and then land this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @dhruvmanila on 2025-04-30 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-30 18:14</div>
+            <div class="timeline-body"><details><summary>(Archived) Ecosystem analysis for an <a href="https://github.com/astral-sh/ruff/pull/17618/commits/49286d6c4869b73ad2c4d423342d2333fbabdcc6">earlier version of this PR</a>:</summary>
+<p>
+
+<h2>Ecosystem analysis</h2>
+<h3>Overall stats</h3>
+<pre><code>                           Diagnostic Analysis Report                           
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━┓
+┃ Diagnostic ID                      ┃ Severity ┃ Removed ┃ Added ┃ Net Change ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━┩
+│ lint:call-non-callable             │ error    │      27 │     0 │        -27 │
+│ lint:call-possibly-unbound-method  │ warning  │      21 │    15 │         -6 │
+│ lint:division-by-zero              │ error    │       0 │    13 │        +13 │
+│ lint:invalid-argument-type         │ error    │      96 │     1 │        -95 │
+│ lint:invalid-assignment            │ error    │      22 │     1 │        -21 │
+│ lint:invalid-base                  │ error    │       2 │     2 │          0 │
+│ lint:invalid-return-type           │ error    │      56 │     1 │        -55 │
+│ lint:invalid-super-argument        │ error    │       1 │     1 │          0 │
+│ lint:invalid-type-form             │ error    │       2 │     0 │         -2 │
+│ lint:no-matching-overload          │ error    │       5 │     0 │         -5 │
+│ lint:non-subscriptable             │ error    │       6 │     0 │         -6 │
+│ lint:not-iterable                  │ error    │       3 │     0 │         -3 │
+│ lint:possibly-unbound-attribute    │ warning  │     124 │    84 │        -40 │
+│ lint:possibly-unresolved-reference │ warning  │       3 │     0 │         -3 │
+│ lint:type-assertion-failure        │ error    │      21 │    25 │         +4 │
+│ lint:unresolved-attribute          │ error    │      50 │     0 │        -50 │
+│ lint:unsupported-operator          │ error    │      30 │     4 │        -26 │
+│ lint:unused-ignore-comment         │ warning  │       0 │     3 │         +3 │
+├────────────────────────────────────┼──────────┼─────────┼───────┼────────────┤
+│ TOTAL                              │          │     469 │   150 │       -319 │
+└────────────────────────────────────┴──────────┴─────────┴───────┴────────────┘
+Analysis complete. Found 18 unique diagnostic IDs.
+Total diagnostics removed: 469
+Total diagnostics added: 150
+Net change: -319
+</code></pre>
+<p>After filtering out the diagnostics where it’s only the messages that have been updated due to the fact that the return type will now include additional types because of intersections, we get the following stats:</p>
+<pre><code>                           Diagnostic Analysis Report                           
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━┓
+┃ Diagnostic ID                      ┃ Severity ┃ Removed ┃ Added ┃ Net Change ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━┩
+│ lint:call-non-callable             │ error    │      27 │     0 │        -27 │
+│ lint:call-possibly-unbound-method  │ warning  │       6 │     0 │         -6 │
+│ lint:division-by-zero              │ error    │       0 │    13 │        +13 │
+│ lint:invalid-argument-type         │ error    │      95 │     0 │        -95 │
+│ lint:invalid-assignment            │ error    │      22 │     1 │        -21 │
+│ lint:invalid-return-type           │ error    │      55 │     0 │        -55 │
+│ lint:invalid-type-form             │ error    │       2 │     0 │         -2 │
+│ lint:no-matching-overload          │ error    │       5 │     0 │         -5 │
+│ lint:non-subscriptable             │ error    │       6 │     0 │         -6 │
+│ lint:not-iterable                  │ error    │       3 │     0 │         -3 │
+│ lint:possibly-unbound-attribute    │ warning  │      44 │     4 │        -40 │
+│ lint:possibly-unresolved-reference │ warning  │       3 │     0 │         -3 │
+│ lint:type-assertion-failure        │ error    │       0 │     4 │         +4 │
+│ lint:unresolved-attribute          │ error    │      50 │     0 │        -50 │
+│ lint:unsupported-operator          │ error    │      26 │     0 │        -26 │
+│ lint:unused-ignore-comment         │ warning  │       0 │     3 │         +3 │
+├────────────────────────────────────┼──────────┼─────────┼───────┼────────────┤
+│ TOTAL                              │          │     344 │    25 │       -319 │
+└────────────────────────────────────┴──────────┴─────────┴───────┴────────────┘
+Analysis complete. Found 16 unique diagnostic IDs.
+Total diagnostics removed: 344
+Total diagnostics added: 25
+Net change: -319
+</code></pre>
+<h3>Notes</h3>
+<p>The most common false positives which have been removed are around the usages of <code>getattr</code>, <code>dict.get</code>, and <code>open</code>.</p>
+<p>Removed false positives:</p>
+<pre><code class="language-python">import urllib
+import webbrowser
+
+# Red knot matches against both overloads - `Literal[b&quot;&quot;] &amp; @Todo`
+url = urllib.parse.urlunparse((&quot;file&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;))
+# The following false positive is removed
+# red-knot: Argument to this function is incorrect: Expected `str`, found `Literal[b&quot;&quot;]` [lint:invalid-argument-type]
+webbrowser.open(url)
+</code></pre>
+<p>Diagnostic messages are getting verbose because of this change because the return type would be an intersection of all the return types from the matched overloads:</p>
+<pre><code class="language-diff">- Attribute `name` on type `Binance | None` is possibly unbound
++ Attribute `name` on type `(Binance &amp; Bitpanda &amp; Bitcoinde &amp; Bitfinex &amp; Bitmex &amp; Bitstamp &amp; Bybit &amp; Coinbase &amp; Coinbaseprime &amp; Gemini &amp; Htx &amp; Iconomi &amp; Independentreserve &amp; Kraken &amp; Okx &amp; Poloniex &amp; Woo &amp; Kucoin) | None` is possibly unbound
+</code></pre>
+<p>Similarly, the return type of <code>open</code> is now:</p>
+<pre><code class="language-python">fd = open(&quot;file.text&quot;, &quot;rb&quot;)
+
+# revealed: `TextIOWrapper &amp; BufferedRandom &amp; BufferedWriter &amp; BufferedReader &amp; @Todo(specialized non-generic class)`
+# revealed on main: `TextIOWrapper`
+reveal_type(fd)
+</code></pre>
+<p>The revealed type for dictionary’s <code>get</code> method which leads to lots of diagnostics removed:</p>
+<pre><code class="language-python">data = {}
+value = data.get(&quot;foo&quot;, None)
+
+# revealed on main: `@Todo(Support for `typing.TypeVar` instances in type expressions) | None`
+# revealed: `@Todo(Support for `typing.TypeVar` instances in type expressions) | (None &amp; @Todo(Support for `typing.TypeVar` instances in type expressions))`
+reveal_type(value)
+</code></pre>
+<h3>False negatives</h3>
+<p>False negative when <code>getattr</code> is involved:</p>
+<pre><code class="language-python">from typing import reveal_type
+
+class Foo:
+    pass
+
+value = getattr(Foo, &quot;foo&quot;, None)
+if value is None:
+	# red-knot does not report that `value` is not callable
+	# revealed:         `Any &amp; None`
+	# revealed on main: `(Any &amp; None) | None`
+    value()
+else:
+    value()
+
+# OR
+
+def _(attr: str) -&gt; int:
+    # red-knot (main): Return type does not match returned value: Expected `int`, found `Any | None` [lint:invalid-return-type]
+    # No error when using intersection of callables
+    return getattr(Foo, attr, None)
+</code></pre>
+<p>Another false negative for <code>subprocess.check_output</code> when the output of that function requires it to be <code>str</code> but <code>bytes &amp; Any</code> would not raise a diagnostic in that case. For example:</p>
+<pre><code class="language-python">import subprocess
+
+def _(cmd: str) -&gt; str:
+	out = subprocess.check_output(cmd)
+	
+	# revealed: bytes &amp; Any
+	# revealed on main: bytes
+	reveal_type(out)
+	
+	# This raises `invalid-return-type` diagnostic on main
+	return out
+</code></pre>
+<h3>False positives</h3>
+<p>The <code>sum</code> return type now includes a <code>Literal[0]</code> which results in <code>division-by-zero</code> diagnostic if it’s used in that context:</p>
+<pre><code class="language-python">values = []
+
+out = sum(values)
+
+# revealed: `(int &amp; @Todo(Support for `typing.TypeVar` instances in type expressions)) | Literal[0]`
+# revealed on main: `int`
+reveal_type(out)
+
+# false positive: division-by-zero
+1 / out
+</code></pre>
+<h3><code>Never</code></h3>
+<p>I’m seeing a bunch of <code>Never</code> instead of the actual types which might be coming from the fact that those types are disjoint which results in <code>Never</code></p>
+<pre><code class="language-python">import os.path
+
+x = os.path.join(&quot;a&quot;, &quot;b&quot;)
+# revealed on main: LiteralString
+# revealed: Never
+reveal_type(x)
+</code></pre>
+<p>Another case for the above:</p>
+<pre><code class="language-python">fd = open(&quot;file.txt&quot;, &quot;rb&quot;)
+
+# revealed: `Never`
+# revealed on main: `str` (incorrect because it should be `bytes`)
+reveal_type(fd.read())
+</code></pre>
+<p>This is because <code>join</code> return type is <code>str &amp; bytes &amp; LiteralString</code> and <code>bytes</code> is disjoint from <code>LiteralString</code> which results in a <code>Never</code> type.</p>
+<p>An example from our mdtest for the descriptor protocol:</p>
+<pre><code class="language-python">from typing_extensions import Literal, LiteralString, overload
+
+class Descriptor:
+    @overload
+    def __get__(self, instance: None, owner: type, /) -&gt; Literal[&quot;called on class object&quot;]: ...
+    @overload
+    def __get__(self, instance: object, owner: type | None = None, /) -&gt; Literal[&quot;called on instance&quot;]: ...
+    def __get__(self, instance, owner=None, /) -&gt; LiteralString:
+        if instance:
+            return &quot;called on instance&quot;
+        else:
+            return &quot;called on class object&quot;
+
+class C:
+    d: Descriptor = Descriptor()
+
+# revealed on main: Literal[&quot;called on class object&quot;]
+# revealed: Never
+reveal_type(C.d)
+
+reveal_type(C().d)  # revealed: Literal[&quot;called on instance&quot;]
+</code></pre>
+<p>The reason this is happening is because when the <code>instance</code> parameter is <code>None</code> when the field is accessed on the class directly, and it is assignable to both the overloads as <code>None</code> is assignable to both <code>None</code> and <code>object</code>:</p>
+<pre><code class="language-python">from knot_extensions import static_assert, is_assignable_to
+
+static_assert(is_assignable_to(None, None))
+static_assert(is_assignable_to(None, object)
+</code></pre>
+<p>And, both <code>Literal</code> types are disjoint from each other, so the intersection of them creates a <code>Never</code> type.</p>
+<p>One way to solve this would be to use the return type of the first matched overload if the intersection type results into <code>Never</code> (done in https://github.com/astral-sh/ruff/pull/17618/commits/ce6d959ca27c0bf67e256e122399cb42a738eb6a and reverted) i.e., retain the old behavior if the return type is <code>Never</code> but this creates an issue when the <code>Never</code> would be beneficial. For example:</p>
+<pre><code class="language-python">from typing import overload
+
+from knot_extensions import Unknown
+
+@overload
+def fix_name(name: None) -&gt; None: ...
+@overload
+def fix_name(name: str) -&gt; str: ...
+def fix_name(name):
+    return name
+
+def _(foo: Unknown) -&gt; str:
+	# Here, we don't know the type of `foo`, so it matches both overloads but
+	# their intersection is `Never` and so we would return `None` instead. But,
+	# that's not assignable to the return type of the function (`str`) when the
+	# `Never` type would be beneficial here
+    return fix_name(foo)
+</code></pre>
+</p>
+</details> 
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Intersection of callables for evaluating an overload call" to "[red-knot] Update call binding to return all matched overloads" by @dhruvmanila on 2025-04-30 18:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-04-30 18:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Update call binding to return all matched overloads" to "[red-knot] Update call binding to return all matching overloads" by @dhruvmanila on 2025-04-30 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-04-30 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-30 18:55</div>
+            <div class="timeline-body"><p>Looks good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-04-30 20:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-04-30 20:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-30 20:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:30 UTC
+    </footer>
+</body>
+</html>

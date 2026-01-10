@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Improve handling of inherited class attributes - astral-sh/ruff #16160</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Improve handling of inherited class attributes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16160">#16160</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-02-14 12:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-14 12:47</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes a number of issues to do with inherited class attributes.</p>
+<p>On <code>main</code>, if you run red-knot on this file, you get these results:</p>
+<pre><code class="language-py">from typing_extensions import reveal_type, ClassVar, Any, Literal
+
+def _(flag: bool):
+    class Foo:
+        x = 1
+
+    class Bar(Foo):
+        if flag:
+            x = 2
+
+    # error: Attribute `x` on type `Literal[Bar]` is possibly unbound
+    reveal_type(Bar.x)  # revealed: `Unknown | Literal[2]`
+
+def _2(flag: bool):
+    class Foo2:
+        if flag:
+            x = 1
+
+    class Bar2(Foo2):
+        if flag:
+            x = 2
+
+     # error: Attribute `x` on type `Literal[Bar]` is possibly unbound
+    reveal_type(Bar2.x)  # revealed: `Unknown | Literal[2]`
+
+class Foo3(Any): ...
+reveal_type(Foo3.__repr__)  # revealed: Any
+
+class A:
+    x: ClassVar[Literal[1]] = 1
+
+class B(Any): ...
+class C(B, A): ...
+
+reveal_type(C.x)  # revealed: `Any`
+</code></pre>
+<p>There are the following issues here:</p>
+<ol>
+<li>The first &quot;possibly unbound&quot; diagnostic is a false positive, and the type is incorrect. Although the attribute is possibly unbound on the subclass, it is definitely bound on the superclass. We should union the two types together and understand the attribute as definitely bound.</li>
+<li>The second &quot;possibly unbound&quot; diagnostic is correct, but the reported type is incorrect. Since the attribute is possibly unbound on the subclass, we should continue iterating up through the class's MRO until we find a definitely bound attribute on a superclass, and we should union all types we find in the process.</li>
+<li>The revealed type for <code>Foo3.__repr__</code> is not incorrect, but it could be more precise. All classes -- even non-fully-static classes that have <code>Any</code> in their MRO -- inherit from <code>object</code>, and <code>object</code> has a <code>__repr__</code> method. We therefore know that whatever the type of <code>Foo3.__repr__</code> is, it must be a consistent subtype of the type of <code>object.__repr__</code>; <code>Literal[object.__repr__] &amp; Any</code> is therefore a better type for <code>Foo3.__repr__</code> than <code>Any</code>.</li>
+<li>A similar principle applies for the final revealed type, for <code>C.x</code>. <code>C</code> is not a fully static type (it has <code>Any</code> in its MRO), but it inherits from a fully static type <code>A</code> that has an <code>x</code> attribute. We therefore know that whatever type the <code>Any</code> in its MRO materialises to, the type of <code>C.x</code> must be a consistent subtype of the type of <code>A.x</code>; <code>Literal[1] &amp; Any</code> is therefore a better type here than simply <code>Any</code>.</li>
+</ol>
+<p>This PR fixes these issues by reworking <code>types::Class::class_member</code>. The PR is best reviewed one commit at a time:</p>
+<ol>
+<li>The first commit is pure refactoring: it adds some new APIs to <code>Symbol</code> that moves the <code>Symbol</code> closer to our other <code>Outcome</code> enums. This refactoring makes commit 2 much easier.</li>
+<li>Commit 2 fixes the bugs described above.</li>
+</ol>
+<h2>Test Plan</h2>
+<p>New mdtests added, which all fail on <code>main</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-02-14 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-02-14 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-02-14 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-02-14 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-14 13:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:79 on 2025-02-14 13:05</div>
+            <div class="timeline-body"><p>In my work attempting to do a wholesale refactor of our <code>Outcome</code> enums, I looked for a while at whether it might be possible to use <code>Result</code>s for all of them. I'm no longer convinced that doing so would necessarily be a good idea, but it's still the case that a lot of the time we want to treat these <code>Outcome</code>s &quot;like <code>Result</code>s&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-14 14:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:79 on 2025-02-14 14:45</div>
+            <div class="timeline-body"><p>...and for more on that topic, see https://github.com/astral-sh/ruff/pull/16161 😃</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3843 on 2025-02-14 14:51</div>
+            <div class="timeline-body"><p>This should become &quot;easy&quot; with my refactor but requires fixing our float/int/bool parameter assignability first :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:79 on 2025-02-14 14:52</div>
+            <div class="timeline-body"><p>Hehe... I think using <code>Result</code>'s is good. The main awkward thing about them is composition AND that we can't add helper methods to them (unless we use an extension trait). But I think the &quot;somewhat more verbose&quot; is actually a good thing because it so far has been easy to do the wrong thing and hard to do the right thing. It should be the other way round ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-14 14:53</div>
+            <div class="timeline-body"><p>That overall makes sense to me and goes into the direction I'm heading in as well. I'd love to get a second review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4227 on 2025-02-14 22:27</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        //     from the non-dynamic members of the class's MRO.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4256 on 2025-02-14 22:37</div>
+            <div class="timeline-body"><p>Compared to the previous code, we are now hardcoding here the idea that all attributes of <code>Any</code> are also <code>Any</code>, and same for other dynamic types; we no longer actually call <code>.member()</code> on them, as the previous code did. I think this is probably fine, but maybe worth noting?</p>
+<p>(It does raise some interesting questions, which I don't think should be answered in this PR, about the definition of <code>member</code> for dynamic types. With this PR, and the way we construct the MRO when inheriting <code>Any</code> as <code>(A, Any, object)</code> given <code>class A(Any): pass</code>, for attributes defined on <code>object</code> we will give e.g. <code>Literal[object.__repr__] &amp; Any</code> as the type of <code>A.__repr__</code>. But really <code>Any</code> itself could be considered to implicitly inherit <code>object</code> (because any Python object must), so perhaps the type of <code>x: Any; x.__repr__</code> should also be <code>Literal[object.__repr__] &amp; Any</code>, not just <code>Any</code>?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-14 22:40</div>
+            <div class="timeline-body"><p>I like this, thanks for implementing it!</p>
+<p>It does feel a little bit like we have too many ways to represent the same thing now? As in, <code>Symbol</code> and <code>LookupResult</code> seem entirely isomorphic, so why do we have both? Maybe <code>LookupResult</code> should entirely replace <code>Symbol</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-15 17:54</div>
+            <div class="timeline-body"><blockquote>
+<p>It does feel a little bit like we have too many ways to represent the same thing now? As in, <code>Symbol</code> and <code>LookupResult</code> seem entirely isomorphic</p>
+</blockquote>
+<p>yep, that's exactly correct!</p>
+<blockquote>
+<p>so why do we have both? Maybe <code>LookupResult</code> should entirely replace <code>Symbol</code>?</p>
+</blockquote>
+<p>It's a great question. In my work looking at ways to refactor our <code>Outcome</code> enums, I looked for quite a while at whether it would be possible (and, whether it would be better!) to use <code>Result</code>s everywhere instead of custom <code>Outcome</code> enums (of which <code>Symbol</code> is one). https://github.com/astral-sh/ruff/compare/main...alex/typeops isn't the most recent attempt of mine to do this, but it is the most fully developed version of the idea that I produced. (It still has compilation failures, but it demonstrates the concept.)</p>
+<p>I still think it would be <em>possible</em> to use <code>Result</code>s everywhere for these enums. I'm no longer sure that it would necessarily be an improvement overall to use <code>Result</code>s everywhere, however. In some cases, like the cases highlighted in this PR, we want to group the possibly-unbound and definitely-unbound variants together -- the definitely bound case becomes <code>Ok</code> and the other two cases become <code>Err</code>. But there are also lots of places in which we want to group the definitely-bound variant with the possibly-unbound variant, e.g.</p>
+<p>https://github.com/astral-sh/ruff/blob/df45a9db641dc319184548cbf6685348657b10b8/crates/red_knot_python_semantic/src/symbol.rs#L99-L105</p>
+<p>There isn't a consistent way in which we want to subdivide the three variants; it depends quite a lot on context. So in some cases it makes more sense to think about it as a <code>Result</code>, and in other cases it just doesn't really help that much, I don't think.</p>
+<p>It still <em>might</em> make sense overall to use <code>Result</code>s everywhere. But it's a big change, and I was really struggling to pull off a wholesale refactor all at once. So for now I'm trying to propose incremental changes where they seem like clear improvements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-15 18:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4256 on 2025-02-15 18:11</div>
+            <div class="timeline-body"><p>Good points!... but I think if I synthesise your two points here, the conclusion I come to is that it would actually be incorrect to calling <code>Type::Any.member()</code> here? If we were to call a method on <code>Type::Any</code> here, I think we'd want the equivalent of <code>Type::Any::own_class_member()</code> (to avoid traversing up <code>Any</code>'s &quot;MRO&quot; and hitting <code>object</code>). But we obviously don't have an <code>own_class_member()</code> method for <code>Any</code> -- and there doesn't seem much point in adding one, since it would always just return <code>Any</code>!</p>
+<blockquote>
+<p>(It does raise some interesting questions, which I don't think should be answered in this PR, about the definition of <code>member</code> for dynamic types. With this PR, and the way we construct the MRO when inheriting <code>Any</code> as <code>(A, Any, object)</code> given <code>class A(Any): pass</code>, for attributes defined on <code>object</code> we will give e.g. <code>Literal[object.__repr__] &amp; Any</code> as the type of <code>A.__repr__</code>. But really <code>Any</code> itself could be considered to implicitly inherit <code>object</code> (because any Python object must), so perhaps the type of <code>x: Any; x.__repr__</code> should also be <code>Literal[object.__repr__] &amp; Any</code>, not just <code>Any</code>?)</p>
+</blockquote>
+<p>Yeah, I fully agree with all this, and it's consistent with the observations made in e.g. https://github.com/astral-sh/ruff/issues/15381. I guess partially fixing these issues (as I do in this PR) leaves things in a slightly inconsistent state... but I think you're right that scope creep here probably isn't a great idea 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-02-15 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-02-15 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-15 18:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:29 UTC
+    </footer>
+</body>
+</html>

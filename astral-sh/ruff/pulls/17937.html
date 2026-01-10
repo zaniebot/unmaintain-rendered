@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Update salsa - astral-sh/ruff #17937</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Update salsa</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17937">#17937</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-05-08 08:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-08 08:09</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<ul>
+<li>Update salsa to pull in https://github.com/salsa-rs/salsa/pull/850.</li>
+<li>Some refactoring of salsa event callbacks in various <code>Db</code>'s due to https://github.com/salsa-rs/salsa/pull/849</li>
+</ul>
+<p>closes https://github.com/astral-sh/ty/issues/108</p>
+<h2>Test Plan</h2>
+<p>Ran <code>cargo run --bin ty -- -vvv</code> on a test file to make sure that salsa Events are still logged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-05-08 08:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-05-08 08:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-05-08 08:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-05-08 08:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2025-05-08 08:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-08 08:13</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/db.rs</code>:52 on 2025-05-08 08:14</div>
+            <div class="timeline-body"><p><code>tracing::enabled</code> shouldn't change during a run. Therefore, it would be better to set the event handler to <code>None</code> if the <code>trace</code> level isn't enabled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-05-08 08:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/db.rs</code>:71 on 2025-05-08 08:15</div>
+            <div class="timeline-body"><p>This comment is no longer accurate. Can you say more why <code>get_mut</code> doesn't work here anymore?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-08 08:16</div>
+            <div class="timeline-body"><p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-05-08 08:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/db.rs</code>:71 on 2025-05-08 08:21</div>
+            <div class="timeline-body"><p>Right, I also just noticed that and it's already removed.</p>
+<p><code>Arc::get_mut</code> requires exclusive access (to the content, i.e. the <code>Mutex&lt;…&gt;</code>). But we cloned the <code>Arc</code> above. There is a reference to the content (<code>Mutex</code>) captured in the event handler callback. But we don't need exclusive access to the <code>Mutex</code>! We need exclusive access to the <code>Vec</code> stored <em>inside</em> the <code>Mutex</code>. But that's what <code>Mutex</code> is for. We just need to get a <code>.lock()</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-08 08:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/db.rs</code>:71 on 2025-05-08 08:24</div>
+            <div class="timeline-body"><p>Let me have a closer look. I do think that using an <code>Arc</code> here was intentional to enforce the constraint that it's never possible to take the events while holding a reference to another db (<code>db</code> is <code>Clone</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-05-08 08:27</div>
+            <div class="timeline-body"><p>This is great. Thanks for doing it. Looks good, but we should set the event handler to <code>None</code> if the <code>trace</code> level is disabled (which should always be true in release builds)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-08 08:27</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/mesonbuild/meson-python">mesonbuild/meson-python</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to read tests/packages/symlinks/baz.py: No such file or directory (os error 2)
+error: Failed to read tests/packages/symlinks/qux.py: No such file or directory (os error 2)
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/mesonbuild/meson-python">mesonbuild/meson-python</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to read tests/packages/symlinks/baz.py: No such file or directory (os error 2)
+error: Failed to read tests/packages/symlinks/qux.py: No such file or directory (os error 2)
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-05-08 08:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_project/src/db.rs</code>:52 on 2025-05-08 08:30</div>
+            <div class="timeline-body"><p>Done. I tried a few variations because I wanted to pull it out into a variable (and potentially use <code>bool::then</code>), but that requires a complex type annotations, so I just left it inline.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/db.rs</code>:71 on 2025-05-08 08:36</div>
+            <div class="timeline-body"><p>Oh, that might explain the use of <code>Arc::get_mut</code>. In this case, should we have an additional <code>count: Arc&lt;()&gt;</code> member (or similar) to enforce that constraint?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-05-08 08:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-05-08 08:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @sharkdp on 2025-05-08 08:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-05-08 08:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @sharkdp on 2025-05-08 08:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-05-08 10:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-05-08 10:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-08 10:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:30 UTC
+    </footer>
+</body>
+</html>

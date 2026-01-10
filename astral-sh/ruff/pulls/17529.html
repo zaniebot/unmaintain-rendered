@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Default to latest supported Python version for version-related syntax errors - astral-sh/ruff #17529</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Default to latest supported Python version for version-related syntax errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17529">#17529</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-04-21 21:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-21 21:05</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR partially addresses #16418 via the following:</p>
+<ul>
+<li><code>LinterSettings::unresolved_python_version</code> is now a <code>TargetVersion</code>, which is a thin wrapper around an <code>Option&lt;PythonVersion&gt;</code></li>
+<li><code>Checker::target_version</code> now calls <code>TargetVersion::linter_version</code> internally, which in turn uses <code>unwrap_or_default</code> to preserve the current default behavior</li>
+<li>Calls to the parser now call <code>TargetVersion::parser_version</code>, which calls <code>unwrap_or_else(PythonVersion::latest)</code></li>
+<li>The <code>Checker</code>'s implementation of <code>SemanticSyntaxContext::python_version</code> also uses <code>TargetVersion::parser_version</code> to use <code>PythonVersion::latest</code> for semantic errors</li>
+</ul>
+<p>In short, all lint rule behavior should be unchanged, but we default to the latest Python version for the new syntax errors, which should minimize confusing version-related syntax errors for users without a version configured.</p>
+<h2>Test Plan</h2>
+<p>Existing tests, which showed no changes (except for printing default settings).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @ntBre on 2025-04-21 21:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-04-21 21:11</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/brent%2Fdefault-python-version">CodSpeed Performance Report</a></h2>
+<h3>Merging #17529 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>brent/default-python-version</code> (3ef26d0) with <code>main</code> (a4c8e43)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 33</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-21 21:11</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -6 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/facebookresearch/chameleon">facebookresearch/chameleon</a> (+0 -6 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/facebookresearch/chameleon/blob/dbbe47fdbc7a3cc4982ae931fea75e227262e70a/chameleon/viewer/backend/models/chameleon_distributed.py#L405'>chameleon/viewer/backend/models/chameleon_distributed.py:405:13:</a> SyntaxError: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- <a href='https://github.com/facebookresearch/chameleon/blob/dbbe47fdbc7a3cc4982ae931fea75e227262e70a/chameleon/viewer/backend/models/chameleon_distributed.py#L818'>chameleon/viewer/backend/models/chameleon_distributed.py:818:17:</a> SyntaxError: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- <a href='https://github.com/facebookresearch/chameleon/blob/dbbe47fdbc7a3cc4982ae931fea75e227262e70a/chameleon/viewer/backend/models/chameleon_local.py#L633'>chameleon/viewer/backend/models/chameleon_local.py:633:13:</a> SyntaxError: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- <a href='https://github.com/facebookresearch/chameleon/blob/dbbe47fdbc7a3cc4982ae931fea75e227262e70a/chameleon/viewer/backend/models/service.py#L131'>chameleon/viewer/backend/models/service.py:131:21:</a> SyntaxError: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- <a href='https://github.com/facebookresearch/chameleon/blob/dbbe47fdbc7a3cc4982ae931fea75e227262e70a/chameleon/viewer/backend/models/service.py#L154'>chameleon/viewer/backend/models/service.py:154:17:</a> SyntaxError: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- <a href='https://github.com/facebookresearch/chameleon/blob/dbbe47fdbc7a3cc4982ae931fea75e227262e70a/chameleon/viewer/backend/models/service.py#L226'>chameleon/viewer/backend/models/service.py:226:25:</a> SyntaxError: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| SyntaxError: | 6 | 0 | 6 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-21 22:08</div>
+            <div class="timeline-body"><p>The ecosystem checks broadly look correct; these projects don't have <code>ruff.toml</code> files or <code>requires-python</code> specified in their <code>pyproject.toml</code> files (at least in the repo root, I didn't look for other files). However, for PLC2801, I should probably narrow the scope of the early version return a bit. It's only relevant for <code>__aiter__</code> and <code>__anext__</code> dunder methods, not all of them, so those are now false negatives. UP035 could probably be narrowed a bit too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-22 07:25</div>
+            <div class="timeline-body"><p>I haven't started reviewing the PR yet but just a remark on the design.</p>
+<p>My only <em>concern</em> with this approach is that it won't work for Red Knot because it currently always requires to know exactly which Python version it is checking. Having said that, I'm okay with ignoring this limitation for now because we may be able to lift this Red Knot restriction in the future by supporting multi-version checking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-04-24 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-04-24 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-24 20:37</div>
+            <div class="timeline-body"><p>As mentioned above, I updated the <code>PLC2801</code> and <code>UP035</code> checks to avoid as many false negatives as possible. It didn't change the ecosystem results for <code>UP035</code>, but it will affect imports from the <code>collections</code> or <code>pipes</code> modules, which are not version-dependent.</p>
+<p>Thanks for the additional context on red-knot's approach. I think this is ready for review if the design sounds reasonable otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-25 06:47</div>
+            <div class="timeline-body"><p>I think I'd find it useful to have a small write up that walks through the different places where we now change the default and explains why it's important that we pick a different default and why that specific default.</p>
+<p>I've a slight concern that we now have multiple defaults and it's unclear to even me when we pick which one. I worry that it will be very hard for users to understand what's going on and even harder for us to make this self explanatory in the tool (e.g. by attaching notes in diagnostics). Could we come up with a simpler approach that assumes fewer different versions or maybe simply disables certain checks if no version's specified?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-01 17:45</div>
+            <div class="timeline-body"><p>I think this should now be up to date with our internal discussions. In summary (I'll update the PR summary to something like this once this is up to date):</p>
+<ul>
+<li><code>LinterSettings::unresolved_python_version</code> is now an Option<PythonVersion></li>
+<li><code>Checker::target_version</code> now calls <code>unwrap_or_default</code> internally, so the behavior in most cases is unchanged</li>
+<li>Calls to the parser now call <code>unwrap_or_else(PythonVersion::latest)</code></li>
+<li>The <code>Checker</code>'s implementation of <code>SemanticSyntaxContext::python_version</code> also calls <code>unwrap_or_else(PythonVersion::latest)</code></li>
+</ul>
+<h2>TODOs</h2>
+<p>I left two literal TODOs in <code>configuration.rs</code> for the <code>target_version</code> fields on <code>FormatterSettings</code> and <code>AnalyzeSettings</code>. Do we want to change anything for those, or should I just delete the comments?</p>
+<p>My other question is: should we go ahead and merge this? I put the <code>breaking</code> label on it when I thought it would be a larger change that needed to wait for a minor release. Now that it only affects syntax errors, I think it could be more reasonable to merge anyway. Alternatively, we could just merge the <code>Option&lt;PythonVersion&gt;</code> changes here and only save the smaller syntax error changes for a future release. That might be easier than keeping this whole branch updated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-05-01 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-01 17:49</div>
+            <div class="timeline-body"><blockquote>
+<p>I left two literal TODOs in configuration.rs for the target_version fields on FormatterSettings and AnalyzeSettings. Do we want to change anything for those, or should I just delete the comments?</p>
+</blockquote>
+<p>I don't think we need to change anything here (assuming they still default to lowest supported)</p>
+<blockquote>
+<p>My other question is: should we go ahead and merge this? I put the breaking label on it when I thought it would be a larger change that needed to wait for a minor release. Now that it only affects syntax errors, I think it could be more reasonable to merge anyway. Alternatively, we could just merge the Option<PythonVersion> changes here and only save the smaller syntax error changes for a future release. That might be easier than keeping this whole branch updated.</p>
+</blockquote>
+<p>I think landing this without breaking should be fine because it only impacts version-specific syntax and semantic errors, both are behind preview.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:526 on 2025-05-01 17:50</div>
+            <div class="timeline-body"><p>It might be useful to add some more documentation here of what the version represents and to what it defaults</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:586 on 2025-05-01 17:50</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        self.target_version()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/filesystem.rs</code>:22 on 2025-05-01 17:51</div>
+            <div class="timeline-body"><p>It would be nice if we could handle the default elsewhere. E.g. on the call site. I would prefer to have the default handling in as few places as possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-01 17:52</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think we need to change anything here (assuming they still default to lowest supported)</p>
+</blockquote>
+<p>Yep, they still <code>unwrap_or_default</code>. I'll delete the comments.</p>
+<blockquote>
+<p>I think landing this without breaking should be fine because it only impacts version-specific syntax and semantic errors, both are behind preview.</p>
+</blockquote>
+<p>Ah of course, I keep forgetting they're still in preview. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> removed by @ntBre on 2025-05-01 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-05-01 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-01 17:53</div>
+            <div class="timeline-body"><p>Overall looks good but I think we should try to find a better place for the default handling. I'm worried by the amount of places where we now have to call <code>unwrap_or_default</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Update default Python version handling in the linter" to "Default to latest supported Python version for version-related syntax errors" by @ntBre on 2025-05-01 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-01 17:54</div>
+            <div class="timeline-body"><p>You also need to update the PR summary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-01 17:55</div>
+            <div class="timeline-body"><blockquote>
+<p>You also need to update the PR summary.</p>
+</blockquote>
+<p>Will do! I was just waiting to see if there were any other big changes before I rewrote it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-01 17:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:586 on 2025-05-01 17:55</div>
+            <div class="timeline-body"><p>I thought we wanted <code>latest</code> for the semantic errors? This would restore it to <code>PythonVersion::default()</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-01 18:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:586 on 2025-05-01 18:09</div>
+            <div class="timeline-body"><p>Oh right. sorry</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-01 18:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:586 on 2025-05-01 18:20</div>
+            <div class="timeline-body"><p>No worries, I previously had a <code>Checker</code> method for this (<code>target_version_or_latest</code>), but this ended up being the only place it was called, so I just inlined it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-01 18:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/filesystem.rs</code>:22 on 2025-05-01 18:21</div>
+            <div class="timeline-body"><p>I was able to move the unwrap in this case up to <code>check_path</code>, but I went through the others and didn't see any more we could fix. Anything that goes through <code>check_ast</code> needs to have the <code>Option</code> because <code>check_ast</code> constructs a <code>Checker</code>, which also contains an <code>Option</code>. That brings us down to only two <code>unwrap_or_default</code> calls, both in <code>check_path</code>.</p>
+<p>I think the <code>unwrap_or_latest</code> calls are as restricted as possible too, with only four of them in non-test code, and two of those are outside of the linter in <code>ruff_wasm</code> and <code>ruff_server</code>.</p>
+<p>I agree in general, though, so I'm happy to update more of these if I'm missing a nicer solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-01 18:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:526 on 2025-05-01 18:24</div>
+            <div class="timeline-body"><p>Sounds good. I had something longer here that I deleted because the <code>target_version</code> field is more private than this method, so I was thinking that, at the <code>pub(crate)</code> level, the fact that this is an <code>Option</code> is hidden. But it makes sense to document it somewhere, and this seems like a good place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-01 19:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/filesystem.rs</code>:22 on 2025-05-01 19:20</div>
+            <div class="timeline-body"><p>Actually, maybe we could make <code>ParseOptions::with_target_version</code> take an option and handle the unwrap once internally, if that would be preferable. I haven't tried it yet, but I don't think that would cause problems anywhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/filesystem.rs</code>:22 on 2025-05-02 06:31</div>
+            <div class="timeline-body"><p>I'm not too concerned about passing <code>Option</code>. That's just what we need to do. I'm more concerned about the number of places where we need to change to get <em>consistent</em> behavior. It seems very easy to miss updating one of those places.</p>
+<blockquote>
+<p>Actually, maybe we could make ParseOptions::with_target_version take an option and handle the unwrap once internally, if that would be preferable</p>
+</blockquote>
+<p>I think I'd prefer changing the <code>ParseOptions::default</code> to initialize to the latest version and to either:</p>
+<ul>
+<li>Only call <code>with_target_version</code> if <code>target_version</code> is <code>Some</code></li>
+<li>Change <code>with_target_version</code> to take an <code>Option</code> and only set it if it isn't <code>None</code></li>
+</ul>
+<p>Unless changing the default results in a too big fall out with tests?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/configuration.rs</code>:188 on 2025-05-02 06:32</div>
+            <div class="timeline-body"><p>I thikn I'd prefer to instead leave line 167 unchanged to only have a single <code>unwrap_or_default</code> in <code>into_settings</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:586 on 2025-05-02 06:35</div>
+            <div class="timeline-body"><p>It would be great to have a comment here explaining why we use <code>latest</code> instead of default. It's very subtle</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/linter.rs</code>:163 on 2025-05-02 06:42</div>
+            <div class="timeline-body"><p>Would it help if <code>check_path</code> (et al) would take a <code>TargetVersion</code> struct instead that has two methods (or even in <code>LinterSettings</code> or for all tools?):</p>
+<ul>
+<li><code>linter_version</code></li>
+<li><code>parser_version</code></li>
+<li>(<code>formatter_version</code>)</li>
+</ul>
+<p>It's a thin wrapper around an <code>Option&lt;PythonVersion&gt;</code></p>
+<p>It would give us a place to document the decision why we use one version for a specific tool and it doesn't repeat the decision in many different places.</p>
+<p>That makes me wonder if we should also pass this struct to the formatter and analyze so that they can initialize the parser with the right version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-02 06:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-05-02 20:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-02 21:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/linter.rs</code>:163 on 2025-05-02 21:29</div>
+            <div class="timeline-body"><p>Oh yeah, I think that's a great idea. That was roughly my intention earlier with two <code>Checker</code> methods, but the parser didn't get a whole <code>Checker</code>, so I couldn't get it to work out nicely. Wrapping <code>Option&lt;PythonVersion&gt;</code> seems like it would help a lot.</p>
+<blockquote>
+<p>That makes me wonder if we should also pass this struct to the formatter and analyze so that they can initialize the parser with the right version.</p>
+</blockquote>
+<p>Ooh good catch. Although it may not be a big deal in these cases if they aren't emitting the errors. It looks like both of these don't actually pass any Python version to the parser currently, so it's just using the default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-05 22:24</div>
+            <div class="timeline-body"><p>Could I get one more quick review here? I think the <code>TargetVersion</code> changes helped a lot, but I want to make sure it's what you had in mind.</p>
+<p>I think the three (minor) things I'm not sure about are</p>
+<ul>
+<li>The <code>Display</code> impl for <code>TargetVersion</code> - is there a way to do this with <code>display_settings!</code> directly? (inline the inner option while also using <code>| optional</code>)</li>
+<li>The <code>Checker::target_version</code> method - I feel like this should return a <code>TargetVersion</code>, but then every lint rule would have to call <code>.linter_version()</code> itself. So I think this is still a nice convenience method</li>
+<li>Should <code>TargetVersion</code> be in <code>settings::types</code> instead of <code>settings</code>?</li>
+</ul>
+<p>We could also reuse <code>TargetVersion</code> in the formatter and analyze settings, but I think that would make sense in a follow-up PR or two.</p>
+<p>As an even smaller note, I know we usually prefer calling <code>TargetVersion::from</code>, but tacking the <code>into</code> calls on here was so much easier. Hopefully that's okay!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:534 on 2025-05-06 11:50</div>
+            <div class="timeline-body"><p>I agree that this method is still useful. It's somewhat confusing that it's called <code>target-version</code> and returns a <code>PythonVersion</code> but renaming it to <code>python_version</code> might be equally confusing because of the method on <code>SemanticSyntaxContext</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-05-06 11:52</div>
+            <div class="timeline-body"><p>Looks good. Thanks for following up on this.</p>
+<p>I haven't used <code>display_settings</code> myself but I think it also supports calling the debug implementation instead of <code>Display</code>. But I think what you have is fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-06 14:19</div>
+            <div class="timeline-body"><p>I double-checked the ecosystem results, and chameleon has a <a href="https://github.com/facebookresearch/chameleon/blob/dbbe47fdbc7a3cc4982ae931fea75e227262e70a/pyproject.toml">pyproject.toml</a> but no project-level <code>requires-python</code> setting (only a <code>build-system.requires-python</code> and a <code>tool.mypy.python_version</code>, which I don't think we read), so I believe we are accurately falling back to a default value, which is now high enough to avoid the <code>match</code> syntax error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-05-06 14:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-05-06 14:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-06 14:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:30 UTC
+    </footer>
+</body>
+</html>

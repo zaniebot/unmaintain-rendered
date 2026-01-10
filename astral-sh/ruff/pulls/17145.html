@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Fix equivalence of differently ordered unions that contain `Callable` types - astral-sh/ruff #17145</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Fix equivalence of differently ordered unions that contain <code>Callable</code> types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17145">#17145</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-04-02 10:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-02 10:38</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ruff/issues/17058.</p>
+<p>Equivalent callable types were not understood as equivalent when they appeared nested inside unions and intersections. This PR fixes that by ensuring that <code>Callable</code> elements nested inside unions, intersections and tuples have their representations normalized before one union type is compared with another for equivalence, or before one intersection type is compared with another for equivalence.</p>
+<p>The normalizations applied to a <code>Callable</code> type are:</p>
+<ul>
+<li>the type of the default value is stripped from all parameters (only whether the parameter <em>has</em> a default value is relevant to whether one <code>Callable</code> type is equivalent to another)</li>
+<li>The names of the parameters are stripped from positional-only parameters, variadic parameters and keyword-variadic parameters</li>
+<li>Unions and intersections that are present (top-level or nested) inside parameter annotations or return annotations are normalized.</li>
+</ul>
+<p>Adding a <code>CallableType::normalized()</code> method also allows us to simplify the implementation of <code>CallableType::is_equivalent_to()</code>.</p>
+<h3>Should these normalizations be done eagerly as part of a <code>CallableType</code> constructor?</h3>
+<p>I considered this. It's something that we could still consider doing in the future; this PR doesn't rule it out as a possibility. However, I didn't pursue it for now, for several reasons:</p>
+<ol>
+<li><p>Our current <code>Display</code> implementation doesn't handle well the possibility that a parameter might not have a name or an annotated type. Callable types with parameters like this would be displayed as follows:</p>
+<pre><code class="language-py">(, ,) -&gt; None: ...
+</code></pre>
+<p>That's fixable! It could easily become something like <code>(Unknown, Unknown) -&gt; None: ...</code>. But it also illustrates that we probably want to retain the parameter names when displaying the signature of a <code>lambda</code> function if you're hovering over a reference to the lambda in an IDE. Currently we don't have a <code>LambdaType</code> struct for representing <code>lambda</code> functions; if we wanted to eagerly normalize signatures when creating <code>CallableType</code>s, we'd probably have to add a <code>LambdaType</code> struct so that we would retain the full signature of a <code>lambda</code> function, rather than representing it as an eagerly simplified <code>CallableType</code>.</p>
+</li>
+<li><p>In order to ensure that it's impossible to create <code>CallableType</code>s without the parameters being normalized, I'd either have to create an alternative <code>SimplifiedSignature</code> struct (which would duplicate a lot of code), or move <code>CallableType</code> to a new module so that the only way of constructing a <code>CallableType</code> instance would be via a constructor method that performs the normalizations eagerly on the callable's signature. Again, this isn't a dealbreaker, and I think it's still an option, but it would be a lot of churn, and it didn't seem necessary for now. Doing it this way, at least to start with, felt like it would create a diff that's easier to review and felt like it would create fewer merge conflicts for others.</p>
+</li>
+</ol>
+<h2>Test Plan</h2>
+<ul>
+<li>Added a regression mdtest for https://github.com/astral-sh/ruff/issues/17058</li>
+<li>Ran <code>QUICKCHECK_TESTS=1000000 cargo test --release -p red_knot_python_semantic -- --ignored types::property_tests::stable</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-04-02 10:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-04-02 10:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-04-02 10:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-04-02 10:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-04-02 10:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @AlexWaygood on 2025-04-02 10:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-02 10:40</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-02 15:37</div>
+            <div class="timeline-body"><blockquote>
+<p>Should these normalizations be done eagerly as part of a <code>CallableType</code> constructor?</p>
+</blockquote>
+<p>There's some context on this in https://github.com/astral-sh/ty/issues/165 and the linked comment in that issue description.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-02 15:42</div>
+            <div class="timeline-body"><p>This looks good to me. Might be nice for @dhruvmanila to take a look as well?</p>
+<p>The tests don't really seem to cover any of the parameter normalization behaviors?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-02 15:46</div>
+            <div class="timeline-body"><blockquote>
+<p>The tests don't really seem to cover any of the parameter normalization behaviors?</p>
+</blockquote>
+<p>In <code>is_equivalent_to.md</code>, <code>f3</code> and <code>f4</code> have equivalent <code>Callable</code> supertypes even though their parameters are differently named. The differently named parameters caused the added test to fail previously: the <code>Callable</code> supertypes would compare equivalent if you compared them directly, but would not compare equivalent when nested inside unions and intersections. So the tests cover one part of the parameter normalization behaviour; the tests fail without those specific changes.</p>
+<p>I should also add a test where there a parameter in a function <code>X</code> has a different default value type to a parameter in a function <code>Y</code>, though; that's a good point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4724 on 2025-04-02 15:47</div>
+            <div class="timeline-body"><p>Re-using the implementation for <code>is_equivalent_to</code> and <code>is_gradual_equivalent_to</code> does have the benefit of only looping over the parameters once while the updated implementation in this PR would be doing that multiple times. I have a slight preference of keep using it as the implementation is going to keep existing unless we change <code>is_gradual_equivalent_to</code> and it also makes the difference between the two implementation easier to reason about.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-02 16:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-04-02 16:26</div>
+            <div class="timeline-body"><p>This looks good apart from one minor comment, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-02 16:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4724 on 2025-04-02 16:29</div>
+            <div class="timeline-body"><p>That's fair. I think at some future point when we have benchmarks with bigger unions and intersections in them, we might experiment with making <code>Type::normalized</code> a Salsa-tracked method, so that once we've done the normalization once we'd never have to do it again. If we do that, it might make sense to go with my new implementation: it'll be slower the first time, but very cheap after that. But we can revisit this if/when we add caching. I'll revert the change to <code>is_equivalent_to</code> for now -- thanks for the pushback!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-04-02 17:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-04-02 17:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-02 17:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:29 UTC
+    </footer>
+</body>
+</html>

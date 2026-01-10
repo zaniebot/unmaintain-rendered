@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Add basic support for non-virtual Python environments - astral-sh/ruff #17991</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Add basic support for non-virtual Python environments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17991">#17991</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-05-09 17:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-09 17:28</div>
+            <div class="timeline-body"><p>This adds basic support for non-virtual Python environments by accepting a directory without a <code>pyvenv.cfg</code> which allows existing, subsequent site-packages discovery logic to succeed. We can do better here in the long-term, by adding more eager validation (for error messages) and parsing the Python version from the discovered site-packages directory (which isn't relevant yet, because we don't use the discovered Python version from virtual environments as the default <code>--python-version</code> yet either).</p>
+<p>Related</p>
+<ul>
+<li>https://github.com/astral-sh/ty/issues/265</li>
+<li>https://github.com/astral-sh/ty/issues/193</li>
+</ul>
+<p>You can review this commit by commit if it makes you happy.</p>
+<p>I tested this manually; I think refactoring the test setup is going to be a bit more invasive so I'll stack it on top (see https://github.com/astral-sh/ruff/pull/17996).</p>
+<pre><code>❯ uv run ty check --python /Users/zb/.local/share/uv/python/cpython-3.10.17-macos-aarch64-none/ -vv example
+2025-05-09 12:06:33.685911 DEBUG Version: 0.0.0-alpha.7 (f9c4c8999 2025-05-08)
+2025-05-09 12:06:33.685987 DEBUG Architecture: aarch64, OS: macos, case-sensitive: case-insensitive
+2025-05-09 12:06:33.686002 DEBUG Searching for a project in '/Users/zb/workspace/ty'
+2025-05-09 12:06:33.686123 DEBUG Resolving requires-python constraint: `&gt;=3.8`
+2025-05-09 12:06:33.686129 DEBUG Resolved requires-python constraint to: 3.8
+2025-05-09 12:06:33.686142 DEBUG Project without `tool.ty` section: '/Users/zb/workspace/ty'
+2025-05-09 12:06:33.686147 DEBUG Searching for a user-level configuration at `/Users/zb/.config/ty/ty.toml`
+2025-05-09 12:06:33.686156 INFO Defaulting to python-platform `darwin`
+2025-05-09 12:06:33.68636 INFO Python version: Python 3.8, platform: darwin
+2025-05-09 12:06:33.686375 DEBUG Adding first-party search path '/Users/zb/workspace/ty'
+2025-05-09 12:06:33.68638 DEBUG Using vendored stdlib
+2025-05-09 12:06:33.686634 DEBUG Discovering site-packages paths from sys-prefix `/Users/zb/.local/share/uv/python/cpython-3.10.17-macos-aarch64-none` (`--python` argument')
+2025-05-09 12:06:33.686667 DEBUG Attempting to parse virtual environment metadata at '/Users/zb/.local/share/uv/python/cpython-3.10.17-macos-aarch64-none/pyvenv.cfg'
+2025-05-09 12:06:33.686671 DEBUG Searching for site-packages directory in `sys.prefix` path `/Users/zb/.local/share/uv/python/cpython-3.10.17-macos-aarch64-none`
+2025-05-09 12:06:33.686702 DEBUG Resolved site-packages directories for this environment are: [&quot;/Users/zb/.local/share/uv/python/cpython-3.10.17-macos-aarch64-none/lib/python3.10/site-packages&quot;]
+2025-05-09 12:06:33.686706 DEBUG Adding site-packages search path '/Users/zb/.local/share/uv/python/cpython-3.10.17-macos-aarch64-none/lib/python3.10/site-packages'
+...
+
+❯ uv run ty check --python /tmp -vv example
+2025-05-09 15:36:10.819416 DEBUG Version: 0.0.0-alpha.7 (f9c4c8999 2025-05-08)
+2025-05-09 15:36:10.819708 DEBUG Architecture: aarch64, OS: macos, case-sensitive: case-insensitive
+2025-05-09 15:36:10.820118 DEBUG Searching for a project in '/Users/zb/workspace/ty'
+2025-05-09 15:36:10.821652 DEBUG Resolving requires-python constraint: `&gt;=3.8`
+2025-05-09 15:36:10.821667 DEBUG Resolved requires-python constraint to: 3.8
+2025-05-09 15:36:10.8217 DEBUG Project without `tool.ty` section: '/Users/zb/workspace/ty'
+2025-05-09 15:36:10.821888 DEBUG Searching for a user-level configuration at `/Users/zb/.config/ty/ty.toml`
+2025-05-09 15:36:10.822072 INFO Defaulting to python-platform `darwin`
+2025-05-09 15:36:10.822439 INFO Python version: Python 3.8, platform: darwin
+2025-05-09 15:36:10.822773 DEBUG Adding first-party search path '/Users/zb/workspace/ty'
+2025-05-09 15:36:10.822929 DEBUG Using vendored stdlib
+2025-05-09 15:36:10.829872 DEBUG Discovering site-packages paths from sys-prefix `/tmp` (`--python` argument')
+2025-05-09 15:36:10.829911 DEBUG Attempting to parse virtual environment metadata at '/private/tmp/pyvenv.cfg'
+2025-05-09 15:36:10.829917 DEBUG Searching for site-packages directory in `sys.prefix` path `/private/tmp`
+ty failed
+  Cause: Invalid search path settings
+  Cause: Failed to discover the site-packages directory: Failed to search the `lib` directory of the Python installation at `sys.prefix` path `/private/tmp` for `site-packages`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @zanieb on 2025-05-09 17:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-09 17:31</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- error[invalid-return-type] src/hydra_zen/wrapper/_implementations.py:945:16: Return type does not match returned value: Expected `DataClass_`, found `@Todo(unsupported type[X] special form) | (((...) -&gt; Any) &amp; dict[Unknown, Unknown]) | (DataClass_ &amp; dict[Unknown, Unknown]) | (list[Any] &amp; dict[Unknown, Unknown]) | dict[Any, Any] | (((...) -&gt; Any) &amp; list[Unknown]) | (DataClass_ &amp; list[Unknown]) | list[Any]`
++ error[invalid-return-type] src/hydra_zen/wrapper/_implementations.py:945:16: Return type does not match returned value: Expected `DataClass_`, found `@Todo(unsupported type[X] special form) | (((...) -&gt; Any) &amp; dict[Unknown, Unknown]) | (DataClass_ &amp; dict[Unknown, Unknown]) | (list[Any] &amp; dict[Unknown, Unknown]) | dict[Any, Any] | (((...) -&gt; Any) &amp; list[Unknown]) | (DataClass_ &amp; list[Unknown]) | list[Any] | (dict[Any, Any] &amp; list[Unknown])`
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2025-05-09 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @zanieb on 2025-05-09 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @zanieb on 2025-05-09 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @zanieb on 2025-05-09 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @zanieb on 2025-05-09 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-09 22:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ty_python_semantic/src/site_packages.rs</code>:44 on 2025-05-09 22:11</div>
+            <div class="timeline-body"><p>We should probably not use this fallback if the <code>origin</code> is specific to virtual environments, I can do that in a follow-up since it's not critical and I'll need to build on #17996 to add test coverage.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ty_python_semantic/src/site_packages.rs</code>:44 on 2025-05-10 12:52</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/ruff/pull/18003</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-10 12:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add basic support for non-virtual Python environments" to "[ty] Add basic support for non-virtual Python environments" by @zanieb on 2025-05-10 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/site_packages.rs</code>:617 on 2025-05-10 14:05</div>
+            <div class="timeline-body"><p>this is part of the <code>prelude</code></p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-05-10 14:09</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-10 14:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ty_python_semantic/src/site_packages.rs</code>:617 on 2025-05-10 14:39</div>
+            <div class="timeline-body"><p>No clue why the editor added that / why Clippy wouldn't remove it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-10 14:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ty_python_semantic/src/site_packages.rs</code>:617 on 2025-05-10 14:46</div>
+            <div class="timeline-body"><p>(I'll remove this before merging, but won't update it until then because I'll need to rebase the whole stack)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-05-10 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-05-10 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-10 20:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:31 UTC
+    </footer>
+</body>
+</html>

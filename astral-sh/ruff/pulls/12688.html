@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Infer boolean literal expression - astral-sh/ruff #12688</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Infer boolean literal expression</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12688">#12688</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-08-05 12:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-05 12:12</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR implements type inference for boolean literal expressions.</p>
+<h2>Test Plan</h2>
+<p>Add test cases for <code>True</code> and <code>False</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2024-08-05 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2024-08-05 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-08-05 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2024-08-05 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-05 12:26</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:180 on 2024-08-05 12:41</div>
+            <div class="timeline-body"><p>Here we'll want to fall back to looking up attributes and methods on the <code>builtins.bool</code> class in our vendored typeshed stubs. But I think we can defer that for this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-05 12:59</div>
+            <div class="timeline-body"><p>Nice. These changes all look good to me.</p>
+<p>I have a concern about union types, though. How do we want a union of boolean literals to be represented internally? For an object that could be the <code>True</code> constant or could be the <code>False</code> constant, should we infer <code>Literal[True] | Literal[False]</code> (a union of literals), or should we eagerly normalize it to <code>&lt;instance of bool&gt;</code> (since we know that the <code>bool</code> class is special: there will only be two possible instance of <code>bool</code>).</p>
+<ul>
+<li>If the former, I think we will want to modify the <code>Display</code> implementation for <code>DisplayUnionType</code> so that <code>Literal[True] | Literal[False]</code> is simplified to <code>Literal[True, False]</code>, the same as we do for numeric literals</li>
+<li>If the latter, some larger changes will be required</li>
+</ul>
+<p>Mypy appears never to normalize <code>Literal[True, False]</code> to <code>bool</code>; pyright appears to always do so. (<a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=425775a11740556527e3fb397a289ae4">Link</a>, <a href="https://pyright-play.net/?pyrightVersion=1.1.368&amp;code=JYWwDg9gTgLgBFAhgOwCYRAKAGZQ3GATzGGQHM5RJY4AZYGAUyQBtNMAPALjoecRYBtACpQArowC6cALxxREzIR70mrQQDEBAZymy4WlrvbBsCFOhAA6AMYALCMBuMAFCPGMANAZ1SAlFyYcMFwAF76HJiMRoyBIWH6hOxQjABujAIA%2BkRgrqF%2B7KiMZtgu3LxqAu4S3oa6kgFBISnpWTmuHH5AA">link</a>.) I think I weakly favour pyright's approach here, but not sure.</p>
+<p>A separate question (which I think can almost certainly be deferred for now) is that @carljm added some fancy logic for int literals in <code>infer_binary_expression</code>. We could also add some understanding of <code>bool</code> literals to that method, since <code>True + True == True + 1 == 1 + 1 == 2</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-08-05 13:04</div>
+            <div class="timeline-body"><p>I actually think even the concern I have about union types can probably be deferred for now. So I'm happy with this landing as-is, as long as we keep track of these open questions somewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-05 14:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Mypy appears never to normalize <code>Literal[True, False]</code> to <code>bool</code>; pyright appears to always do so. (<a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=425775a11740556527e3fb397a289ae4">Link</a>, <a href="https://pyright-play.net/?pyrightVersion=1.1.368&amp;code=JYWwDg9gTgLgBFAhgOwCYRAKAGZQ3GATzGGQHM5RJY4AZYGAUyQBtNMAPALjoecRYBtACpQArowC6cALxxREzIR70mrQQDEBAZymy4WlrvbBsCFOhAA6AMYALCMBuMAFCPGMANAZ1SAlFyYcMFwAF76HJiMRoyBIWH6hOxQjABujAIA%2BkRgrqF%2B7KiMZtgu3LxqAu4S3oa6kgFBISnpWTmuHH5AA">link</a>.) I think I weakly favour pyright's approach here, but not sure.</p>
+</blockquote>
+<p>What's the benefit of the one or the other? I think I'd prefer Pyright's approach as well because it can be resolved.</p>
+<blockquote>
+<p>A separate question (which I think can almost certainly be deferred for now) is that @carljm added some fancy logic for int literals in <code>infer_binary_expression</code>. We could also add some understanding of <code>bool</code> literals to that method, since <code>True + True == True + 1 == 1 + 1 == 2</code></p>
+</blockquote>
+<p>Yes, I started playing around with binary expressions as well but thought to have it as it's own PR which would include all possible combinations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-05 14:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:180 on 2024-08-05 14:27</div>
+            <div class="timeline-body"><p>What's the meaning of &quot;member&quot; in this context? From what I understand, it's the type of an attribute on the given type. So, for instance, <code>set.append</code> would be a function type. Is this understanding correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-05 14:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:180 on 2024-08-05 14:28</div>
+            <div class="timeline-body"><p>Yes, your understanding is correct there</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-05 14:35</div>
+            <div class="timeline-body"><blockquote>
+<p>What's the benefit of the one or the other? I think I'd prefer Pyright's approach as well because it can be resolved.</p>
+</blockquote>
+<p>I think one &quot;benefit&quot; of mypy's approach is that you don't have to apply quite so much special casing to boolean literals specifically inside the type checker implementation when figuring out how unions of boolean literals resolve. <code>Literal[True] | Literal[False]</code> resolves to <code>Literal[True, False]</code> in exactly the same way that <code>Literal[1] | Literal[2]</code> resolves to <code>Literal[1, 2]</code> and <code>Literal[&quot;foo&quot;] | Literal[True]</code> resolves to <code>Literal[&quot;foo&quot;, True]</code>.</p>
+<p>One case where normalizing <code>bool</code> <em>back</em> to <code>Literal[True, False]</code> will be necessary will be reachability analysis. In the following snippet, it's self evident that the third <code>case</code> branch is unreachable, and the type checker is not required to special-case boolean types in any way in order to understand this; it follows from its generalised understanding of <code>Literal</code> types:</p>
+<pre><code class="language-py">from typing import Literal
+
+def f(x: Literal[True, False]):
+    match x:
+        case True:
+            ...
+        case False:
+            ...
+        case unreachable:
+            ...
+</code></pre>
+<p>However: we'll need to apply that special casing to <code>bool</code> anyway. We'll also need to be able to understand types annotated with <code>bool</code> as being functionally equivalent to <code>Literal[True, False]</code>, or we won't understand the third branch in <em>this</em> function as being unreachable:</p>
+<pre><code class="language-py">from typing import Literal
+
+def f(x: bool):
+    match x:
+        case True:
+            ...
+        case False:
+            ...
+        case unreachable:
+            ...
+</code></pre>
+<p>So leaving the union unnormalized as <code>Literal[True, False]</code> doesn't really get us out of having to special-case <code>bool</code>.</p>
+<p>I also... wouldn't necessarily jump to the conclusion that this is a deliberate choice by mypy with an explicit motivation 😄 it's a very old type checker, and support for <code>Literal</code> types was added to mypy after mypy had already been around for many years. To me, pyright's approach also seems significantly better here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-08-05 18:30</div>
+            <div class="timeline-body"><p>Looks great, thank you!</p>
+<p>Enums are a similar case where we'll need to understand sealed types (i.e. types with a finite number of inhabitants). I'm fine with delaying handling of the equivalence of <code>bool</code> and <code>Literal[True, False]</code> for now. I added https://github.com/astral-sh/ruff/issues/12694 to track this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-08-05 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-08-05 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-05 18:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:29 UTC
+    </footer>
+</body>
+</html>

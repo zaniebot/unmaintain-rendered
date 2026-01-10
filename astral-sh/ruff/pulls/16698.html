@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Check whether two callable types are equivalent - astral-sh/ruff #16698</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Check whether two callable types are equivalent</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16698">#16698</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-03-13 05:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-13 05:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR checks whether two callable types are equivalent or not.</p>
+<p>This is required because for an equivalence relationship, the default value does not necessarily need to be the same but if the parameter in one of the callable has a default value then the corresponding parameter in the other callable should also have a default value. This is the main reason a manual implementation is required.</p>
+<p>And, as per https://typing.python.org/en/latest/spec/callables.html#id4, the default <em>type</em> doesn't participate in a subtype relationship, only the optionality (required or not) participates. This means that the following two callable types are equivalent:</p>
+<pre><code class="language-py">def f1(a: int = 1) -&gt; None: ...
+def f2(a: int = 2) -&gt; None: ...
+</code></pre>
+<p>Additionally, the name of positional-only, variadic and keyword-variadic are not required to be the same for an equivalence relation.</p>
+<p>A potential solution to avoid the manual implementation would be to only store whether a parameter has a default value or not but the type is currently required to check for assignability.</p>
+<h2>Test plan</h2>
+<p>Add tests for callable types in <code>is_equivalent_to.md</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2025-03-13 05:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-13 05:33</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Add tests for callable equivalence" to "[red-knot] Check whether two callable types are equivalent" by @dhruvmanila on 2025-03-19 10:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4620 on 2025-03-19 10:42</div>
+            <div class="timeline-body"><p>This is required because we want to avoid checking the default type itself for equivalence.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4585 on 2025-03-19 10:43</div>
+            <div class="timeline-body"><p>This is the main reason a manual implementation is required.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-19 10:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-03-19 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-03-19 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-03-19 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-03-19 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-03-19 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-19 11:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_equivalent_to.md</code>:127 on 2025-03-19 11:34</div>
+            <div class="timeline-body"><p>this makes me wonder whether we should be preserving the default <em>value</em> of the parameter at all when inferring the signature of a function (as opposed to just whether it <em>has</em> a default). For a <code>def</code> function or a <code>lambda</code>, we obviously need to check whether the inferred type of the default value is assignable to the parameter annotation (if there is one). But is there a reason we need to keep track of the default value as part of the signature after that?</p>
+<p>It seems like it could simplify the implementation you have here quite a bit if our <code>Signature</code> did not keep track of the precise default value of parameters, and only kept track of whether each parameter has a default</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-19 11:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_equivalent_to.md</code>:127 on 2025-03-19 11:40</div>
+            <div class="timeline-body"><p>Yeah, that's one of the potential solution that I've mentioned in the PR description. I'll need to check what the fallout of that change would be but I agree that it would be a simpler solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-03-19 13:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_equivalent_to.md</code>:127 on 2025-03-19 13:52</div>
+            <div class="timeline-body"><p>We'll need to store that somewhere, since at a call site we need to know what value to use if no argument is provided for that parameter.</p>
+<p>Or I guess — maybe we don't, since if no argument was matched to the parameter, there's no argument type to verify is assignable to that default value type?</p>
+<p>I'm wondering if generics would be an issue. <em>[tests something...]</em>  Yes, <a href="https://pyright-play.net/?strict=true&amp;code=CYUwZgBGDaAqC6AKAHgLgrCBeCAWAlBALQB8EANgJYDOALnPKgFASsQBOItAruwHYRoyeEyacAbiACG5APq0AngAcQiMIgCMAdnz4xISTPnLV6gER12lPgHMzu-YbmKVaxA6A">here we go</a>:</p>
+<pre><code class="language-python">def f[T](x: T = 4) -&gt; list[T]:
+    return [x]
+
+reveal_type(f(17))  # revealed: list[int]
+reveal_type(f(&quot;string&quot;))  # revealed: list[str]
+reveal_type(f())  # revealed: list[int]
+</code></pre>
+<p>We'll need to keep around the default <code>Literal[4]</code> / <code>int</code> type to be able to solve the constraint system for when we instantiate that generic function in the <code>f()</code> call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-19 14:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_equivalent_to.md</code>:127 on 2025-03-19 14:00</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-python">def f[T](x: T = 4) -&gt; list[T]:
+    return [x]
+
+reveal_type(f(17))  # revealed: list[int]
+reveal_type(f(&quot;string&quot;))  # revealed: list[str]
+reveal_type(f())  # revealed: list[int]
+</code></pre>
+</blockquote>
+<p>Pyright accepts that function but mypy rejects it. I'm not sure whether using a TypeVar for a parameter with a default value like that is explicitly allowed by the spec or not.</p>
+<p>If I were writing a stub for this function in typeshed, I would use overloads in order to be explicit and unambiguous:</p>
+<pre><code class="language-py">@overload
+def f(x: int = 4) -&gt; list[int]: ...
+@overload
+def f[T](x: T) -&gt; list[T]: ...
+</code></pre>
+<p>although I think using a type parameter with a default would also be unambiguous (but mypy still rejects it -- not sure if that's a mypy bug or not):</p>
+<pre><code class="language-py">def f[T = int](x: T = 4) -&gt; list[T]: ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4579 on 2025-03-19 17:17</div>
+            <div class="timeline-body"><p>I think this should not be required for positional-only parameters? Their name cannot affect whether a call succeeds or fails to bind.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4564 on 2025-03-19 17:19</div>
+            <div class="timeline-body"><p>Ultimately we will also need <code>is_gradual_equivalent_to</code>, in which <code>None</code> vs <code>None</code> should be considered equivalent. Similar to what we previously discussed for <code>is_subtype_of</code> vs <code>is_assignable_to</code>, it may end up being simplest to rename this method to <code>is_gradual_equivalent_to</code> and ensure it handles all types correctly, and in the <code>is_equivalent_to_</code> case it will only be called with fully-static callable types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_equivalent_to.md</code>:127 on 2025-03-19 17:28</div>
+            <div class="timeline-body"><p>As far as I know (and can see), we don't use the default value from the Signature object either for verifying its assignability to the annotated type, or for deciding the type of the parameter internally in the function. All of that is derived directly from inference on the AST. So I think just storing a boolean for defaults could work.</p>
+<p>I do see a significant advantage to trying to maintain the invariant that equivalent callable types should be identical. Not only for implementation complexity of <code>is_equivalent_to</code>, but also for predictable behavior. If two callable types are equivalent, we would simplify one of them from a union in favor of the other, and it could be weird if we would arbitrarily carry metadata that doesn't affect equivalence from one of them and not from the other.</p>
+<p>The other change I think we would need to make in order to implement &quot;equivalent signatures are identical&quot; is to never store a name for a positional-only parameter. (It also looks like this PR might currently be missing the case that two callable types are equivalent if their only difference is the name of a positional-only parameter.)</p>
+<p>Another approach could be to maintain this invariant for <code>GeneralCallable</code> types, but not necessarily for <code>Signature</code> itself. That is, <code>Signature</code> could retain the ability for positional-only parameters to have names, and retain the type of default values, but we could ensure that whenever we create a <code>GeneralCallable</code> type, we erase the default types (replace with <code>Unknown</code>) and erase the names of positional-only parameters. This approach would require a bit more care, but might be useful if we think that precise default types and names of positional-only parameters are useful to have for e.g. signatures of <code>FunctionLiteral</code> types. (I am not sure they are useful even there, though. So I would be inclined to first evaluate the &quot;never store this information&quot; option and see what the fallout is like. It will probably impact whether we use parameter names or positions in binding errors against positional-only parameters, but I am not sure that using names is preferable there.)</p>
+<p>Regarding @dcreager 's generics example, I think it is interesting but in some sense orthogonal to this PR. If we decide to follow pyright and include the default type as a constraint on a type variable, then we not only need to preserve that default type in the signature, we also need to consider it in equivalence of callable types. Two generic functions differing only in the default type of a parameter would not actually be equivalent. So this could be supported (if we decide we need to support it) by introducing an enum with <code>DefaultType::Present</code> and <code>DefaultType::Precise(Type&lt;'db&gt;)</code> variants, or (if we decide to have <code>Signature</code> continue to represent default types, but erase them to <code>Unknown</code> in callable types) by just not erasing those particular default types that do matter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-19 17:28</div>
+            <div class="timeline-body"><p>I would be inclined to explore whether we can keep an invariant that equivalent callable types are normalized to actually be the same <code>Signature</code> object.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-20 04:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4564 on 2025-03-20 04:55</div>
+            <div class="timeline-body"><p>We already have <code>is_gradual_equivalent_to</code> but I understand what you mean. I'm going to first explore whether we can maintain the equivalence relation at the type level and then see if this needs to be simplified.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-20 05:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_equivalent_to.md</code>:127 on 2025-03-20 05:18</div>
+            <div class="timeline-body"><p>Yeah, I was thinking of exploring an alternate implementation of maintaining the invariant at the type level, will do so now.</p>
+<blockquote>
+<p>The other change I think we would need to make in order to implement &quot;equivalent signatures are identical&quot; is to never store a name for a positional-only parameter. (It also looks like this PR might currently be missing the case that two callable types are equivalent if their only difference is the name of a positional-only parameter.)</p>
+</blockquote>
+<p>Yeah, I missed that. This does have a minor fallout where the display would only show the type of the parameter as there's no name but I don't think that's a major issue. Mypy does not show the name for the positional-only parameter while Pyright does:</p>
+<pre><code>Pyright: Type of &quot;right&quot; is &quot;(x: int, y: float, /, *, a: int) -&gt; None&quot;
+mypy: Revealed type is &quot;def (builtins.int, builtins.float, *, a: builtins.int)&quot;
+</code></pre>
+<p>Additionally, this might also have a fallout in the LSP where the hover implementation and the signature help would only show the positional-only parameter type and not the name. Following is a screenshot triggering the signature help for the first parameter:</p>
+<p><img width="652" alt="Screenshot 2025-03-20 at 10 46 02 AM" src="https://github.com/user-attachments/assets/c424535e-7e36-4b85-9c86-11851550bd68" /></p>
+<p>It might be fine for signature help but I think the hover implementation should still show the signature with the parameter names even for positional-only parameters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-20 05:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4579 on 2025-03-20 05:46</div>
+            <div class="timeline-body"><p>I think it's the same for variadic and keyword-variadic parameters as well because their name is not relevant in a subtype relation.</p>
+<p>Both of the assignment is valid which means they're equivalent:</p>
+<pre><code class="language-py">class OtherCallable(Protocol):  # Supertype
+    def __call__(self, *args1: int) -&gt; Any: ...
+
+
+class SelfCallable(Protocol):  # Subtype
+    def __call__(self, *args2: int) -&gt; None: ...
+
+
+def _(self_callable: SelfCallable, other_callable: OtherCallable):
+    a: OtherCallable = self_callable
+    b: SelfCallable = other_callable
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-20 06:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4564 on 2025-03-20 06:43</div>
+            <div class="timeline-body"><p>Hmm, taking a look at the current implementation of <code>is_gradual_equivalent_to</code>, I think it's incorrect because it only looks at the annotated type for the parameters and not any other properties like name, default, and kind. This means that the following two callable types are gradual equivalent:</p>
+<pre><code class="language-py">def f1(a): ...
+def f2(b): ...
+</code></pre>
+<p>I think I'll fix this as a follow-up which will then also include the simplification because it needs to special case the <code>...</code> gradual form.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-20 06:57</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-20 07:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_equivalent_to.md</code>:127 on 2025-03-20 07:06</div>
+            <div class="timeline-body"><p>This will also have a fallout in the error messages where we won't be able to include the name of the positional-only, variadic and keyword-variadic parameters, it will only include the index.</p>
+<p>For example, in a function that accepts positional-only parameter:</p>
+<pre><code class="language-diff">- Object of type `float` cannot be assigned to parameter 1 (`a`) of function `pos_only`; expected type `int`
++ Object of type `float` cannot be assigned to parameter 1 of function `pos_only`; expected type `int`
+</code></pre>
+<p>For variadic and keyword-variadic, we could choose to be explicit and mention the parameter kind instead of the name:</p>
+<pre><code class="language-diff">- Object of type `float` cannot be assigned to parameter `*args` of function `var`; expected type `int`
++ Object of type `float` cannot be assigned to variadic parameter of function `var`; expected type `int` [lint:invalid-argument-type]
+</code></pre>
+<p>And, for keyword variadic parameter:</p>
+<pre><code class="language-diff">+ Object of type `float` cannot be assigned to keyword variadic parameter of function `kvar`; expected type `int` [lint:invalid-argument-type]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-20 12:19</div>
+            <div class="timeline-body"><p><strong>Update from the above discussion:</strong></p>
+<ol>
+<li>I explored the option to maintain the equivalent relation at the type level but it has certain fallout for downstream usages which I've mentioned <a href="https://github.com/astral-sh/ruff/pull/16698#discussion_r2004828071">here</a> and <a href="https://github.com/astral-sh/ruff/pull/16698#discussion_r2004947916">here</a>.</li>
+<li>For now, I've updated the manual implementation account for the cases where name shouldn't be checked for positional-only, variadic and keyword-variadic parameter</li>
+<li>It turns out <code>is_gradual_equivalent_to</code> is incorrect in that sense, refer to <a href="https://github.com/astral-sh/ruff/pull/16698#discussion_r2004920075">this comment</a> and will fix it in a follow-up which will also simplify both <code>is_equivalent_to</code> and <code>is_gradual_equivalent_to</code></li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-20 23:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_equivalent_to.md</code>:127 on 2025-03-20 23:20</div>
+            <div class="timeline-body"><p>I think all of these observations are not arguments against making equivalent <code>GeneralCallable</code> types identical, but they are arguments in favor of this variant that I mentioned:</p>
+<blockquote>
+<p>Another approach could be to maintain this invariant for <code>GeneralCallable</code> types, but not necessarily for <code>Signature</code> itself. That is, <code>Signature</code> could retain the ability for positional-only parameters to have names, and retain the type of default values, but we could ensure that whenever we create a <code>GeneralCallable</code> type, we erase the default types (replace with <code>Unknown</code>) and erase the names of positional-only parameters.</p>
+</blockquote>
+<p>With LSP hover and with most function calls, you will have a specific known <code>FunctionLiteral</code> or <code>BoundMethod</code>, which are singletons and therefore have no equivalent, and can maintain full details. I think in the much less common case of calling a general callable type (this would mostly happen with callbacks or similar scenarios), it is fine if we don't have names of positional or variadic arguments. Most general callable types in practice will come from <code>Callable</code> annotations, which can't even represent named positional arguments or variadic arguments.</p>
+<p>So I still think it would be preferable to implement this &quot;erasing&quot; of irrelevant details when we go from a function-literal to a general callable type, so that equivalent callable types are identical.</p>
+<p>But I'm also OK with deferring that if you would rather land this approach for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-03-20 23:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_equivalent_to.md</code>:127 on 2025-03-21 03:08</div>
+            <div class="timeline-body"><blockquote>
+<p>So I still think it would be preferable to implement this &quot;erasing&quot; of irrelevant details when we go from a function-literal to a general callable type, so that equivalent callable types are identical.</p>
+<p>But I'm also OK with deferring that if you would rather land this approach for now.</p>
+</blockquote>
+<p>Yeah, I think that makes sense. This does mean that (a) we'll need to make <code>name: Name</code> into <code>name: Option&lt;Name&gt;</code> to erase it or replace it with <code>Name(&quot;&quot;)</code> and (b) use something else for the default type as <code>Type::Unknown</code> is not a static type, maybe just replace it with <code>None</code>.</p>
+<p>I'd prefer to go forward with this approach now, I'll open an issue with some of my thoughts regarding this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-21 03:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-03-21 03:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-03-21 03:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-21 03:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-21 08:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_equivalent_to.md</code>:127 on 2025-03-21 08:48</div>
+            <div class="timeline-body"><p>#16881</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:29 UTC
+    </footer>
+</body>
+</html>

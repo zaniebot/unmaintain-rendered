@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Add basic file watching to server - astral-sh/ruff #17912</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Add basic file watching to server</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17912">#17912</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-05-07 12:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-07 12:44</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR does the absolut minimum to add file watching support to ty's LSP.</p>
+<p>The main limitation is that it only watches file in the project directory. It doesn't watch for
+changes to:</p>
+<ul>
+<li>The user configuration</li>
+<li>search paths outside the project</li>
+</ul>
+<p>It also has no special handling in case the user adds or removes a <code>ty.toml</code> or <code>pyproject.toml</code> which would change the project's root directory (other than what ty's <code>apply_changes</code> provides by default). The solution
+here is a tighter integration (or at least code sharing) with <code>ProjectWatcher</code>. Ideally, the CLI and LSP would share all code and only differ by the file watching backend.</p>
+<p>This gives us:</p>
+<ul>
+<li>Updated diagnostics when changig files outside the main editor (e.g. git pull)</li>
+<li>Updated inlays and diagnostics when changing the configuration</li>
+</ul>
+<h2>Test Plan</h2>
+<p>I edited a file outside of VS code and verified that diagnostics and inlay hints are correctly recomputed.</p>
+<p>I verified that changing the python version correctly propagates to inlays.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-05-07 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-05-07 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-05-07 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-05-07 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-05-07 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-05-07 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-07 12:47</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-05-07 14:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_server/src/server.rs</code>:196 on 2025-05-07 14:05</div>
+            <div class="timeline-body"><p>Mostly curious: does this mean that we're reacting to changes that match the <code>**/ty.toml</code> pattern. Or that we actively scan the whole project for this pattern when starting the server (which could be quite slow?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-05-07 14:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_server/src/server.rs</code>:208 on 2025-05-07 14:09</div>
+            <div class="timeline-body"><p>If we want to be (more) exhaustive here, we would probably also have to add <code>.git/info/exclude</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-05-07 14:09</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-07 14:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server.rs</code>:196 on 2025-05-07 14:15</div>
+            <div class="timeline-body"><p>The VS code file watcher sends us notifications if any file inside the project matching <code>ty.toml</code> gets changed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-07 14:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server.rs</code>:208 on 2025-05-07 14:16</div>
+            <div class="timeline-body"><p>Maybe. It's not something that we currently handle in <code>apply_changes</code>. (but maybe should?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-05-07 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-05-07 15:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/notifications/did_change_watched_files.rs</code>:78 on 2025-05-07 15:24</div>
+            <div class="timeline-body"><p>Is this suppose to be <code>ty_db</code> ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-05-07 15:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/notifications/did_change_watched_files.rs</code>:78 on 2025-05-07 15:25</div>
+            <div class="timeline-body"><p>Oh, nevermind, I missed the definition. I think it would be useful to include something before <code>??_by_db</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-05-07 15:26</div>
+            <div class="timeline-body"><p>Looks good, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-05-07 15:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server.rs</code>:226 on 2025-05-07 15:28</div>
+            <div class="timeline-body"><p>Wait, why do we need these here? Shouldn't they be handled by the <code>didChange</code> notifications?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-07 15:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server.rs</code>:226 on 2025-05-07 15:32</div>
+            <div class="timeline-body"><p><code>didChange</code> notifications are only sent for files open in the editor. Files that change outside the editor (<code>nano -w my.py</code> or <code>git pull</code>) use the file watcher notification. I tested if VS code would send two events for files open in the editor that also match the file watcher pattern but this isn't the case. It only sends <code>didChange</code> for files open in the editor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-05-07 15:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server.rs</code>:226 on 2025-05-07 15:47</div>
+            <div class="timeline-body"><p>I see, thanks, that makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-07 16:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server.rs</code>:208 on 2025-05-07 16:42</div>
+            <div class="timeline-body"><p>I'll ignore this for now. There's another issue around better handling for git ignored files</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add basic file watching to server" to "[ty] Add basic file watching to server" by @MichaReiser on 2025-05-07 16:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-05-07 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-07 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-07 17:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:30 UTC
+    </footer>
+</body>
+</html>

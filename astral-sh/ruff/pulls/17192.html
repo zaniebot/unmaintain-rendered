@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] add cycle handling to FunctionType::signature query - astral-sh/ruff #17192</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] add cycle handling to FunctionType::signature query</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17192">#17192</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-04-04 00:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-04-04 00:14</div>
+            <div class="timeline-body"><p>This fixes cycle panics in several ecosystem projects (moved to <code>good.txt</code> here), as well as in the minimal case in the added mdtest. It also fixes a number of panicking fuzzer seeds. It doesn't appear to cause any regression in any ecosystem project or any fuzzer seed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-04-04 00:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-04-04 00:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @carljm on 2025-04-04 00:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-04 00:16</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-04-04 05:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-04 07:17</div>
+            <div class="timeline-body"><p>Given the abundance of different query cycles that we seem to discover 'organically', would it make sense to add regression tests for them, whenever we encounter one? It seems a bit fragile to rely on ecosystem checks to avoid accidental reintroduction of a panic?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-04-04 07:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-04 07:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:240 on 2025-04-04 07:22</div>
+            <div class="timeline-body"><p>I'm curious how you came up with the name? I understand that <code>Never</code> is the bottom type, but <code>(…) -&gt; Never</code> is a gradual type which does not participate in subtyping. Did you call it &quot;bottom&quot; because every arrow type is assignable to it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-04 13:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:240 on 2025-04-04 13:51</div>
+            <div class="timeline-body"><p>Good catch, I actually meant for this to be a <code>(*args: object, **kwargs: object) -&gt; Never</code> signature, which is the fully-static &quot;bottom&quot; Callable type (subtype of all other callable types), but wrongly used the gradual form instead. Will fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-04 13:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Given the abundance of different query cycles that we seem to discover 'organically', would it make sense to add regression tests for them, whenever we encounter one? It seems a bit fragile to rely on ecosystem checks to avoid accidental reintroduction of a panic?</p>
+</blockquote>
+<p>Yes, I thought of this last night too and I agree. It requires more investigation time to narrow down the precise code construct as a minimal repro, but this is valuable to do anyway, as it can help catch cases where the cycle is not actually necessary and could be handled without fixpoint iteration, e.g. by using a more fine-grained query.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-04 15:26</div>
+            <div class="timeline-body"><p>(All of the prior cycle handling that was added was necessary in order to avoid panics on existing code samples in the corpus tests. Some of those I intend to investigate more closely, but we do at least have regression protection already for all of those.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-28 06:59</div>
+            <div class="timeline-body"><p>What's the plan here. Should we land or close this PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-28 22:24</div>
+            <div class="timeline-body"><blockquote>
+<p>Should we land or close this PR?</p>
+</blockquote>
+<p>Neither yet, still actively evaluating its ecosystem effects in light of other changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @carljm on 2025-04-28 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-05-04 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @carljm on 2025-05-04 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-05-04 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @carljm on 2025-05-04 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-04 21:41</div>
+            <div class="timeline-body"><p>replaced by https://github.com/astral-sh/ruff/pull/17833</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-05-04 21:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:29 UTC
+    </footer>
+</body>
+</html>

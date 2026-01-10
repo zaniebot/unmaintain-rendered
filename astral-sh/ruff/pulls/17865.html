@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Specialize bound methods and nominal instances - astral-sh/ruff #17865</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Specialize bound methods and nominal instances</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17865">#17865</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-05-05 17:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-05 17:40</div>
+            <div class="timeline-body"><p>Fixes https://github.com/astral-sh/ruff/pull/17832#issuecomment-2851224968. We had a comment that we did not need to apply specializations to generic aliases, or to the bound <code>self</code> of a bound method, because they were already specialized.  But they might be specialized with a type variable, which <em>does</em> need to be specialized, in the case of a &quot;multi-step&quot; specialization, such as:</p>
+<pre><code class="language-py">class LinkedList[T]: ...
+
+class C[U]:
+    def method(self) -&gt; LinkedList[U]:
+        return LinkedList[U]()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-05-05 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-05 17:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4973 on 2025-05-05 17:43</div>
+            <div class="timeline-body"><p>we probably need to do the same for the <code>Type::ProtocolInstance</code> variant, since protocols can also be generic. But I can do that as part of https://github.com/astral-sh/ruff/pull/17832, if you like, since that's the &quot;hook up the generics infrastructure with the protocols infrastructure&quot; PR 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-05 17:43</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+- error[lint:call-non-callable] mypy_primer/model.py:192:9: Method `__getitem__` of type `bound method dict[AnyStr, AnyStr].__getitem__(key: AnyStr, /) -&gt; AnyStr` is not callable on object of type `dict[AnyStr, AnyStr]`
+- error[lint:call-non-callable] mypy_primer/model.py:194:25: Method `__getitem__` of type `bound method dict[AnyStr, AnyStr].__getitem__(key: AnyStr, /) -&gt; AnyStr` is not callable on object of type `dict[AnyStr, AnyStr]`
+- error[lint:call-non-callable] mypy_primer/model.py:195:9: Method `__getitem__` of type `bound method dict[AnyStr, AnyStr].__getitem__(key: AnyStr, /) -&gt; AnyStr` is not callable on object of type `dict[AnyStr, AnyStr]`
+- error[lint:call-non-callable] mypy_primer/model.py:197:13: Method `__getitem__` of type `bound method dict[AnyStr, AnyStr].__getitem__(key: AnyStr, /) -&gt; AnyStr` is not callable on object of type `dict[AnyStr, AnyStr]`
+- error[lint:call-non-callable] mypy_primer/model.py:200:13: Method `__getitem__` of type `bound method dict[AnyStr, AnyStr].__getitem__(key: AnyStr, /) -&gt; AnyStr` is not callable on object of type `dict[AnyStr, AnyStr]`
+- error[lint:call-non-callable] mypy_primer/model.py:268:13: Method `__getitem__` of type `bound method dict[AnyStr, AnyStr].__getitem__(key: AnyStr, /) -&gt; AnyStr` is not callable on object of type `dict[AnyStr, AnyStr]`
+- error[lint:call-non-callable] mypy_primer/model.py:317:13: Method `__getitem__` of type `bound method dict[AnyStr, AnyStr].__getitem__(key: AnyStr, /) -&gt; AnyStr` is not callable on object of type `dict[AnyStr, AnyStr]`
+- error[lint:call-non-callable] mypy_primer/model.py:319:9: Method `__getitem__` of type `bound method dict[AnyStr, AnyStr].__getitem__(key: AnyStr, /) -&gt; AnyStr` is not callable on object of type `dict[AnyStr, AnyStr]`
+- error[lint:call-non-callable] mypy_primer/model.py:378:13: Method `__getitem__` of type `bound method dict[AnyStr, AnyStr].__getitem__(key: AnyStr, /) -&gt; AnyStr` is not callable on object of type `dict[AnyStr, AnyStr]`
+- error[lint:call-non-callable] mypy_primer/type_checker.py:49:13: Method `__getitem__` of type `bound method dict[AnyStr, AnyStr].__getitem__(key: AnyStr, /) -&gt; AnyStr` is not callable on object of type `dict[AnyStr, AnyStr]`
+- error[lint:call-non-callable] mypy_primer/type_checker.py:50:13: Method `__getitem__` of type `bound method dict[AnyStr, AnyStr].__getitem__(key: AnyStr, /) -&gt; AnyStr` is not callable on object of type `dict[AnyStr, AnyStr]`
+- error[lint:call-non-callable] mypy_primer/type_checker.py:116:9: Method `__getitem__` of type `bound method dict[AnyStr, AnyStr].__getitem__(key: AnyStr, /) -&gt; AnyStr` is not callable on object of type `dict[AnyStr, AnyStr]`
+- error[lint:call-non-callable] mypy_primer/type_checker.py:153:9: Method `__getitem__` of type `bound method dict[AnyStr, AnyStr].__getitem__(key: AnyStr, /) -&gt; AnyStr` is not callable on object of type `dict[AnyStr, AnyStr]`
+- Found 31 diagnostics
++ Found 18 diagnostics
+
+com2ann (https://github.com/ilevkivskyi/com2ann)
+- error[lint:no-matching-overload] src/com2ann.py:422:13: No overload of function `search` matches arguments
+- error[lint:no-matching-overload] src/com2ann.py:433:19: No overload of function `search` matches arguments
+- error[lint:no-matching-overload] src/com2ann.py:471:13: No overload of function `search` matches arguments
+- error[lint:no-matching-overload] src/com2ann.py:485:23: No overload of function `search` matches arguments
+- error[lint:no-matching-overload] src/com2ann.py:605:15: No overload of function `search` matches arguments
+- error[lint:no-matching-overload] src/com2ann.py:611:14: No overload of function `search` matches arguments
+- error[lint:no-matching-overload] src/com2ann.py:616:25: No overload of function `search` matches arguments
+- error[lint:no-matching-overload] src/com2ann.py:654:12: No overload of function `search` matches arguments
+- error[lint:no-matching-overload] src/com2ann.py:713:19: No overload of function `search` matches arguments
+- error[lint:no-matching-overload] src/test_com2ann.py:78:29: No overload of function `search` matches arguments
+- error[lint:no-matching-overload] src/test_com2ann.py:80:30: No overload of function `search` matches arguments
+- Found 20 diagnostics
++ Found 9 diagnostics
+
+parso (https://github.com/davidhalter/parso)
+- warning[lint:possibly-unbound-attribute] parso/python/prefix.py:84:19: Attribute `group` on type `Unknown | Match[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] parso/python/prefix.py:84:19: Attribute `group` on type `Unknown | Match[str] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] parso/python/prefix.py:85:17: Attribute `group` on type `Unknown | Match[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] parso/python/prefix.py:85:17: Attribute `group` on type `Unknown | Match[str] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] parso/python/prefix.py:96:17: Attribute `end` on type `Unknown | Match[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] parso/python/prefix.py:96:17: Attribute `end` on type `Unknown | Match[str] | None` is possibly unbound
+
+nionutils (https://github.com/nion-software/nionutils)
+- error[lint:invalid-argument-type] nion/utils/test/Model_test.py:43:49: Argument to this function is incorrect: Expected `AbstractStream[() -&gt; T]`, found `ValueStream[() -&gt; Unknown]`
++ error[lint:invalid-argument-type] nion/utils/test/Model_test.py:43:49: Argument to this function is incorrect: Expected `AbstractStream[() -&gt; Unknown]`, found `ValueStream[() -&gt; Unknown]`
+- error[lint:invalid-argument-type] nion/utils/test/Model_test.py:48:45: Argument to this function is incorrect: Expected `AbstractStream[T]`, found `ValueStream[Literal[0]]`
++ error[lint:invalid-argument-type] nion/utils/test/Model_test.py:48:45: Argument to this function is incorrect: Expected `AbstractStream[Unknown]`, found `ValueStream[Literal[0]]`
++ error[lint:invalid-argument-type] nion/utils/test/Stream_test.py:38:39: Argument to this function is incorrect: Expected `AbstractStream[Unknown]`, found `ValueStream[Literal[0]]`
++ error[lint:invalid-argument-type] nion/utils/test/Stream_test.py:48:45: Argument to this function is incorrect: Expected `AbstractStream[Unknown]`, found `ValueStream[Literal[0]]`
++ error[lint:invalid-argument-type] nion/utils/test/Stream_test.py:53:43: Argument to this function is incorrect: Expected `AbstractStream[Unknown]`, found `ValueStream[Literal[0]]`
++ error[lint:invalid-argument-type] nion/utils/test/Stream_test.py:63:45: Argument to this function is incorrect: Expected `AbstractStream[Unknown]`, found `ValueStream[Literal[0]]`
++ error[lint:invalid-argument-type] nion/utils/test/Stream_test.py:68:47: Argument to this function is incorrect: Expected `AbstractStream[Unknown]`, found `ValueStream[Literal[0]]`
++ error[lint:invalid-argument-type] nion/utils/test/Stream_test.py:73:48: Argument to this function is incorrect: Expected `AbstractStream[Unknown]`, found `ValueStream[Literal[0]]`
+- Found 29 diagnostics
++ Found 35 diagnostics
+
+beartype (https://github.com/beartype/beartype)
+- error[lint:invalid-return-type] beartype/_util/api/standard/utilfunctools.py:319:12: Return type does not match returned value: Expected `BeartypeableT`, found `_lru_cache_wrapper[_T]`
++ error[lint:invalid-return-type] beartype/_util/api/standard/utilfunctools.py:319:12: Return type does not match returned value: Expected `BeartypeableT`, found `_lru_cache_wrapper[Unknown]`
+
+python-chess (https://github.com/niklasf/python-chess)
+- error[lint:invalid-argument-type] chess/engine.py:71:25: Argument to this function is incorrect: Expected `Coroutine[Any, Any, _T]`, found `Coroutine[Any, Any, None]`
+- error[lint:invalid-argument-type] chess/engine.py:3014:34: Argument to this function is incorrect: Expected `(Future[T], /) -&gt; Coroutine[Any, Any, None]`, found `def background(future: Future[SimpleEngine]) -&gt; @Todo(generic types.CoroutineType)`
+- Found 75 diagnostics
++ Found 73 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
+- error[lint:invalid-argument-type] src/anyio/from_thread.py:219:50: Argument to this function is incorrect: Expected `(Future[_T], /) -&gt; object`, found `def callback(f: Future[T_Retval]) -&gt; None`
+- error[lint:invalid-argument-type] src/anyio/from_thread.py:376:29: Argument to this function is incorrect: Expected `(Future[_T], /) -&gt; object`, found `def task_done(future: Future[T_Retval]) -&gt; None`
+- Found 150 diagnostics
++ Found 148 diagnostics
+
+attrs (https://github.com/python-attrs/attrs)
+- error[lint:invalid-argument-type] tests/test_validators.py:185:68: Argument to this function is incorrect: Expected `((Literal[&quot;a&quot;], Literal[&quot;a&quot;], int, /) -&gt; Match[AnyStr] | None) | None`, found `Overload[(pattern: str | Pattern[str], string: str, flags: Unknown = Literal[0]) -&gt; Match[str] | None, (pattern: bytes | Pattern[bytes], string: @Todo(Support for `typing.TypeAlias`), flags: Unknown = Literal[0]) -&gt; Match[bytes] | None]`
++ error[lint:invalid-argument-type] tests/test_validators.py:185:68: Argument to this function is incorrect: Expected `((Literal[&quot;a&quot;], Literal[&quot;a&quot;], int, /) -&gt; Match[Literal[&quot;a&quot;]] | None) | None`, found `Overload[(pattern: str | Pattern[str], string: str, flags: Unknown = Literal[0]) -&gt; Match[str] | None, (pattern: bytes | Pattern[bytes], string: @Todo(Support for `typing.TypeAlias`), flags: Unknown = Literal[0]) -&gt; Match[bytes] | None]`
+- error[lint:invalid-argument-type] tests/test_validators.py:219:56: Argument to this function is incorrect: Expected `((Literal[&quot;a&quot;], Literal[&quot;a&quot;], int, /) -&gt; Match[AnyStr] | None) | None`, found `Overload[(pattern: str | Pattern[str], string: str, flags: Unknown = Literal[0]) -&gt; Match[str] | None, (pattern: bytes | Pattern[bytes], string: @Todo(Support for `typing.TypeAlias`), flags: Unknown = Literal[0]) -&gt; Match[bytes] | None]`
++ error[lint:invalid-argument-type] tests/test_validators.py:219:56: Argument to this function is incorrect: Expected `((Literal[&quot;a&quot;], Literal[&quot;a&quot;], int, /) -&gt; Match[Literal[&quot;a&quot;]] | None) | None`, found `Overload[(pattern: str | Pattern[str], string: str, flags: Unknown = Literal[0]) -&gt; Match[str] | None, (pattern: bytes | Pattern[bytes], string: @Todo(Support for `typing.TypeAlias`), flags: Unknown = Literal[0]) -&gt; Match[bytes] | None]`
+- error[lint:invalid-argument-type] tests/test_validators.py:228:32: Argument to this function is incorrect: Expected `((Literal[&quot;a&quot;], Literal[&quot;a&quot;], int, /) -&gt; Match[AnyStr] | None) | None`, found `() -&gt; Unknown`
++ error[lint:invalid-argument-type] tests/test_validators.py:228:32: Argument to this function is incorrect: Expected `((Literal[&quot;a&quot;], Literal[&quot;a&quot;], int, /) -&gt; Match[Literal[&quot;a&quot;]] | None) | None`, found `() -&gt; Unknown`
+
+git-revise (https://github.com/mystor/git-revise)
+- error[lint:no-matching-overload] gitrevise/utils.py:102:25: No overload of function `match` matches arguments
+- Found 17 diagnostics
++ Found 16 diagnostics
+
+aioredis (https://github.com/aio-libs/aioredis)
++ error[lint:no-matching-overload] aioredis/log.py:10:15: No overload of bound method `__init__` matches arguments
+- Found 33 diagnostics
++ Found 34 diagnostics
+
+koda-validate (https://github.com/keithasaurus/koda-validate)
+- error[lint:invalid-assignment] koda_validate/string.py:46:5: Object of type `Pattern[AnyStr]` is not assignable to `Pattern[str]`
+- error[lint:invalid-argument-type] koda_validate/typehints.py:165:48: Argument to this function is incorrect: Expected `Predicate[SuccessT]`, found `Choices[Unknown]`
++ error[lint:invalid-argument-type] koda_validate/typehints.py:165:48: Argument to this function is incorrect: Expected `Predicate[str]`, found `Choices[Unknown]`
+- error[lint:invalid-argument-type] koda_validate/typehints.py:167:45: Argument to this function is incorrect: Expected `Predicate[SuccessT]`, found `Choices[Unknown]`
++ error[lint:invalid-argument-type] koda_validate/typehints.py:167:45: Argument to this function is incorrect: Expected `Predicate[int]`, found `Choices[Unknown]`
+- error[lint:invalid-argument-type] koda_validate/typehints.py:169:46: Argument to this function is incorrect: Expected `Predicate[SuccessT]`, found `Choices[Unknown]`
++ error[lint:invalid-argument-type] koda_validate/typehints.py:169:46: Argument to this function is incorrect: Expected `Predicate[bool]`, found `Choices[Unknown]`
+- error[lint:invalid-argument-type] koda_validate/typehints.py:171:47: Argument to this function is incorrect: Expected `Predicate[SuccessT]`, found `Choices[Unknown]`
++ error[lint:invalid-argument-type] koda_validate/typehints.py:171:47: Argument to this function is incorrect: Expected `Predicate[bytes]`, found `Choices[Unknown]`
+- Found 106 diagnostics
++ Found 105 diagnostics
+
+kopf (https://github.com/nolar/kopf)
+- error[lint:invalid-return-type] kopf/_core/engines/admission.py:475:12: Return type does not match returned value: Expected `str`, found `str | Unknown | ((s) -&gt; Unknown)`
+- Found 295 diagnostics
++ Found 294 diagnostics
+
+starlette (https://github.com/encode/starlette)
+- error[lint:invalid-return-type] starlette/routing.py:175:12: Return type does not match returned value: Expected `tuple[Pattern[str], str, dict[str, Convertor[Any]]]`, found `tuple[Pattern[AnyStr], str | Unknown, dict[Unknown, Unknown]]`
+- error[lint:invalid-assignment] tests/test_convertors.py:19:5: Object of type `dict[_KT, _VT]` is not assignable to attribute `CONVERTOR_TYPES` of type `dict[str, Convertor[Any]]`
+- Found 217 diagnostics
++ Found 215 diagnostics
+
+alerta (https://github.com/alerta/alerta)
+- error[lint:call-non-callable] tests/test_providers.py:362:26: Method `__getitem__` of type `bound method dict[AnyStr, @Todo(specialized non-generic class)].__getitem__(key: AnyStr, /) -&gt; @Todo(specialized non-generic class)` is not callable on object of type `dict[AnyStr, @Todo(specialized non-generic class)]`
+- error[lint:call-non-callable] tests/test_providers.py:363:26: Method `__getitem__` of type `bound method dict[AnyStr, @Todo(specialized non-generic class)].__getitem__(key: AnyStr, /) -&gt; @Todo(specialized non-generic class)` is not callable on object of type `dict[AnyStr, @Todo(specialized non-generic class)]`
+- error[lint:call-non-callable] tests/test_providers.py:601:26: Method `__getitem__` of type `bound method dict[AnyStr, @Todo(specialized non-generic class)].__getitem__(key: AnyStr, /) -&gt; @Todo(specialized non-generic class)` is not callable on object of type `dict[AnyStr, @Todo(specialized non-generic class)]`
+- error[lint:call-non-callable] tests/test_providers.py:602:26: Method `__getitem__` of type `bound method dict[AnyStr, @Todo(specialized non-generic class)].__getitem__(key: AnyStr, /) -&gt; @Todo(specialized non-generic class)` is not callable on object of type `dict[AnyStr, @Todo(specialized non-generic class)]`
+- error[lint:call-non-callable] tests/test_providers.py:1185:26: Method `__getitem__` of type `bound method dict[AnyStr, @Todo(specialized non-generic class)].__getitem__(key: AnyStr, /) -&gt; @Todo(specialized non-generic class)` is not callable on object of type `dict[AnyStr, @Todo(specialized non-generic class)]`
+- error[lint:call-non-callable] tests/test_providers.py:1186:26: Method `__getitem__` of type `bound method dict[AnyStr, @Todo(specialized non-generic class)].__getitem__(key: AnyStr, /) -&gt; @Todo(specialized non-generic class)` is not callable on object of type `dict[AnyStr, @Todo(specialized non-generic class)]`
+- Found 618 diagnostics
++ Found 612 diagnostics
+
+check-jsonschema (https://github.com/python-jsonschema/check-jsonschema)
+- warning[lint:possibly-unbound-attribute] src/check_jsonschema/cli/param_types.py:90:15: Attribute `group` on type `Match[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/check_jsonschema/cli/param_types.py:90:15: Attribute `group` on type `Match[str] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/check_jsonschema/cli/param_types.py:91:21: Attribute `group` on type `Match[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/check_jsonschema/cli/param_types.py:91:21: Attribute `group` on type `Match[str] | None` is possibly unbound
+
+trio (https://github.com/python-trio/trio)
+- error[lint:invalid-argument-type] src/trio/_core/_tests/test_local.py:81:22: Argument to this function is incorrect: Expected `RunVarToken[T]`, found `RunVarToken[str]`
+- error[lint:invalid-return-type] src/trio/_core/_tests/test_local.py:113:16: Return type does not match returned value: Expected `RunVarToken[str]`, found `Unknown | RunVarToken[T]`
+- error[lint:invalid-argument-type] src/trio/_core/_tests/test_thread_cache.py:31:27: Argument to this function is incorrect: Expected `(Outcome[RetT], /) -&gt; object`, found `def deliver(outcome: Outcome[object]) -&gt; None`
+- error[lint:invalid-argument-type] src/trio/_core/_tests/test_thread_cache.py:53:33: Argument to this function is incorrect: Expected `(Outcome[RetT], /) -&gt; object`, found `def deliver(outcome: Outcome[int]) -&gt; None`
+- error[lint:invalid-return-type] src/trio/_file_io.py:284:16: Return type does not match returned value: Expected `AsyncIOWrapper[T]`, found `AsyncIOWrapper[FileT]`
+- error[lint:invalid-return-type] src/trio/_file_io.py:483:12: Return type does not match returned value: Expected `AsyncIOWrapper[object]`, found `AsyncIOWrapper[FileT]`
+- error[lint:invalid-return-type] src/trio/_path.py:197:16: Return type does not match returned value: Expected `AsyncIOWrapper[IO[Any]]`, found `AsyncIOWrapper[FileT]`
+- error[lint:invalid-return-type] src/trio/_tests/test_file_io.py:33:12: Return type does not match returned value: Expected `AsyncIOWrapper[Mock]`, found `AsyncIOWrapper[FileT]`
+- error[lint:unresolved-attribute] src/trio/_tests/test_file_io.py:236:5: Type `FileT` has no attribute `seek`
+- error[lint:invalid-argument-type] src/trio/_tests/test_highlevel_open_tcp_listeners.py:341:9: Argument to this function is incorrect: Expected `dict[AddressFamily, int]`, found `dict[_T, _S]`
++ error[lint:invalid-argument-type] src/trio/_tests/test_highlevel_open_tcp_listeners.py:341:9: Argument to this function is incorrect: Expected `dict[AddressFamily, int]`, found `dict[_T, int]`
+- error[lint:invalid-return-type] src/trio/_tests/test_ssl.py:423:12: Return type does not match returned value: Expected `tuple[SSLStream[StapledStream[MemorySendStream, MemoryReceiveStream]], SSLStream[StapledStream[MemorySendStream, MemoryReceiveStream]]]`, found `tuple[SSLStream[T_Stream], SSLStream[T_Stream]]`
+- error[lint:invalid-return-type] src/trio/_tests/test_ssl.py:444:12: Return type does not match returned value: Expected `tuple[SSLStream[StapledStream[SendStream, ReceiveStream]], SSLStream[StapledStream[SendStream, ReceiveStream]]]`, found `tuple[SSLStream[T_Stream], SSLStream[T_Stream]]`
+- error[lint:invalid-argument-type] src/trio/_threads.py:426:42: Argument to this function is incorrect: Expected `(Outcome[RetT], /) -&gt; object`, found `def deliver_worker_fn_result(result: Outcome[RetT]) -&gt; None`
+- error[lint:invalid-return-type] src/trio/testing/_memory_streams.py:459:12: Return type does not match returned value: Expected `tuple[StapledStream[MemorySendStream, MemoryReceiveStream], StapledStream[MemorySendStream, MemoryReceiveStream]]`, found `tuple[StapledStream[SendStreamT, ReceiveStreamT], StapledStream[SendStreamT, ReceiveStreamT]]`
+- error[lint:invalid-return-type] src/trio/testing/_memory_streams.py:637:12: Return type does not match returned value: Expected `tuple[StapledStream[SendStream, ReceiveStream], StapledStream[SendStream, ReceiveStream]]`, found `tuple[StapledStream[SendStreamT, ReceiveStreamT], StapledStream[SendStreamT, ReceiveStreamT]]`
+- Found 1149 diagnostics
++ Found 1135 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- error[lint:invalid-assignment] src/graphql/pyutils/convert_case.py:24:5: Object of type `Unknown | ((m) -&gt; Unknown) | str` is not assignable to `str`
+- error[lint:invalid-argument-type] tests/execution/test_resolve.py:49:31: Argument to this function is incorrect: Expected `MutableMapping[_KT, _VT]`, found `dict[Unknown, Unknown]`
++ error[lint:invalid-argument-type] tests/execution/test_resolve.py:49:31: Argument to this function is incorrect: Expected `MutableMapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/test_docs.py:104:27: Argument to this function is incorrect: Expected `dict[str, Any] | None`, found `dict[_KT, _VT]`
+- error[lint:invalid-argument-type] tests/test_docs.py:109:27: Argument to this function is incorrect: Expected `dict[str, Any] | None`, found `dict[_KT, _VT]`
+- error[lint:invalid-argument-type] tests/test_docs.py:266:25: Argument to this function is incorrect: Expected `dict[str, Any] | None`, found `dict[_KT, _VT]`
+- Found 564 diagnostics
++ Found 560 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- error[lint:invalid-argument-type] strawberry/dataloader.py:212:61: Argument to this function is incorrect: Expected `Batch[Unknown, Unknown]`, found `Batch[K, T] | None`
++ error[lint:invalid-argument-type] strawberry/dataloader.py:212:61: Argument to this function is incorrect: Expected `Batch[Unknown, Unknown]`, found `Batch[Unknown, Unknown] | None`
+- error[lint:invalid-return-type] strawberry/dataloader.py:213:16: Return type does not match returned value: Expected `Batch[Unknown, Unknown]`, found `Batch[K, T] | None`
++ error[lint:invalid-return-type] strawberry/dataloader.py:213:16: Return type does not match returned value: Expected `Batch[Unknown, Unknown]`, found `Batch[Unknown, Unknown] | None`
+- error[lint:invalid-argument-type] strawberry/dataloader.py:217:22: Argument to this function is incorrect: Expected `Batch[Unknown, Unknown]`, found `Batch[K, T] | None`
++ error[lint:invalid-argument-type] strawberry/dataloader.py:217:22: Argument to this function is incorrect: Expected `Batch[Unknown, Unknown]`, found `Batch[Unknown, Unknown] | None`
+- error[lint:invalid-return-type] strawberry/dataloader.py:219:12: Return type does not match returned value: Expected `Batch[Unknown, Unknown]`, found `Batch[K, T] | None`
++ error[lint:invalid-return-type] strawberry/dataloader.py:219:12: Return type does not match returned value: Expected `Batch[Unknown, Unknown]`, found `Batch[Unknown, Unknown] | None`
+- error[lint:invalid-assignment] strawberry/types/type_resolver.py:74:5: Object of type `dict[_T, _S]` is not assignable to `dict[str, type]`
++ error[lint:invalid-assignment] strawberry/types/type_resolver.py:74:5: Object of type `dict[_T, type[Any]]` is not assignable to `dict[str, type]`
+
+porcupine (https://github.com/Akuli/porcupine)
++ error[lint:no-matching-overload] porcupine/_logs.py:71:20: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] porcupine/_logs.py:80:25: No overload of bound method `__init__` matches arguments
+- error[lint:invalid-return-type] porcupine/actions.py:108:12: Return type does not match returned value: Expected `dict[str, @Todo(Inference of subscript on special form)]`, found `dict[_KT, _VT]`
+- error[lint:no-matching-overload] porcupine/plugins/autocomplete.py:89:5: No overload of bound method `bind` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/autocomplete.py:90:5: No overload of bound method `bind` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/directory_tree.py:513:5: No overload of bound method `bind` matches arguments
+- error[lint:invalid-assignment] porcupine/plugins/editorconfig.py:68:5: Object of type `Pattern[AnyStr]` is not assignable to attribute `SECTCRE` of type `Pattern[str]`
+- error[lint:no-matching-overload] porcupine/plugins/filemanager.py:420:5: No overload of bound method `bind` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/git_right_click.py:89:5: No overload of bound method `bind` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/hide_project.py:33:5: No overload of bound method `bind` matches arguments
+- warning[lint:possibly-unbound-attribute] porcupine/plugins/langserver.py:62:22: Attribute `fileno` on type `IO[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] porcupine/plugins/langserver.py:62:22: Attribute `fileno` on type `IO[bytes] | None` is possibly unbound
+- error[lint:no-matching-overload] porcupine/plugins/mergeconflict.py:119:9: No overload of bound method `bind` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/mergeconflict.py:120:9: No overload of bound method `bind` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/python_venv.py:169:9: No overload of bound method `bind` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/trailing_newline.py:23:5: No overload of bound method `bind` matches arguments
+- Found 133 diagnostics
++ Found 123 diagnostics
+
+nox (https://github.com/wntrblm/nox)
+- error[lint:call-non-callable] nox/_resolver.py:165:16: Method `__getitem__` of type `Unknown | (bound method dict[_T, _S].__getitem__(key: _T, /) -&gt; _S)` is not callable on object of type `Unknown | dict[_T, _S]`
++ error[lint:call-non-callable] nox/_resolver.py:165:16: Method `__getitem__` of type `Unknown | (bound method dict[_T, Literal[False]].__getitem__(key: _T, /) -&gt; Literal[False])` is not callable on object of type `Unknown | dict[_T, Literal[False]]`
+- error[lint:call-non-callable] nox/_resolver.py:166:13: Method `__getitem__` of type `Unknown | (bound method dict[_T, _S].__getitem__(key: _T, /) -&gt; _S)` is not callable on object of type `Unknown | dict[_T, _S]`
++ error[lint:call-non-callable] nox/_resolver.py:166:13: Method `__getitem__` of type `Unknown | (bound method dict[_T, Literal[False]].__getitem__(key: _T, /) -&gt; Literal[False])` is not callable on object of type `Unknown | dict[_T, Literal[False]]`
+- error[lint:invalid-assignment] nox/_resolver.py:194:9: Object of type `dict[_KT, _VT]` is not assignable to `dict[Node, None]`
+- error[lint:invalid-argument-type] nox/manifest.py:270:39: Argument to this function is incorrect: Expected `Mapping[Node, @Todo(specialized non-generic class)]`, found `dict[Unknown, Unknown]`
++ error[lint:invalid-argument-type] nox/manifest.py:270:39: Argument to this function is incorrect: Expected `Mapping[SessionRunner, @Todo(specialized non-generic class)]`, found `dict[Unknown, Unknown]`
+- Found 48 diagnostics
++ Found 47 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- error[lint:invalid-return-type] pydantic/_internal/_utils.py:139:12: Return type does not match returned value: Expected `dict[KeyType, Any]`, found `dict[_KT, _VT]`
+- error[lint:invalid-return-type] pydantic/_internal/_validators.py:146:16: Return type does not match returned value: Expected `Pattern[str]`, found `Pattern[PatternType]`
+- error[lint:invalid-return-type] pydantic/_internal/_validators.py:160:16: Return type does not match returned value: Expected `Pattern[bytes]`, found `Pattern[PatternType]`
++ error[lint:invalid-return-type] pydantic/_internal/_validators.py:160:16: Return type does not match returned value: Expected `Pattern[bytes]`, found `Pattern[str]`
+- error[lint:invalid-return-type] pydantic/experimental/pipeline.py:298:16: Return type does not match returned value: Expected `_Pipeline[_InT, datetime]`, found `_Pipeline[_InT, _NewOutT]`
+- error[lint:invalid-return-type] pydantic/experimental/pipeline.py:302:16: Return type does not match returned value: Expected `_Pipeline[_InT, str]`, found `_Pipeline[_InT, _NewOutT]`
+- error[lint:invalid-return-type] pydantic/experimental/pipeline.py:305:16: Return type does not match returned value: Expected `_Pipeline[_InT, str]`, found `_Pipeline[_InT, _NewOutT]`
+- error[lint:invalid-return-type] pydantic/experimental/pipeline.py:308:16: Return type does not match returned value: Expected `_Pipeline[_InT, str]`, found `_Pipeline[_InT, _NewOutT]`
+- error[lint:invalid-return-type] pydantic/experimental/pipeline.py:311:16: Return type does not match returned value: Expected `_Pipeline[_InT, str]`, found `_Pipeline[_InT, _NewOutT]`
+- error[lint:invalid-argument-type] pydantic/experimental/pipeline.py:317:16: Argument to this function is incorrect: Expected `_Pipeline[_InT, _NewOutT]`, found `_Pipeline[_InT, str]`
+- error[lint:invalid-return-type] pydantic/experimental/pipeline.py:317:16: Return type does not match returned value: Expected `_Pipeline[_InT, str]`, found `_Pipeline[_InT, _NewOutT]`
+- error[lint:invalid-argument-type] pydantic/experimental/pipeline.py:320:16: Argument to this function is incorrect: Expected `_Pipeline[_InT, _NewOutT]`, found `_Pipeline[_InT, str]`
+- error[lint:invalid-return-type] pydantic/experimental/pipeline.py:320:16: Return type does not match returned value: Expected `_Pipeline[_InT, str]`, found `_Pipeline[_InT, _NewOutT]`
+- error[lint:invalid-argument-type] pydantic/experimental/pipeline.py:323:16: Argument to this function is incorrect: Expected `_Pipeline[_InT, _NewOutT]`, found `_Pipeline[_InT, str]`
+- error[lint:invalid-return-type] pydantic/experimental/pipeline.py:323:16: Return type does not match returned value: Expected `_Pipeline[_InT, str]`, found `_Pipeline[_InT, _NewOutT]`
+- error[lint:invalid-return-type] pydantic/networks.py:1253:12: Return type does not match returned value: Expected `Pattern[str]`, found `Pattern[AnyStr]`
+- error[lint:invalid-return-type] pydantic/v1/networks.py:120:12: Return type does not match returned value: Expected `Pattern[str]`, found `Pattern[AnyStr]`
+- error[lint:invalid-return-type] pydantic/v1/networks.py:138:12: Return type does not match returned value: Expected `Pattern[str]`, found `Pattern[AnyStr]`
+- error[lint:invalid-return-type] pydantic/v1/networks.py:149:12: Return type does not match returned value: Expected `Pattern[str]`, found `Pattern[AnyStr]`
+- error[lint:invalid-return-type] pydantic/v1/networks.py:158:12: Return type does not match returned value: Expected `Pattern[str]`, found `Pattern[AnyStr]`
+- error[lint:invalid-return-type] pydantic/v1/networks.py:168:12: Return type does not match returned value: Expected `Pattern[str]`, found `Pattern[AnyStr]`
+- error[lint:no-matching-overload] pydantic/v1/typing.py:562:5: No overload of bound method `setdefault` matches arguments
+- error[lint:invalid-return-type] pydantic/v1/validators.py:587:16: Return type does not match returned value: Expected `Pattern[str]`, found `Pattern[AnyStr]`
+- Found 931 diagnostics
++ Found 910 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
+- warning[lint:possibly-unbound-attribute] setup.py:22:12: Attribute `group` on type `Match[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] setup.py:22:12: Attribute `group` on type `Match[str] | None` is possibly unbound
+
+isort (https://github.com/pycqa/isort)
+- error[lint:no-matching-overload] isort/format.py:131:12: No overload of function `match` matches arguments
+- error[lint:no-matching-overload] isort/format.py:133:14: No overload of function `match` matches arguments
+- Found 52 diagnostics
++ Found 50 diagnostics
+
+PyWinCtl (https://github.com/Kalmat/PyWinCtl)
+- error[lint:invalid-argument-type] src/pywinctl/_pywinctl_macos.py:214:49: Argument to this function is incorrect: Expected `str | Pattern[str]`, found `(@Todo(unknown type subscript) &amp; ~AlwaysFalsy) | Pattern[AnyStr] | @Todo(map_with_boundness: intersections with negative contributions)`
+- error[lint:invalid-argument-type] src/pywinctl/_pywinctl_macos.py:280:50: Argument to this function is incorrect: Expected `str | Pattern[str]`, found `(@Todo(unknown type subscript) &amp; ~AlwaysFalsy) | Pattern[AnyStr] | @Todo(map_with_boundness: intersections with negative contributions)`
+- error[lint:invalid-argument-type] src/pywinctl/_pywinctl_win.py:149:54: Argument to this function is incorrect: Expected `str | Pattern[str]`, found `(@Todo(unknown type subscript) &amp; ~AlwaysFalsy) | Pattern[AnyStr] | @Todo(map_with_boundness: intersections with negative contributions)`
+- error[lint:invalid-argument-type] src/pywinctl/_pywinctl_win.py:202:50: Argument to this function is incorrect: Expected `str | Pattern[str]`, found `(@Todo(unknown type subscript) &amp; ~AlwaysFalsy) | Pattern[AnyStr] | @Todo(map_with_boundness: intersections with negative contributions)`
+- Found 59 diagnostics
++ Found 55 diagnostics
+
+black (https://github.com/psf/black)
+- error[lint:invalid-assignment] src/black/__init__.py:223:5: Object of type `Pattern[AnyStr]` is not assignable to `Pattern[str]`
+- error[lint:invalid-return-type] src/black/strings.py:166:12: Return type does not match returned value: Expected `Pattern[str]`, found `Pattern[AnyStr]`
+- error[lint:invalid-assignment] src/black/trans.py:531:9: Object of type `dict[_KT, _VT]` is not assignable to attribute `comments` of type `dict[int, @Todo(specialized non-generic class)]`
+- error[lint:invalid-assignment] src/black/trans.py:1014:9: Object of type `dict[_KT, _VT]` is not assignable to attribute `comments` of type `dict[int, @Todo(specialized non-generic class)]`
+- error[lint:invalid-assignment] src/black/trans.py:1705:13: Object of type `dict[_KT, _VT]` is not assignable to attribute `comments` of type `dict[int, @Todo(specialized non-generic class)]`
+- error[lint:invalid-assignment] src/blib2to3/pygram.py:198:5: Object of type `dict[_KT, _VT]` is not assignable to attribute `soft_keywords` of type `dict[str, int]`
+- Found 147 diagnostics
++ Found 141 diagnostics
+
+flake8 (https://github.com/pycqa/flake8)
+- error[lint:invalid-argument-type] src/flake8/plugins/finder.py:220:13: Argument to this function is incorrect: Expected `Pattern[str]`, found `Unknown | Pattern[AnyStr]`
+- error[lint:invalid-return-type] src/flake8/processor.py:273:16: Return type does not match returned value: Expected `dict[int, str]`, found `dict[_T, _S]`
++ error[lint:invalid-return-type] src/flake8/processor.py:273:16: Return type does not match returned value: Expected `dict[int, str]`, found `dict[_T, LiteralString]`
+- error[lint:invalid-parameter-default] src/flake8/utils.py:26:17: Default value of type `Pattern[AnyStr]` is not assignable to annotated parameter type `Pattern[str]`
+- error[lint:invalid-return-type] src/flake8/violation.py:19:12: Return type does not match returned value: Expected `Match[str] | None`, found `Unknown | Match[AnyStr] | None`
+- Found 83 diagnostics
++ Found 80 diagnostics
+
+stone (https://github.com/dropbox/stone)
+- error[lint:no-matching-overload] stone/backends/helpers.py:16:17: No overload of function `split` matches arguments
+- Found 183 diagnostics
++ Found 182 diagnostics
+
+poetry (https://github.com/python-poetry/poetry)
+- error[lint:invalid-return-type] src/poetry/utils/env/system_env.py:42:16: Return type does not match returned value: Expected `dict[str, str]`, found `dict[_KT, _VT]`
+- error[lint:call-non-callable] src/poetry/vcs/git/system.py:42:9: Method `__getitem__` of type `bound method dict[AnyStr, AnyStr].__getitem__(key: AnyStr, /) -&gt; AnyStr` is not callable on object of type `dict[AnyStr, AnyStr]`
++ error[lint:no-matching-overload] tests/repositories/fixtures/pypi.org/generate.py:76:11: No overload of bound method `__init__` matches arguments
+- error[lint:invalid-assignment] tests/utils/test_password_manager.py:321:5: Invalid assignment to data descriptor attribute `keyring` on type `PasswordManager` with custom `__set__` method
+- error[lint:invalid-assignment] tests/utils/test_password_manager.py:339:5: Invalid assignment to data descriptor attribute `keyring` on type `PasswordManager` with custom `__set__` method
+- Found 1152 diagnostics
++ Found 1149 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
++ error[lint:no-matching-overload] cki_lib/logger.py:116:23: No overload of bound method `__init__` matches arguments
+- Found 190 diagnostics
++ Found 191 diagnostics
+
+pip (https://github.com/pypa/pip)
+- error[lint:call-non-callable] src/pip/_internal/models/link.py:592:24: Method `__getitem__` of type `bound method dict[AnyStr, @Todo(specialized non-generic class)].__getitem__(key: AnyStr, /) -&gt; @Todo(specialized non-generic class)` is not callable on object of type `dict[AnyStr, @Todo(specialized non-generic class)]`
+- error[lint:no-matching-overload] src/pip/_internal/models/pylock.py:19:47: No overload of function `match` matches arguments
+- error[lint:call-non-callable] src/pip/_internal/network/auth.py:136:9: Method `__getitem__` of type `bound method dict[AnyStr, AnyStr].__getitem__(key: AnyStr, /) -&gt; AnyStr` is not callable on object of type `dict[AnyStr, AnyStr]`
+- error[lint:call-non-callable] src/pip/_internal/network/auth.py:152:9: Method `__getitem__` of type `bound method dict[AnyStr, AnyStr].__getitem__(key: AnyStr, /) -&gt; AnyStr` is not callable on object of type `dict[AnyStr, AnyStr]`
+- error[lint:invalid-argument-type] src/pip/_internal/resolution/resolvelib/resolver.py:90:13: Argument to this function is incorrect: Expected `AbstractProvider[RT, CT, KT]`, found `PipProvider`
++ error[lint:invalid-argument-type] src/pip/_internal/resolution/resolvelib/resolver.py:90:13: Argument to this function is incorrect: Expected `AbstractProvider[Unknown, Unknown, Unknown]`, found `PipProvider`
+- error[lint:invalid-argument-type] src/pip/_internal/resolution/resolvelib/resolver.py:91:13: Argument to this function is incorrect: Expected `BaseReporter[RT, CT, KT]`, found `PipDebuggingReporter | PipReporter`
++ error[lint:invalid-argument-type] src/pip/_internal/resolution/resolvelib/resolver.py:91:13: Argument to this function is incorrect: Expected `BaseReporter[Unknown, Unknown, Unknown]`, found `PipDebuggingReporter | PipReporter`
+- warning[lint:possibly-unbound-attribute] src/pip/_internal/utils/subprocess.py:148:9: Attribute `close` on type `IO[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/pip/_internal/utils/subprocess.py:148:9: Attribute `close` on type `IO[Unknown] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_internal/utils/subprocess.py:151:25: Attribute `readline` on type `IO[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/pip/_internal/utils/subprocess.py:151:25: Attribute `readline` on type `IO[Unknown] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_internal/utils/subprocess.py:167:17: Attribute `close` on type `IO[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/pip/_internal/utils/subprocess.py:167:17: Attribute `close` on type `IO[Unknown] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/distlib/index.py:201:13: Attribute `write` on type `IO[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/pip/_vendor/distlib/index.py:201:13: Attribute `write` on type `IO[Unknown] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/distlib/index.py:202:13: Attribute `close` on type `IO[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/pip/_vendor/distlib/index.py:202:13: Attribute `close` on type `IO[Unknown] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/distlib/markers.py:120:10: Attribute `group` on type `Unknown | Match[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/pip/_vendor/distlib/markers.py:120:10: Attribute `group` on type `Unknown | Match[str] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/distlib/version.py:281:18: Attribute `groups` on type `Unknown | Match[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/pip/_vendor/distlib/version.py:281:18: Attribute `groups` on type `Unknown | Match[str] | None` is possibly unbound
++ error[lint:no-matching-overload] src/pip/_vendor/distro/distro.py:1365:23: No overload of bound method `__init__` matches arguments
+- error[lint:invalid-argument-type] src/pip/_vendor/pkg_resources/__init__.py:430:26: Argument to this function is incorrect: Expected `Mapping[type, _AdapterT]`, found `dict[@Todo(unsupported type[X] special form), @Todo(Inference of subscript on special form)]`
++ error[lint:invalid-argument-type] src/pip/_vendor/pkg_resources/__init__.py:430:26: Argument to this function is incorrect: Expected `Mapping[type, Unknown]`, found `dict[@Todo(unsupported type[X] special form), @Todo(Inference of subscript on special form)]`
+- error[lint:invalid-argument-type] src/pip/_vendor/pkg_resources/__init__.py:2247:28: Argument to this function is incorrect: Expected `Mapping[type, _AdapterT]`, found `dict[type, @Todo(Inference of subscript on special form)]`
++ error[lint:invalid-argument-type] src/pip/_vendor/pkg_resources/__init__.py:2247:28: Argument to this function is incorrect: Expected `Mapping[type, Unknown]`, found `dict[type, @Todo(Inference of subscript on special form)]`
+- error[lint:invalid-argument-type] src/pip/_vendor/pkg_resources/__init__.py:2463:29: Argument to this function is incorrect: Expected `Mapping[type, _AdapterT]`, found `dict[type, @Todo(Inference of subscript on special form)]`
++ error[lint:invalid-argument-type] src/pip/_vendor/pkg_resources/__init__.py:2463:29: Argument to this function is incorrect: Expected `Mapping[type, Unknown]`, found `dict[type, @Todo(Inference of subscript on special form)]`
+- error[lint:unsupported-operator] src/pip/_vendor/pygments/regexopt.py:23:12: Operator `+` is unsupported between objects of type `Literal[&quot;[&quot;]` and `Unknown | ((m) -&gt; Unknown) | str`
+- error[lint:no-matching-overload] src/pip/_vendor/requests/utils.py:887:13: No overload of bound method `setdefault` matches arguments
+- error[lint:invalid-argument-type] src/pip/_vendor/resolvelib/resolvers/resolution.py:44:35: Argument to this function is incorrect: Expected `Mapping[KT, Criterion[RT, CT]]`, found `dict[KT, Criterion[RT, CT]]`
++ error[lint:invalid-argument-type] src/pip/_vendor/resolvelib/resolvers/resolution.py:44:35: Argument to this function is incorrect: Expected `Mapping[@Todo(specialized non-generic class), Criterion[RT, CT]]`, found `dict[KT, Criterion[RT, CT]]`
+- error[lint:invalid-argument-type] src/pip/_vendor/resolvelib/resolvers/resolution.py:119:17: Argument to this function is incorrect: Expected `Mapping[KT, RT]`, found `dict[KT, Criterion[RT, CT]]`
++ error[lint:invalid-argument-type] src/pip/_vendor/resolvelib/resolvers/resolution.py:119:17: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[KT, Criterion[RT, CT]]`
+- error[lint:invalid-argument-type] src/pip/_vendor/resolvelib/resolvers/resolution.py:121:17: Argument to this function is incorrect: Expected `Mapping[KT, @Todo(specialized non-generic class)] | None`, found `dict[Unknown, Unknown]`
++ error[lint:invalid-argument-type] src/pip/_vendor/resolvelib/resolvers/resolution.py:121:17: Argument to this function is incorrect: Expected `Mapping[Unknown, @Todo(specialized non-generic class)] | None`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] src/pip/_vendor/resolvelib/resolvers/resolution.py:124:17: Argument to this function is incorrect: Expected `Mapping[KT, RT]`, found `dict[KT, Criterion[RT, CT]]`
++ error[lint:invalid-argument-type] src/pip/_vendor/resolvelib/resolvers/resolution.py:124:17: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[KT, Criterion[RT, CT]]`
+- error[lint:invalid-argument-type] src/pip/_vendor/resolvelib/resolvers/resolution.py:126:17: Argument to this function is incorrect: Expected `Mapping[KT, @Todo(specialized non-generic class)] | None`, found `dict[Unknown, Unknown]`
++ error[lint:invalid-argument-type] src/pip/_vendor/resolvelib/resolvers/resolution.py:126:17: Argument to this function is incorrect: Expected `Mapping[Unknown, @Todo(specialized non-generic class)] | None`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] src/pip/_vendor/resolvelib/resolvers/resolution.py:263:21: Argument to this function is incorrect: Expected `Mapping[KT, @Todo(specialized non-generic class)] | None`, found `dict[Unknown, Unknown]`
++ error[lint:invalid-argument-type] src/pip/_vendor/resolvelib/resolvers/resolution.py:263:21: Argument to this function is incorrect: Expected `Mapping[Unknown, @Todo(specialized non-generic class)] | None`, found `dict[Unknown, Unknown]`
++ error[lint:invalid-argument-type] src/pip/_vendor/resolvelib/resolvers/resolution.py:538:47: Argument to this function is incorrect: Expected `dict[int, Unknown | None]`, found `dict[int, KT | None]`
+- error[lint:invalid-return-type] src/pip/_vendor/rich/_emoji_replace.py:32:12: Return type does not match returned value: Expected `str`, found `@Todo(Inference of subscript on special form) | (def do_replace(match: Match[str]) -&gt; str) | str`
+- error[lint:invalid-parameter-default] src/pip/_vendor/rich/cells.py:51:25: Default value of type `_lru_cache_wrapper[_T]` is not assignable to annotated parameter type `(str, /) -&gt; int`
+- error[lint:invalid-assignment] src/pip/_vendor/rich/markup.py:66:5: Object of type `@Todo(Inference of subscript on special form) | (def escape_backslashes(match: Match[str]) -&gt; str) | str` is not assignable to `str`
+- error[lint:invalid-assignment] src/pip/_vendor/rich/text.py:617:13: Object of type `Pattern[AnyStr]` is not assignable to `Pattern[str] | str`
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/rich/text.py:618:22: Attribute `finditer` on type `Pattern[str] | str` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:226:17: Attribute `encode` on type `Unknown | ((match) -&gt; Unknown) | str` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:325:19: Attribute `groups` on type `Unknown | Match[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:325:19: Attribute `groups` on type `Unknown | Match[str] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:325:19: Attribute `groups` on type `Unknown | Match[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:325:19: Attribute `groups` on type `Unknown | Match[str] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:325:19: Attribute `groups` on type `Unknown | Match[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:325:19: Attribute `groups` on type `Unknown | Match[str] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:364:52: Attribute `groups` on type `Unknown | Match[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:364:52: Attribute `groups` on type `Unknown | Match[str] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:364:52: Attribute `groups` on type `Unknown | Match[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:364:52: Attribute `groups` on type `Unknown | Match[str] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:364:52: Attribute `groups` on type `Unknown | Match[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:364:52: Attribute `groups` on type `Unknown | Match[str] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:364:52: Attribute `groups` on type `Unknown | Match[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:364:52: Attribute `groups` on type `Unknown | Match[str] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:364:52: Attribute `groups` on type `Unknown | Match[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:364:52: Attribute `groups` on type `Unknown | Match[str] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:364:52: Attribute `groups` on type `Unknown | Match[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:364:52: Attribute `groups` on type `Unknown | Match[str] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:373:26: Attribute `groups` on type `Unknown | Match[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:373:26: Attribute `groups` on type `Unknown | Match[str] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:373:26: Attribute `groups` on type `Unknown | Match[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:373:26: Attribute `groups` on type `Unknown | Match[str] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:373:26: Attribute `groups` on type `Unknown | Match[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/url.py:373:26: Attribute `groups` on type `Unknown | Match[str] | None` is possibly unbound
+- Found 1110 diagnostics
++ Found 1100 diagnostics
+
+SinbadCogs (https://github.com/mikeshardmind/SinbadCogs)
+- error[lint:call-non-callable] devtools/runner.py:137:17: Method `__getitem__` of type `bound method dict[AnyStr, AnyStr].__getitem__(key: AnyStr, /) -&gt; AnyStr` is not callable on object of type `dict[AnyStr, AnyStr]`
+- error[lint:call-non-callable] devtools/runner.py:137:57: Method `__getitem__` of type `bound method dict[AnyStr, AnyStr].__getitem__(key: AnyStr, /) -&gt; AnyStr` is not callable on object of type `dict[AnyStr, AnyStr]`
+- error[lint:call-non-callable] devtools/runner.py:140:17: Method `__getitem__` of type `bound method dict[AnyStr, AnyStr].__getitem__(key: AnyStr, /) -&gt; AnyStr` is not callable on object of type `dict[AnyStr, AnyStr]`
+- error[lint:call-non-callable] devtools/runner.py:140:57: Method `__getitem__` of type `bound method dict[AnyStr, AnyStr].__getitem__(key: AnyStr, /) -&gt; AnyStr` is not callable on object of type `dict[AnyStr, AnyStr]`
+- error[lint:invalid-return-type] quotetools/helpers.py:47:12: Return type does not match returned value: Expected `str | None`, found `(def repl(obj) -&gt; Unknown) | str`
+- error[lint:invalid-return-type] relays/helpers.py:48:12: Return type does not match returned value: Expected `str | None`, found `(def repl(obj) -&gt; Unknown) | str`
+- error[lint:invalid-argument-type] rolemanagement/massmanager.py:256:21: Argument to this function is incorrect: Expected `Mapping[_T, Any]`, found `dict[Unknown, Unknown]`
++ error[lint:invalid-argument-type] rolemanagement/massmanager.py:256:21: Argument to this function is incorrect: Expected `Mapping[Unknown, Any]`, found `dict[Unknown, Unknown]`
+- Found 185 diagnostics
++ Found 179 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
++ error[lint:no-matching-overload] mkosi/log.py:81:15: No overload of bound method `__init__` matches arguments
+- error[lint:call-non-callable] mkosi/vmspawn.py:117:13: Method `__getitem__` of type `bound method dict[AnyStr, AnyStr].__getitem__(key: AnyStr, /) -&gt; AnyStr` is not callable on object of type `dict[AnyStr, AnyStr]`
+- error[lint:unsupported-operator] mkosi/vmspawn.py:123:17: Operator `|` is unsupported between objects of type `dict[AnyStr, AnyStr]` and `dict[str, str]`
++ error[lint:unsupported-operator] mkosi/vmspawn.py:123:17: Operator `|` is unsupported between objects of type `dict[str, str]` and `dict[str, str]`
+
+urllib3 (https://github.com/urllib3/urllib3)
+- error[lint:invalid-return-type] src/urllib3/util/ssl_match_hostname.py:77:12: Return type does not match returned value: Expected `Match[str] | None | bool`, found `Match[AnyStr] | None`
+- error[lint:invalid-assignment] src/urllib3/util/url.py:241:5: Object of type `Unknown | ((match) -&gt; Unknown) | str` is not assignable to `str | None`
+- warning[lint:possibly-unbound-attribute] src/urllib3/util/url.py:245:17: Attribute `encode` on type `str | None` is possibly unbound
+- Found 540 diagnostics
++ Found 537 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
++ error[lint:no-matching-overload] ignite/utils.py:345:14: No overload of bound method `__init__` matches arguments
+- warning[lint:possibly-unbound-attribute] tests/ignite/distributed/test_launcher.py:53:19: Attribute `read` on type `IO[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] tests/ignite/distributed/test_launcher.py:53:19: Attribute `read` on type `IO[Unknown] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] tests/ignite/distributed/test_launcher.py:53:48: Attribute `read` on type `IO[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] tests/ignite/distributed/test_launcher.py:53:48: Attribute `read` on type `IO[Unknown] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] tests/ignite/distributed/test_launcher.py:54:92: Attribute `read` on type `IO[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] tests/ignite/distributed/test_launcher.py:54:92: Attribute `read` on type `IO[Unknown] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] tests/ignite/distributed/test_launcher.py:55:16: Attribute `read` on type `IO[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] tests/ignite/distributed/test_launcher.py:55:16: Attribute `read` on type `IO[Unknown] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] tests/ignite/distributed/test_launcher.py:55:45: Attribute `read` on type `IO[AnyStr] | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] tests/ignite/distributed/test_launcher.py:55:45: Attribute `read` on type `IO[Unknown] | None` is possibly unbound
+- Found 2568 diagnostics
++ Found 2569 diagnostics
+
+dragonchain (https://github.com/dragonchain/dragonchain)
+- error[lint:no-matching-overload] dragonchain/lib/database/redisearch.py:354:51: No overload of function `search` matches arguments
+- error[lint:no-matching-overload] dragonchain/lib/database/redisearch.py:389:12: No overload of function `search` matches arguments
+- error[lint:no-matching-overload] dragonchain/lib/database/redisearch.py:420:12: No overload of function `search` matches arguments
+- error[lint:no-matching-overload] dragonchain/webserver/lib/verifications.py:71:58: No overload of function `match` matches arguments
+- Found 349 diagnostics
++ Found 345 diagnostics
+
+asynq (https://github.com/quora/asynq)
+- error[lint:invalid-argument-type] asynq/mock_.py:118:17: Argument to this function is incorrect: Expected `_patch[_T]`, found `_PatchAsync`
+- error[lint:invalid-argument-type] asynq/mock_.py:132:17: Argument to this function is incorrect: Expected `_patch[_T]`, found `_PatchAsync`
+- error[lint:invalid-argument-type] asynq/mock_.py:159:23: Argument to this function is incorrect: Expected `_patch[_T]`, found `_PatchAsync`
+- error[lint:invalid-argument-type] asynq/mock_.py:172:23: Argument to this function is incorrect: Expected `_patch[_T]`, found `_PatchAsync`
++ error[lint:no-matching-overload] asynq/tests/test_debug.py:258:15: No overload of bound method `__init__` matches arguments
+- Found 274 diagnostics
++ Found 271 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- error[lint:call-non-callable] tornado/auth.py:1230:22: Method `__getitem__` of type `bound method dict[AnyStr, @Todo(specialized non-generic class)].__getitem__(key: AnyStr, /) -&gt; @Todo(specialized non-generic class)` is not callable on object of type `dict[AnyStr, @Todo(specialized non-generic class)]`
+- error[lint:call-non-callable] tornado/auth.py:1230:50: Method `__getitem__` of type `bound method dict[AnyStr, @Todo(specialized non-generic class)].__getitem__(key: AnyStr, /) -&gt; @Todo(specialized non-generic class)` is not callable on object of type `dict[AnyStr, @Todo(specialized non-generic class)]`
+- error[lint:invalid-return-type] tornado/escape.py:401:12: Return type does not match returned value: Expected `str`, found `Unknown | (def make_link(m: Match[Unknown]) -&gt; str) | str`
+- error[lint:invalid-return-type] tornado/httputil.py:1216:12: Return type does not match returned value: Expected `str`, found `Unknown | (def _unquote_replace(m: Match[Unknown]) -&gt; str) | str`
+- error[lint:invalid-return-type] tornado/util.py:201:12: Return type does not match returned value: Expected `str`, found `Unknown | (def _re_unescape_replacement(match: Match[str]) -&gt; str) | str`
+- Found 562 diagnostics
++ Found 557 diagnostics
+
+Expression (https://github.com/cognitedata/Expression)
+- error[lint:invalid-argument-type] expression/collections/map.py:137:26: Argument to this function is incorrect: Expected `Mapping[_KT_co, _VT_co]`, found `dict[Unknown, Unknown]`
++ error[lint:invalid-argument-type] expression/collections/map.py:137:26: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-return-type] expression/core/result.py:171:24: Return type does not match returned value: Expected `Result[_TSourceOut, _TError | _TErrorOut]`, found `Result[Any, _TError]`
+- error[lint:invalid-return-type] expression/core/result.py:187:24: Return type does not match returned value: Expected `Result[_TSourceOut, _TErrorOut]`, found `Result[Any, _TError]`
+- error[lint:invalid-return-type] expression/core/result.py:393:12: Return type does not match returned value: Expected `Result[_TResult, _TError]`, found `Result[_TResult, _TErrorOut]`
+- error[lint:invalid-return-type] expression/core/result.py:402:12: Return type does not match returned value: Expected `Result[_TResult, _TError]`, found `Result[_TResult, _TErrorOut]`
+- error[lint:invalid-argument-type] expression/core/result.py:402:19: Argument to this function is incorrect: Expected `Result[_TOther, _TErrorOut]`, found `Result[_TOther, _TError]`
+- error[lint:invalid-return-type] expression/core/result.py:407:12: Return type does not match returned value: Expected `Result[_TSource, _TResult]`, found `Result[_TSourceOut, _TResult]`
+- error[lint:invalid-return-type] expression/core/result.py:415:12: Return type does not match returned value: Expected `Result[_TResult, _TError]`, found `Result[_TResult, _TErrorOut]`
+- error[lint:invalid-return-type] expression/core/result.py:419:12: Return type does not match returned value: Expected `dict[str, _TSource | _TError | Literal[&quot;ok&quot;, &quot;error&quot;]]`, found `dict[str, _TSourceOut | _TErrorOut | Literal[&quot;ok&quot;, &quot;error&quot;]]`
+- error[lint:invalid-return-type] expression/core/result.py:438:12: Return type does not match returned value: Expected `Result[_TSource, _TError]`, found `Result[_TSourceOut, _TError | _TErrorOut]`
+- error[lint:invalid-return-type] expression/core/result.py:447:12: Return type does not match returned value: Expected `Result[_TSource, _TError]`, found `Result[_TSourceOut, _TErrorOut]`
+- error[lint:invalid-return-type] expression/core/result.py:452:12: Return type does not match returned value: Expected `Result[_TError, _TSource]`, found `Result[_TErrorOut, _TSourceOut]`
+- error[lint:invalid-return-type] expression/core/result.py:457:12: Return type does not match returned value: Expected `Result[_TSource, _TError]`, found `Result[_TSourceOut, _TErrorOut]`
+- error[lint:invalid-argument-type] expression/core/result.py:457:27: Argument to this function is incorrect: Expected `Result[_TSourceOut, _TErrorOut]`, found `Result[_TSource, _TError]`
+- error[lint:invalid-return-type] expression/core/result.py:465:12: Return type does not match returned value: Expected `Result[_TSource, _TError]`, found `Result[_TSourceOut, _TErrorOut]`
+- error[lint:invalid-argument-type] expression/core/result.py:465:32: Argument to this function is incorrect: Expected `(_TError, /) -&gt; Result[_TSourceOut, _TErrorOut]`, found `(_TError, /) -&gt; Result[_TSource, _TError]`
+- error[lint:invalid-return-type] expression/effect/async_result.py:63:16: Return type does not match returned value: Expected `Result[_TSource, _TError]`, found `Result[_TSource, Any]`
+- error[lint:invalid-return-type] expression/effect/result.py:47:16: Return type does not match returned value: Expected `Result[_TSource, _TError]`, found `Result[_TSource, Any]`
+- error[lint:invalid-return-type] expression/effect/result.py:76:16: Return type does not match returned value: Expected `Result[_TSource, _TError]`, found `Result[_TResult, _TErrorOut]`
++ error[lint:invalid-return-type] expression/effect/result.py:76:16: Return type does not match returned value: Expected `Result[_TSource, _TError]`, found `Result[_TResult, _TError]`
+- error[lint:invalid-argument-type] expression/extra/parser.py:247:24: Argument to this function is incorrect: Expected `Parser[(_A, /) -&gt; _B]`, found `Parser[_A]`
++ error[lint:invalid-argument-type] expression/extra/parser.py:247:24: Argument to this function is incorrect: Expected `Parser[(_A, /) -&gt; _B]`, found `Parser[(_A, /) -&gt; (_B, /) -&gt; _C]`
+- error[lint:invalid-return-type] expression/extra/result/catch.py:40:24: Return type does not match returned value: Expected `Result[_TSource, _TError]`, found `Result[Any, _TError]`
+- error[lint:invalid-return-type] expression/extra/result/catch.py:45:24: Return type does not match returned value: Expected `Result[_TSource, _TError]`, found `Result[_TSource, Any]`
++ error[lint:invalid-return-type] expression/extra/result/catch.py:45:24: Return type does not match returned value: Expected `Result[_TSource, _TError]`, found `Result[_TSource &amp; ~Result[Unknown, Unknown], Any]`
+- error[lint:invalid-assignment] tests/test_map.py:33:5: Object of type `dict_items[_KT, _VT]` is not assignable to `ItemsView[str, int]`
++ error[lint:invalid-assignment] tests/test_map.py:33:5: Object of type `dict_items[str, int]` is not assignable to `ItemsView[str, int]`
+- error[lint:invalid-assignment] tests/test_map.py:40:5: Object of type `dict_items[_KT, _VT]` is not assignable to `ItemsView[str, int]`
++ error[lint:invalid-assignment] tests/test_map.py:40:5: Object of type `dict_items[str, int]` is not assignable to `ItemsView[str, int]`
+- error[lint:invalid-assignment] tests/test_map.py:55:5: Object of type `dict_items[_KT, _VT]` is not assignable to `ItemsView[str, int]`
++ error[lint:invalid-assignment] tests/test_map.py:55:5: Object of type `dict_items[str, int]` is not assignable to `ItemsView[str, int]`
+- error[lint:invalid-assignment] tests/test_map.py:68:5: Object of type `dict_items[_KT, _VT]` is not assignable to `ItemsView[str, int]`
++ error[lint:invalid-assignment] tests/test_map.py:68:5: Object of type `dict_items[str, int]` is not assignable to `ItemsView[str, int]`
+- error[lint:invalid-assignment] tests/test_map.py:81:5: Object of type `dict_items[_KT, _VT]` is not assignable to `ItemsView[str, int]`
++ error[lint:invalid-assignment] tests/test_map.py:81:5: Object of type `dict_items[str, int]` is not assignable to `ItemsView[str, int]`
+- error[lint:invalid-assignment] tests/test_option.py:390:5: Object of type `Result[_TSource, Any]` is not assignable to `Result[int, Any]`
++ error[lint:invalid-assignment] tests/test_option.py:390:5: Object of type `Result[Literal[42], Any]` is not assignable to `Result[int, Any]`
+- error[lint:invalid-assignment] tests/test_result.py:18:5: Object of type `Result[_TSource, Any]` is not assignable to `Result[int, str]`
++ error[lint:invalid-assignment] tests/test_result.py:18:5: Object of type `Result[Literal[42], Any]` is not assignable to `Result[int, str]`
+- error[lint:invalid-assignment] tests/test_result.py:53:5: Object of type `Result[Any, _TError]` is not assignable to `Result[int, str]`
++ error[lint:invalid-assignment] tests/test_result.py:53:5: Object of type `Result[Any, Literal[&quot;err&quot;]]` is not assignable to `Result[int, str]`
+- error[lint:invalid-assignment] tests/test_result.py:69:5: Object of type `Result[Any, _TError]` is not assignable to `Result[str, Exception]`
++ error[lint:invalid-assignment] tests/test_result.py:69:5: Object of type `Result[Any, CustomException]` is not assignable to `Result[str, Exception]`
+- error[lint:invalid-assignment] tests/test_result.py:95:5: Object of type `Result[_TSource, Any]` is not assignable to `Result[int, Exception]`
+- error[lint:invalid-assignment] tests/test_result.py:96:5: Object of type `Result[_TSource, Any]` is not assignable to `Result[int, Exception]`
+- error[lint:invalid-assignment] tests/test_result.py:109:5: Object of type `Result[Any, _TError]` is not assignable to `Result[int, int]`
+- error[lint:invalid-assignment] t...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-05 17:54</div>
+            <div class="timeline-body"><p>it's a big primer diff and I can't claim to have checked every one in detail. But I spot-checked a few and it's definitely getting rid of real false positives. Some projects have a net increase of diagnostics, but the vast majority of projects are seeing fewer diagnostics (sometimes hundreds fewer) as a result of this change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-05 18:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4973 on 2025-05-05 18:09</div>
+            <div class="timeline-body"><p>I did this in https://github.com/astral-sh/ruff/pull/17832/commits/de14158a9c0870552375993d82275406c6a4571a as part of #17832</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] WIP: Specialization bound methods and nominal instances" to "[ty] WIP: Specialize bound methods and nominal instances" by @dcreager on 2025-05-05 20:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] WIP: Specialize bound methods and nominal instances" to "[ty] Specialize bound methods and nominal instances" by @dcreager on 2025-05-05 20:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-05-05 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-05-05 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-05-05 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-05 20:57</div>
+            <div class="timeline-body"><p>Most of the new <code>No overload of bound method `__init__` matches arguments</code> ecosystem errors come from uses of the <code>logging</code> crate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-05-05 21:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-05-05 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-05-05 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-05 21:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:30 UTC
+    </footer>
+</body>
+</html>

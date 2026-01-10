@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] simplify subtypes from unions - astral-sh/ruff #13401</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] simplify subtypes from unions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13401">#13401</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-09-18 23:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-09-18 23:22</div>
+            <div class="timeline-body"><p>Add <code>Type::is_subtype_of</code> method, and simplify subtypes out of unions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-09-18 23:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-09-18 23:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-09-18 23:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-18 23:36</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:69 on 2024-09-19 02:05</div>
+            <div class="timeline-body"><p>As soon as you find an element already in the union that you know to be a supertype of the element you're considering adding to the union, you can short-circuit, since you know you won't be adding or removing any elements from the union in that case:</p>
+<pre><code class="language-suggestion">                let mut remove = vec![];
+                for element in &amp;self.elements {
+                    if ty.is_subtype_of(self.db, *element) {
+                        return self;
+                    } else if element.is_subtype_of(self.db, ty) {
+                        remove.push(*element);
+                    }
+                }
+                for element in remove {
+                    self.elements.remove(&amp;element);
+                }
+                self.elements.insert(ty);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-09-19 02:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-19 03:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:69 on 2024-09-19 03:24</div>
+            <div class="timeline-body"><p>Ugh, yes thanks! I had this in mind when writing it, then the tests passed and I totally forgot. Will fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-09-19 05:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-09-19 05:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-19 05:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:49 on 2024-09-19 05:54</div>
+            <div class="timeline-body"><p>Nit: It could be worth to call <code>union.reserve</code> here based on the assumption that most elements aren't overlapping</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:65 on 2024-09-19 05:56</div>
+            <div class="timeline-body"><p>Does it still make sense to use a hash set for <code>elements</code>, now that the &quot;uniqueness&quot; is no longer determined by <code>Eq</code> and <code>Hash</code> but by <code>is_subtype_of</code>? I get the impression that we could as well use a <code>Vec</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:65 on 2024-09-19 05:59</div>
+            <div class="timeline-body"><p>This makes <code>add</code> <code>O(n^2)</code> where <code>n</code> is the number of removed elements. It's probably still a very low number. It might be worth to store the removed elements in an HashSet and then using <code>self.elements.retain</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-19 05:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-19 09:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:65 on 2024-09-19 09:58</div>
+            <div class="timeline-body"><p>I considered suggesting a <code>HashSet</code> for <code>remove</code>, but then I realised that it's not necessary to use a HashSet to guarantee that all items in <code>remove</code> are unique. Because of the way it's constructed, we know that all items in <code>remove</code> are also members of <code>self.elements</code>, and <code>self.elements</code> is a <code>HashSet</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-19 10:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:65 on 2024-09-19 10:00</div>
+            <div class="timeline-body"><p>This explains why mypy uses a Python <code>list</code> for the inner list of types in its <code>Union</code> representation, rather than a Python <code>set</code> (something I've been wondering about recently)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-19 10:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:65 on 2024-09-19 10:25</div>
+            <div class="timeline-body"><p>It's less about the uniquness but more about using a more efficient removal method that avoids copying the array elements <code>n</code> times where <code>n</code> is the number of removed elements.</p>
+<p>We can probably do something more clever once <code>self.elements</code> is a <code>Vec</code> because we know that the elements in <code>remove</code> and <code>self.elements</code> are in the same order. But it may also just not be worth it (hashing isn't free either).</p>
+<p>The cheapest would be to use <code>swap_remove</code> but that changes the order of the elements. Not sure if we're fine with that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-19 11:46</div>
+            <div class="timeline-body"><p>This change makes <code>UnionBuilder::map</code> <code>O(N^2)</code> but I don't think there's a way to avoid that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-19 14:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:65 on 2024-09-19 14:46</div>
+            <div class="timeline-body"><p>I don't think a high cardinality for <code>remove</code> will be common, but it certainly could happen (e.g. if you have many subtypes of the same base type all in a union, and then you add the common base type), so it's worth considering. Good comments!</p>
+<p>I've replaced the <code>FxOrderSet</code> with a <code>Vec</code>, and I'm now doing a paired iteration to build up a new vec in a single pass with only the elements we want to keep (and using <code>with_capacity</code> to avoid ever needing to resize it). Will push a PR in a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-19 14:47</div>
+            <div class="timeline-body"><blockquote>
+<p>This change makes <code>UnionBuilder::map</code> <code>O(N^2)</code> but I don't think there's a way to avoid that</p>
+</blockquote>
+<p>I assume you mean <code>UnionBuilder::add</code>? There is no <code>UnionBuilder::map</code>.</p>
+<p>But yes, I agree; it's now <code>O(n^2)</code>, and I don't think that's avoidable.</p>
+<p>EDIT: oh, I'm guessing you actually meant <code>UnionType::map</code>. <code>UnionBuilder::add</code> is not really <code>O(n^2)</code>; it is <code>O(n*m)</code> if you add a union to the builder.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-19 14:50</div>
+            <div class="timeline-body"><p>If we switch to using a <code>Vec</code> for the elements of a union, that will make tests such as <code>union.contains(Type::Any)</code> O(n), right? Not sure how important that is to consider</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-19 14:53</div>
+            <div class="timeline-body"><blockquote>
+<p>If we switch to using a <code>Vec</code> for the elements of a union, that will make tests such as <code>union.contains(Type::Any)</code> O(n), right? Not sure how important that is to consider</p>
+</blockquote>
+<p>I don't think in general this is an operation we will need often, for the same reason -- the question will usually be about subtyping or assignability (or equivalence), not simple type equality.</p>
+<p>It's possible we will have the specific case of needing to know if Any/Unknown is in the union, but I think if that's an issue we could store an extra boolean flag on every union (and potentially even leave the actual Any/Unknown entry out of it) for less cost than the cost of the <code>FxOrderSet</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-19 14:56</div>
+            <div class="timeline-body"><blockquote>
+<p>EDIT: oh, I'm guessing you actually meant UnionType::map. UnionBuilder::add is not really O(n^2); it is O(n*m) if you add a union to the builder.</p>
+</blockquote>
+<p>Yes sorry. I still think it is because we loop over <code>n</code> elements and loops over all elements that have been added to this point. So it's probably <code>n(n-1)/2</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-19 14:59</div>
+            <div class="timeline-body"><blockquote>
+<p>I still think it is because we loop over <code>n</code> elements and loops over all elements that have been added to this point. So it's probably <code>n(n-1)/2</code></p>
+</blockquote>
+<p>Yes, I agree that this is accurate for <code>UnionType::map</code>.</p>
+<p>I was correcting myself about <code>UnionBuilder::add</code>, which is itself only <code>O(n)</code>, or <code>O(n*m)</code> if we are adding another union (which won't ever be the case from <code>UnionType::map</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hauntsaninja">@hauntsaninja</a> reviewed on 2024-09-25 08:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:55 on 2024-09-25 08:29</div>
+            <div class="timeline-body"><p>In equivalent mypy code, I had to add a special fast path for literals. You can do better than quadratic for unions with lots of literals of the same type, which turns out to be a thing in the wild</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-25 17:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:55 on 2024-09-25 17:54</div>
+            <div class="timeline-body"><p>Interesting, thanks for pointing this out! I took a look at that optimization in mypy.</p>
+<p>I think the case this would optimize is where a union already contains e.g. <code>str</code>, and then we try to add lots of string literal types to it, every one of which is redundant because its a subtype of <code>str</code>. Rather than going through all existing union members to check if each literal is a subtype of any of them, we can keep a hash-set of &quot;types present in this union which have literal forms&quot; and do an O(1) contains check against that set as the first step when adding a literal type to the union. Framed in more general terms, it's identifying that a certain set of common types have a single super-type that is most likely to rule them out of the union, and so we optimize checking for that most likely super-type by identity.</p>
+<p>This makes sense; I'd prefer to wait to add this kind of optimization until we see it crop up in a real-world codebase and can evaluate the actual impact of the optimization in our case, but it's definitely a useful idea to keep in mind.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-25 17:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:55 on 2024-09-25 17:56</div>
+            <div class="timeline-body"><p>I think what would be useful is if we added one (or more) benchmarks based on a real-world codebase that makes heavy use of large literals. (I.e., pydantic.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hauntsaninja">@hauntsaninja</a> reviewed on 2024-09-25 19:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:55 on 2024-09-25 19:17</div>
+            <div class="timeline-body"><p>That's not quite the right description, it's also useful when the union doesn't contain the supertype (i.e. str). For instance, say if you were combining two unions that you knew consisted only of literal types, you could use a set union, which is linear. The mypy optimisation I added is basically that, but also works when there are non-literal types thrown in as well. Fair enough on waiting though!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-25 19:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:55 on 2024-09-25 19:24</div>
+            <div class="timeline-body"><p>Oh, thanks, yeah, I misread the code. The set is <code>unduplicated_literal_fallbacks</code>, not <code>duplicated_literal_fallbacks</code>. So it looks like it's optimizing only the case you described; the mirror image of the case I described.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-29 16:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:55 on 2024-09-29 16:16</div>
+            <div class="timeline-body"><p>I've created a new issue collating some of the perf issues mypy and pyright have encountered relating to unions: https://github.com/astral-sh/ruff/issues/13549</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hauntsaninja">@hauntsaninja</a> reviewed on 2024-09-29 20:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:55 on 2024-09-29 20:22</div>
+            <div class="timeline-body"><p>Nice!
+I think there are some mypy PRs missing from the list, so if you're interested in code I'd make sure to look at main.
+I'll also make it such that if you're interested in real world use cases you should only have to look at primer, looks like there are 1-2 things I never actually added.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:29 UTC
+    </footer>
+</body>
+</html>

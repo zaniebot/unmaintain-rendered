@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-pyi`] Ensure `Literal[None,] | Literal[None,]` is not autofixed to `None | None` (`PYI061`) - astral-sh/ruff #17659</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-pyi</code>] Ensure <code>Literal[None,] | Literal[None,]</code> is not autofixed to <code>None | None</code> (<code>PYI061</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17659">#17659</a>
+        opened by <a href="https://github.com/LaBatata101">@LaBatata101</a>
+        on 2025-04-27 21:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-04-27 21:38</div>
+            <div class="timeline-body"><p>Handles the case where the <code>None</code> literal inside <code>Literal</code> is part of a tuple, e.g. <code>List[None,]</code>. We don't create the fix for this case.</p>
+<p>Fixes #16177.</p>
+<!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>Snapshot tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @LaBatata101 on 2025-04-27 21:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-04-27 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2025-04-27 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-27 21:45</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs</code>:269 on 2025-04-27 21:47</div>
+            <div class="timeline-body"><p>slightly simpler:</p>
+<pre><code class="language-suggestion">        // If the slice contains a single-element tuple, e.g. `Literal[None,]`,
+        // check the first element.
+        Expr::Tuple(ast::ExprTuple { elts, .. }) =&gt; {
+            matches!(&amp;**elts, [Expr::NoneLiteral(_)])
+        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-27 21:47</div>
+            <div class="timeline-body"><p>thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LaBatata101">@LaBatata101</a> reviewed on 2025-04-27 21:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs</code>:269 on 2025-04-27 21:49</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-27 22:03</div>
+            <div class="timeline-body"><p>Looking at it again, I think this maybe fixes things the wrong way. If we have a <code>foo.pyi</code> file like this:</p>
+<pre><code class="language-py">from typing import Literal
+
+f: Literal[None,] | Literal[None,]
+g: Literal[None,] | None
+h: None | Literal[None,]
+</code></pre>
+<p>and I run <code>cargo run -- check foo.pyi --select=PYI061 --preview --no-cache --diff</code> from the <code>main</code> branch, Ruff says it would apply these fixes:</p>
+<pre><code class="language-diff">--- foo.pyi
++++ foo.pyi
+@@ -1,5 +1,5 @@
+ from typing import Literal
+ 
+-f: Literal[None,] | Literal[None,]
++f: None | None
+ g: Literal[None,] | None
+ h: None | Literal[None,]
+</code></pre>
+<p>I.e., the second and third of these are fine, because this rule already knows that converting <code>Literal[None,] | None</code> to <code>None | None</code> will produce a <code>TypeError</code>. The reason why the first expression gets converted into one that will produce a <code>TypeError</code> is because there are actually two fixes being applied to the same expression as part of a <em>single iteration</em> of diagnostics-plus-fixes from Ruff. The second autofix isn't aware of the changes that the first autofix made (it isn't aware that the first element in the union has already been converted to <code>None</code>) so it thinks it's still safe to convert the second element in the union to <code>None</code>.</p>
+<p>That indicates to me that the better fix here is to ensure that each element's autofix is forced to happen in a separate iteration of the diagnostics-plus-autofixes loop that Ruff does until there are no more autofixes to apply. I.e., this diff applied to <code>main</code> also fixes the issue for me, and feels to me like it more directly addresses the cause of the problem here:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs b/crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs
+index 16a48bc5f..e3fafac62 100644
+--- a/crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs
++++ b/crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs
+@@ -130,6 +130,9 @@ pub(crate) fn redundant_none_literal&lt;'a&gt;(checker: &amp;Checker, literal_expr: &amp;'a Ex
+                 literal_elements.clone(),
+                 union_kind,
+             )
++            .map(|fix| {
++                fix.map(|fix| fix.isolate(Checker::isolation(semantic.current_statement_id())))
++            })
+         });
+         checker.report_diagnostic(diagnostic);
+     }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-04-27 22:18</div>
+            <div class="timeline-body"><blockquote>
+<p>Looking at it again, I think this maybe fixes things the wrong way. If we have a <code>foo.pyi</code> file like this:</p>
+<pre><code class="language-python">from typing import Literal
+
+f: Literal[None,] | Literal[None,]
+g: Literal[None,] | None
+h: None | Literal[None,]
+</code></pre>
+<p>and I run <code>cargo run -- check foo.pyi --select=PYI061 --preview --no-cache --diff</code> from the <code>main</code> branch, Ruff says it would apply these fixes:</p>
+<pre><code class="language-diff">--- foo.pyi
++++ foo.pyi
+@@ -1,5 +1,5 @@
+ from typing import Literal
+ 
+-f: Literal[None,] | Literal[None,]
++f: None | None
+ g: Literal[None,] | None
+ h: None | Literal[None,]
+</code></pre>
+<p>I.e., the second and third of these are fine, because this rule already knows that converting <code>Literal[None,] | None</code> to <code>None | None</code> will produce a <code>TypeError</code>. The reason why the first expression gets converted into one that will produce a <code>TypeError</code> is because there are actually two fixes being applied to the same expression as part of a <em>single iteration</em> of diagnostics-plus-fixes from Ruff. The second autofix isn't aware of the changes that the first autofix made (it isn't aware that the first element in the union has already been converted to <code>None</code>) so it thinks it's still safe to convert the second element in the union to <code>None</code>.</p>
+<p>That indicates to me that the better fix here is to ensure that each element's autofix is forced to happen in a separate iteration of the diagnostics-plus-autofixes loop that Ruff does until there are no more autofixes to apply. I.e., this diff applied to <code>main</code> also fixes the issue for me, and feels to me like it more directly addresses the cause of the problem here:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs b/crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs
+index 16a48bc5f..e3fafac62 100644
+--- a/crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs
++++ b/crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs
+@@ -130,6 +130,9 @@ pub(crate) fn redundant_none_literal&lt;'a&gt;(checker: &amp;Checker, literal_expr: &amp;'a Ex
+                 literal_elements.clone(),
+                 union_kind,
+             )
++            .map(|fix| {
++                fix.map(|fix| fix.isolate(Checker::isolation(semantic.current_statement_id())))
++            })
+         });
+         checker.report_diagnostic(diagnostic);
+     }
+</code></pre>
+</blockquote>
+<p>Makes sense, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_pyi/PYI061.py</code>:84 on 2025-04-27 22:26</div>
+            <div class="timeline-body"><p>can you add a comment along the lines of &quot;we offer a fix for one of these, but not both of them, as if both were autofixed it would result in a <code>TypeError</code> at runtime&quot;?</p>
+<p>(Same for the other fixture file)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs</code>:138 on 2025-04-27 22:26</div>
+            <div class="timeline-body"><p>can you add a short comment for future readers that explains why we need to ensure isolation here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-27 22:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-27 22:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_pyi/PYI061.py</code>:84 on 2025-04-27 22:28</div>
+            <div class="timeline-body"><p>in fact, this should probably be an integration test, since in the unit tests here it looks like both fixes <em>are</em> being offered simultaneously, even though that's not what actually happens on your PR branch when Ruff is actually run on user code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_pyi/PYI061.py</code>:84 on 2025-04-27 22:29</div>
+            <div class="timeline-body"><p>Yep</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LaBatata101">@LaBatata101</a> reviewed on 2025-04-27 22:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LaBatata101">@LaBatata101</a> reviewed on 2025-04-27 22:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs</code>:138 on 2025-04-27 22:29</div>
+            <div class="timeline-body"><p>Yes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-27 22:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_pyi/PYI061.py</code>:84 on 2025-04-27 22:29</div>
+            <div class="timeline-body"><p>an integration test could go in https://github.com/astral-sh/ruff/blob/main/crates/ruff/tests/lint.rs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LaBatata101">@LaBatata101</a> reviewed on 2025-04-27 23:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs</code>:138 on 2025-04-27 23:07</div>
+            <div class="timeline-body"><p>@AlexWaygood I've added the comment, can you check to see if it's good?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-04-28 06:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-28 11:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs</code>:138 on 2025-04-28 11:03</div>
+            <div class="timeline-body"><p>it looks great, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-04-28 11:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-28 11:13</div>
+            <div class="timeline-body"><p>I realised that we could simplify some of the logic added in https://github.com/astral-sh/ruff/pull/14583, because ensuring that the individual autofixes are isolated provides a more general fix! I pushed the change to your branch here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`flake8-pyi`] Improve autofix safety for `PYI061`" to "[`flake8-pyi`] Ensure `Literal[None,] | Literal[None,]` is not autofixed to `None | None` (`PYI061`)" by @AlexWaygood on 2025-04-28 11:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-28 11:23</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-04-28 11:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-04-28 11:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-30 20:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:30 UTC
+    </footer>
+</body>
+</html>

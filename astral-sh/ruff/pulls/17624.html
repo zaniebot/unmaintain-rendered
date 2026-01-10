@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[syntax-errors] detect single starred expression assignment `x = *y` - astral-sh/ruff #17624</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[syntax-errors] detect single starred expression assignment <code>x = *y</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17624">#17624</a>
+        opened by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a>
+        on 2025-04-25 06:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-04-25 06:06</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Part of #17412</p>
+<p>Starred expressions cannot be used as values in assignment expressions.
+Add a new semantic syntax error to catch such instances.
+Note that we already have <code>ParseErrorType::InvalidStarredExpressionUsage</code> to catch some starred expression errors during parsing, but that does not cover top level assignment expressions.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Added new inline tests for the new rule</li>
+<li>Found some examples marked as &quot;valid&quot; in existing tests (<code>_ = *data</code>), which are not really valid (per this new rule) and updated them</li>
+<li>There was an existing inline test - <code>assign_stmt_invalid_value_expr</code> which had instances of <code>*</code> expression which would be deemed invalid by this new rule. Converted these to tuples, so that they do not trigger this new rule.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @abhijeetbodas2001 on 2025-04-25 06:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @abhijeetbodas2001 on 2025-04-25 06:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-04-25 06:08</div>
+            <div class="timeline-body"><p>@ntBre could you review?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-25 06:16</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered linter errors</strong>. (no lint changes; 1 project error)</p>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (error)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre><code>Failed to clone bokeh/bokeh: error: 3300 bytes of body are still expected
+fetch-pack: unexpected disconnect while reading sideband packet
+fatal: early EOF
+fatal: fetch-pack: invalid index-pack output
+</code></pre>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @MichaReiser on 2025-04-25 06:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ntBre by @ntBre on 2025-04-25 16:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-25 16:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@single_starred_assignment_value.py.snap</code>:168 on 2025-04-25 16:32</div>
+            <div class="timeline-body"><p>Let's use the same convention for the message as other similar syntax errors: &quot;Starred expression cannot be used here&quot; (cc @ntBre)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-25 16:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@single_starred_assignment_value.py.snap</code>:168 on 2025-04-25 16:47</div>
+            <div class="timeline-body"><p>Oh, that is actually what we used for the existing <code>InvalidStarExpression</code> variant, so that's my bad. I think the closest to the other variants would be something like &quot;cannot use a starred expression here,&quot; but the current value is identical to CPython.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-25 16:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@single_starred_assignment_value.py.snap</code>:168 on 2025-04-25 16:57</div>
+            <div class="timeline-body"><p>I don't think we necessarily need to have the same message as CPython.</p>
+<blockquote>
+<p>I think the closest to the other variants would be something like &quot;cannot use a starred expression here,&quot;</p>
+</blockquote>
+<p>Oh interesting. IIRC, the parser has messages like &quot;Yield expressions cannot be used here&quot;, etc. which is where my recommendation comes from.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> reviewed on 2025-04-25 17:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@single_starred_assignment_value.py.snap</code>:168 on 2025-04-25 17:49</div>
+            <div class="timeline-body"><blockquote>
+<p>IIRC, the parser has messages like &quot;Yield expressions cannot be used here&quot;</p>
+</blockquote>
+<p>There's also the exact message you mentioned above for star expressions:</p>
+<p>https://github.com/astral-sh/ruff/blob/bc0a5aa4098a5b4d03365a22384b0307a124391c/crates/ruff_python_parser/src/error.rs#L229-L231</p>
+<p>Should I change the syntax error to this message then?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2025-04-28 06:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @MichaReiser removed by @MichaReiser on 2025-04-28 06:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@single_starred_assignment_value.py.snap</code>:168 on 2025-04-28 07:18</div>
+            <div class="timeline-body"><p>Hi, bumping this once again.
+It is not clear to me whether the message needs to be changed or not.
+(Although changing makes sense to me, happy to do that).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> reviewed on 2025-04-28 07:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-28 12:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@single_starred_assignment_value.py.snap</code>:168 on 2025-04-28 12:51</div>
+            <div class="timeline-body"><p>I'd recommend changing the message to &quot;Starred expression cannot be used here&quot; to be consistent with what the parser emits and other similar messages emitted by the Ruff parser. It'd be useful if that change could be done in a separate PR but if that's too much to ask, it's fine to include it in this PR itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/resources/inline/err/assign_stmt_invalid_value_expr.py</code>:1 on 2025-04-28 18:19</div>
+            <div class="timeline-body"><p>I think we can just leave this file alone. It doesn't look like the snapshots changed at all, so I don't think it's worth renaming the file or updating the tests, unless I'm missing something. They don't even trigger the new semantic error, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/resources/valid/statement/assignment.py</code>:41 on 2025-04-28 18:22</div>
+            <div class="timeline-body"><p>I think removing the <code>*</code> would be enough to make this valid again. I'm guessing this test is more about testing that you can assign to <code>[]</code> and <code>()</code>, but @dhruvmanila would know better than me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:111 on 2025-04-28 18:25</div>
+            <div class="timeline-body"><p>Another couple of interesting <code>test_ok</code> cases would be:</p>
+<pre><code class="language-python">x = (*[1],)
+x = *[1],
+</code></pre>
+<p>which is valid because the right-hand side is unpacked into a tuple.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-28 18:28</div>
+            <div class="timeline-body"><p>Thanks, this is looking good. I think we can revert at least one of the snapshot updates and add a couple more interesting <code>test_ok</code> cases, but otherwise this looks good.</p>
+<p>Let's follow up with a small PR updating the error message for this variant, as Dhruv suggested. I think it's okay to land this first since it's just reusing the current message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-28 18:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/resources/valid/statement/assignment.py</code>:41 on 2025-04-28 18:38</div>
+            <div class="timeline-body"><p>Yeah, probably. I don't really remember but looking at the file, I don't see any test case using starred expression on the RHS so I'll recommend to update it to the following instead:</p>
+<pre><code class="language-py">[] = (*data,)
+() = (*data,)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> reviewed on 2025-04-29 05:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on <code>crates/ruff_python_parser/resources/inline/err/assign_stmt_invalid_value_expr.py</code>:1 on 2025-04-29 05:34</div>
+            <div class="timeline-body"><p>They do trigger the new rule.</p>
+<pre><code>        257 │+1 | x = *a and b
+        258 │+  |     ^^^^^^^^ Syntax Error: can't use starred expression here
+        259 │+2 | x = *yield x
+        260 │+3 | x = *yield from x
+        261 │+  |
+        262 │+
+        263 │+
+        264 │+  |
+        265 │+1 | x = *a and b
+        266 │+2 | x = *yield x
+        267 │+  |     ^^^^^^^^ Syntax Error: can't use starred expression here
+        268 │+3 | x = *yield from x
+        269 │+4 | x = *lambda x: x
+</code></pre>
+<p>I had removed the assignments so that they do not trigger it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-04-29 06:02</div>
+            <div class="timeline-body"><p>Addressed two of the review comments, but Brent, please see the unresolved thread at https://github.com/astral-sh/ruff/pull/17624#discussion_r2065512771.</p>
+<p>As you suggested, I'll make a follow up PR to edit the messages once this one is in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-29 20:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/resources/inline/err/assign_stmt_invalid_value_expr.py</code>:1 on 2025-04-29 20:17</div>
+            <div class="timeline-body"><p>I think that would be changing what the test was suppose to do. It's suppose to test that a starred expression involved in an assignment uses the correct precedence which is <code>bitwise_or</code> as per the grammar. We should retain this test but update it such that it still maintains what the original intent was. Now that the star expressions are not allowed at the top level, we can update the code to include the star expressions inside a list / tuple. For example:</p>
+<pre><code class="language-py">x = (*a and b,)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:1129 on 2025-04-29 20:19</div>
+            <div class="timeline-body"><p>I'd recommend to keep using the &quot;assign_stmt_&quot; prefix as that's a good way to differentiate visually just by looking at the file list under the fixtures directory as to what statement this is testing as we don't have a way to categorize them because the files are autogenerated from these comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-29 20:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:109 on 2025-04-29 20:20</div>
+            <div class="timeline-body"><p>Let's use <code>assign_stmt_starred_expr_value</code> to have the &quot;assign_stmt_&quot; prefix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-29 20:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:115 on 2025-04-29 20:20</div>
+            <div class="timeline-body"><p>Same here: Let's use <code>assign_stmt_starred_expr_value</code> to have the &quot;assign_stmt_&quot; prefix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-29 20:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-29 20:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/resources/inline/err/assign_stmt_invalid_value_expr.py</code>:1 on 2025-04-29 20:20</div>
+            <div class="timeline-body"><p>Ah, my mistake for not seeing that these would be affected. Thanks Dhruv for clarifying the intent of the tests, that looks like a great suggestion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> reviewed on 2025-04-30 00:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:1129 on 2025-04-30 00:01</div>
+            <div class="timeline-body"><p>Makes sense, done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> reviewed on 2025-04-30 00:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on <code>crates/ruff_python_parser/resources/inline/err/assign_stmt_invalid_value_expr.py</code>:1 on 2025-04-30 00:03</div>
+            <div class="timeline-body"><p>Thanks for the explanation! Makes sense. For the non-<code>yield</code> test cases, I followed the pattern you mentioned, putting the expression inside a list.
+For the <code>yield</code> test cases, I had to create a two-element tuple, because:</p>
+<ul>
+<li>Changing to <code>(*yield x,)</code> is not good enough, since this is still a &quot;Starred expression&quot; as a whole as per the AST</li>
+<li>Changing to <code>((*yield x),)</code> triggers another of the &quot;Starred expression cannot be used here&quot; errors, namely this one:
+https://github.com/astral-sh/ruff/blob/f11d9cb509fa823b9c52ff799db7077199472677/crates/ruff_python_parser/tests/snapshots/invalid_syntax%40expressions__parenthesized__parenthesized.py.snap#L62-L64</li>
+</ul>
+<p>To avoid this being triggered, I went with a two-element tuple -- <code>(42, *yield from x)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-04-30 00:04</div>
+            <div class="timeline-body"><p>Thanks a lot for the reviews! I have addressed all the comments and pushed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/resources/inline/err/assign_stmt_invalid_value_expr.py</code>:1 on 2025-04-30 15:24</div>
+            <div class="timeline-body"><p>Thanks for following up, that works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-30 15:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-04-30 15:25</div>
+            <div class="timeline-body"><p>Looks good, I've mainly looked at the test cases. I'll leave the final review to @ntBre</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-04-30 19:03</div>
+            <div class="timeline-body"><p>Looks great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-04-30 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-04-30 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-01 05:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> reviewed on 2025-05-01 17:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@single_starred_assignment_value.py.snap</code>:168 on 2025-05-01 17:40</div>
+            <div class="timeline-body"><p>Opened #17772 for the message change.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:30 UTC
+    </footer>
+</body>
+</html>

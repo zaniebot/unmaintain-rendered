@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Protocols: Fixpoint iteration for fully-static check - astral-sh/ruff #17880</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Protocols: Fixpoint iteration for fully-static check</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17880">#17880</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-05-06 07:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-06 07:21</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>A recursive protocol like the following would previously lead to stack overflows when attempting to create the union type for the <code>P | None</code> member, because <code>UnionBuilder</code> checks if element types are fully static, and the fully-static check on <code>P</code> would in turn list all members and check whether all of them were fully static, leading to a cycle.</p>
+<pre><code class="language-py">from __future__ import annotations
+
+from typing import Protocol
+
+class P(Protocol):
+    parent: P | None
+</code></pre>
+<p>Here, we make the fully-static check on protocols a salsa query and add fixpoint iteration, starting with <code>true</code> as the initial value (assume that the recursive protocol is fully-static). If the recursive protocol has any non-fully-static members, we still return <code>false</code> when re-executing the query (see newly added tests).</p>
+<p>closes #17861</p>
+<h2>Test Plan</h2>
+<p>Added regression test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-05-06 07:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-06 07:24</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-05-06 07:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/protocol_class.rs</code>:115 on 2025-05-06 07:38</div>
+            <div class="timeline-body"><p>Not sure if there is a way to avoid cloning here, since <code>_members(db)</code> only gives us shared access to the <code>BTreeMap</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-05-06 07:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-05-06 07:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-05-06 07:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-05-06 07:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-06 07:41</div>
+            <div class="timeline-body"><p>This implies that I might also need to add fixpoint for any other operation that involves probing the types of the protocols members, such as assignability and disjointness checks. That feels slightly painful, but so it goes, I guess!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-06 07:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/protocol_class.rs</code>:115 on 2025-05-06 07:48</div>
+            <div class="timeline-body"><p>I think you could change <code>ProtocolMemberData::normalized()</code> to take <code>&amp;self</code> rather than <code>self</code>. It probably wouldn't improve perf, but it would avoid the need for one of the explicit <code>.clone()</code> calls, which maybe makes us feel slightly better about life?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/protocols.md</code>:1 on 2025-05-06 07:53</div>
+            <div class="timeline-body"><p>Can we create a new <code>## Recursive protocols</code> section of this test suite (that includes the assertions you're adding here, and that also includes the tests I added earlier at https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/protocols.md#regression-test-narrowing-with-self-referential-protocols )?. I think it makes sense for all recursive-protocol tests to be together.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/protocols.md</code>:1382 on 2025-05-06 07:57</div>
+            <div class="timeline-body"><p>These assertions should help prevent me from adding overflows when I add better assignability/subtyping logic for protocols in the future:</p>
+<pre><code class="language-suggestion">static_assert(not is_fully_static(RecursiveNonFullyStatic))
+static_assert(is_assignable_to(RecursiveFullyStatic, RecursiveNonFullyStatic))
+static_assert(is_assignable_to(RecursiveNonFullyStatic, RecursiveFullyStatic))
+static_assert(not is_subtype_of(RecursiveFullyStatic, RecursiveNonFullyStatic))
+static_assert(not is_subtype_of(RecursiveNonFullyStatic, RecursiveFullyStatic))
+</code></pre>
+<p>I'd also be interested in this test, not sure if it passes or not yet (could add it with a TODO if it doesn't):</p>
+<pre><code class="language-py">class AlsoRecursiveFullyStatic(Protocol):
+    parent: AlsoRecursiveFullyStatic | None
+    x: int
+
+static_assert(is_equivalent_to(AlsoRecursiveFullyStatic, RecursiveFullyStatic))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:305 on 2025-05-06 07:59</div>
+            <div class="timeline-body"><p>The inner struct becomes redundant with this refactor. You can get rid of it and have <code>SynthesizedProtocolType</code> just be</p>
+<pre><code class="language-rs">#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, salsa::Update, PartialOrd, Ord)]
+pub(in crate::types) struct SynthesizedProtocolType&lt;'db&gt;(ProtocolInterface&lt;'db&gt;);
+
+impl&lt;'db&gt; SynthesizedProtocolType&lt;'db&gt; {
+    pub(super) fn new(db: &amp;'db dyn Db, interface: ProtocolInterface&lt;'db&gt;) -&gt; Self {
+        Self(interface.normalized(db))
+    }
+
+    pub(in crate::types) fn interface(self) -&gt; ProtocolInterface&lt;'db&gt; {
+        self.0
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/protocol_class.rs</code>:122 on 2025-05-06 08:00</div>
+            <div class="timeline-body"><p>:/ The idea was that this would be an implementation detail that wouldn't be exposed outside of this module at all. I guess this is necessary because of Salsa visibility rules? It doesn't matter too much, I guess :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-05-06 08:00</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/protocol_class.rs</code>:122 on 2025-05-06 11:00</div>
+            <div class="timeline-body"><p>Yeah, this is unfortunate. Not sure if there is a way to control the visibility...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-05-06 11:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-05-06 11:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:305 on 2025-05-06 11:01</div>
+            <div class="timeline-body"><p>Makes sense, I wasn't sure if it was a necessary abstraction layer or just there for <code>Copy</code>-purposes or similar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-05-06 11:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/protocols.md</code>:1382 on 2025-05-06 11:01</div>
+            <div class="timeline-body"><p>So... both <code>is_assignable_to</code> as well as <code>is_equivalent_to</code> checks are also leading to stack overflows. I'll look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:305 on 2025-05-06 11:06</div>
+            <div class="timeline-body"><p>It was basically just there to make it impossible to construct <code>SynthesizedProtocolType</code> without calling <code>new()</code>. If I made <code>SynthesizedProtocolType</code> itself interned, I wouldn't have been able to give it a custom <code>new()</code> method, so I made it a wrapper around a Salsa-interned inner type. I wanted to enforce that it could only be constructed using the <code>new()</code> method so that I could enforce the invariant that the inner interface of a <code>SynthesizedProtocolType</code> could only ever be a normalized interface.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-06 11:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/protocols.md</code>:1382 on 2025-05-07 06:31</div>
+            <div class="timeline-body"><p>I have not yet found a solution to this problem. I added TODO comments for now. I am going to merge this PR, as it solves the originally reported problem, and open a new ticket for the remaining tasks (including a note that the cycle handling for <code>is_fully_static</code> might be replaced with a more general solution).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-05-07 06:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-07 06:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/protocols.md</code>:1382 on 2025-05-07 06:39</div>
+            <div class="timeline-body"><p>SGTM, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-05-07 06:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-05-07 06:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-07 06:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:30 UTC
+    </footer>
+</body>
+</html>

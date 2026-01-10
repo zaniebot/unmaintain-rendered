@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Change range of `revealed-type` diagnostic to be the range of the argument passed in, not the whole call - astral-sh/ruff #17980</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Change range of <code>revealed-type</code> diagnostic to be the range of the argument passed in, not the whole call</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17980">#17980</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-05-09 13:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-09 13:04</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I think we've discussed a few times that it would be desirable for the highlighted range of a <code>reveal_type</code> call to be this:</p>
+<pre><code>reveal_type(x)
+            ^ Revealed type is `int`
+</code></pre>
+<p>Rather than this:</p>
+<pre><code>reveal_type(x)
+^^^^^^^^^^^^^^ Revealed type is `int`
+</code></pre>
+<p>This PR implements that change</p>
+<h2>Test Plan</h2>
+<p>Lots of snapshot changes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-05-09 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-05-09 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-05-09 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-05-09 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-05-09 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-05-09 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-09 13:08</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">attrs (https://github.com/python-attrs/attrs)
+- info[revealed-type] tests/dataclass_transform_example.py:13:1: Revealed type: `(a: str, b: int) -&gt; None`
++ info[revealed-type] tests/dataclass_transform_example.py:13:13: Revealed type: `(a: str, b: int) -&gt; None`
+- info[revealed-type] tests/dataclass_transform_example.py:21:1: Revealed type: `(with_converter: int = Unknown) -&gt; None`
++ info[revealed-type] tests/dataclass_transform_example.py:21:13: Revealed type: `(with_converter: int = Unknown) -&gt; None`
+- info[revealed-type] tests/dataclass_transform_example.py:34:1: Revealed type: `str`
++ info[revealed-type] tests/dataclass_transform_example.py:34:13: Revealed type: `str`
+- info[revealed-type] tests/dataclass_transform_example.py:45:1: Revealed type: `str`
++ info[revealed-type] tests/dataclass_transform_example.py:45:13: Revealed type: `str`
+- info[revealed-type] tests/dataclass_transform_example.py:56:1: Revealed type: `(_a: int = Any) -&gt; None`
++ info[revealed-type] tests/dataclass_transform_example.py:56:13: Revealed type: `(_a: int = Any) -&gt; None`
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- info[revealed-type] tests/annotations/declarations.py:121:5: Revealed type: `Unknown`
++ info[revealed-type] tests/annotations/declarations.py:122:9: Revealed type: `Unknown`
+- info[revealed-type] tests/annotations/declarations.py:232:5: Revealed type: `Unknown`
++ info[revealed-type] tests/annotations/declarations.py:233:9: Revealed type: `Unknown`
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:4786 on 2025-05-09 13:09</div>
+            <div class="timeline-body"><p>Is it guaranteed that we always have an argument here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-09 13:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/expression/len.md</code>:1 on 2025-05-09 13:09</div>
+            <div class="timeline-body"><p>I had to fiddle about with the assertions here a bit because with this PR, the <code>undefined-reveal</code> diagnostic can now be attached to a different line than the <code>revealed-type</code> diagnostic. The mechanism mdtest uses to suppress <code>undefined-reveal</code> diagnostics is that it sees a <code># revealed:</code> assertion as matching both diagnostics simultaneously, but it only recognises a match if the <code>revealed:</code> assertion is on the same line as the <code>undefined-reveal</code> diagnostic.</p>
+<p>Ideally we'd get rid of this limitation in mdtest. (I still think a simpler solution would just be to deselect the <code>undefined-reveal</code> lint altogether in mdtest, and have that specific rule tested solely through integration tests -- this would also solve the issue that <code>undefined-reveal</code> diagnostics tend to be very noisy in snapshots.) However, it didn't seem worth spending much time on right now. So for now I just fiddled with the Markdown in this file to make sure that the <code>undefined-reveal</code> diagnostics are always attached to the same line as the <code>revealed-type</code> diagnostics. It leads to slightly odd Python formatting in some cases, but it means that mdtest continues to recognise the <code># revealed:</code> assertions as matching the <code>undefined-reveal</code> diagnostics as well as the <code>revealed-type</code> diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-05-09 13:09</div>
+            <div class="timeline-body"><p>Nice, thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-09 13:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:4786 on 2025-05-09 13:11</div>
+            <div class="timeline-body"><p>Yes, because otherwise we wouldn't have entered the <code>if let [Some(revealed_type)] = overload.parameter_types()</code> branch a couple of lines above. I can add a comment if you like?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:4786 on 2025-05-09 13:14</div>
+            <div class="timeline-body"><p>Nah, it's fine. Just wanted to make sure it's the case and it wasn't immediately obvious from skimming over the code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-09 13:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-05-09 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-09 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-09 13:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:31 UTC
+    </footer>
+</body>
+</html>

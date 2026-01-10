@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add initial support for `*` imports - astral-sh/ruff #16923</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add initial support for <code>*</code> imports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16923">#16923</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-03-22 22:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-22 22:51</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds initial support for <code>*</code> imports to red-knot. The approach is to implement a standalone query, called from semantic indexing, that visits the module referenced by the <code>*</code> import and collects all global-scope public names that will be imported by the <code>*</code> import. The <code>SemanticIndexBuilder</code> then adds separate definitions for each of these names, all keyed to the same <code>ast::Alias</code> node that represents the <code>*</code> import.</p>
+<p>There are many pieces of <code>*</code>-import semantics that are still yet to be done, even with this PR:</p>
+<ul>
+<li><p>This PR does not attempt to implement any of the semantics to do with <code>__all__</code>. (If a module defines <code>__all__</code>, then only the symbols included in <code>__all__</code> are imported, <em>not</em> all public global-scope symbols.</p>
+</li>
+<li><p>With the logic implemented in this PR as it currently stands, we sometimes incorrectly consider a symbol bound even though it is defined in a branch that is statically known to be dead code, e.g. (assuming the target Python version is set to 3.11):</p>
+<pre><code class="language-py"># a.py
+
+import sys
+
+if sys.version_info &lt; (3, 10):
+    class Foo: ...
+
+</code></pre>
+<pre><code class="language-py"># b.py
+
+from a import *
+
+print(Foo)  # this is unbound at runtime on 3.11,
+            # but we currently consider it bound with the logic in this PR
+</code></pre>
+</li>
+</ul>
+<p>Implementing these features is important, but is for now deferred to followup PRs.</p>
+<p>Many thanks to @ntBre, who contributed to this PR in a pairing session on Friday!</p>
+<h2>Test Plan</h2>
+<p>Assertions in existing mdtests are adjusted, and several new ones are added.</p>
+<p>~~TODO: the <code>collections.abc</code> integration test at the bottom of <code>star.md</code> is still failing. Not sure why...~~ (I figured out the bug here and fixed it!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-03-22 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-22 23:03</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">packaging (https://github.com/pypa/packaging)
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/packaging/src/packaging/_elffile.py:92:16: Type `&lt;module 'struct'&gt;` has no attribute `unpack`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/packaging/src/packaging/_elffile.py:92:48: Type `&lt;module 'struct'&gt;` has no attribute `calcsize`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/packaging/tasks/paths.py:7:11: Type `&lt;module 'os.path'&gt;` has no attribute `abspath`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/packaging/tasks/paths.py:7:27: Type `&lt;module 'os.path'&gt;` has no attribute `dirname`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/packaging/tasks/paths.py:7:43: Type `&lt;module 'os.path'&gt;` has no attribute `dirname`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/packaging/tasks/paths.py:9:9: Type `&lt;module 'os.path'&gt;` has no attribute `join`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/packaging/tests/test_elffile.py:97:19: Type `&lt;module 'struct'&gt;` has no attribute `unpack`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/packaging/tests/test_elffile.py:98:28: Type `&lt;module 'struct'&gt;` has no attribute `pack`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/packaging/tasks/check.py:28:18: Type `&lt;module 'os.path'&gt;` has no attribute `join`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/packaging/tasks/check.py:51:21: Type `&lt;module 'os.path'&gt;` has no attribute `dirname`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/packaging/src/packaging/tags.py:39:23: Type `&lt;module 'struct'&gt;` has no attribute `calcsize`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/packaging/tests/test_tags.py:811:44: Type `&lt;module 'collections.abc'&gt;` has no attribute `Iterator`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/packaging/tests/test_tags.py:1075:44: Type `&lt;module 'collections.abc'&gt;` has no attribute `Iterator`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/packaging/tests/test_tags.py:1278:44: Type `&lt;module 'collections.abc'&gt;` has no attribute `Iterator`
+- Found 137 diagnostics
++ Found 123 diagnostics
+
+zipp (https://github.com/jaraco/zipp)
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/zipp/zipp/__init__.py:419:16: Type `&lt;module 'stat'&gt;` has no attribute `S_ISLNK`
+- Found 10 diagnostics
++ Found 9 diagnostics
+
+pyinstrument (https://github.com/joerick/pyinstrument)
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/pyinstrument/test/low_level/test_context.py:48:19: Object of type `Literal[busy_wait]` cannot be assigned to parameter 2 (`callable`) of bound method `run`; expected type `(...) -&gt; Unknown`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/pyinstrument/test/low_level/test_context.py:49:19: Object of type `Literal[busy_wait]` cannot be assigned to parameter 2 (`callable`) of bound method `run`; expected type `(...) -&gt; Unknown`
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/pyinstrument/test/test_profiler_async.py:158:18: Attribute `root_frame` on type `None | @Todo` is possibly unbound
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/pyinstrument/test/fake_time_util.py:58:20: Type `&lt;module 'asyncio'&gt;` has no attribute `get_running_loop`
+- warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/pyinstrument/test/fake_time_util.py:63:26: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/pyinstrument/test/fake_time_util.py:65:84: Unused blanket `type: ignore` directive
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/magic/magic.py:279:20: Type `&lt;module 'asyncio'&gt;` has no attribute `get_event_loop`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/magic/magic.py:280:16: Type `&lt;module 'asyncio'&gt;` has no attribute `new_event_loop`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/magic/magic.py:283:13: Type `&lt;module 'asyncio'&gt;` has no attribute `set_event_loop`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/magic/magic.py:285:22: Type `&lt;module 'asyncio'&gt;` has no attribute `run_coroutine_threadsafe`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/magic/magic.py:289:13: Type `&lt;module 'asyncio'&gt;` has no attribute `set_event_loop`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/pyinstrument/examples/litestar_hello.py:3:21: Module `asyncio` has no member `sleep`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/pyinstrument/test/test_stack_sampler.py:107:9: Object of type `&lt;bound method `subscribe` of `StackSampler`&gt;` cannot be assigned to parameter 2 (`callable`) of bound method `run`; expected type `(...) -&gt; Unknown`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/pyinstrument/test/test_stack_sampler.py:110:9: Object of type `&lt;bound method `subscribe` of `StackSampler`&gt;` cannot be assigned to parameter 2 (`callable`) of bound method `run`; expected type `(...) -&gt; Unknown`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/pyinstrument/test/test_stack_sampler.py:125:19: Object of type `&lt;bound method `unsubscribe` of `StackSampler`&gt;` cannot be assigned to parameter 2 (`callable`) of bound method `run`; expected type `(...) -&gt; Unknown`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/pyinstrument/test/test_stack_sampler.py:126:19: Object of type `&lt;bound method `unsubscribe` of `StackSampler`&gt;` cannot be assigned to parameter 2 (`callable`) of bound method `run`; expected type `(...) -&gt; Unknown`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/util.py:75:18: Type `&lt;module 'codecs'&gt;` has no attribute `lookup`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/pyinstrument/examples/async_example_simple.py:10:15: Type `&lt;module 'asyncio'&gt;` has no attribute `sleep`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/pyinstrument/examples/async_example_simple.py:15:1: Type `&lt;module 'asyncio'&gt;` has no attribute `run`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/pyinstrument/test/test_profiler_async.py:42:15: Type `&lt;module 'asyncio'&gt;` has no attribute `sleep`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/pyinstrument/test/test_profiler_async.py:101:19: Type `&lt;module 'asyncio'&gt;` has no attribute `sleep`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/pyinstrument/test/test_profiler_async.py:115:16: Type `&lt;module 'asyncio'&gt;` has no attribute `new_event_loop`
+- warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/pyinstrument/test/test_profiler_async.py:158:18: Attribute `root_frame` on type `None | Unknown` is possibly unbound
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/pyinstrument/examples/async_experiment_1.py:27:11: Type `&lt;module 'asyncio'&gt;` has no attribute `sleep`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/pyinstrument/examples/async_experiment_1.py:37:8: Type `&lt;module 'asyncio'&gt;` has no attribute `get_event_loop`
+- Found 287 diagnostics
++ Found 276 diagnostics
+
+arrow (https://github.com/arrow-py/arrow)
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/arrow/arrow/factory.py:232:26: Type `&lt;module 'dateutil.tz'&gt;` has no attribute `tzutc`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/arrow/arrow/factory.py:340:18: Type `&lt;module 'dateutil.tz'&gt;` has no attribute `tzlocal`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:160:22: Type `&lt;module 'dateutil.tz'&gt;` has no attribute `tzutc`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:195:22: Type `&lt;module 'dateutil.tz'&gt;` has no attribute `tzlocal`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:223:30: Type `&lt;module 'dateutil.tz'&gt;` has no attribute `tzutc`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:252:22: Type `&lt;module 'dateutil.tz'&gt;` has no attribute `tzlocal`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:296:13: Type `&lt;module 'dateutil.tz'&gt;` has no attribute `tzutc`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:320:26: Type `&lt;module 'dateutil.tz'&gt;` has no attribute `tzutc`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:347:22: Type `&lt;module 'dateutil.tz'&gt;` has no attribute `tzutc`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:917:16: Type `&lt;module 'dateutil.tz'&gt;` has no attribute `datetime_ambiguous`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:923:20: Type `&lt;module 'dateutil.tz'&gt;` has no attribute `datetime_exists`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1041:36: Type `&lt;module 'dateutil.tz'&gt;` has no attribute `datetime_exists`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1042:23: Type `&lt;module 'dateutil.tz'&gt;` has no attribute `resolve_imaginary`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1154:64: Type `&lt;module 'dateutil.tz'&gt;` has no attribute `tzutc`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1795:20: Type `&lt;module 'dateutil.tz'&gt;` has no attribute `tzutc`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/arrow/arrow/formatter.py:124:18: Type `&lt;module 'dateutil.tz'&gt;` has no attribute `tzutc`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/arrow/arrow/parser.py:730:57: Type `&lt;module 'dateutil.tz'&gt;` has no attribute `tzutc`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/arrow/arrow/parser.py:737:20: Type `&lt;module 'dateutil.tz'&gt;` has no attribute `tzutc`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/arrow/arrow/parser.py:910:22: Type `&lt;module 'dateutil.tz'&gt;` has no attribute `tzlocal`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/arrow/arrow/parser.py:913:22: Type `&lt;module 'dateutil.tz'&gt;` has no attribute `tzutc`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/arrow/arrow/parser.py:928:26: Type `&lt;module 'dateutil.tz'&gt;` has no attribute `tzoffset`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/arrow/arrow/parser.py:931:26: Type `&lt;module 'dateutil.tz'&gt;` has no attribute `gettz`
+- Found 74 diagnostics
++ Found 52 diagnostics
+
+itsdangerous (https://github.com/pallets/itsdangerous)
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/itsdangerous/src/itsdangerous/encoding.py:44:17: Type `&lt;module 'struct'&gt;` has no attribute `Struct`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/itsdangerous/src/itsdangerous/serializer.py:112:35: Type `&lt;module 'collections.abc'&gt;` has no attribute `Iterable`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/itsdangerous/src/itsdangerous/serializer.py:112:56: Type `&lt;module 'collections.abc'&gt;` has no attribute `Iterable`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/itsdangerous/src/itsdangerous/serializer.py:128:35: Type `&lt;module 'collections.abc'&gt;` has no attribute `Iterable`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/itsdangerous/src/itsdangerous/serializer.py:128:56: Type `&lt;module 'collections.abc'&gt;` has no attribute `Iterable`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/itsdangerous/src/itsdangerous/serializer.py:144:35: Type `&lt;module 'collections.abc'&gt;` has no attribute `Iterable`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/itsdangerous/src/itsdangerous/serializer.py:144:56: Type `&lt;module 'collections.abc'&gt;` has no attribute `Iterable`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/itsdangerous/src/itsdangerous/serializer.py:163:35: Type `&lt;module 'collections.abc'&gt;` has no attribute `Iterable`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/itsdangerous/src/itsdangerous/serializer.py:163:56: Type `&lt;module 'collections.abc'&gt;` has no attribute `Iterable`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/itsdangerous/src/itsdangerous/serializer.py:179:35: Type `&lt;module 'collections.abc'&gt;` has no attribute `Iterable`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/itsdangerous/src/itsdangerous/serializer.py:179:56: Type `&lt;module 'collections.abc'&gt;` has no attribute `Iterable`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/itsdangerous/src/itsdangerous/serializer.py:194:35: Type `&lt;module 'collections.abc'&gt;` has no attribute `Iterable`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/itsdangerous/src/itsdangerous/serializer.py:194:56: Type `&lt;module 'collections.abc'&gt;` has no attribute `Iterable`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/itsdangerous/src/itsdangerous/serializer.py:289:66: Type `&lt;module 'collections.abc'&gt;` has no attribute `Iterator`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/itsdangerous/src/itsdangerous/timed.py:179:10: Type `&lt;module 'collections.abc'&gt;` has no attribute `Iterator`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/itsdangerous/src/itsdangerous/timed.py:180:24: Type `&lt;module 'collections.abc'&gt;` has no attribute `Iterator`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/itsdangerous/src/itsdangerous/signer.py:68:31: Type `&lt;module 'collections.abc'&gt;` has no attribute `Iterable`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/itsdangerous/src/itsdangerous/signer.py:68:52: Type `&lt;module 'collections.abc'&gt;` has no attribute `Iterable`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/itsdangerous/src/itsdangerous/signer.py:131:35: Type `&lt;module 'collections.abc'&gt;` has no attribute `Iterable`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/itsdangerous/src/itsdangerous/signer.py:131:56: Type `&lt;module 'collections.abc'&gt;` has no attribute `Iterable`
+- Found 55 diagnostics
++ Found 35 diagnostics
+
+black (https://github.com/psf/black)
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/blib2to3/pytree.py:15:29: Module `collections.abc` has no member `Iterable`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/blib2to3/pytree.py:15:39: Module `collections.abc` has no member `Iterator`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/trans.py:8:29: Module `collections.abc` has no member `Callable`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/trans.py:8:39: Module `collections.abc` has no member `Collection`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/trans.py:8:51: Module `collections.abc` has no member `Iterable`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/trans.py:8:61: Module `collections.abc` has no member `Iterator`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/trans.py:8:71: Module `collections.abc` has no member `Sequence`
++ error[lint:non-subscriptable] /tmp/mypy_primer/projects/black/src/black/trans.py:49:31: Cannot subscript object of type `Literal[Collection]` with no `__class_getitem__` method
++ error[lint:non-subscriptable] /tmp/mypy_primer/projects/black/src/black/trans.py:49:59: Cannot subscript object of type `Literal[Iterator]` with no `__class_getitem__` method
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/black/src/black/trans.py:2482:12: Object of type `Literal[insert_str_child]` is not assignable to return type `(@Todo, /) -&gt; None`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/black/src/black/trans.py:2509:12: Object of type `Literal[is_valid_index]` is not assignable to return type `(int, /) -&gt; bool`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/lines.py:3:29: Module `collections.abc` has no member `Callable`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/lines.py:3:39: Module `collections.abc` has no member `Iterator`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/lines.py:3:49: Module `collections.abc` has no member `Sequence`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/black/src/black/lines.py:684:56: Object of type `Literal[is_import]` cannot be assigned to parameter `first_leaf_matches` of bound method `is_fmt_pass_converted`; expected type `((Leaf, /) -&gt; bool) | None`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/blib2to3/pgen2/driver.py:24:29: Module `collections.abc` has no member `Iterable`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/blib2to3/pgen2/driver.py:24:39: Module `collections.abc` has no member `Iterator`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/blib2to3/pgen2/tokenize.py:31:29: Module `collections.abc` has no member `Iterator`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/comments.py:2:29: Module `collections.abc` has no member `Collection`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/comments.py:2:41: Module `collections.abc` has no member `Iterator`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/files.py:4:29: Module `collections.abc` has no member `Iterable`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/files.py:4:39: Module `collections.abc` has no member `Iterator`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/files.py:4:49: Module `collections.abc` has no member `Sequence`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/cache.py:8:29: Module `collections.abc` has no member `Iterable`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/blib2to3/pgen2/pgen.py:5:29: Module `collections.abc` has no member `Iterator`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/blib2to3/pgen2/pgen.py:5:39: Module `collections.abc` has no member `Sequence`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/blib2to3/pgen2/parse.py:12:29: Module `collections.abc` has no member `Callable`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/blib2to3/pgen2/parse.py:12:39: Module `collections.abc` has no member `Iterator`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/parsing.py:8:29: Module `collections.abc` has no member `Collection`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/parsing.py:8:41: Module `collections.abc` has no member `Iterator`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/__init__.py:9:5: Module `collections.abc` has no member `Collection`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/__init__.py:10:5: Module `collections.abc` has no member `Generator`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/__init__.py:11:5: Module `collections.abc` has no member `Iterator`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/__init__.py:12:5: Module `collections.abc` has no member `MutableMapping`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/__init__.py:13:5: Module `collections.abc` has no member `Sequence`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/__init__.py:14:5: Module `collections.abc` has no member `Sized`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/debug.py:1:29: Module `collections.abc` has no member `Iterator`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/concurrency.py:13:29: Module `collections.abc` has no member `Iterable`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/black/src/black/__init__.py:1280:48: Object of type `&lt;bound method `readline` of `BytesIO`&gt; | @Todo` cannot be assigned to parameter 1 (`readline`) of function `detect_encoding`; expected type `() -&gt; bytes | bytearray`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/black/src/black/__init__.py:1280:48: Object of type `&lt;bound method `readline` of `BytesIO`&gt; | @Todo` cannot be assigned to parameter 1 (`readline`) of function `detect_encoding`; expected type `() -&gt; bytes | bytearray`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/black/src/black/__init__.py:1280:48: Object of type `&lt;bound method `readline` of `BytesIO`&gt; | @Todo` cannot be assigned to parameter 1 (`readline`) of function `detect_encoding`; expected type `() -&gt; bytes | bytearray`
++ error[lint:non-subscriptable] /tmp/mypy_primer/projects/black/src/blackd/middlewares.py:8:31: Cannot subscript object of type `Literal[Awaitable]` with no `__class_getitem__` method
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/black/src/black/concurrency.py:42:29: Type `&lt;module 'asyncio'&gt;` has no attribute `Future`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/black/src/black/concurrency.py:49:20: Type `&lt;module 'asyncio'&gt;` has no attribute `AbstractEventLoop`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/black/src/black/concurrency.py:53:39: Type `&lt;module 'asyncio'&gt;` has no attribute `all_tasks`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/black/src/black/concurrency.py:59:33: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/black/src/black/concurrency.py:99:12: Type `&lt;module 'asyncio'&gt;` has no attribute `new_event_loop`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/black/src/black/concurrency.py:100:5: Type `&lt;module 'asyncio'&gt;` has no attribute `set_event_loop`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/black/src/black/concurrency.py:117:13: Type `&lt;module 'asyncio'&gt;` has no attribute `set_event_loop`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/black/src/black/concurrency.py:128:11: Type `&lt;module 'asyncio'&gt;` has no attribute `AbstractEventLoop`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/black/src/black/concurrency.py:155:9: Type `&lt;module 'asyncio'&gt;` has no attribute `ensure_future`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/black/src/black/concurrency.py:170:25: Type `&lt;module 'asyncio'&gt;` has no attribute `wait`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/black/src/black/concurrency.py:170:25: Type `&lt;module 'asyncio'&gt;` has no attribute `wait`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/black/src/black/concurrency.py:170:25: Type `&lt;module 'asyncio'&gt;` has no attribute `wait`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/black/src/black/concurrency.py:170:59: Type `&lt;module 'asyncio'&gt;` has no attribute `FIRST_COMPLETED`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/black/src/black/concurrency.py:170:59: Type `&lt;module 'asyncio'&gt;` has no attribute `FIRST_COMPLETED`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/black/src/black/concurrency.py:170:59: Type `&lt;module 'asyncio'&gt;` has no attribute `FIRST_COMPLETED`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/black/src/black/concurrency.py:189:15: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/blackd/middlewares.py:1:29: Module `collections.abc` has no member `Awaitable`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/blackd/middlewares.py:1:40: Module `collections.abc` has no member `Callable`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/blackd/middlewares.py:1:50: Module `collections.abc` has no member `Iterable`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/nodes.py:6:29: Module `collections.abc` has no member `Iterator`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/black/src/black/nodes.py:783:43: Object of type `&lt;bound method `prefix` of `Node`&gt; | Literal[prefix]` cannot be assigned to parameter 1 (`obj`) of function `len`; expected type `Sized`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/brackets.py:3:29: Module `collections.abc` has no member `Iterable`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/brackets.py:3:39: Module `collections.abc` has no member `Sequence`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/black/src/blackd/__init__.py:27:16: Type `&lt;module 'asyncio'&gt;` has no attribute `Event`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/black/src/blackd/__init__.py:127:16: Type `&lt;module 'asyncio'&gt;` has no attribute `get_event_loop`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/black/src/blackd/__init__.py:150:20: Type `&lt;module 'asyncio'&gt;` has no attribute `get_event_loop`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/ranges.py:4:29: Module `collections.abc` has no member `Collection`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/ranges.py:4:41: Module `collections.abc` has no member `Iterator`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/ranges.py:4:51: Module `collections.abc` has no member `Sequence`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/linegen.py:7:29: Module `collections.abc` has no member `Collection`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/black/src/black/linegen.py:7:41: Module `collections.abc` has no member `Iterator`
+- Found 288 diagnostics
++ Found 235 diagnostics
+
+rich (https://github.com/Textualize/rich)
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/rich/rich/highlighter.py:133:32: Object of type `&lt;bound method `plain` of `Text`&gt; | Literal[plain]` cannot be assigned to parameter 1 (`obj`) of function `len`; expected type `Sized`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/rich/rich/syntax.py:391:26: Type `&lt;module 'os.path'&gt;` has no attribute `splitext`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/rich/rich/syntax.py:391:26: Type `&lt;module 'os.path'&gt;` has no attribute `splitext`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/rich/rich/syntax.py:391:26: Type `&lt;module 'os.path'&gt;` has no attribute `splitext`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/rich/rich/syntax.py:785:17: Object of type `&lt;bound method `plain` of `Text`&gt; | Literal[plain]` cannot be assigned to parameter 1 (`obj`) of function `len`; expected type `Sized`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/rich/rich/pretty.py:226:9: Object of type `Literal[display_hook]` is not assignable to attribute `displayhook` of type `(object, /) -&gt; Any`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/rich/rich/traceback.py:173:9: Object of type `Literal[excepthook]` is not assignable to attribute `excepthook` of type `(type[BaseException], BaseException, TracebackType | None, /) -&gt; Any`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/rich/rich/traceback.py:688:34: Object of type `None | range` cannot be assigned to parameter 1 (`obj`) of function `len`; expected type `Sized`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/rich/examples/downloader.py:70:29: Type `&lt;module 'os.path'&gt;` has no attribute `join`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/rich/rich/scope.py:1:29: Module `collections.abc` has no member `Mapping`
+
+pybind11 (https://github.com/pybind/pybind11)
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/pybind11/tests/test_buffers.py:112:12: Type `&lt;module 'struct'&gt;` has no attribute `unpack_from`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/pybind11/tests/test_buffers.py:113:12: Type `&lt;module 'struct'&gt;` has no attribute `unpack_from`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/pybind11/tests/test_buffers.py:152:17: Type `&lt;module 'struct'&gt;` has no attribute `unpack`
+- error[lint:unresolved-import] /tmp/mypy_primer/projects/pybind11/setup.py:13:29: Module `collections.abc` has no member `Generator`
+- Found 276 diagnostics
++ Found 272 diagnostics
+
+isort (https://github.com/pycqa/isort)
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/isort/isort/settings.py:545:16: Type `&lt;module 'stat'&gt;` has no attribute `S_ISFIFO`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:97:29: Type `&lt;module 'os.path'&gt;` has no attribute `sep`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:100:44: Type `&lt;module 'os.path'&gt;` has no attribute `join`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:101:20: Type `&lt;module 'os.path'&gt;` has no attribute `isdir`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:101:34: Type `&lt;module 'os.path'&gt;` has no attribute `join`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:124:20: Type `&lt;module 'os.path'&gt;` has no attribute `abspath`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:131:32: Type `&lt;module 'os.path'&gt;` has no attribute `realpath`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:142:20: Type `&lt;module 'os.path'&gt;` has no attribute `isdir`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:148:30: Type `&lt;module 'os.path'&gt;` has no attribute `realpath`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:157:34: Type `&lt;module 'os.path'&gt;` has no attribute `normcase`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:178:66: Type `&lt;module 'os.path'&gt;` has no attribute `isdir`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:186:20: Type `&lt;module 'os.path'&gt;` has no attribute `normcase`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:194:20: Type `&lt;module 'os.path'&gt;` has no attribute `normcase`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:228:16: Type `&lt;module 'os.path'&gt;` has no attribute `dirname`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:229:16: Type `&lt;module 'os.path'&gt;` has no attribute `join`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:250:20: Type `&lt;module 'os.path'&gt;` has no attribute `dirname`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:254:16: Type `&lt;module 'os.path'&gt;` has no attribute `abspath`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:255:12: Type `&lt;module 'os.path'&gt;` has no attribute `isfile`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:256:20: Type `&lt;module 'os.path'&gt;` has no attribute `dirname`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:305:25: Type `&lt;module 'os.path'&gt;` has no attribute `join`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:308:16: Type `&lt;module 'os.path'&gt;` has no attribute `isdir`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:311:25: Type `&lt;module 'os.path'&gt;` has no attribute `join`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:318:16: Type `&lt;module 'os.path'&gt;` has no attribute `isfile`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:335:20: Type `&lt;module 'os.path'&gt;` has no attribute `dirname`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/isort/isort/main.py:1126:77: Object of type `Literal[_preconvert]` cannot be assigned to parameter `default` of function `dumps`; expected type `((Any, /) -&gt; Any) | None`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/isort/isort/main.py:1199:17: Object of type `partial` cannot be assigned to parameter 2 (`func`) of bound method `imap`; expected type `(Unknown | @Todo, /) -&gt; Unknown | @Todo`
+- Found 76 diagnostics
++ Found 54 diagnostics
+
+mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/model.py:303:40: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/model.py:303:40: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/model.py:303:40: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/utils.py:69:13: Type `&lt;module 'asyncio'&gt;` has no attribute `Semaphore`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/utils.py:89:22: Type `&lt;module 'asyncio'&gt;` has no attribute `BoundedSemaphore`
++ error[lint:missing-argument] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/utils.py:104:26: No argument provided for required parameter `program` of function `create_subprocess_exec`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/utils.py:101:26: Type `&lt;module 'asyncio'&gt;` has no attribute `create_subprocess_shell`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/utils.py:104:26: Type `&lt;module 'asyncio'&gt;` has no attribute `create_subprocess_exec`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:30:32: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:30:32: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:30:32: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:46:52: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:46:52: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:46:52: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:46:52: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:46:52: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:59:38: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:59:38: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:59:38: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:73:52: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:73:52: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:73:52: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:73:52: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:73:52: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:172:30: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:205:21: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:241:16: Type `&lt;module 'asyncio'&gt;` has no attribute `as_completed`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:287:11: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:294:25: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:325:29: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:359:23: Type `&lt;module 'asyncio'&gt;` has no attribute `gather`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:411:23: Type `&lt;module 'asyncio'&gt;` has no attribute `as_completed`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:459:23: Type `&lt;module 'asyncio'&gt;` has no attribute `run`
+- Found 49 diagnostics
++ Found 18 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-22 23:54</div>
+            <div class="timeline-body"><p>Still not sure why the <code>collections.abc</code> integration test is still failing, but other than that I'm pretty happy with this now!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-03-22 23:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-03-22 23:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-03-22 23:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-03-22 23:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-22 23:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:663 on 2025-03-22 23:56</div>
+            <div class="timeline-body"><p>It's sort-of unfortunate that we need to keep track of what index the alias is in the names list for <code>*</code> imports, since it's invalid syntax to do something like <code>from foo import *, X</code> -- if <code>*</code> is present in the names list of a <code>StmtImportFrom</code> node, it must be the <em>only</em> name in the list. However, if we <em>don't</em> keep track of the index the <code>*</code> is in the names list, we end up panicking on various kinds of invalid syntax.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-23 06:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:663 on 2025-03-23 06:41</div>
+            <div class="timeline-body"><p>Could we just search for the first alias with a * name? Or we could not  create a star import definition if the syntax is invalid</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-23 09:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:663 on 2025-03-23 09:48</div>
+            <div class="timeline-body"><p>Ohh of course, thanks! I'll make that change</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:663 on 2025-03-23 10:36</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/16923/commits/a6f41525f2f0b9a175b6250a20c9319c72a40242</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-23 10:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-23 11:49</div>
+            <div class="timeline-body"><blockquote>
+<p>Still not sure why the <code>collections.abc</code> integration test is still failing, but other than that I'm pretty happy with this now!</p>
+</blockquote>
+<p>I figured out the bug here and fixed it. Unfortunately, fixing the bug completely broke all our special casing for the builtin <code>len()</code> function. This is because <code>len()</code> has a parameter annotated with the <code>collections.abc.Sized</code> protocol in typeshed's <code>builtins.pyi</code> stub, and with my PR we now half-understand the collections.abc.Sized type (enough to emit false-positive errors 🙃) instead of not understanding it at all.</p>
+<p>There were a huge amount of test failures in <code>len.md</code> resulting from this, so for now I've added a <code>KnownClass::Sized</code> variant and some special-casing for <code>KnownClass::Sized</code> to <code>Type::is_assignable_to()</code>. This is very similar to the existing special-casing @sharkdp had to add for <code>typing.SupportsIndex</code> in an earlier PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-23 11:52</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/re_exports.rs</code>:80 on 2025-03-23 20:31</div>
+            <div class="timeline-body"><p>Don't we need to use the <code>asname</code> here instead if it's Some?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:376 on 2025-03-23 20:36</div>
+            <div class="timeline-body"><p>I see that you added debug assertions where we read definitions to ensure that we just have 1 in the cases where we should. But I think practically if we introduce a bug that adds multiple definitions for the same node key, it will be easier to debug if an assertion is raised on insert rather than on read. Couldn't we add an <code>allow_multiple</code> flag argument to <code>add_definition</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/star.md</code>:43 on 2025-03-23 20:41</div>
+            <div class="timeline-body"><p>There's a related test case (which I don't think would yet pass with this PR, which is fine, but I don't want to lose track of the case), where the re-exports visitor (which, as we've discussed, has to be an over-approximation in some cases) identifies a name as a possible re-export, but in fact in type inference the name turns out to not exist, and it was previously defined in the importing module; we need to be sure that we see the prior definition of that name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:1012 on 2025-03-23 20:54</div>
+            <div class="timeline-body"><p>Might be worth a <code>self.is_module_global_scope()</code> for this, just for readability.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:1055 on 2025-03-23 20:59</div>
+            <div class="timeline-body"><p>I had to remove this line and see which tests failed and why, to understand why it's needed (to ensure we at least have an empty <code>Definitions</code> inserted for star imports from empty modules or with invalid syntax. Maybe comment to clarify?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/re_exports.rs</code>:84 on 2025-03-23 21:02</div>
+            <div class="timeline-body"><p>How much of the code in this visitor could we remove, without changing behavior, if we looked for all <code>Name</code> nodes with <code>Store</code> context?</p>
+<p>I know imports don't use <code>Name</code> nodes and would still need dedicated handling (not to mention that we need to consider re-export logic). And I know we'd still need special handling for any node which creates a sub-scope, to avoid visiting the sub-scope. But maybe we wouldn't have to enumerate every possible place a target can appear?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4177 on 2025-03-23 21:14</div>
+            <div class="timeline-body"><p>I think it would be worth a helper method on the semantic index for getting a single definition, when that's what we expect, rather than repeating the debug assertion and indexing at every call site.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2996 on 2025-03-23 21:17</div>
+            <div class="timeline-body"><p>This comment doesn't quite make sense to me as written. If <code>foo</code> can't be resolved, then it can't be an &quot;empty module&quot; -- it's a nonexistent module. It seems like more what we want to say is, unresolved modules won't have any definitions associated with them, but we still need to emit a diagnostic for their unresolvability here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3124 on 2025-03-23 21:21</div>
+            <div class="timeline-body"><p>Not sure why we need this <code>star_import_info</code> variable and two separate <code>if let</code>, when the variable is only used once? Why not just make this <code>let name = if let DefinitionKind::StarImport(star_import) = definition.kind(self.db()) {</code> and put all the logic in a single if-let?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-03-23 21:21</div>
+            <div class="timeline-body"><p>Nice work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-23 21:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3124 on 2025-03-23 21:49</div>
+            <div class="timeline-body"><p>Borrow checker says &quot;no&quot; IIRC, but I'll double check!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-23 21:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/re_exports.rs</code>:84 on 2025-03-23 21:50</div>
+            <div class="timeline-body"><p>Ooh, interesting idea — I hadn't thought of that! Will try it out</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-24 01:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/re_exports.rs</code>:80 on 2025-03-24 01:56</div>
+            <div class="timeline-body"><p>argh, indeed! I actually added a test that was meant to check this... but there was a bug in the test 🙃</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/module_name.rs</code>:281 on 2025-03-24 02:18</div>
+            <div class="timeline-body"><p>Nit: Should this be a method: <code>ModuleName::from_import_statement</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/re_exports.rs</code>:18 on 2025-03-24 02:20</div>
+            <div class="timeline-body"><p>Nit: <code>find_exports</code> is a somewhat unusual name for a salsa query. We normally name these after what they return rather than using a verb. Maybe just <code>exports</code> or <code>exported_names</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/re_exports.rs</code>:42 on 2025-03-24 02:23</div>
+            <div class="timeline-body"><p>The <code>contains</code> + <code>insert</code> check has the downside that <code>name</code> gets hashed twice. I assume you do it this way to avoid cloning <code>name</code> when the name already exists (although that's probably unlikely?). https://doc.rust-lang.org/std/collections/struct.HashSet.html#method.get_or_insert_with would be nice but it's nightly only.</p>
+<p>I'm leaning towards always cloning. Or you can use a <code>FxHashMap&lt;Name, ()&gt;</code> with the entry API?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/re_exports.rs</code>:73 on 2025-03-24 02:24</div>
+            <div class="timeline-body"><p>Nit: It may be worth to cache the <code>is_stub</code> lookup</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/re_exports.rs</code>:234 on 2025-03-24 02:27</div>
+            <div class="timeline-body"><p>You can use <code>self.visit_body(body)</code> here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/re_exports.rs</code>:37 on 2025-03-24 02:30</div>
+            <div class="timeline-body"><p>Not saying this is wrong, I'm just trying to understand the rational.</p>
+<p>What's the motivation for this being its own query vs. computing the exports as part of the semantic index builder?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3126 on 2025-03-24 02:34</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                Some((star_import, self.index.symbol_table(self.scope())))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-24 02:35</div>
+            <div class="timeline-body"><p>This is great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-24 04:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3126 on 2025-03-24 04:09</div>
+            <div class="timeline-body"><p>hmm, that doesn't compile. This does compile:</p>
+<pre><code class="language-suggestion">                Some((
+                    star_import,
+                    self.index
+                        .symbol_table(self.scope().file_scope_id(self.db())),
+                ))
+</code></pre>
+<p>but it doesn't really seem simpler anymore ;-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-24 04:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/re_exports.rs</code>:42 on 2025-03-24 04:18</div>
+            <div class="timeline-body"><p>Yeah, I thought you might have things to say about this ;)</p>
+<p>I also wasn't sure if this was worth it. I switched it to just do the clone every time.</p>
+<p>I tried the <code>FxHashMap</code> idea but as far as I can tell the <code>entry</code> API also requires the value passed in to be owned rather than be a reference? So I'm not sure that helps us here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-24 04:19</div>
+            <div class="timeline-body"><p>(haven't finished addressing/responding to review comments yet, will continue tomorrow!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-24 04:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:1077 on 2025-03-24 04:24</div>
+            <div class="timeline-body"><p>I'm wondering if we should cache the resolved module in the <code>DefinitionKind</code> for <code>*</code> import definitions? It feels slightly silly to re-resolve the module name and module for these definitions in <code>infer.rs</code>, when we know that we wouldn't have created any definitions for the node during semantic indexing unless the module name and module were both resolvable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/re_exports.rs</code>:37 on 2025-03-24 11:34</div>
+            <div class="timeline-body"><p>The trouble is that if <code>foo</code> has <code>from bar import *</code> in it, then we need to know the complete list of symbols exported from the global scope of <code>bar</code> in order to be able to complete semantic indexing of <code>foo</code>. I discussed this with @carljm and he was reluctant to have semantic indexing of one module be blocked on semantic indexing of another module, since semantic indexing can be expensive. (And the chain can go arbitrarily deep if <code>bar</code> also has <code>from baz import *</code> in it: now semantic indexing of <code>foo</code> is blocked on semantic indexing of <code>bar</code>, but semantic indexing of <code>bar</code> is blocked on semantic indexing of <code>baz</code>.)</p>
+<p>Instead we decided to go down the route of a simpler, faster query called by semantic indexing that <em>only</em> collects the names exported by the global scope. But the approach obviously has the disadvantage that we don't have all the tools available to us in this query that the <code>SemanticIndexBuilder</code> has.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-24 11:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/star.md</code>:271 on 2025-03-24 11:35</div>
+            <div class="timeline-body"><p>mimimal repro that shows the bug here is pre-existing, rather than an issue with this PR: <a href="https://playknot.ruff.rs/6f9f0942-db9f-481f-b868-690be1d1176e">playknot.ruff.rs/6f9f0942-db9f-481f-b868-690be1d1176e</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-24 11:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-24 13:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3126 on 2025-03-24 13:33</div>
+            <div class="timeline-body"><p>Oh, this isn't about simplifications. It's to avoid an extra salsa lookup (and dependency).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-24 13:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/re_exports.rs</code>:42 on 2025-03-24 13:34</div>
+            <div class="timeline-body"><p>ah right. That's unfortunate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-24 13:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3126 on 2025-03-24 13:35</div>
+            <div class="timeline-body"><p>Oh I see — I'll make the change, thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-24 13:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/re_exports.rs</code>:37 on 2025-03-24 13:46</div>
+            <div class="timeline-body"><p>Oh, I see. It recursively resolves star imports. That makes sense then</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-24 14:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/re_exports.rs</code>:37 on 2025-03-24 14:13</div>
+            <div class="timeline-body"><p>It's my fault for not documenting this better -- I'll add a paragraph to the module doc-comment in <code>re_exports.rs</code> 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-24 14:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3124 on 2025-03-24 14:29</div>
+            <div class="timeline-body"><p>Yeah, so if I make this change:</p>
+<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/types/infer.rs b/crates/red_knot_python_semantic/src/types/infer.rs
+index 4160a6aec..132001ec4 100644
+--- a/crates/red_knot_python_semantic/src/types/infer.rs
++++ b/crates/red_knot_python_semantic/src/types/infer.rs
+@@ -3161,21 +3161,16 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+             return;
+         };
+ 
+-        let star_import_info = definition
++        let name = definition
+             .kind(self.db())
+             .as_star_import()
+             .map(|star_import| {
+-                let symbol_table = self
+-                    .index
+-                    .symbol_table(self.scope().file_scope_id(self.db()));
+-                (star_import, symbol_table)
+-            });
+-
+-        let name = if let Some((star_import, symbol_table)) = star_import_info.as_ref() {
+-            symbol_table.symbol(star_import.symbol_id()).name()
+-        } else {
+-            &amp;alias.name.id
+-        };
++                self.index
++                    .symbol_table(self.scope().file_scope_id(self.db()))
++                    .symbol(star_import.symbol_id())
++                    .name()
++            })
++            .unwrap_or(&amp;alias.name.id);
+</code></pre>
+<p>then the borrow checker complains:</p>
+<pre><code>error[E0515]: cannot return value referencing temporary value
+    --&gt; crates/red_knot_python_semantic/src/types/infer.rs:3168:17
+     |
+3168 | //                 self.index
+3169 | ||                     .symbol_table(self.scope().file_scope_id(self.db()))
+     | ||________________________________________________________________________- temporary value created here
+3170 | |                      .symbol(star_import.symbol_id())
+3171 | |                      .name()
+     | |____________________________^ returns a value referencing data owned by the current function
+</code></pre>
+<p>The borrow checker has to be able to prove that the value returned by <code>.symbol_table()</code> outlasts the <code>name</code> variable, since the <code>name</code> variable borrows from the value returned by <code>.symbol_table()</code>.</p>
+<p>I'll add a comment saying why the indirection is necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-24 14:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:376 on 2025-03-24 14:46</div>
+            <div class="timeline-body"><p>I had a go at addressing this in https://github.com/astral-sh/ruff/pull/16923/commits/210b860387cb6333b3319f2ce814660eec70a0eb -- is that the kind of thing you were thinking of?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/star.md</code>:271 on 2025-03-24 15:36</div>
+            <div class="timeline-body"><p>Wroteup an issue for this: https://github.com/astral-sh/ruff/issues/16954</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-24 15:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-24 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:1077 on 2025-03-24 15:50</div>
+            <div class="timeline-body"><p>Hrm, this involves quite an annoying amount of refactoring unless we also cache the resolved <code>ModuleName</code> as well as the <code>File</code> on <code>StarImportDefinitionKind</code>. Leaning towards leaning this as-is for now, even though the duplication of logic between this file and <code>infer.rs</code> is somewhat annoying.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/star.md</code>:265 on 2025-03-24 16:05</div>
+            <div class="timeline-body"><p>probably <code>Unknown | int</code> since none of them are declared?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:1052 on 2025-03-24 16:19</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                        // - If the import statement has invalid syntax: multiple `*` names in the `names` list
+                        //   (e.g. `from foo import *, bar, *`)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/re_exports.rs</code>:16 on 2025-03-24 16:21</div>
+            <div class="timeline-body"><p>Not sure if we have to say it here, but a main concern is also making semantic indexing potentially cyclic, meaning we'd have to fixpoint iterate it, which would be even more expensive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-03-24 16:27</div>
+            <div class="timeline-body"><p>Looks good to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-24 16:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:376 on 2025-03-24 16:28</div>
+            <div class="timeline-body"><p>Yep, that looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-24 16:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/star.md</code>:43 on 2025-03-24 16:30</div>
+            <div class="timeline-body"><p>Thanks -- I'm tackling this in https://github.com/astral-sh/ruff/pull/16955. I'll rebase this PR on top of that branch</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/star.md</code>:265 on 2025-03-24 16:37</div>
+            <div class="timeline-body"><p>Thanks, made this change in https://github.com/astral-sh/ruff/pull/16955</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-24 16:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-24 17:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/re_exports.rs</code>:16 on 2025-03-24 17:07</div>
+            <div class="timeline-body"><p>I'll add cycle handling as a followup and add a note to this effect at the same time 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-03-24 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-03-24 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-24 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/re_exports.rs</code>:16 on 2025-03-24 18:00</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/16958</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-24 18:00</div>
+            <div class="timeline-body"></div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:29 UTC
+    </footer>
+</body>
+</html>

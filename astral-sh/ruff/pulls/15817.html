@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Combine terminal statement support with statically known branches - astral-sh/ruff #15817</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Combine terminal statement support with statically known branches</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15817">#15817</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-01-29 21:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-01-29 21:34</div>
+            <div class="timeline-body"><p>This example from @sharkdp shows how terminal statements can appear in statically known branches: https://github.com/astral-sh/ruff/pull/15676#issuecomment-2618809716</p>
+<pre><code class="language-py">def _(cond: bool):
+    x = &quot;a&quot;
+    if cond:
+        x = &quot;b&quot;
+        if True:
+            return
+
+    reveal_type(x)  # revealed: &quot;a&quot;, &quot;b&quot;; should be &quot;a&quot;
+</code></pre>
+<p>We now use visibility constraints to track reachability, which allows us to model this correctly.  There are two related changes as a result:</p>
+<ul>
+<li><p>New bindings are not assumed to be visible; they inherit the current &quot;scope start&quot; visibility, which effectively means that new bindings are visible if/when the current flow is reachable</p>
+</li>
+<li><p>When simplifying visibility constraints after branching control flow, we only simplify if none of the intervening branches included a terminal statement.  That is, earlier unaffected bindings are only <em>actually</em> unaffected if all branches make it to the merge point.</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-01-29 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-01-30 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-01-30 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dcreager on 2025-01-30 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-01-30 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-01-30 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @dcreager on 2025-01-30 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:510 on 2025-01-30 19:02</div>
+            <div class="timeline-body"><p>At first I replaced this with <code>reachability: ScopedVisibilityConstraintId</code>, but I realized that <code>scope_start_visibility</code> is already what we need: the start of the scope is visible iff the flow is still reachable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:680 on 2025-01-30 19:03</div>
+            <div class="timeline-body"><p>Commenting out these two <code>if</code> clauses is how we verify that this is truly an optimization — we should get the same results for the tests with and without it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-01-30 19:08</div>
+            <div class="timeline-body"><p>This is not currently working because of visibility constraint simplification:</p>
+<pre><code class="language-py">def _(cond: bool):
+    x = &quot;a&quot;
+    if cond:
+        x = &quot;b&quot;
+        # ← {0}
+        if True:
+            return
+            # ← {1}
+        # ← {2}
+
+    reveal_type(x)  # revealed: Literal[&quot;a&quot;]
+</code></pre>
+<p>At point <code>{1}</code>, we're marking the <code>x = &quot;b&quot;</code> binding as non-visible (by setting a visibility constraint of <code>ALWAYS_FALSE</code>).</p>
+<p>But at point <code>{2}</code>, after we merge the two flows back together (the <code>then</code> flow and the artifically inserted <code>else</code> flow), we simplify the result relative to point <code>{0}</code>.  That sees that there weren't any new bindings of <code>x</code>, and resets the visibility of <code>x = &quot;b&quot;</code> back to what it was at point <code>{0}</code>, forgetting the unreachability that we just introduced.</p>
+<p>So I think I need to skip the simplification step when a flow contains a terminal statement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-30 20:08</div>
+            <div class="timeline-body"><blockquote>
+<p>So I think I need to skip the simplification step when a flow contains a terminal statement.</p>
+</blockquote>
+<p>This sounds right. The simplification step is a bit of a performance hack. I think it could be eliminated if we used BDDs instead of syntax trees to represent visibility constraints (since BDDs self-simplify). But I think it should never be <em>wrong</em> to skip the simplification, just potentially hurt performance. Which in this case shouldn't be too bad, since it would only occur when there's a terminal statement in the branch, which won't be the common case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/terminal_statements.md</code>:456 on 2025-01-30 20:24</div>
+            <div class="timeline-body"><p>Does it matter that it's <code>raise</code>? I think anytime the <code>try</code> block unconditionally terminates (via any terminal statement) that means we can't enter the <code>else</code> block. I'm not sure why we'd have a hard time modeling this, since I think entry into the <code>else</code> block just comes off the end of the <code>try</code> block, so we should mark that whole flow as unreachable?</p>
+<p>Or to put it another way, why does this regress in this PR, if we handled it correctly before?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-01-30 21:32</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fstatic-terminal">CodSpeed Performance Report</a></h2>
+<h3>Merging astral-sh/ruff#15817 will <strong>degrade performances by 7.96%</strong></h3>
+<p><sub>Comparing <code>dcreager/static-terminal</code> (7423de2) with <code>main</code> (d47088c)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1 (👁 1)</code> regressions<br />
+<code>✅ 31</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| 👁 | <code>red_knot_check_file[incremental]</code> | 4.8 ms | 5.2 ms | -7.96% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:543 on 2025-02-04 20:23</div>
+            <div class="timeline-body"><p>New bindings should only be considered visible if/when the flow is reachable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-04 20:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-04 21:30</div>
+            <div class="timeline-body"><p>Running <code>cargo bench</code> locally agrees with codspeed that this is a performance regression, but using hyperfine on both black and tomllib says that it's a slight performance increase!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-02-04 21:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-04 21:34</div>
+            <div class="timeline-body"><p>I'm marking this as ready for review to get :eyes: on it.  Just like the TDD patch that this builds on, I'm quite confused by the codspeed findings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] [WIP] Combine terminal statement support with statically known branches" to "[red-knot] Combine terminal statement support with statically known branches" by @dcreager on 2025-02-04 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-02-04 21:35</div>
+            <div class="timeline-body"><blockquote>
+<p>Running <code>cargo bench</code> locally agrees with codspeed that this is a performance regression, but using hyperfine on both black and tomllib says that it's a slight performance increase!</p>
+</blockquote>
+<p>CodSpeed says it's a regression on the incremental benchmark, not the cold benchmark. Is your hyperfine testing on black and tomllib testing incremental performance (that is, make an insignificant/comment change to one file and test how fast we re-check incrementally), or cold-check performance?</p>
+<p>Incremental regression generally suggests we are creating more Salsa-cached values that have to be revalidated on incremental re-check, or making that revalidation of cached values (rather than the actual semantic indexing and type inference itself) more expensive in some way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-04 22:11</div>
+            <div class="timeline-body"><blockquote>
+<p>CodSpeed says it's a regression on the incremental benchmark, not the cold benchmark. Is your hyperfine testing on black and tomllib testing incremental performance (that is, make an insignificant/comment change to one file and test how fast we re-check incrementally), or cold-check performance?</p>
+</blockquote>
+<p>hyperfine is testing cold performance, but I was seeing the regression locally on <code>cargo bench</code> for the cold test too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:805 on 2025-02-04 22:35</div>
+            <div class="timeline-body"><p>Since we usually use <code>TODO</code> for things we definitely need to return to and fix, let's get a `TODO: fix definition of public type in function-like scopes, see #15777&quot; or similar somewhere in this comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:484 on 2025-02-04 22:36</div>
+            <div class="timeline-body"><p>Why do we need <code>UseDefMapBuilder</code> to not derive <code>Debug</code>?</p>
+<p>I guess maybe it's so big it's not likely to be useful, can't recall if I've ever debug-dumped an entire <code>UseDefMapBuilder</code>. I may have when I was working on it, but it's certainly been a while.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:543 on 2025-02-04 22:42</div>
+            <div class="timeline-body"><p>Is this the fix to the &quot;visibility constraints only apply to prior, not subsequent, bindings&quot; issue that @sharkdp pointed out on the very first terminals PR that used visibility constraints?</p>
+<p>Do we already have (and if not, can we add?) a test showing that a definition that occurs in the unreachable code after a terminal statement in a branch doesn't then become visible after that branch merges?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:599 on 2025-02-04 22:44</div>
+            <div class="timeline-body"><p>Nice! So you don't need an additional boolean for this after all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:680 on 2025-02-04 23:07</div>
+            <div class="timeline-body"><p>And I verified that we can indeed remove these checks and all tests pass! I'm not seeing a detectable performance improvement in the benchmark from including these lines; perhaps that just suggests conditional terminals aren't common enough for it to show up? It definitely seems like this should be faster in cases where it does apply.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-04 23:14</div>
+            <div class="timeline-body"><p>This looks great!</p>
+<p>I think it's worth putting some time-boxed effort (on the scale of a few hours) into looking into the regression here, but I don't think it should block the PR; I don't see anything obviously inefficient here, and this is what we need in order to get the right semantics. It's a better use of optimization effort to look broadly for the best ROI than to focus narrowly on a specific regression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-04 23:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/terminal_statements.md</code>:456 on 2025-02-04 23:15</div>
+            <div class="timeline-body"><p>Uh, ignore this -- old review comment that apparently never got submitted before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-04 23:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/exception/basic.md</code>:161 on 2025-02-04 23:18</div>
+            <div class="timeline-body"><p>Hmm, do you know why this is now an unresolved reference? I would think we'd still want to bind <code>e</code> to <code>Unknown</code> in this clause, even though <code>int</code> is not a valid exception type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-04 23:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/terminal_statements.md</code>:641 on 2025-02-04 23:18</div>
+            <div class="timeline-body"><p>The prose paragraph above this test needs updating.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-05 08:02</div>
+            <div class="timeline-body"><p>Two things I like doing when investigating performance issues are run <code>red_knot -vvv</code> and compare between main and my feature (e.g. by running over tomllib):</p>
+<ul>
+<li>the ingredient counts printed just before existing: Are there more or fewer ingredients?</li>
+<li>Paste the logs into a text diff tool and see how they differ (you may want to disable concurrency for this)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:543 on 2025-02-05 14:27</div>
+            <div class="timeline-body"><blockquote>
+<p>Is this the fix to the &quot;visibility constraints only apply to prior, not subsequent, bindings&quot; issue that @sharkdp pointed out on the very first terminals PR that used visibility constraints?</p>
+</blockquote>
+<p>It is!</p>
+<blockquote>
+<p>Do we already have (and if not, can we add?) a test showing that a definition that occurs in the unreachable code after a terminal statement in a branch doesn't then become visible after that branch merges?</p>
+</blockquote>
+<p>The <code>&quot;unreachable&quot;</code> assignment in the <code>try</code>/<code>else</code> clause should cover this, but I can add a more direct test of this as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:599 on 2025-02-05 14:27</div>
+            <div class="timeline-body"><p>Yep, this is the main change that I wanted to enable with the TDD PR, since this relies on being able to compare the two TDD node IDs to test whether the reachability of the two branches is equivalent</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:680 on 2025-02-05 14:30</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not seeing a detectable performance improvement in the benchmark from including these lines</p>
+</blockquote>
+<p>I think it might be that the merge step is now faster: if the other snapshot's reachability is <code>ALWAYS_FALSE</code>, then the visibility of all of its bindings should also be <code>ALWAYS_FALSE</code>.  (I think there were cases before TDD normalization where we wouldn't be able to see that in the structure of the visibility constraint.)  Merge will iterate through all of the bindings and AND their visibility constraints, but ANDing with <code>ALWAYS_FALSE</code> is one of the fast-path returns.</p>
+<p>To be clear, it's a hunch — I haven't backed any of :point_up: with data!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/exception/basic.md</code>:161 on 2025-02-05 14:35</div>
+            <div class="timeline-body"><p>I believe it's because of how new bindings' visibility starts off as the reachability of the current control flow.  The <code>raise</code> is currently treated the same as a <code>return</code>, which (I think) means that we consider the entire <code>except</code> block unreachable now.</p>
+<p>That said, the clause immediately above does <em>not</em> have new <code>unresolved-reference</code> errors:</p>
+<pre><code class="language-py">try:
+    raise
+except KeyboardInterrupt as e:  # fine
+    reveal_type(e)  # revealed: KeyboardInterrupt
+    raise LookupError from e  # fine
+</code></pre>
+<p>and the only difference is whether the <code>except</code> expression resolves to a subclass of <code>BaseException</code> or not...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/terminal_statements.md</code>:641 on 2025-02-05 14:41</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:484 on 2025-02-05 14:44</div>
+            <div class="timeline-body"><p>Whoops!  It doesn't anymore.  This is left over from a previous version of this PR, where I had added something non-<code>Debug</code> to this struct.  Reverted</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:805 on 2025-02-05 14:50</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/terminal_statements.md</code>:646 on 2025-02-05 14:53</div>
+            <div class="timeline-body"><p>This is the new test case showing that bindings after a terminal statement are considered not visible. https://github.com/astral-sh/ruff/pull/15817/files#r1941996689</p>
+<p>Note that this means we're currently implementing the &quot;least helpful&quot; option in https://github.com/astral-sh/ruff/issues/15797.  (I think that's still okay for this PR, just pointing out that this will change depending on how we decide to handle unreachable code)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-05 14:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/exception/basic.md</code>:161 on 2025-02-05 18:47</div>
+            <div class="timeline-body"><blockquote>
+<p>I believe it's because of how new bindings' visibility starts off as the reachability of the current control flow. The <code>raise</code> is currently treated the same as a <code>return</code>, which (I think) means that we consider the entire <code>except</code> block unreachable now.</p>
+</blockquote>
+<p>This doesn't seem right, both because I think we currently model that an exception could be raised right &quot;before&quot; the <code>raise</code> statement, which jumps to <code>except</code> blocks, and because (as you observe) the other similar <code>try: raise</code> cases above don't have this problem.</p>
+<p>This seems worth understanding before we land this (IMO) semantic regression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/terminal_statements.md</code>:646 on 2025-02-05 18:51</div>
+            <div class="timeline-body"><p>Makes sense. I would put a TODO on that <code>unresolved-reference</code> diagnostic below.</p>
+<p>I'm a little worried about the difficulty of implementing &quot;more useful&quot; options for checking unreachable code, but we can leave that as a separate problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-05 18:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-05 19:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/exception/basic.md</code>:161 on 2025-02-05 19:52</div>
+            <div class="timeline-body"><p>Ahhhhh, it's actually something slightly different: the previous <code>try</code> statement has a <code>raise</code>, which we treat the same as <code>return</code> — and so we think the entire second <code>try</code> statement is unreachable!  If you reverse the order of the two, it's always the second one that has the new error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-05 19:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/exception/basic.md</code>:161 on 2025-02-05 19:57</div>
+            <div class="timeline-body"><p>And because the earlier example's <code>except</code> clause also has a <code>raise</code>, I think that's the correct interpretation.  I've wrapped all of the <code>try</code> statements in this test in functions so each statement can't affect the reachability of later ones.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/exception/basic.md</code>:1 on 2025-02-05 20:00</div>
+            <div class="timeline-body"><p>The changes in this file are easier to see with &quot;Hide whitespace&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-05 20:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-05 20:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/terminal_statements.md</code>:646 on 2025-02-05 20:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Makes sense. I would put a TODO on that <code>unresolved-reference</code> diagnostic below.</p>
+</blockquote>
+<p>Done</p>
+<blockquote>
+<p>I'm a little worried about the difficulty of implementing &quot;more useful&quot; options for checking unreachable code, but we can leave that as a separate problem.</p>
+</blockquote>
+<p>Are you worried that this PR makes it more difficult?  Or just that it's on the list of things to tackle sooner rather than later in case it requires large changes to the design?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-05 20:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/terminal_statements.md</code>:646 on 2025-02-05 20:15</div>
+            <div class="timeline-body"><p>It's not really so much that this PR makes it more difficult, just that I'm not sure how much this approach will end up having to change. I don't think it's a reason not to merge this. I am curious if you have a rough sense of how we might go about implementing &quot;check unreachable code as if it were reachable&quot; while still preserving (as I think we must) &quot;unreachable branches never merge back to outer control flow&quot;. That is, fixing the TODO you just added, without having that unreachable assignment become visible in the outer flow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-05 20:50</div>
+            <div class="timeline-body"><blockquote>
+<p>Two things I like doing when investigating performance issues are run <code>red_knot -vvv</code> and compare between main and my feature (e.g. by running over tomllib):</p>
+<ul>
+<li>the ingredient counts printed just before existing: Are there more or fewer ingredients?</li>
+</ul>
+</blockquote>
+<p>For my future self, a <code>--profile=profiling</code> build is considered a &quot;release&quot; build for the purposes of our static max logging level, so you have to remove this feature to get <code>-vvv</code> to print out trace log messages:</p>
+<p>https://github.com/astral-sh/ruff/blob/d47088c8f83f966f734c254a23073eeee123c347/crates/red_knot/Cargo.toml#L29</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/terminal_statements.md</code>:646 on 2025-02-05 21:01</div>
+            <div class="timeline-body"><blockquote>
+<p>I am curious if you have a rough sense of how we might go about implementing &quot;check unreachable code as if it were reachable&quot; while still preserving (as I think we must) &quot;unreachable branches never merge back to outer control flow&quot;.</p>
+</blockquote>
+<p>I'd say we'd either need to track multiple visibility constraints for each binding, or multiple &quot;current flow states&quot; — both being ways to represent the visibility that each binding has <em>now</em>, and what it would reset to at the next merge point.</p>
+<p>But I'm also not sure that's what we'd want to implement — if we want to &quot;check unreachable code as if it were reachable&quot;, I'm not sure that should reset at merge points.  e.g. if someone inserted a <code>return</code> statement for debugging, I don't see a difference in UX between:</p>
+<pre><code class="language-py">def _(cond: bool):
+    if cond:
+        x = 1
+        return
+        reveal_type(x)  # revealed: Literal[1]
+</code></pre>
+<p>and</p>
+<pre><code class="language-py">def _(cond: bool):
+    if cond:
+        x = 1
+        return
+    reveal_type(x)  # revealed: Literal[1]
+</code></pre>
+<p>And so if we want to treat these both the same, I'd say we'd go for an option that controls the visibility of new bindings: &quot;always true&quot; if we want to check unreachable code as if it were reachable, and &quot;current reachability&quot; if not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-05 21:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-05 21:06</div>
+            <div class="timeline-body"><blockquote>
+<p>I think it's worth putting some time-boxed effort (on the scale of a few hours) into looking into the regression here, but I don't think it should block the PR; I don't see anything obviously inefficient here, and this is what we need in order to get the right semantics. It's a better use of optimization effort to look broadly for the best ROI than to focus narrowly on a specific regression.</p>
+</blockquote>
+<p>After figuring out https://github.com/astral-sh/ruff/pull/15817#issuecomment-2637995420, I get identical ingredient counts for <code>main</code> and this feature branch:</p>
+<pre><code>1   0.059255s TRACE red_knot Counts for entire CLI run:
+1red_knot_python_semantic::semantic_index::definition::Definition         7_722        7_722        7_722
+1red_knot_python_semantic::semantic_index::expression::Expression         1_150        1_150        1_150
+1red_knot_python_semantic::semantic_index::symbol::ScopeId                2_322        2_322        2_322
+1red_knot_python_semantic::unpack::Unpack                                    21           21           21
+1ruff_db::files::File                                                        76           76           76
+1ruff_db::source::SourceText                                                 20           20           20
+1                                                                         total     max_live         live
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-05 22:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/terminal_statements.md</code>:646 on 2025-02-05 22:15</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd say we'd either need to track multiple visibility constraints for each binding, or multiple &quot;current flow states&quot; — both being ways to represent the visibility that each binding has <em>now</em>, and what it would reset to at the next merge point.</p>
+</blockquote>
+<p>Yeah makes sense.</p>
+<blockquote>
+<p>But I'm also not sure that's what we'd want to implement — if we want to &quot;check unreachable code as if it were reachable&quot;, I'm not sure that should reset at merge points.</p>
+</blockquote>
+<p>Not sure either. I feel like checking unreachable code as if it were reachable is kind of an unprincipled approach that may not have a sensible and consistent semantics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/terminal_statements.md</code>:646 on 2025-02-05 22:15</div>
+            <div class="timeline-body"><p>In any case, I think the semantics implemented in this PR are a good step forward, and we should go ahead with them for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-05 22:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-02-05 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-02-05 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-05 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-06 06:49</div>
+            <div class="timeline-body"><p>@dcreager can you tell me a bit more about what performance investigation you did other than comparing ingredient numbers? Did you try to compare the verbose output of watching tomllib? Did you compare two recorded profiles?</p>
+<p>I'm asking because an 8% regression is huge, especially considering we don't even know where it's coming from. For comparison, our biggest win on the incremental benchmark is https://github.com/astral-sh/ruff/pull/15763, and it's only 15%. This PR &quot;eats up&quot; 50% of that improvement. My main worry is: It's hard to figure out the root cause today, but it will even be harder to win back this regression in the future if nothing obvious shows up in benchmarks or profiles today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-06 07:14</div>
+            <div class="timeline-body"><p>I went ahead and ran <code>knot check --watch -vvv</code> locally over the tomllib project (after moving the files into a src directory ). I appended some whitespace at the end of the file once initial checking is complete, this should mimic our benchmark fairly closely. <a href="https://www.diffchecker.com/nC1rZxR2/">Here's the output</a> that compares pre-terminal statement support with main.</p>
+<p>One main finding: We now call <code>symbol(__bool__)</code> way more often.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-06 07:45</div>
+            <div class="timeline-body"><p>One thing I noticed is that the following stack only shows up in the new version, suggesting that <code>UseDefMapBuilder::snapshot</code> has to do more heap allocation because a small vec spills to the stack more often? This could make sense, considering that we're pushing now more <code>visibility_constraints</code> (at least, not always TRUE)</p>
+<p><img width="1359" alt="Screenshot 2025-02-06 at 08 41 11" src="https://github.com/user-attachments/assets/74656a97-8300-4fba-be85-cf24b5c04409" /></p>
+<ul>
+<li><a href="https://share.firefox.dev/4jXBi0y">pre-terminal-statement</a></li>
+<li><a href="https://share.firefox.dev/4hppdzv">main</a></li>
+</ul>
+<p>You have to select the small &quot;peak&quot; around second 3 or 5. Everything else is just me being slow to manually make an edit in the file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-06 13:33</div>
+            <div class="timeline-body"><blockquote>
+<p>can you tell me a bit more about what performance investigation you did other than comparing ingredient numbers? Did you try to compare the verbose output of watching tomllib? Did you compare two recorded profiles?</p>
+</blockquote>
+<p>I ran the benchmark test under valgrind and used the <a href="https://docs.rs/crabgrind/latest/crabgrind/"><code>crabgrind</code></a> crate to only instrument the incremental type-check call.  I can post the stack traces I got, but I'll have to recompile and recollect to do that.  It showed some small differences in the amount of time spent in salsa internals, which is why I focused on the ingredient counts per Carl's hypothesis.</p>
+<p>I also had added some <code>printf</code>s to spit out the number of visibility constraints that were created inside of each <code>UseDefMapBuilder</code>, and verified that those counts were the same before/after as well.</p>
+<blockquote>
+<p>One thing I noticed is that the following stack only shows up in the new version, suggesting that <code>UseDefMapBuilder::snapshot</code> has to do more heap allocation because a small vec spills to the stack more often? This could make sense, considering that we're pushing now more <code>visibility_constraints</code> (at least, not always TRUE)</p>
+</blockquote>
+<p>That looks like an <code>IndexVec</code> being cloned, not a <code>SmallVec</code>.  We use an <code>IndexVec</code> to hold all of the visibility constraints that we create while building the use-def map.  But per above, I did confirm that we're not creating any new visibility constraints with this PR — I was able to piggy-back on the <code>scope_start_visibility</code> constraint that we were already collecting.  There's a <code>SmallVec</code> that records a visibility constraint for each binding, but that shouldn't be larger since we aren't introducing any new bindings.</p>
+<p>Could this be sampling bias due to <code>perf</code> taking stack frame snapshots periodically?  Incremental checking doesn't take long in absolute terms, so it seems like it might be more susceptible to that.</p>
+<blockquote>
+<p>One main finding: We now call <code>symbol(__bool__)</code> way more often.</p>
+</blockquote>
+<p>That suggests that the cause might be <a href="https://github.com/astral-sh/ruff/pull/15817/files#r1941839502">this change</a> — we might be recording more complex visibility constraints for a noticeable number of bindings, which would take more time to evaluate than the <code>AlwaysTrue</code> that we were recording before.  And those would necessarily have some kind of <code>Expression</code> inside of them that we would have to type-check.  Though I would have thought that would show up as a noticeable increase in the time spent in <code>VisibilityConstraints::evaluate</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-06 13:47</div>
+            <div class="timeline-body"><p>Thanks for the extra explanation. It does show that you spent a fair amount of time investigating! Thanks for doing that.</p>
+<blockquote>
+<p>we might be recording more complex visibility constraints for a noticeable number of bindings, which would take more time to evaluate than the AlwaysTrue that we were recording before. And those would necessarily have some kind of Expression inside of them that we would have to type-check. T</p>
+</blockquote>
+<p>I think that could partially explain the regression. It means that the queries evaluating visibility constraints have more dependencies and marking each dependency as &quot;green&quot; is a non-zero cost.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:29 UTC
+    </footer>
+</body>
+</html>

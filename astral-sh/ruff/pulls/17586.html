@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] improve unsupported bool conversion diagnostics - astral-sh/ruff #17586</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] improve unsupported bool conversion diagnostics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17586">#17586</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-04-23 16:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-23 16:36</div>
+            <div class="timeline-body"><p>This mostly only improves things for incorrect arguments and for an
+incorrect return type on a <code>__bool__</code> method. It doesn't do much
+to improve the case when <code>__bool__</code> isn't callable and leaves the
+union/other cases untouched completely.</p>
+<p>I picked this one because, at first glance, this <em>looked</em> like a
+lower hanging fruit. The conceptual improvement here is pretty
+straight-forward: add annotations for relevant data. But it took me a
+bit to figure out how to connect all of the pieces.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BurntSushi on 2025-04-23 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @BurntSushi on 2025-04-23 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-04-23 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @BurntSushi on 2025-04-23 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-04-23 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-23 16:42</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/unsupported_bool_conversion.md_-_Different_ways_that_`UNSUPPORTED_BOOL_CONVERSION`_can_occur_-_Has_a_`__bool__`_method,_but_has_an_incorrect_return_type.snap</code>:44 on 2025-04-23 16:47</div>
+            <div class="timeline-body"><p>I feel like there's a couple of missing steps in the explanation here. We're emitting the diagnostic on the expression <code>10 and a and True</code>, and then we're showing them where the <code>NotBoolable.__bool__</code> method is defined. But we don't say anywhere why the user should care about the <code>NotBoolable</code> class, or why the return method of <code>NotBoolable.__bool__</code> is important.</p>
+<p>I think we need to explicitly say:</p>
+<ol>
+<li><code>a.__bool__()</code> is implicitly called due to the use of the <code>and</code> operator</li>
+<li>In order for boolean conversion to succeed, a <code>__bool__</code> method must return an instance of <code>bool</code></li>
+<li><code>a</code> is an instance of <code>NotBoolable</code></li>
+<li>Here is the <code>NotBoolable.__bool__</code> method. It returns <code>str</code>, which is not assignable to <code>bool</code></li>
+</ol>
+<p>You do step (4) here but you skip steps (1), (2) and (3) in the explanation!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-23 16:48</div>
+            <div class="timeline-body"><p>Nice!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/diagnostics/unsupported_bool_conversion.md</code>:3 on 2025-04-23 17:20</div>
+            <div class="timeline-body"><p>nit -- let's use the user-facing name of a diagnostic code in mdtests, not the shouty Rust constant name</p>
+<pre><code class="language-suggestion"># Different ways that `unsupported-bool-conversion` can occur
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/membership_test.md_-_Comparison___Membership_Test_-_Return_type_that_doesn't_implement_`__bool__`_correctly.snap</code>:31 on 2025-04-23 17:22</div>
+            <div class="timeline-body"><p>This can remain a TODO, but really this diagnostic should explain why we are looking at <code>NotBoolable</code> in the first place (because we did an <code>in</code> operation on <code>WithContains</code>, and its <code>__contains__</code> returns <code>NotBoolable</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/not.md_-_Unary_not_-_Object_that_implements_`__bool__`_incorrectly.snap</code>:32 on 2025-04-23 17:23</div>
+            <div class="timeline-body"><p>In all of these cases, it would be ideal to have an annotation pointing at the not-callable <code>__bool__</code> in question (doesn't need to happen in this PR)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-04-23 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-04-23 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/unsupported_bool_conversion.md_-_Different_ways_that_`UNSUPPORTED_BOOL_CONVERSION`_can_occur_-_Has_a_`__bool__`_method,_but_has_an_incorrect_return_type.snap</code>:44 on 2025-04-23 17:32</div>
+            <div class="timeline-body"><p>I feel like all of 1-3 are pretty well implied by what's here. Pointing at <code>a</code> and discussing boolean conversion and the type <code>NotBoolable</code> pretty strongly implies both that we have to convert <code>a</code> to a boolean, and that it's of type <code>NotBoolable</code>. Saying that <code>str</code> is an incorrect return type because it's not assignable to <code>bool</code> pretty strongly implies that <code>__bool__</code> needs to return something assignable to <code>bool</code>.</p>
+<p>I'm not necessarily opposed to spelling some things out more, but I do feel like what's here is a pretty reasonable level of spelling things out, and there is some inherent cost to added verbosity.</p>
+<p>I think it is higher priority to improve some other diagnostics, than it is to make this one more verbose than this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/unsupported_bool_conversion.md_-_Different_ways_that_`UNSUPPORTED_BOOL_CONVERSION`_can_occur_-_Part_of_a_union_where_at_least_one_member_has_incorrect_`__bool__`_method.snap</code>:35 on 2025-04-23 17:42</div>
+            <div class="timeline-body"><p>In this case I think ideally we would provide the same information about <em>why</em> <code>NotBoolable1</code> doesn't implement <code>__bool__</code> correctly as we do in the non-union examples above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:5831 on 2025-04-23 17:49</div>
+            <div class="timeline-body"><p>Yeah, this has overlap with go-to-definition; it requires adding APIs to not just get a symbol, but get the location(s) of its definition(s), and we don't currently have those APIs. I don't think they are inherently difficult to add over what we have now (the information is all there in the use-def map, it's just a Simple Matter of Programming), but it's a non-trivial amount of Programming.</p>
+<p>cc @MichaReiser</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:5812 on 2025-04-23 17:50</div>
+            <div class="timeline-body"><p>I think one fairly simple thing we could do here to improve this diagnostic (short of the below) would be to name the not-callable type we found for <code>__bool__</code>. That alone could really help someone to track down the source of the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-23 17:51</div>
+            <div class="timeline-body"><p>This looks great! There are definitely areas in these diagnostics for further improvements, but IMO what's here is already clearly better than the status quo, so none of the improvements are blocking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-23 17:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4929 on 2025-04-23 17:53</div>
+            <div class="timeline-body"><p>This API and <code>parameter_span</code> can both cause cross-module dependencies. We already discussed this with the improved invalid-call diagnostic, and I don't think there's anything to be done about that core fact -- it's just a reality of providing nice diagnostics.</p>
+<p>I'm not sure if it would be useful to call this out in the doc comment, or via some kind of naming convention? I don't really think it's likely we'd attempt to use these methods unless we really need them for diagnostics, so tbh I'm not sure how much that would benefit us.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-23 17:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/unsupported_bool_conversion.md_-_Different_ways_that_`UNSUPPORTED_BOOL_CONVERSION`_can_occur_-_Has_a_`__bool__`_method,_but_has_an_incorrect_return_type.snap</code>:44 on 2025-04-23 17:59</div>
+            <div class="timeline-body"><blockquote>
+<p>I feel like all of 1-3 are pretty well implied by what's here. Pointing at <code>a</code> and discussing boolean conversion and the type <code>NotBoolable</code> pretty strongly implies both that we have to convert <code>a</code> to a boolean, and that it's of type <code>NotBoolable</code>. Saying that <code>str</code> is an incorrect return type because it's not assignable to <code>bool</code> pretty strongly implies that <code>__bool__</code> needs to return something assignable to <code>bool</code>.</p>
+</blockquote>
+<p>Even the term &quot;assignable to&quot; is going to be pretty foreign to a newbie in Python typing. And if this type checker is successful, we'll have a whole bunch of users who are pretty new to Python altogether, let alone Python typing. (Mypy certainly does! I've seen many of their issues on the mypy tracker, and I've responded to many of their questions on StackOverflow.)</p>
+<blockquote>
+<p>I think it is higher priority to improve some other diagnostics, than it is to make this one more verbose than this.</p>
+</blockquote>
+<p>Sure, it doesn't need to block this PR, of course! I also don't think it would take very long at all to address this, though. But I'm happy to park this for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] improve unsupport bool conversion diagnostics" to "[red-knot] improve unsupported bool conversion diagnostics" by @AlexWaygood on 2025-04-23 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-23 18:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:5831 on 2025-04-23 18:33</div>
+            <div class="timeline-body"><p>I'm on the run so I haven't looked closely at the code but we now have <code>Type::definition</code>... in case you have a type pointing to <code>__bool__</code> somewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-23 18:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:5831 on 2025-04-23 18:54</div>
+            <div class="timeline-body"><p>That's true, in the common case where <code>__bool__</code> is a method, the <code>FunctionType::definition</code> ought to point to where it was defined?</p>
+<p>EDIT: But in that case we wouldn't be getting this error about it not being callable 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-23 19:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:5831 on 2025-04-23 19:18</div>
+            <div class="timeline-body"><p>There's a method on Type that returns the definition which also works for classes and even literals</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-23 19:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:5831 on 2025-04-23 19:33</div>
+            <div class="timeline-body"><p>I know, but it goes to the definition of the <em>type</em>, which won't be useful for many invalid <code>__bool__</code> values. E.g. if we have</p>
+<pre><code class="language-py">class NotBoolable
+    __bool__ = &quot;foo&quot;
+</code></pre>
+<p>using <code>Type::definition</code> would go to the definition of <code>str</code> in typeshed, which is not useful; we want to go to the <code>__bool__ = &quot;foo&quot;</code> assignment.</p>
+<p>This is precisely the same as the distinction between goto-definition and goto-type-definition in the LSP, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-24 13:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/unsupported_bool_conversion.md_-_Different_ways_that_`UNSUPPORTED_BOOL_CONVERSION`_can_occur_-_Has_a_`__bool__`_method,_but_has_an_incorrect_return_type.snap</code>:44 on 2025-04-24 13:04</div>
+            <div class="timeline-body"><p>I did consider spelling this out a bit more. And in particular, highlighting the class definition <code>NotBoolable</code> itself. It <em>felt</em> like a little too much information, so I biased toward brevity. But I can absolutely believe that spelling it out a bit more could be more beneficial. Perhaps we leave it this way for now until we get a better idea of what verbosity level is ideal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-24 13:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/membership_test.md_-_Comparison___Membership_Test_-_Return_type_that_doesn't_implement_`__bool__`_correctly.snap</code>:31 on 2025-04-24 13:26</div>
+            <div class="timeline-body"><p>Ah yeah it looks like this is even mentioned in the corresponding mdtest:</p>
+<pre><code>TODO: Ideally the message would explain to the user what's wrong. E.g,
+
+```ignore
+error: [operator] cannot use `in` operator on object of type `WithContains`
+    note: This is because the `in` operator implicitly calls `WithContains.__contains__`, but `WithContains.__contains__` is invalidly defined
+    note: `WithContains.__contains__` is invalidly defined because it returns an instance of `NotBoolable`, which cannot be evaluated in a boolean context
+    note: `NotBoolable` cannot be evaluated in a boolean context because its `__bool__` attribute is not callable
+```
+</code></pre>
+<p>That would be a really nice diagnostic!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-24 13:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/not.md_-_Unary_not_-_Object_that_implements_`__bool__`_incorrectly.snap</code>:32 on 2025-04-24 13:27</div>
+            <div class="timeline-body"><p>Yeah I called this out in the code. I actually tried to do it, but it didn't seem straight-forward. (And I mean that in the sense that it is maybe actually not straight-forward, or more likely, only not straight-forward to <em>me</em> haha.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-24 13:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/membership_test.md_-_Comparison___Membership_Test_-_Return_type_that_doesn't_implement_`__bool__`_correctly.snap</code>:31 on 2025-04-24 13:30</div>
+            <div class="timeline-body"><p>I think I'd prefer to fix that as part of tackling https://github.com/astral-sh/ruff/issues/16371#issuecomment-2682014149. This error should be propagated up so that it's reported as an <code>[operator]</code> error rather than a <code>[not-boolable]</code> error; that will allow us to provide more details in the diagnostic, but to do that we need to cleanup some of our internals a little bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-24 14:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/unsupported_bool_conversion.md_-_Different_ways_that_`UNSUPPORTED_BOOL_CONVERSION`_can_occur_-_Part_of_a_union_where_at_least_one_member_has_incorrect_`__bool__`_method.snap</code>:35 on 2025-04-24 14:05</div>
+            <div class="timeline-body"><p>Yeah, 100%. I looked into doing this too, but seemed like more work that I wanted to bite off here. I even specifically wrote this test such that <code>NotBoolable1</code> and <code>NotBoolable3</code> are both not usable as booleans for different reasons, thinking that I could improve that case. And perhaps even include diagnostics for <em>all</em> (or at least more than 1) parts of a union. There's some refactoring involved so that we re-use the diagnostic generation for each of the base cases, and then some way to figure out how to tie off the recursion of union types themselves.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-24 14:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:5831 on 2025-04-24 14:19</div>
+            <div class="timeline-body"><p>Yeah this is all pretty much the same conclusion I arrived at. I had indeed found <code>Type::definition</code>.</p>
+<p>I'm at least happy that I wasn't missing something dumb. :-)</p>
+<p>(Totally agree about this being a &quot;simple matter of programming.&quot;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:5812 on 2025-04-24 14:21</div>
+            <div class="timeline-body"><p>Is that not done in the couple lines above this one? Or am I misunderstanding? That is, I think <code>not_boolable_type</code> is the not-callable type, and its name is included in the main diagnostic message.</p>
+<p>Or maybe you're saying I should repeat it here? That is, something like:</p>
+<pre><code>`__bool__` on `{not_boolable_type}` must be callable
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-24 14:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-24 14:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4929 on 2025-04-24 14:24</div>
+            <div class="timeline-body"><p>I added this as a doc comment to this method and <code>parameter_span</code>:</p>
+<pre><code>    /// # Performance
+    ///
+    /// Note that this may introduce cross-module
+    /// dependencies. This can have an impact on
+    /// the effectiveness of incremental caching
+    /// and should therefore be used judiciously.
+    ///
+    /// An example of a good use case is to improve
+    /// a diagnostic.
+</code></pre>
+<p>I think the cross module dependency thing is really subtle, so a naming convention might actually help here. But yeah, I also don't have a good feel for how much of a problem this will be in practice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-24 15:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:5812 on 2025-04-24 15:36</div>
+            <div class="timeline-body"><p>I ended up making that change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-04-24 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-04-24 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-24 15:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:30 UTC
+    </footer>
+</body>
+</html>

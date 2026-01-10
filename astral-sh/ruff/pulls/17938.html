@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Default to latest supported python version - astral-sh/ruff #17938</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Default to latest supported python version</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17938">#17938</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-05-08 08:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-08 08:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Default to the latest python version if a project has no <code>requires-python</code> constraint or <code>environment.python-version</code>.</p>
+<p>I first assumed that this would be more complicated because we would also need to respect the requires-python uppper bound.
+However, this isn't necessary because the fallback behavior only applies if a project has <strong>no</strong> requires-python constraint
+(because we error if a requires-python constraint has no lower bound).</p>
+<p>I do think that we'll want to have two python versions once we start adding version-dependent lint rules
+because we don't want that users see different diagnostics (because they could now make use of some newer syntax)
+when running <code>ty check --python-version &lt;newer&gt;</code> when there <code>requires-python</code> clearly states that they have to support <code>&lt;older-version&gt;</code>.</p>
+<p>The way this would be implemented is that <code>ty</code> knows both a <code>minimal-supported-python-version</code> and a <code>python-version</code> option.</p>
+<p>Closes https://github.com/astral-sh/ty/issues/112</p>
+<h2>Test Plan</h2>
+<p>Added CLI test</p>
+<p>I verified that none of the projects with mypy primer changes specifies a <code>requires-python</code> constraint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-05-08 08:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-05-08 08:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-05-08 08:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-05-08 08:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2025-05-08 08:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-08 08:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/python_version.rs</code>:65 on 2025-05-08 08:50</div>
+            <div class="timeline-body"><p>I added this as a precaution that we don't accidentally bump the Python version in ty when bumping the version for ruff</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-08 08:53</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">dacite (https://github.com/konradhalas/dacite)
+- error[lint:unsupported-operator] dacite/generics.py:64:72: Operator `|` is unsupported between objects of type `&lt;class 'int'&gt;` and `&lt;class 'str'&gt;`
++ error[lint:non-subscriptable] dacite/generics.py:68:24: Cannot subscript object of type `ParamSpec` with no `__getitem__` method
++ warning[lint:unused-ignore-comment] dacite/types.py:47:38: Unused blanket `type: ignore` directive
+- Found 23 diagnostics
++ Found 24 diagnostics
+
+pyinstrument (https://github.com/joerick/pyinstrument)
++ error[lint:unresolved-attribute] pyinstrument/vendor/decorator.py:57:34: Type `&lt;module 'inspect'&gt;` has no attribute `getargspec`
+- Found 97 diagnostics
++ Found 98 diagnostics
+
+aioredis (https://github.com/aio-libs/aioredis)
++ error[lint:invalid-exception-caught] aioredis/client.py:1105:16: Cannot catch object of type `&lt;class 'TimeoutError'&gt;` in an exception handler (must be a `BaseException` subclass or a tuple of `BaseException` subclasses)
++ error[lint:invalid-exception-caught] aioredis/client.py:4047:16: Cannot catch object of type `&lt;class 'TimeoutError'&gt;` in an exception handler (must be a `BaseException` subclass or a tuple of `BaseException` subclasses)
++ error[lint:invalid-exception-caught] aioredis/client.py:4452:16: Cannot catch object of type `&lt;class 'TimeoutError'&gt;` in an exception handler (must be a `BaseException` subclass or a tuple of `BaseException` subclasses)
++ error[lint:invalid-exception-caught] aioredis/client.py:4648:16: Cannot catch object of type `&lt;class 'TimeoutError'&gt;` in an exception handler (must be a `BaseException` subclass or a tuple of `BaseException` subclasses)
++ error[lint:unresolved-import] aioredis/connection.py:11:6: Cannot resolve imported module `distutils.version`
++ error[lint:invalid-exception-caught] aioredis/connection.py:826:20: Cannot catch object of type `&lt;class 'TimeoutError'&gt;` in an exception handler (must be a `BaseException` subclass or a tuple of `BaseException` subclasses)
++ error[lint:duplicate-base] aioredis/exceptions.py:14:7: Duplicate base class `TimeoutError`
+- Found 26 diagnostics
++ Found 33 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- error[lint:unresolved-import] src/graphql/error/graphql_error.py:13:24: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] src/graphql/execution/collect_fields.py:30:24: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] src/graphql/execution/execute.py:27:24: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] src/graphql/execution/execute.py:27:35: Module `typing` has no member `TypeGuard`
+- warning[lint:unresolved-reference] src/graphql/execution/execute.py:100:5: Name `anext` used when not defined
+- warning[lint:possibly-unresolved-reference] src/graphql/execution/execute.py:859:35: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] src/graphql/execution/execute.py:1575:26: Name `anext` used when possibly not defined
+- error[lint:unresolved-import] src/graphql/execution/middleware.py:10:24: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] src/graphql/execution/values.py:38:24: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] src/graphql/language/ast.py:10:24: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] src/graphql/language/parser.py:75:24: Module `typing` has no member `TypeAlias`
+- warning[lint:redundant-cast] src/graphql/language/parser.py:646:16: Value is already of type `Unknown`
+- error[lint:unresolved-import] src/graphql/language/predicates.py:23:24: Module `typing` has no member `TypeGuard`
+- error[lint:unresolved-import] src/graphql/language/printer.py:15:24: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] src/graphql/language/source.py:10:24: Module `typing` has no member `TypeGuard`
+- error[lint:unresolved-import] src/graphql/language/visitor.py:22:24: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] src/graphql/pyutils/awaitable_or_value.py:8:24: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] src/graphql/pyutils/is_awaitable.py:10:24: Module `typing` has no member `TypeGuard`
+- error[lint:unresolved-import] src/graphql/pyutils/is_iterable.py:9:24: Module `typing` has no member `TypeGuard`
+- error[lint:unresolved-import] src/graphql/type/definition.py:26:24: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] src/graphql/type/definition.py:26:35: Module `typing` has no member `TypeGuard`
+- error[lint:unresolved-import] src/graphql/type/directives.py:18:24: Module `typing` has no member `TypeGuard`
+- error[lint:unresolved-import] src/graphql/type/scalars.py:21:24: Module `typing` has no member `TypeGuard`
+- error[lint:unresolved-import] src/graphql/type/schema.py:49:24: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] src/graphql/type/schema.py:49:35: Module `typing` has no member `TypeGuard`
+- warning[lint:redundant-cast] src/graphql/utilities/build_client_schema.py:106:20: Value is already of type `Unknown`
+- error[lint:unresolved-import] src/graphql/utilities/coerce_input_value.py:27:24: Module `typing` has no member `TypeAlias`
+- warning[lint:redundant-cast] src/graphql/utilities/extend_schema.py:554:17: Value is already of type `Unknown`
+- warning[lint:redundant-cast] src/graphql/utilities/extend_schema.py:588:27: Value is already of type `Unknown`
+- warning[lint:redundant-cast] src/graphql/utilities/extend_schema.py:606:21: Value is already of type `Unknown`
+- warning[lint:redundant-cast] src/graphql/utilities/extend_schema.py:627:25: Value is already of type `Unknown`
+- error[lint:unresolved-import] src/graphql/utilities/find_breaking_changes.py:38:24: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] src/graphql/utilities/get_introspection_query.py:16:24: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] src/graphql/utilities/separate_operations.py:18:24: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] src/graphql/utilities/type_info.py:45:24: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] src/graphql/validation/rules/known_type_names.py:22:24: Module `typing` has no member `TypeGuard`
+- error[lint:unresolved-import] src/graphql/validation/rules/overlapping_fields_can_be_merged.py:36:24: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] src/graphql/validation/validation_context.py:41:24: Module `typing` has no member `TypeAlias`
+- warning[lint:unresolved-reference] tests/execution/test_customize.py:10:5: Name `anext` used when not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_customize.py:103:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_customize.py:152:22: Name `anext` used when possibly not defined
+- warning[lint:unresolved-reference] tests/execution/test_map_async_iterable.py:6:5: Name `anext` used when not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:34:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:35:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:36:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:38:26: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:83:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:84:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:91:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:93:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:111:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:112:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:119:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:121:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:139:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:140:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:150:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:152:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:165:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:179:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:189:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:192:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:203:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:227:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:232:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:252:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:255:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:271:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:286:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:289:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:302:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_map_async_iterable.py:304:19: Name `anext` used when possibly not defined
+- warning[lint:unresolved-reference] tests/execution/test_stream.py:29:5: Name `anext` used when not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_stream.py:132:36: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_stream.py:1743:25: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_stream.py:1768:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_stream.py:1926:25: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_stream.py:1935:25: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_stream.py:1940:25: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_stream.py:1945:25: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_stream.py:1949:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_stream.py:2002:25: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_stream.py:2014:25: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_stream.py:2019:25: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_stream.py:2027:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_stream.py:2079:25: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_stream.py:2090:25: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_stream.py:2100:25: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_stream.py:2107:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_stream.py:2150:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_stream.py:2199:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_stream.py:2246:19: Name `anext` used when possibly not defined
+- warning[lint:unresolved-reference] tests/execution/test_subscribe.py:45:5: Name `anext` used when not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:218:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:242:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:262:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:290:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:320:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:506:20: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:507:20: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:549:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:566:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:575:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:615:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:645:26: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:654:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:701:24: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:709:26: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:718:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:767:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:790:26: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:798:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:823:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:854:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:879:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:905:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:930:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:946:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:984:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:1026:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:1029:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:1042:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:1071:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:1074:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:1079:19: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:1107:22: Name `anext` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/execution/test_subscribe.py:1137:22: Name `anext` used when possibly not defined
+- error[lint:unresolved-import] tests/language/test_lexer.py:15:24: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] tests/language/test_parser.py:46:24: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] tests/language/test_schema_parser.py:45:24: Module `typing` has no member `TypeAlias`
+- warning[lint:unused-ignore-comment] tests/pyutils/test_is_awaitable.py:88:29: Unused blanket `type: ignore` directive
+- error[lint:unresolved-import] tests/test_docs.py:11:24: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] tests/utilities/test_build_ast_schema.py:48:24: Module `typing` has no member `TypeAlias`
+- warning[lint:redundant-cast] tests/utilities/test_build_client_schema.py:720:26: Value is already of type `Unknown`
+- error[lint:unresolved-import] tests/utilities/test_extend_schema.py:36:24: Module `typing` has no member `TypeAlias`
+- Found 541 diagnostics
++ Found 406 diagnostics
+
+speedrun.com_global_scoreboard_webapp (https://github.com/Avasam/speedrun.com_global_scoreboard_webapp)
+- error[lint:invalid-parameter-default] backend/models/core_models.py:79:13: Default value of type `ellipsis` is not assignable to annotated parameter type `int | None`
++ error[lint:invalid-parameter-default] backend/models/core_models.py:79:13: Default value of type `EllipsisType` is not assignable to annotated parameter type `int | None`
+- error[lint:invalid-parameter-default] backend/models/tournament_scheduler_models.py:143:13: Default value of type `ellipsis` is not assignable to annotated parameter type `Schedule`
++ error[lint:invalid-parameter-default] backend/models/tournament_scheduler_models.py:143:13: Default value of type `EllipsisType` is not assignable to annotated parameter type `Schedule`
+- error[lint:invalid-parameter-default] backend/models/tournament_scheduler_models.py:216:13: Default value of type `ellipsis` is not assignable to annotated parameter type `TimeSlot`
++ error[lint:invalid-parameter-default] backend/models/tournament_scheduler_models.py:216:13: Default value of type `EllipsisType` is not assignable to annotated parameter type `TimeSlot`
+- error[lint:invalid-parameter-default] backend/models/tournament_scheduler_models.py:245:13: Default value of type `ellipsis` is not assignable to annotated parameter type `Registration`
++ error[lint:invalid-parameter-default] backend/models/tournament_scheduler_models.py:245:13: Default value of type `EllipsisType` is not assignable to annotated parameter type `Registration`
+
+comtypes (https://github.com/enthought/comtypes)
++ error[lint:unresolved-attribute] comtypes/test/__init__.py:137:12: Type `&lt;module 'unittest'&gt;` has no attribute `makeSuite`
++ error[lint:unresolved-attribute] comtypes/test/__init__.py:207:15: Type `&lt;module 'unittest'&gt;` has no attribute `makeSuite`
++ error[lint:unresolved-import] comtypes/test/setup.py:3:6: Cannot resolve imported module `distutils.core`
+- Found 679 diagnostics
++ Found 682 diagnostics
+
+mypy-protobuf (https://github.com/dropbox/mypy-protobuf)
+- error[lint:unsupported-operator] mypy_protobuf/main.py:166:53: Operator `|` is unsupported between objects of type `&lt;class 'str'&gt;` and `None`
+- Found 46 diagnostics
++ Found 45 diagnostics
+
+pybind11 (https://github.com/pybind/pybind11)
++ warning[lint:unused-ignore-comment] pybind11/setup_helpers.py:440:89: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] pybind11/setup_helpers.py:443:77: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] pybind11/setup_helpers.py:459:89: Unused blanket `type: ignore` directive
+- error[lint:unresolved-import] tests/test_pytypes.py:1176:25: Module `inspect` has no member `get_annotations`
+- Found 252 diagnostics
++ Found 254 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- error[lint:unresolved-import] strawberry/experimental/pydantic/fields.py:18:23: Module `types` has no member `UnionType`
++ error[lint:invalid-assignment] strawberry/experimental/pydantic/fields.py:23:9: Implicit shadowing of class `UnionType`
++ error[lint:invalid-assignment] strawberry/federation/scalar.py:133:9: Object of type `_T | None` is not assignable to `((...) -&gt; Unknown) | None`
++ error[lint:invalid-argument-type] strawberry/schema/types/scalar.py:60:36: Argument to this function is incorrect: Expected `type`, found `Unknown | NewType`
+- error[lint:invalid-return-type] strawberry/types/maybe.py:41:12: Return type does not match returned value: Expected `bool`, found `(type &amp; ~AlwaysTruthy) | bool`
+- warning[lint:unused-ignore-comment] strawberry/types/scalar.py:98:49: Unused blanket `type: ignore` directive
++ error[lint:invalid-argument-type] strawberry/types/scalar.py:109:29: Argument to this function is incorrect: Expected `(Any, /) -&gt; Any`, found `_T`
++ error[lint:invalid-assignment] strawberry/types/scalar.py:207:9: Object of type `_T | None` is not assignable to `((...) -&gt; Unknown) | None`
+- error[lint:non-subscriptable] strawberry/utils/typing.py:381:13: Cannot subscript object of type `type` with no `__class_getitem__` method
++ error[lint:invalid-return-type] strawberry/utils/typing.py:386:12: Return type does not match returned value: Expected `type`, found `@Todo(Inference of subscript on special form) | typing.Union`
+- Found 448 diagnostics
++ Found 450 diagnostics
+
+ppb-vector (https://github.com/ppb/ppb-vector)
+- error[invalid-syntax] tests/test_pattern_matching.py:5:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_pattern_matching.py:13:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_pattern_matching.py:21:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_pattern_matching.py:29:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- Found 44 diagnostics
++ Found 40 diagnostics
+
+flake8 (https://github.com/pycqa/flake8)
+- error[lint:no-matching-overload] tests/integration/test_checker.py:332:15: No overload of bound method `__init__` matches arguments
+- Found 45 diagnostics
++ Found 44 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+- error[invalid-syntax] cki_lib/cki_pipeline.py:447:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] cki_lib/inttests/cluster.py:176:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] cki_lib/inttests/remote_responses.py:187:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- Found 182 diagnostics
++ Found 179 diagnostics
+
+stone (https://github.com/dropbox/stone)
+- warning[lint:unused-ignore-comment] stone/frontend/ir_generator.py:9:49: Unused blanket `type: ignore` directive
+- Found 179 diagnostics
++ Found 178 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- error[lint:invalid-argument-type] tornado/test/web_test.py:414:60: Argument to this function is incorrect: Expected `str`, found `AnyStr | @Todo(Support for `typing.TypeAlias`)`
++ error[lint:no-matching-overload] tornado/test/web_test.py:414:26: No overload of function `parsedate_to_datetime` matches arguments
+- error[lint:invalid-argument-type] tornado/test/web_test.py:3091:60: Argument to this function is incorrect: Expected `str`, found `AnyStr | @Todo(Support for `typing.TypeAlias`)`
++ error[lint:no-matching-overload] tornado/test/web_test.py:3091:26: No overload of function `parsedate_to_datetime` matches arguments
+- error[lint:missing-argument] tornado/web.py:1369:25: No arguments provided for required parameters `etype`, `value`, `tb` of function `format_exception`
++ error[lint:no-matching-overload] tornado/web.py:1369:25: No overload of function `format_exception` matches arguments
++ error[lint:unresolved-attribute] tornado/web.py:2888:16: Type `None` has no attribute `tzinfo`
++ error[lint:unresolved-attribute] tornado/web.py:2889:28: Type `None` has no attribute `replace`
+- Found 509 diagnostics
++ Found 511 diagnostics
+
+bandersnatch (https://github.com/pypa/bandersnatch)
+- error[lint:unresolved-attribute] src/bandersnatch/filter.py:190:32: Type `dict[str, @Todo(specialized non-generic class)]` has no attribute `select`
+- error[lint:unresolved-attribute] src/bandersnatch/mirror.py:58:42: Type `&lt;module 'datetime'&gt;` has no attribute `UTC`
+- error[lint:unresolved-import] src/bandersnatch/simple.py:4:24: Module `enum` has no member `StrEnum`
+- error[lint:not-iterable] src/bandersnatch/simple.py:66:49: Object of type `&lt;class 'SimpleDigest'&gt;` is not iterable
+- error[lint:unsupported-operator] src/bandersnatch/storage.py:23:14: Operator `|` is unsupported between objects of type `&lt;class 'Path'&gt;` and `&lt;class 'str'&gt;`
+- error[lint:unresolved-attribute] src/bandersnatch/storage.py:366:24: Type `dict[str, @Todo(specialized non-generic class)]` has no attribute `select`
+- error[lint:unresolved-attribute] src/bandersnatch/tests/plugins/test_storage_plugins.py:116:25: Type `&lt;module 'datetime'&gt;` has no attribute `UTC`
+- error[lint:unresolved-attribute] src/bandersnatch/tests/plugins/test_storage_plugins.py:123:28: Type `&lt;module 'datetime'&gt;` has no attribute `UTC`
+- error[lint:unresolved-import] src/bandersnatch/tests/test_mirror.py:9:35: Module `typing` has no member `TypeAlias`
+- error[lint:not-iterable] src/bandersnatch/tests/test_simple.py:52:59: Object of type `&lt;class 'SimpleDigest'&gt;` is not iterable
+- error[lint:unresolved-attribute] src/bandersnatch_storage_plugins/filesystem.py:286:70: Type `&lt;module 'datetime'&gt;` has no attribute `UTC`
++ error[lint:unresolved-import] src/bandersnatch_storage_plugins/s3.py:24:10: Cannot resolve imported module `s3path.accessor`
+- error[lint:unresolved-attribute] src/bandersnatch_storage_plugins/s3.py:437:52: Type `&lt;module 'datetime'&gt;` has no attribute `UTC`
+- error[lint:unresolved-attribute] src/bandersnatch_storage_plugins/swift.py:989:56: Type `&lt;module 'datetime'&gt;` has no attribute `UTC`
+- Found 163 diagnostics
++ Found 151 diagnostics
+
+Expression (https://github.com/cognitedata/Expression)
+- error[invalid-syntax] README.py:333:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] README.py:714:1: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[lint:unsupported-operator] expression/collections/array.py:40:10: Operator `|` is unsupported between objects of type `GenericAlias` and `&lt;class 'MutableSequence'&gt;`
+- error[lint:unsupported-operator] expression/collections/array.py:161:31: Operator `|` is unsupported between objects of type `&lt;class 'float64'&gt;` and `&lt;class 'double'&gt;`
+- error[invalid-syntax] expression/collections/array.py:572:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/collections/block.py:823:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/collections/maptree.py:66:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/collections/maptree.py:80:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/collections/maptree.py:149:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/collections/maptree.py:209:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/collections/maptree.py:238:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/collections/maptree.py:254:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/collections/maptree.py:268:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/collections/maptree.py:292:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/collections/maptree.py:334:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/collections/maptree.py:348:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/collections/maptree.py:360:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/collections/maptree.py:378:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/collections/maptree.py:388:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/collections/maptree.py:398:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/collections/maptree.py:411:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/collections/maptree.py:423:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/collections/maptree.py:436:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/collections/maptree.py:479:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/collections/maptree.py:498:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[lint:unsupported-operator] expression/core/builder.py:94:23: Operator `|` is unsupported between objects of type `typing.TypeVar` and `None`
+- error[lint:unsupported-operator] expression/core/builder.py:94:38: Operator `|` is unsupported between objects of type `typing.TypeVar` and `None`
+- error[lint:unsupported-operator] expression/core/builder.py:94:61: Operator `|` is unsupported between objects of type `typing.TypeVar` and `None`
+- error[lint:unsupported-operator] expression/core/builder.py:94:78: Operator `|` is unsupported between objects of type `typing.TypeVar` and `None`
+- error[lint:unresolved-import] expression/core/curry.py:3:25: Module `typing` has no member `Concatenate`
+- error[lint:unresolved-import] expression/core/option.py:13:49: Module `typing` has no member `TypeGuard`
+- error[invalid-syntax] expression/core/option.py:71:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/option.py:83:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/option.py:95:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/option.py:107:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/option.py:120:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/option.py:140:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/option.py:148:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/option.py:160:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/option.py:172:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/option.py:180:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/option.py:191:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/option.py:199:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/option.py:207:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/option.py:230:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/option.py:240:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/option.py:250:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/option.py:258:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/option.py:274:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/option.py:284:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/option.py:291:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/option.py:302:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/option.py:512:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[lint:unresolved-import] expression/core/result.py:21:5: Module `typing` has no member `TypeGuard`
+- error[invalid-syntax] expression/core/result.py:79:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/result.py:91:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/result.py:103:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/result.py:119:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/result.py:131:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/result.py:143:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/result.py:165:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/result.py:183:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/result.py:193:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/result.py:207:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/result.py:232:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/result.py:253:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/result.py:261:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/result.py:270:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/result.py:475:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/core/tagged_union.py:67:13: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[lint:no-matching-overload] expression/core/tagged_union.py:148:12: No overload of function `field` matches arguments
+- error[lint:no-matching-overload] expression/core/tagged_union.py:153:12: No overload of function `field` matches arguments
+- error[invalid-syntax] expression/core/try_.py:26:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[lint:unresolved-import] expression/effect/async_option.py:9:25: Module `typing` has no member `ParamSpec`
+- error[invalid-syntax] expression/effect/async_option.py:44:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/effect/async_option.py:91:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[lint:unresolved-import] expression/effect/async_result.py:9:25: Module `typing` has no member `ParamSpec`
+- error[invalid-syntax] expression/effect/async_result.py:45:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/effect/async_result.py:92:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[lint:unsupported-operator] expression/effect/option.py:102:23: Operator `|` is unsupported between objects of type `typing.TypeVar` and `None`
+- error[lint:unsupported-operator] expression/effect/option.py:102:50: Operator `|` is unsupported between objects of type `typing.TypeVar` and `None`
+- error[lint:unsupported-operator] expression/effect/option.py:102:79: Operator `|` is unsupported between objects of type `typing.TypeVar` and `None`
+- error[lint:unsupported-operator] expression/effect/option.py:102:102: Operator `|` is unsupported between objects of type `typing.TypeVar` and `None`
+- error[lint:unsupported-operator] expression/effect/result.py:93:23: Operator `|` is unsupported between objects of type `typing.TypeVar` and `None`
+- error[lint:unsupported-operator] expression/effect/result.py:93:50: Operator `|` is unsupported between objects of type `typing.TypeVar` and `None`
+- error[lint:unsupported-operator] expression/effect/result.py:93:79: Operator `|` is unsupported between objects of type `typing.TypeVar` and `None`
+- error[lint:unsupported-operator] expression/effect/result.py:93:102: Operator `|` is unsupported between objects of type `typing.TypeVar` and `None`
+- error[lint:unsupported-operator] expression/effect/seq.py:105:23: Operator `|` is unsupported between objects of type `typing.TypeVar` and `None`
+- error[lint:unsupported-operator] expression/effect/seq.py:105:50: Operator `|` is unsupported between objects of type `typing.TypeVar` and `None`
+- error[lint:unsupported-operator] expression/effect/seq.py:105:79: Operator `|` is unsupported between objects of type `typing.TypeVar` and `None`
+- error[lint:unsupported-operator] expression/effect/seq.py:105:102: Operator `|` is unsupported between objects of type `typing.TypeVar` and `None`
+- error[invalid-syntax] expression/extra/parser.py:130:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/extra/parser.py:136:17: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/extra/parser.py:149:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/extra/parser.py:184:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/extra/parser.py:260:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/extra/parser.py:285:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/extra/parser.py:310:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] expression/extra/parser.py:507:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_array.py:138:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_async_option_builder.py:88:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_async_option_builder.py:120:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_async_option_builder.py:153:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_async_option_builder.py:208:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_async_option_builder.py:225:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_async_option_builder.py:242:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_async_option_builder.py:284:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_async_result_builder.py:88:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_async_result_builder.py:120:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_async_result_builder.py:138:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_async_result_builder.py:157:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_async_result_builder.py:212:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_async_result_builder.py:229:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_async_result_builder.py:245:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_async_result_builder.py:247:13: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_async_result_builder.py:266:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_async_result_builder.py:308:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_async_result_builder.py:328:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_block.py:40:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_block.py:51:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_block.py:62:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_catch.py:24:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_catch.py:52:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_catch.py:60:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_catch.py:87:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_catch.py:103:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[lint:unsupported-operator] tests/test_gen.py:143:32: Operator `|` is unsupported between objects of type `&lt;class 'int'&gt;` and `None`
+- error[lint:unsupported-operator] tests/test_gen.py:148:32: Operator `|` is unsupported between objects of type `&lt;class 'int'&gt;` and `None`
+- error[invalid-syntax] tests/test_option.py:35:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_option.py:47:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_option.py:83:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_option.py:199:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_option.py:219:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_option.py:240:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_option.py:252:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_option.py:264:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_option.py:275:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_option.py:286:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_option.py:297:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_option.py:311:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_option_builder.py:82:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_option_builder.py:111:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_option_builder.py:141:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_option_builder.py:189:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_option_builder.py:205:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_option_builder.py:221:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_option_builder.py:236:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_parser.py:30:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_parser.py:44:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_parser.py:63:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_parser.py:76:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_parser.py:88:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_parser.py:96:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_parser.py:104:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_parser.py:114:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_parser.py:124:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_parser.py:134:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_parser.py:144:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_parser.py:154:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_parser.py:237:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_parser.py:264:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result.py:20:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result.py:35:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result.py:45:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result.py:55:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result.py:76:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result.py:121:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result.py:134:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result.py:149:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result.py:163:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result.py:176:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result.py:190:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result.py:211:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result.py:222:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result.py:235:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result.py:381:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result.py:395:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result_builder.py:81:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result_builder.py:110:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result_builder.py:126:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result_builder.py:144:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result_builder.py:192:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result_builder.py:208:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result_builder.py:224:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result_builder.py:226:13: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result_builder.py:244:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_result_builder.py:300:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[lint:unsupported-operator] tests/test_seq_builder.py:17:27: Operator `|` is unsupported between objects of type `&lt;class 'int'&gt;` and `None`
+- error[lint:unsupported-operator] tests/test_seq_builder.py:17:44: Operator `|` is unsupported between objects of type `&lt;class 'int'&gt;` and `None`
+- error[invalid-syntax] tests/test_tagged_union.py:40:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_tagged_union.py:52:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_tagged_union.py:121:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_tagged_union.py:130:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_tagged_union.py:141:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_tagged_union.py:150:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_tagged_union.py:161:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_tagged_union.py:217:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_tagged_union.py:237:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_tagged_union.py:264:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_tagged_union.py:352:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_try.py:15:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tests/test_try.py:26:5: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- Found 507 diagnostics
++ Found 305 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
+- error[lint:unresolved-import] psycopg/psycopg/_acompat.py:16:25: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] psycopg/psycopg/_connection_base.py:11:56: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] psycopg/psycopg/_pipeline.py:11:40: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] psycopg/psycopg/_preparing.py:10:40: Module `typing` has no member `TypeAlias`
+- error[lint:unsupported-operator] psycopg/psycopg/_preparing.py:51:32: Operator `|` is unsupported between objects of type `&lt;class 'bytes'&gt;` and `None`
+- error[lint:unresolved-import] psycopg/psycopg/_py_transformer.py:14:53: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] psycopg/psycopg/_queries.py:10:52: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] psycopg/psycopg/_queries.py:10:63: Module `typing` has no member `TypeGuard`
+- error[lint:unresolved-import] psycopg/psycopg/_struct.py:10:30: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] psycopg/psycopg/_typeinfo.py:12:40: Module `typing` has no member `TypeAlias`
+- error[lint:unsupported-operator] psycopg/psycopg/_typeinfo.py:29:26: Operator `|` is unsupported between objects of type `&lt;class 'str'&gt;` and `&lt;class 'int'&gt;`
+- error[lint:unresolved-import] psycopg/psycopg/abc.py:9:50: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] psycopg/psycopg/errors.py:23:50: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] psycopg/psycopg/errors.py:23:61: Module `typing` has no member `TypeGuard`
+- error[lint:unsupported-operator] psycopg/psycopg/errors.py:34:24: Operator `|` is unsupported between objects of type `&lt;class 'PGresult'&gt;` and `&lt;class 'dict[int, bytes | None]'&gt;`
+- error[lint:unresolved-import] psycopg/psycopg/pq/abc.py:9:50: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] psycopg/psycopg/rows.py:10:72: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] psycopg/psycopg/types/enum.py:8:49: Module `typing` has no member `TypeAlias`
+- error[lint:unsupported-operator] psycopg/psycopg/types/enum.py:28:26: Operator `|` is unsupported between objects of type `&lt;class 'Mapping[E, str]'&gt;` and `&lt;class 'Sequence'&gt;`
+- error[lint:unresolved-import] psycopg/psycopg/types/hstore.py:11:20: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] psycopg/psycopg/types/json.py:10:25: Module `typing` has no member `TypeAlias`
+- error[lint:unsupported-operator] psycopg/psycopg/types/json.py:20:48: Operator `|` is unsupported between objects of type `&lt;class 'str'&gt;` and `&lt;class 'bytes'&gt;`
+- error[lint:unsupported-operator] psycopg/psycopg/types/json.py:21:42: Operator `|` is unsupported between objects of type `&lt;class 'str'&gt;` and `&lt;class 'bytes'&gt;`
+- error[lint:unresolved-import] psycopg/psycopg/types/net.py:9:35: Module `typing` has no member `TypeAlias`
++ error[lint:unresolved-import] psycopg_c/build_backend/psycopg_build_ext.py:13:6: Cannot resolve imported module `distutils`
++ error[lint:unresolved-import] psycopg_c/build_backend/psycopg_build_ext.py:14:6: Cannot resolve imported module `distutils.command.build_ext`
+- error[lint:unresolved-import] psycopg_pool/psycopg_pool/_acompat.py:18:25: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] psycopg_pool/psycopg_pool/abc.py:9:35: Module `typing` has no member `TypeAlias`
+- error[lint:unresolved-import] tests/test_cursor_common_async.py:8:24: Module `contextlib` has no member `aclosing`
+- warning[lint:unresolved-reference] tests/test_cursor_common_async.py:167:18: Name `anext` used when not defined
+- warning[lint:unresolved-reference] tests/test_cursor_common_async.py:169:15: Name `anext` used when not defined
+- warning[lint:unresolved-reference] tests/test_cursor_common_async.py:697:19: Name `anext` used when not defined
+- warning[lint:unresolved-reference] tests/test_cursor_common_async.py:699:19: Name `anext` used when not defined
+- warning[lint:unresolved-reference] tests/test_cursor_common_async.py:711:15: Name `anext` used when not defined
+- warning[lint:unresolved-reference] tests/test_cursor_common_async.py:718:15: Name `anext` used when not defined
+- warning[lint:unresolved-reference] tests/test_cursor_common_async.py:733:22: Name `anext` used when not defined
+- warning[lint:unresolved-reference] tests/test_cursor_server_async.py:463:22: Name `anext` used when not defined
+- warning[lint:unresolved-reference] tests/test_cursor_server_async.py:465:19: Name `anext` used when not defined
+- warning[lint:unresolved-reference] tests/test_pipeline_async.py:111:19: Name `anext` used when not defined
++ error[lint:unresolved-attribute] tests/test_psycopg_dbapi20.py:45:1: Unresolved attribute `failUnless` on type `&lt;class 'PsycopgTests'&gt;`.
++ error[lint:unresolved-attribute] tests/test_psycopg_dbapi20.py:46:1: Unresolved attribute `assertEquals` on type `&lt;class 'PsycopgTPCTests'&gt;`.
+- error[invalid-syntax] tools/async_to_sync.py:244:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tools/async_to_sync.py:349:13: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tools/async_to_sync.py:359:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tools/async_to_sync.py:376:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tools/async_to_sync.py:384:13: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tools/async_to_sync.py:395:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tools/async_to_sync.py:421:13: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tools/async_to_sync.py:464:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[invalid-syntax] tools/bump_version.py:103:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- error[lint:unresolved-import] tools/update_oids.py:22:20: Module `typing` has no member `TypeAlias`
+- Found 1158 diagnostics
++ Found 1115 diagnostics
+
+paasta (https://github.com/yelp/paasta)
++ error[lint:unresolved-import] paasta_tools/run-paasta-api-in-dev-mode.py:3:6: Cannot resolve imported module `distutils.dir_util`
+- Found 963 diagnostics
++ Found 964 diagnostics
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
+- error[lint:unresolved-attribute] mypy-stubs/rdflib/graph.pyi:185:10: Type `def query(self, query_object: Any, processor: str = ellipsis, result: str = ellipsis, initNs: Any | None = ellipsis, initBindings: Any | None = ellipsis, use_store_provided: bool = ellipsis, **kwargs: Any) -&gt; Unknown` has no attribute `Result`
++ error[lint:unresolved-attribute] mypy-stubs/rdflib/graph.pyi:185:10: Type `def query(self, query_object: Any, processor: str = EllipsisType, result: str = EllipsisType, initNs: Any | None = EllipsisType, initBindings: Any | None = EllipsisType, use_store_provided: bool = EllipsisType, **kwargs: Any) -&gt; Unknown` has no attribute `Result`
+
+vision (https://github.com/pytorch/vision)
++ error[lint:unresolved-import] setup.py:1:8: Cannot resolve imported module `distutils.command.clean`
++ error[lint:unresolved-import] setup.py:2:8: Cannot resolve imported module `distutils.spawn`
+- warning[lint:possibly-unbound-attribute] torchvision/datasets/video_utils.py:280:12: Attribute `is_integer` on type `int | float` is possibly unbound
+- Found 1850 diagnostics
++ Found 1851 diagnostics
+
+pycryptodome (https://github.com/Legrandin/pycryptodome)
+- error[lint:unsupported-operator] lib/Crypto/Cipher/AES.pyi:4:8: Operator `|` is unsupported between objects of type `&lt;class 'bytes'&gt;` and `&lt;class 'bytearray'&gt;`
+- error[lint:unsupported-operator] lib/Crypto/Cipher/ARC2.pyi:3:10: Operator `|` is unsupported between objects of type `&lt;class 'bytes'&gt;` and `&lt;class 'bytearray'&gt;`
+- error[lint:unsupported-operator] lib/Crypto/Cipher/ARC4.pyi:3:10: Operator `|` is unsupported between objects of type `&lt;class 'bytes'&gt;` and `&lt;class 'bytearray'&gt;`
+- error[lint:unsupported-operator] lib/Crypto/Cipher/Blowfish.pyi:3:10: Operator `|` is unsupported between objects of type `&lt;class 'bytes'&gt;` and `&lt;class 'bytearray'&gt;`
+- error[lint:unsupported-operator] lib/Crypto/Cipher/CAST.pyi:3:10: Operator `|` is unsupported between objects of type `&lt;class 'bytes'&gt;` and `&lt;class 'bytearray'&gt;`
+- error[lint:unsupported-operator] lib/Crypto/Cipher/ChaCha20.pyi:3:10: Operator `|` is unsupported between objects of type `&lt;class 'bytes'&gt;` and `&lt;class 'bytearray'&gt;`
+- error[lint:unsupported-operator] lib/Crypto/Cipher/ChaCha20_Poly1305.pyi:3:10: Operator `|` is unsupported between objects of type `&lt;class 'bytes'&gt;` and `&lt;class 'bytearray'&gt;`
+- error[lint:unsupported-operator] lib/Crypto/Cipher/DES.pyi:3:10: Operator `|` is unsupported between objects of type `&lt;class 'bytes'&gt;` and `&lt;class 'bytearray'&gt;`
+- error[lint:unsupported-operator]...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-08 08:59</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/mesonbuild/meson-python">mesonbuild/meson-python</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to read tests/packages/symlinks/baz.py: No such file or directory (os error 2)
+error: Failed to read tests/packages/symlinks/qux.py: No such file or directory (os error 2)
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/mesonbuild/meson-python">mesonbuild/meson-python</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to read tests/packages/symlinks/baz.py: No such file or directory (os error 2)
+error: Failed to read tests/packages/symlinks/qux.py: No such file or directory (os error 2)
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-05-08 10:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-08 10:21</div>
+            <div class="timeline-body"><p>uh, looks like you have some snapshot issues on Windows</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-08 10:23</div>
+            <div class="timeline-body"><blockquote>
+<p>I do think that we'll want to have two python versions once we start adding version-dependent lint rules
+because we don't want that users see different diagnostics (because they could now make use of some newer syntax)
+when running <code>ty check --python-version &lt;never&gt;</code> when there <code>requires-python</code> clearly states that they have to support <code>&lt;older-version&gt;</code>.</p>
+</blockquote>
+<p>not sure I totally understand what you're saying here, but we can defer this discussion to a later date 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-08 10:31</div>
+            <div class="timeline-body"><p>I'm confused. I expected some push back from you @AlexWaygood ;)</p>
+<p>I should probably have called out the trade offs in the summary. So let me do it here.</p>
+<p>Defaulting to the latest supported Python version comes with its trade-offs.</p>
+<ul>
+<li>Defaulting to the oldest python version: ty errored when using newer language features when a project doesn't explicitly configure a Python version. This can be confusing to users because their code works at runtime. The other downside is when using ty in an editor when working on projects without a ty configuration. Using the oldest version is unlikely the right version</li>
+<li>Defaulting to the newest Python version: ty now misses errors specific to newer Python versions if a user actually uses an older Python version to run their code. It may be harder for them to become aware that they need to set the configuration because there's nothing (no diagnostic) that makes them aware of it.</li>
+</ul>
+<p>I'm leaning towards defaulting to the newest Python version because we already have experience with what it means to default to the oldest version from Ruff and i want to use the alpha to get some feedback for doing the opposite. I also think that part of the solution will be to get better at detecting the fallback version (by e.g. using uv)</p>
+<blockquote>
+<p>not sure I totally understand what you're saying here, but we can defer this discussion to a later date 😆</p>
+</blockquote>
+<p>Whoops, <code>never</code> -&gt; <code>newer</code>. But yes, this isn't something we have to discuss now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-08 10:44</div>
+            <div class="timeline-body"><p>Oh, I'm well aware of the tradeoffs. This is going to lead to false negatives, and maybe some false positives too. But the current situation is confusing for users, and I'm tired of arguing about whether this is the best solution or not. I'm more interested in moving on and exploring ways to avoid falling back to this default at all:</p>
+<ul>
+<li>We should use the Python version from the pyvenv.cfg file where possible, instead of falling back to this default. We already collect this information when reading the pyvenv.cfg file, we just don't use it for this yet.</li>
+<li>We should probably add support for <code>.python-version</code> files as well -- they're very common, practically a de-facto standard at this point, and shouldn't be hard to support</li>
+<li>Even if a venv isn't activated, then yes, uv might be able to tell us something about the Python version being used</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-08 10:46</div>
+            <div class="timeline-body"><p>TL;DR this solution has problems that I'm still unhappy with, but on net I think probably reduces very real confusion for users, and I think there are very obvious ways in which we can mitigate the problems in followups.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-05-08 14:47</div>
+            <div class="timeline-body"><p>Looks good, thank you!</p>
+<p>I don't think any option is <em>great</em> when we are just arbitrarily choosing a default with no information, but it seems pretty clear to me that this option is the best available, and the way to improve it is to need the fallback default less often.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-05-08 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-05-08 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-08 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-08 14:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:30 UTC
+    </footer>
+</body>
+</html>

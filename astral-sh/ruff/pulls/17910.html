@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] fix assigning a typevar to a union with itself - astral-sh/ruff #17910</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] fix assigning a typevar to a union with itself</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17910">#17910</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-05-07 11:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-07 11:43</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is an alternative PR to https://github.com/astral-sh/ruff/pull/17901. It retains the tests from that PR but uses a more targeted fix.</p>
+<p>I don't think it's necessary to refactor the <code>Type::is_subtype_of()</code> and <code>Type::is_assignable_to()</code> methods to the extent that https://github.com/astral-sh/ruff/pull/17901 does. As far as I can see, the problem is specific to unions and intersections containing <code>TypeVar</code>s. I don't <em>think</em> there's any situation where a <code>TypeVar</code> <code>T</code> can be assignable to a type <code>S</code> without its upper bound being assignable to <code>S</code> unless <code>S</code> is a union that directly contains <code>T</code>; this is the premise that my alternative implementation is based on.</p>
+<p>I also added a couple more tests on top of the ones @carljm added.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test -p ty_python_semantic</code></p>
+<p>Co-authored-by: Carl Meyer <a href="mailto:carl@astral.sh">carl@astral.sh</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-05-07 11:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-05-07 11:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-05-07 11:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-05-07 11:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-07 11:48</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">kopf (https://github.com/nolar/kopf)
+- error[lint:invalid-assignment] kopf/_cogs/aiokits/aioenums.py:54:9: Object of type `FlagReasonT | Unknown` is not assignable to `FlagReasonT | None`
+- Found 227 diagnostics
++ Found 226 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
+- error[lint:invalid-return-type] mkosi/config.py:1092:16: Return type does not match returned value: Expected `SE | None`, found `SE`
+- Found 327 diagnostics
++ Found 326 diagnostics
+
+operator (https://github.com/canonical/operator)
+- error[lint:invalid-argument-type] ops/pebble.py:1833:67: Argument to this function is incorrect: Expected `AnyStr | None`, found `AnyStr`
+- Found 208 diagnostics
++ Found 207 diagnostics
+
+setuptools (https://github.com/pypa/setuptools)
+- error[lint:invalid-return-type] setuptools/_distutils/spawn.py:38:16: Return type does not match returned value: Expected `_MappingT | dict[str, str | int] | None`, found `_MappingT | None`
+- Found 1209 diagnostics
++ Found 1208 diagnostics
+
+arviz (https://github.com/arviz-devs/arviz)
+- error[lint:invalid-return-type] arviz/data/inference_data.py:972:20: Return type does not match returned value: Expected `InferenceDataT | None`, found `InferenceDataT`
+- error[lint:invalid-return-type] arviz/data/inference_data.py:1052:20: Return type does not match returned value: Expected `InferenceDataT | None`, found `InferenceDataT`
+- Found 2602 diagnostics
++ Found 2600 diagnostics
+
+streamlit (https://github.com/streamlit/streamlit)
+- error[lint:invalid-return-type] lib/streamlit/elements/lib/options_selector_utils.py:121:16: Return type does not match returned value: Expected `E1 | E2`, found `E1`
+- error[lint:invalid-return-type] lib/streamlit/elements/lib/options_selector_utils.py:131:16: Return type does not match returned value: Expected `E1 | E2`, found `E1`
+- error[lint:invalid-return-type] lib/streamlit/elements/lib/options_selector_utils.py:150:16: Return type does not match returned value: Expected `E1 | E2`, found `E1`
+- Found 3291 diagnostics
++ Found 3288 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-07 11:48</div>
+            <div class="timeline-body"><p>The primer results are identical to https://github.com/astral-sh/ruff/pull/17901</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] fix assigning a typevar to a union with itself" to "[ty] fix assigning a typevar to a union with itself (alternative version)" by @AlexWaygood on 2025-05-07 11:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1003 on 2025-05-07 14:00</div>
+            <div class="timeline-body"><p>This arm is removable because we (now, as of this PR) handle it in equivalence, which is already checked above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1335 on 2025-05-07 14:00</div>
+            <div class="timeline-body"><p>This condition is also removable because it's handled in gradual equivalence, which is checked above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1575 on 2025-05-07 14:01</div>
+            <div class="timeline-body"><p>I didn't do this in my PR, but maybe we should add a test for this? Apparently we don't have one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-05-07 14:03</div>
+            <div class="timeline-body"><p>Looks good to me, thank you! I'd vaguely considered this option but didn't love adding special handling for unions and intersections outside of their dedicated arms -- but now that I see it worked through, it's really not bad at all. The DNF normalization really helps us here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] fix assigning a typevar to a union with itself (alternative version)" to "[ty] fix assigning a typevar to a union with itself" by @carljm on 2025-05-07 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-05-07 15:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1003 on 2025-05-07 15:47</div>
+            <div class="timeline-body"><p>In fact, it was already handled prior to this PR in equivalence! The last branch of the <code>match</code> statement handles it in <code>is_equivalent_to()</code>; the <code>if self == other</code> check before the <code>match</code> handles it in <code>is_gradual_equivalent_to</code>. The branches that you and I both added in our separate PRs was redundant.</p>
+<p>I added tests (as you suggested in https://github.com/astral-sh/ruff/pull/17910/files#r2077710287) that demonstrate this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-05-07 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-07 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-07 15:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:30 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Avoid including `__all__` in the exported names - astral-sh/ruff #17797</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Avoid including <code>__all__</code> in the exported names</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17797">#17797</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-05-02 19:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-02 19:53</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes a bug where the <code>__all__</code> was being included in the exported names which would lead to a hang on the following example.</p>
+<p>The <code>__all__</code> variable is not exported from a <code>*</code>-import.</p>
+<details><summary>Example that hangs on <code>main</code></summary>
+<p>
+
+<p><code>play.py</code>:</p>
+<pre><code class="language-py">from submodule import *
+</code></pre>
+<p><code>submodule/__init__.py</code>:</p>
+<pre><code class="language-py">from submodule import foo
+
+reveal_type(foo)
+
+__all__ = []
+__all__ += foo.__all__
+</code></pre>
+<p><code>submodule/foo/__init__.py</code>:</p>
+<pre><code class="language-py">__all__ = [&quot;SubmoduleFoo&quot;]
+
+
+class SubmoduleFoo: ...
+</code></pre>
+</p>
+</details> 
+
+<h2>Test Plan</h2>
+<p>Update one of the existing star import test case to make sure <code>__all__</code> creates an unresolved-reference error and the inferred type is <code>Unknown</code>.</p>
+<p>On <code>main</code>, this doesn't result into any error and the inferred type is <code>Unknown | list</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-05-02 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2025-05-02 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-05-02 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-05-02 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-05-02 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-05-02 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-02 19:55</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-02 20:00</div>
+            <div class="timeline-body"><blockquote>
+<p>The <code>__all__</code> variable is not exported from a <code>*</code>-import.</p>
+</blockquote>
+<p>it is if <code>__all__</code> itself includes <code>&quot;__all__&quot;</code>: https://playknot.ruff.rs/20c9ff08-2415-4932-8a13-83b60706350d</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @carljm on 2025-05-02 20:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-02 20:08</div>
+            <div class="timeline-body"><blockquote>
+<p>it is if <code>__all__</code> itself includes <code>&quot;__all__&quot;</code>: <a href="https://playknot.ruff.rs/20c9ff08-2415-4932-8a13-83b60706350d">playknot.ruff.rs/20c9ff08-2415-4932-8a13-83b60706350d</a></p>
+</blockquote>
+<p>Hmm, so this is not the correct fix, we need <code>__all__</code> support here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @dhruvmanila on 2025-05-02 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-07 03:21</div>
+            <div class="timeline-body"><p>Closing in favor of astral-sh/ty#106</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-05-07 03:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:30 UTC
+    </footer>
+</body>
+</html>

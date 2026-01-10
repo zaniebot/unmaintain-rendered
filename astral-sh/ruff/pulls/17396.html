@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] infer attribute assignments bound in comprehensions - astral-sh/ruff #17396</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] infer attribute assignments bound in comprehensions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17396">#17396</a>
+        opened by <a href="https://github.com/mtshiba">@mtshiba</a>
+        on 2025-04-14 17:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-04-14 17:05</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR is a follow-up to astral-sh/ruff#16852.</p>
+<p>Instance variables bound in comprehensions are recorded, allowing type inference to work correctly.</p>
+<p>This required adding support for unpacking in comprehension which resolves https://github.com/astral-sh/ruff/issues/15369.</p>
+<h2>Test Plan</h2>
+<p>One TODO in <code>mdtest/attributes.md</code> is now resolved, and some new test cases are added.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @mtshiba on 2025-04-14 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @mtshiba on 2025-04-14 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @mtshiba on 2025-04-14 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @mtshiba on 2025-04-14 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-14 17:07</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">async-utils (https://github.com/mikeshardmind/async-utils)
+- error[lint:unsupported-operator] /tmp/mypy_primer/projects/async-utils/_misc/_queue_testing.py:50:30: Operator `+` is unsupported between objects of type `Literal[&quot;\u{1b}[30;1m%(asctime)s\u{1b}[0m &quot;]` and `tuple[Unknown, Literal[&quot;\u{1b}[40;1m&quot;]] | tuple[Unknown, Literal[&quot;\u{1b}[34;1m&quot;]] | tuple[Unknown, Literal[&quot;\u{1b}[33;1m&quot;]] | tuple[Unknown, Literal[&quot;\u{1b}[31m&quot;]] | tuple[Unknown, Literal[&quot;\u{1b}[41m&quot;]]`
+- Found 30 diagnostics
++ Found 29 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-04-14 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-14 22:33</div>
+            <div class="timeline-body"><p>By the looks of it, this PR resolves https://github.com/astral-sh/ruff/issues/15369 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-14 22:35</div>
+            <div class="timeline-body"><p>This looks really good!</p>
+<p>As @dhruvmanila mentions, it seems like this adds general support for unpacking in comprehension targets, not only for discovering instance attributes? If so, can we add some tests specifically for unpacking in comprehensions, to regular Name targets?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/unpack.rs</code>:53 on 2025-04-14 22:41</div>
+            <div class="timeline-body"><p>I think we should be clear in which cases it's going to be different as there's just one case - first generator in a generator expression or list / dict / set comprehension</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3909 on 2025-04-14 22:45</div>
+            <div class="timeline-body"><p>I think the support for inferring the <code>ExprName</code> targets in an unpacking is missing. Is that intentional?</p>
+<p>I think it'd be useful to add full support for unpacking in comprehension in this PR. You can look at what kind of update is required in <code>infer_for_statement_definition</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/b5d529e976d08e9cc03099d803db7561a4b65ebe/crates/red_knot_python_semantic/src/types/infer.rs#L3091-L3106</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-14 22:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-14 23:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3909 on 2025-04-14 23:15</div>
+            <div class="timeline-body"><p>I'd also be OK with doing that part (and adding tests for unpacking to Name nodes in comprehensions) as a follow-up PR. But in that case it would be good to add TODOs in this PR, just in case the follow-up doesn't happen soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-04-15 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @mtshiba on 2025-04-15 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @mtshiba on 2025-04-15 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:946 on 2025-04-15 16:53</div>
+            <div class="timeline-body"><p>We could add a <code>debug_assert</code> here to verify that the semantic model is in the <code>ScopeKind::Comprehension</code> if the <code>unpackable</code> is a comprehension otherwise this could possibly panic. Also, add a &quot;SAFETY&quot; comment after the debug assert.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:2148 on 2025-04-15 16:56</div>
+            <div class="timeline-body"><p>I think we should document why this <code>unwrap</code> is safe which as far as I understand is because the targets in comprehensions should always introduce a new scope so the <code>scope</code> variable points to the outer scope relative to the comprehension scope. We could possibly add a similar <code>debug_assert</code> similar to my previous comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:780 on 2025-04-15 17:04</div>
+            <div class="timeline-body"><p>nit: I'd usually avoid adding a <code>new</code> constructor method if it's mirroring the exact fields that the struct contains similar to how it's being done for constructing <code>*DefinitionNodeRef</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:760 on 2025-04-15 17:09</div>
+            <div class="timeline-body"><p>Unrelated to this PR but I think the <code>target</code> here is either a <code>ExprName</code> or <code>ExprAttribute</code>, so it might be useful to have an enum similar to <code>TargetKind</code> which has two variants like <code>TargetExpr::Name(ast::ExprName)</code> and <code>TargetExpr::Attribute(ast::ExprAttribute)</code>. This should not be done in this PR as it requires updating other attribute unpacking as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/unpack.rs</code>:55 on 2025-04-15 17:15</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">	/// Returns the scope in which the unpack value expression belongs.
+	/// 
+	/// The scope in which the target and value expression belongs to are usually the same
+	/// except in generator expressions and comprehensions (list/dict/set), where the value 
+	/// expression of the first generator is evaluated in the outer scope, while the ones in the subsequent 
+	/// generators are evaluated in the comprehension scope.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/unpack.rs</code>:60 on 2025-04-15 17:16</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Returns the scope where the unpack target expression belongs to.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comprehensions/basic.md</code>:50 on 2025-04-15 17:18</div>
+            <div class="timeline-body"><p>Thanks for adding the test case but I think we should add comprehensive unpacking test cases specific to comprehensions in https://github.com/astral-sh/ruff/blob/e2a38e4c0090cee5c20bde86a8ca9b30bffb2cfa/crates/red_knot_python_semantic/resources/mdtest/unpacking.md as well similar to how it's done for <code>for</code> and <code>with</code> statement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-15 17:19</div>
+            <div class="timeline-body"><p>This looks great. My comments are mainly around adding / updating comments and increasing the test coverage for unpacking in comprehensions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-04-15 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-04-16 15:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:760 on 2025-04-16 15:00</div>
+            <div class="timeline-body"><p>OK, I'll work on this in a separate PR (this would be a topic related to #16894).</p>
+<p>We also need to support <code>ExprSubscript</code> as a target expression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-16 16:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:760 on 2025-04-16 16:20</div>
+            <div class="timeline-body"><p>Just as a note it's not a priority to make this refactor, just something nice to have and is not necessarily required.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @mtshiba on 2025-04-16 16:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @mtshiba on 2025-04-16 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-16 23:54</div>
+            <div class="timeline-body"><p>This looks good to me, but will let @dhruvmanila have another look and merge if happy with it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-17 18:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3919 on 2025-04-17 18:25</div>
+            <div class="timeline-body"><p>Shouldn't this just use the existing <code>infer_target</code> method? Or, why is a separate method required in this case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-17 18:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3919 on 2025-04-17 18:26</div>
+            <div class="timeline-body"><p>That method (<code>infer_target</code>) isn't correct currently as it has a bug (https://github.com/astral-sh/ruff/issues/16514) but we're aware of it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3919 on 2025-04-18 17:18</div>
+            <div class="timeline-body"><p>I think we cannot simply replace <code>infer_comprehension_target</code> with <code>infer_target</code>.</p>
+<p>Specifically, if we change the code as follows, the tests will fail as follows:</p>
+<pre><code class="language-diff"># infer.rs#L3897
+-         self.infer_comprehension_target(target);
++         self.infer_target(target, iter, |db, iter_ty| {
++             iter_ty.iterate(db)
++         });
+</code></pre>
+<pre><code class="language-txt">invalid.md - Tests for invalid types in type expressions - Invalid Collection based AST nodes
+
+  crates\red_knot_python_semantic\resources\mdtest\annotations\invalid.md:98 panicked at crates\red_knot_python_semantic\src\types\infer.rs:561:9
+  crates\red_knot_python_semantic\resources\mdtest\annotations\invalid.md:98 assertion `left == right` failed
+  left: ScopeId { [salsa id]: Id(801), file: File(System(&quot;\\src\\mdtest_snippet.py&quot;)), file_scope_id: FileScopeId(1), count: Count { ghost: PhantomData&lt;fn(red_knot_python_semantic::semantic_index::symbol::ScopeId)&gt; } }
+ right: ScopeId { [salsa id]: Id(800), file: File(System(&quot;\\src\\mdtest_snippet.py&quot;)), file_scope_id: FileScopeId(0), count: Count { ghost: PhantomData&lt;fn(red_knot_python_semantic::semantic_index::symbol::ScopeId)&gt; } }
+
+---
+
+attributes.md - Attributes - Class and instance variables - Pure instance variables - Attributes defined in comprehensions
+
+  crates\red_knot_python_semantic\resources\mdtest\attributes.md:392 panicked at crates\red_knot_python_semantic\src\types\infer.rs:561:9
+  crates\red_knot_python_semantic\resources\mdtest\attributes.md:392 assertion `left == right` failed
+  left: ScopeId { [salsa id]: Id(37ac), file: File(System(&quot;\\src\\mdtest_snippet.py&quot;)), file_scope_id: FileScopeId(11), count: Count { ghost: PhantomData&lt;fn(red_knot_python_semantic::semantic_index::symbol::ScopeId)&gt; } }
+ right: ScopeId { [salsa id]: Id(37a9), file: File(System(&quot;\\src\\mdtest_snippet.py&quot;)), file_scope_id: FileScopeId(10), count: Count { ghost: PhantomData&lt;fn(red_knot_python_semantic::semantic_index::symbol::ScopeId)&gt; } }
+</code></pre>
+<p><code>TypeInferenceBuilder::extend</code> fails because the scope of the comprehension and the scope of the value=iter are different.</p>
+<p>~~However, since the implementations of <code>infer_comprehension_target</code> and <code>infer_target_impl</code> are almost the same, I will use this instead.~~</p>
+<p>It would be better if <code>infer_target</code> supported comprehension.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-04-18 17:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-19 01:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3919 on 2025-04-19 01:05</div>
+            <div class="timeline-body"><blockquote>
+<p>It would be better if <code>infer_target</code> supported comprehension.</p>
+</blockquote>
+<p>Agreed. Thanks for making the change. I think the logic to infer the value expression using <code>infer_same_file_expression_type</code> is only to be done for the first comprehension, right? I think we could update the <code>infer_target</code> specifically the <code>to_assigned_ty</code> to instead be <code>infer_value_expr</code> so that the closure is responsible to infer the (non <code>Name</code> node) <code>value</code> expression so that we can check whether <code>is_first</code> is true inside the <code>infer_comprehension</code>.</p>
+<p>I do have to change the logic of <code>infer_target</code> a bit to fix the bug as mentioned in https://github.com/astral-sh/ruff/issues/16514 but that's something for later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3919 on 2025-04-19 01:07</div>
+            <div class="timeline-body"><p>I've pushed <a href="https://github.com/astral-sh/ruff/pull/17396/commits/329a0f278bfe5cc319a35c18e3315c76f7ae3cde"><code>329a0f2</code> (#17396)</a> to reflect what I propose.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-19 01:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-19 01:11</div>
+            <div class="timeline-body"><p>The mypy_primer change is removing a false positive, it popped up in the overload PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-04-19 01:11</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-04-19 01:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-04-19 01:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-27 09:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:57:29 UTC
+    </footer>
+</body>
+</html>
