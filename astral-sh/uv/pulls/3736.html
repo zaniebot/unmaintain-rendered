@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover and prefer the parent interpreter when invoked with `python -m uv` - astral-sh/uv #3736</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Discover and prefer the parent interpreter when invoked with <code>python -m uv</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3736">#3736</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-05-22 14:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-22 14:12</div>
+            <div class="timeline-body"><p>Closes #2222
+Closes https://github.com/astral-sh/uv/issues/2058
+Replaces https://github.com/astral-sh/uv/pull/2338
+See also https://github.com/astral-sh/uv/issues/2649</p>
+<p>We use an environment variable (<code>UV_INTERNAL__PARENT_INTERPRETER</code>) to track the invoking interpreter when <code>python -m uv</code> is used. The parent interpreter is preferred over all other sources (though it will be skipped if it does not meet a <code>--python</code> request or if <code>--system</code> is used and it belongs to a virtual environment). We warn if <code>--system</code> is not provided and this interpreter would mutate system packages, but allow it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-05-22 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Discover and prefer the parent interpreter when invoked with `python -m uv ...`" to "Discover and prefer the parent interpreter when invoked with `python -m uv`" by @zanieb on 2024-05-22 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-22 14:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/environment.rs</code>:43 on 2024-05-22 14:18</div>
+            <div class="timeline-body"><p>Should we do a real <code>warn_user_once</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/environment.rs</code>:43 on 2024-05-22 14:18</div>
+            <div class="timeline-body"><p>(I think it may be overkill)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-22 14:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-05-22 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-22 14:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:1117 on 2024-05-22 14:20</div>
+            <div class="timeline-body"><p>This is in the <code>SystemPython::Required</code> clause. Maybe I should move it out? This may be a bit weird if you do <code>./.venv/bin/python -m uv pip install --system</code> as we'll still find this Python... but also a bit weird if you do <code>/sys/python -m uv --system</code> and we find a different Python?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>python/uv/__main__.py</code>:35 on 2024-05-22 15:07</div>
+            <div class="timeline-body"><p>Can we use something other than the double underscore, like a name that is so long that no one likes to use it outside that script?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-05-22 15:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-22 15:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>python/uv/__main__.py</code>:35 on 2024-05-22 15:12</div>
+            <div class="timeline-body"><p>I feel like the double underscore is sufficient for saying it's not user facing and we're not going to document or support it elsewhere. Idk about making the name arbitrarily longer.... I guess I could do <code>UV_PRIVATE__...</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-22 15:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:1117 on 2024-05-22 15:20</div>
+            <div class="timeline-body"><p>I think I can fix this with some changes to discovery</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-22 15:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/environment.rs</code>:43 on 2024-05-22 15:25</div>
+            <div class="timeline-body"><p>Can you use <code>env.interpreter().is_virtualenv()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:1117 on 2024-05-22 15:30</div>
+            <div class="timeline-body"><p>Is the ideal behavior that:</p>
+<ul>
+<li><code>./.venv/bin/python -m uv pip install --system</code> does not find <code>.venv/bin/python</code></li>
+<li><code>/sys/python -m uv --system</code> does find <code>/sys/python</code></li>
+</ul>
+<p>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-22 15:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-22 15:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/environment.rs</code>:43 on 2024-05-22 15:56</div>
+            <div class="timeline-body"><p>Yeah I copied this from below and I don't know why it's not using that either. Will do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-22 15:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:1117 on 2024-05-22 15:56</div>
+            <div class="timeline-body"><p>I think so yea. With #3739 this will be possible</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-22 15:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:1117 on 2024-05-22 15:56</div>
+            <div class="timeline-body"><p>(rebasing this onto that now)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-22 16:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>python/uv/__main__.py</code>:35 on 2024-05-22 16:18</div>
+            <div class="timeline-body"><p>Added more suffix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-22 16:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:1117 on 2024-05-22 16:19</div>
+            <div class="timeline-body"><p>The behavior should be as described now, I'll do some QA.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-22 16:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:69 on 2024-05-22 16:23</div>
+            <div class="timeline-body"><p>I decided to add an <code>Explicit</code> variant to avoid confusing internal behavior where <code>SystemPython::Disallowed</code> could still get a system Python from this environment variable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-22 16:28</div>
+            <div class="timeline-body"><p>e.g.</p>
+<pre><code>❯ RUST_LOG=uv=trace ./uv/.venv/bin/python -m uv -v pip install anyio
+TRACE Cached interpreter info for Python 3.12.3, skipping probing: uv/.venv/bin/python
+TRACE Found Python interpreter cpython 3.12.3 at /Users/zb/workspace/uv/.venv/bin/python from parent interpreter
+DEBUG Using Python 3.12.3 environment at uv/.venv/bin/python
+DEBUG Trying to lock if free: uv/.venv/.lock
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;anyio&quot;), version: &quot;4.3.0&quot;, path: &quot;/Users/zb/workspace/uv/.venv/lib/python3.12/site-packages/anyio-4.3.0.dist-info&quot; }) Registry { specifier: VersionSpecifiers([]), index: None }
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;sniffio&quot;), version: &quot;1.3.1&quot;, path: &quot;/Users/zb/workspace/uv/.venv/lib/python3.12/site-packages/sniffio-1.3.1.dist-info&quot; }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;1.1&quot; }]), index: None }
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;idna&quot;), version: &quot;3.7&quot;, path: &quot;/Users/zb/workspace/uv/.venv/lib/python3.12/site-packages/idna-3.7.dist-info&quot; }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;2.8&quot; }]), index: None }
+DEBUG Requirement satisfied: anyio
+DEBUG Requirement satisfied: idna&gt;=2.8
+DEBUG Requirement satisfied: sniffio&gt;=1.1
+DEBUG All editables satisfied: 
+Audited 1 package in 1ms
+</code></pre>
+<pre><code>❯ RUST_LOG=uv=trace ./uv/.venv/bin/python -m uv -v pip install anyio --system
+TRACE Searching PATH for executables: python3, python
+TRACE Checking `PATH` directory for interpreters: /Users/zb/bin
+TRACE Checking `PATH` directory for interpreters: /Users/zb/.local/bin
+TRACE Checking `PATH` directory for interpreters: /Users/zb/.cargo/bin
+TRACE Checking `PATH` directory for interpreters: /opt/homebrew/bin
+TRACE Found possible Python executable: /opt/homebrew/bin/python3
+TRACE Cached interpreter info for Python 3.12.3, skipping probing: /opt/homebrew/bin/python3
+TRACE Found Python interpreter cpython 3.12.3 at /opt/homebrew/bin/python3 from search path
+DEBUG Using Python 3.12.3 environment at /opt/homebrew/opt/python@3.12/bin/python3.12
+error: The interpreter at /opt/homebrew/opt/python@3.12/Frameworks/Python.framework/Versions/3.12 is externally managed, and indicates the following:
+</code></pre>
+<pre><code>❯ ./uv/.venv/bin/python -m uv -v pip install anyio --python 3.10
+INFO Found active virtual environment (via VIRTUAL_ENV) at: /Users/zb/workspace/uv/.venv
+DEBUG Ignoring Python interpreter at `/Users/zb/workspace/uv/bin/cpython-3.10.13-macos-aarch64-none/install/bin/python3`: system intepreter not explicit
+DEBUG Ignoring Python interpreter at `/opt/homebrew/opt/python@3.12/bin/python3.12`: system intepreter not explicit
+DEBUG Ignoring Python interpreter at `/Library/Developer/CommandLineTools/usr/bin/python3`: system intepreter not explicit
+DEBUG Ignoring Python interpreter at `/opt/homebrew/opt/python@3.12/bin/python3.12`: system intepreter not explicit
+error: No interpreter found for Python 3.10 in all sources
+</code></pre>
+<pre><code>❯ /opt/homebrew/bin/python3 -m uv -v pip install anyio
+DEBUG Allowing system Python interpreter at `/opt/homebrew/opt/python@3.12/bin/python3.12`
+DEBUG Using Python 3.12.3 environment at /opt/homebrew/opt/python@3.12/bin/python3.12
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-05-22 16:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-05-22 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-05-22 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-22 16:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:32:38 UTC
+    </footer>
+</body>
+</html>

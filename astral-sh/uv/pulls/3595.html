@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv-distribution: include all wheels in distribution types - astral-sh/uv #3595</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv-distribution: include all wheels in distribution types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3595">#3595</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-05-14 22:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-14 22:45</div>
+            <div class="timeline-body"><p>Our current flow of data from &quot;simple registry package&quot; to &quot;final
+resolved distribution&quot; goes through a number of types:</p>
+<ul>
+<li><code>SimpleMetadata</code> is the API response from a registry that includes all
+published versions for a package. Each version has an assortment of metadata
+associated with it.</li>
+<li><code>VersionFiles</code> is the aforementioned metadata. It is split in two: a
+group of files for source distributions and a group of files for wheels.</li>
+<li><code>PrioritizedDist</code> collects a subset of the files from <code>VersionFiles</code>
+to form a selection of the &quot;best&quot; sdist and the &quot;best&quot; wheel for the
+current environment.</li>
+<li><code>CompatibleDist</code> is created from a borrowed <code>PrioritizedDist</code> that,
+perhaps among other things, encapsulates the decision of whether to pick
+an sdist or a wheel. (This decision depends both on compatibility and
+the action being performed. e.g., When doing installation, a
+<code>CompatibleDist</code> will sometimes select an sdist over a wheel.)</li>
+<li><code>ResolvedDistRef</code> is like a <code>ResolvedDist</code>, but borrows a <code>Dist</code>.</li>
+<li><code>ResolvedDist</code> is the almost-final-form of a distribution in a
+resolution and is created from a <code>ResolvedDistRef</code>.</li>
+<li><code>AnnotatedResolvedDist</code> is a new data type that is the actual final
+form of a distribution that a universal lock file cares about. It
+bundles a <code>ResolvedDist</code> with some metadata needed to generate a lock
+file.</li>
+</ul>
+<p>One of the requirements of a universal lock file is that we include all
+wheels (and maybe all source distributions? but at least one if it's
+present) associated with a distribution. But the above flow of data (in
+the step from <code>VersionFiles</code> to <code>PrioritizedDist</code>) drops all wheels
+except for the best one.</p>
+<p>To remedy this, in this PR, we rejigger <code>PrioritizedDist</code>,
+<code>CompatibleDist</code> and <code>ResolvedDistRef</code> so that all wheel data is
+preserved. And when a <code>ResolvedDistRef</code> is finally turned into a
+<code>ResolvedDist</code>, we copy all of the wheel data. And finally, we adjust
+the <code>Lock</code> constructor to read this new data and include it in the lock
+file. To make this work, we also modify <code>RegistryBuiltDist</code> so that it
+can contain one or more wheels instead of just one.</p>
+<p>One shortcoming here (called out in the code as a FIXME) is that if a
+source distribution is selected as the &quot;best&quot; thing to use (perhaps
+there are no compatible wheels), then the wheels won't end up in the
+lock file. I plan to fix this in a follow-up PR.</p>
+<p>We also aren't totally consistent on source distribution naming.
+Sometimes we use <code>sdist</code>. Sometimes <code>source</code>. Sometimes <code>source_dist</code>.
+I think it'd be nice to just use <code>sdist</code> everywhere, but I do prefer
+the type names to be <code>SourceDist</code>. And sometimes you want function
+names to match the type names (i.e., <code>from_source_dist</code>), which in turn
+leads to an appearance of inconsistency. I'm open to ideas.</p>
+<p>Closes #3351</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-05-15 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-05-15 15:29</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/uv/branches/ag/propagate-wheels">CodSpeed Performance Report</a></h2>
+<h3>Merging #3595 will <strong>degrade performances by 10.28%</strong></h3>
+<p><sub>Comparing <code>ag/propagate-wheels</code> (7308f17) with <code>main</code> (8d68d45)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1</code> regressions
+<code>✅ 11</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/uv/branches/ag/propagate-wheels">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>ag/propagate-wheels</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>resolve_warm_jupyter</code> | 371 ms | 413.5 ms | -10.28% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-05-15 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @BurntSushi on 2024-05-15 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-15 15:32</div>
+            <div class="timeline-body"><p>Do you think that's a real regression?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-15 15:46</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you think that's a real regression?</p>
+</blockquote>
+<p>It's possible. The regression is highlighting the drop impl for <code>ResolvedDist</code>, which is definitely an area that has been touched here.</p>
+<p>The various distribution data is cloned occasionally in full. I don't have a complete picture yet on how to eliminate those clones, but we probably should, especially since we're carrying around more data now. It's <em>possible</em> that fixing this is a gnarly refactor though.</p>
+<p>I'll take a look and see if there's a quicker fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-15 15:55</div>
+            <div class="timeline-body"><p>I can't measure a regression locally. This PR actually seems to be consistently a hair faster:</p>
+<pre><code>$ hyperfine -w10 -r1000 'uv-main pip compile ~/astral/tmp/reqs/jupyter.in' 'uv pip compile ~/astral/tmp/reqs/jupyter.in'
+Benchmark 1: uv-main pip compile ~/astral/tmp/reqs/jupyter.in
+  Time (mean ± σ):      33.9 ms ±   8.8 ms    [User: 28.5 ms, System: 44.0 ms]
+  Range (min … max):    19.2 ms …  75.0 ms    1000 runs
+
+Benchmark 2: uv pip compile ~/astral/tmp/reqs/jupyter.in
+  Time (mean ± σ):      32.8 ms ±   8.6 ms    [User: 27.4 ms, System: 42.6 ms]
+  Range (min … max):    19.9 ms …  73.2 ms    1000 runs
+
+Summary
+  uv pip compile ~/astral/tmp/reqs/jupyter.in ran
+    1.04 ± 0.38 times faster than uv-main pip compile ~/astral/tmp/reqs/jupyter.in
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-15 15:58</div>
+            <div class="timeline-body"><p>Okay, that's fine with me then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-15 15:59</div>
+            <div class="timeline-body"><p>Thanks for investigating.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-15 16:05</div>
+            <div class="timeline-body"><p>Aye. And looking more at our distribution types to see if we can avoid copying them, it looks a little tricky. I think the main problem is that <code>VersionMap</code> is the owner of <code>PrioritizedDist</code> and <code>PrioritizedDist</code> is ultimately the owner of each <code>RegistryBuiltDist</code> (which is now a list of wheels and an optional sdist). When we do the <code>PrioritizedDist -&gt; CandidateDist -&gt; ResolvedDistRef -&gt; ResolvedDist</code> sequence, it's the <code>ResolvedDistRef -&gt; ResolvedDist</code> conversion that does the copy. The <code>VersionMap</code> data structure isn't really designed to give up ownership, and I don't see an obvious way to do it. That in turn probably means that the key to avoiding a copy is reference counting. But that means injecting an <code>Arc</code> into types like <code>RegistryBuiltDist</code>. I'm not quite sure that's worth doing.</p>
+<p>Anyway, I agree. I also saw mention on Discord that <code>resolve_warm_jupyter</code> was noisy in particular. So I think I'm also okay with plowing ahead for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-15 16:30</div>
+            <div class="timeline-body"><blockquote>
+<p>One shortcoming here (called out in the code as a FIXME) is that if a
+source distribution is selected as the &quot;best&quot; thing to use (perhaps
+there are no compatible wheels), then the wheels won't end up in the
+lock file. I plan to fix this in a follow-up PR.</p>
+</blockquote>
+<p>I did this in #3610.</p>
+<p>(Also, this PR and #3610 are ready for review.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-15 16:55</div>
+            <div class="timeline-body"><p>You got it, I will review today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-15 17:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:228 on 2024-05-15 17:54</div>
+            <div class="timeline-body"><p>Nit: remove</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-15 17:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/resolved.rs</code>:62 on 2024-05-15 17:56</div>
+            <div class="timeline-body"><p>What's the difference between <code>sdist</code> and <code>source</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-15 17:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/lock.rs</code>:784 on 2024-05-15 17:57</div>
+            <div class="timeline-body"><p>It looks like this got changed back from <code>let hash = reg_dist.file.hashes.first().cloned().map(Hash::from);</code>. Is that intentional?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-15 17:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/lib.rs</code>:446 on 2024-05-15 17:58</div>
+            <div class="timeline-body"><p>Where is this used? It seems somewhat lossy, is it dangerous that it exists?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-15 17:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/lib.rs</code>:538 on 2024-05-15 17:58</div>
+            <div class="timeline-body"><p>Can this be <code>self.best_wheel().name()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-15 17:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/lib.rs</code>:623 on 2024-05-15 17:58</div>
+            <div class="timeline-body"><p>Can this be <code>self.best_wheel().version_or_url()</code>, to avoid re-encoding the implementation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-15 18:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/resolved.rs</code>:62 on 2024-05-15 18:00</div>
+            <div class="timeline-body"><p>Looks like no difference, but <code>wheel</code> and <code>built</code> <em>do</em> differ in the <code>Self::InstallableRegistryBuiltDist</code> case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-05-15 18:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-15 18:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/resolved.rs</code>:62 on 2024-05-15 18:02</div>
+            <div class="timeline-body"><p>I see, in the next PR they <em>do</em> differ.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-05-15 18:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/distribution-types/src/resolved.rs</code>:62 on 2024-05-15 18:34</div>
+            <div class="timeline-body"><p>Yeah it's a bit weird. My sense is that the types could possibly be clearer here if we could find a way to split <code>PrioritizedDist</code> into a &quot;builder phase&quot; and &quot;final phase.&quot; But I'm not sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-05-15 18:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/lock.rs</code>:784 on 2024-05-15 18:36</div>
+            <div class="timeline-body"><p>Ah no, not intentional. Maybe a bad merge. Or I fumbled conflict resolution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/lock.rs</code>:784 on 2024-05-15 18:36</div>
+            <div class="timeline-body"><p>I switched it back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-05-15 18:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/distribution-types/src/lib.rs</code>:446 on 2024-05-15 18:48</div>
+            <div class="timeline-body"><p>Yeah this is a really nice catch. I had added this to help with the refactor, but it turned out it was still being used to convert a <code>ResolvedDistRef</code> into a <code>Request</code> in the resolver. This was indeed dropping all of the wheels that were being carried around, although I don't know much it matters. (It's also another copy of the dist data.)</p>
+<p>I've removed this <code>From</code> impl and added a <code>From&lt;ResolvedDistRef&gt; for Request</code> impl that does the conversion correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-05-15 18:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-05-15 18:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/distribution-types/src/lib.rs</code>:623 on 2024-05-15 18:49</div>
+            <div class="timeline-body"><p>Yup. I've fixed the other instances of this too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-15 19:07</div>
+            <div class="timeline-body"><p>The perf regression remains (and actually got bigger), but https://github.com/astral-sh/uv/pull/3610, which builds on this one, has no regression. And there's nothing in #3610 that ought to have impacted things here. I re-ran my hyperfine benchmark from above to double check:</p>
+<pre><code>[andrew@duff uv]$ hyperfine -w10 -r1000 'uv-main pip compile ~/astral/tmp/reqs/jupyter.in' 'uv pip compile ~/astral/tmp/reqs/jupyter.in' ; A bart
+Benchmark 1: uv-main pip compile ~/astral/tmp/reqs/jupyter.in
+  Time (mean ± σ):      32.4 ms ±   8.7 ms    [User: 26.9 ms, System: 43.4 ms]
+  Range (min … max):    19.1 ms …  66.8 ms    1000 runs
+
+Benchmark 2: uv pip compile ~/astral/tmp/reqs/jupyter.in
+  Time (mean ± σ):      32.5 ms ±   8.1 ms    [User: 27.7 ms, System: 42.6 ms]
+  Range (min … max):    19.8 ms …  66.4 ms    1000 runs
+
+Summary
+  uv-main pip compile ~/astral/tmp/reqs/jupyter.in ran
+    1.00 ± 0.37 times faster than uv pip compile ~/astral/tmp/reqs/jupyter.in
+</code></pre>
+<p>So I'm going to go ahead and merge this. It looks like we might have a noisy benchmark.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-05-15 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-05-15 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-15 19:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:32:37 UTC
+    </footer>
+</body>
+</html>

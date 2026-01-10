@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorporate build tag into wheel prioritization - astral-sh/uv #3781</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorporate build tag into wheel prioritization</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3781">#3781</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-05-23 00:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-23 00:52</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>It turns out that in the <a href="https://packaging.python.org/en/latest/specifications/binary-distribution-format/#file-name-convention">spec</a>, if a wheel filename includes a build tag, then we need to use it to break ties. This PR implements that behavior. (Previously, we dropped the build tag entirely.)</p>
+<p>Closes #3779.</p>
+<h2>Test Plan</h2>
+<p>Run: <code>cargo run pip install -i https://pypi.anaconda.org/intel/simple mkl_fft==1.3.8 --python-platform linux --python-version 3.10</code>. This now resolves without error. Previously, we selected build tag 63 of <code>mkl_fft==1.3.8</code>, which led to an incompatibility with NumPy. Now, we select build tag 70.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-05-23 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-05-23 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-05-23 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-05-23 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-05-23 00:54</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/uv/branches/charlie/build-tag">CodSpeed Performance Report</a></h2>
+<h3>Merging #3781 will <strong>degrade performances by 6.1%</strong></h3>
+<p><sub>Comparing <code>charlie/build-tag</code> (1a5ee74) with <code>main</code> (5bebadd)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 2</code> improvements
+<code>❌ 1</code> regressions
+<code>✅ 10</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/uv/branches/charlie/build-tag">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>charlie/build-tag</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>wheelname_parsing_failure[flyte-long-extension]</code> | 1.8 µs | 1.9 µs | -6.1% |
+| ⚡ | <code>wheelname_tag_compatibility[flyte-long-incompatible]</code> | 1.5 µs | 1.5 µs | +6% |
+| ⚡ | <code>wheelname_tag_compatibility[flyte-short-incompatible]</code> | 926.7 ns | 868.3 ns | +6.72% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-filename/src/build_tag.rs</code>:36 on 2024-05-23 01:01</div>
+            <div class="timeline-body"><p>Is there a more compact representation for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-23 01:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-cache/src/lib.rs</code>:617 on 2024-05-23 11:23</div>
+            <div class="timeline-body"><p>Nice. I was looking for this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/distribution-filename/src/wheel.rs</code>:86 on 2024-05-23 11:24</div>
+            <div class="timeline-body"><p>Does this not need the build tag somewhere in the formatted string?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/distribution-filename/src/build_tag.rs</code>:36 on 2024-05-23 11:41</div>
+            <div class="timeline-body"><p>Yes. Using <code>Option&lt;Arc&lt;str&gt;&gt;</code> here will use one fewer words of memory (24 bytes instead of 32 on 64-bit targets). You could use <code>Box&lt;str&gt;</code>, but I would go with <code>Arc</code> because I noticed this is being cloned in <code>version_map</code>.</p>
+<p>Getting more compact than that I think would look more like how we deal with <code>Version</code>: optimize some set of common cases into a more compact form and then use a bigger representation for &quot;everything else.&quot; But this relies on being able to identify the common cases <em>and</em> the common cases being subject to optimization.</p>
+<p>For example, maybe 95% of all build tags have a number less than 256 and no more than 7 bytes of suffix. Those could all be represented by <code>[u8; 8]</code>. So something like this:</p>
+<pre><code class="language-rust">pub struct BuildTag(Arc&lt;BuildTagInner&gt;);
+
+enum BuildTagInner {
+    Compact([u8; 8]),
+    General(u32, Option&lt;Arc&lt;str&gt;&gt;),
+}
+</code></pre>
+<p>You'd probably want to use a bit somewhere in the <code>[u8; 8]</code> to indicate whether the suffix is present or not.</p>
+<p>But the problem here is that the size of <code>BuildTagInner</code> is still the size of its biggest variant. So, you wouldn't really be saving any heap memory here. And I'm not sure you get much from the compact representation unless it can make comparisons substantially faster in a place where it matters.</p>
+<p>However, the heap indirection here does reduce the size of <code>BuildTag</code> itself to one word of memory. Maybe that's worth it to make <code>WheelFilename</code> overall smaller. So, something like this:</p>
+<pre><code class="language-rust">pub struct BuildTag(Arc&lt;BuildTagInner&gt;);
+
+struct BuildTagInner(u32, Option&lt;Box&lt;str&gt;&gt;);
+</code></pre>
+<p>But, this means every build tag necessarily requires an allocation, where as the representation you have now only does an alloc when there is a non-empty suffix.</p>
+<p>Unless we have some data pointing at this as a problem, I'd just switch <code>Option&lt;String&gt;</code> to <code>Option&lt;Arc&lt;str&gt;&gt;</code> and call that good enough for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-05-23 11:42</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-23 21:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-filename/src/build_tag.rs</code>:36 on 2024-05-23 21:07</div>
+            <div class="timeline-body"><p>Sounds good. The vast majority of wheels have no build tag, and of those that do, I've only ever seen them be numerical, so good not to allocate there. (But the spec says they <em>can</em> be non-numerical, hence this dance.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-05-23 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-23 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-23 21:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:32:38 UTC
+    </footer>
+</body>
+</html>

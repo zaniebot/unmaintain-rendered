@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arc-wrap `PubGrubPackage` for cheap cloning in pubgrub - astral-sh/uv #3688</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Arc-wrap <code>PubGrubPackage</code> for cheap cloning in pubgrub</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3688">#3688</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-05-21 10:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-05-21 10:11</div>
+            <div class="timeline-body"><p>Pubgrub stores incompatibilities as (package name, version range) tuples, meaning it needs to clone the package name for each incompatibility, and each non-borrowed operation on incompatibilities. https://github.com/astral-sh/uv/pull/3673 made me realize that <code>PubGrubPackage</code> has gotten large (expensive to copy), so like <code>Version</code> and other structs, i've added an <code>Arc</code> wrapper around it.</p>
+<p>It's a pity clippy forbids <code>.deref()</code>, it's less opaque than <code>&amp;**</code> and has IDE support (clicking on <code>.deref()</code> jumps to the right impl).</p>
+<h2>Benchmarks</h2>
+<p>It looks like this matters most for complex resolutions which, i assume because they carry larger <code>PubGrubPackageInner::Package</code> and <code>PubGrubPackageInner::Extra</code> types.</p>
+<pre><code class="language-bash">hyperfine --warmup 5 &quot;./uv-main pip compile -q ./scripts/requirements/jupyter.in&quot; &quot;./uv-branch pip compile -q ./scripts/requirements/jupyter.in&quot;
+hyperfine --warmup 5 &quot;./uv-main pip compile -q ./scripts/requirements/airflow.in&quot; &quot;./uv-branch pip compile -q ./scripts/requirements/airflow.in&quot;
+hyperfine --warmup 5 &quot;./uv-main pip compile -q ./scripts/requirements/boto3.in&quot; &quot;./uv-branch pip compile -q ./scripts/requirements/boto3.in&quot;
+</code></pre>
+<pre><code>Benchmark 1: ./uv-main pip compile -q ./scripts/requirements/jupyter.in
+  Time (mean ± σ):      18.2 ms ±   1.6 ms    [User: 14.4 ms, System: 26.0 ms]
+  Range (min … max):    15.8 ms …  22.5 ms    181 runs
+
+Benchmark 2: ./uv-branch pip compile -q ./scripts/requirements/jupyter.in
+  Time (mean ± σ):      17.8 ms ±   1.4 ms    [User: 14.4 ms, System: 25.3 ms]
+  Range (min … max):    15.4 ms …  23.1 ms    159 runs
+
+Summary
+  ./uv-branch pip compile -q ./scripts/requirements/jupyter.in ran
+    1.02 ± 0.12 times faster than ./uv-main pip compile -q ./scripts/requirements/jupyter.in
+</code></pre>
+<pre><code>Benchmark 1: ./uv-main pip compile -q ./scripts/requirements/airflow.in
+  Time (mean ± σ):     153.7 ms ±   3.5 ms    [User: 165.2 ms, System: 157.6 ms]
+  Range (min … max):   150.4 ms … 163.0 ms    19 runs
+
+Benchmark 2: ./uv-branch pip compile -q ./scripts/requirements/airflow.in
+  Time (mean ± σ):     123.9 ms ±   4.6 ms    [User: 152.4 ms, System: 133.8 ms]
+  Range (min … max):   118.4 ms … 138.1 ms    24 runs
+
+Summary
+  ./uv-branch pip compile -q ./scripts/requirements/airflow.in ran
+    1.24 ± 0.05 times faster than ./uv-main pip compile -q ./scripts/requirements/airflow.in
+</code></pre>
+<pre><code>Benchmark 1: ./uv-main pip compile -q ./scripts/requirements/boto3.in
+  Time (mean ± σ):     327.0 ms ±   3.8 ms    [User: 344.5 ms, System: 71.6 ms]
+  Range (min … max):   322.7 ms … 334.6 ms    10 runs
+
+Benchmark 2: ./uv-branch pip compile -q ./scripts/requirements/boto3.in
+  Time (mean ± σ):     311.2 ms ±   3.1 ms    [User: 339.3 ms, System: 63.1 ms]
+  Range (min … max):   307.8 ms … 317.0 ms    10 runs
+
+Summary
+  ./uv-branch pip compile -q ./scripts/requirements/boto3.in ran
+    1.05 ± 0.02 times faster than ./uv-main pip compile -q ./scripts/requirements/boto3.in
+</code></pre>
+<!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @konstin on 2024-05-21 10:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2024-05-21 10:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-05-21 11:40</div>
+            <div class="timeline-body"><p>I think you read my mind. I was thinking about doing exactly this too. I don't think I realized how much we were cloning <code>PubGrubPackage</code> though. Nice find. This will probably help even more once <code>marker</code> is a non-<code>None</code> value. (Right now, it's always <code>None</code>, so cloning will still be cheap.)</p>
+<p>While I don't mind the <code>&amp;*foo</code> and <code>&amp;**foo</code> myself, if you wanted to go the <code>foo.deref()</code> route, I'd recommend just defining an additional concrete method, e.g., <code>foo.as_inner()</code> or something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-05-21 11:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-05-21 11:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-21 11:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-21 11:51</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:32:38 UTC
+    </footer>
+</body>
+</html>

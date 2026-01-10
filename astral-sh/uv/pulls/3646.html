@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `UV_CONCURRENT_INSTALLS` variable in favor of `RAYON_NUM_THREADS` - astral-sh/uv #3646</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>UV_CONCURRENT_INSTALLS</code> variable in favor of <code>RAYON_NUM_THREADS</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3646">#3646</a>
+        opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a>
+        on 2024-05-17 20:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-05-17 20:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Continuation of https://github.com/astral-sh/uv/pull/3493. This gives us more flexibility in case we decide to move away from <code>rayon</code> in the future.</p>
+<p>Should this be named something else? We also use <code>rayon</code> for unzipping files, and maybe other things in the future?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @ibraheemdev on 2024-05-17 20:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @ibraheemdev on 2024-05-17 20:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @ibraheemdev on 2024-05-17 20:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-17 21:10</div>
+            <div class="timeline-body"><p>Are we always going to use a single global thread pool?</p>
+<p>I guess... <code>UV_WORKER_THREADS</code> would be a more general name?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-17 21:11</div>
+            <div class="timeline-body"><p>It seems like an implementation detail though. If, in the future, we use Rayon elsewhere, we may in fact want to use different pool sizes for different tasks -- or is that wrong?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-05-17 21:23</div>
+            <div class="timeline-body"><p>Yeah. For example we run some other file operations on tokios blocking pool. I think worker threads is a bit misleading because we already have download and build limits.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-17 21:24</div>
+            <div class="timeline-body"><p>I think the current name is ok...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-17 21:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>README.md</code>:587 on 2024-05-17 21:33</div>
+            <div class="timeline-body"><p>Does this no longer have any effect? (If it still has an effect, we should leave it here, even if <code>UV_CONCURRENT_INSTALLS</code> is recommended, since this is intended to document env variables that could affect behavior.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-17 21:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-configuration/src/concurrency.rs</code>:35 on 2024-05-17 21:38</div>
+            <div class="timeline-body"><p>Just confirming that this is the same as the Rayon default?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>README.md</code>:587 on 2024-05-17 21:41</div>
+            <div class="timeline-body"><p>It shouldn't have any effect because we're initialize the global thread pool manually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-05-17 21:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-05-17 21:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-configuration/src/concurrency.rs</code>:35 on 2024-05-17 21:41</div>
+            <div class="timeline-body"><p>Yes, https://docs.rs/rayon-core/1.12.1/src/rayon_core/lib.rs.html#473.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-05-17 21:42</div>
+            <div class="timeline-body"><p>Feel free to close that issue once merged IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ibraheemdev on 2024-05-18 03:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2024-05-18 03:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:32:38 UTC
+    </footer>
+</body>
+</html>

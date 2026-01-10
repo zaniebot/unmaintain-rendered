@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add PEP 714 support for JSON API client - astral-sh/uv #3698</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add PEP 714 support for JSON API client</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3698">#3698</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-05-21 14:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-21 14:13</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes https://github.com/astral-sh/uv/issues/3689.</p>
+<h2>Test Plan</h2>
+<p>Manually verified we pick up <code>core-metadata</code> from PyPI if I remove the aliases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-05-21 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-21 14:44</div>
+            <div class="timeline-body"><p>Oh interesting, Serde does not treat aliases as fallbacks. They're mutually exclusive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-05-21 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-05-21 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-21 14:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pypi-types/src/simple_json.rs</code>:44 on 2024-05-21 14:52</div>
+            <div class="timeline-body"><p>Repeating like this is the only way I could figure out to support multiple aliases under different names, where <em>multiple</em> values can be present. (PyPI serves both <code>core-metadata</code> and <code>data-dist-info-metadata</code>; serde's <code> alias</code> feature errors if multiple values are present.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pypi-types/src/simple_json.rs</code>:44 on 2024-05-21 14:52</div>
+            <div class="timeline-body"><p>Per PEP 714, we <em>could</em> omit <code>data_dist_info_metadata</code>... But there may be registries that <em>only</em> serve that in practice, since that's what pip did for a while.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-21 14:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-05-21 15:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pypi-types/src/simple_json.rs</code>:44 on 2024-05-21 15:10</div>
+            <div class="timeline-body"><p>I would define a separate wire type with what you want to support, and then implement <code>From&lt;FileWire&gt; for File</code> (or <code>TryFrom</code> if needed). Then use <a href="https://serde.rs/container-attrs.html#from"><code>#[serde(from = &quot;FileWire&quot;)]</code></a>. That way, you can resolve the aliases down to one field at deserialization time, and avoid spreading that complexity outward to anyone consuming <code>File</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-21 15:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pypi-types/src/simple_json.rs</code>:44 on 2024-05-21 15:11</div>
+            <div class="timeline-body"><p>Hmm, but we already have a separate <code>File</code> type that we use in our own abstractions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-21 15:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pypi-types/src/simple_json.rs</code>:44 on 2024-05-21 15:11</div>
+            <div class="timeline-body"><p>So in a sense this <em>is</em> <code>FileWire</code>. And we have a <code>From</code> elsewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-05-21 15:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pypi-types/src/simple_json.rs</code>:44 on 2024-05-21 15:14</div>
+            <div class="timeline-body"><p>Ah I was confused because I wouldn't normally expect a wire type to have <code>pub</code> fields and otherwise be exported. Basically, my suggestion boils down to &quot;encapsulate the aliases at the deserialization boundary.&quot; But if the point of <code>File</code> is to be the boundary and be exposed to the world, then yeah, I think what you have is fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-21 15:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pypi-types/src/simple_json.rs</code>:44 on 2024-05-21 15:21</div>
+            <div class="timeline-body"><p>Yeah this is meant to be roughly &quot;the exact JSON we get from the API&quot;, so I suppose this is ok.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-05-21 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-21 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-21 15:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:32:38 UTC
+    </footer>
+</body>
+</html>

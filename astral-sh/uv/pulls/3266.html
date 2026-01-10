@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rewrite Python interpreter discovery - astral-sh/uv #3266</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rewrite Python interpreter discovery</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3266">#3266</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-04-25 18:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-25 18:01</div>
+            <div class="timeline-body"><p>Updates our Python interpreter discovery to conform to the rules described in #2386, please see that issue for a full description of the behavior. Briefly, we now will search for interpreters that satisfy a requested version without stopping at the first Python executable. Additionally, if retrieving information about an interpreter fails we will continue to search for a working interpreter. We also add the plumbing necessary to request Python implementations other than CPython, though we do not add support for other implementations at this time.</p>
+<p>A major internal goal of this work is to prepare for user-facing managed toolchains i.e. fetching a requested version during <code>uv run</code>. These APIs are not introduced, but there is some managed toolchain handling as required for our test suite.</p>
+<p>Some noteworthy implementation changes:</p>
+<ul>
+<li>The <code>uv_interpreter::find_python</code> module has been removed in favor of a <code>uv_interpreter::discovery</code> module.</li>
+<li>There are new types to help structure interpreter requests and track sources</li>
+<li>Executable discovery is implemented as a big lazy iterator and is a central authority for source precedence</li>
+<li><code>uv_interpreter::Error</code> variants were split into scoped types in each module</li>
+<li>There's much more unit test coverage, but not for Windows yet</li>
+</ul>
+<p>Remaining work:</p>
+<ul>
+<li>[x] Write new test cases</li>
+<li>[x] Determine correct behavior around executables in the current directory</li>
+<li><em>Future</em>: Combine <code>PythonVersion</code> and <code>VersionRequest</code></li>
+<li><em>Future</em>: Consider splitting <code>ManagedToolchain</code> into local and remote variants</li>
+<li><em>Future</em>: Add Windows unit test coverage</li>
+<li><em>Future</em>: Explore behavior around implementation precedence (i.e. CPython over PyPy)</li>
+</ul>
+<p>Refactors split into:</p>
+<ul>
+<li>#3329</li>
+<li>#3330</li>
+<li>#3331</li>
+<li>#3332</li>
+</ul>
+<p>Closes #2386</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-04-30 17:48</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/uv/branches/zb/interp-request-ii">CodSpeed Performance Report</a></h2>
+<h3>Merging #3266 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>zb/interp-request-ii</code> (1b212ab) with <code>main</code> (dfd6ccf)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 12</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:37 on 2024-05-02 08:35</div>
+            <div class="timeline-body"><p>Can you add &quot;in PATH&quot; to the docstring? This got me confused initially</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:192 on 2024-05-02 08:40</div>
+            <div class="timeline-body"><p>Error handling with results in iterators is ugly, probably needs a <code>impl Iterator&lt;Item = Result&lt;(InterpreterSource, PathBuf)&gt;, _&gt; + 'a</code> return type or something (see e.g. https://doc.rust-lang.org/std/fs/struct.ReadDir.html#impl-Iterator-for-ReadDir or https://docs.rs/walkdir/latest/walkdir/struct.WalkDir.html#impl-IntoIterator-for-WalkDir)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-05-02 09:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:37 on 2024-05-02 12:39</div>
+            <div class="timeline-body"><p>Yes, but I intentionally removed it previously because the request should not need to know <em>how</em> we find the interpreter to fulfill the given executable name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-02 12:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-02 12:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:192 on 2024-05-02 12:40</div>
+            <div class="timeline-body"><p>Yeah I've been dreading making this have error handling. I'm kind of wondering if we want it at all? Like should we consider just logging errors and continue searching for an interpreter we can use?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-02 17:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:192 on 2024-05-02 17:43</div>
+            <div class="timeline-body"><p>Done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/managed/find.rs</code>:96 on 2024-05-07 09:22</div>
+            <div class="timeline-body"><p>nit: Can you add a comment about sorting, esp. about how we order cpython-3.8 &lt; cpython-3.9 &lt; cpython-3.10?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/managed/find.rs</code>:70 on 2024-05-07 09:27</div>
+            <div class="timeline-body"><p>I'd merge these into a single invalid toolchain name error that we return</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/managed/find.rs</code>:21 on 2024-05-07 09:32</div>
+            <div class="timeline-body"><p>I'd return <code>Toolchain</code> from <code>toolchain_directories</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/lib.rs</code>:10 on 2024-05-07 09:33</div>
+            <div class="timeline-body"><p>The crate doc comment above needs updating</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/pip_compile.rs</code>:183 on 2024-05-07 09:36</div>
+            <div class="timeline-body"><p>It's asymmetric that <code>find_interpreter</code> gets the sources passed, while <code>find_best_interpreter</code> gets the system preference passed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/pip_check.rs</code>:32 on 2024-05-07 09:37</div>
+            <div class="timeline-body"><p>This is a much better abstraction</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:115 on 2024-05-07 09:39</div>
+            <div class="timeline-body"><p>This is type is <code>pub</code>, but not importable (it's not reexported in lib.rs)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/pip_compile_scenarios.rs</code>:37 on 2024-05-07 09:41</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">.env(&quot;UV_TEST_PYTHON_PATH&quot;, &amp;python_path)
+</code></pre>
+<p>The function takes two <code>AsRef&lt;OsStr&gt;</code>, it clones internally anyway</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/managed/find.rs</code>:19 on 2024-05-07 09:44</div>
+            <div class="timeline-body"><p>I think this can be <code>pub(crate)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:77 on 2024-05-07 09:49</div>
+            <div class="timeline-body"><p>These aliases feel odd, i think i'd go for another variant in the <code>Error</code> enum and matching in downstream code instead</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:182 on 2024-05-07 09:54</div>
+            <div class="timeline-body"><p>nit: Inline iter and dedent one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:191 on 2024-05-07 10:02</div>
+            <div class="timeline-body"><p>Really missing <code>yield</code> in rust here, chaining different iterators with results is so much nesting.</p>
+<p>An alternative to chaining is boxing, not sure if it's better:</p>
+<pre><code class="language-rust">    let mut iter: Box&lt;dyn Iterator&lt;Item = _&gt;&gt; = Box::new(iter::empty());
+    // (1) The active environment
+    if sources.contains(InterpreterSource::ActiveEnvironment) {
+        let active_venv = virtualenv_from_env()
+            .into_iter()
+            .map(virtualenv_python_executable)
+            .map(|path| Ok((InterpreterSource::ActiveEnvironment, path)));
+        iter = Box::new(iter.chain(active_venv));
+    }
+    // (2) A discovered environment
+    if sources.contains(InterpreterSource::DiscoveredEnvironment) {
+        let discovered_venv = virtualenv_from_working_dir()
+            .map(|path| {
+                path.map(virtualenv_python_executable)
+                    .map(|path| (InterpreterSource::DiscoveredEnvironment, path))
+                    .into_iter()
+            })
+            .map_err(Error::from);
+        iter = Box::new(iter.chain(iter::once(discovered_venv).flatten_ok()));
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:312 on 2024-05-07 10:03</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// Lazily iterate over all discoverable Python interpreters.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/managed/find.rs</code>:13 on 2024-05-07 10:04</div>
+            <div class="timeline-body"><p>Do the <code>expect</code>s in <code>TOOLCHAIN_DIRECTORY</code> below hold up for non-test code?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/lib.rs</code>:20 on 2024-05-07 10:07</div>
+            <div class="timeline-body"><p>This feels like it could be private (with fetch-python moving a bit?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-05-07 10:10</div>
+            <div class="timeline-body"><p>Left some nitpicky rust comments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:77 on 2024-05-07 14:38</div>
+            <div class="timeline-body"><p>I really want to separate &quot;There was an error during discovery&quot; from &quot;We did not find an interpreter&quot;. They mean very different things and I think callers should be encouraged to handle them separately. I could remove the aliases or change it to be a custom enum instead of a result — I explored both of these options previously though and found this the clearest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-07 14:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-07 14:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/lib.rs</code>:20 on 2024-05-07 14:42</div>
+            <div class="timeline-body"><p>Do you mind if I tackle this separately? I'm trying not to touch the toolchain management stuff here and expect to revisit it when we add real support for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-05-07 14:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/lib.rs</code>:20 on 2024-05-07 14:43</div>
+            <div class="timeline-body"><p>Yeah that's a follow-up PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/managed/find.rs</code>:13 on 2024-05-07 14:43</div>
+            <div class="timeline-body"><p>I'll double check. It's still not intended to be used in production though i.e. it's powered by <code>UV_BOOTSTRAP_DIR</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-07 14:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-07 14:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_compile_scenarios.rs</code>:37 on 2024-05-07 14:44</div>
+            <div class="timeline-body"><p>Ah thanks this was just added during debugging and I missed reverting it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-08 13:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/managed/find.rs</code>:21 on 2024-05-08 13:00</div>
+            <div class="timeline-body"><p>I don't know if it will be costly to construct <code>Toolchain</code> in the future, going to wait until I work on that code more.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-08 19:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:77 on 2024-05-08 19:20</div>
+            <div class="timeline-body"><p>What are the aliases doing exactly? Am I correct that <code>Ok(FoundInterpreter(result))</code> could be replaced with <code>Ok(InterpreterResult::Ok(result))</code>? So it's just syntactic sugar?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-08 19:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:77 on 2024-05-08 19:25</div>
+            <div class="timeline-body"><p>Yep just sugar to clarify the meaning, I'm okay with the latter (and had it earlier) but chose the current sugar because I think &quot;Found&quot; is clearer than &quot;Ok&quot;. I especially don't like <code>Ok(Ok(...))</code> and <code>Ok(Err(...))</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-08 19:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:77 on 2024-05-08 19:27</div>
+            <div class="timeline-body"><p>I tried to create a more explicit <code>InterpreterResult::Found</code> alias but you can't do that since <code>Result</code> is external.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-08 19:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:77 on 2024-05-08 19:27</div>
+            <div class="timeline-body"><p>I would personally find <code>Ok(Ok(...))</code> and <code>Ok(Err(...))</code> to be clearer, since I don't have to guess at the meaning or look back at this definition.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-08 19:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:77 on 2024-05-08 19:35</div>
+            <div class="timeline-body"><p>Either way it's trade-offs at where you have to look when, but two votes is enough I'll just remove the aliases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-08 20:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:77 on 2024-05-08 20:07</div>
+            <div class="timeline-body"><p>I think it's fine in principle, I just haven't seen it before so I'm finding the unfamiliarity of it to be not worth it (but this is highly personal, others may disagree, maybe it is a common pattern outside of our crates).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-virtualenv/src/lib.rs</code>:19 on 2024-05-13 00:32</div>
+            <div class="timeline-body"><p>Nit: <code>Python</code> should be capitalized here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:70 on 2024-05-13 00:33</div>
+            <div class="timeline-body"><p>Today, doesn't <code>--today</code> <em>ignore</em> (e.g.) discovering a <code>.venv</code> in the current directory? <code>Preferred</code> makes it sound like that's still allowed as a fallback. Is it a behavior change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:67 on 2024-05-13 00:33</div>
+            <div class="timeline-body"><p>Nit: <code>vritual</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:319 on 2024-05-13 00:35</div>
+            <div class="timeline-body"><p>Nit: needless <code>let</code>, can we just return <code>python_executables</code> directly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:809 on 2024-05-13 00:37</div>
+            <div class="timeline-body"><p>So we <em>do</em> allow (e.g.) <code>--python foo</code> where <code>foo</code> is an arbitrary executable in <code>PATH</code>? I think the post said we wouldn't do this: https://github.com/astral-sh/uv/issues/2386#issuecomment-1992133003. Although I think we <em>should</em> support it and don't agree with the linked comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:269 on 2024-05-13 00:39</div>
+            <div class="timeline-body"><p>Nit: Do you need to collect here? You immediately <code>into_iter</code>, can you just continue the chain?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:451 on 2024-05-13 00:40</div>
+            <div class="timeline-body"><p>Confirming the logic here -- we take the first interpreter that matches the query, right? So e.g. if the user requested <code>3.9</code>, and the first <code>3.9</code> we saw was <code>3.9.0</code>, we'd accept that (even if we might have <code>3.9.12</code> later in <code>PATH</code>) -- is that correct? (IMO that is the correct behavior but confirming.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:70 on 2024-05-13 00:42</div>
+            <div class="timeline-body"><p>Looking at the code, I think it <em>does</em> ignore the <code>.venv</code> in the current directory. So maybe this should be called <code>Required</code>...?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-13 00:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-13 00:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:64 on 2024-05-13 00:44</div>
+            <div class="timeline-body"><p>Can you make these rustdocs? (I.e., use triple slashes.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-13 00:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:91 on 2024-05-13 00:44</div>
+            <div class="timeline-body"><p>Nit: <code>requesed</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-13 00:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:180 on 2024-05-13 00:45</div>
+            <div class="timeline-body"><p>Nit: this lifetime can be removed (&quot;elided&quot;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-13 00:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:894 on 2024-05-13 00:47</div>
+            <div class="timeline-body"><p>I think I would find <code>from_sources</code> or similar to be more idiomatic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-13 00:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:402 on 2024-05-13 00:51</div>
+            <div class="timeline-body"><p>I'd personally find these a bit easier to read as a <code>match</code>, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-13 00:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:395 on 2024-05-13 00:52</div>
+            <div class="timeline-body"><p>What's the motivation for <code>try_exists</code> over <code>exists</code>? Just wondering.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-13 00:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:268 on 2024-05-13 00:56</div>
+            <div class="timeline-body"><p>It seems like <code>which_in_global</code> does accept multiple directories, but I'm guessing this gives us slightly different ordering / preference resolution?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-13 00:58</div>
+            <div class="timeline-body"><p>This generally looks good to me -- I don't have any major structural feedback. I'm mostly curious as to how we're going to test this and gain confidence in its correctness prior to merging and shipping out to users, since it's such a substantial and user-facing refactor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-13 01:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:800 on 2024-05-13 01:00</div>
+            <div class="timeline-body"><p>Should we not check if <code>value_as_path.is_file()</code>? What if you provide <code>foo</code> and <code>foo</code> is in your current working directory? IMO that should resolve to the local executable, but would it as-written?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-13 01:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:775 on 2024-05-13 01:01</div>
+            <div class="timeline-body"><p>Honestly I think the path checks should be first. If you have <code>python3</code> in the current working directory, I'd expect <code>./python3</code> and <code>python3</code> to work the same (as they would if you ran them directly from the shell).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-13 14:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:70 on 2024-05-13 14:29</div>
+            <div class="timeline-body"><p>Yeah you are correct</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-13 14:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:809 on 2024-05-13 14:31</div>
+            <div class="timeline-body"><p>Yeah I forgot I said we shouldn't do this in that latter comment. I think it's okay? I'll consider this a bit more.. it seems nice not to have a breaking change</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-13 14:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:269 on 2024-05-13 14:33</div>
+            <div class="timeline-body"><pre><code>error[E0515]: cannot return value referencing local variable `search_path`
+   --&gt; crates/uv-interpreter/src/discovery.rs:268:5
+    |
+268 |       env::split_paths(&amp;search_path)
+    |       ^                ------------ `search_path` is borrowed here
+    |  _____|
+    | |
+269 | |         .into_iter()
+270 | |         .filter(|dir| dir.is_dir())
+271 | |         .flat_map(move |dir| {
+...   |
+302 | |                 )
+303 | |         })
+    | |__________^ returns a value referencing data owned by the current function
+    |
+    = help: use `.collect()` to allocate the iterator
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:395 on 2024-05-13 14:36</div>
+            <div class="timeline-body"><p>Just because the Rust docs suggest that <code>exists</code> is error prone and <code>try_exists</code> is better to use. I think if we encounter a permissions error on a parent directory it'll fail instead of saying <code>false</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-13 14:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:268 on 2024-05-13 14:37</div>
+            <div class="timeline-body"><p>Yeah we need to check each directory separately since we are checking for multiple names per directory, whereas <code>which_in_global</code> would resolve a single name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-13 14:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-13 14:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:180 on 2024-05-13 14:39</div>
+            <div class="timeline-body"><p>With an unnamed lifetime</p>
+<pre><code>error[E0106]: missing lifetime specifier
+   --&gt; crates/uv-interpreter/src/discovery.rs:177:74
+    |
+175 |     version: Option&lt;&amp;VersionRequest&gt;,
+    |              -----------------------
+176 |     sources: &amp;SourceSelector,
+    |              ---------------
+177 | ) -&gt; impl Iterator&lt;Item = Result&lt;(InterpreterSource, PathBuf), Error&gt;&gt; + '_ {
+    |                                                                          ^^ expected named lifetime parameter
+    |
+    = help: this function's return type contains a borrowed value, but the signature does not say whether it is borrowed from `version` or `sources`
+help: consider introducing a named lifetime parameter
+    |
+174 ~ fn python_executables&lt;'a&gt;(
+175 ~     version: Option&lt;&amp;'a VersionRequest&gt;,
+176 ~     sources: &amp;'a SourceSelector,
+177 ~ ) -&gt; impl Iterator&lt;Item = Result&lt;(InterpreterSource, PathBuf), Error&gt;&gt; + 'a {
+</code></pre>
+<p>Without a lifetime</p>
+<pre><code>
+error[E0700]: hidden type for `impl std::iter::Iterator&lt;Item = std::result::Result&lt;(discovery::InterpreterSource, std::path::PathBuf), discovery::Error&gt;&gt;` captures lifetime that does not appear in bounds
+
+help: to declare that `impl std::iter::Iterator&lt;Item = std::result::Result&lt;(discovery::InterpreterSource, std::path::PathBuf), discovery::Error&gt;&gt;` captures `'_`, you can introduce a named lifetime parameter `'a`
+    |
+174 ~ fn python_executables&lt;'a&gt;(
+175 ~     version: Option&lt;&amp;'a VersionRequest&gt;,
+176 ~     sources: &amp;'a SourceSelector,
+177 ~ ) -&gt; impl Iterator&lt;Item = Result&lt;(InterpreterSource, PathBuf), Error&gt;&gt; + 'a  {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-13 14:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:451 on 2024-05-13 14:40</div>
+            <div class="timeline-body"><p>Yep!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-13 14:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:180 on 2024-05-13 14:46</div>
+            <div class="timeline-body"><p>You can omit it from <code>sources</code> specifically (is what I was trying to say).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:180 on 2024-05-13 14:46</div>
+            <div class="timeline-body"><p>Like <code>sources: &amp;SourceSelector</code> while leaving the rest of the signature intact. It's not a necessary constraint. (At least, it wasn't when I tried, I could be wrong or misremembering now.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-13 14:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-13 14:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:180 on 2024-05-13 14:47</div>
+            <div class="timeline-body"><p>Oh okay thanks for clarifying!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:180 on 2024-05-13 14:47</div>
+            <div class="timeline-body"><p>(and you are correct)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-13 14:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-14 03:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:775 on 2024-05-14 03:36</div>
+            <div class="timeline-body"><p>I don't think that's how shells usually work though:</p>
+<pre><code>❯ touch foo
+❯ chmod +x foo
+❯ foo
+zsh: command not found: foo
+❯ ./foo
+❯ bash
+bash-5.2$ foo
+bash: foo: command not found
+bash-5.2$ ./foo
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-14 17:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:800 on 2024-05-14 17:31</div>
+            <div class="timeline-body"><p>I think it should not actually, per the comment at https://github.com/astral-sh/uv/pull/3266#discussion_r1599331047</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-20 16:17</div>
+            <div class="timeline-body"><p>Example test setup</p>
+<pre><code>gh pr checkout 3266
+cargo build
+alias uv=$(pwd)/target/debug/uv
+uv version
+</code></pre>
+<p>I'll do some local QA and share helpful commands here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-20 20:26</div>
+            <div class="timeline-body"><p>Not sure if intentional, but I have <code>pypy</code> (which is PyPy at Python 2.7) and <code>pypy39</code> (which is PyPy at Python 3.9) in path, and <code>cargo run venv --python pypy</code> fails because it tries to use the one called <code>pypy</code>:</p>
+<pre><code>puffin on  zb/interp-request-ii [$] is 📦 v0.1.44 via 🐍 v3.11.8 via 🦀 v1.78.0 took 2s
+❯ cargo run venv --python pypy
+   Compiling uv v0.1.44 (/Users/crmarsh/workspace/puffin/crates/uv)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.75s
+     Running `target/debug/uv venv --python pypy`
+  × Can't use Python at `/opt/homebrew/bin/pypy`
+  ╰─▶ Python executable does not support `-I` flag. Please use Python 3.8 or newer.
+
+puffin on  zb/interp-request-ii [$] is 📦 v0.1.44 via 🐍 v3.11.8 via 🦀 v1.78.0 took 2s
+❯ cargo run venv --python pypy3.9
+   Compiling uv v0.1.44 (/Users/crmarsh/workspace/puffin/crates/uv)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.02s
+     Running `target/debug/uv venv --python pypy3.9`
+Using Python 3.9.18 interpreter at: /opt/homebrew/bin/pypy3.9
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+</code></pre>
+<p>Should it resolve to the <code>pypy3.9</code>?</p>
+<p><code>cargo run venv --python pypy3.9</code> does work as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-20 20:30</div>
+            <div class="timeline-body"><p>Otherwise, my own smoke-testing works as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-20 20:32</div>
+            <div class="timeline-body"><p>I would personally expect this to work -- I copied a Python to <code>foo</code> locally, and <code>--python ./foo</code> discovers it but <code>--python foo</code> does not:</p>
+<pre><code>puffin on  zb/interp-request-ii [$?]
+❯ cargo run venv --python foo
+   Compiling uv v0.1.44 (/Users/crmarsh/workspace/puffin/crates/uv)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.87s
+     Running `target/debug/uv venv --python foo`
+  × Requested Python executable `foo` not found in PATH
+
+puffin on  zb/interp-request-ii [$?]
+❯ cargo run venv --python ./foo
+   Compiling uv v0.1.44 (/Users/crmarsh/workspace/puffin/crates/uv)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.72s
+     Running `target/debug/uv venv --python ./foo`
+Using Python 3.9.18 interpreter at: foo
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+</code></pre>
+<p>I think we fixed this in the prior implementation and that it was considered a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-20 22:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:800 on 2024-05-20 22:56</div>
+            <div class="timeline-body"><p>At the very least, doesn't this need to respect both kinds of separators, per https://github.com/astral-sh/uv/issues/3062 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-20 22:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:800 on 2024-05-20 22:59</div>
+            <div class="timeline-body"><p>Ah interesting, yeah I guess we need to support Unix separators on Windows</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-20 23:55</div>
+            <div class="timeline-body"><p>I think your <code>pypy</code> example fails because we don't have support for detecting that as an implementation name yet (that will happen in a follow up pull request). Here, <code>cpython</code> is the only implementation name variant (just to reduce scope).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-21 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:775 on 2024-05-21 14:54</div>
+            <div class="timeline-body"><p>I changed this behavior to match Charlie's expectation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-21 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:800 on 2024-05-21 14:54</div>
+            <div class="timeline-body"><p>I fixed this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-05-21 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-05-21 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-05-21 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-21 19:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:32:37 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve logging during interpreter discovery - astral-sh/uv #3790</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve logging during interpreter discovery</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3790">#3790</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-05-23 13:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-23 13:26</div>
+            <div class="timeline-body"><pre><code>❯ VIRTUAL_ENV=.venv cargo run -q -- pip install anyio -v
+DEBUG Searching for interpreter that fulfills Python @ default in virtual environments
+DEBUG Found Python interpreter cpython 3.12.3 at `.venv/bin/python` (active virtual environment)
+DEBUG Using Python 3.12.3 environment at .venv/bin/python
+DEBUG Trying to lock if free: .venv/.lock
+DEBUG Requirement satisfied: anyio
+DEBUG Requirement satisfied: idna&gt;=2.8
+DEBUG Requirement satisfied: sniffio&gt;=1.1
+DEBUG All editables satisfied: 
+Audited 1 package in 14ms
+</code></pre>
+<p>instead of</p>
+<pre><code>❯ VIRTUAL_ENV=.venv cargo run -q -- pip install anyio -v
+DEBUG Searching for interpreter that fulfills Python @ default
+DEBUG Searching for interpreter that fulfills Python @ default
+INFO Found active virtual environment (via VIRTUAL_ENV) at: .venv
+DEBUG Found a virtual environment at: /Users/zb/workspace/uv/.venv
+DEBUG Using Python 3.12.3 environment at .venv/bin/python
+DEBUG Trying to lock if free: .venv/.lock
+DEBUG Requirement satisfied: anyio
+DEBUG Requirement satisfied: idna&gt;=2.8
+DEBUG Requirement satisfied: sniffio&gt;=1.1
+DEBUG All editables satisfied: 
+Audited 1 package in 16ms
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">tracing</span> added by @zanieb on 2024-05-23 13:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-23 14:56</div>
+            <div class="timeline-body"><p>What is <code>Python @ default</code>?</p>
+<p>Should <code>Found Python interpreter cpython 3.12.3</code> perhaps be something like <code>Found cpython@3.12.3 at...</code>? &quot;Python interpreter {impl}&quot; is maybe a bit redundant?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-23 15:00</div>
+            <div class="timeline-body"><p>&quot;Python @ default&quot; was resolved / removed in #3789</p>
+<p>The implementation name display is being changed in https://github.com/astral-sh/uv/pull/3791 — I do agree it feels a little redundant though. Let me rebase onto <code>main</code> and tweak a bit more.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-23 15:03</div>
+            <div class="timeline-body"><p>Now it looks like</p>
+<pre><code>DEBUG Searching for interpreter that fulfills any Python in virtual environments
+DEBUG Found CPython 3.12.3 at `.venv/bin/python` (active virtual environment)
+DEBUG Using Python 3.12.3 environment at .venv/bin/python
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-23 15:10</div>
+            <div class="timeline-body"><p>Specialized the search message per request kind so we can do a little better e.g.</p>
+<pre><code>❯ VIRTUAL_ENV=.venv cargo run -q -- pip install anyio -v
+DEBUG Searching for Python interpreter in virtual environments
+DEBUG Found CPython 3.12.3 at `.venv/bin/python` (active virtual environment)
+DEBUG Using Python 3.12.3 environment at .venv/bin/python
+</code></pre>
+<pre><code>❯ cargo run -q -- pip install anyio -v --python cpython
+DEBUG Searching for a CPython interpreter in all sources
+DEBUG Found CPython 3.12.3 at `/Users/zb/workspace/uv/.venv/bin/python` (virtual environment)
+DEBUG Using Python 3.12.3 environment at .venv/bin/python
+</code></pre>
+<pre><code>❯ cargo run -q -- pip install anyio -v --python .venv
+DEBUG Checking for Python interpreter in directory .venv
+DEBUG Using Python 3.12.3 environment at .venv/bin/python
+</code></pre>
+<pre><code>❯ cargo run -q -- pip install anyio -v --python .venv/bin/python
+DEBUG Checking for Python interpreter at path .venv/bin/python
+DEBUG Using Python 3.12.3 environment at .venv/bin/python
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-05-23 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-05-23 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-23 15:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:32:38 UTC
+    </footer>
+</body>
+</html>

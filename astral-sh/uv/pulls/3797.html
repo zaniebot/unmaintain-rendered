@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add persistent storage of installed toolchains - astral-sh/uv #3797</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add persistent storage of installed toolchains</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3797">#3797</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-05-23 16:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-23 16:40</div>
+            <div class="timeline-body"><p>Extends #3726</p>
+<p>Moves toolchain storage out of <code>UV_BOOTSTRAP_DIR</code> (<code>./bin</code>) into the proper user data directory as defined by #3726.</p>
+<p>Replaces <code>UV_BOOTSTRAP_DIR</code> with <code>UV_TOOLCHAIN_DIR</code> for customization. Installed toolchains will be discovered without opt-in, but the idea is still that these are not yet user-facing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-05-23 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-23 21:22</div>
+            <div class="timeline-body"><p>I'm going to write a <code>TestContext</code> for <code>uv-interpreter</code> to make the setup less complicated (#3832)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-05-23 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-23 21:23</div>
+            <div class="timeline-body"><p>There's an open question about versioning. We probably shouldn't just discard old buckets like we do in the cache. Maybe we can version and write explicit migrations?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/managed/find.rs</code>:52 on 2024-05-24 00:39</div>
+            <div class="timeline-body"><p>You may want to look at the cache initialization. We probably want to add a <code>.gitignore</code> and a <code>CACHEDIR.tag</code> to this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/managed/find.rs</code>:25 on 2024-05-24 00:40</div>
+            <div class="timeline-body"><p>I've gone back and forth on <code>Into&lt;PathBuf&gt;</code>, it's sort of a hidden allocation if you pass in <code>&amp;Path</code> I think? Not sure what's best.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-05-24 00:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-24 00:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/managed/find.rs</code>:143 on 2024-05-24 00:45</div>
+            <div class="timeline-body"><p>You could do something like:</p>
+<pre><code class="language-diff">diff --git a/crates/uv-interpreter/src/managed/find.rs b/crates/uv-interpreter/src/managed/find.rs
+index fd15c484..40f609cd 100644
+--- a/crates/uv-interpreter/src/managed/find.rs
++++ b/crates/uv-interpreter/src/managed/find.rs
+@@ -128,7 +128,11 @@ impl InstalledToolchains {
+                     .path
+                     .file_name()
+                     .map(OsStr::to_string_lossy)
+-                    .is_some_and(|filename| filename.starts_with(&amp;format!(&quot;cpython-{version}&quot;)))
++                    .is_some_and(|filename| {
++                        filename
++                            .strip_prefix(&quot;cpython-&quot;)
++                            .is_some_and(|prefix| prefix.starts_with(&amp;version.to_string()))
++                    })
+             }))
+     }
+</code></pre>
+<p>That would avoid allocation for anything that doesn't start with <code>cpython-</code>. But, IDK, perhaps this already gets optimized out anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-24 00:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/managed/find.rs</code>:143 on 2024-05-24 00:45</div>
+            <div class="timeline-body"><p>What you have now is more readable, I'd leave it as-is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-24 04:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/managed/find.rs</code>:143 on 2024-05-24 04:19</div>
+            <div class="timeline-body"><p>Probably going to parse the folder name into metadata <em>once</em> when constructing the <code>Toolchain</code> in the future anyway</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-24 15:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/managed/find.rs</code>:52 on 2024-05-24 15:18</div>
+            <div class="timeline-body"><p>I did copy this from the cache init.</p>
+<p>I think if we add a <code>CACHEDIR.tag</code> some tools may delete this data presuming it's not important, which seems... less than ideal.</p>
+<p>I was thinking about adding a <code>.gitignore</code> but am scared of all the bugs we encountered with it in the cache directory. I'm not sure about the <code>.git</code> boundary file and such. Hm.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-24 15:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/managed/find.rs</code>:25 on 2024-05-24 15:19</div>
+            <div class="timeline-body"><p>👍 just going to stick with consistency for now but yeah that makes sense as a concern</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-24 15:20</div>
+            <div class="timeline-body"><p>Updated to include #3726 which wouldn't pass CI otherwise since it was unused.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>.github/workflows/ci.yml</code>:147 on 2024-05-24 16:20</div>
+            <div class="timeline-body"><p>:tada:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-05-24 17:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-05-27 03:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-27 03:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-27 03:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:32:38 UTC
+    </footer>
+</body>
+</html>
