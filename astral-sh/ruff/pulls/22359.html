@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pyflakes: fix F401 infinite loop via improved submodule re-export logic - astral-sh/ruff #22359</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>pyflakes: fix F401 infinite loop via improved submodule re-export logic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22359">#22359</a>
+        opened by <a href="https://github.com/Jkhall81">@Jkhall81</a>
+        on 2026-01-03 16:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Jkhall81">@Jkhall81</a> on 2026-01-03 16:31</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR resolves a convergence failure (infinite loop) in rule <code>F401</code> occurring in <code>__init__.py</code> files.</p>
+<p>The fix is two-fold:</p>
+<ol>
+<li><strong>Linter Logic</strong>: Updated <code>unused_import.rs</code> to recognize that a parent package listed in <code>__all__</code> correctly re-exports its submodule imports (e.g., <code>[&quot;foo&quot;]</code> now covers <code>import foo.bar</code>).</li>
+<li><strong>Fixer Idempotency</strong>: Hardened <code>add_to_dunder_all</code> in <code>edits.rs</code> to check for existing entries before inserting new ones. This prevents duplicate strings from being appended and ensures the fixer terminates even if the linter re-flags an entry.</li>
+</ol>
+<p>Fixes #22221</p>
+<h2>Test Plan</h2>
+<ul>
+<li><strong>Regression Tests</strong>: Added new test cases to <code>crates/ruff_linter/src/fix/edits.rs</code> covering duplicate detection in both lists and tuples.</li>
+<li><strong>Snapshot Updates</strong>: Updated existing <code>pyflakes</code> snapshots to reflect the improved submodule matching logic.</li>
+<li><strong>Manual Verification</strong>: Verified against the reproduction case in the linked issue using <code>ruff check --fix --preview</code>.</li>
+<li><strong>Suite Verification</strong>: Ran the full linter test suite (<code>cargo test -p ruff_linter</code>) with 2625 tests passing.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> approved on 2026-01-08 18:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @amyreese on 2026-01-08 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-08 18:18</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dylwil3 by @MichaReiser on 2026-01-08 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @ntBre removed by @MichaReiser on 2026-01-08 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2026-01-08 19:25</div>
+            <div class="timeline-body"><p>Looks like this needs a rebase to clean up ecosystem results.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2026-01-09 08:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2026-01-09 08:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> removed by @MichaReiser on 2026-01-09 08:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2026-01-09 08:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2026-01-09 08:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:56:31 UTC
+    </footer>
+</body>
+</html>

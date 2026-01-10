@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Add support for dynamic `type()` classes - astral-sh/ruff #22291</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Add support for dynamic <code>type()</code> classes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22291">#22291</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-12-29 21:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-29 21:45</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support for dynamic classes created via <code>type()</code>. The core of the change is that <code>ClassLiteral</code> is now an enum:</p>
+<pre><code class="language-rust">pub enum ClassLiteral&lt;'db&gt; {
+    /// A class defined via a `class` statement.
+    Stmt(StmtClassLiteral&lt;'db&gt;),
+    /// A class created via the functional form `type(name, bases, dict)`.
+    Functional(FunctionalClassLiteral&lt;'db&gt;),
+}
+</code></pre>
+<p>And, in turn, various methods on <code>ClassLiteral</code> like <code>body_scope</code> now return <code>Option</code> or similar (and callers must adjust to that change in signature).</p>
+<p>Over time, we can expand the enum to include functional namedtuples, etc. (I already have this working in a separate branch, and I believe it slots in well.)</p>
+<p>(I'd love help with the names -- I think <code>StmtClassLiteral</code> is kind of lame. Maybe <code>DeclarativeClassLiteral</code>?)</p>
+<p>Closes https://github.com/astral-sh/ty/issues/740.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @charliermarsh on 2025-12-29 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-29 21:45</div>
+            <div class="timeline-body"><p>(Not ready for review.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-29 21:46</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-29 21:48</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">spack (https://github.com/spack/spack)
+- lib/spack/spack/test/packages.py:417:9: error[unresolved-attribute] Object of type `type` has no attribute `name`
+- Found 4318 diagnostics
++ Found 4317 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- src/werkzeug/test.py:815:32: error[invalid-assignment] Object of type `type` is not assignable to `type[Response] | None`
++ src/werkzeug/test.py:817:32: warning[unsupported-base] Unsupported class base: Has type `type[Response] &amp; ~type[TestResponse]`
+
+black (https://github.com/psf/black)
++ src/black/linegen.py:775:32: error[invalid-assignment] Object of type `list[((Line, Collection[Feature], Mode, /) -&gt; Iterator[Line]) | rhs]` is not assignable to `list[(Line, Collection[Feature], Mode, /) -&gt; Iterator[Line]]`
++ src/black/linegen.py:785:32: error[invalid-assignment] Object of type `list[((Line, Collection[Feature], Mode, /) -&gt; Iterator[Line]) | rhs]` is not assignable to `list[(Line, Collection[Feature], Mode, /) -&gt; Iterator[Line]]`
++ src/black/linegen.py:794:32: error[invalid-assignment] Object of type `list[((Line, Collection[Feature], Mode, /) -&gt; Iterator[Line]) | rhs]` is not assignable to `list[(Line, Collection[Feature], Mode, /) -&gt; Iterator[Line]]`
++ src/black/linegen.py:796:32: error[invalid-assignment] Object of type `list[((Line, Collection[Feature], Mode, /) -&gt; Iterator[Line]) | rhs]` is not assignable to `list[(Line, Collection[Feature], Mode, /) -&gt; Iterator[Line]]`
+- Found 54 diagnostics
++ Found 58 diagnostics
+
+aiohttp-devtools (https://github.com/aio-libs/aiohttp-devtools)
++ tests/test_runserver_logs.py:17:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `logging.Logger`, found `tests.test_runserver_logs.&lt;locals of function 'test_aiohttp_std'&gt;.Logger`
++ tests/test_runserver_logs.py:39:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `logging.Logger`, found `tests.test_runserver_logs.&lt;locals of function 'test_aiohttp_debugtoolbar'&gt;.Logger`
++ tests/test_runserver_logs.py:61:30: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `logging.Logger`, found `tests.test_runserver_logs.&lt;locals of function 'test_aux_logger'&gt;.Logger`
++ tests/test_runserver_logs.py:84:30: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `logging.Logger`, found `tests.test_runserver_logs.&lt;locals of function 'test_aux_logger_livereload'&gt;.Logger`
++ tests/test_runserver_logs.py:99:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `logging.Logger`, found `tests.test_runserver_logs.&lt;locals of function 'test_extra'&gt;.Logger`
+- Found 30 diagnostics
++ Found 35 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
+
+schemathesis (https://github.com/schemathesis/schemathesis)
+- src/schemathesis/core/deserialization.py:137:34: error[invalid-assignment] Object of type `type` is not assignable to `type[SafeLoader]`
++ src/schemathesis/core/deserialization.py:137:54: warning[unsupported-base] Unsupported class base: Has type `&lt;class 'CSafeLoader'&gt; | &lt;class 'SafeLoader'&gt;`
++ src/schemathesis/core/deserialization.py:174:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/schemathesis/specs/openapi/stateful/__init__.py:206:12: error[invalid-return-type] Return type does not match returned value: expected `type[APIStateMachine]`, found `type`
+
+pandera (https://github.com/pandera-dev/pandera)
+- pandera/api/dataframe/model.py:257:13: error[invalid-assignment] Object of type `type` is not assignable to attribute `Config` of type `type[BaseConfig]`
++ pandera/api/dataframe/model.py:257:42: warning[unsupported-base] Unsupported class base: Has type `type[BaseConfig]`
+- pandera/api/dataframe/model.py:455:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[type[BaseConfig], dict[str, Any]]`, found `tuple[type, dict[str, Any]]`
++ pandera/api/dataframe/model.py:455:32: warning[unsupported-base] Unsupported class base: Has type `type[BaseConfig]`
+- pandera/api/pyspark/model.py:162:13: error[invalid-assignment] Object of type `type` is not assignable to attribute `Config` of type `type[BaseConfig]`
+- Found 1578 diagnostics
++ Found 1577 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) &amp; ~Top[dict[Unknown, Unknown]]) | None`
++ pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -&gt; None) &amp; ~Top[dict[Unknown, Unknown]]) | None`
+- pydantic/v1/networks.py:572:12: error[invalid-return-type] Return type does not match returned value: expected `type[AnyUrl]`, found `type`
+- pydantic/v1/types.py:239:12: error[invalid-return-type] Return type does not match returned value: expected `type[int]`, found `type`
+- pydantic/v1/types.py:318:12: error[invalid-return-type] Return type does not match returned value: expected `type[int] | type[float]`, found `type`
+- pydantic/v1/types.py:391:12: error[invalid-return-type] Return type does not match returned value: expected `type[bytes]`, found `type`
+- pydantic/v1/types.py:471:12: error[invalid-return-type] Return type does not match returned value: expected `type[str]`, found `type`
+- pydantic/v1/types.py:749:12: error[invalid-return-type] Return type does not match returned value: expected `type[Decimal]`, found `type`
+- pydantic/v1/types.py:833:16: error[invalid-return-type] Return type does not match returned value: expected `type[JsonWrapper]`, found `type`
+- pydantic/v1/types.py:1205:12: error[invalid-return-type] Return type does not match returned value: expected `type[date]`, found `type`
+- Found 3159 diagnostics
++ Found 3151 diagnostics
+
+trio (https://github.com/python-trio/trio)
+- src/trio/_tests/test_util.py:236:5: error[unresolved-attribute] Unresolved attribute `recursion` on type `type`.
++ src/trio/_tests/test_util.py:236:5: error[unresolved-attribute] Unresolved attribute `recursion` on type `&lt;class 'SomeClass'&gt;`.
+
+setuptools (https://github.com/pypa/setuptools)
++ setuptools/_distutils/compilers/C/msvc.py:583:13: error[unresolved-attribute] Unresolved attribute `value` on type `Bag`.
++ setuptools/tests/test_editable_install.py:1206:53: error[unresolved-attribute] Object of type `SimulatedErr` has no attribute `__notes__`
+- setuptools/tests/test_editable_install.py:1204:24: error[invalid-argument-type] Argument to function `raises` is incorrect: Argument type `object` does not satisfy upper bound `BaseException` of type variable `E`
+- setuptools/tests/test_editable_install.py:1204:24: error[invalid-argument-type] Argument to function `raises` is incorrect: Expected `type[BaseException] | tuple[type[BaseException], ...]`, found `type`
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
++ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
+- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
++ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` on object of type `dict[str, Any]`
+- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
++ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | str | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
++ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | str | int | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
++ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | str | int | ... omitted 5 union elements]`
+- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
++ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
+- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
++ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
+
+pywin32 (https://github.com/mhammond/pywin32)
++ com/win32com/client/__init__.py:339:20: error[duplicate-base] Duplicate base classes Unknown, Unknown in class `COMEventClass`
++ com/win32com/client/__init__.py:377:20: error[duplicate-base] Duplicate base class Unknown in class `COMEventClass`
+- Found 2712 diagnostics
++ Found 2714 diagnostics
+
+jax (https://github.com/google/jax)
+- jax/_src/interpreters/partial_eval.py:1710:79: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- jax/_src/interpreters/partial_eval.py:1726:81: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 2799 diagnostics
++ Found 2797 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
++ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
+- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
++ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
+- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
++ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
+- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, object_]`
++ static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
+
+rotki (https://github.com/rotki/rotki)
++ rotkehlchen/chain/decoding/tools.py:96:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- rotkehlchen/chain/decoding/tools.py:97:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress`, found `A@BaseDecoderTools`
++ rotkehlchen/chain/decoding/tools.py:99:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `Sequence[A@BaseDecoderTools]`, found `Unknown | tuple[BTCAddress, ...] | tuple[ChecksumAddress, ...] | tuple[SubstrateAddress, ...] | tuple[SolanaAddress, ...]`
+- rotkehlchen/chain/decoding/tools.py:98:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress | None`, found `A@BaseDecoderTools | None`
++ rotkehlchen/chain/decoding/tools.py:100:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 2102 diagnostics
++ Found 2103 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-29 22:56</div>
+            <div class="timeline-body"><p>I think the scrapy, black, and aiohttp-devtools changes are true positives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-12-29 22:59</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2>Merging this PR will <strong>not alter performance</strong></h2>
+<p><code>✅ 53</code> untouched benchmarks</p>
+<hr />
+<p><sub>Comparing <code>charlie/dyn</code> (4e43509) with <code>main</code> (11cc324)</sub></p>
+<a href="https://codspeed.io/astral-sh/ruff/branches/charlie%2Fdyn?utm_source=github&utm_medium=comment-v2&utm_content=button">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://codspeed.io/pr-report/open-in-codspeed-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://codspeed.io/pr-report/open-in-codspeed-light.svg">
+    <img alt="Open in CodSpeed" src="https://codspeed.io/pr-report/open-in-codspeed-light.svg" width="169" height="32">
+  </picture>
+</a>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2025-12-29 23:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @charliermarsh on 2025-12-29 23:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @charliermarsh on 2025-12-29 23:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @charliermarsh on 2025-12-29 23:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @charliermarsh on 2025-12-29 23:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2025-12-29 23:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2025-12-29 23:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-12-29 23:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ty_python_semantic/src/types/functional_class.rs</code>:54 on 2025-12-29 23:49</div>
+            <div class="timeline-body"><p>(Need to remove this.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2025-12-30 03:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @charliermarsh on 2025-12-30 03:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-30 03:30</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-return-type</code> | 2 | 12 | 5 |
+| <code>invalid-argument-type</code> | 7 | 3 | 3 |
+| <code>invalid-assignment</code> | 4 | 4 | 5 |
+| <code>unused-ignore-comment</code> | 1 | 4 | 0 |
+| <code>unresolved-attribute</code> | 2 | 1 | 1 |
+| <code>unsupported-base</code> | 4 | 0 | 0 |
+| <code>duplicate-base</code> | 2 | 0 | 0 |
+| <strong>Total</strong> | <strong>22</strong> | <strong>24</strong> | <strong>14</strong> |</p>
+<p><strong><a href="https://f7bcb46c.ty-ecosystem-ext.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://f7bcb46c.ty-ecosystem-ext.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2025-12-30 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2025-12-30 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-30 17:24</div>
+            <div class="timeline-body"><p>I haven't looked too hard at this yet, but is adding a new <code>Type</code> variant definitely the best way of doing this? We've talked in the past about making <code>ClassLiteral</code> (the wrapped data inside the <code>Type::ClassLiteral</code> variant) an enum. In almost all respects, types created using three-argument <code>type()</code> calls should be treated the same way as classes created using <code>class</code> statements (the only difference is that its definition in the AST will be an <code>ExprCall</code> rather than a <code>StmtClassDef</code>), and that design would better reflect that, I think.</p>
+<p>We should also try to make our design here extensible for other classes-created-by-function-calls: functional namedtuples, functional typeddicts, and functional enums.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-30 17:28</div>
+            <div class="timeline-body"><p>For a previous attempt to make <code>ClassLiteral</code> an enum, you can see https://github.com/astral-sh/ruff/pull/19998. We eventually realised that that wasn't the correct way to go to implement <code>NewType</code>, but it still might be for three-argument <code>type()</code>, functional typeddicts, functional namedtuples and functional enums.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-30 17:34</div>
+            <div class="timeline-body"><p>I can give that a try. I initially tried to add another variant to <code>ClassType</code>, but there was so much coupling to the class AST node that it ended up not being worth it in my assessment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-30 17:35</div>
+            <div class="timeline-body"><p>(The context around functional namedtuples, functional typeddicts, and functional enums is also very useful, thank you.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2025-12-30 19:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2025-12-31 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2025-12-31 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2026-01-01 00:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-06 04:15</div>
+            <div class="timeline-body"><p>This needs a rebase.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-06 14:48</div>
+            <div class="timeline-body"><p>Should be rebased now. It was a little gnarly, sorry for any fragments...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2026-01-06 14:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2114 on 2026-01-06 14:48</div>
+            <div class="timeline-body"><p>I'm not a huge fan of <code>Stmt</code> vs. <code>Functional</code>. I would almost prefer <code>Declarative</code> vs. <code>Functional</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-08 01:42</div>
+            <div class="timeline-body"><p>Ecosystem report looks like mostly good news, a few quick notes:</p>
+<ol>
+<li>It looks like this PR now allows inheritance from <code>type[...]</code> (SubclassOf) types. Is that intentional? I think it might be OK -- we've intentionally not done it so far, but I'm not sure it can actually cause unsoundness. Mypy and Pyrefly seem to allow it, Pyright does not.</li>
+<li>The new diagnostics in <code>src/prefect/flow_engine.py</code> look a bit concerning. I don't think those are non-determinism, and it looks like we are now failing to specialize away a type variable from a method call. I think we need to understand what's happening here.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-08 01:47</div>
+            <div class="timeline-body"><p>Which new diagnostics are you referring to? I only see these removed diagnostics: https://dee97dfa.ty-ecosystem-ext.pages.dev/diff</p>
+<p><img width="876" height="594" alt="Screenshot 2026-01-07 at 8 47 00 PM" src="https://github.com/user-attachments/assets/276f08f3-3569-4603-badf-1563ec32513a" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-08 01:47</div>
+            <div class="timeline-body"><p>I assume I'm looking in the wrong place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-08 01:57</div>
+            <div class="timeline-body"><p>Oh interesting! I was still looking at the pre rebase ecosystem report. And it was exactly those same diagnostics now showing as removed that were showing as new in that report. So maybe they are non deterministic. In any case, no need to worry about them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-08 07:36</div>
+            <div class="timeline-body"><blockquote>
+<p>. In any case, no need to worry about them.</p>
+</blockquote>
+<p>Shouldn't we worry about any new non-deterministic diagnostics to avoid making ty even more non-deterministic? It's obviously possible that the they're non-deterministic because of an existing issue but it might be worth to scan through the code to see if there's anything that might introduce new non-determinism (are we iterating over a <code>FxHashMap</code>, any non-deterministic cycle handling...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types.rs</code>:982 on 2026-01-08 07:37</div>
+            <div class="timeline-body"><p>Nit: You could write this as:</p>
+<pre><code class="language-suggestion">            .and_then(|class| crate::types::enums::enum_metadata(db, instance.class_literal(db)?))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1275 on 2026-01-08 07:43</div>
+            <div class="timeline-body"><p>I find <code>as_stmt</code> somewhat confusing because I immediately associate it with <code>ast::Stmt</code>.</p>
+<p>I think I would go with:</p>
+<ul>
+<li><code>ClassDefinition</code> which is the terminology used in the <a href="https://docs.python.org/3/reference/compound_stmts.html#class">Python documentation</a></li>
+<li><code>Static</code> and <code>Dynamic</code>, <code>dynamic</code> is the terminology used in the <a href="https://docs.python.org/3/library/functions.html#type"><code>type</code> documentation</a> <em>This is essentially a dynamic form of the <a href="https://docs.python.org/3/reference/compound_stmts.html#class">class</a> statement.</em></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types.rs</code>:3262 on 2026-01-08 07:45</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    .and_then(|(class_literal, _)| {
+                    	let metadata = enum_metadata(db, class_literal)?;
+                    	let index = *metadata.members.get_index(0)?;
+                    	Some(Place::bound(index))
+                  	})
+                  	.unwrap_or(Place::Undefined)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types.rs</code>:3371 on 2026-01-08 07:45</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                        .and_then(|class| Some(class.stmt_class_literal(db)?.0)),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types.rs</code>:8996 on 2026-01-08 07:46</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    Some(Type::ClassLiteral(
+                    	instance
+                        .class(db)
+                        .stmt_class_literal(db)?
+                        .0
+                        .into()
+                    ))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/call/arguments.rs</code>:409 on 2026-01-08 07:47</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            if let Some((class_literal, _)) = class.stmt_class_literal(db) &amp;&amp;
+            	let Some(enum_members) = enum_member_literals(db, class_literal, None) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:91 on 2026-01-08 07:49</div>
+            <div class="timeline-body"><p>That's a lot of monomorphized code. Does the code need to be generic over <code>I</code>? Are there parts that we can move into non-generic functions?</p>
+<p>I also think this should come after the <code>ClassLiteral</code> definition as it seems more an implementation detail</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:682 on 2026-01-08 07:50</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        self.as_stmt()?.known(db)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4738 on 2026-01-08 07:53</div>
+            <div class="timeline-body"><p>Could we use <code>deref</code> here? (so that salsa returns <code>&amp;[ClassBase]</code>) or are there cases where we need to know that it's a boxed slice?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4784 on 2026-01-08 07:55</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        let (mut candidate_base, rest) = bases.split_first().unwrap();
+
+        // Reconcile with other bases' metaclasses.
+        for base in rest {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2026-01-08 07:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2026-01-08 14:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1275 on 2026-01-08 14:43</div>
+            <div class="timeline-body"><p>Yeah I like this too. @carljm -- does that seem reasonable? (Just want to avoid multiple rounds of renaming if possible.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:981 on 2026-01-08 14:51</div>
+            <div class="timeline-body"><p>we'll probably have to use a <code>match</code> here in the future when we add support for functional enums, so is it worth switching to use a <code>match</code> here now? It might lead to less code churn in the future</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1275 on 2026-01-08 14:52</div>
+            <div class="timeline-body"><blockquote>
+<p>I find <code>as_stmt</code> somewhat confusing because I immediately associate it with <code>ast::Stmt</code>.</p>
+</blockquote>
+<p>I think that's sort of the point? One kind of class is created using a <code>class</code> statement, and the other is created using a call expression.</p>
+<p>But I also like your proposed terminology!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5489 on 2026-01-08 14:56</div>
+            <div class="timeline-body"><p>what's the motivation for making this a separate branch in the <code>match</code>? It still looks like the branch arm does the same thing as the following one to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6543 on 2026-01-08 14:58</div>
+            <div class="timeline-body"><p>we should be able to provide a <code>TypeDefinition</code> for dynamic <code>type()</code> classes too -- you might have to add a new variant to the <code>TypeDefinition</code> enum, but that shouldn't be too hard</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:12725 on 2026-01-08 15:00</div>
+            <div class="timeline-body"><p>in the long term we won't be able to count on all <code>enum_class</code>es having <code>StmtClassDef</code> nodes in the AST, due to the functional syntax for creating enum classes. (But no change requested; this seems fine for now.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:12953 on 2026-01-08 15:01</div>
+            <div class="timeline-body"><p>why is this taking a <code>StmtClassLiteral</code> rather than a <code>ClassLiteral</code>? All kinds of class-literals have MROs, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/bound_super.rs</code>:1 on 2026-01-08 15:10</div>
+            <div class="timeline-body"><p>most of the changes to this file <em>look</em> unnecessary -- but I think that's just because you need to fix some merge conflicts, and they'll probably go away from the diff after a rebase?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1396 on 2026-01-08 15:15</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                                    .map(|s| Name::new(s.value(db)));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:755 on 2026-01-08 15:23</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            Self::Functional(_) =&gt; ClassType::NonGeneric(self),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:763 on 2026-01-08 15:24</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            Self::Functional(_) =&gt; ClassType::NonGeneric(self),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:574 on 2026-01-08 15:32</div>
+            <div class="timeline-body"><p>is this correct? Couldn't you create a protocol class using the <code>type()</code> function?</p>
+<pre><code class="language-py">from typing import Protocol
+
+X = type(&quot;X&quot;, (Protocol,), {})
+</code></pre>
+<p>though I don't know why you would, since you wouldn't be able to define any protocol members. Maybe we should just explicitly ban that, and emit a diagnostic for that? (Fine to defer that to a followup.)</p>
+<p>There are lots of assumptions everywhere that you can't define a generic class using the <code>type()</code> function, so we should probably try to emit a diagnostic for</p>
+<pre><code class="language-py">from typing import Generic, TypeVar
+
+T = TypeVar(&quot;T&quot;)
+
+X = type(&quot;X&quot;, (Generic[T],), {})
+</code></pre>
+<p>Interestingly, all type checkers reject &quot;dynamic generic classes&quot; like the one above, but mypy <em>does</em> support defining generic functional namedtuples/typeddicts:</p>
+<pre><code class="language-py">from typing import Generic, NamedTuple, TypeVar, TypedDict
+
+T = TypeVar(&quot;T&quot;)
+
+X = NamedTuple(&quot;X&quot;, [(&quot;a&quot;, T)])
+Y = TypedDict(&quot;Y&quot;, {&quot;some-key&quot;: T})
+
+def _(obj: X[int], obj2: Y[int]):
+    reveal_type(obj)  # revealed: tuple[builtins.int, fallback=__main__.X[builtins.int]]
+    reveal_type(obj2)  # revealed: TypedDict('__main__.Y', {'some-key': builtins.int})
+</code></pre>
+<p>the second case here is important, actually, because it's the only way to define a generic <code>TypedDict</code> with invalid-identifier keys.</p>
+<p>https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=5f45711ace3174d8a87b2c4d14920f57</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:825 on 2026-01-08 15:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            Self::Functional(_) =&gt; ClassType::NonGeneric(self),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:837 on 2026-01-08 15:33</div>
+            <div class="timeline-body"><p>Ideally, functional classes would store a reference to the <code>ExprCall</code> <code>Definition</code> that was used to define them, and return that <code>Definition</code> here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:855 on 2026-01-08 15:34</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            Self::Functional(_) =&gt; {
+                Type::instance(db, ClassType::NonGeneric(self))
+            }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:875 on 2026-01-08 15:34</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            Self::Functional(_) =&gt; ClassType::NonGeneric(self),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:896 on 2026-01-08 15:35</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            Self::Functional(_) =&gt; ClassType::NonGeneric(self),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4613 on 2026-01-08 15:40</div>
+            <div class="timeline-body"><p>Hmm, but pyright's behaviour seems incorrect here? Ideally we would treat these as distinct types, the same as we do for different class-literals that have the same name. Storing the <code>Definition</code> on the <code>FunctionalClassLiteral</code> struct, as I suggested above, might help with that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4893 on 2026-01-08 15:42</div>
+            <div class="timeline-body"><p>I would add <code>#[salsa::tracked]</code> to the <code>impl</code> block above and then put this method in that <code>impl</code> block. Just because <code>#[salsa::tracked]</code> is added to an <code>impl</code> block doesn't mean that all methods in that <code>impl</code> block need to be themselves decorated with <code>#[salsa::tracked]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4683 on 2026-01-08 15:43</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // If no bases, metaclass is `type`.
+        // To dynamically create a class with no bases that has a custom metaclass,
+        // you have to invoke that metaclass rather than `type()`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class_base.rs</code>:321 on 2026-01-08 15:46</div>
+            <div class="timeline-body"><p>At some point we need to add support for the fact that all <code>Protocol</code> classes actually have <code>_ProtocolMeta</code> as their metaclass (https://github.com/astral-sh/ty/issues/1204); you could possibly add a TODO here about that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class_base.rs</code>:373 on 2026-01-08 15:48</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                let Some((class_literal, specialization)) = class.stmt_class_literal(db) else {
+                    // Functional classes can't have cyclic MRO since their bases must
+                    // already exist at creation time. Unlike statement classes, we do not
+                    // permit functional classes to have forward references in their
+                    // bases list.
+                    return false;
+                };
+</code></pre>
+<p>Do you have any tests for attempts to create cyclic MROs using <code>type()</code> in stub files? If not, you could add this as a test (make sure you make the mdtest a <code>.pyi</code> file!):</p>
+<pre><code class="language-py">X = type(&quot;X&quot;, (X,), {})
+</code></pre>
+<p>(you don't panic on it, which is good 😄)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-08 15:51</div>
+            <div class="timeline-body"><p>Wow, thanks for taking this on!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2026-01-08 18:06</div>
+            <div class="timeline-body"><blockquote>
+<p>but I'm not sure it can actually cause unsoundness</p>
+</blockquote>
+<pre><code class="language-python">def func(x: int) -&gt; str:
+    class Base1:
+        pass
+    
+    class Base2:
+        def meth(self, x: int) -&gt; str:
+            return str(x)
+    
+    class Sneaky(Base1):
+        def meth(self, x: int) -&gt; int:
+            return x
+            
+    t: type[Base1] = Sneaky
+    
+    class Child(t, Base2):
+        pass
+    
+    c = Child()
+    return c.meth(x)
+</code></pre>
+<p>Pyrefly seems to allow this and it is unsound. Mypy rejects the inheritance from <code>t</code>, not sure what you were doing that made it accept it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-08 20:01</div>
+            <div class="timeline-body"><p>Thanks @jelle-openai ! I didn't spend very long thinking about it, and knew I was probably missing something. I was thinking that Liskov checking should make it safe, but of course that doesn't apply when subclasses introduce new methods/attributes.</p>
+<p>I agree this means we shouldn't allow this, so whatever is changing in this PR to allow it, let's not make that change (even if it shows up in the ecosystem as a thing people try to do.)</p>
+<blockquote>
+<p>Mypy rejects the inheritance from <code>t</code>, not sure what you were doing that made it accept it.</p>
+</blockquote>
+<p>Don't have the playground I used anymore, but probably it was the usual -- forgetting that mypy doesn't check all code by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-08 20:02</div>
+            <div class="timeline-body"><p>(This PR needs conflict resolution again, with the bound-super PR that landed.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-08 20:02</div>
+            <div class="timeline-body"><p>Sounds good -- I will rebase and address some of the initial feedback tonight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-08 20:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Shouldn't we worry about any new non-deterministic diagnostics to avoid making ty even more non-deterministic?</p>
+</blockquote>
+<p>Yes, I guess I was thinking &quot;the non-determinism in prefect isn't new&quot;, but if these particular diagnostics are really new (not totally sure, but I don't think I remember this block of added/removed diagnostics) we should try to avoid adding them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1275 on 2026-01-08 20:05</div>
+            <div class="timeline-body"><p>I also like @MichaReiser 's proposed terminology!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2026-01-08 20:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-08 20:06</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Shouldn't we worry about any new non-deterministic diagnostics to avoid making ty even more non-deterministic?</p>
+</blockquote>
+<p>Yes, I guess I was thinking &quot;the non-determinism in prefect isn't new&quot;, but if these particular diagnostics are really new (not totally sure, but I don't think I remember this block of added/removed diagnostics) we should try to avoid adding them.</p>
+</blockquote>
+<p>I've seen the diagnostics in <code>src/prefect/flow_engine.py</code> come and go on quite a few other PRs; there's nothing new about those flakes in particular</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-08 20:08</div>
+            <div class="timeline-body"><p>I agree with Carl and Jelle that we definitely shouldn't allow this (we don't on <code>main</code>, and that's deliberate):</p>
+<pre><code class="language-py">class Foo: ...
+
+def f(x: type[Foo]):
+    class Y(x): ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-08 20:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/mro.rs</code>:263 on 2026-01-08 20:13</div>
+            <div class="timeline-body"><p>huh? Not sure I understand this comment. For a class defined as <code>X = type(&quot;X&quot;, (A, B), {})</code>, surely the explicit bases of <code>X</code> are <code>[A, B]</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-08 22:21</div>
+            <div class="timeline-body"><p>Reducing the diff quite a bit here (hopefully) by using <code>ClassLiteral</code> in more places (i.e., pushing the match on <code>ClassLiteral</code> lower).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2026-01-08 22:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ty_python_semantic/src/types/mro.rs</code>:263 on 2026-01-08 22:40</div>
+            <div class="timeline-body"><p>Sorry, this comment is clearly wrong. (But we only ever call this particular method with a statement-based class.) I will clean up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2026-01-08 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-08 23:00</div>
+            <div class="timeline-body"><p>Converting to draft while I work through the feedback.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_benchmark/benches/ty_walltime.rs</code>:166 on 2026-01-09 01:17</div>
+            <div class="timeline-body"><p>You can stick to round numbers here and give us a buffer, so we don't have to bump this on every small change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/call/builtins.md</code>:118 on 2026-01-09 01:22</div>
+            <div class="timeline-body"><p>I kinda think this behavior isn't great, and I'd rather have mypy/pyrefly's behavior (where all attributes are allowed, with type <code>Unknown</code>), or better, just attributes named in the namespace dict are allowed, with type <code>Unknown</code>. (Or we could even infer types from the assigned elements in the namespace dict?)</p>
+<p>Not saying we should do it in this PR, though. And we probably don't even need a TODO for it here, we can wait for someone to file an issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/call/builtins.md</code>:162 on 2026-01-09 01:29</div>
+            <div class="timeline-body"><p>This test demonstrates (and the comment in it explains) the opposite of what the prose above it claims.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/call/builtins.md</code>:169 on 2026-01-09 01:30</div>
+            <div class="timeline-body"><p>And this test isn't really about disjointness at all, just subtyping</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2026-01-09 01:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:607 on 2026-01-09 01:38</div>
+            <div class="timeline-body"><p>I <em>think</em> we want to omit dynamic classes here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2026-01-09 01:39</div>
+            <div class="timeline-body"><p>Holding off on more code review since this is currently in draft and getting revisions, but I did take a look at the tests quick.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2026-01-09 01:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:1 on 2026-01-09 01:56</div>
+            <div class="timeline-body"><p>I'm not very confident in what's in here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2026-01-09 02:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @charliermarsh on 2026-01-09 02:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-09 02:29</div>
+            <div class="timeline-body"><p>Okay, remarking as ready for review:</p>
+<ul>
+<li>I renamed to <code>StaticClassLiteral</code> and <code>DynamicClassLiteral</code>.</li>
+<li>I removed a variety of special-casings (like for display, etc.) that were unnecessary and wrong. (Likely Claude fragments from iterating on this a few times.)</li>
+<li>I implemented <code>Definition</code> and span tracking for dynamic class literals. This enabled me to remove a lot of special-casing that was no longer necessary as it further unified the <code>ClassLiteral</code> interface.</li>
+</ul>
+<p>The pieces in which I have lowest confidence:</p>
+<ul>
+<li>The actual call parsing and inference in <code>builder.rs</code>, and the fall-through handling.</li>
+<li>The MRO handling for dynamic classes.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2026-01-09 15:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ty_python_semantic/resources/mdtest/call/builtins.md</code>:118 on 2026-01-09 15:57</div>
+            <div class="timeline-body"><p>Doing this in https://github.com/astral-sh/ruff/pull/22480 (in part because it actually helps the code generalize a bit more).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-09 17:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1275 on 2026-01-09 17:10</div>
+            <div class="timeline-body"><p>Okay this was a great call @MichaReiser -- I find the code so much more readable now we've switched to this terminology!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/call/builtins.md</code>:1 on 2026-01-09 17:23</div>
+            <div class="timeline-body"><p>There are so many new tests here that it might be worth moving all <code>type()</code>-related assertions in this file to a new, standalone, <code>type.md</code> mdtest suite</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:12720 on 2026-01-09 19:16</div>
+            <div class="timeline-body"><p>looks like a spurious change</p>
+<pre><code class="language-suggestion">        self.enum_class(db).to_non_generic_instance(db)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:3258 on 2026-01-09 19:19</div>
+            <div class="timeline-body"><p>can be this if you rebase on <code>main</code></p>
+<pre><code class="language-suggestion">                    .unwrap_or_default()
+</code></pre>
+<p>though idk if that's actually any clearer at the end of the day 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1120 on 2026-01-09 19:21</div>
+            <div class="timeline-body"><p>Why must this specifically be a static class-literal? In theory we could support this, right? (We don't have to do it in this PR, but you could add a test and/or a TODO comment)</p>
+<pre><code class="language-py">from dataclasses import dataclass
+
+T = type(&quot;T&quot;, (), {})
+T = dataclass(T)
+</code></pre>
+<p>If we made this change, <code>CodeGeneratorKind::from_class</code> would need to be updated so that it accepted a <code>ClassLiteral</code> rather than a <code>StaticClassLiteral</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:576 on 2026-01-09 19:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Returns whether this class is a `TypedDict`.
+    ///
+    // TODO: We should emit a diagnostic if a functional class (created via `type()`) attempts
+    // to inherit from `TypedDict`. To create a functional TypedDict, you should invoke
+    // `TypedDict` as a function, not `type`. See also: `generic_context`, `is_protocol`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:556 on 2026-01-09 19:38</div>
+            <div class="timeline-body"><p>The code here is correct but the comments are wrong:</p>
+<ul>
+<li><p>Functional types <em>can</em> be tuple subclasses: your branch gets this right!</p>
+<pre><code class="language-py">from ty_extensions import reveal_mro
+
+X = type(&quot;X&quot;, (tuple[int, str],), {})
+reveal_mro(X)  # Revealed MRO: (&lt;class 'X'&gt;, &lt;class 'tuple[int, str]'&gt;, &lt;class 'Sequence[int | str]'&gt;, &lt;class 'Reversible[int | str]'&gt;, &lt;class 'Collection[int | str]'&gt;, &lt;class 'Iterable[int | str]'&gt;, &lt;class 'Container[int | str]'&gt;, typing.Protocol, typing.Generic, &lt;class 'object'&gt;)
+</code></pre>
+</li>
+<li><p>But this method isn't actually asking &quot;Is this class a tuple subclass?&quot;, it's asking &quot;Is this the tuple class exactly?&quot;</p>
+</li>
+</ul>
+<pre><code class="language-suggestion">    /// Returns whether this class is `builtins.tuple` exactly
+    pub(crate) fn is_tuple(self, db: &amp;'db dyn Db) -&gt; bool {
+        match self {
+            Self::Static(class) =&gt; class.is_tuple(db),
+            Self::Dynamic(_) =&gt; false,
+        }
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:648 on 2026-01-09 19:40</div>
+            <div class="timeline-body"><p>this will need to be revised in https://github.com/astral-sh/ruff/pull/22480, when we start adding support for dynamic classes to define attributes via the namespace parameter</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:628 on 2026-01-09 19:44</div>
+            <div class="timeline-body"><p>this API now feels like a bit of a footgun, because I think you usually want to go via higher-level APIs for attribute access, etc. (which will work for both static classes and dynamic classes) rather than asking for the body scope. Considering that it is only used in one place, I'd be inclined to get rid of it:</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/place.rs b/crates/ty_python_semantic/src/place.rs
+index 1eb7e0b511..6b44f328af 100644
+--- a/crates/ty_python_semantic/src/place.rs
++++ b/crates/ty_python_semantic/src/place.rs
+@@ -1606,7 +1606,9 @@ mod implicit_globals {
+     use crate::place::{Definedness, PlaceAndQualifiers};
+     use crate::semantic_index::symbol::Symbol;
+     use crate::semantic_index::{place_table, use_def_map};
+-    use crate::types::{KnownClass, MemberLookupPolicy, Parameter, Parameters, Signature, Type};
++    use crate::types::{
++        ClassLiteral, KnownClass, MemberLookupPolicy, Parameter, Parameters, Signature, Type,
++    };
+     use ruff_python_ast::PythonVersion;
+ 
+     use super::{DefinedPlace, Place, place_from_declarations};
+@@ -1756,10 +1758,11 @@ mod implicit_globals {
+             return smallvec::SmallVec::default();
+         };
+ 
+-        let Some(module_type_scope) = module_type.body_scope(db) else {
++        let ClassLiteral::Static(module_type) = module_type else {
+             return smallvec::SmallVec::default();
+         };
+-        let module_type_symbol_table = place_table(db, module_type_scope);
++
++        let module_type_symbol_table = place_table(db, module_type.body_scope(db));
+ 
+         module_type_symbol_table
+             .symbols()
+diff --git a/crates/ty_python_semantic/src/types/class.rs b/crates/ty_python_semantic/src/types/class.rs
+index d67e927f39..5cf85f120c 100644
+--- a/crates/ty_python_semantic/src/types/class.rs
++++ b/crates/ty_python_semantic/src/types/class.rs
+@@ -621,11 +621,6 @@ impl&lt;'db&gt; ClassLiteral&lt;'db&gt; {
+         }
+     }
+ 
+-    /// Returns the body scope of this class, if it's a statement class.
+-    pub(crate) fn body_scope(self, db: &amp;'db dyn Db) -&gt; Option&lt;ScopeId&lt;'db&gt;&gt; {
+-        self.as_static().map(|class| class.body_scope(db))
+-    }
+-
+     /// Returns the definition of this class, if available.
+     pub(crate) fn definition(self, db: &amp;'db dyn Db) -&gt; Option&lt;Definition&lt;'db&gt;&gt; {
+         match self {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:716 on 2026-01-09 19:47</div>
+            <div class="timeline-body"><p>we may want to revise this in https://github.com/astral-sh/ruff/pull/22480, because a dynamic class could provide <code>__slots__</code> in the namespace dictionary, which would make it a disjoint base:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; X = type(&quot;X&quot;, (), {&quot;__slots__&quot;: (&quot;a&quot;,)})
+&gt;&gt;&gt; class Foo(int, X): ...
+... 
+Traceback (most recent call last):
+  File &quot;&lt;python-input-4&gt;&quot;, line 1, in &lt;module&gt;
+    class Foo(int, X): ...
+TypeError: multiple bases have instance lay-out conflict
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/call/builtins.md</code>:348 on 2026-01-09 20:01</div>
+            <div class="timeline-body"><p>when we hit this situation for static class literals, we still infer the class as a class-literal, but (after emitting a diagnostic to tell the user off about it) we insert <code>Unknown</code> into the MRO. This has the nice property that we will allow arbitrary attributes to be accessed on instances of the class: the user gets one (and exactly one) diagnostic about the bad class definition, rather than getting many other diagnostics about unresolved attributes on instances of the class:</p>
+<pre><code class="language-py">from ty_extensions import reveal_mro
+
+def f(x: type[int]):
+    class Foo(x): ...  # error: [unsupported-base]
+
+    reveal_mro(Foo)  # revealed: (&lt;class 'Foo'&gt;, Unknown, &lt;class 'object'&gt;)
+</code></pre>
+<p>Should we just do the same for dynamic class-literals?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/call/builtins.md</code>:1 on 2026-01-09 20:02</div>
+            <div class="timeline-body"><p>Can you also add a test that attributes defined on <code>builtins.type</code> are accessible on dynamic classes? It looks like you get this behaviour correct on your branch, which is great:</p>
+<pre><code class="language-py">T = type(&quot;T&quot;, (), {})
+
+# inherited from `builtins.type`:
+reveal_type(T.__dictoffset__)  # revealed: int
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4519 on 2026-01-09 20:09</div>
+            <div class="timeline-body"><p><code>type[]</code> types are different from class-literal types: <code>type[Foo]</code> means &quot;the class object <code>Foo</code> or any subclass of <code>Foo</code>&quot;; <code>&lt;class 'Foo'&gt;</code> means &quot;the class object <code>Foo</code>, and only that exact class object (no subclasses)&quot;</p>
+<pre><code class="language-suggestion">/// The type of `Foo` would be `&lt;class 'Foo'&gt;` where `Foo` is a `DynamicClassLiteral` with:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4599 on 2026-01-09 20:10</div>
+            <div class="timeline-body"><p>nit</p>
+<pre><code class="language-suggestion">/// This matches Pyright's behavior. For example:
+///
+/// ```python
+/// Foo = type(&quot;Foo&quot;, (), {&quot;attr&quot;: 42})
+/// Foo().attr  # Error: no attribute 'attr'
+/// ```
+///
+/// Supporting namespace dict attributes would require parsing dict literals and tracking
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4609 on 2026-01-09 20:10</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// same name and bases:
+///
+/// ```python
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4633 on 2026-01-09 20:14</div>
+            <div class="timeline-body"><p>We may need to put some warnings in the doc-comments for some of these fields that they shouldn't be accessed when we're inferring types for a different module to the one the class was defined in? I think doing so would lead to overly aggressive cache invalidation. @MichaReiser will be able to say whether I'm spouting nonsense here or not</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4596 on 2026-01-09 20:18</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">#[salsa::tracked]
+impl&lt;'db&gt; DynamicClassLiteral&lt;'db&gt; {
+    /// Returns a [`Span`] with the range of the `type()` call expression.
+    ///
+    /// See [`Self::header_range`] for more details.
+    pub(super) fn header_span(self, db: &amp;'db dyn Db) -&gt; Span {
+        Span::from(self.file(db)).with_range(self.header_range(db))
+    }
+
+    /// Returns the range of the `type()` call expression that created this class.
+    pub(super) fn header_range(self, db: &amp;'db dyn Db) -&gt; TextRange {
+        let module = parsed_module(db, self.file(db)).load(db);
+        let node = module.get_by_index(self.node_index(db));
+        node.range()
+    }
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4624 on 2026-01-09 20:21</div>
+            <div class="timeline-body"><p>this isn't quite correct: we have this behaviour on your branch:</p>
+<pre><code class="language-py">class Foo: ...
+Bar = type(&quot;Bar&quot;, (), {})
+
+reveal_type(Foo.__class__)  # &lt;class 'type'&gt;
+reveal_type(Bar.__class__)  # type
+</code></pre>
+<p>so whereas for the static class, we return &quot;the class <code>type</code> itself&quot;, for the functional class we return &quot;instance of <code>type</code>&quot;. We should be consistent here and return &quot;the class <code>type</code> itself&quot; in both cases:</p>
+<pre><code class="language-suggestion">            return Ok(KnownClass::Type.to_class_literal(db));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4798 on 2026-01-09 20:23</div>
+            <div class="timeline-body"><p>nit: I'd find this more readable</p>
+<pre><code class="language-suggestion">        let result = MroLookup::new(db, self.iter_mro(db)).class_member(
+            name,
+            policy,
+            None,  // No inherited generic context.
+            false,  // Functional classes are never `object`.
+        );
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4961 on 2026-01-09 20:33</div>
+            <div class="timeline-body"><p>you can do this without the <code>unreachable!()</code> if you add another intermediate type:</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types/class.rs b/crates/ty_python_semantic/src/types/class.rs
+index d67e927f39..d773c7daef 100644
+--- a/crates/ty_python_semantic/src/types/class.rs
++++ b/crates/ty_python_semantic/src/types/class.rs
+@@ -488,7 +488,7 @@ impl&lt;'db&gt; ClassLiteral&lt;'db&gt; {
+                 // Functional classes don't have inherited generic context and are never `object`.
+                 let result = MroLookup::new(db, mro_iter).class_member(name, policy, None, false);
+                 match result {
+-                    ClassMemberResult::Done { .. } =&gt; result.finalize(db),
++                    ClassMemberResult::Done(result) =&gt; result.finalize(db),
+                     ClassMemberResult::TypedDict =&gt; KnownClass::TypedDictFallback
+                         .to_class_literal(db)
+                         .find_name_in_mro_with_policy(db, name, policy)
+@@ -2634,7 +2634,7 @@ impl&lt;'db&gt; StaticClassLiteral&lt;'db&gt; {
+         );
+ 
+         match result {
+-            ClassMemberResult::Done { .. } =&gt; result.finalize(db),
++            ClassMemberResult::Done(result) =&gt; result.finalize(db),
+ 
+             ClassMemberResult::TypedDict =&gt; KnownClass::TypedDictFallback
+                 .to_class_literal(db)
+@@ -4713,7 +4713,7 @@ impl&lt;'db&gt; DynamicClassLiteral&lt;'db&gt; {
+         );
+ 
+         match result {
+-            ClassMemberResult::Done { .. } =&gt; result.finalize(db),
++            ClassMemberResult::Done(result) =&gt; result.finalize(db),
+             ClassMemberResult::TypedDict =&gt; {
+                 // Simplified `TypedDict` handling without type mapping.
+                 KnownClass::TypedDictFallback
+@@ -4848,10 +4848,10 @@ impl&lt;'db, I: Iterator&lt;Item = ClassBase&lt;'db&gt;&gt;&gt; MroLookup&lt;'db, I&gt; {
+             }
+         }
+ 
+-        ClassMemberResult::Done {
++        ClassMemberResult::Done(CompletedMemberLookup {
+             lookup_result,
+             dynamic_type,
+-        }
++        })
+     }
+ 
+     /// Look up an instance member by iterating through the MRO.
+@@ -4942,50 +4942,46 @@ impl&lt;'db, I: Iterator&lt;Item = ClassBase&lt;'db&gt;&gt;&gt; MroLookup&lt;'db, I&gt; {
+ /// Result of class member lookup from MRO iteration.
+ pub(super) enum ClassMemberResult&lt;'db&gt; {
+     /// Found the member or exhausted the MRO.
+-    Done {
+-        lookup_result: LookupResult&lt;'db&gt;,
+-        dynamic_type: Option&lt;Type&lt;'db&gt;&gt;,
+-    },
++    Done(CompletedMemberLookup&lt;'db&gt;),
+     /// Encountered a `TypedDict` base.
+     TypedDict,
+ }
+ 
+-impl&lt;'db&gt; ClassMemberResult&lt;'db&gt; {
++pub(super) struct CompletedMemberLookup&lt;'db&gt; {
++    lookup_result: LookupResult&lt;'db&gt;,
++    dynamic_type: Option&lt;Type&lt;'db&gt;&gt;,
++}
++
++impl&lt;'db&gt; CompletedMemberLookup&lt;'db&gt; {
+     /// Finalize the lookup result by handling dynamic type intersection.
+     pub(super) fn finalize(self, db: &amp;'db dyn Db) -&gt; PlaceAndQualifiers&lt;'db&gt; {
+-        match self {
+-            ClassMemberResult::TypedDict =&gt; {
+-                // Caller should handle TypedDict case before calling finalize
+-                unreachable!(&quot;finalize called on TypedDict result&quot;)
+-            }
+-            ClassMemberResult::Done {
+-                lookup_result,
+-                dynamic_type,
+-            } =&gt; match (PlaceAndQualifiers::from(lookup_result), dynamic_type) {
+-                (symbol_and_qualifiers, None) =&gt; symbol_and_qualifiers,
++        match (
++            PlaceAndQualifiers::from(self.lookup_result),
++            self.dynamic_type,
++        ) {
++            (symbol_and_qualifiers, None) =&gt; symbol_and_qualifiers,
+ 
+-                (
+-                    PlaceAndQualifiers {
+-                        place: Place::Defined(DefinedPlace { ty, .. }),
+-                        qualifiers,
+-                    },
+-                    Some(dynamic),
+-                ) =&gt; Place::bound(
+-                    IntersectionBuilder::new(db)
+-                        .add_positive(ty)
+-                        .add_positive(dynamic)
+-                        .build(),
+-                )
+-                .with_qualifiers(qualifiers),
++            (
++                PlaceAndQualifiers {
++                    place: Place::Defined(DefinedPlace { ty, .. }),
++                    qualifiers,
++                },
++                Some(dynamic),
++            ) =&gt; Place::bound(
++                IntersectionBuilder::new(db)
++                    .add_positive(ty)
++                    .add_positive(dynamic)
++                    .build(),
++            )
++            .with_qualifiers(qualifiers),
+ 
+-                (
+-                    PlaceAndQualifiers {
+-                        place: Place::Undefined,
+-                        qualifiers,
+-                    },
+-                    Some(dynamic),
+-                ) =&gt; Place::bound(dynamic).with_qualifiers(qualifiers),
+-            },
++            (
++                PlaceAndQualifiers {
++                    place: Place::Undefined,
++                    qualifiers,
++                },
++                Some(dynamic),
++            ) =&gt; Place::bound(dynamic).with_qualifiers(qualifiers),
+         }
+     }
+ }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-09 20:33</div>
+            <div class="timeline-body"><p>Sorry, just a partial review but I gotta go!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2026-01-09 21:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:628 on 2026-01-09 21:12</div>
+            <div class="timeline-body"><p>Smart!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2026-01-09 21:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4798 on 2026-01-09 21:18</div>
+            <div class="timeline-body"><p>Rust un-formats that away sadly :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_benchmark/benches/ty_walltime.rs</code>:174 on 2026-01-10 02:07</div>
+            <div class="timeline-body"><p>I suspect we don't need this? No significant number of new diagnostics on pandas in the current iteration of the PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/call/type.md</code>:70 on 2026-01-10 02:11</div>
+            <div class="timeline-body"><p>nit: should we match the code and call these &quot;dynamic classes&quot; throughout the tests? It seems clearer to me than &quot;functional classes&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/call/type.md</code>:450 on 2026-01-10 02:22</div>
+            <div class="timeline-body"><p>There's an issue here that shows up in pywin32 in the ecosystem:</p>
+<pre><code class="language-py">from not_found import Bar, Baz  # import from unknown module to get values of type Unknown
+
+class Child(Bar, Baz):  # no diagnostic here, on main or this PR
+    pass
+
+X = type(&quot;X&quot;, (Bar, Baz), {})  # duplicate-bases diagnostic here on this PR
+</code></pre>
+<p>We don't emit a duplicate-bases diagnostic on <code>Child</code>, but in this PR we do on <code>X</code>. There shouldn't be a diagnostic on either one -- as far as we know (and should assume), <code>Bar</code> and <code>Baz</code> are separate types and it's perfectly valid to inherit from both; we just don't know what types they are.</p>
+<p>The way this is handled in the static-class MRO logic is that we don't emit duplicate-base errors until after we've tried and failed to linearize an MRO -- and multiple <code>Unknown</code> or <code>Any</code> bases doesn't fail linearization. Might be ideal to see if we can use the same approach for dynamic classes?</p>
+<p>If not, the other approach would be to manually avoid emitting this diagnostic if the &quot;dupes&quot; are <code>Type::Dynamic</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/call/type.md</code>:499 on 2026-01-10 02:23</div>
+            <div class="timeline-body"><p>This means we aren't treating the bases of a dynamic class as forward references (deferred evaluation) in a stub file?</p>
+<p>I think that's fine -- nobody should be using <code>type(...)</code> in a stub file anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1123 on 2026-01-10 02:25</div>
+            <div class="timeline-body"><p>Should there be a TODO here that this should also work for dynamic class literal types?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2026-01-10 02:26</div>
+            <div class="timeline-body"><p>I also didn't make it through a complete review before needing to head out, but I left what I've got so far.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/call/type.md</code>:499 on 2026-01-10 10:49</div>
+            <div class="timeline-body"><p>Yeah, I specifically asked Charlie to add this test to demonstrate that we wouldn't panic on cyclic definitions in stub files 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-10 10:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/call/type.md</code>:394 on 2026-01-10 12:23</div>
+            <div class="timeline-body"><p>but note that that <code>weird_other_arg</code> would actually be <em>mandatory</em> if you created a dynamic class that had <code>Base</code> as a superclass, and <code>Base.__init_subclass__</code> required a <code>weird_other_arg</code> argument to be passed to it:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class Base:
+...     def __init_subclass__(cls, weird_other_arg: int): ...
+...     
+&gt;&gt;&gt; X = type(&quot;X&quot;, (Base,), {}, weird_other_arg=42)
+&gt;&gt;&gt; Y = type(&quot;X&quot;, (Base,), {})
+Traceback (most recent call last):
+  File &quot;&lt;python-input-3&gt;&quot;, line 1, in &lt;module&gt;
+    Y = type(&quot;X&quot;, (Base,), {})
+TypeError: Base.__init_subclass__() missing 1 required positional argument: 'weird_other_arg'
+</code></pre>
+<p>We don't handle this properly yet for static classes (https://github.com/astral-sh/ty/issues/1541), though we have an open PR to fix that (https://github.com/astral-sh/ruff/pull/22185). Maybe we should just land that PR and then rebase this on top of that...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/call/type.md</code>:1 on 2026-01-10 12:27</div>
+            <div class="timeline-body"><p>What happens if you create a type with a dynamic name?</p>
+<pre><code class="language-py">def f(x: str):
+    X = type(x, (), {})
+    reveal_type(X)]
+</code></pre>
+<p>I think our ideal behaviour there would maybe be that we'd still infer it as a class-literal type, but in our display we'd show something like <code>&lt;class '&lt;unknown&gt;'&gt; @ main.py:42</code>...?</p>
+<hr />
+<p>What happens if you create a type with dynamic bases?</p>
+<pre><code class="language-py">from ty_extensions import reveal_mro
+
+def f(bases: tuple[type, ...]):
+    X = type(&quot;X&quot;, bases, {})
+    reveal_type(X)
+    reveal_mro(X)
+</code></pre>
+<p>I think our ideal behaviour there would maybe be that we'd still infer it as a class-literal type, but the revealed MRO would be <code>(&lt;class 'X'&gt;, Unknown, &lt;class 'object'&gt;)</code>, which would lead us to treat instances of the class highly dynamically (they would have all possible attributes available on them)</p>
+<hr />
+<p>What happens for things like this?</p>
+<pre><code class="language-py">def f(*args, **kwargs):
+    A = type(*args, **kwargs)
+    reveal_type(A)
+
+    B = type(&quot;B&quot;, *args, **kwargs)
+    reveal_type(B)
+
+    C = type(&quot;C&quot;, (), *args, **kwargs)
+    reveal_type(C)
+
+    D = type(&quot;D&quot;, (), {}, **kwargs)
+    reveal_type(D)
+</code></pre>
+<p>For <code>A</code> and <code>B</code>, <code>type[Any]</code> might lead to the fewest false-positive errors. For <code>C</code> and <code>D</code>, it feels like we could infer class-literal types...?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/call/type.md</code>:382 on 2026-01-10 12:36</div>
+            <div class="timeline-body"><p>Why are these commented out? They all pass for me locally 😆</p>
+<pre><code class="language-suggestion"># Inherited from `builtins.type`:
+reveal_type(T.__dictoffset__)  # revealed: int
+reveal_type(T.__name__)  # revealed: str
+reveal_type(T.__bases__)  # revealed: tuple[type, ...]
+reveal_type(T.__mro__)  # revealed: tuple[type, ...]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:6132 on 2026-01-10 12:43</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        let class_literal = self.to_class_literal(db).as_class_literal()?.as_static()?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:7021 on 2026-01-10 12:57</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    // Check for metaclass conflicts
+                    if let Err(FunctionalMetaclassConflict {
+                        metaclass1,
+                        base1,
+                        metaclass2,
+                        base2,
+                    }) = dynamic_class.try_metaclass(db)
+                        &amp;&amp; let Some(builder) =
+                            context.report_lint(&amp;CONFLICTING_METACLASS, call_expression)
+                    {
+                        builder.into_diagnostic(format_args!(
+                            &quot;The metaclass of a derived class (`{class}`) \
+                            must be a subclass of the metaclasses of all its bases, \
+                            but `{metaclass1}` (metaclass of base class `{base1}`) \
+                            and `{metaclass2}` (metaclass of base class `{base2}`) \
+                            have no subclass relationship&quot;,
+                            class = dynamic_class.name(db),
+                            metaclass1 = metaclass1.name(db),
+                            base1 = base1.display(db),
+                            metaclass2 = metaclass2.name(db),
+                            base2 = base2.display(db),
+                        ));
+                    }
+</code></pre>
+<p>But given that this is the exact same message that we emit for static classes with metaclass conflicts in <code>infer/builder.rs</code>, maybe we could factor out a standalone <code>report_*</code> function in <code>types/diagnostic.rs</code>, to avoid the repetition?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:5075 on 2026-01-10 12:59</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+pub(super) enum InstanceMemberResult&lt;'db&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:6974 on 2026-01-10 13:00</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                                        &quot;Duplicate base class{maybe_s} {dupes} in class `{class}`&quot;,
+                                        maybe_s = if duplicates.len() == 1 { &quot;&quot; } else { &quot;es&quot; },
+                                        dupes = duplicates.iter().map(|base| base.display(db)).join(&quot;, &quot;),
+                                        class = dynamic_class.name(db),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/call/type.md</code>:1 on 2026-01-10 13:12</div>
+            <div class="timeline-body"><p>I'd also love some x-failing tests for the various diagnostics that we plan to add in followups:</p>
+<ul>
+<li><code>Protocol</code> in the bases list</li>
+<li><code>TypedDict</code> in the bases list</li>
+<li><code>NamedTuple</code> in the bases list</li>
+<li><code>Generic[T]</code> in the bases list</li>
+<li><code>Enum</code> (or any <code>Enum</code> subclass) in the bases list</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/enums.rs</code>:167 on 2026-01-10 13:15</div>
+            <div class="timeline-body"><p>oof, splitting that type annotation over three lines is ugly 😆 Let's just import <code>SmallVec</code> here?</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types/enums.rs b/crates/ty_python_semantic/src/types/enums.rs
+index 2bb0e4e4d1..f5067cc675 100644
+--- a/crates/ty_python_semantic/src/types/enums.rs
++++ b/crates/ty_python_semantic/src/types/enums.rs
+@@ -1,5 +1,6 @@
+ use ruff_python_ast::name::Name;
+ use rustc_hash::FxHashMap;
++use smallvec::SmallVec;
+ 
+ use crate::{
+     Db, FxIndexMap,
+@@ -162,23 +163,22 @@ pub(crate) fn enum_metadata&lt;'db&gt;(
+                                     {
+                                         Type::string_literal(db, &amp;name.to_lowercase())
+                                     } else {
+-                                        let custom_mixins: smallvec::SmallVec&lt;
+-                                            [Option&lt;KnownClass&gt;; 1],
+-                                        &gt; = class
+-                                            .iter_mro(db, None)
+-                                            .skip(1)
+-                                            .filter_map(ClassBase::into_class)
+-                                            .filter(|class| {
+-                                                !Type::from(*class).is_subtype_of(
+-                                                    db,
+-                                                    KnownClass::Enum.to_subclass_of(db),
+-                                                )
+-                                            })
+-                                            .map(|class| class.known(db))
+-                                            .filter(|class| {
+-                                                !matches!(class, Some(KnownClass::Object))
+-                                            })
+-                                            .collect();
++                                        let custom_mixins: SmallVec&lt;[Option&lt;KnownClass&gt;; 1]&gt; =
++                                            class
++                                                .iter_mro(db, None)
++                                                .skip(1)
++                                                .filter_map(ClassBase::into_class)
++                                                .filter(|class| {
++                                                    !Type::from(*class).is_subtype_of(
++                                                        db,
++                                                        KnownClass::Enum.to_subclass_of(db),
++                                                    )
++                                                })
++                                                .map(|class| class.known(db))
++                                                .filter(|class| {
++                                                    !matches!(class, Some(KnownClass::Object))
++                                                })
++                                                .collect();
+ 
+                                         // `IntEnum`s have the same `auto()` behaviour to enums inheriting from `(int, Enum)`,
+                                         // and `IntEnum`s also have `int` in their MROs, so both cases are handled here.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:39 on 2026-01-10 13:21</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            // Dynamic classes cannot be `TypedDict`s or protocols and they cannot be
+            // the class `builtins.tuple`.
+</code></pre>
+<p>But I think it would be more future-proof to do an explicit <code>match</code> here over the <code>ClassLiteral</code> variant rather than calling <code>.static_class_literal(db)</code>. In the future we intend to add another <code>ClassLiteral</code> variant corresponding to functional <code>TypeDict</code>s; for that variant, we will want to go down the same codepath as the <code>class_literal.is_typed_dict(db).then(|| Type::typed_dict(class))</code> bit of this method a few lines below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/list_members.rs</code>:1 on 2026-01-10 13:22</div>
+            <div class="timeline-body"><p>Can we add some tests to https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/ide_support/all_members.md that demonstrate which members our autocomplete machinery considers to be available on instances of dynamic classes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/overrides.rs</code>:48 on 2026-01-10 13:25</div>
+            <div class="timeline-body"><p>We will want to change this in https://github.com/astral-sh/ruff/pull/22480 so that it accepts dynamic classes too: if we allow dynamic classes to define attributes in their namespace dictionary, we should also check whether those attributes are valid overrides of attributes in their superclasses.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:607 on 2026-01-10 13:29</div>
+            <div class="timeline-body"><p>It looks like most of these checks either don't apply to dynamic classes, or we have them independently implemented elsewhere for dynamic classes. So I think this is fine. But we should rename the method to <code>check_static_class_definitions, and mention in the docstring that we only iterate over class definitions created using </code>class` statements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/call/type.md</code>:1 on 2026-01-10 13:32</div>
+            <div class="timeline-body"><p>What happens if you provide an explicit annotation when creating a dynamic class? I don't actually care <em>too</em> much about our behaviour here right now, because we intend to change how this stuff works more broadly pretty soon in https://github.com/astral-sh/ty/issues/136. But let's add a test for it:</p>
+<pre><code class="language-py">T: type = type(&quot;T&quot;, (), {})
+reveal_type(T)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:5430 on 2026-01-10 13:34</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                        // Only handle 3-arg type() calls specially to capture the definition.
+                        // 1-arg type() calls are handled by normal call binding.
+                        Some(KnownClass::Type)
+                            if call_expr.arguments.args.len() == 3
+                                &amp;&amp; call_expr.arguments.keywords.is_empty() =&gt;
+                        {
+                            // Try to extract the functional class with definition.
+                            // Fall back to regular call binding if extraction fails
+                            // (e.g., for cyclic references where names aren't resolved yet).
+                            self.infer_functional_type_expression(call_expr, definition)
+                                .unwrap_or_else(|| {
+                                    self.infer_call_expression_impl(call_expr, callable_type, tcx)
+                                })
+                        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:6057 on 2026-01-10 13:36</div>
+            <div class="timeline-body"><p>we should check whether we can infer the name as a string-literal <em>type</em> rather than checking whether it's a string-literal <em>node</em>, so that we can support things like</p>
+<pre><code class="language-py">name = &quot;some very very long name&quot;
+T = type(name, (), {})
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:6084 on 2026-01-10 13:44</div>
+            <div class="timeline-body"><p>I think here you want to do something like this:</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types/infer/builder.rs b/crates/ty_python_semantic/src/types/infer/builder.rs
+index b3cacb5663..96c3243ad0 100644
+--- a/crates/ty_python_semantic/src/types/infer/builder.rs
++++ b/crates/ty_python_semantic/src/types/infer/builder.rs
+@@ -6077,10 +6077,13 @@ impl&lt;'db, 'ast&gt; TypeInferenceBuilder&lt;'db, 'ast&gt; {
+             KnownClass::Object.try_to_class_literal(db).unwrap().into();
+ 
+         let base_classes: Option&lt;Box&lt;[ClassBase&lt;'db&gt;]&gt;&gt; = bases_type
+-            .exact_tuple_instance_spec(db)
+-            .and_then(|tuple_spec| {
+-                tuple_spec
+-                    .fixed_elements()
++            .tuple_instance_spec(db)
++            .as_deref()
++            .and_then(|spec|spec.as_fixed_length())
++            .and_then(|tuple| {
++                tuple
++                    .elements_slice()
++                    .iter()
+                     .enumerate()
+                     .map(|(idx, base)| {
+                         // First try the standard conversion.
+diff --git a/crates/ty_python_semantic/src/types/tuple.rs b/crates/ty_python_semantic/src/types/tuple.rs
+index dfc484cabd..2bd955432b 100644
+--- a/crates/ty_python_semantic/src/types/tuple.rs
++++ b/crates/ty_python_semantic/src/types/tuple.rs
+@@ -1313,6 +1313,13 @@ pub enum Tuple&lt;T&gt; {
+ }
+ 
+ impl&lt;T&gt; Tuple&lt;T&gt; {
++    pub(crate) fn as_fixed_length(&amp;self) -&gt; Option&lt;&amp;FixedLengthTuple&lt;T&gt;&gt; {
++        match self {
++            Tuple::Fixed(tuple) =&gt; Some(tuple),
++            Tuple::Variable(_) =&gt; None,
++        }
++    }
++
+     pub(crate) const fn homogeneous(element: T) -&gt; Self {
+         Self::Variable(VariableLengthTuple::homogeneous(element))
+     }
+</code></pre>
+<p>There's two changes here:</p>
+<ul>
+<li>Use <code>tuple_instance_spec()</code> rather than <code>exact_tuple_instance_spec()</code>. Tuple subclasses should be fine here. We could actually add a test for this:</li>
+<li>Make sure that the tuple is a fixed-length tuple. <code>Tuple::fixed_elements()</code> doesn't do this for you: if it's a tuple like <code>tuple[int, *tuple[str, ...]]</code>, it will give you the <code>int</code> element (the &quot;fixed element&quot;), then stop.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2026-01-10 13:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ty_python_semantic/resources/mdtest/call/type.md</code>:70 on 2026-01-10 13:46</div>
+            <div class="timeline-body"><p>Thank you, sorry. These are missed renames.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:6212 on 2026-01-10 13:47</div>
+            <div class="timeline-body"><p>It looks like there's quite a lot of duplication between this and the method above. Can we not have them both call into a <code>infer_functional_type_call_impl</code> method or something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/mro.rs</code>:94 on 2026-01-10 13:53</div>
+            <div class="timeline-body"><p>I've been meaning for a while now to move this special casing to <code>class.rs</code>, where it would make more sense. Since this code is moving anyway in this PR, you could make that change here (or in a standalone PR and then rebase this on top of it):</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types/class.rs b/crates/ty_python_semantic/src/types/class.rs
+index 32029a5617..ded5d5d9bc 100644
+--- a/crates/ty_python_semantic/src/types/class.rs
++++ b/crates/ty_python_semantic/src/types/class.rs
+@@ -2280,20 +2280,24 @@ impl&lt;'db&gt; StaticClassLiteral&lt;'db&gt; {
+         let class_definition =
+             semantic_index(db, self.file(db)).expect_single_definition(class_stmt);
+ 
+-        if self.is_known(db, KnownClass::VersionInfo) {
+-            let tuple_type = TupleType::new(db, &amp;TupleSpec::version_info_spec(db))
+-                .expect(&quot;sys.version_info tuple spec should always be a valid tuple&quot;);
+-
+-            Box::new([
+-                definition_expression_type(db, class_definition, &amp;class_stmt.bases()[0]),
+-                Type::from(tuple_type.to_class_type(db)),
+-            ])
+-        } else {
+-            class_stmt
++        match self.known(db) {
++            Some(KnownClass::VersionInfo) =&gt; {
++                let tuple_type = TupleType::new(db, &amp;TupleSpec::version_info_spec(db))
++                    .expect(&quot;sys.version_info tuple spec should always be a valid tuple&quot;);
++
++                // Special-case `NotImplementedType`: typeshed says that it inherits from `Any`,
++                // but this causes more problems than it fixes.
++                Box::new([
++                    definition_expression_type(db, class_definition, &amp;class_stmt.bases()[0]),
++                    Type::from(tuple_type.to_class_type(db)),
++                ])
++            }
++            Some(KnownClass::NotImplementedType) =&gt; Box::new([]),
++            _ =&gt; class_stmt
+                 .bases()
+                 .iter()
+                 .map(|base_node| definition_expression_type(db, class_definition, base_node))
+-                .collect()
++                .collect(),
+         }
+     }
+ 
+diff --git a/crates/ty_python_semantic/src/types/mro.rs b/crates/ty_python_semantic/src/types/mro.rs
+index eb6e05e58c..9f60c590ac 100644
+--- a/crates/ty_python_semantic/src/types/mro.rs
++++ b/crates/ty_python_semantic/src/types/mro.rs
+@@ -8,7 +8,7 @@ use crate::Db;
+ use crate::types::class_base::ClassBase;
+ use crate::types::generics::Specialization;
+ use crate::types::{
+-    ClassLiteral, ClassType, DynamicClassLiteral, KnownClass, KnownInstanceType, SpecialFormType,
++    ClassLiteral, ClassType, DynamicClassLiteral, KnownInstanceType, SpecialFormType,
+     StaticClassLiteral, Type,
+ };
+ 
+@@ -86,13 +86,6 @@ impl&lt;'db&gt; Mro&lt;'db&gt; {
+         }
+ 
+         let class = class_literal.apply_optional_specialization(db, specialization);
+-
+-        // Special-case `NotImplementedType`: typeshed says that it inherits from `Any`,
+-        // but this causes more problems than it fixes.
+-        if class_literal.is_known(db, KnownClass::NotImplementedType) {
+-            return Ok(Self::from([ClassBase::Class(class), ClassBase::object(db)]));
+-        }
+-
+         let original_bases = class_literal.explicit_bases(db);
+ 
+         match original_bases {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-10 13:53</div>
+            <div class="timeline-body"><p>This looks very good, and I think it's close! My main comment on this pass is I think we could do with a bunch more tests</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:56:31 UTC
+    </footer>
+</body>
+</html>

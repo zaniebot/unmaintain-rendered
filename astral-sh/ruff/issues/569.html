@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pre-commit hook does not respect directory - astral-sh/ruff #569</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>pre-commit hook does not respect directory</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/569">#569</a>
+        opened by <a href="https://github.com/brizzbuzz">@brizzbuzz</a>
+        on 2022-11-03 15:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/brizzbuzz">@brizzbuzz</a> on 2022-11-03 15:26</div>
+            <div class="timeline-body"><p>Very cool tool 🔥 Ran it on a gigantic repo and it crunched through everything in 100 seconds, where as Flake8 would just puke if we tried to lint everything in 1 shot.</p>
+<p>Only problem, I'm getting an issue trying to configure it to run as a pre-commit hook :(</p>
+<p>I have a bad feeling that I'm just doing something dumb here, but for the life of me I cannot figure it out, so gonna file it as a bug just in case.</p>
+<p>I have a repo where all my python files are inside a <code>src</code> directory in my repo root.</p>
+<p>Running <code>ruff src</code> from the root dir works as expected, no errors.  However, with the following pre-commit hook</p>
+<pre><code>fail_fast: false
+repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        name: ruff
+        entry: ruff src
+        language: system
+</code></pre>
+<p>Ruff seems to completely ignore the directory, and all of my files from root downwards get linted.</p>
+<pre><code>pre-commit run
+ruff.....................................................................Failed
+- hook id: ruff
+- exit code: 1
+
+Found 469 error(s).
+.gitignore:1:3: E999 SyntaxError: invalid syntax. Got unexpected token '.'
+.pre-commit-config.yaml:2:8: E999 SyntaxError: invalid syntax. Got unexpected token Newline
+docker-compose.yml:2:11: E999 SyntaxError: invalid syntax. Got unexpected token Newline
+poetry.lock:4:1: E501 Line too long (99 &gt; 88 characters)
+poetry.lock:12:31: E999 SyntaxError: invalid syntax. Got unexpected token '='
+poetry.lock:16:1: E501 Line too long (175 &gt; 88 characters)
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-03 15:28</div>
+            <div class="timeline-body"><p>Thank you! Taking a look...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-03 15:43</div>
+            <div class="timeline-body"><p>I think the issue here is that ruff is trying to run against <em>all staged files</em>. (The way <code>pre-commit</code> is designed is that it expects to pass the list of changed files to the underlying tool, rather than always running against a pre-defined directory like <code>src</code>.)</p>
+<p>That being said, if you change <code>.pre-commit-config.yaml</code> to this, it should then only check staged <em>Python</em> files:</p>
+<pre><code class="language-yaml">repos:
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.0.95
+    hooks:
+      - id: ruff
+</code></pre>
+<p>Alternatively, if you want to keep using <code>repo: local</code>, you could do this:</p>
+<pre><code class="language-yaml">repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        name: ruff
+        entry: ruff
+        language: python
+        &quot;types&quot;: [python]
+</code></pre>
+<p>There might be a way to <em>always</em> run against all files in <code>src</code> (and no other Python files), I'll play around with it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-03 15:43</div>
+            <div class="timeline-body"><p>Separately: 100 seconds is long! Is this a public repo??</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-03 15:46</div>
+            <div class="timeline-body"><p>Oh, I think you could do this to limit to <code>src</code>:</p>
+<pre><code class="language-yaml">repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        name: ruff
+        entry: ruff
+        # Limit to files in `src`
+        files: src
+        language: python
+        &quot;types&quot;: [python]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2022-11-03 15:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brizzbuzz">@brizzbuzz</a> on 2022-11-03 16:11</div>
+            <div class="timeline-body"><p>ah yep looks like that did the trick.  Thanks so much! Will close this out</p>
+<blockquote>
+<p>Separately: 100 seconds is long! Is this a public repo??</p>
+</blockquote>
+<p>Nope, private company monolith. ~19000 python files, some of them terrifyingly large.  This was also totally cold, I'm sure that it takes a fraction of that with the cache in place :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @brizzbuzz on 2022-11-03 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-03 16:26</div>
+            <div class="timeline-body"><p>If you run into other issues, don't hesitate to reach out!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:56:29 UTC
+    </footer>
+</body>
+</html>

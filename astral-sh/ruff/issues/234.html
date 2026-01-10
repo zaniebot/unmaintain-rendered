@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regression with ruff 0.0.42 on relative exclude files - astral-sh/ruff #234</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Regression with ruff 0.0.42 on relative exclude files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/234">#234</a>
+        opened by <a href="https://github.com/amotl">@amotl</a>
+        on 2022-09-20 16:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/amotl">@amotl</a> on 2022-09-20 16:03</div>
+            <div class="timeline-body"><p>Hi again,</p>
+<p>apologies for creating so many issues and for sometimes missing to catch up, because the pace is so fast. I hope you still appreciate my feedback.</p>
+<p>After adjusting our exclude pattern recently as outlined at https://github.com/charliermarsh/ruff/issues/203#issuecomment-1249055408 and https://github.com/jpmens/mqttwarn/commit/fad50af912e, we just had to downgrade to ruff 0.0.40 (https://github.com/jpmens/mqttwarn/commit/041a3f425d) to make it work again.</p>
+<p>Currently, on 0.0.42, <code>ruff</code> would croak on both configuration variants of <code>extend-exclude</code>. There is probably another thing amongst the recent changes I am missing here?</p>
+<pre><code>tests/etc/functions_bad.py:0:0: E999 SyntaxError: unexpected indent at line 6 column 5
+</code></pre>
+<pre><code class="language-toml">extend-exclude = [
+  &quot;./tests/etc/functions_bad.py&quot;
+]
+</code></pre>
+<pre><code class="language-toml">extend-exclude = [
+  &quot;tests/etc/functions_bad.py&quot;
+]
+</code></pre>
+<p>Keep up the spirit and with kind regards,
+Andreas.</p>
+<p>P.S.: Just to make it clear: <a href="https://github.com/jpmens/mqttwarn/blob/0.29.1/tests/etc/functions_bad.py"><code>tests/etc/functions_bad.py</code></a> <em>intentionally</em> has bad formatting, because we use it as a canary for running our plugin machinery on bad input files. That is why we need to make <code>ruff</code> skip it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-20 16:13</div>
+            <div class="timeline-body"><p>Sorry, will look into this now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-20 16:15</div>
+            <div class="timeline-body"><p>Legitimate bug thank you! I assume you're running <code>ruff .</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amotl">@amotl</a> on 2022-09-20 16:21</div>
+            <div class="timeline-body"><blockquote>
+<p>I assume you're running <code>ruff .</code>?</p>
+</blockquote>
+<p>We are actually running <code>ruff</code> only on a subdirectory of <code>mqttwarn</code> yet, per <a href="https://github.com/jpmens/mqttwarn/blob/ee3a736e7dd88442c837e38b5600817d4e3591a6/pyproject.toml#L59"><code>ruff tests</code></a>. However, the same admonition, on the corresponding file, also happens when invoking <code>ruff .</code> -- amongst many others yet unfixed within the code base.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-09-20 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-20 16:28</div>
+            <div class="timeline-body"><p>Hopefully fixed in v0.0.43 (building now) but please let me know if not! I cloned your repo and tested on that directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-20 16:39</div>
+            <div class="timeline-body"><p>Apologies for all the churn here. The strategy for inclusion / exclusion has stabilized a lot so I don't anticipate any more breakages or API changes (apart from backwards-compatible changes, like ignoring <code>.venv*</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amotl">@amotl</a> on 2022-09-20 16:42</div>
+            <div class="timeline-body"><p>No worries about those hiccups. Speaking for me, I was happy to help on the corresponding teething issues, and I am sure @jack1142 enjoys it equally well. Cheers!</p>
+<p>P.S.: I will report back about the outcome on 0.0.43, but I am sure it will be fixed. Thanks for going the extra mile by cloning our repo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amotl">@amotl</a> on 2022-09-20 17:39</div>
+            <div class="timeline-body"><p>🌧️ Build failed, maybe just a hiccup. -- https://github.com/charliermarsh/ruff/actions/runs/3091788765/jobs/5002298427</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amotl">@amotl</a> on 2022-09-20 20:15</div>
+            <div class="timeline-body"><p>Hi again. @charliermarsh: I can confirm that ruff 0.0.43 works excellent again. Thank you once more for fixing it so quickly.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:56:29 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skip walking all tokens when loading range suppressions - astral-sh/ruff #22446</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Skip walking all tokens when loading range suppressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22446">#22446</a>
+        opened by <a href="https://github.com/amyreese">@amyreese</a>
+        on 2026-01-07 22:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/amyreese">@amyreese</a> on 2026-01-07 22:39</div>
+            <div class="timeline-body"><p>Adapted from https://github.com/astral-sh/ruff/pull/21441#pullrequestreview-3503773083</p>
+<p>issue #22087</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @amyreese on 2026-01-07 22:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @amyreese on 2026-01-07 22:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-07 22:49</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2026-01-08 01:20</div>
+            <div class="timeline-body"><p>The original codspeed run I think showed a 1% perf <em>regression</em> on a few benchmarks, but I also don't think we have any codspeed jobs that would actually exercise this functionality yet since the range suppressions aren't likely to be found in the wild yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-08 08:04</div>
+            <div class="timeline-body"><p>We'll probably need to temporarily remove the preview gating to see if we mitigated the perf regression that we've seen on your first PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2026-01-08 18:09</div>
+            <div class="timeline-body"><blockquote>
+<p>We'll probably need to temporarily remove the preview gating to see if we mitigated the perf regression that we've seen on your first PR.</p>
+</blockquote>
+<p>Looks like a <a href="https://codspeed.io/astral-sh/ruff/branches/amy%2Fsuppression-perf-2?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Adefault_rules%3A%3Abenchmark_default_rules%3A%3Alinter%2Fdefault-rules%255Blarge%2Fdataset.py%255D&amp;runnerMode=Instrumentation&amp;sectionId=benchmark-comparison-section-comparison-passed">1% perf hit</a> when ungated on <code>large/dataset.py</code>, compared to <a href="https://codspeed.io/astral-sh/ruff/branches/amy%2Fperf-enable-suppressions?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Adefault_rules%3A%3Abenchmark_default_rules%3A%3Alinter%2Fdefault-rules%255Blarge%2Fdataset.py%255D&amp;runnerMode=Instrumentation&amp;sectionId=benchmark-comparison-section-comparison-passed">2% perf hit</a> without this PR when ungated on the same benchmark in #22461.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @amyreese on 2026-01-09 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @amyreese on 2026-01-09 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/suppression.rs</code>:402 on 2026-01-10 09:16</div>
+            <div class="timeline-body"><p>We could avoid doing two binary search by introducing a <code>tokens.split_at(offset)</code> method:</p>
+<pre><code class="language-rust">let (before_tokens, after_tokens) = tokens.split_at(suppression.range.start());
+
+let last_indent = before_tokens.iter().rfind(...);
+let tokens = after_tokens
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/suppression.rs</code>:392 on 2026-01-10 09:18</div>
+            <div class="timeline-body"><p>I think we should clear indents after each iteration. We use it more as a scratch pad and we only use the same instance to avoid allocating multiple vecs`</p>
+<pre><code class="language-suggestion">        'comments: while let Some(suppression) = suppressions.peek() {
+        		indents.clear();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/suppression.rs</code>:448 on 2026-01-10 09:39</div>
+            <div class="timeline-body"><p>Nit: You could use let chains here</p>
+<p>Change the tokens loop to:</p>
+<pre><code class="language-rust">let mut tokens = tokens.after(suppression.range.start()).iter();
+while let Some(token) = tokens.next() {
+	...
+</code></pre>
+<pre><code class="language-suggestion">                        if indent == current_indent
+                            &amp;&amp; let Some(non_trivia) = tokens.clone().find(|t| !t.kind().is_trivia())
+                            &amp;&amp; matches!(non_trivia.kind(), TokenKind::Dedent | TokenKind::Indent)
+</code></pre>
+<p>Cloning <code>tokens</code> here is fine because cloning a slice iterator is cheap (it's only two pointers, one pointing to the start and one to the end of the slice)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/preview.rs</code>:298 on 2026-01-10 09:39</div>
+            <div class="timeline-body"><p>TODO: Revert</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2026-01-10 09:40</div>
+            <div class="timeline-body"><p>Nice, thank you.</p>
+<p>I think it's worthwhile to introduce a <code>tokens.split_at</code> method to avoid repeating the same binary search twice only to get after and before</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> removed by @MichaReiser on 2026-01-10 09:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2026-01-10 09:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:56:31 UTC
+    </footer>
+</body>
+</html>

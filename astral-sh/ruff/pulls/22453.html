@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`airflow`] Second positional argument to Asset/Dataset should not be a dictionary (`AIR303`) - astral-sh/ruff #22453</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>airflow</code>] Second positional argument to Asset/Dataset should not be a dictionary (<code>AIR303</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22453">#22453</a>
+        opened by <a href="https://github.com/sjyangkevin">@sjyangkevin</a>
+        on 2026-01-08 04:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sjyangkevin">@sjyangkevin</a> on 2026-01-08 04:46</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This PR is related to https://github.com/apache/airflow/issues/48389.</p>
+<p>In Airflow 3, the function signature for <code>airflow.Dataset</code>, <code>airflow.datasets.Dataset</code>, and <code>airflow.sdk.Asset</code> has changed. Below is the function signature for <code>airflow.sdk.Asset</code>. The second positional argument is <code>uri</code> which is of type <code>str</code>. In the older version, the second positional argument can be a dictionary which is the <code>extra: 'dict | None' = None</code> argument. Therefore, we need to flag this in Airflow 3.</p>
+<pre><code class="language-python">Asset(name: 'str | None' = None, uri: 'str | None' = None, *, group: 'str | None' = None, extra: 'dict | None' = None, watchers: 'list[AssetWatcher | SerializedAssetWatcher] | None' = None) -&gt; 'None'
+</code></pre>
+<p>As this is a check on constructor call, we need to create a new method <code>check_constructor_arguments</code>, instead of on method call. The new rule check whether the index 1 (the second argument) is a dictionary (either a literal or a <code>dict()</code> call).</p>
+<h2>Test Plan</h2>
+<p>The <code>AIR303.py</code> test file have been updated with new test cases. The snapshot has been updated and all other test cases passed.</p>
+<p>@Lee-W , could you please review it when you have a chance, and let me know if you have further feedback. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-08 04:57</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lee-W">@Lee-W</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:150 on 2026-01-08 06:56</div>
+            <div class="timeline-body"><p>We could mention it's now <code>Asset(name=..., uri=..., extra=...)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lee-W">@Lee-W</a> reviewed on 2026-01-08 06:57</div>
+            <div class="timeline-body"><p>one nit, LGTM!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sjyangkevin">@sjyangkevin</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:150 on 2026-01-08 15:34</div>
+            <div class="timeline-body"><p>wondering if this looks better</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sjyangkevin">@sjyangkevin</a> reviewed on 2026-01-08 15:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Lee-W by @sjyangkevin on 2026-01-08 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @amyreese on 2026-01-08 20:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lee-W">@Lee-W</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:150 on 2026-01-09 01:16</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                            message: &quot;Use keyword argument `extra` instead of passing a dict as the second positional argument (e.g., `Asset(name=..., uri=..., extra=...)`)&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lee-W">@Lee-W</a> reviewed on 2026-01-09 01:16</div>
+            <div class="timeline-body"><p>LGTM after the last nit 👍 Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sjyangkevin">@sjyangkevin</a> reviewed on 2026-01-09 01:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sjyangkevin">@sjyangkevin</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:150 on 2026-01-09 01:19</div>
+            <div class="timeline-body"><p>cool! just pushed the fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sjyangkevin">@sjyangkevin</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:1 on 2026-01-09 15:38</div>
+            <div class="timeline-body"><p>wonder if we should update the version as 0.14.11 was released.</p>
+<pre><code>#[violation_metadata(preview_since = &quot;0.14.11&quot;)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sjyangkevin">@sjyangkevin</a> reviewed on 2026-01-09 15:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @MichaReiser on 2026-01-09 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lee-W">@Lee-W</a> reviewed on 2026-01-10 13:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lee-W">@Lee-W</a> on <code>crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs</code>:1 on 2026-01-10 13:43</div>
+            <div class="timeline-body"><p>yep, I think so</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:56:31 UTC
+    </footer>
+</body>
+</html>

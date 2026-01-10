@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ruff] Split WASM build and publish into separate workflows (#12387) - astral-sh/ruff #22476</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ruff] Split WASM build and publish into separate workflows (#12387)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22476">#22476</a>
+        opened by <a href="https://github.com/bybrooks">@bybrooks</a>
+        on 2026-01-09 12:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/bybrooks">@bybrooks</a> on 2026-01-09 12:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Issue：https://github.com/astral-sh/ruff/issues/12387</p>
+<p>This PR splits the WASM workflow into separate build and publish workflows, following the same pattern used for binaries (<code>build-binaries.yml</code> and <code>release.yml</code>).</p>
+<h3>Changes</h3>
+<p><strong>New file: <code>.github/workflows/build-wasm.yml</code></strong></p>
+<ul>
+<li>Triggers on <code>workflow_call</code> and <code>pull_request</code></li>
+<li>Builds WASM packages for three targets: <code>web</code>, <code>bundler</code>, <code>nodejs</code> (matrix strategy)</li>
+<li>Uploads build artifacts via <code>actions/upload-artifact</code></li>
+</ul>
+<p><strong>Modified: <code>.github/workflows/publish-wasm.yml</code></strong></p>
+<ul>
+<li>Removed build steps (wasm-pack, rust toolchain setup, etc.)</li>
+<li>Added <code>actions/download-artifact</code> to fetch pre-built artifacts</li>
+<li>Kept existing npm publish logic (dry-run and production)</li>
+</ul>
+<p><strong>Modified: <code>.github/workflows/release.yml</code></strong></p>
+<ul>
+<li>Added <code>custom-build-wasm</code> job that runs after <code>plan</code></li>
+<li>Updated <code>build-global-artifacts</code> to depend on <code>custom-build-wasm</code></li>
+</ul>
+<h2>Test Plan</h2>
+<h3>Automated Tests (triggered by this PR)</h3>
+<ul>
+<li>[x] <code>Build wasm</code> workflow is triggered via <code>pull_request</code></li>
+<li>[x] 3 matrix jobs (web, bundler, nodejs) run in parallel</li>
+<li>[x] Artifacts (<code>artifacts-wasm-*</code>) are uploaded for each target</li>
+</ul>
+<h3>Manual Verification (after merge)</h3>
+<ol>
+<li>Run <code>Release</code> workflow via <code>workflow_dispatch</code> with <code>dry-run</code> tag</li>
+<li>Verify:<ul>
+<li>[x] <code>custom-build-wasm</code> job runs after <code>plan</code></li>
+<li>[x] <code>build-global-artifacts</code> waits for <code>custom-build-wasm</code> completion</li>
+<li>[ ] <code>custom-publish-wasm</code> downloads artifacts and runs <code>npm publish --dry-run</code></li>
+<li>[ ] Job dependency chain works correctly</li>
+</ul>
+</li>
+</ol>
+<h3>Local Validation (completed)</h3>
+<ul>
+<li>[x] <code>pre-commit run check-github-workflows -a</code> - Passed</li>
+<li>[x] <code>pre-commit run actionlint -a --hook-stage=manual</code> - Passed</li>
+<li>[x] <code>pre-commit run prettier -a</code> - Passed</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @bybrooks on 2026-01-09 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ci</span> added by @MichaReiser on 2026-01-09 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2026-01-09 12:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/release.yml</code>:122 on 2026-01-09 12:46</div>
+            <div class="timeline-body"><p>This file is auto generated. I believe you have to add the job here</p>
+<p>https://github.com/astral-sh/ruff/blob/69999e49cf3026f85ab99445a14d8f30d088b126/dist-workspace.toml#L53</p>
+<p>and then run <code>cargo dist init</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-09 16:23</div>
+            <div class="timeline-body"><p>This is great. It will make our release workflows much faster. Thank you</p>
+<p>Hmm, I don't think that I can trigger the release workflow from your branch. Do you know if you can trigger it on your fork?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-09 16:40</div>
+            <div class="timeline-body"><p>Let's give this a try</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2026-01-09 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2026-01-09 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-09 16:57</div>
+            <div class="timeline-body"><p>Running https://github.com/astral-sh/ruff/actions/runs/20858802478</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-09 17:20</div>
+            <div class="timeline-body"><p>Looks like we'll only find out when doing our next release</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:56:31 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid back-ticks in linter messages - astral-sh/ruff #723</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid back-ticks in linter messages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/723">#723</a>
+        opened by <a href="https://github.com/peterjc">@peterjc</a>
+        on 2022-11-13 18:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/peterjc">@peterjc</a> on 2022-11-13 18:16</div>
+            <div class="timeline-body"><p>e.g. Trying ruff 0.0.114 on the Biopython codebase as an alternative to flake8 (for which is almost unbelievably fast, sub-second even if I deliberately run <code>rm -rf .ruff_cache/</code> first. Nice!):</p>
+<pre><code>$ ruff Bio --extend-ignore E501,B007,E741,F401,F841,D105,B009,B010,B011
+Bio/PDB/MMCIF2Dict.py:120:41: E713 Test for membership should be `not in`
+</code></pre>
+<p>Attempting to copy and past that into my git commit message at the command line is complicated due to the back ticks (bash attempts to run the command <code>not in</code>). Typically flake8 plugins use single quotes, where that is not a problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2022-11-13 18:55</div>
+            <div class="timeline-body"><p>Many characters remain special to Bash inside double quotes. The way to suppress their special meaning is by surrounding them with single quotes (<a href="https://www.gnu.org/software/bash/manual/html_node/Quoting.html">documentation</a>):</p>
+<pre><code class="language-bash">git commit -am 'Fix E713 Test for membership should be `not in`'
+</code></pre>
+<p>which would actually become harder if ruff used single quotes itself.</p>
+<p>(That said, if it were my project, I might have opted for Unicode curly quotes: <code>Test for membership should be ‘not in’</code>, like GCC.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/peterjc">@peterjc</a> on 2022-11-13 21:57</div>
+            <div class="timeline-body"><p>I know there are workarounds, my point was with flake8 and pycodestyle I don't need one because it uses single quote chars:</p>
+<p>https://github.com/PyCQA/pycodestyle/blob/2.9.1/pycodestyle.py#L1418</p>
+<p>i.e. I see this as a minor but annoying change in potentially switching from flake8 to ruff.</p>
+<p>(Unicode quotes would be a neat alternative, they probably would work near universally nowadays.)</p>
+<p>As an aside, the real flake8 and pycodestyle seems to miss this particular example https://github.com/biopython/biopython/pull/4159 very strange (e.g. <code>$ flake8 --isolated --select E713 Bio/PDB/MMCIF2Dict.py</code> to rule out a configuration issue) - so that's an upside.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/peterjc">@peterjc</a> on 2022-11-14 13:40</div>
+            <div class="timeline-body"><p>This looks easy to fix in ruff, a series of string literal changes - the specific examples is here:</p>
+<p>https://github.com/charliermarsh/ruff/blob/v0.0.117/src/checks.rs#L1347</p>
+<p>I've not worked with rust before, but could attempt a pull request if welcome?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-14 18:09</div>
+            <div class="timeline-body"><p>Let me take a look at a few other tools and see how they handle this! I initially liked the use of backticks since they render correctly in Markdown and (to my mind) had become a standard for indicating code snippets. But it's not worth it to me if it's causing a bunch of inconveniences.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2022-11-14 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2022-11-14 20:54</div>
+            <div class="timeline-body"><p>“A bunch of inconveniences” seems overblown. Rust errors use backticks <code>``</code>; the Rust team has put a lot of effort into error message ergonomics generally, and thought about this specific question at least enough to put it in their <a href="https://rustc-dev-guide.rust-lang.org/diagnostics.html#diagnostic-structure">style guide</a>. I didn’t find any evidence of complaints from people incorrectly pasting backticks from Rust errors into their shell.</p>
+<p>ASCII quotes <code>''</code> or <code>&quot;&quot;</code> would be confusable with real Python syntax, and they’d still be misinterpreted under naïve shell pasting. Unicode quotes <code>‘’</code> or <code>“”</code> would be pretty and unambiguous (in good enough fonts), but might require a bit more effort from ruff contributors to maintain consistency. I assume we can all agree that the hideous <code>`'</code> “pairs” emitted by some older tools merit no consideration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-15 02:32</div>
+            <div class="timeline-body"><p>Hmm yeah. While I totally understand the critique @peterjc, I think I'm going to leave this as-is for now. If we continue to hear complaints, I'll definitely reconsider!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-15 02:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/peterjc">@peterjc</a> on 2022-11-15 10:52</div>
+            <div class="timeline-body"><p>That's fine, it is only a minor inconvenience to me. Thank you.</p>
+<p>I can see this was a deliberate choice away from the Python tools' use of single quotes to the back-ticks favoured by the Rust team (quoting the style guide Anders linked to):</p>
+<blockquote>
+<p>When code or an identifier must appear in a message or label, it should be surrounded with backticks</p>
+</blockquote>
+<p>The Rust team were probably swayed by the back-tick use for literals in markdown and RST.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:56:29 UTC
+    </footer>
+</body>
+</html>

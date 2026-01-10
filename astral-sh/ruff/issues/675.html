@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import sorting deletes comments - astral-sh/ruff #675</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Import sorting deletes comments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/675">#675</a>
+        opened by <a href="https://github.com/andersk">@andersk</a>
+        on 2022-11-11 00:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/andersk">@andersk</a> on 2022-11-11 00:51</div>
+            <div class="timeline-body"><p>(This is a known limitation mentioned in https://github.com/charliermarsh/ruff/issues/465#issuecomment-1311075618, but might as well be tracked as an issue.)</p>
+<p><code>ruff --select=I --fix</code> incorrectly transforms</p>
+<pre><code class="language-python"># preserved
+import os  # deleted
+
+# deleted
+import third_party  # deleted
+</code></pre>
+<p>into</p>
+<pre><code class="language-python"># preserved
+import os
+
+import third_party
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @charliermarsh on 2022-11-11 03:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2022-11-12 03:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-12 04:11</div>
+            <div class="timeline-body"><p>I don't understand isort's comment behavior yet, trying to make sense of it.</p>
+<p>Before:</p>
+<pre><code class="language-py"># Comment 1
+# Comment 2
+import D
+
+# Comment 3a
+import C
+# Comment 3b
+import C
+
+import B  # Comment 4
+
+# Comment 5
+
+# Comment 6
+from A import (
+	a,  # Comment 7
+	b,
+	c,  # Comment 8
+)
+from A import (
+	a,  # Comment 9
+	b,  # Comment 10
+	c,  # Comment 11
+)
+</code></pre>
+<p>After:</p>
+<pre><code class="language-py"># Comment 1
+# Comment 2
+import B  # Comment 4
+
+# Comment 3b
+# Comment 3a
+import C
+import D
+
+# Comment 6
+from A import a  # Comment 9
+from A import b  # Comment 10
+from A import c  # Comment 11
+
+# Comment 5
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-12 04:15</div>
+            <div class="timeline-body"><p>I'll just try to come up with something reasonable that does the right thing in the common cases (comment at end-of-line, etc.).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-12 15:02</div>
+            <div class="timeline-body"><p>Gonna try to fix this today. I've added comment extraction, now I just need to figure out the preservation strategy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tiangolo">@tiangolo</a> on 2022-11-13 18:20</div>
+            <div class="timeline-body"><p>Amazing! This is one of the two things not allowing me to switch to Ruff's sorting, I need to preserve some comments for some <code># type: ignore</code> and things like that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-16 02:28</div>
+            <div class="timeline-body"><p>This took longer than expected. I'm not super happy with the amount of code required to handle comments, but the output is looking pretty good.</p>
+<p>Here's the diff on Zulip:</p>
+<p><img src="https://user-images.githubusercontent.com/1309177/202068800-3850a40d-45c9-4bfd-a936-cd5b296a77e6.png" alt="Screen Shot 2022-11-15 at 9 27 05 PM" /></p>
+<p>Here's the diff on FastAPI:</p>
+<p><img src="https://user-images.githubusercontent.com/1309177/202068828-ccd37a18-0775-4378-80d8-cee4210e4097.png" alt="Screen Shot 2022-11-15 at 9 27 48 PM" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-16 03:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:56:29 UTC
+    </footer>
+</body>
+</html>

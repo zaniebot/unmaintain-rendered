@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[PT006] Fix syntax error when unpacking nested tuples in parametrize fixes (#22441) - astral-sh/ruff #22464</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[PT006] Fix syntax error when unpacking nested tuples in parametrize fixes (#22441)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22464">#22464</a>
+        opened by <a href="https://github.com/bxff">@bxff</a>
+        on 2026-01-08 19:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/bxff">@bxff</a> on 2026-01-08 19:56</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes a syntax error bug in the <code>PT006</code> rule where applying fixes could generate invalid Python code.</p>
+<p><strong>Problem</strong>: When unpacking nested tuples in <code>pytest.mark.parametrize</code> decorators, Ruff's code generator unparses tuples without outer parentheses at level 0 (e.g., <code>(1, 2)</code> becomes <code>1, 2</code> and <code>((1,),)</code> becomes <code>(1,),</code>). This caused syntax errors like <code>[1, 2,]</code> or <code>[(1,),,]</code> when used as list elements.</p>
+<p><strong>Solution</strong>: Introduced two helper functions in <code>parametrize.rs</code>:</p>
+<ul>
+<li><code>is_parenthesized</code>: Validates if a string is fully enclosed in matching parentheses</li>
+<li><code>unparse_expr_in_sequence</code>: Ensures non-empty tuples are always parenthesized when used as sequence elements</li>
+</ul>
+<p>Fixes https://github.com/astral-sh/ruff/issues/22441</p>
+<h2>Test Plan</h2>
+<ul>
+<li><p>Added comprehensive regression tests to <code>PT006.py</code> covering:</p>
+<ul>
+<li>Single-element nested empty tuples: <code>((),)</code></li>
+<li>Single-element nested single-value tuples: <code>((1,),)</code></li>
+<li>Single-element nested multi-value tuples: <code>((1, 2),)</code></li>
+<li>Deeply nested structures: <code>(((1,),),)</code></li>
+<li>Mixed types: <code>(&quot;hello&quot;,,)</code>, <code>([1, 2],,)</code></li>
+</ul>
+</li>
+<li><p>Verified edge cases with automated snapshot testing:</p>
+<ul>
+<li>All 47 existing flake8-pytest-style tests continue to pass</li>
+<li>Updated snapshots: <code>PT006_default.snap</code>, <code>PT006_csv.snap</code>, <code>PT006_list.snap</code></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @amyreese on 2026-01-08 20:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @amyreese on 2026-01-08 20:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-08 20:17</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chirizxc">@chirizxc</a> reviewed on 2026-01-09 15:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chirizxc">@chirizxc</a> on <code>crates/ruff_linter/src/rules/flake8_pytest_style/rules/parametrize.rs</code>:790 on 2026-01-09 15:01</div>
+            <div class="timeline-body"><p>maybe:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/flake8_pytest_style/rules/parametrize.rs b/crates/ruff_linter/src/rules/flake8_pytest_style/rules/par
+ametrize.rs
+index d1a5240a15..537687d571 100644
+--- a/crates/ruff_linter/src/rules/flake8_pytest_style/rules/parametrize.rs
++++ b/crates/ruff_linter/src/rules/flake8_pytest_style/rules/parametrize.rs
+@@ -753,41 +753,19 @@ fn unpack_single_element_items(checker: &amp;Checker, expr: &amp;Expr) -&gt; Vec&lt;Edit&gt; {
+ 
+ fn unparse_expr_in_sequence(expr: &amp;Expr, checker: &amp;Checker) -&gt; String {
+     let content = checker.generator().expr(expr);
+-    // The generator may unparse tuples without outer parentheses at level 0.
+-    // For example, `(1, 2)` becomes `1, 2` and `((1,),)` becomes `(1,),`.
+-    // When these are used as elements in a list, it causes syntax errors.
+-    // We detect this by checking if the content ends with a trailing comma
+-    // that is not inside parentheses.
++
+     if let Expr::Tuple(tuple) = expr {
+-        if !tuple.is_empty() &amp;&amp; !is_parenthesized(&amp;content) {
++        if !tuple.is_empty() &amp;&amp; parenthesized_range(
++            expr.into(),
++            checker.semantic().current_statement().into(),
++            checker.tokens()
++        ).is_none() {
+             return format!(&quot;({content})&quot;);
+         }
+     }
+     content
+ }
+ 
+-/// Check if the content is fully parenthesized (starts with '(' and the matching ')' is at the end).
+-fn is_parenthesized(content: &amp;str) -&gt; bool {
+-    if !content.starts_with('(') {
+-        return false;
+-    }
+-    let mut depth = 0;
+-    for (i, c) in content.chars().enumerate() {
+-        match c {
+-            '(' =&gt; depth += 1,
+-            ')' =&gt; {
+-                depth -= 1;
+-                if depth == 0 {
+-                    // If we close the first paren before the end, it's not fully parenthesized
+-                    return i == content.len() - 1;
+-                }
+-            }
+-            _ =&gt; {}
+-        }
+-    }
+-    false
+-}
+-
+ fn handle_value_rows(
+     checker: &amp;Checker,
+     elts: &amp;[Expr],
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/bxff">@bxff</a> on <code>crates/ruff_linter/src/rules/flake8_pytest_style/rules/parametrize.rs</code>:790 on 2026-01-09 15:21</div>
+            <div class="timeline-body"><p><code>parenthesized_range</code> has a subtle edge case: with extra grouping parens like <code>(((1,)),)</code>, the AST is unchanged so it would skip adding outer parens, but the generator still outputs <code>1,</code> which needs them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bxff">@bxff</a> reviewed on 2026-01-09 15:21</div>
+            <div class="timeline-body"></div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:56:31 UTC
+    </footer>
+</body>
+</html>

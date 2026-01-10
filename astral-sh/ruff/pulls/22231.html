@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Update conformance workflow to compare ty diagnostics with expected errors  - astral-sh/ruff #22231</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Update conformance workflow to compare ty diagnostics with expected errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22231">#22231</a>
+        opened by <a href="https://github.com/WillDuke">@WillDuke</a>
+        on 2025-12-28 01:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/WillDuke">@WillDuke</a> on 2025-12-28 01:15</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>I had a go at improving the typing conformance workflow. I compared the path and beginning line from <code>ty</code>'s <code>gitlab</code> output to the path and line numbers matching &quot;# E&quot; in the conformance suite. Based on the presence of a corresponding error in the conformance tests, I broke out the diagnostics on the current branch into groups (true positives, false positives, etc.) that changed compared to the merge base. I've used Github's diff syntax to make new positives appear in green and new negatives appear in red (displaying the old diagnostic). I've also added a summary with counts for each group and a sentence indicating whether performance improved overall.</p>
+<p>Here's a standalone version of the script comparing <code>0.0.1a35</code> to <code>0.0.7</code>.</p>
+<details>
+  <summary>conformance.sh</summary>
+
+<pre><code class="language-console">
+#!/bin/bash
+
+git clone git@github.com:python/typing.git || true
+
+uvx 'ty@@0.0.1a35' check \
+  typing/conformance/tests \
+  --output-format gitlab \
+  | jq '.[] |
+    .key = .location?.path? + &quot;:&quot; + (.location?.positions?.begin?.line? | tostring) |
+    .source = &quot;old&quot;
+  ' \
+  &gt; old.jsonl
+
+uvx 'ty@0.0.7' check \
+  typing/conformance/tests \
+  --output-format gitlab \
+  | jq '.[] |
+    .key = .location?.path? + &quot;:&quot; + (.location?.positions?.begin?.line? | tostring) |
+    .source = &quot;new&quot;
+  ' \
+  &gt; new.jsonl
+
+rg '# E\:?' typing/conformance/tests \
+  --json \
+  | jq '
+    select(.type == &quot;match&quot;) |
+    {
+      key: (.data?.path?.text? + &quot;:&quot; + (.data?.line_number? | tostring)),
+      source: &quot;expected&quot;
+    }' \
+  &gt; expected.jsonl
+
+jq -s -r '
+  def xor($a; $b): ($a or $b) and (($a and $b) | not);
+  def has($a; $b): $a | index($b) != null;
+  def missing($a; $b): $a | index($b) == null;
+  def severity_to_level:
+    {
+      &quot;major&quot;: &quot;error&quot;,
+      &quot;minor&quot;: &quot;warning&quot;,
+      &quot;info&quot;: &quot;note&quot;
+    }[.] // &quot;error&quot;;
+    def to_concise($d): &quot;\($d.location.path | gsub(&quot;^.*typing&quot;; &quot;typing&quot;)):&quot; +
+      &quot;\($d.location.positions.begin.line):\($d.location.positions.begin.column): &quot; +
+      &quot;\( $d.severity | severity_to_level)[\($d.check_name)]&quot; +
+      &quot;\($d.description | gsub(&quot;^[a-z-]*:&quot;; &quot;&quot;))&quot;;
+  def ascii_titlecase:
+      split(&quot; &quot;) | map((.[0:1] | ascii_upcase) + .[1:]) | join(&quot; &quot;);
+  def sign($s):
+    if $s | contains(&quot;positive&quot;) then &quot;+ &quot; else &quot;- &quot; end;
+  group_by(.key)
+  | map({
+      key: .[0].key,
+      sources: (map(.source) | unique),
+      changed: xor(
+        has(map(.source); &quot;new&quot;);
+        has(map(.source); &quot;old&quot;)
+      ),
+      classification: (
+        if has(map(.source); &quot;new&quot;) and has(map(.source); &quot;expected&quot;) then &quot;true_positive&quot;
+        elif has(map(.source); &quot;new&quot;) and missing(map(.source); &quot;expected&quot;) then &quot;false_positive&quot;
+        elif missing(map(.source); &quot;new&quot;) and has(map(.source); &quot;expected&quot;) then &quot;false_negative&quot;
+        elif missing(map(.source); &quot;new&quot;) and missing(map(.source); &quot;expected&quot;) then &quot;true_negative&quot;
+        else &quot;unknown&quot;
+        end
+      ),
+      old: map(select(.source == &quot;old&quot;)) | first,
+      new: map(select(.source == &quot;new&quot;)) | first,
+      expected: map(select(.source == &quot;expected&quot;)) | first
+    })
+  | map(select(.changed))
+  | map({
+      classification: .classification?,
+      concise: (
+        if .classification == &quot;true_positive&quot; then to_concise(.new)
+        elif .classification == &quot;false_positive&quot; then to_concise(.new)
+        elif .classification == &quot;false_negative&quot; then to_concise(.old)
+        elif .classification == &quot;true_negative&quot; then to_concise(.old)
+        else &quot;unknown&quot;
+        end
+      )
+    })
+  | group_by(.classification)
+  | .[]
+  | &quot;### \(. [0].classification | gsub(&quot;_&quot;; &quot; &quot;) | ascii_titlecase)s\n&quot;
+    + &quot;\n```diff\n&quot;
+    + (map(sign(.classification) + .concise) | join(&quot;\n&quot;))
+    + &quot;\n```\n&quot;
+' old.jsonl \
+  new.jsonl \
+  expected.jsonl \
+  &gt; changed.md
+
+jq -s -r '
+  def has($a; $b): $a | index($b) != null;
+  def stats(fp_source):
+    map(select(has(.source; fp_source) or has(.source; &quot;expected&quot;)))
+    | group_by(.key)
+    | map(map(.source) | unique)
+    | reduce .[] as $s (
+        { tp: 0, fp: 0, fn: 0 };
+        if      $s == [fp_source]  then .fp += 1
+        elif    $s == [&quot;expected&quot;] then .fn += 1
+        elif    ($s | length == 2) then .tp += 1
+        else .
+        end
+      )
+    | .precision = (if (.tp + .fp) &gt; 0 then .tp / (.tp + .fp) else 1 end)
+    | .recall    = (if (.tp + .fn) &gt; 0 then .tp / (.tp + .fn) else 1 end);
+  def sign(x):
+    if x &gt; 0 then &quot;+&quot;
+    elif x &lt; 0 then &quot;-&quot;
+    else &quot;±0&quot;
+    end;
+  def trend(x):
+    if x &gt; 0 then &quot;improves&quot;
+    elif x &lt; 0 then &quot;regresses&quot;
+    else &quot;does not change&quot;
+    end;
+  def pct(x):
+    (x * 100 | tostring | .[0:5]) + &quot;%&quot;;
+  def summary:
+    [
+      &quot;## Typing Conformance&quot;,
+      &quot;\n&quot;,
+      &quot;### Summary&quot;,
+      &quot;\n&quot;,
+      &quot;| Metric     | Old | New | Δ |&quot;,
+      &quot;|------------|-----|-----|---|&quot;,
+      &quot;| True Positives | \(.old.tp) | \(.new.tp) | \(.new.tp - .old.tp) |&quot;,
+      &quot;| False Positives | \(.old.fp) | \(.new.fp) | \(.new.fp - .old.fp) |&quot;,
+      &quot;| False Negatives | \(.old.fn) | \(.new.fn) | \(.new.fn - .old.fn) |&quot;,
+      &quot;| Precision  | \(pct(.old.precision)) | \(pct(.new.precision)) | \(sign(.comparison.precision_delta))\(pct(.comparison.precision_delta)) |&quot;,
+      &quot;| Recall     | \(pct(.old.recall)) | \(pct(.new.recall)) | \(sign(.comparison.recall_delta))\(pct(.comparison.recall_delta)) |&quot;,
+      &quot;&quot;,
+      (
+        &quot;Compared to the current merge base, this PR &quot;
+        + trend(.comparison.precision_delta)
+        + &quot; precision and &quot;
+        + trend(.comparison.recall_delta)
+        + &quot; recall &quot;
+        + &quot;(TP: \(.new.tp - .old.tp), &quot;
+        + &quot;FP: \(.new.fp - .old.fp), &quot;
+        + &quot;FN: \(.new.fn - .old.fn)).&quot;
+      )
+    ]
+    | join(&quot;\n&quot;);
+  {
+    new: stats(&quot;new&quot;),
+    old: stats(&quot;old&quot;)
+  }
+  | .comparison = {
+      precision_delta: (.new.precision - .old.precision),
+      recall_delta:    (.new.recall    - .old.recall)
+    }
+  | summary
+' \
+new.jsonl \
+old.jsonl \
+expected.jsonl \
+&gt; stats.md
+
+{
+  cat stats.md
+  echo
+  cat changed.md
+} &gt; comment.md
+
+
+</code></pre>
+</details>
+
+<p>Which produces the following markdown output:</p>
+<details>
+  <summary>comment.md</summary>
+
+<h2>Typing Conformance</h2>
+<h3>Summary</h3>
+<p>| Metric     | Old | New | Δ |
+|------------|-----|-----|---|
+| True Positives | 647 | 654 | 7 |
+| False Positives | 227 | 227 | 0 |
+| False Negatives | 539 | 532 | -7 |
+| Precision  | 74.02% | 74.23% | +0.206% |
+| Recall     | 54.55% | 55.14% | +0.590% |</p>
+<p>Compared to the current merge base, this PR improves precision and improves recall (TP: 7, FP: 0, FN: -7).</p>
+<h3>False Positives</h3>
+<pre><code class="language-diff">+ typing/conformance/tests/constructors_callable.py:143:27: error[invalid-argument-type] Argument to function `accepts_callable` is incorrect: Expected `() -&gt; Any | Class6Any`, found `&lt;class 'Class6Any'&gt;`
++ typing/conformance/tests/constructors_callable.py:145:1: error[type-assertion-failure] Type `Any` does not match asserted type `Any | Class6Any`
++ typing/conformance/tests/dataclasses_transform_converter.py:102:42: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(str | bytes, /) -&gt; ConverterClass`, found `&lt;class 'ConverterClass'&gt;`
++ typing/conformance/tests/dataclasses_transform_converter.py:103:31: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(str | list[str], /) -&gt; int`, found `Overload[(s: str) -&gt; int, (s: list[str]) -&gt; int]`
++ typing/conformance/tests/dataclasses_transform_converter.py:104:30: error[invalid-assignment] Object of type `dict[str, str] | dict[bytes, bytes]` is not assignable to `dict[str, str]`
+</code></pre>
+<h3>True Negatives</h3>
+<pre><code class="language-diff">- typing/conformance/tests/constructors_callable.py:128:1: error[type-assertion-failure] Argument does not have asserted type `Class6Proxy`
+- typing/conformance/tests/constructors_callable.py:37:1: error[type-assertion-failure] Argument does not have asserted type `Class1`
+- typing/conformance/tests/constructors_callable.py:50:1: error[type-assertion-failure] Argument does not have asserted type `Class2`
+- typing/conformance/tests/constructors_callable.py:65:1: error[type-assertion-failure] Argument does not have asserted type `Class3`
+- typing/conformance/tests/constructors_callable.py:80:1: error[type-assertion-failure] Argument does not have asserted type `int`
+</code></pre>
+<h3>True Positives</h3>
+<pre><code class="language-diff">+ typing/conformance/tests/constructors_callable.py:146:8: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++ typing/conformance/tests/constructors_callable.py:186:4: error[invalid-argument-type] Argument is incorrect: Expected `list[T@Class8]`, found `list[Unknown | int]`
++ typing/conformance/tests/dataclasses_transform_converter.py:133:31: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(str | int, /) -&gt; int`, found `def converter_simple(s: str) -&gt; int`
++ typing/conformance/tests/dataclasses_usage.py:88:14: error[invalid-assignment] Object of type `dataclasses.Field[str | int]` is not assignable to `int`
++ typing/conformance/tests/namedtuples_usage.py:43:5: error[non-subscriptable] Cannot delete subscript on object of type `Point` with no `__delitem__` method
++ typing/conformance/tests/typeddicts_extra_items.py:128:15: error[invalid-argument-type] Cannot delete required key &quot;name&quot; from TypedDict `MovieEI`
++ typing/conformance/tests/typeddicts_operations.py:49:11: error[invalid-argument-type] Cannot delete required key &quot;name&quot; from TypedDict `Movie`
+</code></pre>
+</details>
+
+<p>Partially addresses <a href="https://github.com/astral-sh/ty/issues/2205">#2205</a>.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>I have only tested the standalone version of this. I think I'd need some guidance on how to test the action if you think this is worth merging. For example, I'm just piping the markdown content into the original diff file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ci</span> added by @AlexWaygood on 2025-12-28 07:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-12-28 07:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/typing_conformance.yaml</code>:194 on 2025-12-29 10:13</div>
+            <div class="timeline-body"><p>This is very impressive that you were able to do all of this with jq.</p>
+<p>I don't know jq well and would find it difficult to make changes to this script in the future. Have you considered writing this as a Python script instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-29 10:16</div>
+            <div class="timeline-body"><p>This is great!</p>
+<p>We only recently talked about that having something like this would make life so much easier. Thanks for working on this</p>
+<blockquote>
+<p>. I think I'd need some guidance on how to test the action if you think this is worth merging. For example, I'm just piping the markdown content into the original diff file.</p>
+</blockquote>
+<p>I think that should just work. We might need to limit the diff's length but I can look into this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/WillDuke">@WillDuke</a> reviewed on 2025-12-29 14:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/WillDuke">@WillDuke</a> on <code>.github/workflows/typing_conformance.yaml</code>:194 on 2025-12-29 14:10</div>
+            <div class="timeline-body"><p>Sure, this started partially as an exercise to learn jq that ended up taking more code than I anticipated. 😂 I can work on porting it to Python.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-09 17:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>.github/workflows/typing_conformance.yaml</code>:194 on 2026-01-09 17:31</div>
+            <div class="timeline-body"><p>I'd also find a Python script much more maintainable! But thanks so much for taking this on, this is awesome!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/WillDuke">@WillDuke</a> reviewed on 2026-01-09 17:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/WillDuke">@WillDuke</a> on <code>.github/workflows/typing_conformance.yaml</code>:194 on 2026-01-09 17:58</div>
+            <div class="timeline-body"><p>Thanks, I've ported it over! I should find time to update this PR this weekend</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:56:31 UTC
+    </footer>
+</body>
+</html>

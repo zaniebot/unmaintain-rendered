@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] ensure explicitly provided folders to the cli are fully checked - astral-sh/ruff #19841</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] ensure explicitly provided folders to the cli are fully checked</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19841">#19841</a>
+        opened by <a href="https://github.com/leandrobbraga">@leandrobbraga</a>
+        on 2025-08-09 11:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2025-08-09 11:52</div>
+            <div class="timeline-body"><p>When users directly specify directories on the command line (e.g., <code>ty check dir2</code>), they expect those directories to be fully processed, including all their contents. However, the directory contents were still subject to include rules in <code>pyproject.toml</code>, leading to confusing behavior.</p>
+<h2>Example</h2>
+<pre><code>dir1/
+└─ test.py
+dir2/
+└─ test.py
+</code></pre>
+<pre><code># pyproject.toml
+[tool.ty.src]
+include = [&quot;dir1&quot;]
+</code></pre>
+<pre><code>&gt; ty check dir1 -v
+INFO Indexed 1 file(s) in 0.005s
+All checks passed!
+
+&gt; ty check dir2 -v 
+INFO Indexed 0 file(s) in 0.005s
+WARN No python files found under the given path(s)
+All checks passed!
+
+&gt; ty check dir2/test.py -v
+INFO Indexed 1 file(s) in 0.003s
+All checks passed!
+</code></pre>
+<p>This behavior would occur because ty would only consider the exact provided path as required to be checked, while the folder's contents were still subject to the include rules in pyproject.toml.</p>
+<h1>How does it work</h1>
+<p>This change implicitly adds any CLI directory path to the include configuration as a relative <code>dir/**/*</code> glob pattern.</p>
+<p>Assuming <code>cwd</code> is &quot;project&quot;</p>
+<pre><code>* ty check                     # don't add
+* ty check .                   # add &quot;/**/*&quot;
+* ty check ..                  # don't add
+* ty check dir                 # add &quot;dir/**/*&quot;
+* ty check ../project/dir      # add &quot;dir/**/*&quot;
+* ty check dir/../../other_dir # don't add
+* ty check dir/file.py         # don't add
+</code></pre>
+<h1>Considerations</h1>
+<ol>
+<li>This implementation will treat <code>ty check .</code> by including <code>/**/*</code> as well. Meaning <code>ty check</code> and <code>ty check .</code> have considerably different behavior.</li>
+<li>It will not add any path that is not a relative path to the project root folder to include</li>
+<li>There are some platforms where the path is not UTF-8, meaning that <code>to_str</code> will return None and the path will not be implicitly added to the project include</li>
+</ol>
+<p>Fixes https://github.com/astral-sh/ty/issues/936</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @leandrobbraga on 2025-08-09 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @leandrobbraga on 2025-08-09 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @leandrobbraga on 2025-08-09 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @leandrobbraga on 2025-08-09 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-09 11:54</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-09 11:58</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">streamlit (https://github.com/streamlit/streamlit)
++ lib/tests/streamlit/commands/navigation_test.py:460:65: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/tests/streamlit/config_test.py:1084:9: error[unresolved-attribute] Unresolved attribute `return_value` on type `_patch_pass_arg[MagicMock | AsyncMock]`.
++ lib/tests/streamlit/config_test.py:1086:9: error[unresolved-attribute] Unresolved attribute `side_effect` on type `_patch_pass_arg[MagicMock | AsyncMock]`.
++ lib/tests/streamlit/config_test.py:1110:9: error[unresolved-attribute] Unresolved attribute `return_value` on type `_patch_pass_arg[MagicMock | AsyncMock]`.
++ lib/tests/streamlit/config_test.py:1112:9: error[unresolved-attribute] Unresolved attribute `side_effect` on type `_patch_pass_arg[MagicMock | AsyncMock]`.
++ lib/tests/streamlit/config_test.py:1148:9: error[unresolved-attribute] Unresolved attribute `return_value` on type `_patch_pass_arg[MagicMock | AsyncMock]`.
++ lib/tests/streamlit/config_test.py:1150:9: error[unresolved-attribute] Unresolved attribute `side_effect` on type `_patch_pass_arg[MagicMock | AsyncMock]`.
++ lib/tests/streamlit/config_test.py:1196:9: error[unresolved-attribute] Unresolved attribute `return_value` on type `_patch_pass_arg[MagicMock | AsyncMock]`.
++ lib/tests/streamlit/config_test.py:1198:9: error[unresolved-attribute] Unresolved attribute `side_effect` on type `_patch_pass_arg[MagicMock | AsyncMock]`.
++ lib/tests/streamlit/config_test.py:1222:9: error[unresolved-attribute] Unresolved attribute `return_value` on type `_patch_pass_arg[MagicMock | AsyncMock]`.
++ lib/tests/streamlit/config_test.py:1224:9: error[unresolved-attribute] Unresolved attribute `side_effect` on type `_patch_pass_arg[MagicMock | AsyncMock]`.
++ lib/tests/streamlit/config_test.py:1258:9: error[unresolved-attribute] Unresolved attribute `return_value` on type `_patch_pass_arg[MagicMock | AsyncMock]`.
++ lib/tests/streamlit/config_test.py:1260:9: error[unresolved-attribute] Unresolved attribute `side_effect` on type `_patch_pass_arg[MagicMock | AsyncMock]`.
++ lib/tests/streamlit/connections/base_connection_test.py:38:16: error[invalid-return-type] Return type does not match returned value: expected `str`, found `MockRawConnection`
++ lib/tests/streamlit/data_test_cases.py:104:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/tests/streamlit/elements/exception_test.py:120:20: warning[redundant-cast] Value is already of type `Exception`
++ lib/tests/streamlit/elements/exception_test.py:159:20: warning[redundant-cast] Value is already of type `Exception`
++ lib/tests/streamlit/elements/json_test.py:80:36: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/tests/streamlit/elements/lib/column_config_utils_test.py:344:69: warning[possibly-unresolved-reference] Name `data_kind` used when possibly not defined
++ lib/tests/streamlit/elements/lib/column_config_utils_test.py:409:52: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/tests/streamlit/elements/lib/column_config_utils_test.py:416:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/tests/streamlit/elements/number_input_test.py:355:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/tests/streamlit/elements/support_files/exception_test_utils.py:27:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/tests/streamlit/elements/support_files/exception_test_utils.py:39:28: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/tests/streamlit/external/langchain/capturing_callback_handler.py:96:42: error[invalid-argument-type] Argument to function `load_records_from_file` is incorrect: Expected `str`, found `(list[CallbackRecord] &amp; ~list[Unknown]) | str`
++ lib/tests/streamlit/external/pydantic_integration.py:23:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/tests/streamlit/logger_test.py:53:16: error[unresolved-attribute] Type `BaseException` has no attribute `code`
++ lib/tests/streamlit/net_util_test.py:39:47: error[unresolved-attribute] Type `&lt;module 'requests'&gt;` has no attribute `exceptions`
++ lib/tests/streamlit/net_util_test.py:51:47: error[unresolved-attribute] Type `&lt;module 'requests'&gt;` has no attribute `exceptions`
++ lib/tests/streamlit/repr_test.py:41:5: error[unresolved-attribute] Unresolved attribute `bar` on type `Foo`.
++ lib/tests/streamlit/runtime/app_session_test.py:725:21: warning[possibly-unbound-attribute] Attribute `items` on type `Any | None` is possibly unbound
++ lib/tests/streamlit/runtime/caching/hashing_test.py:437:30: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/tests/streamlit/runtime/credentials_test.py:323:61: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/tests/streamlit/runtime/credentials_test.py:367:61: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/tests/streamlit/runtime/credentials_test.py:386:61: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/tests/streamlit/runtime/scriptrunner/script_runner_test.py:75:1: error[unresolved-attribute] Unresolved attribute `runTest` on type `&lt;class 'AsyncTestCase'&gt;`.
++ lib/tests/streamlit/runtime/scriptrunner/script_runner_test.py:276:68: error[no-matching-overload] No overload of function `realpath` matches arguments
++ lib/tests/streamlit/runtime/scriptrunner/script_runner_test.py:459:24: error[invalid-argument-type] Argument to function `_create_widget` is incorrect: Expected `str`, found `str | None | @Todo(instance attribute on class with dynamic base)`
++ lib/tests/streamlit/runtime/scriptrunner/script_runner_test.py:461:24: error[invalid-argument-type] Argument to function `_create_widget` is incorrect: Expected `str`, found `str | None | @Todo(instance attribute on class with dynamic base)`
++ lib/tests/streamlit/runtime/scriptrunner/script_runner_test.py:463:24: error[invalid-argument-type] Argument to function `_create_widget` is incorrect: Expected `str`, found `str | None | @Todo(instance attribute on class with dynamic base)`
++ lib/tests/streamlit/runtime/scriptrunner/script_runner_test.py:465:24: error[invalid-argument-type] Argument to function `_create_widget` is incorrect: Expected `str`, found `str | None | @Todo(instance attribute on class with dynamic base)`
++ lib/tests/streamlit/runtime/scriptrunner/script_runner_test.py:506:24: error[invalid-argument-type] Argument to function `_create_widget` is incorrect: Expected `str`, found `str | None | @Todo(instance attribute on class with dynamic base)`
++ lib/tests/streamlit/runtime/scriptrunner/script_runner_test.py:544:24: error[invalid-argument-type] Argument to function `_create_widget` is incorrect: Expected `str`, found `str | None | @Todo(instance attribute on class with dynamic base)`
++ lib/tests/streamlit/runtime/scriptrunner/script_runner_test.py:546:24: error[invalid-argument-type] Argument to function `_create_widget` is incorrect: Expected `str`, found `str | None | @Todo(instance attribute on class with dynamic base)`
++ lib/tests/streamlit/runtime/scriptrunner/script_runner_test.py:548:24: error[invalid-argument-type] Argument to function `_create_widget` is incorrect: Expected `str`, found `str | None | @Todo(instance attribute on class with dynamic base)`
++ lib/tests/streamlit/runtime/scriptrunner/script_runner_test.py:550:24: error[invalid-argument-type] Argument to function `_create_widget` is incorrect: Expected `str`, found `str | None | @Todo(instance attribute on class with dynamic base)`
++ lib/tests/streamlit/runtime/scriptrunner/script_runner_test.py:732:28: error[invalid-argument-type] Argument to function `_create_widget` is incorrect: Expected `str`, found `str | None | @Todo(instance attribute on class with dynamic base)`
++ lib/tests/streamlit/runtime/scriptrunner/script_runner_test.py:734:28: error[invalid-argument-type] Argument to function `_create_widget` is incorrect: Expected `str`, found `str | None | @Todo(instance attribute on class with dynamic base)`
++ lib/tests/streamlit/runtime/scriptrunner/script_runner_test.py:736:28: error[invalid-argument-type] Argument to function `_create_widget` is incorrect: Expected `str`, found `str | None | @Todo(instance attribute on class with dynamic base)`
++ lib/tests/streamlit/runtime/scriptrunner/script_runner_test.py:738:28: error[invalid-argument-type] Argument to function `_create_widget` is incorrect: Expected `str`, found `str | None | @Todo(instance attribute on class with dynamic base)`
++ lib/tests/streamlit/runtime/scriptrunner/script_runner_test.py:987:28: error[invalid-argument-type] Argument to function `_create_widget` is incorrect: Expected `str`, found `str | None | @Todo(instance attribute on class with dynamic base)`
++ lib/tests/streamlit/runtime/scriptrunner/script_runner_test.py:1216:24: warning[possibly-unbound-attribute] Attribute `id` on type `Any | None` is possibly unbound
++ lib/tests/streamlit/runtime/scriptrunner/test_data/runtime_error.py:24:1: error[unresolved-attribute] Type `None` has no attribute `do_a_thing`
++ lib/tests/streamlit/runtime/scriptrunner_utils/script_requests_test.py:117:16: warning[possibly-unbound-attribute] Attribute `trigger_value` on type `Unknown | None` is possibly unbound
++ lib/tests/streamlit/runtime/scriptrunner_utils/script_requests_test.py:120:16: warning[possibly-unbound-attribute] Attribute `int_value` on type `Unknown | None` is possibly unbound
++ lib/tests/streamlit/runtime/scriptrunner_utils/script_requests_test.py:142:16: warning[possibly-unbound-attribute] Attribute `trigger_value` on type `Unknown | None` is possibly unbound
++ lib/tests/streamlit/runtime/scriptrunner_utils/script_requests_test.py:143:16: warning[possibly-unbound-attribute] Attribute `int_value` on type `Unknown | None` is possibly unbound
++ lib/tests/streamlit/runtime/scriptrunner_utils/script_requests_test.py:164:16: warning[possibly-unbound-attribute] Attribute `trigger_value` on type `Unknown | None` is possibly unbound
++ lib/tests/streamlit/runtime/scriptrunner_utils/script_requests_test.py:165:16: warning[possibly-unbound-attribute] Attribute `int_value` on type `Unknown | None` is possibly unbound
++ lib/tests/streamlit/streamlit_test.py:108:20: warning[possibly-unbound-attribute] Attribute `lower` on type `str | None` is possibly unbound
++ lib/tests/streamlit/type_util_test.py:118:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/tests/streamlit/typing/cache_types.py:32:5: error[type-assertion-failure] Argument does not have asserted type `bool`
++ lib/tests/streamlit/typing/cache_types.py:33:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:34:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:35:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:36:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:37:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:38:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:39:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:41:5: error[type-assertion-failure] Argument does not have asserted type `bool`
++ lib/tests/streamlit/typing/cache_types.py:42:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:43:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:44:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:45:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:46:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:47:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:48:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:58:5: error[type-assertion-failure] Argument does not have asserted type `bool`
++ lib/tests/streamlit/typing/cache_types.py:59:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:60:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:61:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:62:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:63:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:64:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:65:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:67:5: error[type-assertion-failure] Argument does not have asserted type `bool`
++ lib/tests/streamlit/typing/cache_types.py:68:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:69:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:70:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:71:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:72:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:73:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/cache_types.py:74:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/date_input_types.py:34:5: error[type-assertion-failure] Argument does not have asserted type `date`
++ lib/tests/streamlit/typing/date_input_types.py:35:5: error[type-assertion-failure] Argument does not have asserted type `date`
++ lib/tests/streamlit/typing/date_input_types.py:36:5: error[type-assertion-failure] Argument does not have asserted type `date`
++ lib/tests/streamlit/typing/date_input_types.py:37:5: error[type-assertion-failure] Argument does not have asserted type `date`
++ lib/tests/streamlit/typing/date_input_types.py:40:5: error[type-assertion-failure] Argument does not have asserted type `date | None`
++ lib/tests/streamlit/typing/date_input_types.py:41:5: error[type-assertion-failure] Argument does not have asserted type `date | None`
++ lib/tests/streamlit/typing/date_input_types.py:70:5: error[type-assertion-failure] Argument does not have asserted type `date`
++ lib/tests/streamlit/typing/date_input_types.py:90:5: error[type-assertion-failure] Argument does not have asserted type `date`
++ lib/tests/streamlit/typing/date_input_types.py:97:5: error[type-assertion-failure] Argument does not have asserted type `date`
++ lib/tests/streamlit/typing/date_input_types.py:98:5: error[type-assertion-failure] Argument does not have asserted type `date`
++ lib/tests/streamlit/typing/date_input_types.py:107:5: error[type-assertion-failure] Argument does not have asserted type `date`
++ lib/tests/streamlit/typing/date_input_types.py:108:5: error[type-assertion-failure] Argument does not have asserted type `date`
++ lib/tests/streamlit/typing/date_input_types.py:120:5: error[type-assertion-failure] Argument does not have asserted type `date`
++ lib/tests/streamlit/typing/date_input_types.py:123:5: error[type-assertion-failure] Argument does not have asserted type `date`
++ lib/tests/streamlit/typing/feedback.py:27:5: error[type-assertion-failure] Argument does not have asserted type `None | Literal[0, 1]`
++ lib/tests/streamlit/typing/feedback.py:28:5: error[type-assertion-failure] Argument does not have asserted type `None | Literal[0, 1]`
++ lib/tests/streamlit/typing/feedback.py:29:5: error[type-assertion-failure] Argument does not have asserted type `None | Literal[0, 1, 2, 3, 4]`
++ lib/tests/streamlit/typing/feedback.py:30:5: error[type-assertion-failure] Argument does not have asserted type `None | Literal[0, 1, 2, 3, 4]`
++ lib/tests/streamlit/typing/multiselect_types.py:36:5: error[type-assertion-failure] Argument does not have asserted type `list[int]`
++ lib/tests/streamlit/typing/multiselect_types.py:37:5: error[type-assertion-failure] Argument does not have asserted type `list[int]`
++ lib/tests/streamlit/typing/multiselect_types.py:38:5: error[type-assertion-failure] Argument does not have asserted type `list[int | float]`
++ lib/tests/streamlit/typing/multiselect_types.py:39:5: error[type-assertion-failure] Argument does not have asserted type `list[int | float]`
++ lib/tests/streamlit/typing/multiselect_types.py:40:5: error[type-assertion-failure] Argument does not have asserted type `list[int | float]`
++ lib/tests/streamlit/typing/multiselect_types.py:41:5: error[type-assertion-failure] Argument does not have asserted type `list[int | float]`
++ lib/tests/streamlit/typing/multiselect_types.py:42:5: error[type-assertion-failure] Argument does not have asserted type `list[str]`
++ lib/tests/streamlit/typing/multiselect_types.py:43:5: error[type-assertion-failure] Argument does not have asserted type `list[str]`
++ lib/tests/streamlit/typing/multiselect_types.py:44:5: error[type-assertion-failure] Argument does not have asserted type `list[Alfred]`
++ lib/tests/streamlit/typing/multiselect_types.py:45:5: error[type-assertion-failure] Argument does not have asserted type `list[Alfred]`
++ lib/tests/streamlit/typing/multiselect_types.py:46:5: error[type-assertion-failure] Argument does not have asserted type `list[object]`
++ lib/tests/streamlit/typing/multiselect_types.py:49:5: error[type-assertion-failure] Argument does not have asserted type `list[int | str]`
++ lib/tests/streamlit/typing/multiselect_types.py:52:5: error[type-assertion-failure] Argument does not have asserted type `list[int | str]`
++ lib/tests/streamlit/typing/multiselect_types.py:56:5: error[type-assertion-failure] Argument does not have asserted type `list[int | float | str]`
++ lib/tests/streamlit/typing/multiselect_types.py:60:5: error[type-assertion-failure] Argument does not have asserted type `list[str]`
++ lib/tests/streamlit/typing/multiselect_types.py:61:5: error[type-assertion-failure] Argument does not have asserted type `list[Alfred | str]`
++ lib/tests/streamlit/typing/multiselect_types.py:64:5: error[type-assertion-failure] Argument does not have asserted type `list[Alfred | str]`
++ lib/tests/streamlit/typing/multiselect_types.py:70:5: error[type-assertion-failure] Argument does not have asserted type `list[int]`
++ lib/tests/streamlit/typing/multiselect_types.py:71:5: error[type-assertion-failure] Argument does not have asserted type `list[int]`
++ lib/tests/streamlit/typing/multiselect_types.py:72:5: error[type-assertion-failure] Argument does not have asserted type `list[str]`
++ lib/tests/streamlit/typing/multiselect_types.py:73:5: error[type-assertion-failure] Argument does not have asserted type `list[str]`
++ lib/tests/streamlit/typing/multiselect_types.py:74:5: error[type-assertion-failure] Argument does not have asserted type `list[Alfred]`
++ lib/tests/streamlit/typing/multiselect_types.py:75:5: error[type-assertion-failure] Argument does not have asserted type `list[Alfred]`
++ lib/tests/streamlit/typing/multiselect_types.py:78:5: error[type-assertion-failure] Argument does not have asserted type `list[int | str]`
++ lib/tests/streamlit/typing/multiselect_types.py:82:5: error[type-assertion-failure] Argument does not have asserted type `list[int | str]`
++ lib/tests/streamlit/typing/multiselect_types.py:86:5: error[type-assertion-failure] Argument does not have asserted type `list[str]`
++ lib/tests/streamlit/typing/multiselect_types.py:90:5: error[type-assertion-failure] Argument does not have asserted type `list[str]`
++ lib/tests/streamlit/typing/multiselect_types.py:94:5: error[type-assertion-failure] Argument does not have asserted type `list[Alfred | str]`
++ lib/tests/streamlit/typing/multiselect_types.py:98:5: error[type-assertion-failure] Argument does not have asserted type `list[Alfred | str]`
++ lib/tests/streamlit/typing/number_input_types.py:30:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/number_input_types.py:31:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/number_input_types.py:32:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/number_input_types.py:33:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/number_input_types.py:34:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/number_input_types.py:35:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/number_input_types.py:36:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/number_input_types.py:37:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/number_input_types.py:38:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/number_input_types.py:47:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/number_input_types.py:48:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/number_input_types.py:49:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/number_input_types.py:50:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/number_input_types.py:51:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/number_input_types.py:52:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/number_input_types.py:53:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/number_input_types.py:54:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/number_input_types.py:55:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/number_input_types.py:56:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/number_input_types.py:57:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/number_input_types.py:58:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/number_input_types.py:59:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/number_input_types.py:60:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/number_input_types.py:61:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/number_input_types.py:62:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/number_input_types.py:63:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/number_input_types.py:64:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/number_input_types.py:65:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/number_input_types.py:66:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/number_input_types.py:67:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/number_input_types.py:68:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/number_input_types.py:76:5: error[type-assertion-failure] Argument does not have asserted type `int | None`
++ lib/tests/streamlit/typing/number_input_types.py:77:5: error[type-assertion-failure] Argument does not have asserted type `int | None`
++ lib/tests/streamlit/typing/number_input_types.py:78:5: error[type-assertion-failure] Argument does not have asserted type `int | None`
++ lib/tests/streamlit/typing/number_input_types.py:79:5: error[type-assertion-failure] Argument does not have asserted type `int | float | None`
++ lib/tests/streamlit/typing/number_input_types.py:84:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/pills.py:28:5: error[type-assertion-failure] Argument does not have asserted type `int | None`
++ lib/tests/streamlit/typing/pills.py:32:5: error[type-assertion-failure] Argument does not have asserted type `int | None`
++ lib/tests/streamlit/typing/pills.py:36:5: error[type-assertion-failure] Argument does not have asserted type `int | None`
++ lib/tests/streamlit/typing/pills.py:40:5: error[type-assertion-failure] Argument does not have asserted type `int | None`
++ lib/tests/streamlit/typing/pills.py:44:5: error[type-assertion-failure] Argument does not have asserted type `list[int]`
++ lib/tests/streamlit/typing/pills.py:48:5: error[type-assertion-failure] Argument does not have asserted type `list[int]`
++ lib/tests/streamlit/typing/pills.py:52:5: error[type-assertion-failure] Argument does not have asserted type `list[int]`
++ lib/tests/streamlit/typing/radio_types.py:34:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/radio_types.py:36:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/radio_types.py:37:5: error[type-assertion-failure] Argument does not have asserted type `int | None`
++ lib/tests/streamlit/typing/radio_types.py:38:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/radio_types.py:39:5: error[type-assertion-failure] Argument does not have asserted type `int | float | None`
++ lib/tests/streamlit/typing/radio_types.py:40:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/radio_types.py:41:5: error[type-assertion-failure] Argument does not have asserted type `int | float | None`
++ lib/tests/streamlit/typing/radio_types.py:42:5: error[type-assertion-failure] Argument does not have asserted type `str`
++ lib/tests/streamlit/typing/radio_types.py:43:5: error[type-assertion-failure] Argument does not have asserted type `str | None`
++ lib/tests/streamlit/typing/radio_types.py:44:5: error[type-assertion-failure] Argument does not have asserted type `Alfred`
++ lib/tests/streamlit/typing/radio_types.py:45:5: error[type-assertion-failure] Argument does not have asserted type `Alfred`
++ lib/tests/streamlit/typing/radio_types.py:46:5: error[type-assertion-failure] Argument does not have asserted type `Alfred | None`
++ lib/tests/streamlit/typing/radio_types.py:47:5: error[type-assertion-failure] Argument does not have asserted type `object`
++ lib/tests/streamlit/typing/segmented_control.py:28:5: error[type-assertion-failure] Argument does not have asserted type `int | None`
++ lib/tests/streamlit/typing/segmented_control.py:32:5: error[type-assertion-failure] Argument does not have asserted type `int | None`
++ lib/tests/streamlit/typing/segmented_control.py:36:5: error[type-assertion-failure] Argument does not have asserted type `int | None`
++ lib/tests/streamlit/typing/segmented_control.py:40:5: error[type-assertion-failure] Argument does not have asserted type `int | None`
++ lib/tests/streamlit/typing/segmented_control.py:44:5: error[type-assertion-failure] Argument does not have asserted type `list[int]`
++ lib/tests/streamlit/typing/segmented_control.py:48:5: error[type-assertion-failure] Argument does not have asserted type `list[int]`
++ lib/tests/streamlit/typing/segmented_control.py:52:5: error[type-assertion-failure] Argument does not have asserted type `list[int]`
++ lib/tests/streamlit/typing/select_slider_types.py:34:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/select_slider_types.py:35:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/select_slider_types.py:36:5: error[type-assertion-failure] Argument does not have asserted type `tuple[int, int]`
++ lib/tests/streamlit/typing/select_slider_types.py:37:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/select_slider_types.py:38:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/select_slider_types.py:39:5: error[type-assertion-failure] Argument does not have asserted type `tuple[int | float, int | float]`
++ lib/tests/streamlit/typing/select_slider_types.py:42:5: error[type-assertion-failure] Argument does not have asserted type `str`
++ lib/tests/streamlit/typing/select_slider_types.py:43:5: error[type-assertion-failure] Argument does not have asserted type `Alfred`
++ lib/tests/streamlit/typing/select_slider_types.py:44:5: error[type-assertion-failure] Argument does not have asserted type `Alfred`
++ lib/tests/streamlit/typing/select_slider_types.py:45:5: error[type-assertion-failure] Argument does not have asserted type `object`
++ lib/tests/streamlit/typing/select_slider_types.py:48:5: error[type-assertion-failure] Argument does not have asserted type `tuple[object, object]`
++ lib/tests/streamlit/typing/select_slider_types.py:52:5: error[type-assertion-failure] Argument does not have asserted type `tuple[list[int], list[int]]`
++ lib/tests/streamlit/typing/select_slider_types.py:57:5: error[type-assertion-failure] Argument does not have asserted type `object`
++ lib/tests/streamlit/typing/selectbox_types.py:35:5: error[type-assertion-failure] Argument does not have asserted type `None`
++ lib/tests/streamlit/typing/selectbox_types.py:36:5: error[type-assertion-failure] Argument does not have asserted type `str`
++ lib/tests/streamlit/typing/selectbox_types.py:38:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/selectbox_types.py:39:5: error[type-assertion-failure] Argument does not have asserted type `int | None`
++ lib/tests/streamlit/typing/selectbox_types.py:40:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/selectbox_types.py:41:5: error[type-assertion-failure] Argument does not have asserted type `int | float | None`
++ lib/tests/streamlit/typing/selectbox_types.py:42:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/selectbox_types.py:43:5: error[type-assertion-failure] Argument does not have asserted type `int | float | None`
++ lib/tests/streamlit/typing/selectbox_types.py:44:5: error[type-assertion-failure] Argument does not have asserted type `str`
++ lib/tests/streamlit/typing/selectbox_types.py:45:5: error[type-assertion-failure] Argument does not have asserted type `str | None`
++ lib/tests/streamlit/typing/selectbox_types.py:46:5: error[type-assertion-failure] Argument does not have asserted type `Alfred`
++ lib/tests/streamlit/typing/selectbox_types.py:47:5: error[type-assertion-failure] Argument does not have asserted type `Alfred`
++ lib/tests/streamlit/typing/selectbox_types.py:48:5: error[type-assertion-failure] Argument does not have asserted type `Alfred | None`
++ lib/tests/streamlit/typing/selectbox_types.py:49:5: error[type-assertion-failure] Argument does not have asserted type `object`
++ lib/tests/streamlit/typing/selectbox_types.py:50:5: error[type-assertion-failure] Argument does not have asserted type `int | str`
++ lib/tests/streamlit/typing/selectbox_types.py:53:5: error[type-assertion-failure] Argument does not have asserted type `int | str | None`
++ lib/tests/streamlit/typing/selectbox_types.py:57:5: error[type-assertion-failure] Argument does not have asserted type `str | None`
++ lib/tests/streamlit/typing/selectbox_types.py:62:5: error[type-assertion-failure] Argument does not have asserted type `Alfred | str | None`
++ lib/tests/streamlit/typing/slider_types.py:31:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/slider_types.py:32:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/slider_types.py:33:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/slider_types.py:34:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/slider_types.py:35:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/slider_types.py:36:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/slider_types.py:37:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/slider_types.py:38:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/slider_types.py:39:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/slider_types.py:40:5: error[type-assertion-failure] Argument does not have asserted type `tuple[int, int]`
++ lib/tests/streamlit/typing/slider_types.py:41:5: error[type-assertion-failure] Argument does not have asserted type `tuple[int, int]`
++ lib/tests/streamlit/typing/slider_types.py:43:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/slider_types.py:44:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/slider_types.py:45:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/slider_types.py:46:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/slider_types.py:47:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/slider_types.py:48:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/slider_types.py:49:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/slider_types.py:50:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/slider_types.py:51:5: error[type-assertion-failure] Argument does not have asserted type `int`
++ lib/tests/streamlit/typing/slider_types.py:53:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/slider_types.py:54:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/slider_types.py:55:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/slider_types.py:56:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/slider_types.py:59:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/slider_types.py:60:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/slider_types.py:64:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/slider_types.py:65:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/slider_types.py:67:5: error[type-assertion-failure] Argument does not have asserted type `tuple[int, int]`
++ lib/tests/streamlit/typing/slider_types.py:68:5: error[type-assertion-failure] Argument does not have asserted type `tuple[int, int]`
++ lib/tests/streamlit/typing/slider_types.py:71:5: error[type-assertion-failure] Argument does not have asserted type `tuple[int, int]`
++ lib/tests/streamlit/typing/slider_types.py:73:5: error[type-assertion-failure] Argument does not have asserted type `tuple[int | float, int | float]`
++ lib/tests/streamlit/typing/slider_types.py:74:5: error[type-assertion-failure] Argument does not have asserted type `tuple[int | float, int | float]`
++ lib/tests/streamlit/typing/slider_types.py:78:5: error[type-assertion-failure] Argument does not have asserted type `tuple[int | float, int | float]`
++ lib/tests/streamlit/typing/slider_types.py:81:5: error[type-assertion-failure] Argument does not have asserted type `int | float`
++ lib/tests/streamlit/typing/slider_types.py:89:5: error[type-assertion-failure] Argument does not have asserted type `date`
++ lib/tests/streamlit/typing/slider_types.py:90:5: error[type-assertion-failure] Argument does not have asserted type `date`
++ lib/tests/streamlit/typing/slider_types.py:91:5: error[type-assertion-failure] Argument does not have asserted type `date`
++ lib/tests/streamlit/typing/slider_types.py:92:5: error[type-assertion-failure] Argument does not have asserted type `date`
++ lib/tests/streamlit/typing/slider_types.py:94:5: error[type-assertion-failure] Argument does not have asserted type `tuple[date, date]`
++ lib/tests/streamlit/typing/slider_types.py:97:5: error[type-assertion-failure] Argument does not have asserted type `tuple[date, date]`
++ lib/tests/streamlit/typing/slider_types.py:102:5: error[type-assertion-failure] Argument does not have asserted type `date`
++ lib/tests/streamlit/typing/slider_types.py:103:5: error[type-assertion-failure] Argument does not have asserted type `date`
++ lib/tests/streamlit/typing/slider_types.py:104:5: error[type-assertion-failure] Argument does not have asserted type `date`
++ lib/tests/streamlit/typing/slider_types.py:107:5: error[type-assertion-failure] Argument does not have asserted type `date`
++ lib/tests/streamlit/typing/slider_types.py:117:5: error[type-assertion-failure] Argument does not have asserted type `date`
++ lib/tests/streamlit/typing/slider_types.py:120:5: error[type-assertion-failure] Argument does not have asserted type `date`
++ lib/tests/streamlit/typing/slider_types.py:125:5: error[type-assertion-failure] Argument does not have asserted type `date`
++ lib/tests/streamlit/typing/slider_types.py:126:5: error[type-assertion-failure] Argument does not have asserted type `date`
++ lib/tests/streamlit/typing/slider_types.py:130:5: error[type-assertion-failure] Argument does not have asserted type `tuple[date, date]`
++ lib/tests/streamlit/typing/slider_types.py:134:5: error[type-assertion-failure] Argument does not have asserted type `tuple[date, date]`
++ lib/tests/streamlit/typing/slider_types.py:144:5: error[type-assertion-failure] Argument does not have asserted type `tuple[date, date]`
++ lib/tests/streamlit/typing/slider_types.py:157:5: error[type-assertion-failure] Argument does not have asserted type `time`
++ lib/tests/streamlit/typing/slider_types.py:158:5: error[type-assertion-failure] Argument does not have asserted type `time`
++ lib/tests/streamlit/typing/slider_types.py:159:5: error[type-assertion-failure] Argument does not have asserted type `time`
++ lib/tests/streamlit/typing/slider_types.py:160:5: error[type-assertion-failure] Argument does not have asserted type `time`
++ lib/tests/streamlit/typing/slider_types.py:161:5: error[type-assertion-failure] Argument does not have asserted type `tuple[time, time]`
++ lib/tests/streamlit/typing/slider_types.py:162:5: error[type-assertion-failure] Argument does not have asserted type `tuple[time, time]`
++ lib/tests/streamlit/typing/slider_types.py:166:5: error[type-assertion-failure] Argument does not have asserted type `time`
++ lib/tests/streamlit/typing/slider_types.py:167:5: error[type-assertion-failure] Argument does not have asserted type `time`
++ lib/tests/streamlit/typing/slider_types.py:168:5: error[type-assertion-failure] Argument does not have asserted type `time`
++ lib/tests/streamlit/typing/slider_types.py:169:5: error[type-assertion-failure] Argument does not have asserted type `time`
++ lib/tests/streamlit/typing/slider_types.py:173:5: error[type-assertion-failure] Argument does not have asserted type `time`
++ lib/tests/streamlit/typing/slider_types.py:174:5: error[type-assertion-failure] Argument does not have asserted type `time`
++ lib/tests/streamlit/typing/slider_types.py:179:5: error[type-assertion-failure] Argument does not have asserted type `time`
++ lib/tests/streamlit/typing/slider_types.py:180:5: error[type-assertion-failure] Argument does not have asserted type `time`
++ lib/tests/streamlit/typing/slider_types.py:184:5: error[type-assertion-failure] Argument does not have asserted type `tuple[time, time]`
++ lib/tests/streamlit/typing/slider_types.py:185:5: error[type-assertion-failure] Argument does not have asserted type `tuple[time, time]`
++ lib/tests/streamlit/typing/slider_types.py:195:5: error[type-assertion-failure] Argument does not have asserted type `tuple[time, time]`
++ lib/tests/streamlit/typing/slider_types.py:207:5: error[type-assertion-failure] Argument does not have asserted type `datetime`
++ lib/tests/streamlit/typing/slider_types.py:208:5: error[type-assertion-failure] Argument does not have asserted type `datetime`
++ lib/tests/streamlit/typing/slider_types.py:209:5: error[type-assertion-failure] Argument does not have asserted type `datetime`
++ lib/tests/streamlit/typing/slider_types.py:212:5: error[type-assertion-failure] Argument does not have asserted type `datetime`
++ lib/tests/streamlit/typing/slider_types.py:223:5: error[type-assertion-failure] Argument does not have asserted type `tuple[datetime, datetime]`
++ lib/tests/streamlit/typing/slider_types.py:232:5: error[type-assertion-failure] Argument does not have asserted type `tuple[datetime, datetime]`
++ lib/tests/streamlit/typing/slider_types.py:243:5: error[type-assertion-failure] Argument does not have asserted type `datetime`
++ lib/tests/streamlit/typing/slider_types.py:246:5: error[type-assertion-failure] Argument does not have asserted type `datetime`
++ lib/tests/streamlit/typing/slider_types.py:247:5: error[type-assertion-failure] Argument does not have asserted type `datetime`
++ lib/tests/streamlit/typing/slider_types.py:253:5: error[type-assertion-failure] Argument does not have asserted type `datetime`
++ lib/tests/streamlit/typing/slider_types.py:263:5: error[type-assertion-failure] Argument does not have asserted type `datetime`
++ lib/tests/streamlit/typing/slider_types.py:269:5: error[type-assertion-failure] Argument does not have asserted type `datetime`
++ lib/tests/streamlit/typing/slider_types.py:270:5: error[type-assertion-failure] Argument does not have asserted type `datetime`
++ lib/tests/streamlit/typing/slider_types.py:274:5: error[type-assertion-failure] Argument does not have asserted type `datetime`
++ lib/tests/streamlit/typing/slider_types.py:284:5: error[type-assertion-failure] Argument does not have asserted type `tuple[datetime, datetime]`
++ lib/tests/streamlit/typing/slider_types.py:292:5: error[type-assertion-failure] Argument does not have asserted type `tuple[datetime, datetime]`
++ lib/tests/streamlit/typing/slider_types.py:302:5: error[type-assertion-failure] Argument does not have asserted type `tuple[datetime, datetime]`
++ lib/tests/streamlit/typing/slider_types.py:313:5: error[type-assertion-failure] Argument does not have asserted type `tuple[int, int]`
++ lib/tests/streamlit/typing/slider_types.py:314:5: error[type-assertion-failure] Argument does not have asserted type `tuple[int, int]`
++ lib/tests/streamlit/typing/slider_types.py:316:5: error[type-assertion-failure] Argument does not have asserted type `tuple[int | float, int | float]`
++ lib/tests/streamlit/typing/slider_types.py:317:5: error[type-assertion-failure] Argument does not have asserted type `tuple[int | float, int | float]`
++ lib/tests/streamlit/typing/slider_types.py:318:5: error[type-assertion-failure] Argument does not have asserted type `tuple[int | float, int | float]`
++ lib/tests/streamlit/typing/slider_types.py:319:5: error[type-assertion-failure] Argument does not have asserted type `tuple[int | float, int | float]`
++ lib/tests/streamlit/typing/slider_types.py:321:5: error[type-assertion-failure] Argument does not have asserted type `tuple[date, date]`
++ lib/tests/streamlit/typing/slider_types.py:322:5: error[type-assertion-failure] Argument does not have asserted type `tuple[date, date]`
++ lib/tests/streamlit/typing/slider_types.py:325:5: error[type-assertion-failure] Argument does not have asserted type `tuple[date, date]`
++ lib/tests/streamlit/typing/slider_types.py:329:5: error[type-assertion-failure] Argument does not have asserted type `tuple[time, time]`
++ lib/tests/streamlit/typing/slider_types.py:330:5: error[type-assertion-failure] Argument does not have asserted type `tuple[time, time]`
++ lib/tests/streamlit/typing/slider_types.py:331:5: error[type-assertion-failure] Argument does not have asserted type `tuple[time, time]`
++ lib/tests/streamlit/typing/slider_types.py:333:5: error[type-assertion-failure] Argument does not have asserted type `tuple[datetime, datetime]`
++ lib/tests/streamlit/typing/slider_types.py:337:5: error[type-assertion-failure] Argument does not have asserted type `tuple[datetime, datetime]`
++ lib/tests/streamlit/typing/slider_types.py:341:5: error[type-assertion-failure] Argument does not have asserted type `tuple[datetime, datetime]`
++ lib/tests/streamlit/web/bootstrap_test.py:59:15: warning[possibly-unbound-attribute] Attribute `getvalue` on type `TextIO | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
++ lib/tests/streamlit/web/bootstrap_test.py:77:15: warning[possibly-unbound-attribute] Attribute `getvalue` on type `TextIO | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
++ lib/tests/streamlit/web/bootstrap_test.py:100:15: warning[possibly-unbound-attribute] Attribute `getvalue` on type `TextIO | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
++ lib/tests/streamlit/web/bootstrap_test.py:126:15: warning[possibly-unbound-attribute] Attribute `getvalue` on type `TextIO | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
++ lib/tests/streamlit/web/bootstrap_test.py:152:15: warning[possibly-unbound-attribute] Attribute `getvalue` on type `TextIO | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
++ lib/tests/streamlit/web/bootstrap_test.py:174:15: warning[possibly-unbound-attribute] Attribute `getvalue` on type `TextIO | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
++ lib/tests/streamlit/web/bootstrap_test.py:199:15: warning[possibly-unbound-attribute] Attribute `getvalue` on type `TextIO | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
++ lib/tests/streamlit/web/bootstrap_test.py:225:15: warning[possibly-unbound-attribute] Attribute `getvalue` on type `TextIO | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
++ lib/tests/streamlit/web/bootstrap_test.py:251:15: warning[possibly-unbound-attribute] Attribute `getvalue` on type `TextIO | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
++ lib/tests/streamlit/web/bootstrap_test.py:268:15: warning[possibly-unbound-attribute] Attribute `getvalue` on type `TextIO | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
++ lib/tests/streamlit/web/bootstrap_test.py:290:15: warning[possibly-unbound-attribute] Attribute `getvalue` on type `TextIO | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
++ lib/tests/streamlit/web/bootstrap_test.py:299:15: warning[possibly-unbound-attribute] Attribute `getvalue` on type `TextIO | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
++ lib/tests/streamlit/web/cli_test.py:139:44: error[unresolved-attribute] Type `&lt;module 'requests'&gt;` has no attribute `exceptions`
++ lib/tests/streamlit/web/cli_test.py:691:36: error[unresolved-attribute] Type `&lt;module 'requests'&gt;` has no attribute `exceptions`
++ lib/tests/streamlit/web/server/component_request_handler_test.py:207:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `str` does not satisfy upper bound of type variable `_BufferT_co`
++ lib/tests/streamlit/web/server/component_request_handler_test.py:207:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_WrappedBuffer`, found `str`
++ lib/tests/streamlit/web/server/server_test.py:210:20: error[unsupported-operator] Operator `in` is not supported for types `str` and `None`, in comparing `Literal[&quot;permessage-deflate&quot;]` with `Unknown | str | None`
++ lib/tests/streamlit/web/server/server_test.py:426:20: error[unresolved-attribute] Type `BaseException` has no attribute `code`
++ lib/tests/streamlit/web/server/server_test.py:610:17: error[unresolved-attribute] Type `&lt;module 'tornado'&gt;` has no attribute `netutil`
+- Found 147 diagnostics
++ Found 501 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-08-09 12:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-09 16:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty/src/args.rs</code>:194 on 2025-08-09 16:38</div>
+            <div class="timeline-body"><p>Can you tell me what the motivation is for canonicalizing the input paths?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-09 16:38</div>
+            <div class="timeline-body"><p>Nice. I'll take a closer look next week</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/leandrobbraga">@leandrobbraga</a> reviewed on 2025-08-09 16:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on <code>crates/ty/src/args.rs</code>:194 on 2025-08-09 16:45</div>
+            <div class="timeline-body"><p>I was trying to solve the issue where the user provides paths such as:</p>
+<ul>
+<li>&quot;..&quot;</li>
+<li>&quot;dir/../../other_dir&quot;</li>
+</ul>
+<p>Those paths fails as <code>invalid-glob</code>.</p>
+<p>I could just reject any path containing &quot;..&quot; as well.</p>
+<p>I'm not very used to working with paths, specially on other platforms such as Window. So I might be doing something that should be easy in a hard way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/onerandomusername">@onerandomusername</a> on 2025-08-10 11:22</div>
+            <div class="timeline-body"><p>I feel like astral already has a specification with the includes of ruff, it feels to me that this command should have very similar behavior to <code>ruff check .</code>, and <code>ruff format .</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2025-08-10 11:41</div>
+            <div class="timeline-body"><blockquote>
+<p>I feel like astral already has a specification with the includes of ruff, it feels to me that this command should have very similar behavior to <code>ruff check .</code>, and <code>ruff format .</code></p>
+</blockquote>
+<p>It seems a little bit unsatisfying to me as well. I did some testing with ruff and this was the behavior:</p>
+<pre><code>a/
+└─ t.py
+b/
+└─ t.py
+</code></pre>
+<pre><code># pyproject.toml
+[tool.ruff]
+include = [&quot;a/*.py&quot;]
+</code></pre>
+<pre><code>&gt; ruff check a -v
+(...)
+[2025-08-10][08:38:29][ruff::commands::check][DEBUG] Checked 1 files in: 756.468µs
+All checks passed!
+
+&gt; ruff check b -v
+(...)
+warning: No Python files found under the given path(s)
+All checks passed
+</code></pre>
+<p>The same is valid for <code>ruff format</code>.</p>
+<p>Maybe the current behavior should be kept, what do you think @MichaReiser?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2025-08-10 11:45</div>
+            <div class="timeline-body"><p>Another interesting thing is that <code>ruff</code>'s include is slightly different in behavior from <code>ty</code>. From the <a href="https://docs.astral.sh/ruff/configuration/#default-inclusions">site</a>:</p>
+<pre><code>[tool.ruff]
+include = [&quot;pyproject.toml&quot;, &quot;src/**/*.py&quot;, &quot;scripts/**/*.py&quot;]
+</code></pre>
+<blockquote>
+<p>Warning
+Paths provided to include must match files. For example, include = [&quot;src&quot;] will fail since it matches a directory.</p>
+</blockquote>
+<p>In <code>ty</code>, the configuration would be:</p>
+<pre><code>[tool.ty.src]
+include = [&quot;src&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-10 13:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty/src/args.rs</code>:194 on 2025-08-10 13:04</div>
+            <div class="timeline-body"><p>You can use <code>SystemPath::absolute(&quot;/foo//test/.././bar.rs&quot;, &quot;/tmp&quot;)</code> to make a path absolute without calling <code>canonicalize</code> (which also resolves symlinks which we don't want to do here)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-10 13:07</div>
+            <div class="timeline-body"><p>The new include and exclude syntax are intentionally different from Ruff's because Ruff's syntax proved to be confusing for users (https://github.com/astral-sh/ruff/issues/6262). Ruff also doesn't support negative exclude patterns.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-10 13:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty/src/args.rs</code>:194 on 2025-08-10 13:22</div>
+            <div class="timeline-body"><p>We also need to escape globs, but let's wait until we agreed on the overall design</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/leandrobbraga">@leandrobbraga</a> reviewed on 2025-08-10 17:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on <code>crates/ty/src/args.rs</code>:194 on 2025-08-10 17:42</div>
+            <div class="timeline-body"><p>Ok, I just replaced dunce::canonicalize to SystemPath::absolute for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-14 06:52</div>
+            <div class="timeline-body"><p>This is still on my mind. This week has just been a lot busier than I expected and I haven't found the time to think about the desired behavior (you raised very good concerns)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2026-01-09 14:03</div>
+            <div class="timeline-body"><p>I'm closing this MR since the related issue has also been closed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @leandrobbraga on 2026-01-09 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-09 14:14</div>
+            <div class="timeline-body"><p>Thanks for your work here and sorry that I never managed to get back to it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:56:31 UTC
+    </footer>
+</body>
+</html>

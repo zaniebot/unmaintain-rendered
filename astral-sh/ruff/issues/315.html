@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is &quot;A003 class attribute `set` is shadowing a python builtin&quot; too aggressive? - astral-sh/ruff #315</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Is &quot;A003 class attribute <code>set</code> is shadowing a python builtin&quot; too aggressive?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/315">#315</a>
+        opened by <a href="https://github.com/amotl">@amotl</a>
+        on 2022-10-04 00:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/amotl">@amotl</a> on 2022-10-04 00:20</div>
+            <div class="timeline-body"><p>Dear Charlie,</p>
+<p>after upgrading to <code>ruff 0.0.52</code> on https://github.com/isarengineering/SecPi, we found <code>ruff</code> would emit an admonition on a code like outlined below. Do you think it might be worth to build up a dedicated exclusion list for specific symbols, in order make ruff skip those cases?</p>
+<p>With kind regards,
+Andreas.</p>
+<pre><code class="language-python">class Foobar:
+    def __init__(self):
+        self.data = {}
+
+    def get(self, key, default=None):
+        return self.data.get(key, default)
+
+    def set(self, key, value):
+        self.data[key] = value
+</code></pre>
+<pre><code>$ ruff foobar.py
+Found 1 error(s).
+foobar.py:8:5: A003 class attribute `set` is shadowing a python builtin
+</code></pre>
+<p>P.S.: The new features and rules added to ruff keep being an awesome driver for modernizing an outdated Python 2 code base, where I did not bother to run flake8 on it at all, see https://github.com/isarengineering/SecPi/pull/30. Cheers!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2022-10-04 04:55</div>
+            <div class="timeline-body"><p>IMO, shadowing is a completely normal part of the language and doesn’t indicate a problem. This diagnostic seems too opinionated to be enabled by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-04 11:54</div>
+            <div class="timeline-body"><p>Sounds reasonable. I’ll remove it from the list of defaults. (In general, I’m not interested in enabling opinionated checks by default.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-10-04 12:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lovetox">@lovetox</a> on 2022-11-15 16:19</div>
+            <div class="timeline-body"><p>Can someone explain to me how defining a set() method on an Object is &quot;shadowing&quot; anything?</p>
+<pre><code>&gt;&gt;&gt; class Test:  
+...     pass
+... 
+&gt;&gt;&gt; dir(Test())
+['__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__']
+&gt;&gt;&gt;
+</code></pre>
+<p>A class has no inbuilt set method, if you mean the inbuilt <code>set()</code> method, we can pass a object to this method, but i dont see how this is relevant.</p>
+<p>This check is not opinonated its just wrong in what the error text says. It does not shadow something in this example in my opinion.</p>
+<p>Can this be reopened?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-15 16:50</div>
+            <div class="timeline-body"><p>I agree that it's confusing but it is consistent with <code>flake8-builtins</code>:</p>
+<pre><code>∴ flake8 foo.py --select A003
+foo.py:8:5: A003 class attribute &quot;set&quot; is shadowing a python builtin
+</code></pre>
+<p>I'm not sure what a more reasonable A003 would be, I think folks should just disable this check if they don't find the current behavior useful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lovetox">@lovetox</a> on 2022-11-15 17:01</div>
+            <div class="timeline-body"><p>I guess it's ok if you want to mirror the flake check exactly. Usually one wants to check variable names against builtins. For methods on classes we normally speak about overriding a method which is a common practice and not really worth a warning or error</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2022-11-15 17:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Can someone explain to me how defining a set() method on an Object is &quot;shadowing&quot; anything?</p>
+</blockquote>
+<p>In this example, the default value of <code>type_arg</code> refers to the unbound <code>set</code> method above rather than the builtin, which may surprise programmers unfamiliar with Python scopes.</p>
+<pre><code class="language-python">class Foobar:
+    def set(self, key, value):
+        pass
+
+    def method(self, type_arg=set):
+        pass
+</code></pre>
+<p>The warning is legitimate, for programmers who request warnings about shadowing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lovetox">@lovetox</a> on 2022-11-15 18:32</div>
+            <div class="timeline-body"><p>Thanks for that example, seems its indeed possible to shadow a builtin with a method, i didnt know that.</p>
+<p>Nevertheless in the original examples, nothing was shadowed.
+I guess the algo is just not very good, and just scans for method names with names of builtins.</p>
+<p>EDIT: I think i understand now, its like with variables, it warns that one cannot use the builtin in that scope anymore, so its indeed correct.</p>
+<p>Not very useful, as set() is a very common method name, but still correct.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:56:29 UTC
+    </footer>
+</body>
+</html>
