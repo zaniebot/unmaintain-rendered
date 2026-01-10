@@ -1,0 +1,337 @@
+```yaml
+number: 22444
+title: "[ty] Only consider fully static pivots when deriving transitive constraints"
+type: pull_request
+state: merged
+author: dcreager
+labels:
+  - ty
+  - ecosystem-analyzer
+assignees: []
+merged: true
+base: main
+head: dcreager/gradual-transitivity
+created_at: 2026-01-07T20:28:04Z
+updated_at: 2026-01-08T14:31:58Z
+url: https://github.com/astral-sh/ruff/pull/22444
+synced_at: 2026-01-10T16:30:32Z
+```
+
+# [ty] Only consider fully static pivots when deriving transitive constraints
+
+---
+
+_Pull request opened by @dcreager on 2026-01-07 20:28_
+
+When working with constraint sets, we track transitive relationships between the constraints in the set. For instance, in `S ≤ int ∧ int ≤ T`, we can infer that `S ≤ T`. However, we should only consider fully static types when looking for a "pivot" for this kind of transitive relationship. The same pattern does not hold for `S ≤ Any ∧ Any ≤ T`; because the two `Any`s can materialize to different types, we cannot infer that `S ≤ T`.
+
+Fixes https://github.com/astral-sh/ty/issues/2371
+
+---
+
+_Review requested from @carljm by @dcreager on 2026-01-07 20:28_
+
+---
+
+_Review requested from @AlexWaygood by @dcreager on 2026-01-07 20:28_
+
+---
+
+_Review requested from @sharkdp by @dcreager on 2026-01-07 20:28_
+
+---
+
+_Label `ty` added by @dcreager on 2026-01-07 20:28_
+
+---
+
+_Label `ecosystem-analyzer` added by @dcreager on 2026-01-07 20:28_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-07 20:29_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+No changes detected when running ty on typing conformance tests ✅
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-07 20:31_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+spack (https://github.com/spack/spack)
+- lib/spack/spack/vendor/jinja2/environment.py:639:16: error[invalid-return-type] Return type does not match returned value: expected `str`, found `Unknown | Extension | str`
+- Found 4295 diagnostics
++ Found 4294 diagnostics
+
+jinja (https://github.com/pallets/jinja)
+- src/jinja2/environment.py:654:16: error[invalid-return-type] Return type does not match returned value: expected `str`, found `Unknown | Extension | str`
+- Found 181 diagnostics
++ Found 180 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
+- dulwich/pack.py:674:16: error[invalid-return-type] Return type does not match returned value: expected `Iterator[ObjectID]`, found `map[Unknown | bytes]`
+- Found 235 diagnostics
++ Found 234 diagnostics
+
+ppb-vector (https://github.com/ppb/ppb-vector)
+- ppb_vector/__init__.py:468:13: error[invalid-argument-type] Argument to function `max` is incorrect: Argument type `Unknown | Vector | Sequence[SupportsFloat]` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- ppb_vector/__init__.py:468:13: error[invalid-argument-type] Argument to function `max` is incorrect: Expected `int | float`, found `Unknown | Vector | Sequence[SupportsFloat]`
+- Found 23 diagnostics
++ Found 21 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- references/depth/stereo/transforms.py:124:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[tuple[Unknown, Unknown], tuple[Unknown | ndarray[tuple[Any, ...], dtype[Any]] | None, Unknown | ndarray[tuple[Any, ...], dtype[Any]] | None], tuple[Unknown | ndarray[tuple[Any, ...], dtype[Any]] | None, Unknown | ndarray[tuple[Any, ...], dtype[Any]] | None]]`, found `tuple[tuple[Unknown, ...], tuple[Unknown | ndarray[tuple[Any, ...], dtype[Any]] | None, ...], tuple[Unknown | ndarray[tuple[Any, ...], dtype[Any]] | None, ...]]`
+- Found 1410 diagnostics
++ Found 1409 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
++ pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
+
+Expression (https://github.com/cognitedata/Expression)
+- README.py:637:11: error[invalid-assignment] Object of type `Unknown | range | int` is not assignable to `int`
+- expression/collections/array.py:376:16: error[invalid-return-type] Return type does not match returned value: expected `int`, found `Unknown | Self@sum_by | int`
+- expression/collections/array.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `TypedArray[_TSource@TypedArray]`, found `Unknown | _TState@unfold | TypedArray[_TSource@TypedArray]`
+- expression/collections/array.py:655:23: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[_TSource@unfold] | None`, found `Unknown | _TState@unfold`
+- expression/collections/block.py:274:16: error[invalid-return-type] Return type does not match returned value: expected `_TResult@sum_by`, found `Unknown | Block[_TSourceSum@sum_by]`
+- expression/collections/block.py:486:16: error[invalid-return-type] Return type does not match returned value: expected `Block[_TSource@Block]`, found `Unknown | _TState@unfold | Block[_TSource@Block]`
+- expression/collections/block.py:595:12: error[invalid-return-type] Return type does not match returned value: expected `Block[_TSource@concat]`, found `Unknown | Iterable[Block[_TSource@concat]] | Block[_TSource@concat]`
+- expression/collections/block.py:1014:18: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[_TSource@unfold]`, found `Unknown | _TState@unfold`
+- expression/collections/map.py:252:24: error[no-matching-overload] No overload of bound method `join` matches arguments
+- expression/collections/seq.py:299:16: error[invalid-return-type] Return type does not match returned value: expected `_TSupportsSum@sum_by`, found `Unknown | Self@sum_by`
+- expression/collections/seq.py:353:16: error[invalid-return-type] Return type does not match returned value: expected `Iterable[_TSource@Seq]`, found `Unknown | _TState@unfold | Iterable[_TSource@Seq]`
+- expression/collections/seq.py:446:12: error[invalid-return-type] Return type does not match returned value: expected `Iterable[_TResult@choose]`, found `Unknown | Iterable[_TSource@choose] | Iterable[_TResult@choose]`
+- expression/core/result.py:121:24: error[invalid-return-type] Return type does not match returned value: expected `Result[_TResult@map2, _TErrorOut@Result]`, found `Result[Unknown | _TOther@map2 | _TResult@map2, _TErrorOut@Result]`
+- expression/effect/result.py:33:16: error[invalid-return-type] Return type does not match returned value: expected `Result[_TResult@bind, _TError@ResultBuilder]`, found `Unknown | Result[_TSource@ResultBuilder, _TError@ResultBuilder] | Result[_TResult@bind, _TError@ResultBuilder]`
+- expression/extra/parser.py:413:13: error[invalid-argument-type] Argument to function `pipe` is incorrect: Expected `(Unknown | Block[str] | str | ... omitted 4 union elements, /) -> int`, found `<class 'int'>`
+- expression/extra/parser.py:441:13: error[invalid-argument-type] Argument to function `pipe` is incorrect: Expected `(Unknown | Block[str] | str | ... omitted 3 union elements, /) -> float`, found `<class 'float'>`
+- tests/test_array.py:47:27: error[invalid-assignment] Object of type `Unknown | TypedArray[Unknown | int] | TypedArray[str]` is not assignable to `TypedArray[str]`
+- tests/test_array.py:58:35: error[invalid-assignment] Object of type `Unknown | TypedArray[Unknown | str] | TypedArray[uint8]` is not assignable to `TypedArray[uint8]`
+- tests/test_array.py:69:36: error[invalid-assignment] Object of type `Unknown | TypedArray[Unknown | str] | TypedArray[uint16]` is not assignable to `TypedArray[uint16]`
+- tests/test_array.py:80:36: error[invalid-assignment] Object of type `Unknown | TypedArray[Unknown | str] | TypedArray[uint32]` is not assignable to `TypedArray[uint32]`
+- tests/test_array.py:91:37: error[invalid-assignment] Object of type `Unknown | TypedArray[Unknown | str] | TypedArray[float32]` is not assignable to `TypedArray[float32]`
+- tests/test_array.py:99:35: error[invalid-assignment] Object of type `Unknown | TypedArray[Unknown | int] | TypedArray[int16]` is not assignable to `TypedArray[int16]`
+- tests/test_seq.py:154:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[Unknown]`, found `Unknown | Literal[0]`
+- Found 228 diagnostics
++ Found 205 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+- cki_lib/yaml.py:264:5: error[invalid-assignment] Cannot assign to a subscript on an object of type `str`
+- cki_lib/yaml.py:272:9: error[not-subscriptable] Cannot delete subscript on object of type `str` with no `__delitem__` method
+- Found 242 diagnostics
++ Found 240 diagnostics
+
+discord.py (https://github.com/Rapptz/discord.py)
+- discord/channel.py:3427:16: error[no-matching-overload] No overload of bound method `join` matches arguments
+- discord/state.py:1178:9: error[invalid-assignment] Object of type `tuple[Unknown | Emoji, ...]` is not assignable to attribute `emojis` of type `tuple[Emoji, ...]`
+- discord/state.py:1191:9: error[invalid-assignment] Object of type `tuple[Unknown | GuildSticker, ...]` is not assignable to attribute `stickers` of type `tuple[GuildSticker, ...]`
+- Found 552 diagnostics
++ Found 549 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
+- cloudinit/config/schema.py:175:17: error[no-matching-overload] No overload of bound method `join` matches arguments
+- Found 1187 diagnostics
++ Found 1186 diagnostics
+
+openlibrary (https://github.com/internetarchive/openlibrary)
+- openlibrary/plugins/upstream/merge_authors.py:194:63: warning[possibly-missing-attribute] Attribute `values` may be missing on object of type `Unknown | str | dict[Unknown, Unknown]`
+- Found 1164 diagnostics
++ Found 1163 diagnostics
+
+pwndbg (https://github.com/pwndbg/pwndbg)
+- pwndbg/integration/__init__.py:955:19: error[no-matching-overload] No overload of function `bisect_right` matches arguments
+- pwndbg/integration/__init__.py:963:19: error[no-matching-overload] No overload of function `bisect_right` matches arguments
+- Found 2063 diagnostics
++ Found 2061 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -> Any) & ((*args: object, **kwargs: object) -> object))`
++ src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -> Any)`
++ src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
++ src/prefect/flow_engine.py:1401:24: error[invalid-await] `Unknown | R@AsyncFlowRunEngine | Coroutine[Any, Any, R@AsyncFlowRunEngine]` is not awaitable
++ src/prefect/flow_engine.py:1482:43: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_flow_sync`
++ src/prefect/flow_engine.py:1490:21: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_sync`
++ src/prefect/flow_engine.py:1524:44: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_flow_async`
++ src/prefect/flow_engine.py:1531:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_async`
+- src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
++ src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
+- src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
++ src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
+- src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5377 diagnostics
++ Found 5382 diagnostics
+
+pandas (https://github.com/pandas-dev/pandas)
+- pandas/tests/io/parser/test_multi_thread.py:120:14: warning[possibly-missing-attribute] Attribute `columns` may be missing on object of type `Unknown | tuple[Unknown, Unknown]`
+- pandas/tests/io/parser/test_multi_thread.py:123:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `columns` on type `Unknown | tuple[Unknown, Unknown]`
+- Found 3785 diagnostics
++ Found 3783 diagnostics
+
+jax (https://github.com/google/jax)
+- jax/_src/core.py:3866:25: error[invalid-argument-type] Argument to function `join` is incorrect: Expected `Sequence[Doc]`, found `list[Unknown | (Jaxpr & ~ClosedJaxpr)]`
+- jax/_src/debugging.py:727:7: error[unsupported-operator] Operator `*` is not supported between objects of type `Unknown | str` and `float`
+- jax/_src/debugging.py:727:19: error[unsupported-operator] Operator `*` is not supported between objects of type `Unknown | str` and `float`
+- jax/_src/debugging.py:727:31: error[unsupported-operator] Operator `*` is not supported between objects of type `Unknown | str` and `float`
+- jax/_src/interpreters/mlir.py:2126:9: error[invalid-argument-type] Argument to function `_emit_lowering_rule_as_fun` is incorrect: Expected `Sequence[AbstractValue]`, found `list[Unknown | Var]`
+- jax/_src/pallas/hlo_interpreter.py:305:38: error[no-matching-overload] No overload of function `safe_zip` matches arguments
+- jax/_src/pallas/mosaic/lowering.py:2165:37: error[no-matching-overload] No overload of bound method `join` matches arguments
+- jax/_src/pallas/mosaic_gpu/lowering.py:3232:17: error[invalid-argument-type] Argument to function `safe_map` is incorrect: Expected `(Any, dtype[Any] | Unknown | ShapedAbstractValue, /) -> Unknown | dtype[Any] | ShapedAbstractValue`, found `(def _ensure_ir_value(x: Any, dtype: dtype[Any]) -> Unknown) | ((v, aval) -> Unknown)`
+- jax/_src/pallas/mosaic_gpu/lowering.py:3255:22: error[invalid-argument-type] Argument to function `safe_map` is incorrect: Expected `(Any, dtype[Any] | Unknown | ShapedAbstractValue, /) -> Unknown | dtype[Any] | ShapedAbstractValue`, found `(def _ensure_ir_value(x: Any, dtype: dtype[Any]) -> Unknown) | ((v, aval) -> Unknown)`
++ jax/_src/pallas/mosaic_gpu/lowering.py:3232:17: error[invalid-argument-type] Argument to function `safe_map` is incorrect: Expected `(Any, dtype[Any] | Unknown | ShapedAbstractValue, /) -> Unknown`, found `(def _ensure_ir_value(x: Any, dtype: dtype[Any]) -> Unknown) | ((v, aval) -> Unknown)`
++ jax/_src/pallas/mosaic_gpu/lowering.py:3255:22: error[invalid-argument-type] Argument to function `safe_map` is incorrect: Expected `(Any, dtype[Any] | Unknown | ShapedAbstractValue, /) -> Unknown`, found `(def _ensure_ir_value(x: Any, dtype: dtype[Any]) -> Unknown) | ((v, aval) -> Unknown)`
+- jax/_src/pallas/mosaic_gpu/primitives.py:3380:7: error[invalid-argument-type] Argument to function `unzip2` is incorrect: Expected `Iterable[tuple[Unknown, Unknown]]`, found `map[Unknown | AbstractRef | TransformedRef]`
+- jax/_src/pallas/pipelining/schedulers.py:240:10: error[invalid-return-type] Return type does not match returned value: expected `builtins.bool | Array`, found `Array | Any | ndarray[tuple[Any, ...], dtype[Any]] | ... omitted 6 union elements`
+- jax/_src/pallas/pipelining/schedulers.py:302:10: error[invalid-return-type] Return type does not match returned value: expected `builtins.bool | Array`, found `Array | Any | ndarray[tuple[Any, ...], dtype[Any]] | ... omitted 6 union elements`
+- jax/_src/shard_map.py:1393:29: error[invalid-argument-type] Argument to function `unzip2` is incorrect: Expected `Iterable[tuple[Unknown, Unknown]]`, found `list[Unknown | BatchTracer]`
+- jax/experimental/slab/djax.py:172:18: warning[possibly-missing-attribute] Attribute `shape` may be missing on object of type `Unknown | int`
+- jax/experimental/slab/slab.py:337:18: warning[possibly-missing-attribute] Attribute `shape` may be missing on object of type `Unknown | int`
+- Found 2810 diagnostics
++ Found 2797 diagnostics
+
+zulip (https://github.com/zulip/zulip)
+- zerver/lib/message.py:297:9: error[invalid-argument-type] Argument to function `generic_bulk_cached_fetch` is incorrect: Expected `(int | Unknown | dict[str, Any], /) -> str`, found `def to_dict_cache_key_id(message_id: int) -> str`
+- zerver/lib/message.py:298:9: error[invalid-argument-type] Argument to function `generic_bulk_cached_fetch` is incorrect: Expected `(list[int | Unknown | dict[str, Any]], /) -> Iterable[dict[str, Any] | Unknown]`, found `def ids_to_dict(needed_ids: list[int]) -> list[dict[str, Any]]`
+- Found 3663 diagnostics
++ Found 3661 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 6 union elements, object_]`
++ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
+- static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
++ static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Unknown, Any]`
+- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | TypeBlocks | Batch | ... omitted 6 union elements, TVDtype@Series]`
+- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | TypeBlocks | Batch | ... omitted 7 union elements, TVDtype@SeriesHE]`
++ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
+- Found 1838 diagnostics
++ Found 1837 diagnostics
+
+sympy (https://github.com/sympy/sympy)
+- sympy/utilities/tests/test_codegen.py:54:33: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Idx` on object of type `str`
+- sympy/utilities/tests/test_codegen.py:54:39: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Idx` on object of type `str`
+- sympy/utilities/tests/test_codegen.py:55:52: warning[possibly-missing-attribute] Attribute `label` may be missing on object of type `Unknown | str`
+- sympy/utilities/tests/test_codegen.py:55:61: warning[possibly-missing-attribute] Attribute `label` may be missing on object of type `Unknown | str`
+- Found 15637 diagnostics
++ Found 15633 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
++ pandas-stubs/_typing.pyi:1232:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_pandas.py:265:13: error[no-matching-overload] No overload of function `concat` matches arguments
+
+scipy (https://github.com/scipy/scipy)
+- scipy/signal/tests/test_ltisys.py:1005:28: warning[possibly-missing-attribute] Attribute `shape` may be missing on object of type `Unknown | list[Unknown | list[Unknown | int | float]]`
+- scipy/signal/tests/test_ltisys.py:1005:41: warning[possibly-missing-attribute] Attribute `shape` may be missing on object of type `Unknown | list[Unknown | list[Unknown | int | float]]`
+- scipy/signal/tests/test_ltisys.py:1022:28: warning[possibly-missing-attribute] Attribute `shape` may be missing on object of type `Unknown | list[Unknown | list[Unknown | int | float]]`
+- scipy/signal/tests/test_ltisys.py:1022:41: warning[possibly-missing-attribute] Attribute `shape` may be missing on object of type `Unknown | list[Unknown | list[Unknown | int | float]]`
+- scipy/stats/_sensitivity_analysis.py:718:24: error[invalid-argument-type] Argument is incorrect: Expected `ndarray[tuple[Any, ...], dtype[Any]]`, found `Unknown | ((f_A, f_B, f_AB) -> Unknown) | ndarray[tuple[Any, ...], dtype[Unknown]]`
++ scipy/stats/_sensitivity_analysis.py:718:24: error[invalid-argument-type] Argument is incorrect: Expected `ndarray[tuple[Any, ...], dtype[Any]]`, found `Unknown | ((f_A, f_B, f_AB) -> Unknown)`
+- scipy/stats/_sensitivity_analysis.py:718:24: error[invalid-argument-type] Argument is incorrect: Expected `ndarray[tuple[Any, ...], dtype[Any]]`, found `Unknown | ((f_A, f_B, f_AB) -> Unknown) | ndarray[tuple[Any, ...], dtype[Unknown]]`
++ scipy/stats/_sensitivity_analysis.py:718:24: error[invalid-argument-type] Argument is incorrect: Expected `ndarray[tuple[Any, ...], dtype[Any]]`, found `Unknown | ((f_A, f_B, f_AB) -> Unknown)`
+- scipy/stats/_sensitivity_analysis.py:718:24: error[invalid-argument-type] Argument is incorrect: Expected `(...) -> Unknown`, found `Unknown | ((f_A, f_B, f_AB) -> Unknown) | ndarray[tuple[Any, ...], dtype[Unknown]]`
+- scipy/stats/_sensitivity_analysis.py:718:24: error[invalid-argument-type] Argument is incorrect: Expected `ndarray[tuple[Any, ...], dtype[Any]]`, found `Unknown | ((f_A, f_B, f_AB) -> Unknown) | ndarray[tuple[Any, ...], dtype[Unknown]]`
++ scipy/stats/_sensitivity_analysis.py:718:24: error[invalid-argument-type] Argument is incorrect: Expected `ndarray[tuple[Any, ...], dtype[Any]]`, found `Unknown | ((f_A, f_B, f_AB) -> Unknown)`
+- scipy/stats/_sensitivity_analysis.py:718:24: error[invalid-argument-type] Argument is incorrect: Expected `ndarray[tuple[Any, ...], dtype[Any]]`, found `Unknown | ((f_A, f_B, f_AB) -> Unknown) | ndarray[tuple[Any, ...], dtype[Unknown]]`
++ scipy/stats/_sensitivity_analysis.py:718:24: error[invalid-argument-type] Argument is incorrect: Expected `ndarray[tuple[Any, ...], dtype[Any]]`, found `Unknown | ((f_A, f_B, f_AB) -> Unknown)`
+- scipy/stats/_sensitivity_analysis.py:718:24: error[invalid-argument-type] Argument is incorrect: Expected `ndarray[tuple[Any, ...], dtype[Any]]`, found `Unknown | ((f_A, f_B, f_AB) -> Unknown) | ndarray[tuple[Any, ...], dtype[Unknown]]`
++ scipy/stats/_sensitivity_analysis.py:718:24: error[invalid-argument-type] Argument is incorrect: Expected `ndarray[tuple[Any, ...], dtype[Any]]`, found `Unknown | ((f_A, f_B, f_AB) -> Unknown)`
+- scipy/stats/_sensitivity_analysis.py:718:24: error[invalid-argument-type] Argument is incorrect: Expected `ndarray[tuple[Any, ...], dtype[Any]] | None`, found `Unknown | ((f_A, f_B, f_AB) -> Unknown) | ndarray[tuple[Any, ...], dtype[Unknown]]`
++ scipy/stats/_sensitivity_analysis.py:718:24: error[invalid-argument-type] Argument is incorrect: Expected `ndarray[tuple[Any, ...], dtype[Any]] | None`, found `Unknown | ((f_A, f_B, f_AB) -> Unknown)`
+- scipy/stats/_sensitivity_analysis.py:718:24: error[invalid-argument-type] Argument is incorrect: Expected `ndarray[tuple[Any, ...], dtype[Any]] | None`, found `Unknown | ((f_A, f_B, f_AB) -> Unknown) | ndarray[tuple[Any, ...], dtype[Unknown]]`
++ scipy/stats/_sensitivity_analysis.py:718:24: error[invalid-argument-type] Argument is incorrect: Expected `ndarray[tuple[Any, ...], dtype[Any]] | None`, found `Unknown | ((f_A, f_B, f_AB) -> Unknown)`
+- scipy/stats/_sensitivity_analysis.py:718:24: error[invalid-argument-type] Argument is incorrect: Expected `ndarray[tuple[Any, ...], dtype[Any]] | None`, found `Unknown | ((f_A, f_B, f_AB) -> Unknown) | ndarray[tuple[Any, ...], dtype[Unknown]]`
++ scipy/stats/_sensitivity_analysis.py:718:24: error[invalid-argument-type] Argument is incorrect: Expected `ndarray[tuple[Any, ...], dtype[Any]] | None`, found `Unknown | ((f_A, f_B, f_AB) -> Unknown)`
+- scipy/stats/_sensitivity_analysis.py:718:24: error[invalid-argument-type] Argument is incorrect: Expected `BootstrapResult | None`, found `Unknown | ((f_A, f_B, f_AB) -> Unknown) | ndarray[tuple[Any, ...], dtype[Unknown]]`
++ scipy/stats/_sensitivity_analysis.py:718:24: error[invalid-argument-type] Argument is incorrect: Expected `BootstrapResult | None`, found `Unknown | ((f_A, f_B, f_AB) -> Unknown)`
+- Found 8067 diagnostics
++ Found 8062 diagnostics
+
+
+```
+
+</details>
+
+
+No memory usage changes detected ✅
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-07 20:34_
+
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `invalid-argument-type` | 0 | 21 | 5 |
+| `invalid-return-type` | 0 | 17 | 6 |
+| `possibly-missing-attribute` | 0 | 13 | 1 |
+| `invalid-assignment` | 0 | 11 | 0 |
+| `no-matching-overload` | 0 | 8 | 0 |
+| `unsupported-operator` | 0 | 3 | 0 |
+| `invalid-await` | 0 | 2 | 0 |
+| `unresolved-attribute` | 0 | 0 | 2 |
+| `unused-ignore-comment` | 2 | 0 | 0 |
+| `not-subscriptable` | 0 | 1 | 0 |
+| **Total** | **2** | **76** | **14** |
+
+
+**[Full report with detailed diff](https://69ccc91c.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://69ccc91c.ty-ecosystem-ext.pages.dev/timing))
+
+
+
+---
+
+_@carljm approved on 2026-01-07 23:38_
+
+Nice!
+
+---
+
+_Merged by @dcreager on 2026-01-08 14:31_
+
+---
+
+_Closed by @dcreager on 2026-01-08 14:31_
+
+---
+
+_Branch deleted on 2026-01-08 14:31_
+
+---

@@ -1,0 +1,611 @@
+```yaml
+number: 21902
+title: "[ty] Infer typevar specializations for implicit generic protocols"
+type: pull_request
+state: open
+author: dcreager
+labels:
+  - ty
+  - ecosystem-analyzer
+assignees: []
+draft: true
+base: main
+head: dcreager/genprop
+created_at: 2025-12-10T18:22:13Z
+updated_at: 2026-01-08T17:31:48Z
+url: https://github.com/astral-sh/ruff/pull/21902
+synced_at: 2026-01-10T16:30:32Z
+```
+
+# [ty] Infer typevar specializations for implicit generic protocols
+
+---
+
+_Pull request opened by @dcreager on 2025-12-10 18:22_
+
+Grabbing a PR number for the generic protocol work. Better description TBD
+
+---
+
+_Label `ty` added by @dcreager on 2025-12-10 18:22_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-10 18:24_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2026-01-08 16:24:17.076581555 +0000
++++ new-output.txt	2026-01-08 16:24:17.392583808 +0000
+@@ -429,20 +429,16 @@
+ generics_base_class.py:26:26: error[invalid-argument-type] Argument to function `takes_dict_incorrect` is incorrect: Expected `dict[str, list[object]]`, found `SymbolTable`
+ generics_base_class.py:29:14: error[invalid-type-form] `typing.Generic` is not allowed in type expressions
+ generics_base_class.py:30:8: error[invalid-type-form] `typing.Generic` is not allowed in type expressions
+-generics_base_class.py:45:5: error[type-assertion-failure] Type `Iterator[int]` does not match asserted type `Unknown`
+ generics_base_class.py:49:38: error[invalid-type-arguments] Too many type arguments to class `LinkedList`: expected 1, got 2
+ generics_base_class.py:61:30: error[invalid-type-arguments] Too many type arguments to class `MyDict`: expected 1, got 2
+ generics_basic.py:34:12: error[unsupported-operator] Operator `+` is not supported between two objects of type `AnyStr@concat`
+ generics_basic.py:49:44: error[invalid-legacy-type-variable] A `TypeVar` cannot have exactly one constraint
+-generics_basic.py:139:5: error[type-assertion-failure] Type `int` does not match asserted type `Unknown`
+-generics_basic.py:140:5: error[type-assertion-failure] Type `int` does not match asserted type `Unknown`
+ generics_basic.py:157:5: error[invalid-argument-type] Method `__getitem__` of type `bound method MyMap1[str, int].__getitem__(key: str, /) -> int` cannot be called with key of type `Literal[0]` on object of type `MyMap1[str, int]`
+ generics_basic.py:158:5: error[invalid-argument-type] Method `__getitem__` of type `bound method MyMap2[int, str].__getitem__(key: str, /) -> int` cannot be called with key of type `Literal[0]` on object of type `MyMap2[int, str]`
+ generics_basic.py:162:12: error[invalid-argument-type] `<class 'int'>` is not a valid argument to `Generic`
+ generics_basic.py:163:12: error[invalid-argument-type] `<class 'int'>` is not a valid argument to `Protocol`
+ generics_basic.py:171:1: error[invalid-generic-class] `Generic` base class must include all type variables used in other base classes
+ generics_basic.py:172:1: error[invalid-generic-class] `Generic` base class must include all type variables used in other base classes
+-generics_basic.py:199:5: error[type-assertion-failure] Type `Iterator[Any]` does not match asserted type `Unknown`
+ generics_defaults.py:24:40: error[invalid-generic-class] Type parameter `T` without a default cannot follow earlier parameter `DefaultStrT` with a default
+ generics_defaults.py:30:1: error[type-assertion-failure] Type `type[NoNonDefaults[str, int]]` does not match asserted type `<class 'NoNonDefaults'>`
+ generics_defaults.py:31:1: error[type-assertion-failure] Type `type[NoNonDefaults[str, int]]` does not match asserted type `<class 'NoNonDefaults[str, int]'>`
+@@ -1023,4 +1019,4 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Unknown key "title" for TypedDict `Movie`: Unknown key "title"
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions
+-Found 1025 diagnostics
++Found 1021 diagnostics
+
+```
+
+</details>
+
+
+
+
+---
+
+_Label `ecosystem-analyzer` added by @dcreager on 2025-12-13 21:22_
+
+---
+
+_Comment by @codspeed-hq[bot] on 2025-12-16 00:58_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fgenprop?utm_source=github&utm_medium=comment&utm_content=header)
+
+### Merging this PR will **degrade performance by 73.27%**
+
+<sub>Comparing <code>dcreager/genprop</code> (bb07775) with <code>main</code> (1f49e8e)</sub>
+
+
+
+### Summary
+
+`⚡ 1` improved benchmark  
+`❌ 3` regressed benchmarks  
+`✅ 17` untouched benchmarks  
+`⏩ 32` skipped benchmarks[^skipped]  
+
+
+> :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fgenprop?utm_source=github&utm_medium=comment&utm_content=acknowledge)._
+
+### Performance Changes
+
+|     | Mode | Benchmark | `BASE` | `HEAD` | Efficiency |
+| --- | ---- | --------- | ------ | ------ | ---------- |
+| ❌ | WallTime | [`` pandas ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fgenprop?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apandas&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 62.8 s | 235 s | -73.27% |
+| ❌ | WallTime | [`` colour_science ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fgenprop?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Acolour_science&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 87 s | 130.2 s | -33.15% |
+| ⚡ | Simulation | [`` DateType ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fgenprop?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Adatetype%3A%3Aproject%3A%3ADateType&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 232.9 ms | 214.7 ms | +8.47% |
+| ❌ | Simulation | [`` attrs ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fgenprop?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Aattrs%3A%3Aproject%3A%3Aattrs&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 429.6 ms | 450.7 ms | -4.69% |
+
+[^skipped]: 32 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fgenprop?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment&utm_content=archive).
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-16 01:49_
+
+
+<!-- generated-comment ecosystem -->
+
+
+## `ruff-ecosystem` results
+
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
+
+---
+
+_Label `ecosystem-analyzer` removed by @dcreager on 2026-01-06 02:27_
+
+---
+
+_Label `ecosystem-analyzer` added by @dcreager on 2026-01-06 02:28_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-07 16:45_
+
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `type-assertion-failure` | 88 | 356 | 443 |
+| `invalid-argument-type` | 260 | 59 | 88 |
+| `unused-ignore-comment` | 11 | 222 | 0 |
+| `unsupported-operator` | 149 | 0 | 7 |
+| `no-matching-overload` | 98 | 2 | 0 |
+| `invalid-assignment` | 50 | 0 | 20 |
+| `possibly-missing-attribute` | 44 | 4 | 12 |
+| `invalid-return-type` | 17 | 17 | 16 |
+| `unresolved-attribute` | 29 | 11 | 3 |
+| `not-subscriptable` | 12 | 0 | 0 |
+| `call-non-callable` | 8 | 0 | 0 |
+| `not-iterable` | 6 | 0 | 2 |
+| `invalid-await` | 0 | 2 | 0 |
+| `missing-argument` | 0 | 1 | 0 |
+| **Total** | **772** | **674** | **591** |
+
+
+**[Full report with detailed diff](https://551f965f.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://551f965f.ty-ecosystem-ext.pages.dev/timing))
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-08 14:42_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+more-itertools (https://github.com/more-itertools/more-itertools)
+- more_itertools/more.py:1058:33: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Iterable[Never]`, found `repeat[tuple[Unknown, ...]]`
+- more_itertools/recipes.py:818:25: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Iterable[Never]`, found `repeat[list[Unknown]]`
+- more_itertools/recipes.py:1098:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `(int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], /) -> int | float | complex | ... omitted 3 union elements`, found `Overload[(base: int, exp: int, mod: int) -> int, (base: int, exp: Literal[0], mod: None = None) -> Literal[1], (base: int, exp: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], mod: None = None) -> int, (base: int, exp: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], mod: None = None) -> int | float, (base: int, exp: int, mod: None = None) -> Any, (base: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], exp: int | float, mod: None = None) -> int | float, (base: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], exp: int | float, mod: None = None) -> int | float | complex, (base: int | float, exp: int, mod: None = None) -> int | float, (base: int | float, exp: int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], mod: None = None) -> Any, (base: int | float | complex, exp: int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], mod: None = None) -> int | float | complex, (base: _SupportsPow2[_E_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: None = None) -> _T_co@pow, (base: _SupportsPow3NoneOnly[_E_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: None = None) -> _T_co@pow, (base: _SupportsPow3[_E_contra@pow, _M_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: _M_contra@pow) -> _T_co@pow, (base: _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], exp: int | float, mod: None = None) -> Any, (base: _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], exp: int | float | complex, mod: None = None) -> int | float | complex]`
++ more_itertools/recipes.py:1098:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `(int | float | complex | ... omitted 3 union elements, int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], /) -> int | float | complex | ... omitted 3 union elements`, found `Overload[(base: int, exp: int, mod: int) -> int, (base: int, exp: Literal[0], mod: None = None) -> Literal[1], (base: int, exp: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], mod: None = None) -> int, (base: int, exp: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], mod: None = None) -> int | float, (base: int, exp: int, mod: None = None) -> Any, (base: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], exp: int | float, mod: None = None) -> int | float, (base: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], exp: int | float, mod: None = None) -> int | float | complex, (base: int | float, exp: int, mod: None = None) -> int | float, (base: int | float, exp: int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], mod: None = None) -> Any, (base: int | float | complex, exp: int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], mod: None = None) -> int | float | complex, (base: _SupportsPow2[_E_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: None = None) -> _T_co@pow, (base: _SupportsPow3NoneOnly[_E_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: None = None) -> _T_co@pow, (base: _SupportsPow3[_E_contra@pow, _M_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: _M_contra@pow) -> _T_co@pow, (base: _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], exp: int | float, mod: None = None) -> Any, (base: _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], exp: int | float | complex, mod: None = None) -> int | float | complex]`
+- Found 35 diagnostics
++ Found 33 diagnostics
+
+attrs (https://github.com/python-attrs/attrs)
+- src/attr/validators.py:175:24: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `(Overload[(pattern: str | Pattern[str], string: str, flags: int = 0) -> Match[str] | None, (pattern: bytes | Pattern[bytes], string: Buffer, flags: int = 0) -> Match[bytes] | None] & ~AlwaysTruthy & ~AlwaysFalsy) | (str & ~AlwaysFalsy)` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- tests/test_validators.py:1143:64: error[unresolved-attribute] Object of type `(Any, Attribute[Unknown | int], Unknown | int, /) -> Any` has no attribute `exc_types`
++ tests/test_validators.py:1143:64: error[unresolved-attribute] Object of type `(Any, Attribute[Unknown], Unknown, /) -> Any` has no attribute `exc_types`
+- Found 616 diagnostics
++ Found 615 diagnostics
+
+mypy_primer (https://github.com/hauntsaninja/mypy_primer)
++ mypy_primer/utils.py:33:16: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Path` does not satisfy generic parameter annotation `Iterable[_T@set]
+- Found 3 diagnostics
++ Found 4 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
+- src/anyio/functools.py:227:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `(**P@__call__) -> Awaitable[Unknown]`, found `((**P@__call__) -> Coroutine[Any, Any, T@_LRUCacheWrapper]) | ((...) -> T@_LRUCacheWrapper)`
++ src/anyio/functools.py:227:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `(**P@__call__) -> Awaitable[T@_LRUCacheWrapper]`, found `((**P@__call__) -> Coroutine[Any, Any, T@_LRUCacheWrapper]) | ((...) -> T@_LRUCacheWrapper)`
+
+pip (https://github.com/pypa/pip)
+- src/pip/_vendor/idna/core.py:341:89: error[invalid-argument-type] Argument to function `bisect_left` is incorrect: Expected `SupportsLenAndGetItem[tuple[int, Literal["Z"]]]`, found `tuple[tuple[int, str] | tuple[int, str, str], ...]`
++ src/pip/_vendor/pkg_resources/__init__.py:3050:36: warning[possibly-missing-attribute] Attribute `partition` may be missing on object of type `str | None`
++ src/pip/_vendor/rich/text.py:1285:16: error[invalid-return-type] Return type does not match returned value: expected `int`, found `(SupportsIndex & ~AlwaysFalsy) | (Unknown & ~AlwaysFalsy)`
+- Found 610 diagnostics
++ Found 611 diagnostics
+
+beartype (https://github.com/beartype/beartype)
+- beartype/_util/func/arg/utilfuncargtest.py:302:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_util/func/arg/utilfuncargtest.py:331:52: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 497 diagnostics
++ Found 495 diagnostics
+
+spack (https://github.com/spack/spack)
+- lib/spack/spack/cmd/commands.py:563:34: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `object` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ lib/spack/spack/cmd/info.py:283:23: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `object` does not satisfy generic parameter annotation `Iterable[SupportsRichComparisonT@sorted]
+- lib/spack/spack/cmd/providers.py:59:40: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `Spec` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ lib/spack/spack/detection/path.py:169:33: error[invalid-argument-type] Argument to function `dedupe_paths` is incorrect: Expected `list[str]`, found `Unknown | list[PathLike[str] | Unknown | bytes | ... omitted 3 union elements]`
++ lib/spack/spack/hooks/sbang.py:146:38: error[invalid-argument-type] Argument to function `copyfileobj` is incorrect: Expected `SupportsWrite[bytes | str]`, found `_TemporaryFileWrapper[bytes]`
+- lib/spack/spack/package_base.py:1531:33: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `Spec` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- lib/spack/spack/package_base.py:1539:84: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `Spec` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ lib/spack/spack/solver/asp.py:2948:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/solver/reuse.py:360:66: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/spec.py:1398:49: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/spec.py:4037:38: error[invalid-argument-type] Argument to function `__new__` is incorrect: Argument type `None` does not satisfy generic parameter annotation `Iterable[_T@enumerate]
+- lib/spack/spack/test/cmd/deprecate.py:89:45: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `Spec` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- lib/spack/spack/test/cmd/deprecate.py:90:41: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `Unknown | Spec` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- lib/spack/spack/test/llnl/util/lock.py:192:23: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `None | Unknown`
++ lib/spack/spack/test/llnl/util/lock.py:192:23: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `None | str | Unknown`
+- lib/spack/spack/test/spec_semantics.py:2106:19: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `Spec | Unknown` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ lib/spack/spack/util/elf.py:607:56: error[not-subscriptable] Cannot subscript object of type `Sized` with no `__getitem__` method
++ lib/spack/spack/util/elf.py:615:29: error[invalid-argument-type] Argument to bound method `join` is incorrect: Expected `Iterable[Buffer]`, found `list[Sized]`
+- lib/spack/spack/vendor/attr/validators.py:186:25: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `(Overload[(pattern: str | Pattern[str], string: str, flags: int = 0) -> Match[str] | None, (pattern: bytes | Pattern[bytes], string: Buffer, flags: int = 0) -> Match[bytes] | None] & ~AlwaysTruthy & ~AlwaysFalsy) | (str & ~AlwaysFalsy)` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- Found 4294 diagnostics
++ Found 4295 diagnostics
+
+bandersnatch (https://github.com/pypa/bandersnatch)
+- src/bandersnatch/mirror.py:264:13: error[invalid-argument-type] Argument to function `max` is incorrect: Argument type `Unknown | int | None` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- Found 80 diagnostics
++ Found 79 diagnostics
+
+isort (https://github.com/pycqa/isort)
+- isort/core.py:86:27: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Iterable[None]`, found `TextIO`
+- isort/core.py:126:40: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Iterable[None]`, found `TextIO`
+- Found 35 diagnostics
++ Found 33 diagnostics
+
+aiortc (https://github.com/aiortc/aiortc)
+- src/aiortc/codecs/h264.py:200:20: error[invalid-return-type] Return type does not match returned value: expected `tuple[bytes, bytes]`, found `tuple[bytes, bytes | Unknown | None]`
++ src/aiortc/codecs/h264.py:200:20: error[invalid-return-type] Return type does not match returned value: expected `tuple[bytes, bytes]`, found `tuple[bytes, bytes | None]`
+- src/aiortc/sdp.py:446:52: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `None | Unknown`
++ src/aiortc/sdp.py:446:52: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `None | Unknown | str`
+
+werkzeug (https://github.com/pallets/werkzeug)
++ src/werkzeug/wsgi.py:422:13: error[call-non-callable] Object of type `object` is not callable
+- src/werkzeug/wsgi.py:388:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/werkzeug/wsgi.py:389:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/test_datastructures.py:544:35: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[MultiDict[Never, Never]] | None`, found `tuple[MultiDict[str, str], MultiDict[str, str]]`
++ tests/test_test.py:757:17: error[invalid-argument-type] Argument to function `next` is incorrect: Argument type `Iterable[bytes]` does not satisfy generic parameter annotation `SupportsNext[_T@next]
+- Found 382 diagnostics
++ Found 383 diagnostics
+
+boostedblob (https://github.com/hauntsaninja/boostedblob)
++ boostedblob/boost.py:417:16: error[unresolved-attribute] Object of type `Awaitable[T@UnorderedMappingBoostable]` has no attribute `result`
+- Found 21 diagnostics
++ Found 22 diagnostics
+
+starlette (https://github.com/encode/starlette)
+- tests/middleware/test_base.py:247:33: error[missing-argument] No argument provided for required parameter 1 of bound method `__init__`
+- Found 216 diagnostics
++ Found 215 diagnostics
+
+alerta (https://github.com/alerta/alerta)
+- alerta/views/alerts.py:332:26: error[invalid-argument-type] Argument to function `max` is incorrect: Argument type `Unknown | None | datetime` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- Found 555 diagnostics
++ Found 554 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
++ scrapy/core/spidermw.py:318:30: error[call-non-callable] Object of type `object` is not callable
++ scrapy/core/spidermw.py:322:30: error[call-non-callable] Object of type `object` is not callable
++ scrapy/utils/datatypes.py:96:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/test_http_headers.py:54:27: error[not-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_http_headers.py:54:43: error[not-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_http_headers.py:55:16: error[not-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_http_headers.py:60:16: error[not-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_http_headers.py:65:16: error[not-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- tests/test_settings/__init__.py:222:25: error[invalid-argument-type] Argument to bound method `update` is incorrect: Expected `SupportsItems[int | float | str | None, Any] | str | None`, found `list[Unknown | tuple[str, int]]`
++ tests/test_settings/__init__.py:222:25: error[invalid-argument-type] Argument to bound method `update` is incorrect: Expected `SupportsItems[int | float | str | None, Any] | str | None`, found `list[Unknown]`
+- Found 1782 diagnostics
++ Found 1790 diagnostics
+
+rich (https://github.com/Textualize/rich)
++ rich/text.py:1285:16: error[invalid-return-type] Return type does not match returned value: expected `int`, found `(SupportsIndex & ~AlwaysFalsy) | (Unknown & ~AlwaysFalsy)`
++ tests/test_containers.py:17:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Renderables` does not satisfy generic parameter annotation `Iterable[_T@list]
++ tests/test_tools.py:8:17: error[invalid-argument-type] Argument to function `next` is incorrect: Argument type `Iterable[tuple[bool, Unknown | str]]` does not satisfy generic parameter annotation `SupportsNext[_T@next]
++ tests/test_tools.py:9:17: error[invalid-argument-type] Argument to function `next` is incorrect: Argument type `Iterable[tuple[bool, Unknown | str]]` does not satisfy generic parameter annotation `SupportsNext[_T@next]
++ tests/test_tools.py:10:17: error[invalid-argument-type] Argument to function `next` is incorrect: Argument type `Iterable[tuple[bool, Unknown | str]]` does not satisfy generic parameter annotation `SupportsNext[_T@next]
++ tests/test_tools.py:11:17: error[invalid-argument-type] Argument to function `next` is incorrect: Argument type `Iterable[tuple[bool, Unknown | str]]` does not satisfy generic parameter annotation `SupportsNext[_T@next]
++ tests/test_tools.py:17:17: error[invalid-argument-type] Argument to function `next` is incorrect: Argument type `Iterable[tuple[bool, Unknown | str]]` does not satisfy generic parameter annotation `SupportsNext[_T@next]
++ tests/test_tools.py:18:17: error[invalid-argument-type] Argument to function `next` is incorrect: Argument type `Iterable[tuple[bool, Unknown | str]]` does not satisfy generic parameter annotation `SupportsNext[_T@next]
++ tests/test_tools.py:19:17: error[invalid-argument-type] Argument to function `next` is incorrect: Argument type `Iterable[tuple[bool, Unknown | str]]` does not satisfy generic parameter annotation `SupportsNext[_T@next]
++ tests/test_tools.py:20:17: error[invalid-argument-type] Argument to function `next` is incorrect: Argument type `Iterable[tuple[bool, Unknown | str]]` does not satisfy generic parameter annotation `SupportsNext[_T@next]
++ tests/test_tools.py:26:17: error[invalid-argument-type] Argument to function `next` is incorrect: Argument type `Iterable[tuple[bool, bool, Unknown | str]]` does not satisfy generic parameter annotation `SupportsNext[_T@next]
++ tests/test_tools.py:27:17: error[invalid-argument-type] Argument to function `next` is incorrect: Argument type `Iterable[tuple[bool, bool, Unknown | str]]` does not satisfy generic parameter annotation `SupportsNext[_T@next]
++ tests/test_tools.py:28:17: error[invalid-argument-type] Argument to function `next` is incorrect: Argument type `Iterable[tuple[bool, bool, Unknown | str]]` does not satisfy generic parameter annotation `SupportsNext[_T@next]
++ tests/test_tools.py:29:17: error[invalid-argument-type] Argument to function `next` is incorrect: Argument type `Iterable[tuple[bool, bool, Unknown | str]]` does not satisfy generic parameter annotation `SupportsNext[_T@next]
+- Found 345 diagnostics
++ Found 359 diagnostics
+
+pylint (https://github.com/pycqa/pylint)
++ pylint/checkers/refactoring/implicit_booleaness_checker.py:219:24: warning[possibly-missing-attribute] Attribute `as_string` may be missing on object of type `Unknown | str`
++ pylint/checkers/refactoring/implicit_booleaness_checker.py:219:62: warning[possibly-missing-attribute] Attribute `as_string` may be missing on object of type `Unknown | str`
++ pylint/checkers/refactoring/implicit_booleaness_checker.py:222:27: warning[possibly-missing-attribute] Attribute `as_string` may be missing on object of type `(Unknown & ~None) | str`
++ pylint/checkers/refactoring/implicit_booleaness_checker.py:236:29: warning[possibly-missing-attribute] Attribute `as_string` may be missing on object of type `Unknown | str`
++ pylint/checkers/refactoring/implicit_booleaness_checker.py:239:29: warning[possibly-missing-attribute] Attribute `as_string` may be missing on object of type `Unknown | str`
+- Found 216 diagnostics
++ Found 221 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
++ sockeye/data_io.py:1354:38: error[invalid-argument-type] Argument to function `are_none` is incorrect: Expected `Sequence[Sized]`, found `list[Any | None]`
++ sockeye/data_io.py:1354:69: error[invalid-argument-type] Argument to function `are_token_parallel` is incorrect: Expected `Sequence[Sized]`, found `list[Any | None]`
++ sockeye/data_io.py:1356:38: error[invalid-argument-type] Argument to function `are_none` is incorrect: Expected `Sequence[Sized]`, found `list[Any | None]`
++ sockeye/data_io.py:1356:69: error[invalid-argument-type] Argument to function `are_token_parallel` is incorrect: Expected `Sequence[Sized]`, found `list[Any | None]`
+- Found 416 diagnostics
++ Found 420 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
+- tests/ignite/engine/test_engine.py:1222:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `dataiter` on type `Unknown | State`
++ tests/ignite/engine/test_engine.py:1222:9: error[invalid-assignment] Object of type `Iterator[int]` is not assignable to attribute `dataiter` on type `Unknown | State`
+
+PyGithub (https://github.com/PyGithub/PyGithub)
+- github/Requester.py:899:57: error[invalid-argument-type] Argument to bound method `__hostnameHasDomain` is incorrect: Expected `str | list[str]`, found `Unknown | list[Unknown | str] | list[Unknown | str | None]`
++ github/Requester.py:899:57: error[invalid-argument-type] Argument to bound method `__hostnameHasDomain` is incorrect: Expected `str | list[str]`, found `Unknown | list[Unknown | str] | list[str | Unknown | None]`
++ tests/Installation.py:125:35: error[unresolved-attribute] Object of type `Github` has no attribute `_Github__requester`
++ tests/Installation.py:127:22: error[unresolved-attribute] Object of type `Github` has no attribute `_Github__requester`
+- Found 299 diagnostics
++ Found 301 diagnostics
+
+nox (https://github.com/wntrblm/nox)
+- nox/_options.py:293:12: error[invalid-return-type] Return type does not match returned value: expected `Iterable[str]`, found `filter[Unknown | Sequence[str] | bool]`
++ nox/_options.py:293:12: error[invalid-return-type] Return type does not match returned value: expected `Iterable[str]`, found `filter[Sequence[str] | bool | None]`
+
+dedupe (https://github.com/dedupeio/dedupe)
++ dedupe/convenience.py:77:16: error[invalid-argument-type] Argument to function `__new__` is incorrect: Argument type `signedinteger[Unknown]` does not satisfy generic parameter annotation `Iterable[_T1@__new__]
++ dedupe/convenience.py:77:19: error[invalid-argument-type] Argument to function `__new__` is incorrect: Argument type `signedinteger[Unknown]` does not satisfy generic parameter annotation `Iterable[_T2@__new__]
+- Found 52 diagnostics
++ Found 54 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
+
+schemathesis (https://github.com/schemathesis/schemathesis)
++ src/schemathesis/specs/openapi/examples.py:597:33: error[invalid-argument-type] Argument to function `_find_matching_in_responses` is incorrect: Expected `dict[str, Any]`, found `Top[dict[Unknown, Unknown]]`
+- src/schemathesis/transport/requests.py:87:13: warning[possibly-missing-attribute] Attribute `pop` may be missing on object of type `Unknown | str | dict[str, Any] | CaseInsensitiveDict[Unknown] | dict[Unknown, Unknown]`
++ src/schemathesis/transport/requests.py:87:13: warning[possibly-missing-attribute] Attribute `pop` may be missing on object of type `Unknown | str | dict[str, Any] | CaseInsensitiveDict[Unknown]`
+- Found 276 diagnostics
++ Found 277 diagnostics
+
+typeshed-stats (https://github.com/AlexWaygood/typeshed-stats)
++ src/typeshed_stats/gather.py:275:29: error[invalid-argument-type] Argument to bound method `_visit_arg` is incorrect: Expected `arg`, found `arg | None`
+- Found 14 diagnostics
++ Found 15 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- mitmproxy/dns.py:303:17: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Iterable[Buffer]`, found `chain[Question | ResourceRecord]`
++ test/mitmproxy/contentviews/test__view_xml_html.py:20:21: error[invalid-argument-type] Argument to function `next` is incorrect: Argument type `Iterable[Token]` does not satisfy generic parameter annotation `SupportsNext[_T@next]
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
++ cki_lib/metrics/server.py:22:12: error[invalid-return-type] Return type does not match returned value: expected `None`, found `Iterator[Unknown]`
+- Found 240 diagnostics
++ Found 241 diagnostics
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
+- schema_salad/sourceline.py:203:25: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `object` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- Found 249 diagnostics
++ Found 248 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/_internal/_mock_val_ser.py:137:5: error[invalid-assignment] Object of type `MockValSer[SchemaValidator | PluggableSchemaValidator | SchemaSerializer]` is not assignable to attribute `validator` of type `SchemaValidator | PluggableSchemaValidator`
++ pydantic/_internal/_mock_val_ser.py:137:5: error[invalid-assignment] Object of type `MockValSer[Unknown]` is not assignable to attribute `validator` of type `SchemaValidator | PluggableSchemaValidator`
+- pydantic/_internal/_mock_val_ser.py:143:5: error[invalid-assignment] Object of type `MockValSer[SchemaValidator | PluggableSchemaValidator | SchemaSerializer]` is not assignable to attribute `serializer` of type `SchemaSerializer`
++ pydantic/_internal/_mock_val_ser.py:143:5: error[invalid-assignment] Object of type `MockValSer[Unknown]` is not assignable to attribute `serializer` of type `SchemaSerializer`
+- pydantic/_internal/_mock_val_ser.py:176:5: error[invalid-assignment] Object of type `MockValSer[SchemaValidator | PluggableSchemaValidator | SchemaSerializer]` is not assignable to attribute `__pydantic_validator__` of type `SchemaValidator | PluggableSchemaValidator`
++ pydantic/_internal/_mock_val_ser.py:176:5: error[invalid-assignment] Object of type `MockValSer[Unknown]` is not assignable to attribute `__pydantic_validator__` of type `SchemaValidator | PluggableSchemaValidator`
+- pydantic/_internal/_mock_val_ser.py:182:5: error[invalid-assignment] Object of type `MockValSer[SchemaValidator | PluggableSchemaValidator | SchemaSerializer]` is not assignable to attribute `__pydantic_serializer__` of type `SchemaSerializer`
++ pydantic/_internal/_mock_val_ser.py:182:5: error[invalid-assignment] Object of type `MockValSer[Unknown]` is not assignable to attribute `__pydantic_serializer__` of type `SchemaSerializer`
+
+vision (https://github.com/pytorch/vision)
++ test/test_transforms_v2.py:245:13: error[invalid-assignment] Object of type `<class '_empty'>` is not assignable to attribute `_annotation` on type `Unknown | Parameter`
++ test/test_transforms_v2.py:1543:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Number | Sequence[Unknown]`, found `Unknown | int | tuple[int | float, int | float] | tuple[int, int, int, int]`
++ test/test_transforms_v2.py:1543:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Sequence[int | float] | None`, found `Unknown | int | tuple[int | float, int | float] | tuple[int, int, int, int]`
++ test/test_transforms_v2.py:1543:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Sequence[int | float] | None`, found `Unknown | int | tuple[int | float, int | float] | tuple[int, int, int, int]`
++ test/test_transforms_v2.py:1543:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `InterpolationMode | int`, found `Unknown | int | tuple[int | float, int | float] | tuple[int, int, int, int]`
++ test/test_transforms_v2.py:1543:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[int | float] | None`, found `Unknown | int | tuple[int | float, int | float] | tuple[int, int, int, int]`
++ test/test_transforms_v2.py:1597:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Number | Sequence[Unknown]`, found `Unknown | int | tuple[int | float, int | float] | tuple[int, int, int, int]`
++ test/test_transforms_v2.py:1597:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Sequence[int | float] | None`, found `Unknown | int | tuple[int | float, int | float] | tuple[int, int, int, int]`
++ test/test_transforms_v2.py:1597:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Sequence[int | float] | None`, found `Unknown | int | tuple[int | float, int | float] | tuple[int, int, int, int]`
++ test/test_transforms_v2.py:1684:45: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Number | Sequence[Unknown]`, found `Unknown | int | tuple[int | float, int | float] | tuple[int, int, int, int]`
++ test/test_transforms_v2.py:1684:45: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Sequence[int | float] | None`, found `Unknown | int | tuple[int | float, int | float] | tuple[int, int, int, int]`
++ test/test_transforms_v2.py:1684:45: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Sequence[int | float] | None`, found `Unknown | int | tuple[int | float, int | float] | tuple[int, int, int, int]`
++ test/test_transforms_v2.py:1684:45: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `InterpolationMode | int`, found `Unknown | int | tuple[int | float, int | float] | tuple[int, int, int, int]`
++ test/test_transforms_v2.py:1739:45: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Number | Sequence[Unknown]`, found `Unknown | int | tuple[int | float, int | float] | tuple[int, int, int, int]`
++ test/test_transforms_v2.py:1739:45: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Sequence[int | float] | None`, found `Unknown | int | tuple[int | float, int | float] | tuple[int, int, int, int]`
++ test/test_transforms_v2.py:1739:45: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Sequence[int | float] | None`, found `Unknown | int | tuple[int | float, int | float] | tuple[int, int, int, int]`
++ test/test_transforms_v2.py:1739:45: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `InterpolationMode | int`, found `Unknown | int | tuple[int | float, int | float] | tuple[int, int, int, int]`
+- Found 1409 diagnostics
++ Found 1426 diagnostics
+
+koda-validate (https://github.com/keithasaurus/koda-validate)
+- koda_validate/serialization/errors.py:66:42: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `object` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- koda_validate/serialization/json_schema.py:313:38: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `object` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- Found 405 diagnostics
++ Found 403 diagnostics
+
+mypy (https://github.com/python/mypy)
+- mypy/config_parser.py:707:56: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `object` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- mypy/config_parser.py:713:57: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `object` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ mypyc/irbuild/for_helpers.py:1270:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 1756 diagnostics
++ Found 1755 diagnostics
+
+Tanjun (https://github.com/FasterSpeeding/Tanjun)
++ tanjun/dependencies/limiters.py:475:29: error[invalid-assignment] Object of type `filter[Role | None]` is not assignable to `Iterable[Role]`
+- tanjun/parsing.py:585:75: error[invalid-argument-type] Argument to bound method `convert` is incorrect: Expected `str`, found `(Unknown & ~AlwaysFalsy) | EllipsisType | (str & ~AlwaysFalsy)`
++ tanjun/parsing.py:585:75: error[invalid-argument-type] Argument to bound method `convert` is incorrect: Expected `str`, found `(str & ~AlwaysFalsy) | EllipsisType`
++ tanjun/parsing.py:588:92: error[invalid-argument-type] Argument to bound method `convert` is incorrect: Expected `str`, found `str | None`
++ tanjun/permissions.py:83:17: warning[possibly-missing-attribute] Attribute `deny` may be missing on object of type `PermissionOverwrite | None`
++ tanjun/permissions.py:84:18: warning[possibly-missing-attribute] Attribute `allow` may be missing on object of type `PermissionOverwrite | None`
+- Found 134 diagnostics
++ Found 138 diagnostics
+
+sphinx (https://github.com/sphinx-doc/sphinx)
++ sphinx/ext/apidoc/_generate.py:50:12: error[no-matching-overload] No overload of bound method `join` matches arguments
++ sphinx/ext/graphviz.py:377:14: error[no-matching-overload] No overload of bound method `join` matches arguments
++ sphinx/transforms/i18n.py:424:13: error[unsupported-operator] Operator `|=` is not supported between objects of type `dict[str, str]` and `None`
+- sphinx/util/_serialise.py:49:16: error[no-matching-overload] No overload of function `sorted` matches arguments
+- Found 345 diagnostics
++ Found 347 diagnostics
+
+discord.py (https://github.com/Rapptz/discord.py)
++ discord/automod.py:435:16: error[invalid-return-type] Return type does not match returned value: expected `list[GuildChannel | Thread]`, found `list[GuildChannel | Thread | None]`
++ discord/ext/commands/help.py:673:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ discord/ext/commands/help.py:677:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ discord/message.py:2559:16: error[invalid-return-type] Return type does not match returned value: expected `list[GuildChannel | Thread]`, found `list[GuildChannel | Thread | None]`
++ discord/onboarding.py:182:16: error[invalid-return-type] Return type does not match returned value: expected `list[GuildChannel | Thread]`, found `list[GuildChannel | Thread | None]`
++ discord/onboarding.py:194:16: error[invalid-return-type] Return type does not match returned value: expected `list[Role]`, found `list[Role | None]`
++ discord/onboarding.py:365:16: error[invalid-return-type] Return type does not match returned value: expected `list[GuildChannel | Thread]`, found `list[GuildChannel | Thread | None]`
+- Found 548 diagnostics
++ Found 555 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
++ mesonbuild/backend/ninjabackend.py:1934:34: error[invalid-assignment] Object of type `str | Unknown` is not assignable to `Literal["2015", "2018", "2021"]`
+- mesonbuild/cmake/fileapi.py:195:21: error[unsupported-operator] Operator `+=` is not supported between objects of type `Path` and `list[Unknown | dict[Unknown, Unknown]]`
++ mesonbuild/cmake/fileapi.py:195:21: error[unsupported-operator] Operator `+=` is not supported between objects of type `Path` and `list[Unknown | dict[Unknown | str, Unknown | list[Any] | None]]`
+- mesonbuild/cmake/fileapi.py:195:21: error[unsupported-operator] Operator `+=` is not supported between objects of type `bool` and `list[Unknown | dict[Unknown, Unknown]]`
++ mesonbuild/cmake/fileapi.py:195:21: error[unsupported-operator] Operator `+=` is not supported between objects of type `bool` and `list[Unknown | dict[Unknown | str, Unknown | list[Any] | None]]`
+- mesonbuild/cmake/fileapi.py:200:21: error[unsupported-operator] Operator `+=` is not supported between objects of type `Path` and `list[Unknown | dict[Unknown, Unknown]]`
++ mesonbuild/cmake/fileapi.py:200:21: error[unsupported-operator] Operator `+=` is not supported between objects of type `Path` and `list[Unknown | dict[Unknown | str, Unknown | list[Any] | None]]`
+- mesonbuild/cmake/fileapi.py:200:21: error[unsupported-operator] Operator `+=` is not supported between objects of type `bool` and `list[Unknown | dict[Unknown, Unknown]]`
++ mesonbuild/cmake/fileapi.py:200:21: error[unsupported-operator] Operator `+=` is not supported between objects of type `bool` and `list[Unknown | dict[Unknown | str, Unknown | list[Any] | None]]`
+- mesonbuild/compilers/mixins/apple.py:27:52: error[invalid-assignment] Object of type `list[Unknown | str]` is not assignable to `ImmutableListProtocol[str]`
++ mesonbuild/compilers/mixins/apple.py:27:52: error[invalid-assignment] Object of type `list[Unknown]` is not assignable to `ImmutableListProtocol[str]`
++ mesonbuild/coredata.py:327:13: error[invalid-assignment] Object of type `Literal["lib"]` is not assignable to attribute `default` on type `UserBooleanOption | Unknown | UserStringArrayOption | ... omitted 4 union elements`
+- mesonbuild/modules/python.py:187:104: error[invalid-argument-type] Argument to bound method `_convert_api_version_to_py_version_hex` is incorrect: Expected `str`, found `Unknown | str | None`
++ mesonbuild/modules/python.py:187:104: error[invalid-argument-type] Argument to bound method `_convert_api_version_to_py_version_hex` is incorrect: Expected `str`, found `str | None`
+- mesonbuild/modules/python.py:202:17: warning[possibly-missing-attribute] Attribute `find_libpy_windows` may be missing on object of type `(Unknown & ~None) | Dependency`
++ mesonbuild/modules/python.py:202:17: error[unresolved-attribute] Object of type `Dependency` has no attribute `find_libpy_windows`
+- mesonbuild/modules/python.py:215:25: warning[possibly-missing-attribute] Attribute `replace` may be missing on object of type `Unknown | str | None`
++ mesonbuild/modules/python.py:215:25: warning[possibly-missing-attribute] Attribute `replace` may be missing on object of type `str | None`
+- mesonbuild/utils/universal.py:236:26: error[invalid-assignment] Object of type `list[Unknown | str]` is not assignable to `ImmutableListProtocol[str] | None`
++ mesonbuild/utils/universal.py:236:26: error[invalid-assignment] Object of type `list[Unknown]` is not assignable to `ImmutableListProtocol[str] | None`
+- tools/regenerate_docs.py:51:16: error[invalid-return-type] Return type does not match returned value: expected `int`, found `Unknown | int | None`
++ tools/regenerate_docs.py:51:16: error[invalid-return-type] Return type does not match returned value: expected `int`, found `Any | int | None`
+- Found 1942 diagnostics
++ Found 1944 diagnostics
+
+apprise (https://github.com/caronc/apprise)
++ apprise/plugins/telegram.py:618:21: error[invalid-argument-type] Argument to function `post` is incorrect: Expected `Mapping[str, SupportsRead[str | bytes] | str | bytes | ... omitted 3 union elements] | Iterable[tuple[str, SupportsRead[str | bytes] | str | bytes | ... omitted 3 union elements]] | None`, found `dict[Unknown | str | Pattern[str], Unknown | tuple[Unknown | str, BufferedReader[_BufferedReaderStream]]]`
++ tests/test_plugin_dapnet.py:276:9: error[unresolved-attribute] Object of type `NotifyBase` has no attribute `priority`
++ tests/test_plugin_gotify.py:222:9: error[unresolved-attribute] Object of type `NotifyBase` has no attribute `priority`
++ tests/test_plugin_growl.py:439:9: error[unresolved-attribute] Object of type `NotifyBase` has no attribute `priority`
++ tests/test_plugin_join.py:276:12: error[unresolved-attribute] Object of type `NotifyBase` has no attribute `priority`
++ tests/test_plugin_ntfy.py:695:12: error[unresolved-attribute] Object of type `NotifyBase` has no attribute `priority`
++ tests/test_plugin_opsgenie.py:448:9: error[unresolved-attribute] Object of type `NotifyBase` has no attribute `priority`
++ tests/test_plugin_prowl.py:251:9: error[unresolved-attribute] Object of type `NotifyBase` has no attribute `priority`
++ tests/test_plugin_pushover.py:526:9: error[unresolved-attribute] Object of type `NotifyBase` has no attribute `priority`
+- Found 2655 diagnostics
++ Found 2664 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- pymongo/topology_description.py:112:17: error[invalid-argument-type] Argument to function `min` is incorrect: Argument type `int | None` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- Found 447 diagnostics
++ Found 446 diagnostics
+
+trio (https://github.com/python-trio/trio)
+- src/trio/_core/_tests/type_tests/run.py:39:1: error[type-assertion-failure] Type `list[int | float]` does not match asserted type `Unknown`
+- src/trio/_core/_tests/type_tests/run.py:44:1: error[type-assertion-failure] Type `int` does not match asserted type `Unknown`
+- src/trio/_core/_tests/type_tests/run.py:50:1: error[type-assertion-failure] Type `str` does not match asserted type `Unknown`
++ src/trio/_core/_tests/type_tests/run.py:50:1: error[type-assertion-failure] Type `str` does not match asserted type `str | int`
+- src/trio/_core/_tests/type_tests/run.py:51:1: error[type-assertion-failure] Type `int` does not match asserted type `Unknown`
++ src/trio/_core/_tests/type_tests/run.py:51:1: error[type-assertion-failure] Type `int` does not match asserted type `str | int`
+- src/trio/_file_io.py:269:22: error[invalid-argument-type] Argument to bound method `readline` is incorrect: Argument type `AnyStr@__anext__` does not satisfy constraints (`str`, `bytes`) of type variable `AnyStr`
+- src/trio/_socket.py:1201:19: error[invalid-assignment] Object of type `(...) -> Awaitable[tuple[bytes, list[tuple[int, int, bytes]], int, Any]]` is not assignable to `def recvmsg(self, bufsize: int, ancbufsize: int = 0, flags: int = 0, /) -> Awaitable[tuple[bytes, list[tuple[int, int, bytes]], int, object]]`
++ src/trio/_socket.py:1201:19: error[invalid-assignment] Object of type `(...) -> Awaitable[tuple[bytes, list[tuple[int, int, bytes]], int, object]]` is not assignable to `def recvmsg(self, bufsize: int, ancbufsize: int = 0, flags: int = 0, /) -> Awaitable[tuple[bytes, list[tuple[int, int, bytes]], int, object]]`
+- src/trio/_socket.py:1224:24: error[invalid-assignment] Object of type `(...) -> Awaitable[tuple[int, list[tuple[int, int, bytes]], int, Any]]` is not assignable to `def recvmsg_into(self, buffers: Iterable[Buffer], ancbufsize: int = 0, flags: int = 0, /) -> Awaitable[tuple[int, list[tuple[int, int, bytes]], int, object]]`
++ src/trio/_socket.py:1224:24: error[invalid-assignment] Object of type `(...) -> Awaitable[tuple[int, list[tuple[int, int, bytes]], int, object]]` is not assignable to `def recvmsg_into(self, buffers: Iterable[Buffer], ancbufsize: int = 0, flags: int = 0, /) -> Awaitable[tuple[int, list[tuple[int, int, bytes]], int, object]]`
+- Found 482 diagnostics
++ Found 479 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
++ tests/unittests/distros/test_user_data_normalize.py:23:9: error[invalid-assignment] Invalid subscript assignment with key of type `Literal["distro"]` and value of type `Unknown` on object of type `list[Unknown | str]`
++ tests/unittests/distros/test_user_data_normalize.py:23:9: error[invalid-assignment] Invalid subscript assignment with key of type `Literal["distro"]` and value of type `Unknown` on object of type `list[Unknown]`
++ tests/unittests/distros/test_user_data_normalize.py:23:9: error[invalid-assignment] Cannot assign to a subscript on an object of type `str`
++ tests/unittests/distros/test_user_data_normalize.py:24:31: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> Unknown | str, (s: slice[Any, Any, Any], /) -> list[Unknown | str]]` cannot be called with key of type `Literal["paths"]` on object of type `list[Unknown | str]`
++ tests/unittests/distros/test_user_data_normalize.py:24:31: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> Unknown, (s: slice[Any, Any, Any], /) -> list[Unknown]]` cannot be called with key of type `Literal["paths"]` on object of type `list[Unknown]`
++ tests/unittests/distros/test_user_data_normalize.py:24:31: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Literal["paths"]` on object of type `str`
++ tests/unittests/distros/test_user_data_normalize.py:24:31: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[Unknown, Unknown]`, found `Unknown | dict[Unknown | str, Unknown | str] | str | ... omitted 3 union elements`
++ tests/unittests/distros/test_user_data_normalize.py:27:13: error[invalid-assignment] Invalid subscript assignment with key of type `Literal["default_user"]` and value of type `Unknown` on object of type `list[Unknown | str]`
++ tests/unittests/distros/test_user_data_normalize.py:27:13: error[invalid-assignment] Invalid subscript assignment with key of type `Literal["default_user"]` and value of type `Unknown` on object of type `list[Unknown]`
++ tests/unittests/distros/test_user_data_normalize.py:27:13: error[invalid-assignment] Cannot assign to a subscript on an object of type `str`
++ tests/unittests/sources/test_gce.py:70:9: error[invalid-assignment] Invalid subscript assignment with key of type `Literal["distro"]` and value of type `Unknown` on object of type `list[Unknown | str]`
++ tests/unittests/sources/test_gce.py:70:9: error[invalid-assignment] Invalid subscript assignment with key of type `Literal["distro"]` and value of type `Unknown` on object of type `list[Unknown]`
++ tests/unittests/sources/test_gce.py:70:9: error[invalid-assignment] Cannot assign to a subscript on an object of type `str`
++ tests/unittests/sources/test_gce.py:71:31: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> Unknown | str, (s: slice[Any, Any, Any], /) -> list[Unknown | str]]` cannot be called with key of type `Literal["paths"]` on object of type `list[Unknown | str]`
++ tests/unittests/sources/test_gce.py:71:31: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> Unknown, (s: slice[Any, Any, Any], /) -> list[Unknown]]` cannot be called with key of type `Literal["paths"]` on object of type `list[Unknown]`
++ tests/unittests/sources/test_gce.py:71:31: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Literal["paths"]` on object of type `str`
++ tests/unittests/sources/test_gce.py:71:31: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[Unknown, Unknown]`, found `Unknown | dict[Unknown | str, Unknown | str] | str | ... omitted 3 union elements`
++ tests/unittests/sources/test_gce.py:74:13: error[invalid-assignment] Invalid subscript assignment with key of type `Literal["default_user"]` and value of type `Unknown` on object of type `list[Unknown | str]`
++ tests/unittests/sources/test_gce.py:74:13: error[invalid-assignment] Invalid subscript assignment with key of type `Literal["default_user"]` and value of type `Unknown` on object of type `list[Unknown]`
++ tests/unittests/sources/test_gce.py:74:13: error[invalid-assignment] Cannot assign to a subscript on an object of type `str`
+- Found 1186 diagnostics
++ Found 1206 diagnostics
+
+cwltool (https://github.com/common-workflow-language/cwltool)
+- cwltool/pack.py:102:25: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `object` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- Found 258 diagnostics
++ Found 257 diagnostics
+
+openlibrary (https://github.com/internetarchive/openlibrary)
++ openlibrary/core/observations.py:729:13: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `Unknown | int | str | ... omitted 3 union elements`
++ openlibrary/core/observations.py:732:25: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Literal["name"]` on object of type `str`
++ openlibrary/core/observations.py:732:25: error[not-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
++ openlibrary/core/observations.py:733:34: error[not-iterable] Object of type `Unknown | int | str | list[Unknown | int] | list[Unknown | dict[Unknown | str, Unknown | int | str]]` may not be iterable
++ openlibrary/core/observations.py:734:28: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Literal["id"]` on object of type `str`
++ openlibrary/core/observations.py:734:28: error[not-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
++ openlibrary/core/observations.py:926:22: error[invalid-argu
+
+... (truncated 2443 lines) ...
+```
+
+</details>
+
+
+
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+```diff
+trio (https://github.com/python-trio/trio)
+-     struct metadata = ~10MB
++     struct metadata = ~11MB
+
+prefect (https://github.com/PrefectHQ/prefect)
+-     struct fields = ~54MB
++     struct fields = ~52MB
+
+
+```
+
+</details>
+
+
+
+
+---
+
+_Comment by @dcreager on 2026-01-08 17:15_
+
+The ecosystem report shows that `static-frame` is now taking 100 seconds to analyze, rather than 0.5 seconds :grimacing: 
+
+---
+
+_Comment by @MichaReiser on 2026-01-08 17:31_
+
+Yeah, I think we would now be (significantely) slower than pyrefly on most projects (e.g. pandas, pandas-stubs)
+
+---

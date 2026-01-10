@@ -1,0 +1,569 @@
+```yaml
+number: 22440
+title: "[ty] relax the attribute narrowing condition"
+type: pull_request
+state: open
+author: mtshiba
+labels:
+  - ty
+  - ecosystem-analyzer
+assignees: []
+base: main
+head: relax-attribute-narrowing
+created_at: 2026-01-07T16:36:08Z
+updated_at: 2026-01-07T17:03:34Z
+url: https://github.com/astral-sh/ruff/pull/22440
+synced_at: 2026-01-10T16:30:32Z
+```
+
+# [ty] relax the attribute narrowing condition
+
+---
+
+_Pull request opened by @mtshiba on 2026-01-07 16:36_
+
+## Summary
+
+Fixes https://github.com/astral-sh/ty/issues/2134
+
+This PR is based on the "pragmatism" that narrowing should only be disabled when an attribute *is a* data descriptor, and should be left as is when it *might be a* data descriptor.
+
+I believe this is somewhat justified given the fact that the current behavior is not strictly safe either.
+
+```python
+from typing import Any
+
+class FixedAge:
+    def __get__(self, obj, objtype=None):
+        return -1
+
+    def __set__(self, obj, value):
+        pass
+
+class Person:
+    def __init__(self, age):
+        self.age = age
+
+class Dead(Person):
+    age = FixedAge()
+
+def f(p: Person):
+    p.age = 21
+    reveal_type(p.age)  # reveals Literal[21], but -1 at runtime
+
+f(Dead(20))
+```
+
+This code doesn't throw an error, and there's nothing inherently unsound about it, but the narrowing result is still incorrect.
+Even if the class attribute is `Undefined`, there is the possibility of dynamic attribute additions or additions in subclasses (and this issue persists even if we don't mark implicit attribute types with `Unknown |`).
+But if we take this into account, this kind of narrowing of implicit attributes becomes completely inapplicable!
+
+I'd like to see the results of mypy_primer and decide whether this idea makes sense.
+
+## Test Plan
+
+mdtest updated
+
+---
+
+_Label `ty` added by @mtshiba on 2026-01-07 16:36_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-07 16:38_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+No changes detected when running ty on typing conformance tests ✅
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-07 16:39_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+pip (https://github.com/pypa/pip)
+- src/pip/_vendor/distlib/util.py:1484:36: warning[possibly-missing-attribute] Attribute `getpeercert` may be missing on object of type `socket | Any`
++ src/pip/_vendor/distlib/util.py:1484:36: error[invalid-argument-type] Argument to function `match_hostname` is incorrect: Expected `dict[str, str | tuple[tuple[tuple[str, str], ...], ...] | tuple[tuple[str, str], ...]]`, found `dict[str, str | tuple[tuple[tuple[str, str], ...], ...] | tuple[tuple[str, str], ...]] | None`
+
+beartype (https://github.com/beartype/beartype)
++ beartype/_conf/confmain.py:961:17: error[invalid-argument-type] Argument to function `issubclass` is incorrect: Expected `type`, found `BeartypeDecorPlace | bool | Collection[str] | ... omitted 5 union elements`
++ beartype/_conf/confmain.py:963:17: error[invalid-argument-type] Argument to function `issubclass` is incorrect: Expected `type`, found `BeartypeDecorPlace | bool | Collection[str] | ... omitted 5 union elements`
++ beartype/_conf/confmain.py:965:17: error[invalid-argument-type] Argument to function `issubclass` is incorrect: Expected `type`, found `BeartypeDecorPlace | bool | Collection[str] | ... omitted 5 union elements`
+- Found 497 diagnostics
++ Found 500 diagnostics
+
+paasta (https://github.com/yelp/paasta)
++ paasta_tools/kubernetes_tools.py:603:42: error[call-non-callable] Object of type `property` is not callable
+- Found 1107 diagnostics
++ Found 1108 diagnostics
+
+alerta (https://github.com/alerta/alerta)
++ alerta/auth/decorators.py:51:54: error[invalid-argument-type] Argument to bound method `is_in_scope` is incorrect: Expected `list[Scope]`, found `Unknown | (list[str] & ~AlwaysFalsy) | list[Scope | Unknown]`
+- Found 555 diagnostics
++ Found 556 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
+- ignite/engine/engine.py:810:33: error[no-matching-overload] No overload of function `iter` matches arguments
+- ignite/engine/engine.py:1119:63: error[unsupported-operator] Operator `/` is not supported between objects of type `(Unknown & ~None) | int` and `Unknown | int | None`
+- ignite/engine/engine.py:1306:63: error[unsupported-operator] Operator `/` is not supported between objects of type `(Unknown & ~None) | int` and `Unknown | int | None`
++ tests/ignite/handlers/test_clearml_logger.py:287:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `output` of type `int | None`
++ tests/ignite/handlers/test_clearml_logger.py:301:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `output` of type `int | None`
++ tests/ignite/handlers/test_clearml_logger.py:310:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `output` of type `int | None`
++ tests/ignite/handlers/test_clearml_logger.py:327:5: error[unresolved-attribute] Unresolved attribute `alpha` on type `State`.
++ tests/ignite/handlers/test_clearml_logger.py:328:5: error[unresolved-attribute] Unresolved attribute `beta` on type `State`.
++ tests/ignite/handlers/test_clearml_logger.py:329:5: error[unresolved-attribute] Unresolved attribute `gamma` on type `State`.
++ tests/ignite/handlers/test_mlflow_logger.py:173:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `output` of type `int | None`
++ tests/ignite/handlers/test_mlflow_logger.py:187:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `output` of type `int | None`
++ tests/ignite/handlers/test_mlflow_logger.py:196:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `output` of type `int | None`
++ tests/ignite/handlers/test_mlflow_logger.py:213:5: error[unresolved-attribute] Unresolved attribute `alpha` on type `State`.
++ tests/ignite/handlers/test_mlflow_logger.py:214:5: error[unresolved-attribute] Unresolved attribute `beta` on type `State`.
++ tests/ignite/handlers/test_mlflow_logger.py:215:5: error[unresolved-attribute] Unresolved attribute `gamma` on type `State`.
++ tests/ignite/handlers/test_neptune_logger.py:257:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `output` of type `int | None`
++ tests/ignite/handlers/test_neptune_logger.py:272:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `output` of type `int | None`
++ tests/ignite/handlers/test_neptune_logger.py:278:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `output` of type `int | None`
++ tests/ignite/handlers/test_neptune_logger.py:319:5: error[unresolved-attribute] Unresolved attribute `alpha` on type `State`.
++ tests/ignite/handlers/test_neptune_logger.py:320:5: error[unresolved-attribute] Unresolved attribute `beta` on type `State`.
++ tests/ignite/handlers/test_neptune_logger.py:321:5: error[unresolved-attribute] Unresolved attribute `gamma` on type `State`.
++ tests/ignite/handlers/test_polyaxon_logger.py:195:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `output` of type `int | None`
++ tests/ignite/handlers/test_polyaxon_logger.py:209:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `output` of type `int | None`
++ tests/ignite/handlers/test_polyaxon_logger.py:218:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `output` of type `int | None`
++ tests/ignite/handlers/test_polyaxon_logger.py:235:5: error[unresolved-attribute] Unresolved attribute `alpha` on type `State`.
++ tests/ignite/handlers/test_polyaxon_logger.py:236:5: error[unresolved-attribute] Unresolved attribute `beta` on type `State`.
++ tests/ignite/handlers/test_polyaxon_logger.py:237:5: error[unresolved-attribute] Unresolved attribute `gamma` on type `State`.
++ tests/ignite/handlers/test_tensorboard_logger.py:243:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `output` of type `int | None`
++ tests/ignite/handlers/test_tensorboard_logger.py:257:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `output` of type `int | None`
++ tests/ignite/handlers/test_tensorboard_logger.py:266:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `output` of type `int | None`
++ tests/ignite/handlers/test_visdom_logger.py:479:5: error[unresolved-attribute] Unresolved attribute `alpha` on type `State`.
++ tests/ignite/handlers/test_visdom_logger.py:480:5: error[unresolved-attribute] Unresolved attribute `beta` on type `State`.
++ tests/ignite/handlers/test_visdom_logger.py:481:5: error[unresolved-attribute] Unresolved attribute `gamma` on type `State`.
++ tests/ignite/handlers/test_visdom_logger.py:597:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `output` of type `int | None`
++ tests/ignite/handlers/test_visdom_logger.py:612:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `output` of type `int | None`
++ tests/ignite/handlers/test_visdom_logger.py:633:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `output` of type `int | None`
++ tests/ignite/handlers/test_wandb_logger.py:216:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `output` of type `int | None`
++ tests/ignite/handlers/test_wandb_logger.py:230:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `output` of type `int | None`
++ tests/ignite/handlers/test_wandb_logger.py:238:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `output` of type `int | None`
++ tests/ignite/handlers/test_wandb_logger.py:255:5: error[unresolved-attribute] Unresolved attribute `alpha` on type `State`.
++ tests/ignite/handlers/test_wandb_logger.py:256:5: error[unresolved-attribute] Unresolved attribute `beta` on type `State`.
++ tests/ignite/handlers/test_wandb_logger.py:257:5: error[unresolved-attribute] Unresolved attribute `gamma` on type `State`.
++ tests/ignite/handlers/test_wandb_logger.py:258:5: error[unresolved-attribute] Unresolved attribute `delta` on type `State`.
+- Found 2053 diagnostics
++ Found 2090 diagnostics
+
+dragonchain (https://github.com/dragonchain/dragonchain)
+- dragonchain/job_processor/contract_job_utest.py:146:26: error[not-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- dragonchain/job_processor/contract_job_utest.py:147:26: error[not-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- dragonchain/job_processor/contract_job_utest.py:148:26: error[not-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- dragonchain/job_processor/contract_job_utest.py:149:26: error[not-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- dragonchain/job_processor/contract_job_utest.py:431:9: warning[possibly-missing-attribute] Attribute `update` may be missing on object of type `Unknown | None | (Divergent & ~AlwaysFalsy)`
+- dragonchain/job_processor/contract_job_utest.py:435:9: error[invalid-assignment] Object of type `MagicMock` is not assignable to attribute `save` on type `Unknown | SmartContractModel`
+- Found 436 diagnostics
++ Found 430 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- torchvision/datasets/stl10.py:78:27: error[no-matching-overload] No overload of function `concatenate` matches arguments
+- Found 1410 diagnostics
++ Found 1409 diagnostics
+
+artigraph (https://github.com/artigraph/artigraph)
++ tests/arti/graphs/test_graph.py:30:12: error[unresolved-attribute] Object of type `Literal[5]` has no attribute `storage`
++ tests/arti/graphs/test_graph.py:31:12: error[unresolved-attribute] Object of type `Storage[Unknown]` has no attribute `id`
+- Found 149 diagnostics
++ Found 151 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
+- test/test_http2_connection.py:133:9: warning[possibly-missing-attribute] Attribute `sendall` may be missing on object of type `socket | Any | SSLTransport | None`
+- test/test_http2_connection.py:133:9: warning[possibly-missing-attribute] Attribute `assert_called_with` may be missing on object of type `(bound method socket.sendall(data: Buffer, flags: int = 0, /) -> None) | Any | (bound method SSLTransport.sendall(data: bytes, flags: int = 0) -> None)`
+- test/test_http2_connection.py:150:9: warning[possibly-missing-attribute] Attribute `sendall` may be missing on object of type `socket | Any | SSLTransport | None`
+- test/test_http2_connection.py:150:9: warning[possibly-missing-attribute] Attribute `assert_called_with` may be missing on object of type `(bound method socket.sendall(data: Buffer, flags: int = 0, /) -> None) | Any | (bound method SSLTransport.sendall(data: bytes, flags: int = 0) -> None)`
+- test/test_http2_connection.py:173:9: warning[possibly-missing-attribute] Attribute `sendall` may be missing on object of type `socket | Any | SSLTransport | None`
+- test/test_http2_connection.py:173:9: warning[possibly-missing-attribute] Attribute `assert_has_calls` may be missing on object of type `(bound method socket.sendall(data: Buffer, flags: int = 0, /) -> None) | Any | (bound method SSLTransport.sendall(data: bytes, flags: int = 0) -> None)`
+- test/test_http2_connection.py:205:17: warning[possibly-missing-attribute] Attribute `sendall` may be missing on object of type `socket | Any | SSLTransport | None`
+- test/test_http2_connection.py:205:17: warning[possibly-missing-attribute] Attribute `assert_called_with` may be missing on object of type `(bound method socket.sendall(data: Buffer, flags: int = 0, /) -> None) | Any | (bound method SSLTransport.sendall(data: bytes, flags: int = 0) -> None)`
+- test/test_http2_connection.py:229:13: warning[possibly-missing-attribute] Attribute `sendall` may be missing on object of type `socket | Any | SSLTransport | None`
+- test/test_http2_connection.py:229:13: warning[possibly-missing-attribute] Attribute `assert_called_with` may be missing on object of type `(bound method socket.sendall(data: Buffer, flags: int = 0, /) -> None) | Any | (bound method SSLTransport.sendall(data: bytes, flags: int = 0) -> None)`
+- test/test_http2_connection.py:246:19: warning[possibly-missing-attribute] Attribute `sendall` may be missing on object of type `socket | Any | SSLTransport | None`
+- test/test_http2_connection.py:259:9: warning[possibly-missing-attribute] Attribute `assert_called_with` may be missing on object of type `(bound method socket.sendall(data: Buffer, flags: int = 0, /) -> None) | Any | (bound method SSLTransport.sendall(data: bytes, flags: int = 0) -> None)`
+- test/test_http2_connection.py:279:19: warning[possibly-missing-attribute] Attribute `sendall` may be missing on object of type `socket | Any | SSLTransport | None`
+- test/test_http2_connection.py:292:9: warning[possibly-missing-attribute] Attribute `assert_called_with` may be missing on object of type `(bound method socket.sendall(data: Buffer, flags: int = 0, /) -> None) | Any | (bound method SSLTransport.sendall(data: bytes, flags: int = 0) -> None)`
+- test/test_http2_connection.py:312:19: warning[possibly-missing-attribute] Attribute `sendall` may be missing on object of type `socket | Any | SSLTransport | None`
+- test/test_http2_connection.py:325:9: warning[possibly-missing-attribute] Attribute `assert_called_with` may be missing on object of type `(bound method socket.sendall(data: Buffer, flags: int = 0, /) -> None) | Any | (bound method SSLTransport.sendall(data: bytes, flags: int = 0) -> None)`
+- test/test_http2_connection.py:334:19: warning[possibly-missing-attribute] Attribute `sendall` may be missing on object of type `socket | Any | SSLTransport | None`
+- test/test_http2_connection.py:347:9: warning[possibly-missing-attribute] Attribute `assert_called_with` may be missing on object of type `(bound method socket.sendall(data: Buffer, flags: int = 0, /) -> None) | Any | (bound method SSLTransport.sendall(data: bytes, flags: int = 0) -> None)`
+- Found 304 diagnostics
++ Found 286 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
++ pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+- tests/test_cronjob.py:43:9: warning[possibly-missing-attribute] Attribute `assert_has_calls` may be missing on object of type `Unknown | Event`
+- Found 242 diagnostics
++ Found 241 diagnostics
+
+pyodide (https://github.com/pyodide/pyodide)
++ src/tests/test_jsproxy.py:324:12: error[missing-argument] No argument provided for required parameter `self` of function `f`
+- Found 932 diagnostics
++ Found 933 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- bson/code.py:78:46: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 447 diagnostics
++ Found 446 diagnostics
+
+apprise (https://github.com/caronc/apprise)
++ tests/test_apprise_cli.py:130:9: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_apprise_cli.py:1879:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_escapes.py:44:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_logger.py:371:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_dapnet.py:192:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_dapnet.py:246:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_discord.py:308:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_discord.py:523:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_discord.py:524:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_discord.py:614:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_discord.py:621:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_discord.py:871:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_discord.py:927:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_discord.py:1108:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_discord.py:1137:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_discord.py:1161:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:149:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_emby.py:150:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_emby.py:150:37: error[unresolved-attribute] Object of type `Request` has no attribute `content`
++ tests/test_plugin_emby.py:153:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:154:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:158:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:159:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:162:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:163:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:164:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_emby.py:164:37: error[unresolved-attribute] Object of type `Request` has no attribute `content`
++ tests/test_plugin_emby.py:203:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_emby.py:204:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_emby.py:204:37: error[unresolved-attribute] Object of type `Request` has no attribute `content`
++ tests/test_plugin_emby.py:207:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:208:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:212:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:213:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:216:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:217:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:240:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_emby.py:243:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_emby.py:243:37: error[unresolved-attribute] Object of type `Request` has no attribute `content`
++ tests/test_plugin_emby.py:254:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_emby.py:261:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_emby.py:261:37: error[unresolved-attribute] Object of type `Request` has no attribute `content`
++ tests/test_plugin_emby.py:274:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_emby.py:280:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_emby.py:280:37: error[unresolved-attribute] Object of type `Request` has no attribute `content`
++ tests/test_plugin_emby.py:322:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_emby.py:323:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_emby.py:323:37: error[unresolved-attribute] Object of type `Request` has no attribute `content`
++ tests/test_plugin_emby.py:326:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:327:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:333:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:334:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:339:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:340:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:341:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_emby.py:341:37: error[unresolved-attribute] Object of type `Request` has no attribute `content`
++ tests/test_plugin_emby.py:351:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_emby.py:362:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_emby.py:362:37: error[unresolved-attribute] Object of type `Request` has no attribute `content`
++ tests/test_plugin_emby.py:413:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_emby.py:414:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_emby.py:414:37: error[unresolved-attribute] Object of type `Request` has no attribute `content`
++ tests/test_plugin_emby.py:417:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:418:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:424:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:425:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:430:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:431:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_emby.py:432:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_emby.py:432:37: error[unresolved-attribute] Object of type `Request` has no attribute `content`
++ tests/test_plugin_google_chat.py:173:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_gotify.py:191:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_guilded.py:212:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_ifttt.py:163:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_ifttt.py:164:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_ifttt.py:165:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_ifttt.py:166:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_join.py:246:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_mattermost.py:202:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_msteams.py:248:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_ntfy.py:663:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_ntfy.py:665:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_onesignal.py:354:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_opsgenie.py:415:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_opsgenie.py:416:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_opsgenie.py:458:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_opsgenie.py:459:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_pagertree.py:172:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_prowl.py:220:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_pushbullet.py:422:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_pushbullet.py:423:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_pushed.py:219:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_pushed.py:220:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_pushed.py:271:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_pushed.py:272:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_pushover.py:416:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_pushover.py:495:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_pushsafer.py:300:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_pushsafer.py:301:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_revolt.py:276:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_revolt.py:277:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_revolt.py:358:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_revolt.py:359:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_revolt.py:430:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_revolt.py:437:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_revolt.py:484:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_revolt.py:485:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_revolt.py:542:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_revolt.py:543:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_rocket_chat.py:348:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_rocket_chat.py:349:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_rocket_chat.py:350:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_rocket_chat.py:351:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_rocket_chat.py:369:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_rocket_chat.py:370:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_rocket_chat.py:374:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_rocket_chat.py:375:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_rocket_chat.py:376:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_rocket_chat.py:377:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_rocket_chat.py:394:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_rocket_chat.py:395:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_signal.py:55:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_signal.py:56:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_slack.py:664:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_slack.py:665:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_slack.py:666:5: error[unresolved-attribute] Unresolved attribute `text` on type `Request`.
++ tests/test_plugin_telegram.py:382:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_telegram.py:383:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_telegram.py:390:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_telegram.py:395:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_telegram.py:400:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_telegram.py:423:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_telegram.py:762:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_telegram.py:763:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_telegram.py:766:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_telegram.py:795:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_telegram.py:1310:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_telegram.py:1313:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_telegram.py:1420:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_telegram.py:1423:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_telegram.py:1527:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_telegram.py:1530:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_title_maxlen.py:52:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_title_maxlen.py:53:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_twist.py:190:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_twist.py:191:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_twist.py:192:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_twist.py:196:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_twist.py:196:37: error[unresolved-attribute] Object of type `Request` has no attribute `content`
++ tests/test_plugin_twist.py:211:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_twist.py:221:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_twist.py:221:37: error[unresolved-attribute] Object of type `Request` has no attribute `content`
++ tests/test_plugin_twist.py:230:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_twist.py:240:5: error[unresolved-attribute] Unresolved attribute `content` on type `Request`.
++ tests/test_plugin_twist.py:240:37: error[unresolved-attribute] Object of type `Request` has no attribute `content`
++ tests/test_plugin_twist.py:249:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_twist.py:250:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_twist.py:254:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_twist.py:255:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_twist.py:263:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_twist.py:264:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
++ tests/test_plugin_workflows.py:235:5: error[unresolved-attribute] Unresolved attribute `status_code` on type `Request`.
+- Found 2655 diagnostics
++ Found 2817 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
+- cloudinit/sources/DataSourceLXD.py:119:9: warning[possibly-missing-attribute] Attribute `connect` may be missing on object of type `socket | Any | None`
++ tests/unittests/sources/test_oracle.py:1637:13: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | int | list[Unknown | dict[Unknown | str, Unknown | str | list[Unknown | dict[Unknown | str, Unknown | str | list[Unknown | str]]]]]`
+- tests/unittests/test_stages.py:200:9: error[invalid-assignment] Object of type `list[Unknown | NetworkConfigSource]` is not assignable to attribute `network_config_sources` on type `Unknown | DataSource | None`
++ tests/unittests/test_stages.py:200:9: error[invalid-assignment] Object of type `list[Unknown | NetworkConfigSource]` is not assignable to attribute `network_config_sources` of type `tuple[NetworkConfigSource, ...]`
+- tests/unittests/test_stages.py:226:9: error[invalid-assignment] Object of type `list[Unknown | str | NetworkConfigSource]` is not assignable to attribute `network_config_sources` on type `Unknown | DataSource | None`
++ tests/unittests/test_stages.py:226:9: error[invalid-assignment] Object of type `list[Unknown | str | NetworkConfigSource]` is not assignable to attribute `network_config_sources` of type `tuple[NetworkConfigSource, ...]`
+- tests/unittests/test_stages.py:255:9: error[invalid-assignment] Object of type `list[Unknown | NetworkConfigSource]` is not assignable to attribute `network_config_sources` on type `Unknown | DataSource | None`
++ tests/unittests/test_stages.py:255:9: error[invalid-assignment] Object of type `list[Unknown | NetworkConfigSource]` is not assignable to attribute `network_config_sources` of type `tuple[NetworkConfigSource, ...]`
+
+meson (https://github.com/mesonbuild/meson)
++ mesonbuild/interpreter/interpreter.py:316:16: warning[possibly-missing-attribute] Attribute `cpu` may be missing on object of type `Unknown | MachineInfo | None`
++ mesonbuild/interpreter/interpreter.py:317:16: warning[possibly-missing-attribute] Attribute `cpu` may be missing on object of type `Unknown | MachineInfo | None`
++ mesonbuild/interpreter/interpreter.py:318:16: warning[possibly-missing-attribute] Attribute `cpu` may be missing on object of type `Unknown | MachineInfo | None`
++ mesonbuild/interpreter/interpreter.py:321:31: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `MachineInfo`, found `Unknown | MachineInfo | None`
++ mesonbuild/interpreter/interpreter.py:323:31: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `MachineInfo`, found `Unknown | MachineInfo | None`
++ mesonbuild/interpreter/interpreter.py:325:31: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `MachineInfo`, found `Unknown | MachineInfo | None`
+- Found 1940 diagnostics
++ Found 1946 diagnostics
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 47 diagnostics
++ Found 48 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
++ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
+- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
++ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` on object of type `dict[str, Any]`
+- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
++ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | int | dict[str, Any] | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
++ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, int | T@resolve_variables | float | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
++ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[int | T@resolve_variables | float | ... omitted 5 union elements]`
+- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
++ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
+- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
++ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `int | T@resolve_variables | float | ... omitted 4 union elements`
+
+AutoSplit (https://github.com/Toufool/AutoSplit)
+- src/AutoSplit.py:182:13: warning[possibly-missing-attribute] Attribute `start` may be missing on object of type `AutoControlledThread | None`
+- Found 63 diagnostics
++ Found 62 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
++ ddtrace/contrib/internal/pynamodb/patch.py:88:33: error[unsupported-operator] Operator `+` is not supported between objects of type `Any | None` and `Literal[" "]`
+- tests/integration/test_integration_civisibility.py:92:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `_conn` on type `Unknown | TraceWriter`
+- tests/integration/test_integration_civisibility.py:105:20: warning[possibly-missing-attribute] Attribute `_conn` may be missing on object of type `Unknown | TraceWriter`
+- Found 8444 diagnostics
++ Found 8443 diagnostics
+
+streamlit (https://github.com/streamlit/streamlit)
++ lib/streamlit/elements/widgets/slider.py:1013:66: error[invalid-argument-type] Argument to bound method `deserialize_single_value` is incorrect: Expected `int | float`, found `Any | int | float | date | time`
++ lib/streamlit/elements/widgets/slider.py:1018:66: error[invalid-argument-type] Argument to bound method `deserialize_single_value` is incorrect: Expected `int | float`, found `Any | int | float | date | time`
+- Found 101 diagnostics
++ Found 103 diagnostics
+
+scikit-learn (https://github.com/scikit-learn/scikit-learn)
+- sklearn/feature_selection/_univariate_selection.py:886:16: error[unsupported-operator] Operator `<` is not supported between objects of type `Unknown | ndarray[tuple[Any, ...], dtype[Any]] | None` and `Unknown | float`
++ sklearn/feature_selection/_univariate_selection.py:886:16: error[unsupported-operator] Operator `<` is not supported between objects of type `Unknown | ndarray[tuple[Any, ...], dtype[Unknown]] | None` and `Unknown | float`
+- sklearn/feature_selection/_univariate_selection.py:970:26: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | ndarray[tuple[Any, ...], dtype[Any]] | None`
++ sklearn/feature_selection/_univariate_selection.py:970:26: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | ndarray[tuple[Any, ...], dtype[Unknown]] | None`
+- sklearn/feature_selection/_univariate_selection.py:1052:16: error[unsupported-operator] Operator `<` is not supported between objects of type `Unknown | ndarray[tuple[Any, ...], dtype[Any]] | None` and `Unknown | int | float`
++ sklearn/feature_selection/_univariate_selection.py:1052:16: error[unsupported-operator] Operator `<` is not supported between objects of type `Unknown | ndarray[tuple[Any, ...], dtype[Unknown]] | None` and `Unknown | int | float`
+- sklearn/feature_selection/_univariate_selection.py:1052:49: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | ndarray[tuple[Any, ...], dtype[Any]] | None`
++ sklearn/feature_selection/_univariate_selection.py:1052:49: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | ndarray[tuple[Any, ...], dtype[Unknown]] | None`
+
+jax (https://github.com/google/jax)
+- jax/_src/distributed.py:167:5: warning[possibly-missing-attribute] Attribute `connect` may be missing on object of type `DistributedRuntimeClient | Any | None`
+- jax/_src/distributed.py:211:5: warning[possibly-missing-attribute] Attribute `initialize` may be missing on object of type `Any | None`
++ jax/_src/distributed.py:211:45: error[invalid-argument-type] Argument to bound method `initialize` is incorrect: Expected `DistributedRuntimeClient`, found `DistributedRuntimeClient | Any | None`
+- Found 2807 diagnostics
++ Found 2806 diagnostics
+
+pandas (https://github.com/pandas-dev/pandas)
++ pandas/tests/series/accessors/test_dt_acces
+
+... (truncated 41 lines) ...
+```
+
+</details>
+
+
+No memory usage changes detected ✅
+
+
+
+---
+
+_Label `ecosystem-analyzer` added by @mtshiba on 2026-01-07 16:42_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-07 16:47_
+
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `unresolved-attribute` | 186 | 0 | 0 |
+| `possibly-missing-attribute` | 3 | 28 | 0 |
+| `invalid-assignment` | 22 | 2 | 3 |
+| `invalid-argument-type` | 15 | 2 | 2 |
+| `invalid-return-type` | 1 | 1 | 5 |
+| `unsupported-operator` | 3 | 2 | 2 |
+| `unused-ignore-comment` | 3 | 3 | 0 |
+| `not-subscriptable` | 0 | 4 | 0 |
+| `no-matching-overload` | 0 | 2 | 0 |
+| `call-non-callable` | 1 | 0 | 0 |
+| `missing-argument` | 1 | 0 | 0 |
+| **Total** | **235** | **44** | **12** |
+
+
+**[Full report with detailed diff](https://c42a0c94.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://c42a0c94.ty-ecosystem-ext.pages.dev/timing))
+
+
+
+---
+
+_Comment by @mtshiba on 2026-01-07 16:53_
+
+The mypy_primer results look reasonable.
+The newly added errors are due to dynamically patching attributes that don't exist in the original class.
+
+---
+
+_Marked ready for review by @mtshiba on 2026-01-07 17:03_
+
+---
+
+_Review requested from @carljm by @mtshiba on 2026-01-07 17:03_
+
+---
+
+_Review requested from @AlexWaygood by @mtshiba on 2026-01-07 17:03_
+
+---
+
+_Review requested from @sharkdp by @mtshiba on 2026-01-07 17:03_
+
+---
+
+_Review requested from @dcreager by @mtshiba on 2026-01-07 17:03_
+
+---
