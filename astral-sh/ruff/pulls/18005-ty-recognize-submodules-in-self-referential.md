@@ -1,0 +1,872 @@
+```yaml
+number: 18005
+title: "[ty] Recognize submodules in self-referential imports"
+type: pull_request
+state: merged
+author: sharkdp
+labels:
+  - ty
+assignees: []
+merged: true
+base: main
+head: david/fix-261
+created_at: 2025-05-10T13:31:52Z
+updated_at: 2025-05-13T14:59:13Z
+url: https://github.com/astral-sh/ruff/pull/18005
+synced_at: 2026-01-10T18:51:01Z
+```
+
+# [ty] Recognize submodules in self-referential imports
+
+---
+
+_Pull request opened by @sharkdp on 2025-05-10 13:31_
+
+## Summary
+
+Fix the lookup of `submodule`s in cases where the `parent` module has a self-referential import like `from parent import submodule`. This allows us to infer proper types for many symbols where we previously inferred `Never`. This leads to many new false (and true) positives across the ecosystem because the fact that we previously inferred `Never` shadowed a lot of problems. For example, we inferred `Never` for `os.path`, which is why we now see a lot of new diagnostics related to `os.path.abspath` and similar.
+
+```py
+import os
+
+reveal_type(os.path)  # previously: Never, now: <module 'os.path'>
+```
+
+closes https://github.com/astral-sh/ty/issues/261
+closes https://github.com/astral-sh/ty/issues/307
+
+## Ecosystem analysis
+
+```
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━┓
+┃ Diagnostic ID                 ┃ Severity ┃ Removed ┃ Added ┃ Net Change ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━┩
+│ call-non-callable             │ error    │       1 │     5 │         +4 │
+│ call-possibly-unbound-method  │ warning  │       6 │    26 │        +20 │
+│ invalid-argument-type         │ error    │      26 │    94 │        +68 │
+│ invalid-assignment            │ error    │      18 │    46 │        +28 │
+│ invalid-context-manager       │ error    │       9 │     4 │         -5 │
+│ invalid-raise                 │ error    │       1 │     1 │          0 │
+│ invalid-return-type           │ error    │       3 │    20 │        +17 │
+│ invalid-super-argument        │ error    │       4 │     0 │         -4 │
+│ invalid-type-form             │ error    │     573 │     0 │       -573 │
+│ missing-argument              │ error    │       2 │    10 │         +8 │
+│ no-matching-overload          │ error    │       0 │   715 │       +715 │
+│ non-subscriptable             │ error    │       0 │    35 │        +35 │
+│ not-iterable                  │ error    │       6 │     7 │         +1 │
+│ possibly-unbound-attribute    │ warning  │      14 │    31 │        +17 │
+│ possibly-unbound-import       │ warning  │      13 │     0 │        -13 │
+│ possibly-unresolved-reference │ warning  │       0 │     8 │         +8 │
+│ redundant-cast                │ warning  │       1 │     0 │         -1 │
+│ too-many-positional-arguments │ error    │       2 │     0 │         -2 │
+│ unknown-argument              │ error    │       2 │     0 │         -2 │
+│ unresolved-attribute          │ error    │     583 │   304 │       -279 │
+│ unresolved-import             │ error    │       0 │    96 │        +96 │
+│ unsupported-operator          │ error    │       0 │    17 │        +17 │
+│ unused-ignore-comment         │ warning  │      29 │     2 │        -27 │
+├───────────────────────────────┼──────────┼─────────┼───────┼────────────┤
+│ TOTAL                         │          │    1293 │  1421 │       +128 │
+└───────────────────────────────┴──────────┴─────────┴───────┴────────────┘
+
+Analysis complete. Found 23 unique diagnostic IDs.
+Total diagnostics removed: 1293
+Total diagnostics added: 1421
+Net change: +128
+```
+
+* We see a lot of new errors (`no-matching-overload`) related to `os.path.dirname` and other `os.path` operations because we infer `str | None` for `__file__`, but many projects use something like `os.path.dirname(__file__)`.
+* We also see many new `unresolved-attribute` errors related to the fact that we now infer proper module types for some imports (e.g. `import kornia.augmentation as K`), but we don't allow implicit imports (e.g. accessing `K.auto.operations` without also importing `K.auto`). See https://github.com/astral-sh/ty/issues/133.
+* Many false positive `invalid-type-form` are removed because we now infer the correct type for some type expression instead of `Never`, which is not valid in a type annotation/expression context.
+
+## Test Plan
+
+Added new Markdown tests
+
+---
+
+_Label `ty` added by @sharkdp on 2025-05-10 13:31_
+
+---
+
+_Comment by @github-actions[bot] on 2025-05-10 13:35_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+parso (https://github.com/davidhalter/parso)
++ error[no-matching-overload] parso/grammar.py:250:25: No overload of function `dirname` matches arguments
+- Found 82 diagnostics
++ Found 83 diagnostics
+
+attrs (https://github.com/python-attrs/attrs)
++ error[unresolved-attribute] tests/test_validators.py:110:40: Type `<module 'src.attr.validators'>` has no attribute `__all__`
++ error[unresolved-attribute] tests/test_validators.py:159:39: Type `<module 'src.attr.validators'>` has no attribute `__all__`
++ error[unresolved-attribute] tests/test_validators.py:271:33: Type `<module 'src.attr.validators'>` has no attribute `__all__`
++ error[unresolved-attribute] tests/test_validators.py:320:37: Type `<module 'src.attr.validators'>` has no attribute `__all__`
++ error[unresolved-attribute] tests/test_validators.py:385:32: Type `<module 'src.attr.validators'>` has no attribute `__all__`
++ error[invalid-argument-type] tests/test_validators.py:448:52: Argument to function `include` is incorrect: Expected `type | str | Attribute[Any]`, found `(val) -> Unknown`
++ error[invalid-argument-type] tests/test_validators.py:449:52: Argument to function `exclude` is incorrect: Expected `type | str | Attribute[Any]`, found `(val) -> Unknown`
++ error[unresolved-attribute] tests/test_validators.py:477:42: Type `<module 'src.attr.validators'>` has no attribute `__all__`
++ error[unresolved-attribute] tests/test_validators.py:634:41: Type `<module 'src.attr.validators'>` has no attribute `__all__`
++ error[unresolved-attribute] tests/test_validators.py:734:40: Type `<module 'src.attr.validators'>` has no attribute `__all__`
++ error[unresolved-attribute] tests/test_validators.py:804:27: Type `<module 'src.attr.validators'>` has no attribute `__all__`
++ error[unresolved-attribute] tests/test_validators.py:879:36: Type `<module 'src.attr.validators'>` has no attribute `__all__`
++ error[unresolved-attribute] tests/test_validators.py:952:36: Type `<module 'src.attr.validators'>` has no attribute `__all__`
++ error[unresolved-attribute] tests/test_validators.py:1066:33: Type `<module 'src.attr.validators'>` has no attribute `__all__`
++ error[unresolved-attribute] tests/test_validators.py:1286:32: Type `<module 'src.attr.validators'>` has no attribute `__all__`
++ error[invalid-argument-type] tests/typing_example.py:221:64: Argument to function `matches_re` is incorrect: Expected `((Literal["foo"], Literal["foo"], int, /) -> Match[Literal["foo"]] | None) | None`, found `Overload[(pattern: str | Pattern[str], string: str, flags: Unknown = Literal[0]) -> Match[str] | None, (pattern: bytes | Pattern[bytes], string: @Todo(Support for `typing.TypeAlias`), flags: Unknown = Literal[0]) -> Match[bytes] | None]`
+- Found 602 diagnostics
++ Found 618 diagnostics
+
+pyinstrument (https://github.com/joerick/pyinstrument)
++ error[no-matching-overload] pyinstrument/__main__.py:363:27: No overload of function `dirname` matches arguments
++ error[invalid-return-type] pyinstrument/session.py:215:16: Return type does not match returned value: Expected `str`, found `str | bytes`
+- Found 90 diagnostics
++ Found 92 diagnostics
+
+starlette (https://github.com/encode/starlette)
++ error[no-matching-overload] starlette/staticfiles.py:107:33: No overload of function `join` matches arguments
+- Found 185 diagnostics
++ Found 186 diagnostics
+
+kornia (https://github.com/kornia/kornia)
+- error[invalid-type-form] kornia/augmentation/container/ops.py:182:41: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] kornia/augmentation/container/ops.py:191:39: Variable of type `Never` is not allowed in a type expression
++ error[unresolved-attribute] kornia/augmentation/container/ops.py:213:34: Type `<module 'kornia.augmentation.auto'>` has no attribute `operations`
++ error[unresolved-attribute] kornia/augmentation/container/ops.py:233:34: Type `<module 'kornia.augmentation.auto'>` has no attribute `operations`
++ error[unresolved-attribute] kornia/augmentation/container/ops.py:309:34: Type `<module 'kornia.augmentation.auto'>` has no attribute `operations`
++ error[unresolved-attribute] kornia/augmentation/container/ops.py:372:34: Type `<module 'kornia.augmentation.auto'>` has no attribute `operations`
++ error[unresolved-attribute] kornia/augmentation/container/ops.py:415:34: Type `<module 'kornia.augmentation.auto'>` has no attribute `operations`
++ error[unresolved-attribute] kornia/augmentation/container/ops.py:468:34: Type `<module 'kornia.augmentation.auto'>` has no attribute `operations`
++ error[unresolved-attribute] kornia/augmentation/container/ops.py:513:34: Type `<module 'kornia.augmentation.auto'>` has no attribute `operations`
++ error[unresolved-attribute] kornia/augmentation/container/ops.py:566:34: Type `<module 'kornia.augmentation.auto'>` has no attribute `operations`
++ error[unresolved-attribute] kornia/augmentation/container/ops.py:612:34: Type `<module 'kornia.augmentation.auto'>` has no attribute `operations`
++ error[unresolved-attribute] kornia/core/mixin/onnx.py:145:22: Type `<module 'kornia.onnx'>` has no attribute `utils`
++ error[unresolved-attribute] kornia/core/mixin/onnx.py:306:20: Type `<module 'kornia.onnx'>` has no attribute `utils`
++ error[unresolved-attribute] kornia/core/mixin/onnx.py:399:14: Type `<module 'kornia.onnx'>` has no attribute `utils`
++ error[unresolved-attribute] kornia/core/module.py:142:20: Type `<module 'kornia.utils'>` has no attribute `image`
++ error[unresolved-attribute] kornia/core/module.py:232:25: Type `<module 'kornia.utils'>` has no attribute `image`
++ error[unresolved-attribute] kornia/core/module.py:258:25: Type `<module 'kornia.utils'>` has no attribute `image`
+- error[invalid-type-form] kornia/models/segmentation/segmentation_models.py:85:71: Variable of type `Never` is not allowed in a type expression
++ error[unresolved-attribute] kornia/utils/sample.py:108:26: Type `<module 'kornia.geometry'>` has no attribute `transform`
+- Found 970 diagnostics
++ Found 983 diagnostics
+
+alerta (https://github.com/alerta/alerta)
++ error[no-matching-overload] alerta/utils/logging.py:21:33: No overload of function `dirname` matches arguments
+- warning[possibly-unbound-import] alerta/views/__init__.py:12:19: Member `bulk` of module `alerta.views` is possibly unbound
+
+porcupine (https://github.com/Akuli/porcupine)
++ warning[possibly-unbound-attribute] porcupine/plugins/directory_tree.py:351:46: Attribute `parents` on type `(Unknown & Path) | (Unknown & None) | Path | None` is possibly unbound
++ error[invalid-argument-type] porcupine/plugins/directory_tree.py:438:26: Argument to bound method `select_file` is incorrect: Expected `Path`, found `(Unknown & Path) | (Unknown & None) | Path | None`
++ warning[possibly-unbound-attribute] porcupine/plugins/filemanager.py:52:42: Attribute `parents` on type `(Unknown & Path) | (Unknown & None) | Path | None` is possibly unbound
++ error[invalid-assignment] porcupine/plugins/filetypes.py:239:13: Object of type `Unknown | Path` is not assignable to `str | None`
+- error[invalid-type-form] porcupine/plugins/run/__init__.py:21:14: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] porcupine/plugins/run/__init__.py:21:39: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] porcupine/plugins/run/__init__.py:74:64: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] porcupine/plugins/run/dialog.py:60:29: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] porcupine/plugins/run/dialog.py:167:30: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] porcupine/plugins/run/dialog.py:186:55: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] porcupine/plugins/run/dialog.py:222:22: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] porcupine/plugins/run/dialog.py:222:47: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] porcupine/plugins/run/history.py:19:14: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] porcupine/plugins/run/history.py:40:14: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] porcupine/plugins/run/history.py:40:39: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] porcupine/plugins/run/history.py:80:24: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] porcupine/plugins/run/history.py:80:85: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] porcupine/plugins/run/history.py:112:32: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] porcupine/plugins/run/history.py:112:51: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] porcupine/plugins/run/history.py:121:34: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] porcupine/plugins/run/history.py:121:58: Variable of type `Never` is not allowed in a type expression
+- Found 97 diagnostics
++ Found 84 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- warning[possibly-unbound-import] strawberry/experimental/__init__.py:2:19: Member `pydantic` of module `strawberry.experimental` is possibly unbound
+- Found 454 diagnostics
++ Found 453 diagnostics
+
+trio (https://github.com/python-trio/trio)
+- error[invalid-type-form] src/trio/_highlevel_serve_listeners.py:27:36: Variable of type `Never` is not allowed in a type expression
++ error[invalid-assignment] src/trio/_subprocess.py:395:13: Object of type `ClosableSendStream | FdStream | PipeSendStream` is not assignable to `ClosableSendStream | None`
++ warning[possibly-unbound-attribute] src/trio/_subprocess.py:397:38: Attribute `close` on type `ClosableSendStream | None` is possibly unbound
++ error[invalid-assignment] src/trio/_subprocess.py:399:13: Object of type `ClosableReceiveStream | FdStream | PipeReceiveStream` is not assignable to `ClosableReceiveStream | None`
++ warning[possibly-unbound-attribute] src/trio/_subprocess.py:401:38: Attribute `close` on type `ClosableReceiveStream | None` is possibly unbound
++ error[invalid-assignment] src/trio/_subprocess.py:413:13: Object of type `ClosableReceiveStream | FdStream | PipeReceiveStream` is not assignable to `ClosableReceiveStream | None`
++ warning[possibly-unbound-attribute] src/trio/_subprocess.py:415:38: Attribute `close` on type `ClosableReceiveStream | None` is possibly unbound
+- error[invalid-type-form] src/trio/_tests/test_channel.py:63:36: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] src/trio/_tests/test_channel.py:481:21: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] src/trio/_tests/test_dtls.py:324:54: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] src/trio/_tests/test_dtls.py:336:57: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] src/trio/_tests/test_dtls.py:356:21: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] src/trio/_tests/test_dtls.py:469:56: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] src/trio/_tests/test_dtls.py:512:21: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] src/trio/_tests/test_dtls.py:641:21: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] src/trio/_tests/test_dtls.py:696:21: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] src/trio/_tests/test_dtls.py:823:21: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] src/trio/_tests/test_dtls.py:845:21: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] src/trio/_tests/test_highlevel_open_tcp_listeners.py:220:19: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] src/trio/_tests/test_highlevel_open_tcp_listeners.py:228:10: Variable of type `Never` is not allowed in a type expression
+- warning[unused-ignore-comment] src/trio/_tests/test_highlevel_open_tcp_listeners.py:299:29: Unused blanket `type: ignore` directive
+- error[invalid-type-form] src/trio/_tests/test_highlevel_serve_listeners.py:37:28: Variable of type `Never` is not allowed in a type expression
+- warning[unused-ignore-comment] src/trio/_tests/test_socket.py:314:40: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] src/trio/_tests/test_socket.py:784:40: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] src/trio/_tests/test_socket.py:1093:62: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] src/trio/_tests/test_socket.py:1116:52: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] src/trio/_tests/test_socket.py:1143:60: Unused blanket `type: ignore` directive
+- error[invalid-type-form] src/trio/_tests/test_ssl.py:763:28: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] src/trio/_tests/test_ssl.py:763:49: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] src/trio/_tests/test_ssl.py:1331:16: Variable of type `Never` is not allowed in a type expression
++ error[unresolved-attribute] src/trio/_tests/test_testing_raisesgroup.py:1110:9: Type `<module 'src.trio.testing'>` has no attribute `_raises_group`
++ error[unresolved-attribute] src/trio/_tests/test_testing_raisesgroup.py:1112:9: Type `<module 'src.trio.testing'>` has no attribute `_raises_group`
++ error[no-matching-overload] src/trio/_tests/type_tests/subprocesses.py:10:11: No overload of function `open_process` matches arguments
+- warning[unused-ignore-comment] src/trio/_tests/type_tests/subprocesses.py:15:70: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] src/trio/_tests/type_tests/subprocesses.py:23:70: Unused blanket `type: ignore` directive
++ error[no-matching-overload] src/trio/_tests/type_tests/subprocesses.py:19:15: No overload of function `open_process` matches arguments
+- error[invalid-type-form] src/trio/_threads.py:48:25: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] src/trio/_threads.py:357:25: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] src/trio/_threads.py:431:50: Variable of type `Never` is not allowed in a type expression
+- Found 1116 diagnostics
++ Found 1097 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
++ error[no-matching-overload] docs/source/conf.py:74:18: No overload of function `dirname` matches arguments
++ error[no-matching-overload] setup.py:9:31: No overload of function `dirname` matches arguments
+- Found 2274 diagnostics
++ Found 2276 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
++ error[no-matching-overload] setup.py:10:8: No overload of function `dirname` matches arguments
++ error[no-matching-overload] sockeye_contrib/vistools/generate_graphs.py:112:33: No overload of function `realpath` matches arguments
++ error[no-matching-overload] sockeye_contrib/vistools/test/test_integration.py:19:23: No overload of function `realpath` matches arguments
++ error[no-matching-overload] test/unit/test_utils.py:81:67: No overload of function `dirname` matches arguments
+- Found 399 diagnostics
++ Found 403 diagnostics
+
+black (https://github.com/psf/black)
++ error[no-matching-overload] src/blib2to3/pygram.py:174:34: No overload of function `dirname` matches arguments
++ error[no-matching-overload] src/blib2to3/pygram.py:176:9: No overload of function `dirname` matches arguments
+- Found 141 diagnostics
++ Found 143 diagnostics
+
+stone (https://github.com/dropbox/stone)
++ error[no-matching-overload] stone/backends/obj_c_types.py:95:36: No overload of function `dirname` matches arguments
++ error[no-matching-overload] stone/backends/swift_client.py:319:36: No overload of function `dirname` matches arguments
++ error[no-matching-overload] stone/backends/swift_types.py:140:36: No overload of function `dirname` matches arguments
+- Found 178 diagnostics
++ Found 181 diagnostics
+
+dragonchain (https://github.com/dragonchain/dragonchain)
++ error[no-matching-overload] dragonchain/job_processor/contract_job.py:140:45: No overload of function `abspath` matches arguments
+- warning[possibly-unbound-import] dragonchain/webserver/routes/__init__.py:30:46: Member `verifications` of module `dragonchain.webserver.routes` is possibly unbound
+- warning[possibly-unbound-import] dragonchain/webserver/routes/__init__.py:31:46: Member `smart_contracts` of module `dragonchain.webserver.routes` is possibly unbound
+- warning[possibly-unbound-import] dragonchain/webserver/routes/__init__.py:32:46: Member `transaction_types` of module `dragonchain.webserver.routes` is possibly unbound
+- warning[possibly-unbound-import] dragonchain/webserver/routes/__init__.py:33:46: Member `transactions` of module `dragonchain.webserver.routes` is possibly unbound
+- warning[possibly-unbound-import] dragonchain/webserver/routes/__init__.py:36:46: Member `interchain` of module `dragonchain.webserver.routes` is possibly unbound
+- Found 317 diagnostics
++ Found 313 diagnostics
+
+poetry (https://github.com/python-poetry/poetry)
++ error[no-matching-overload] tests/fixtures/git/github.com/demo/no-version/setup.py:10:28: No overload of function `dirname` matches arguments
+- Found 1055 diagnostics
++ Found 1056 diagnostics
+
+pybind11 (https://github.com/pybind/pybind11)
++ error[no-matching-overload] pybind11/commands.py:5:23: No overload of function `dirname` matches arguments
++ error[no-matching-overload] tests/extra_python_package/test_files.py:14:23: No overload of function `dirname` matches arguments
++ error[no-matching-overload] tests/extra_setuptools/test_setuphelper.py:10:23: No overload of function `dirname` matches arguments
++ error[no-matching-overload] tests/test_eval.py:24:29: No overload of function `dirname` matches arguments
+- Found 245 diagnostics
++ Found 249 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
++ error[no-matching-overload] docs/conf.py:11:42: No overload of function `dirname` matches arguments
++ error[no-matching-overload] dummyserver/socketserver.py:32:27: No overload of function `dirname` matches arguments
++ error[no-matching-overload] test/contrib/test_pyopenssl.py:97:29: No overload of function `dirname` matches arguments
+- Found 464 diagnostics
++ Found 467 diagnostics
+
+mkdocs (https://github.com/mkdocs/mkdocs)
++ error[no-matching-overload] mkdocs/__main__.py:237:27: No overload of function `abspath` matches arguments
++ error[no-matching-overload] mkdocs/contrib/search/__init__.py:20:29: No overload of function `abspath` matches arguments
++ error[no-matching-overload] mkdocs/contrib/search/search_index.py:103:37: No overload of function `abspath` matches arguments
++ error[no-matching-overload] mkdocs/localization.py:26:29: No overload of function `abspath` matches arguments
++ error[no-matching-overload] mkdocs/tests/base.py:28:46: No overload of function `dirname` matches arguments
++ error[no-matching-overload] mkdocs/tests/base.py:108:16: No overload of function `join` matches arguments
++ error[no-matching-overload] mkdocs/tests/base.py:114:16: No overload of function `join` matches arguments
++ error[no-matching-overload] mkdocs/tests/base.py:120:16: No overload of function `join` matches arguments
++ error[no-matching-overload] mkdocs/tests/base.py:126:16: No overload of function `join` matches arguments
++ error[no-matching-overload] mkdocs/tests/config/config_options_legacy_tests.py:655:21: No overload of function `dirname` matches arguments
++ error[no-matching-overload] mkdocs/tests/config/config_options_legacy_tests.py:706:13: No overload of function `dirname` matches arguments
++ error[no-matching-overload] mkdocs/tests/config/config_options_legacy_tests.py:750:45: No overload of function `abspath` matches arguments
++ error[no-matching-overload] mkdocs/tests/config/config_options_legacy_tests.py:779:18: No overload of function `dirname` matches arguments
++ error[no-matching-overload] mkdocs/tests/config/config_options_legacy_tests.py:798:18: No overload of function `dirname` matches arguments
++ error[no-matching-overload] mkdocs/tests/config/config_options_legacy_tests.py:816:17: No overload of function `dirname` matches arguments
++ error[no-matching-overload] mkdocs/tests/config/config_options_tests.py:856:21: No overload of function `dirname` matches arguments
++ error[no-matching-overload] mkdocs/tests/config/config_options_tests.py:910:13: No overload of function `dirname` matches arguments
++ error[no-matching-overload] mkdocs/tests/config/config_options_tests.py:954:45: No overload of function `abspath` matches arguments
++ error[no-matching-overload] mkdocs/tests/config/config_options_tests.py:983:18: No overload of function `dirname` matches arguments
++ error[no-matching-overload] mkdocs/tests/config/config_options_tests.py:1002:18: No overload of function `dirname` matches arguments
++ error[no-matching-overload] mkdocs/tests/config/config_options_tests.py:1028:17: No overload of function `dirname` matches arguments
++ error[no-matching-overload] mkdocs/tests/config/config_tests.py:98:38: No overload of function `dirname` matches arguments
++ error[no-matching-overload] mkdocs/tests/integration.py:27:7: No overload of function `dirname` matches arguments
++ error[no-matching-overload] mkdocs/tests/structure/page_tests.py:17:21: No overload of function `dirname` matches arguments
++ error[no-matching-overload] mkdocs/tests/structure/page_tests.py:26:29: No overload of function `dirname` matches arguments
++ error[no-matching-overload] mkdocs/tests/theme_tests.py:10:28: No overload of function `dirname` matches arguments
++ error[no-matching-overload] mkdocs/tests/theme_tests.py:11:30: No overload of function `dirname` matches arguments
++ error[no-matching-overload] mkdocs/theme.py:50:39: No overload of function `dirname` matches arguments
+- Found 341 diagnostics
++ Found 369 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
++ error[no-matching-overload] cki_lib/yaml.py:91:22: No overload of function `dirname` matches arguments
+- Found 180 diagnostics
++ Found 181 diagnostics
+
+bandersnatch (https://github.com/pypa/bandersnatch)
++ error[no-matching-overload] src/bandersnatch/tests/plugins/test_storage_plugins.py:37:37: No overload of function `abspath` matches arguments
++ error[no-matching-overload] src/bandersnatch/tests/plugins/test_storage_plugins.py:40:21: No overload of function `abspath` matches arguments
+- Found 148 diagnostics
++ Found 150 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
++ error[no-matching-overload] tornado/autoreload.py:74:23: No overload of function `dirname` matches arguments
++ error[no-matching-overload] tornado/test/httpserver_test.py:158:22: No overload of function `dirname` matches arguments
++ error[no-matching-overload] tornado/test/iostream_test.py:50:31: No overload of function `dirname` matches arguments
++ error[no-matching-overload] tornado/test/iostream_test.py:51:30: No overload of function `dirname` matches arguments
++ error[no-matching-overload] tornado/test/iostream_test.py:967:26: No overload of function `dirname` matches arguments
++ error[no-matching-overload] tornado/test/iostream_test.py:968:26: No overload of function `dirname` matches arguments
++ error[no-matching-overload] tornado/test/iostream_test.py:1197:30: No overload of function `dirname` matches arguments
++ error[no-matching-overload] tornado/test/iostream_test.py:1198:30: No overload of function `dirname` matches arguments
++ error[no-matching-overload] tornado/test/iostream_test.py:1213:26: No overload of function `dirname` matches arguments
++ error[no-matching-overload] tornado/test/locale_test.py:32:26: No overload of function `dirname` matches arguments
++ error[no-matching-overload] tornado/test/locale_test.py:40:26: No overload of function `dirname` matches arguments
++ error[no-matching-overload] tornado/test/locale_test.py:62:26: No overload of function `dirname` matches arguments
++ error[no-matching-overload] tornado/test/options_test.py:42:29: No overload of function `abspath` matches arguments
++ error[no-matching-overload] tornado/test/options_test.py:246:30: No overload of function `dirname` matches arguments
++ error[no-matching-overload] tornado/test/options_test.py:306:30: No overload of function `dirname` matches arguments
++ error[no-matching-overload] tornado/test/template_test.py:523:43: No overload of function `dirname` matches arguments
++ error[no-matching-overload] tornado/test/web_test.py:62:25: No overload of function `dirname` matches arguments
++ error[no-matching-overload] tornado/test/web_test.py:1108:31: No overload of function `dirname` matches arguments
++ error[no-matching-overload] tornado/test/web_test.py:1456:29: No overload of function `abspath` matches arguments
++ error[no-matching-overload] tornado/test/web_test.py:1506:20: No overload of function `dirname` matches arguments
++ error[no-matching-overload] tornado/test/web_test.py:1838:49: No overload of function `dirname` matches arguments
++ error[no-matching-overload] tornado/test/web_test.py:3311:26: No overload of function `dirname` matches arguments
++ error[no-matching-overload] tornado/testing.py:521:22: No overload of function `dirname` matches arguments
+- Found 511 diagnostics
++ Found 534 diagnostics
+
+Expression (https://github.com/cognitedata/Expression)
+- error[unknown-argument] README.py:689:22: Argument `rectangle` does not match any known parameter of bound method `__init__`
+- error[too-many-positional-arguments] README.py:689:42: Too many positional arguments to bound method `__init__`: expected 0, got 2
+- error[unknown-argument] README.py:694:22: Argument `circle` does not match any known parameter of bound method `__init__`
+- error[too-many-positional-arguments] README.py:694:36: Too many positional arguments to bound method `__init__`: expected 0, got 1
+- error[invalid-return-type] expression/extra/parser.py:262:20: Return type does not match returned value: Expected `Parser[Block[_A]]`, found `Parser[Never]`
++ error[invalid-return-type] expression/extra/parser.py:262:20: Return type does not match returned value: Expected `Parser[Block[_A]]`, found `Parser[Block[Any]]`
+- error[invalid-argument-type] expression/extra/parser.py:335:36: Argument to bound method `or_else` is incorrect: Expected `Parser[Block[Unknown]]`, found `Parser[Never]`
+- error[invalid-type-form] tests/test_array.py:58:20: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] tests/test_array.py:69:20: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] tests/test_array.py:80:20: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] tests/test_array.py:91:20: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] tests/test_array.py:99:20: Variable of type `Never` is not allowed in a type expression
+- error[invalid-type-form] tests/test_array.py:102:20: Variable of type `Never` is not allowed in a type expression
++ error[invalid-assignment] tests/test_array.py:137:5: Object of type `TypedArray[Literal[42]]` is not assignable to `TypedArray[int]`
++ error[invalid-assignment] tests/test_array.py:357:1: Object of type `def singleton(value: _TSource) -> TypedArray[_TSource]` is not assignable to `(int, /) -> TypedArray[int]`
++ error[invalid-assignment] tests/test_block.py:335:1: Object of type `def singleton(value: _TSource) -> Block[_TSource]` is not assignable to `(int, /) -> Block[int]`
++ error[no-matching-overload] tests/test_result.py:487:12: No overload of bound method `pipe` matches arguments
++ error[no-matching-overload] tests/test_result.py:573:12: No overload of bound method `pipe` matches arguments
++ warning[call-possibly-unbound-method] tests/test_seq.py:15:6: Method `__getitem__` of type `Unknown | <class 'SeqBuilder'>` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq.py:27:6: Method `__getitem__` of type `Unknown | <class 'SeqBuilder'>` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq.py:38:6: Method `__getitem__` of type `Unknown | <class 'SeqBuilder'>` is possibly unbound
++ error[invalid-argument-type] tests/test_seq.py:308:20: Argument to bound method `choose` is incorrect: Expected `(None | Literal[42], /) -> Option[Unknown]`, found `def of_optional(value: _TSource | None) -> Option[_TSource]`
++ error[invalid-assignment] tests/test_seq.py:321:1: Object of type `def singleton(item: _TSource) -> Seq[_TSource]` is not assignable to `(int, /) -> Seq[int]`
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:16:6: Method `__getitem__` of type `Unknown | <class 'SeqBuilder'>` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:37:6: Method `__getitem__` of type `Unknown | <class 'SeqBuilder'>` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:57:6: Method `__getitem__` of type `Unknown | <class 'SeqBuilder'>` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:77:6: Method `__getitem__` of type `Unknown | <class 'SeqBuilder'>` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:89:6: Method `__getitem__` of type `Unknown | <class 'SeqBuilder'>` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:102:6: Method `__getitem__` of type `Unknown | <class 'SeqBuilder'>` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:118:6: Method `__getitem__` of type `Unknown | <class 'SeqBuilder'>` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:138:6: Method `__getitem__` of type `Unknown | <class 'SeqBuilder'>` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:143:6: Method `__getitem__` of type `Unknown | <class 'SeqBuilder'>` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:157:6: Method `__getitem__` of type `Unknown | <class 'SeqBuilder'>` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:171:6: Method `__getitem__` of type `Unknown | <class 'SeqBuilder'>` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:183:6: Method `__getitem__` of type `Unknown | <class 'SeqBuilder'>` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:195:6: Method `__getitem__` of type `Unknown | <class 'SeqBuilder'>` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:207:6: Method `__getitem__` of type `Unknown | <class 'SeqBuilder'>` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:224:6: Method `__getitem__` of type `Unknown | <class 'SeqBuilder'>` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:241:6: Method `__getitem__` of type `Unknown | <class 'SeqBuilder'>` is possibly unbound
+- Found 302 diagnostics
++ Found 317 diagnostics
+
+jinja (https://github.com/pallets/jinja)
++ error[no-matching-overload] scripts/generate_identifier_pattern.py:62:22: No overload of function `dirname` matches arguments
++ error[unsupported-operator] src/jinja2/loaders.py:33:36: Operator `in` is not supported for types `None` and `str`, in comparing `LiteralString | None` with `str`
++ error[no-matching-overload] src/jinja2/loaders.py:344:30: No overload of function `dirname` matches arguments
++ error[no-matching-overload] tests/test_loader.py:334:26: No overload of function `join` matches arguments
++ error[no-matching-overload] tests/test_loader.py:356:26: No overload of function `join` matches arguments
++ error[no-matching-overload] tests/test_loader.py:379:26: No overload of function `join` matches arguments
+- Found 303 diagnostics
++ Found 309 diagnostics
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
++ error[invalid-assignment] schema_salad/sourceline.py:26:9: Object of type `bytes` is not assignable to `str`
++ error[no-matching-overload] schema_salad/tests/test_ref_resolver.py:168:50: No overload of function `dirname` matches arguments
++ error[no-matching-overload] schema_salad/tests/util.py:29:25: No overload of function `dirname` matches arguments
++ error[no-matching-overload] schema_salad/tests/util.py:34:29: No overload of function `dirname` matches arguments
++ error[no-matching-overload] setup.py:8:13: No overload of function `dirname` matches arguments
+- Found 400 diagnostics
++ Found 405 diagnostics
+
+twine (https://github.com/pypa/twine)
+- warning[call-possibly-unbound-method] twine/__init__.py:44:13: Method `__getitem__` of type `Unknown | None` is possibly unbound
++ warning[call-possibly-unbound-method] twine/__init__.py:44:13: Method `__getitem__` of type `PackageMetadata | None` is possibly unbound
+- warning[call-possibly-unbound-method] twine/__init__.py:45:15: Method `__getitem__` of type `Unknown | None` is possibly unbound
++ warning[call-possibly-unbound-method] twine/__init__.py:45:15: Method `__getitem__` of type `PackageMetadata | None` is possibly unbound
+- warning[possibly-unbound-attribute] twine/__init__.py:48:18: Attribute `get_all` on type `Unknown | None` is possibly unbound
++ warning[possibly-unbound-attribute] twine/__init__.py:48:18: Attribute `get_all` on type `PackageMetadata | None` is possibly unbound
+- warning[call-possibly-unbound-method] twine/__init__.py:51:15: Method `__getitem__` of type `Unknown | None` is possibly unbound
++ warning[call-possibly-unbound-method] twine/__init__.py:51:15: Method `__getitem__` of type `PackageMetadata | None` is possibly unbound
+- warning[call-possibly-unbound-method] twine/__init__.py:52:47: Method `__getitem__` of type `Unknown | None` is possibly unbound
++ warning[call-possibly-unbound-method] twine/__init__.py:52:47: Method `__getitem__` of type `PackageMetadata | None` is possibly unbound
+- warning[call-possibly-unbound-method] twine/__init__.py:52:47: Method `__getitem__` of type `Unknown | None` is possibly unbound
++ warning[call-possibly-unbound-method] twine/__init__.py:52:47: Method `__getitem__` of type `PackageMetadata | None` is possibly unbound
+- warning[call-possibly-unbound-method] twine/__init__.py:52:47: Method `__getitem__` of type `Unknown | None` is possibly unbound
++ warning[call-possibly-unbound-method] twine/__init__.py:52:47: Method `__getitem__` of type `PackageMetadata | None` is possibly unbound
+
+pwndbg (https://github.com/pwndbg/pwndbg)
+- error[unresolved-attribute] pwndbg/aglib/arch.py:392:19: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/argv.py:60:12: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/argv.py:77:12: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/argv.py:87:26: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/argv.py:107:26: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/argv.py:121:27: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/disasm/arch.py:495:24: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/disasm/arch.py:522:28: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/disasm/disassembly.py:328:16: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/dt.py:16:8: Type `Debugger` has no attribute `TypeField`
+- error[unresolved-attribute] pwndbg/aglib/dt.py:16:35: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/dt.py:16:58: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/dt.py:18:22: Type `Debugger` has no attribute `TypeField`
+- error[unresolved-attribute] pwndbg/aglib/dt.py:20:24: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/dt.py:22:24: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/dt.py:32:17: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/dt.py:33:10: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/dt.py:44:25: Type `Debugger` has no attribute `TypeCode`
+- error[unresolved-attribute] pwndbg/aglib/dt.py:58:9: Type `Debugger` has no attribute `TypeCode`
+- error[unresolved-attribute] pwndbg/aglib/dt.py:59:9: Type `Debugger` has no attribute `TypeCode`
+- error[unresolved-attribute] pwndbg/aglib/dt.py:84:13: Type `Debugger` has no attribute `TypeCode`
+- error[unresolved-attribute] pwndbg/aglib/dt.py:85:13: Type `Debugger` has no attribute `TypeCode`
+- error[unresolved-attribute] pwndbg/aglib/dt.py:89:34: Type `Debugger` has no attribute `TypeCode`
+- error[unresolved-attribute] pwndbg/aglib/dt.py:92:36: Type `Debugger` has no attribute `TypeCode`
+- error[unresolved-attribute] pwndbg/aglib/dt.py:92:69: Type `Debugger` has no attribute `TypeCode`
+- error[unresolved-attribute] pwndbg/aglib/dt.py:99:20: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/dynamic.py:62:50: Type `Debugger` has no attribute `StopPoint`
+- error[unresolved-attribute] pwndbg/aglib/dynamic.py:80:19: Type `Debugger` has no attribute `StopPoint`
+- error[unresolved-attribute] pwndbg/aglib/dynamic.py:628:22: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/dynamic.py:752:48: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/elf.py:269:16: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/file.py:106:16: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/godbg.py:309:12: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/__init__.py:66:25: Type `Debugger` has no attribute `DebuggerType`
+- error[unresolved-attribute] pwndbg/aglib/heap/jemalloc.py:198:19: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/jemalloc.py:214:19: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/jemalloc.py:266:19: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/jemalloc.py:269:19: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/jemalloc.py:337:27: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/jemalloc.py:340:27: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/jemalloc.py:400:20: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:61:20: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:63:36: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:266:63: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:306:20: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:316:20: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:328:20: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:382:20: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:392:20: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:402:20: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:412:20: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:515:20: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:556:20: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:600:63: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:639:20: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:649:20: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:668:20: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:678:20: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:690:20: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:702:20: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:714:20: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:724:20: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:734:20: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:744:20: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:1210:38: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:1541:42: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:1541:63: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:1582:31: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:1618:21: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:1637:28: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:1642:31: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:1647:31: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:1652:42: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:1657:31: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:1662:27: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:1667:29: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:1670:38: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:1677:34: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/heap/ptmalloc.py:1678:10: Type `Debugger` has no attribute `Value`
++ warning[unused-ignore-comment] pwndbg/aglib/heap/structs.py:93:72: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] pwndbg/aglib/heap/structs.py:97:72: Unused blanket `type: ignore` directive
+- error[unresolved-attribute] pwndbg/aglib/heap/structs.py:131:12: Type `Debugger` has no attribute `TypeCode`
+- error[unresolved-attribute] pwndbg/aglib/heap/structs.py:143:40: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/heap/structs.py:149:40: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/heap/structs.py:168:41: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/__init__.py:250:29: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/__init__.py:250:64: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/__init__.py:352:29: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/__init__.py:352:78: Type `Debugger` has no attribute `Value`
+- warning[possibly-unbound-attribute] pwndbg/aglib/kernel/__init__.py:375:33: Attribute `sizeof` on type `Unknown | None` is possibly unbound
++ warning[possibly-unbound-attribute] pwndbg/aglib/kernel/__init__.py:375:33: Attribute `sizeof` on type `Type | None` is possibly unbound
+- error[unresolved-attribute] pwndbg/aglib/kernel/__init__.py:395:29: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/__init__.py:395:78: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/__init__.py:481:29: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/__init__.py:481:78: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/__init__.py:544:19: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/__init__.py:544:68: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/macros.py:11:62: Type `Debugger` has no attribute `Value`
++ error[unsupported-operator] pwndbg/aglib/kernel/macros.py:12:16: Operator `-` is unsupported between objects of type `int` and `int | None`
+- warning[possibly-unbound-attribute] pwndbg/aglib/kernel/macros.py:12:27: Attribute `offsetof` on type `Unknown | None` is possibly unbound
++ warning[possibly-unbound-attribute] pwndbg/aglib/kernel/macros.py:12:27: Attribute `offsetof` on type `Type | None` is possibly unbound
++ warning[possibly-unbound-attribute] pwndbg/aglib/kernel/macros.py:43:11: Attribute `cast` on type `Value | None` is possibly unbound
+- error[unresolved-attribute] pwndbg/aglib/kernel/macros.py:17:11: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/macros.py:18:15: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/macros.py:41:13: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/macros.py:41:46: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/macros.py:47:25: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/macros.py:47:50: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/macros.py:49:30: Type `Debugger` has no attribute `TypeCode`
+- error[unresolved-attribute] pwndbg/aglib/kernel/nftables.py:37:17: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/kernel/nftables.py:55:49: Type `Debugger` has no attribute `Value`
++ error[invalid-return-type] pwndbg/aglib/kernel/nftables.py:614:12: Return type does not match returned value: Expected `Value`, found `Value | None`
+- error[unresolved-attribute] pwndbg/aglib/kernel/nftables.py:79:30: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/nftables.py:99:16: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/kernel/nftables.py:140:30: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/nftables.py:262:30: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/nftables.py:292:37: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/nftables.py:355:30: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/nftables.py:433:30: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/nftables.py:510:30: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/nftables.py:541:30: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/nftables.py:591:30: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/nftables.py:613:33: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/rbtree.py:11:15: Type `Debugger` has no attribute `Type`
++ error[invalid-assignment] pwndbg/aglib/kernel/rbtree.py:11:1: Object of type `None` is not assignable to `Type`
+- error[unresolved-attribute] pwndbg/aglib/kernel/rbtree.py:12:15: Type `Debugger` has no attribute `Type`
++ error[invalid-assignment] pwndbg/aglib/kernel/rbtree.py:12:1: Object of type `None` is not assignable to `Type`
++ error[invalid-assignment] pwndbg/aglib/kernel/rbtree.py:18:5: Object of type `Type | None` is not assignable to `Type`
++ error[invalid-assignment] pwndbg/aglib/kernel/rbtree.py:19:5: Object of type `Type | None` is not assignable to `Type`
++ error[invalid-argument-type] pwndbg/aglib/kernel/rbtree.py:29:24: Argument to function `rb_next` is incorrect: Expected `Value`, found `Value | None`
++ warning[possibly-unbound-attribute] pwndbg/aglib/kernel/rbtree.py:35:16: Attribute `cast` on type `Value | None` is possibly unbound
++ warning[possibly-unbound-attribute] pwndbg/aglib/kernel/rbtree.py:51:16: Attribute `cast` on type `Value | None` is possibly unbound
++ warning[possibly-unbound-attribute] pwndbg/aglib/kernel/rbtree.py:76:16: Attribute `cast` on type `Value | None` is possibly unbound
++ warning[possibly-unbound-attribute] pwndbg/aglib/kernel/rbtree.py:99:16: Attribute `cast` on type `Value | None` is possibly unbound
+- error[unresolved-attribute] pwndbg/aglib/kernel/rbtree.py:23:11: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/rbtree.py:24:15: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/rbtree.py:33:20: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/rbtree.py:33:45: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/rbtree.py:37:15: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/kernel/rbtree.py:49:19: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/rbtree.py:49:44: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/rbtree.py:53:15: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/kernel/rbtree.py:65:21: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/rbtree.py:65:46: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/rbtree.py:70:25: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/rbtree.py:74:19: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/rbtree.py:74:44: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/rbtree.py:78:15: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/kernel/rbtree.py:97:19: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/rbtree.py:97:44: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/rbtree.py:101:15: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/kernel/slab.py:113:36: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/slab.py:133:20: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/kernel/slab.py:198:35: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/slab.py:237:36: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/slab.py:259:15: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/kernel/slab.py:312:16: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/kernel/vmmap.py:212:12: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/memory.py:38:20: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/memory.py:271:11: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/memory.py:271:44: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/memory.py:272:6: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/memory.py:280:17: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/memory.py:280:50: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/memory.py:281:6: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/memory.py:287:27: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/memory.py:295:22: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/memory.py:295:55: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/memory.py:296:6: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/memory.py:322:12: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/memory.py:345:12: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/memory.py:357:27: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/memory.py:366:21: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/memory.py:395:53: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/memory.py:409:15: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/next.py:117:9: Type `Debugger` has no attribute `ExecutionController`
+- error[unresolved-attribute] pwndbg/aglib/next.py:135:9: Type `Debugger` has no attribute `ExecutionController`
+- error[unresolved-attribute] pwndbg/aglib/next.py:153:31: Type `Debugger` has no attribute `ExecutionController`
+- error[unresolved-attribute] pwndbg/aglib/next.py:182:30: Type `Debugger` has no attribute `ExecutionController`
+- error[unresolved-attribute] pwndbg/aglib/next.py:198:9: Type `Debugger` has no attribute `ExecutionController`
+- error[unresolved-attribute] pwndbg/aglib/next.py:244:37: Type `Debugger` has no attribute `ExecutionController`
+- error[unresolved-attribute] pwndbg/aglib/next.py:278:29: Type `Debugger` has no attribute `ExecutionController`
+- error[unresolved-attribute] pwndbg/aglib/onegadget.py:326:12: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/onegadget.py:398:16: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/onegadget.py:448:16: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/regs.py:37:26: Type `Debugger` has no attribute `Frame`
+- error[unresolved-attribute] pwndbg/aglib/regs.py:37:51: Type `Debugger` has no attribute `Registers`
+- error[unresolved-attribute] pwndbg/aglib/regs.py:43:23: Type `Debugger` has no attribute `Frame`
+- error[unresolved-attribute] pwndbg/aglib/regs.py:44:6: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/regs.py:51:19: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/regs.py:106:41: Type `Debugger` has no attribute `Frame`
+- error[unresolved-attribute] pwndbg/aglib/regs.py:123:29: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/saved_register_frames.py:31:16: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/strings.py:45:12: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/strings.py:63:12: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/symbol.py:54:6: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/symbol.py:78:6: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/aglib/tls.py:30:12: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:15:7: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:16:8: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:17:7: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:18:8: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:19:9: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:20:7: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:21:7: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:23:8: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:24:9: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:25:9: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:26:9: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:27:21: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:29:7: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:30:8: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:31:8: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:32:8: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:33:19: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:35:8: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:36:9: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:37:8: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:41:10: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:42:9: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:43:10: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:46:34: Type `Debugger` has no attribute `Type`
+- error[invalid-assignment] pwndbg/aglib/typeinfo.py:58:5: Object of type `Unknown` is not assignable to attribute `char` on type `Unknown | ModuleType`
++ error[invalid-assignment] pwndbg/aglib/typeinfo.py:58:5: Object of type `Type` is not assignable to attribute `char` on type `Unknown | ModuleType`
+- error[invalid-assignment] pwndbg/aglib/typeinfo.py:59:5: Object of type `Unknown` is not assignable to attribute `ulong` on type `Unknown | ModuleType`
++ error[invalid-assignment] pwndbg/aglib/typeinfo.py:59:5: Object of type `Type` is not assignable to attribute `ulong` on type `Unknown | ModuleType`
+- error[invalid-assignment] pwndbg/aglib/typeinfo.py:60:5: Object of type `Unknown` is not assignable to attribute `long` on type `Unknown | ModuleType`
++ error[invalid-assignment] pwndbg/aglib/typeinfo.py:60:5: Object of type `Type` is not assignable to attribute `long` on type `Unknown | ModuleType`
+- error[invalid-assignment] pwndbg/aglib/typeinfo.py:61:5: Object of type `Unknown` is not assignable to attribute `uchar` on type `Unknown | ModuleType`
++ error[invalid-assignment] pwndbg/aglib/typeinfo.py:61:5: Object of type `Type` is not assignable to attribute `uchar` on type `Unknown | ModuleType`
+- error[invalid-assignment] pwndbg/aglib/typeinfo.py:62:5: Object of type `Unknown` is not assignable to attribute `ushort` on type `Unknown | ModuleType`
++ error[invalid-assignment] pwndbg/aglib/typeinfo.py:62:5: Object of type `Type` is not assignable to attribute `ushort` on type `Unknown | ModuleType`
+- error[invalid-assignment] pwndbg/aglib/typeinfo.py:63:5: Object of type `Unknown` is not assignable to attribute `uint` on type `Unknown | ModuleType`
++ error[invalid-assignment] pwndbg/aglib/typeinfo.py:63:5: Object of type `Type` is not assignable to attribute `uint` on type `Unknown | ModuleType`
+- error[invalid-assignment] pwndbg/aglib/typeinfo.py:64:5: Object of type `Unknown` is not assignable to attribute `void` on type `Unknown | ModuleType`
++ error[invalid-assignment] pwndbg/aglib/typeinfo.py:64:5: Object of type `Type` is not assignable to attribute `void` on type `Unknown | ModuleType`
+- error[invalid-assignment] pwndbg/aglib/typeinfo.py:69:5: Object of type `Unknown` is not assignable to attribute `uint64` on type `Unknown | ModuleType`
++ error[invalid-assignment] pwndbg/aglib/typeinfo.py:69:5: Object of type `Type` is not assignable to attribute `uint64` on type `Unknown | ModuleType`
+- error[invalid-assignment] pwndbg/aglib/typeinfo.py:77:5: Object of type `Unknown` is not assignable to attribute `int8` on type `Unknown | ModuleType`
++ error[invalid-assignment] pwndbg/aglib/typeinfo.py:77:5: Object of type `Type` is not assignable to attribute `int8` on type `Unknown | ModuleType`
+- error[invalid-assignment] pwndbg/aglib/typeinfo.py:78:5: Object of type `Unknown` is not assignable to attribute `int16` on type `Unknown | ModuleType`
++ error[invalid-assignment] pwndbg/aglib/typeinfo.py:78:5: Object of type `Type` is not assignable to attribute `int16` on type `Unknown | ModuleType`
+- error[invalid-assignment] pwndbg/aglib/typeinfo.py:79:5: Object of type `Unknown` is not assignable to attribute `int32` on type `Unknown | ModuleType`
++ error[invalid-assignment] pwndbg/aglib/typeinfo.py:79:5: Object of type `Type` is not assignable to attribute `int32` on type `Unknown | ModuleType`
+- error[invalid-assignment] pwndbg/aglib/typeinfo.py:80:5: Object of type `Unknown` is not assignable to attribute `int64` on type `Unknown | ModuleType`
++ error[invalid-assignment] pwndbg/aglib/typeinfo.py:80:5: Object of type `Type` is not assignable to attribute `int64` on type `Unknown | ModuleType`
+- error[invalid-assignment] pwndbg/aglib/typeinfo.py:83:5: Object of type `Unknown` is not assignable to attribute `pvoid` on type `Unknown | ModuleType`
++ error[invalid-assignment] pwndbg/aglib/typeinfo.py:83:5: Object of type `Type` is not assignable to attribute `pvoid` on type `Unknown | ModuleType`
+- error[invalid-assignment] pwndbg/aglib/typeinfo.py:84:5: Object of type `Unknown` is not assignable to attribute `ppvoid` on type `Unknown | ModuleType`
++ error[invalid-assignment] pwndbg/aglib/typeinfo.py:84:5: Object of type `Type` is not assignable to attribute `ppvoid` on type `Unknown | ModuleType`
+- error[invalid-assignment] pwndbg/aglib/typeinfo.py:85:5: Object of type `Unknown` is not assignable to attribute `pchar` on type `Unknown | ModuleType`
++ error[invalid-assignment] pwndbg/aglib/typeinfo.py:85:5: Object of type `Type` is not assignable to attribute `pchar` on type `Unknown | ModuleType`
+- error[invalid-assignment] pwndbg/aglib/typeinfo.py:87:5: Object of type `Unknown` is not assignable to attribute `ptrsize` on type `Unknown | ModuleType`
++ error[invalid-assignment] pwndbg/aglib/typeinfo.py:87:5: Object of type `int` is not assignable to attribute `ptrsize` on type `Unknown | ModuleType`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:101:33: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/typeinfo.py:109:28: Type `Debugger` has no attribute `Type`
+- error[unresolved-attribute] pwndbg/aglib/vmmap.py:24:25: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/arguments.py:94:48: Type `Debugger` has no attribute `TypeCode`
+- error[unresolved-attribute] pwndbg/arguments.py:133:15: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/auxv.py:221:12: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/chain.py:87:16: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/color/memory.py:72:20: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/commands/__init__.py:290:28: Type `Debugger` has no attribute `Error`
+- error[unresolved-attribute] pwndbg/commands/__init__.py:366:29: Type `Debugger` has no attribute `DebuggerType`
+- error[unresolved-attribute] pwndbg/commands/__init__.py:367:32: Type `Debugger` has no attribute `DebuggerType`
+- error[unresolved-attribute] pwndbg/commands/__init__.py:425:10: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/commands/__init__.py:426:12: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/commands/__init__.py:439:24: Type `Debugger` has no attribute `Value`
+- error[unresolved-attribute] pwndbg/commands/__init__.py:443:13: Type ...*[Comment body truncated]*
+
+---
+
+_Marked ready for review by @sharkdp on 2025-05-11 09:52_
+
+---
+
+_Review requested from @carljm by @sharkdp on 2025-05-11 09:52_
+
+---
+
+_Review requested from @AlexWaygood by @sharkdp on 2025-05-11 09:52_
+
+---
+
+_Review requested from @dcreager by @sharkdp on 2025-05-11 09:52_
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/resources/mdtest/import/cyclic.md`:33 on 2025-05-11 09:53_
+
+I added a test for https://github.com/astral-sh/ty/issues/113 here as well. The issue is not fixed with this PR (I didn't have a closer look into why), ~~but we now infer `Unknown` instead of `Never`~~.
+
+---
+
+_@sharkdp reviewed on 2025-05-11 09:53_
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/src/symbol.rs`:335 on 2025-05-11 10:34_
+
+One rather obvious problem here is a module that actually exports a symbol with type `Never` :-/
+
+
+`main.py`:
+
+```py
+# error: [unresolved-import]
+from module import n
+
+reveal_type(n)  # revealed: Unknown
+```
+
+`module.py`:
+
+```py
+from typing_extensions import Never
+
+
+def never() -> Never:
+    raise Exception("never")
+
+n: Never = never()
+```
+
+
+---
+
+_@sharkdp reviewed on 2025-05-11 10:34_
+
+---
+
+_@sharkdp reviewed on 2025-05-13 14:31_
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/src/symbol.rs`:335 on 2025-05-13 14:31_
+
+This is now fixed.
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/import/cyclic.md`:41 on 2025-05-13 14:39_
+
+This isn't the desired revealed type, so we should have a TODO comment here?
+
+---
+
+_@carljm approved on 2025-05-13 14:41_
+
+Looks great to me, thank you!!
+
+---
+
+_@carljm reviewed on 2025-05-13 14:43_
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer.rs`:3951 on 2025-05-13 14:43_
+
+This seems slightly more roundabout than it feels like it ought to have to be, considering that we must have already resolved `module_name` to a `File` in a method we called above to resolve `module_ty`. Or does `module_ty` itself know its `File`?
+
+---
+
+_@dhruvmanila approved on 2025-05-13 14:43_
+
+Thank you!
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer.rs`:3952 on 2025-05-13 14:44_
+
+I think this could possibly be cheaper and more accurate if we compared the files rather than the module names?
+
+```suggestion
+        let import_is_self_referential = module_ty
+            .into_module_literal()
+            .is_some_and(|module| self.file() == module.module(self.db()).file());
+```
+
+---
+
+_@AlexWaygood reviewed on 2025-05-13 14:44_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer.rs`:3951 on 2025-05-13 14:44_
+
+jinx -- https://github.com/astral-sh/ruff/pull/18005#discussion_r2087012889
+
+---
+
+_@AlexWaygood reviewed on 2025-05-13 14:44_
+
+---
+
+_@carljm reviewed on 2025-05-13 14:44_
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer.rs`:3951 on 2025-05-13 14:44_
+
+`module_ty` should be a `ModuleLiteralType`, which wraps a `Module`, which knows its `File`. So can we compare that directly with `self.file()` instead of needing to do another `file_to_module` and compare module names?
+
+---
+
+_@carljm reviewed on 2025-05-13 14:45_
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer.rs`:3951 on 2025-05-13 14:45_
+
+But if we are trying to merge this ASAP, we can also look into this as a follow-up.
+
+---
+
+_@AlexWaygood approved on 2025-05-13 14:45_
+
+This makes sense to me!
+
+---
+
+_Merged by @sharkdp on 2025-05-13 14:59_
+
+---
+
+_Closed by @sharkdp on 2025-05-13 14:59_
+
+---
+
+_Branch deleted on 2025-05-13 14:59_
+
+---

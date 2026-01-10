@@ -1,0 +1,774 @@
+```yaml
+number: 18155
+title: "[ty] Infer function call typevars in both directions"
+type: pull_request
+state: merged
+author: dcreager
+labels:
+  - ty
+assignees: []
+merged: true
+base: main
+head: dcreager/both-directions
+created_at: 2025-05-17T19:39:39Z
+updated_at: 2025-05-19T15:45:42Z
+url: https://github.com/astral-sh/ruff/pull/18155
+synced_at: 2026-01-10T18:51:01Z
+```
+
+# [ty] Infer function call typevars in both directions
+
+---
+
+_Pull request opened by @dcreager on 2025-05-17 19:39_
+
+This primarily comes up with annotated `self` parameters in constructors:
+
+```py
+class C[T]:
+    def __init__(self: C[int]): ...
+```
+
+Here, we want infer a specialization of `{T = int}` for a call that hits this overload. 
+
+Normally when inferring a specialization of a function call, typevars appear in the parameter annotations, and not in the argument types.  In this case, this is reversed: we need to verify that the `self` argument (`C[T]`, as we have not yet completed specialization inference) is assignable to the parameter type `C[int]`.
+
+To do this, we simply look for a typevar/type in both directions when performing inference, and apply the inferred specialization to argument types as well as parameter types before verifying assignability.
+
+As a wrinkle, this exposed that we were not checking subtyping/assignability for function literals correctly. Our function literal representation includes an optional specialization that should be applied to the signature. Before, function literals were considered subtypes of (assignable to) each other only if they were identical Salsa objects. Two function literals with different specializations should still be considered subtypes of (assignable to) each other if those specializations result in the same function signature (typically because the function doesn't use the typevars in the specialization).
+
+Closes https://github.com/astral-sh/ty/issues/370
+Closes https://github.com/astral-sh/ty/issues/100
+Closes https://github.com/astral-sh/ty/issues/258
+
+---
+
+_Review requested from @carljm by @dcreager on 2025-05-17 19:39_
+
+---
+
+_Review requested from @AlexWaygood by @dcreager on 2025-05-17 19:39_
+
+---
+
+_Label `ty` added by @dcreager on 2025-05-17 19:39_
+
+---
+
+_Review requested from @sharkdp by @dcreager on 2025-05-17 19:39_
+
+---
+
+_Comment by @github-actions[bot] on 2025-05-17 19:44_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
+- error[no-matching-overload] pytest_robotframework/__init__.py:302:22: No overload of bound method `__init__` matches arguments
+- Found 229 diagnostics
++ Found 228 diagnostics
+
+mypy_primer (https://github.com/hauntsaninja/mypy_primer)
++ error[invalid-assignment] mypy_primer/main.py:303:5: Object of type `dict[str | bytes, str | bytes]` is not assignable to `dict[str, TypeCheckResult]`
++ error[invalid-assignment] mypy_primer/main.py:335:9: Object of type `dict[str | bytes, str | bytes]` is not assignable to `dict[str, TypeCheckResult]`
+- Found 17 diagnostics
++ Found 19 diagnostics
+
+more-itertools (https://github.com/more-itertools/more-itertools)
++ error[call-non-callable] more_itertools/more.py:814:13: Method `__getitem__` of type `bound method defaultdict[str, Unknown].__getitem__(key: str, /) -> Unknown` is not callable on object of type `defaultdict[str, Unknown]`
+- Found 50 diagnostics
++ Found 51 diagnostics
+
+com2ann (https://github.com/ilevkivskyi/com2ann)
++ error[call-non-callable] src/com2ann.py:646:23: Method `__getitem__` of type `Unknown | (bound method defaultdict[str, Unknown].__getitem__(key: str, /) -> Unknown)` is not callable on object of type `Unknown | defaultdict[str, Unknown]`
+- Found 12 diagnostics
++ Found 13 diagnostics
+
+paroxython (https://github.com/laowantong/paroxython)
++ error[call-non-callable] paroxython/filter_programs.py:441:17: Method `__getitem__` of type `bound method defaultdict[str, Unknown].__getitem__(key: str, /) -> Unknown` is not callable on object of type `defaultdict[str, Unknown]`
+- Found 15 diagnostics
++ Found 16 diagnostics
+
+git-revise (https://github.com/mystor/git-revise)
+- error[no-matching-overload] gitrevise/odb.py:286:29: No overload of bound method `__init__` matches arguments
+- Found 10 diagnostics
++ Found 9 diagnostics
+
+beartype (https://github.com/beartype/beartype)
+- error[no-matching-overload] beartype/_conf/confmain.py:846:27: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] beartype/_util/error/utilerrwarn.py:65:14: No overload of bound method `__init__` matches arguments
+- Found 553 diagnostics
++ Found 551 diagnostics
+
+parso (https://github.com/davidhalter/parso)
+- error[no-matching-overload] parso/python/errors.py:650:22: No overload of bound method `__init__` matches arguments
+- Found 82 diagnostics
++ Found 81 diagnostics
+
+pyinstrument (https://github.com/joerick/pyinstrument)
+- error[no-matching-overload] pyinstrument/vendor/decorator.py:223:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] pyinstrument/vendor/decorator.py:263:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] pyinstrument/vendor/decorator.py:287:13: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] pyinstrument/vendor/decorator.py:428:13: No overload of bound method `__init__` matches arguments
+- Found 92 diagnostics
++ Found 88 diagnostics
+
+kornia (https://github.com/kornia/kornia)
+- error[no-matching-overload] kornia/feature/dedode/encoder.py:57:22: No overload of bound method `__init__` matches arguments
++ error[invalid-return-type] kornia/utils/image_print.py:316:12: Return type does not match returned value: expected `str`, found `Unknown | str | bytes`
+
+aioredis (https://github.com/aio-libs/aioredis)
+- error[no-matching-overload] aioredis/log.py:10:15: No overload of bound method `__init__` matches arguments
+- Found 34 diagnostics
++ Found 33 diagnostics
+
+starlette (https://github.com/encode/starlette)
+- error[no-matching-overload] starlette/formparsers.py:208:24: No overload of bound method `__init__` matches arguments
++ error[invalid-argument-type] starlette/middleware/cors.py:138:69: Argument to bound method `__init__` is incorrect: Expected `Mapping[str, str] | None`, found `dict[str | bytes, str | bytes]`
++ error[invalid-argument-type] starlette/middleware/cors.py:140:57: Argument to bound method `__init__` is incorrect: Expected `Mapping[str, str] | None`, found `dict[str | bytes, str | bytes]`
+- warning[possibly-unbound-attribute] starlette/requests.py:114:20: Attribute `endswith` on type `Unknown | None` is possibly unbound
+- error[unsupported-operator] starlette/requests.py:115:17: Operator `+=` is unsupported between objects of type `None` and `Literal["/"]`
++ error[invalid-assignment] starlette/routing.py:259:17: Object of type `dict[str | bytes, str | bytes]` is not assignable to `dict[str, Any]`
++ error[invalid-assignment] starlette/routing.py:344:17: Object of type `dict[str | bytes, str | bytes]` is not assignable to `dict[str, Any]`
++ error[invalid-assignment] starlette/routing.py:411:17: Object of type `dict[str | bytes, str | bytes]` is not assignable to `dict[str, Any]`
++ error[no-matching-overload] starlette/schemas.py:133:9: No overload of bound method `setdefault` matches arguments
++ warning[call-possibly-unbound-method] starlette/schemas.py:145:13: Method `__getitem__` of type `str | int` is possibly unbound
++ error[invalid-return-type] starlette/schemas.py:147:16: Return type does not match returned value: expected `dict[str, Any]`, found `dict[str | bytes, str | bytes]`
+- error[no-matching-overload] tests/test_formparsers.py:420:51: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/test_formparsers.py:448:51: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/test_formparsers.py:476:51: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/test_formparsers.py:503:51: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/test_formparsers.py:530:51: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/test_formparsers.py:559:51: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/test_formparsers.py:589:13: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/test_formparsers.py:619:13: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/test_formparsers.py:671:51: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/test_formparsers.py:710:13: No overload of bound method `__init__` matches arguments
+- Found 187 diagnostics
++ Found 182 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
+- error[no-matching-overload] src/anyio/_core/_tempfile.py:500:21: No overload of bound method `__init__` matches arguments
+- Found 119 diagnostics
++ Found 118 diagnostics
+
+alerta (https://github.com/alerta/alerta)
+- error[no-matching-overload] alerta/auth/hmac.py:7:23: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] alerta/auth/oidc.py:100:19: No overload of bound method `__init__` matches arguments
++ error[call-non-callable] alerta/database/backends/mongodb/base.py:857:13: Method `__getitem__` of type `bound method defaultdict[str, Unknown].__getitem__(key: str, /) -> Unknown` is not callable on object of type `defaultdict[str, Unknown]`
++ error[call-non-callable] alerta/database/backends/mongodb/base.py:862:13: Method `__getitem__` of type `bound method defaultdict[str, Unknown].__getitem__(key: str, /) -> Unknown` is not callable on object of type `defaultdict[str, Unknown]`
++ error[call-non-callable] alerta/database/backends/mongodb/base.py:874:40: Method `__getitem__` of type `bound method defaultdict[str, Unknown].__getitem__(key: str, /) -> Unknown` is not callable on object of type `defaultdict[str, Unknown]`
++ error[call-non-callable] alerta/database/backends/mongodb/base.py:875:38: Method `__getitem__` of type `bound method defaultdict[str, Unknown].__getitem__(key: str, /) -> Unknown` is not callable on object of type `defaultdict[str, Unknown]`
++ error[call-non-callable] alerta/database/backends/mongodb/base.py:876:44: Method `__getitem__` of type `bound method defaultdict[str, Unknown].__getitem__(key: str, /) -> Unknown` is not callable on object of type `defaultdict[str, Unknown]`
++ error[call-non-callable] alerta/database/backends/postgres/base.py:683:17: Method `__getitem__` of type `bound method defaultdict[str, Unknown].__getitem__(key: str, /) -> Unknown` is not callable on object of type `defaultdict[str, Unknown]`
++ error[call-non-callable] alerta/database/backends/postgres/base.py:685:17: Method `__getitem__` of type `bound method defaultdict[str, Unknown].__getitem__(key: str, /) -> Unknown` is not callable on object of type `defaultdict[str, Unknown]`
++ error[call-non-callable] alerta/database/backends/postgres/base.py:687:17: Method `__getitem__` of type `bound method defaultdict[str, Unknown].__getitem__(key: str, /) -> Unknown` is not callable on object of type `defaultdict[str, Unknown]`
++ error[call-non-callable] alerta/database/backends/postgres/base.py:695:40: Method `__getitem__` of type `bound method defaultdict[str, Unknown].__getitem__(key: str, /) -> Unknown` is not callable on object of type `defaultdict[str, Unknown]`
++ error[call-non-callable] alerta/database/backends/postgres/base.py:696:38: Method `__getitem__` of type `bound method defaultdict[str, Unknown].__getitem__(key: str, /) -> Unknown` is not callable on object of type `defaultdict[str, Unknown]`
++ error[call-non-callable] alerta/database/backends/postgres/base.py:697:26: Method `__getitem__` of type `bound method defaultdict[str, Unknown].__getitem__(key: str, /) -> Unknown` is not callable on object of type `defaultdict[str, Unknown]`
+- error[no-matching-overload] alerta/models/note.py:116:24: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/test_heartbeats.py:241:13: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/test_webhooks.py:1126:22: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/test_zrouting.py:147:70: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/test_zrouting.py:161:74: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/test_zrouting.py:326:12: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/test_zrouting.py:339:12: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/test_zrouting.py:351:12: No overload of bound method `__init__` matches arguments
+- Found 481 diagnostics
++ Found 482 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
++ error[invalid-assignment] src/graphql/pyutils/group_by.py:16:5: Object of type `defaultdict[str, Unknown]` is not assignable to `dict[K, list[T]]`
++ error[invalid-assignment] src/graphql/type/validate.py:111:9: Object of type `defaultdict[str, Unknown]` is not assignable to `dict[GraphQLObjectType, list[OperationType]]`
+- error[no-matching-overload] tests/utilities/test_type_info.py:192:26: No overload of bound method `__init__` matches arguments
+- Found 411 diagnostics
++ Found 412 diagnostics
+
+kopf (https://github.com/nolar/kopf)
++ error[invalid-assignment] kopf/_cogs/structs/credentials.py:221:9: Object of type `defaultdict[str, Unknown]` is not assignable to `dict[int, list[tuple[Unknown, VaultItem]]]`
+- error[no-matching-overload] kopf/_cogs/structs/bodies.py:236:11: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] kopf/_cogs/structs/bodies.py:261:11: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] kopf/_core/actions/execution.py:373:24: No overload of bound method `__init__` matches arguments
++ error[invalid-return-type] kopf/_core/actions/invocation.py:58:16: Return type does not match returned value: expected `Mapping[str, Any]`, found `dict[str | bytes, str | bytes]`
++ error[invalid-return-type] kopf/_core/actions/invocation.py:63:16: Return type does not match returned value: expected `Mapping[str, Any]`, found `dict[str | bytes, str | bytes]`
++ error[invalid-return-type] kopf/_core/actions/invocation.py:68:16: Return type does not match returned value: expected `Mapping[str, Any]`, found `dict[str | bytes, str | bytes]`
++ error[invalid-assignment] kopf/_core/actions/invocation.py:113:9: Object of type `dict[str | bytes, str | bytes]` is not assignable to `Mapping[str, Any] | None`
++ error[invalid-assignment] kopf/_core/actions/invocation.py:116:9: Object of type `dict[str | bytes, str | bytes]` is not assignable to `Mapping[str, Any] | None`
+- error[no-matching-overload] kopf/_core/actions/loggers.py:63:19: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] kopf/_core/actions/loggers.py:126:34: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] kopf/_core/actions/loggers.py:129:21: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] kopf/_core/actions/loggers.py:160:27: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] kopf/_core/actions/loggers.py:190:15: No overload of bound method `__init__` matches arguments
++ error[invalid-assignment] kopf/_core/actions/progression.py:180:9: Object of type `dict[str | bytes, str | bytes]` is not assignable to `dict[Unknown, HandlerState]`
++ error[invalid-assignment] kopf/_core/actions/progression.py:190:9: Object of type `dict[str | bytes, str | bytes]` is not assignable to `dict[Unknown, HandlerState]`
+- error[no-matching-overload] kopf/_core/intents/causes.py:133:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] kopf/_core/intents/causes.py:260:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] kopf/_core/intents/causes.py:264:16: No overload of bound method `__init__` matches arguments
++ error[invalid-return-type] kopf/_core/intents/causes.py:112:16: Return type does not match returned value: expected `Mapping[str, Any]`, found `dict[str | bytes, str | bytes]`
++ error[invalid-return-type] kopf/_core/intents/causes.py:166:16: Return type does not match returned value: expected `Mapping[str, Any]`, found `dict[str | bytes, str | bytes]`
++ error[invalid-return-type] kopf/_core/intents/causes.py:202:16: Return type does not match returned value: expected `Mapping[str, Any]`, found `dict[str | bytes, str | bytes]`
++ error[invalid-return-type] kopf/_core/intents/causes.py:223:16: Return type does not match returned value: expected `Mapping[str, Any]`, found `dict[str | bytes, str | bytes]`
++ error[invalid-return-type] kopf/_core/intents/causes.py:256:16: Return type does not match returned value: expected `Mapping[str, Any]`, found `dict[str | bytes, str | bytes]`
+- error[no-matching-overload] kopf/_core/intents/causes.py:309:15: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] kopf/_core/intents/causes.py:311:19: No overload of bound method `__init__` matches arguments
++ error[invalid-argument-type] kopf/_kits/webhooks.py:215:73: Argument to bound method `__call__` is incorrect: Expected `Mapping[str, str] | None`, found `dict[str | bytes, str | bytes]`
+- error[no-matching-overload] kopf/cli.py:69:44: No overload of bound method `__init__` matches arguments
+
+dedupe (https://github.com/dedupeio/dedupe)
+- error[no-matching-overload] dedupe/api.py:255:14: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] dedupe/api.py:411:14: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] dedupe/api.py:673:29: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] dedupe/clustering.py:32:10: No overload of bound method `__init__` matches arguments
++ error[invalid-return-type] dedupe/clustering.py:210:12: Return type does not match returned value: expected `tuple[dict[int, Unknown], @Todo(unknown type subscript), int]`, found `tuple[dict[str | bytes, str | bytes], ndarray[tuple[int], Literal["f4"]], int]`
++ error[invalid-assignment] dedupe/clustering.py:241:13: Object of type `defaultdict[str, Unknown]` is not assignable to `dict[int, list[int]]`
+- Found 67 diagnostics
++ Found 65 diagnostics
+
+check-jsonschema (https://github.com/python-jsonschema/check-jsonschema)
+- error[no-matching-overload] src/check_jsonschema/parsers/yaml.py:61:14: No overload of bound method `__init__` matches arguments
+- Found 68 diagnostics
++ Found 67 diagnostics
+
+trio (https://github.com/python-trio/trio)
+- error[no-matching-overload] src/trio/_core/_tests/test_guest_mode.py:316:14: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] src/trio/_core/_tests/test_guest_mode.py:320:14: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] src/trio/_core/_tests/test_guest_mode.py:338:18: No overload of bound method `__init__` matches arguments
++ error[invalid-assignment] src/trio/_core/_tests/test_run.py:2673:5: Object of type `<class 'RuntimeError'> | RaisesGroup[ExcT_1 | ExceptionGroup[ExcT_2] | BaseExcT_1 | BaseExceptionGroup[BaseExcT_2]]` is not assignable to `type[RuntimeError] | RaisesGroup[RuntimeError]`
+- error[no-matching-overload] src/trio/_core/_tests/tutil.py:68:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] src/trio/_tests/test_socket.py:1186:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] src/trio/_tests/test_testing.py:666:14: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] src/trio/_tests/type_tests/raisesgroup.py:98:5: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] src/trio/_tests/type_tests/raisesgroup.py:103:5: No overload of bound method `__init__` matches arguments
++ warning[unused-ignore-comment] src/trio/_tests/type_tests/raisesgroup.py:92:51: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] src/trio/_tests/type_tests/raisesgroup.py:95:49: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] src/trio/_tests/type_tests/raisesgroup.py:99:57: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] src/trio/_tests/type_tests/raisesgroup.py:102:48: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] src/trio/_tests/type_tests/raisesgroup.py:106:67: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] src/trio/_tests/type_tests/raisesgroup.py:107:69: Unused blanket `type: ignore` directive
+- error[no-matching-overload] src/trio/_tests/type_tests/raisesgroup.py:121:5: No overload of bound method `__init__` matches arguments
++ error[invalid-assignment] src/trio/_tests/type_tests/raisesgroup.py:169:5: Object of type `RaisesGroup[ExcT_1 | ExceptionGroup[ExcT_2] | BaseExcT_1 | BaseExceptionGroup[BaseExcT_2]]` is not assignable to `RaisesGroup[ValueError]`
++ error[invalid-assignment] src/trio/_tests/type_tests/raisesgroup.py:170:5: Object of type `RaisesGroup[ExcT_1 | ExceptionGroup[ExcT_2] | BaseExcT_1 | BaseExceptionGroup[BaseExcT_2]]` is not assignable to `RaisesGroup[ValueError]`
++ error[invalid-assignment] src/trio/_tests/type_tests/raisesgroup.py:171:5: Object of type `RaisesGroup[ExcT_1 | ExceptionGroup[ExcT_2] | BaseExcT_1 | BaseExceptionGroup[BaseExcT_2]]` is not assignable to `RaisesGroup[ValueError]`
++ error[invalid-assignment] src/trio/_tests/type_tests/raisesgroup.py:182:5: Object of type `RaisesGroup[ExcT_1 | ExceptionGroup[ExcT_2] | BaseExcT_1 | BaseExceptionGroup[BaseExcT_2]]` is not assignable to `RaisesGroup[Exception]`
++ error[invalid-assignment] src/trio/_tests/type_tests/raisesgroup.py:183:5: Object of type `RaisesGroup[ExcT_1 | ExceptionGroup[ExcT_2] | BaseExcT_1 | BaseExceptionGroup[BaseExcT_2]]` is not assignable to `RaisesGroup[Exception]`
++ error[invalid-assignment] src/trio/_tests/type_tests/raisesgroup.py:184:5: Object of type `RaisesGroup[ExcT_1 | ExceptionGroup[ExcT_2] | BaseExcT_1 | BaseExceptionGroup[BaseExcT_2]]` is not assignable to `RaisesGroup[Exception]`
+- error[invalid-argument-type] src/trio/testing/_raises_group.py:233:66: Argument to function `repr_callable` is incorrect: Expected `(Unknown, /) -> bool`, found `Unknown | ((BaseExcT_1, /) -> bool) | None`
++ error[invalid-argument-type] src/trio/testing/_raises_group.py:233:66: Argument to function `repr_callable` is incorrect: Expected `(Unknown, /) -> bool`, found `Unknown | ((Unknown, /) -> bool) | None`
+- Found 1094 diagnostics
++ Found 1098 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
++ error[invalid-return-type] strawberry/http/base.py:68:16: Return type does not match returned value: expected `dict[str, Any]`, found `dict[str | bytes, str | bytes]`
++ error[invalid-return-type] strawberry/http/parse_content_type.py:15:12: Return type does not match returned value: expected `tuple[str, dict[str, str]]`, found `tuple[@Todo(map_with_boundness: intersections with negative contributions), dict[str | bytes, str | bytes]]`
++ error[invalid-assignment] strawberry/relay/fields.py:128:13: Object of type `defaultdict[str, Unknown]` is not assignable to `defaultdict[type[Node], list[str]]`
+- Found 436 diagnostics
++ Found 439 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
++ warning[possibly-unbound-attribute] setup.py:28:19: Attribute `decode` on type `bytes | str` is possibly unbound
+- error[no-matching-overload] setup.py:94:8: No overload of bound method `__init__` matches arguments
++ error[unresolved-attribute] sockeye/model.py:497:24: Type `str | bytes` has no attribute `size`
++ error[unresolved-attribute] sockeye/model.py:499:28: Type `str | bytes` has no attribute `size`
++ error[unresolved-attribute] sockeye/model.py:500:17: Type `str | bytes` has no attribute `data`
+- error[no-matching-overload] sockeye/test_utils.py:165:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] sockeye/train.py:976:20: No overload of bound method `__init__` matches arguments
++ error[unresolved-attribute] sockeye/utils.py:587:29: Type `str` has no attribute `shape`
++ error[call-non-callable] sockeye_contrib/rouge.py:102:17: Method `__getitem__` of type `bound method dict[str, Unknown].__getitem__(key: str, /) -> Unknown` is not callable on object of type `dict[str, Unknown]`
++ error[call-non-callable] sockeye_contrib/rouge.py:104:17: Method `__getitem__` of type `bound method dict[str, Unknown].__getitem__(key: str, /) -> Unknown` is not callable on object of type `dict[str, Unknown]`
++ error[call-non-callable] sockeye_contrib/rouge.py:104:31: Method `__getitem__` of type `bound method dict[str, Unknown].__getitem__(key: str, /) -> Unknown` is not callable on object of type `dict[str, Unknown]`
++ error[call-non-callable] sockeye_contrib/rouge.py:106:17: Method `__getitem__` of type `bound method dict[str, Unknown].__getitem__(key: str, /) -> Unknown` is not callable on object of type `dict[str, Unknown]`
++ error[call-non-callable] sockeye_contrib/rouge.py:106:35: Method `__getitem__` of type `bound method dict[str, Unknown].__getitem__(key: str, /) -> Unknown` is not callable on object of type `dict[str, Unknown]`
++ error[call-non-callable] sockeye_contrib/rouge.py:106:52: Method `__getitem__` of type `bound method dict[str, Unknown].__getitem__(key: str, /) -> Unknown` is not callable on object of type `dict[str, Unknown]`
+- error[no-matching-overload] test/integration/test_backwards_compatibility.py:44:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/integration/test_seq_copy_int.py:237:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_arguments.py:47:6: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_arguments.py:67:6: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_arguments.py:88:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_arguments.py:100:6: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_arguments.py:108:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_arguments.py:113:6: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_arguments.py:123:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_arguments.py:159:18: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_arguments.py:198:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_arguments.py:263:6: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_arguments.py:269:6: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_arguments.py:282:6: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_arguments.py:293:6: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_arguments.py:328:6: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_arguments.py:432:38: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_arguments.py:433:52: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_arguments.py:435:27: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_arguments.py:436:28: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_arguments.py:437:52: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_arguments.py:467:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_arguments.py:468:14: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_average.py:70:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_config.py:58:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_data_io.py:116:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_data_io.py:328:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_data_io.py:607:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_data_io.py:665:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_data_io.py:733:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_data_io.py:765:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_deepspeed.py:35:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_knn.py:36:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_knn.py:84:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_knn.py:84:54: No overload of bound method `__init__` matches arguments
++ error[invalid-argument-type] test/unit/test_knn.py:104:66: Argument to bound method `__init__` is incorrect: Expected `str`, found `str | bytes`
+- error[no-matching-overload] test/unit/test_lexicon.py:34:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_lexicon.py:99:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_lexicon.py:114:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_params.py:29:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_params.py:42:10: No overload of bound method `__init__` matches arguments
++ error[invalid-argument-type] test/unit/test_params.py:33:47: Argument to function `cleanup_params_files` is incorrect: Expected `str`, found `str | bytes`
++ error[invalid-argument-type] test/unit/test_params.py:46:47: Argument to function `cleanup_params_files` is incorrect: Expected `str`, found `str | bytes`
++ error[unresolved-attribute] test/unit/test_params.py:80:29: Type `str | bytes` has no attribute `data`
+- error[no-matching-overload] test/unit/test_quantize.py:42:10: No overload of bound method `__init__` matches arguments
++ error[invalid-argument-type] test/unit/test_quantize.py:51:27: Argument to bound method `save_config` is incorrect: Expected `str`, found `str | bytes`
++ error[invalid-argument-type] test/unit/test_quantize.py:73:48: Argument to function `load_model` is incorrect: Expected `str`, found `str | bytes`
++ error[invalid-argument-type] test/unit/test_quantize.py:73:48: Argument to function `load_model` is incorrect: Expected `str`, found `str | bytes`
++ error[invalid-argument-type] test/unit/test_quantize.py:73:48: Argument to function `load_model` is incorrect: Expected `str`, found `str | bytes`
++ error[invalid-argument-type] test/unit/test_quantize.py:73:48: Argument to function `load_model` is incorrect: Expected `str`, found `str | bytes`
+- error[no-matching-overload] test/unit/test_translate.py:47:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_utils.py:207:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_utils.py:216:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_utils.py:247:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/unit/test_utils.py:436:10: No overload of bound method `__init__` matches arguments
+- Found 398 diagnostics
++ Found 369 diagnostics
+
+porcupine (https://github.com/Akuli/porcupine)
+- error[no-matching-overload] porcupine/_logs.py:71:20: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] porcupine/_logs.py:80:25: No overload of bound method `__init__` matches arguments
++ error[unsupported-operator] porcupine/plugins/autocomplete.py:296:13: Unary operator `-` is unsupported for type `Unknown | str | bytes`
++ error[invalid-argument-type] porcupine/plugins/autocomplete.py:306:13: Argument is incorrect: Expected `str`, found `str | bytes`
++ error[invalid-argument-type] porcupine/plugins/autocomplete.py:309:13: Argument is incorrect: Expected `str`, found `str | bytes`
++ error[invalid-argument-type] porcupine/plugins/autocomplete.py:310:13: Argument is incorrect: Expected `str`, found `str | bytes`
++ error[invalid-argument-type] porcupine/plugins/autocomplete.py:311:13: Argument is incorrect: Expected `str`, found `str | bytes`
++ error[invalid-argument-type] porcupine/plugins/langserver.py:706:29: Argument to bound method `__init__` is incorrect: Expected `Popen[bytes]`, found `Popen[bytes | str]`
++ error[unsupported-operator] porcupine/plugins/longlinemarker.py:60:47: Operator `+` is unsupported between objects of type `Literal["#"]` and `str | int`
++ error[invalid-argument-type] porcupine/plugins/run/common.py:68:74: Argument to bound method `startswith` is incorrect: Expected `str | tuple[str, ...]`, found `str | bytes`
++ error[invalid-return-type] porcupine/plugins/run/common.py:71:12: Return type does not match returned value: expected `dict[str, str]`, found `dict[str | bytes, str | bytes]`
+- Found 83 diagnostics
++ Found 90 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
+- error[no-matching-overload] examples/mnist/mnist_with_visdom.py:54:65: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] examples/notebooks/EfficientNet_Cifar100_finetuning.ipynb:559:15: No overload of bound method `__init__` matches arguments
++ error[no-matching-overload] ignite/distributed/auto.py:269:15: No overload of class `type` matches arguments
+- error[no-matching-overload] ignite/handlers/lr_finder.py:486:14: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] ignite/handlers/neptune_logger.py:682:18: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] ignite/handlers/param_scheduler.py:824:14: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] ignite/handlers/param_scheduler.py:1026:14: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] ignite/handlers/param_scheduler.py:1524:14: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] ignite/handlers/terminate_on_nan.py:36:32: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/ignite/conftest.py:399:14: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/ignite/conftest.py:578:26: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/ignite/distributed/check_idist_parallel.py:96:19: No overload of bound method `__init__` matches arguments
+- warning[possibly-unbound-attribute] tests/ignite/distributed/test_launcher.py:53:19: Attribute `read` on type `IO[Unknown] | None` is possibly unbound
++ warning[possibly-unbound-attribute] tests/ignite/distributed/test_launcher.py:53:19: Attribute `read` on type `IO[bytes | str] | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/ignite/distributed/test_launcher.py:53:48: Attribute `read` on type `IO[Unknown] | None` is possibly unbound
++ warning[possibly-unbound-attribute] tests/ignite/distributed/test_launcher.py:53:48: Attribute `read` on type `IO[bytes | str] | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/ignite/distributed/test_launcher.py:54:92: Attribute `read` on type `IO[Unknown] | None` is possibly unbound
++ warning[possibly-unbound-attribute] tests/ignite/distributed/test_launcher.py:54:92: Attribute `read` on type `IO[bytes | str] | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/ignite/distributed/test_launcher.py:55:16: Attribute `read` on type `IO[Unknown] | None` is possibly unbound
++ warning[possibly-unbound-attribute] tests/ignite/distributed/test_launcher.py:55:16: Attribute `read` on type `IO[bytes | str] | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/ignite/distributed/test_launcher.py:55:45: Attribute `read` on type `IO[Unknown] | None` is possibly unbound
++ warning[possibly-unbound-attribute] tests/ignite/distributed/test_launcher.py:55:45: Attribute `read` on type `IO[bytes | str] | None` is possibly unbound
+- error[no-matching-overload] tests/ignite/engine/test_deterministic.py:198:33: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/ignite/engine/test_deterministic.py:230:33: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/ignite/engine/test_deterministic.py:312:37: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/ignite/engine/test_deterministic.py:416:37: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/ignite/engine/test_deterministic.py:476:33: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/ignite/engine/test_deterministic.py:529:33: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/ignite/handlers/test_checkpoint.py:640:18: No overload of bound method `__init__` matches arguments
++ error[call-non-callable] tests/ignite/handlers/test_clearml_logger.py:907:19: Method `__getitem__` of type `bound method defaultdict[str, Unknown].__getitem__(key: str, /) -> Unknown` is not callable on object of type `defaultdict[str, Unknown]`
+- error[no-matching-overload] tests/ignite/handlers/test_neptune_logger.py:541:14: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/ignite/metrics/nlp/test_bleu.py:53:18: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/ignite/metrics/nlp/test_bleu.py:61:18: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/ignite/metrics/nlp/test_bleu.py:152:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/ignite/metrics/nlp/test_bleu.py:188:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/ignite/metrics/nlp/test_bleu.py:243:18: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/ignite/metrics/nlp/test_bleu.py:289:14: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/ignite/metrics/test_precision.py:221:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/ignite/metrics/test_precision.py:287:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/ignite/metrics/test_precision.py:434:18: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/ignite/metrics/test_recall.py:223:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/ignite/metrics/test_recall.py:290:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/ignite/metrics/test_recall.py:437:18: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/ignite/metrics/test_running_average.py:38:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/ignite/metrics/test_running_average.py:224:10: No overload of bound method `__init__` matches arguments
+- Found 2262 diagnostics
++ Found 2231 diagnostics
+
+rich (https://github.com/Textualize/rich)
++ error[call-non-callable] rich/columns.py:132:21: Method `__getitem__` of type `bound method defaultdict[str, Unknown].__getitem__(key: str, /) -> Unknown` is not callable on object of type `defaultdict[str, Unknown]`
++ error[call-non-callable] rich/columns.py:132:45: Method `__getitem__` of type `bound method defaultdict[str, Unknown].__getitem__(key: str, /) -> Unknown` is not callable on object of type `defaultdict[str, Unknown]`
+- error[no-matching-overload] rich/logging.py:297:47: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/test_console.py:562:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/test_console.py:572:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/test_console.py:583:10: No overload of bound method `__init__` matches arguments
+- warning[possibly-unbound-attribute] tests/test_console.py:1020:5: Attribute `close` on type `IO[Unknown] | None` is possibly unbound
++ warning[possibly-unbound-attribute] tests/test_console.py:1020:5: Attribute `close` on type `IO[bytes | str] | None` is possibly unbound
+- error[no-matching-overload] tests/test_theme.py:35:10: No overload of bound method `__init__` matches arguments
+- Found 396 diagnostics
++ Found 393 diagnostics
+
+PyWinCtl (https://github.com/Kalmat/PyWinCtl)
++ warning[possibly-unbound-attribute] src/pywinctl/_pywinctl_linux.py:236:17: Attribute `decode` on type `bytes | str` is possibly unbound
++ warning[possibly-unbound-attribute] src/pywinctl/_pywinctl_linux.py:759:20: Attribute `decode` on type `bytes | str` is possibly unbound
+- Found 38 diagnostics
++ Found 40 diagnostics
+
+nox (https://github.com/wntrblm/nox)
++ error[invalid-return-type] nox/_parametrize.py:66:16: Return type does not match returned value: expected `dict[str, Any]`, found `dict[str | bytes, str | bytes]`
+- error[no-matching-overload] nox/logger.py:135:15: No overload of bound method `__init__` matches arguments
++ error[invalid-argument-type] nox/popen.py:105:38: Argument to function `shutdown_process` is incorrect: Expected `Popen[bytes]`, found `Popen[bytes | str]`
++ error[invalid-argument-type] nox/popen.py:105:38: Argument to function `shutdown_process` is incorrect: Expected `Popen[bytes]`, found `Popen[bytes | str]`
++ error[invalid-argument-type] nox/popen.py:105:38: Argument to function `shutdown_process` is incorrect: Expected `Popen[bytes]`, found `Popen[bytes | str]`
++ error[invalid-argument-type] nox/popen.py:111:39: Argument to function `decode_output` is incorrect: Expected `bytes`, found `(bytes & ~AlwaysFalsy) | (str & ~AlwaysFalsy)`
+- Found 39 diagnostics
++ Found 43 diagnostics
+
+comtypes (https://github.com/enthought/comtypes)
+- error[no-matching-overload] comtypes/_npsupport.py:39:28: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] comtypes/test/test_client.py:47:40: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] comtypes/test/test_client_regenerate_modules.py:29:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] comtypes/test/test_persist.py:18:14: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] comtypes/test/test_shelllink.py:14:14: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] comtypes/test/test_shelllink.py:72:14: No overload of bound method `__init__` matches arguments
++ error[unsupported-operator] comtypes/tools/codegenerator/namespaces.py:248:13: Operator `-=` is unsupported between objects of type `str` and `Literal[1]`
++ error[unsupported-operator] comtypes/tools/codegenerator/namespaces.py:248:13: Operator `-=` is unsupported between objects of type `bytes` and `Literal[1]`
+- Found 607 diagnostics
++ Found 603 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
+- error[no-matching-overload] mkosi/__init__.py:188:25: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:514:21: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:525:13: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:541:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:596:11: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:642:11: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:661:9: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:755:11: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:782:52: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:823:11: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:850:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:898:11: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:923:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:967:11: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:992:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:1036:11: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:1115:17: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:2528:11: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:2530:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:3892:18: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:4166:37: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:4174:17: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:4333:43: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:4447:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:4450:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:4456:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:4462:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:4544:13: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:4579:11: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:4741:22: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:5058:13: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:5062:13: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:5216:13: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:5220:13: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/__init__.py:5224:13: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/addon.py:45:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/backport.py:89:21: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/config.py:1779:14: No overload of bound method `__init__` matches arguments
++ error[invalid-argument-type] mkosi/config.py:1751:29: Argument to function `key_transformer` is incorrect: Expected `str`, found `str | bytes`
+- error[no-matching-overload] mkosi/distributions/arch.py:42:17: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/distributions/fedora.py:67:18: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/distributions/fedora.py:79:26: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/distributions/opensuse.py:222:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/distributions/rhel.py:80:38: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/initrd.py:215:65: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/initrd.py:312:9: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/initrd.py:313:9: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/log.py:81:15: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/mounts.py:58:21: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/mounts.py:69:17: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/mounts.py:110:29: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/mounts.py:120:25: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/qemu.py:291:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/qemu.py:397:9: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/qemu.py:929:21: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/run.py:144:61: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/run.py:180:61: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/run.py:402:12: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/sysupdate.py:34:39: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/tree.py:71:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/tree.py:161:78: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] mkosi/tree.py:177:78: No overload of bound method `__init__` matches arguments
++ error[invalid-return-type] mkosi/util.py:49:16: Return type does not match returned value: expected `dict[T, V]`, found `dict[str | bytes, str | bytes]`
+- Found 311 diagnostics
++ Found 252 diagnostics
+
+stone (https://github.com/dropbox/stone)
++ warning[possibly-unbound-attribute] test/test_python_gen.py:838:34: Attribute `decode` on type `bytes | str` is possibly unbound
++ warning[possibly-unbound-attribute] test/test_python_gen.py:1760:34: Attribute `decode` on type `bytes | str` is possibly unbound
++ warning[possibly-unbound-attribute] test/test_tsd_types.py:485:34: Attribute `decode` on type `bytes | str` is possibly unbound
++ warning[possibly-unbound-attribute] test/test_tsd_types.py:517:34: Attribute `decode` on type `bytes | str` is possibly unbound
++ warning[possibly-unbound-attribute] test/test_tsd_types.py:547:34: Attribute `decode` on type `bytes | str` is possibly unbound
+- Found 178 diagnostics
++ Found 183 diagnostics
+
+yarl (https://github.com/aio-libs/yarl)
+- error[no-matching-overload] tests/test_update_query.py:69:17: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/test_url_build.py:97:19: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/test_url_build.py:192:68: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/test_url_build.py:202:15: No overload of bound method `__init__` matches arguments
+- Found 163 diagnostics
++ Found 159 diagnostics
+
+pybind11 (https://github.com/pybind/pybind11)
+- error[no-matching-overload] tests/extra_setuptools/test_setuphelper.py:83:13: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] tests/test_pytypes.py:778:14: No overload of bound method `__init__` matches arguments
+- Found 269 diagnostics
++ Found 267 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
++ error[invalid-return-type] pydantic/_internal/_generics.py:225:12: Return type does not match returned value: expected `dict[TypeVar, Any] | None`, found `dict[str | bytes, str | bytes]`
++ error[invalid-return-type] pydantic/_internal/_generics.py:243:12: Return type does not match returned value: expected `dict[TypeVar, Any]`, found `dict[str | bytes, str | bytes]`
++ error[invalid-argument-type] pydantic/main.py:1525:58: Argument to function `_copy_and_set_values` is incorrect: Expected `dict[str, Any]`, found `dict[str | bytes, str | bytes]`
++ error[invalid-argument-type] pydantic/v1/generics.py:166:75: Argument to function `_prepare_model_fields` is incorrect: Expected `Mapping[Any, type]`, found `dict[str | bytes, str | bytes]`
+- error[no-matching-overload] pydantic/v1/networks.py:564:17: No overload of bound method `__init__` matches arguments
++ error[call-non-callable] pydantic/v1/schema.py:961:9: Method `__getitem__` of type `bound method defaultdict[str, Unknown].__getitem__(key: str, /) -> Unknown` is not callable on object of type `defaultdict[str, Unknown]`
+- error[no-matching-overload] pydantic/v1/types.py:238:17: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] pydantic/v1/types.py:317:17: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] pydantic/v1/types.py:383:17: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] pydantic/v1/types.py:461:17: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] pydantic/v1/types.py:627:17: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] pydantic/v1/types.py:746:17: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] pydantic/v1/types.py:1204:17: No overload of bound method `__init__` matches arguments
+- Found 770 diagnostics
++ Found 767 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- error[no-matching-overload] .github/process_commit.py:51:91: No overload of bound method `__init__` matches arguments
+- warning[possibly-unbound-attribute] .github/scripts/run-clang-format.py:152:17: Attribute `readlines` on type `IO[Unknown] | None` is possibly unbound
++ warning[possibly-unbound-attribute] .github/scripts/run-clang-format.py:152:17: Attribute `readlines` on type `IO[str] | None` is possibly unbound
+- warning[possibly-unbound-attribute] .github/scripts/run-clang-format.py:153:17: Attribute `readlines` on type `IO[Unknown] | None` is possibly unbound
++ warning[possibly-unbound-attribute] .github/scripts/run-clang-format.py:153:17: Attribute `readlines` on type `IO[str] | None` is possibly unbound
+- error[no-matching-overload] gallery/transforms/plot_custom_transforms.py:166:18: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] references/detection/coco_utils.py:194:18: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] references/segmentation/v2_extras.py:17:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] scripts/download_model_urls.py:22:46: No overload of bound method `__init__` matches arguments
++ warning[possibly-unbound-attribute] scripts/release_notes/retrieve_prs_data.py:44:14: Attribute `decode` on type `bytes | str` is possibly unbound
++ warning[possibly-unbound-attribute] scripts/release_notes/retrieve_prs_data.py:45:11: Attribute `decode` on type `bytes | str` is possibly unbound
+- error[no-matching-overload] test/builtin_dataset_mocks.py:48:25: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/builtin_dataset_mocks.py:412:58: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/builtin_dataset_mocks.py:537:41: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/builtin_dataset_mocks.py:568:34: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/builtin_dataset_mocks.py:572:23: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/builtin_dataset_mocks.py:586:20: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/builtin_dataset_mocks.py:588:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/builtin_dataset_mocks.py:598:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/builtin_dataset_mocks.py:629:17: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/builtin_dataset_mocks.py:1245:13: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/builtin_dataset_mocks.py:1246:13: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/builtin_dataset_mocks.py:1247:13: No overload of bound method `__init__` matches arguments
++ error[call-non-callable] test/builtin_dataset_mocks.py:1341:37: Method `__getitem__` of type `bound method Counter[str].__getitem__(key: str, /) -> int` is not callable on object of type `Counter[str]`
++ error[call-non-callable] test/builtin_dataset_mocks.py:1341:56: Method `__getitem__` of type `bound method Counter[str].__getitem__(key: str, /) -> int` is not callable on object of type `Counter[str]`
++ error[unresolved-attribute] test/common_extended_utils.py:178:17: Type `str | bytes` has no attribute `register_forward_pre_hook`
++ error[unresolved-attribute] test/common_extended_utils.py:179:17: Type `str | bytes` has no attribute `register_forward_hook`
+- error[no-matching-overload] test/common_utils.py:37:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/common_utils.py:522:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/common_utils.py:533:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/datasets_utils.py:491:20: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/datasets_utils.py:659:20: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/datasets_utils.py:659:20: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/datasets_utils.py:659:20: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:75:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:82:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:157:17: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:446:23: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:466:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:502:23: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:522:21: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:539:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:542:32: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:671:9: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:690:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:697:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:744:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:826:19: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:829:39: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:846:17: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:900:29: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:1273:18: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:1294:23: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:1295:23: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:1437:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:1576:22: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:1670:22: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:1695:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:1749:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:1959:16: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:1997:20: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:1997:20: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:1997:20: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:2572:27: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:2667:21: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:2670:29: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:2693:13: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:2694:13: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:2695:13: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:2832:32: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:2841:22: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets.py:2848:22: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets_utils.py:265:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets_utils.py:266:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_datasets_utils.py:267:10: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_extended_models.py:414:26: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_extended_models.py:415:26: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_extended_models.py:450:72: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_extended_models.py:450:72: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_extended_models.py:450:72: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_functional_tensor.py:1263:14: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_models.py:163:14: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_onnx.py:229:29: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_onnx.py:230:30: No overload of bound method `__init__` matches arguments
++ error[invalid-argument-type] test/test_onnx.py:241:13: Argument to bound method `__init__` is incorrect: Expected `dict[str, int]`, found `dict[str, Literal[2000, 1000]]`
++ error[invalid-argument-type] test/test_onnx.py:242:13: Argument to bound method `__init__` is incorrect: Expected `dict[str, int]`, found `dict[str, Literal[2000, 1000]]`
+- error[no-matching-overload] test/test_ops.py:704:14: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_ops.py:1228:22: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_prototype_transforms.py:195:26: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_prototype_transforms.py:216:13: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_prototype_transforms.py:233:26: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_prototype_transforms.py:285:18: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_prototype_transforms.py:329:18: No overload of bound method `__init__` matches arguments
+- error[no-matching-overload] test/test_transforms_tensor.py:889:21: No ov...*[Comment body truncated]*
+
+---
+
+_Comment by @AlexWaygood on 2025-05-18 11:59_
+
+I'm guessing this also fixes https://github.com/astral-sh/ty/issues/258?
+
+---
+
+_Comment by @dcreager on 2025-05-18 14:18_
+
+> I'm guessing this also fixes [astral-sh/ty#258](https://github.com/astral-sh/ty/issues/258)?
+
+Yes I think you're right!
+
+---
+
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/src/types.rs`:6947 on 2025-05-18 15:42_
+
+nit: can you specify which "equality check" this is referring to? Is it the `is_equivalent_to` check in `is_subtype_of`?
+
+---
+
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/src/types.rs`:6960 on 2025-05-18 15:43_
+
+Same here, it would be useful to specify which equality check this is referring to.
+
+---
+
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/src/types/call/bind.rs`:1415 on 2025-05-18 15:48_
+
+Does this need to be mutated? It seems like in the loop, `argument_type = argument_type.apply_specialization(...)` indicates that it might not be required.
+
+---
+
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/src/types.rs`:1178 on 2025-05-18 15:54_
+
+nit: it might be useful to copy / move the comment present in `FunctionType::is_subtype_of` right above these three branches to clarify the intent here similar to how there are other comments right in these match expression. It might also remove the duplication between the comments in `FunctionType` and `BoundMethodType`
+
+Same comment for other relation methods where the comments are present.
+
+---
+
+_@dhruvmanila reviewed on 2025-05-18 15:55_
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/src/types/call/bind.rs`:1415 on 2025-05-19 14:10_
+
+Reassigning like that requires the `mut` — I was getting a compile error without it.  (Note that I'm not using `let` to only use the new value inside of that `if` statement down below; it's meant to update the argument type that is used in the `is_assignable_to` call down further)
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/src/types.rs`:6947 on 2025-05-19 14:11_
+
+Oh whoops!  Copy/pasted too much from `Type::is_subtype_of` :hand_over_mouth:  There's no equality check here, so I've removed that part of the comment
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/src/types.rs`:6960 on 2025-05-19 14:12_
+
+Ditto above
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/src/types.rs`:1178 on 2025-05-19 14:17_
+
+Good idea, done.  (I kept some comments in `FunctionType` and `BoundMethodType` which are more specific to those variants, but also put some commentary here about this cluster of match arms that are all about type variants that contain a function literal)
+
+---
+
+_@dcreager reviewed on 2025-05-19 14:26_
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types.rs`:1186 on 2025-05-19 15:22_
+
+It vaguely feels like these cases could be combined in a bit more general way with other below cases like `FunctionLiteral` vs `Callable`, etc. But since this is already a digression for this PR, I think it's fine to not worry about that for now and consider it in future if we have further bugs in this area.
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types.rs`:6955 on 2025-05-19 15:24_
+
+```suggestion
+        // literal are only subtypes of each other if they result in subtype signatures.
+```
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types.rs`:6966 on 2025-05-19 15:24_
+
+```suggestion
+        // literal are only assignable to each other if they result in assignable signatures.
+```
+
+---
+
+_@carljm approved on 2025-05-19 15:31_
+
+Nice!
+
+---
+
+_@carljm reviewed on 2025-05-19 15:42_
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types.rs`:1186 on 2025-05-19 15:42_
+
+Never mind this... I think these can't really be combined. They could be placed closer together, but we can't optimize that placement perfectly in a one-dimensional list of cases, so I don't think this requires any further attention in this PR.
+
+---
+
+_Merged by @dcreager on 2025-05-19 15:45_
+
+---
+
+_Closed by @dcreager on 2025-05-19 15:45_
+
+---
+
+_Branch deleted on 2025-05-19 15:45_
+
+---

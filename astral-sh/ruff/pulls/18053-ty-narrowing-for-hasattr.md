@@ -1,0 +1,707 @@
+```yaml
+number: 18053
+title: "[ty] Narrowing for `hasattr()`"
+type: pull_request
+state: merged
+author: AlexWaygood
+labels:
+  - ty
+assignees: []
+merged: true
+base: main
+head: alex/hasattr-narrow
+created_at: 2025-05-12T19:09:38Z
+updated_at: 2025-05-13T13:16:35Z
+url: https://github.com/astral-sh/ruff/pull/18053
+synced_at: 2026-01-10T18:51:01Z
+```
+
+# [ty] Narrowing for `hasattr()`
+
+---
+
+_Pull request opened by @AlexWaygood on 2025-05-12 19:09_
+
+## Summary
+
+Narrow the type of an object in a `hasattr()` branch by intersecting with a synthesized protocol type that has a single member with type `object`
+
+## Test Plan
+
+mdtests added
+
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-05-12 19:09_
+
+---
+
+_Comment by @github-actions[bot] on 2025-05-12 19:15_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+dacite (https://github.com/konradhalas/dacite)
+- error[unresolved-attribute] dacite/generics.py:96:21: Type `type` has no attribute `__orig_bases__`
++ error[not-iterable] dacite/generics.py:96:21: Object of type `object` is not iterable
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- error[unresolved-attribute] strawberry/exceptions/utils/source_finder.py:425:33: Type `object` has no attribute `_scalar_definition`
++ error[unresolved-attribute] strawberry/exceptions/utils/source_finder.py:425:33: Type `object` has no attribute `name`
+- error[unresolved-attribute] strawberry/experimental/pydantic/conversion.py:103:16: Type `type` has no attribute `to_pydantic`
++ error[call-non-callable] strawberry/experimental/pydantic/conversion.py:103:16: Object of type `object` is not callable
+- error[invalid-argument-type] strawberry/experimental/pydantic/conversion.py:106:37: Argument to function `fields` is incorrect: Expected `DataclassInstance`, found `type`
++ error[invalid-argument-type] strawberry/experimental/pydantic/conversion.py:106:37: Argument to function `fields` is incorrect: Expected `DataclassInstance`, found `type & ~<Protocol with members 'to_pydantic'>`
+- error[unresolved-attribute] strawberry/schema/schema_converter.py:824:17: Type `<class 'GraphQLNamedType'>` has no attribute `reserved_types`
+- error[unresolved-attribute] strawberry/schema/schema_converter.py:833:17: Type `<class 'GraphQLNamedType'>` has no attribute `reserved_types`
+- Found 460 diagnostics
++ Found 458 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- warning[possibly-unbound-attribute] tests/language/test_ast.py:217:25: Attribute `_hash` on type `SampleTestNode` is possibly unbound
+- warning[possibly-unbound-attribute] tests/language/test_ast.py:223:25: Attribute `_hash` on type `SampleTestNode` is possibly unbound
+- Found 413 diagnostics
++ Found 411 diagnostics
+
+nox (https://github.com/wntrblm/nox)
+- error[unresolved-attribute] nox/manifest.py:356:23: Type `Func` has no attribute `parametrize`
++ error[invalid-argument-type] nox/manifest.py:357:43: Argument to bound method `generate_calls` is incorrect: Expected `Iterable[Param]`, found `object`
+
+trio (https://github.com/python-trio/trio)
+- warning[possibly-unbound-attribute] src/trio/_core/_io_windows.py:328:16: Attribute `fileno` on type `Unknown | int` is possibly unbound
+- warning[possibly-unbound-attribute] src/trio/_core/_io_windows.py:373:24: Attribute `fileno` on type `Unknown | int` is possibly unbound
++ error[call-non-callable] src/trio/_core/_io_windows.py:328:16: Object of type `object` is not callable
++ error[call-non-callable] src/trio/_core/_io_windows.py:373:24: Object of type `object` is not callable
+- warning[possibly-unbound-attribute] src/trio/_core/_tests/test_windows.py:257:20: Attribute `fileno` on type `int | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
+- warning[possibly-unbound-attribute] src/trio/_core/_tests/test_windows.py:288:20: Attribute `fileno` on type `int | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
++ error[call-non-callable] src/trio/_core/_tests/test_windows.py:257:20: Object of type `object` is not callable
++ error[call-non-callable] src/trio/_core/_tests/test_windows.py:288:20: Object of type `object` is not callable
+- error[unresolved-attribute] src/trio/_deprecate.py:49:38: Type `object` has no attribute `__qualname__`
++ error[unsupported-operator] src/trio/_util.py:221:45: Operator `not in` is not supported for types `str` and `object`, in comparing `Literal["."]` with `object`
+- error[unresolved-attribute] src/trio/_util.py:221:56: Type `object` has no attribute `__name__`
+- error[unresolved-attribute] src/trio/_util.py:222:17: Can not assign object of `str` to attribute `__name__` on type `object` with custom `__setattr__` method.
+- error[unresolved-attribute] src/trio/_util.py:224:21: Can not assign object of `str` to attribute `__qualname__` on type `object` with custom `__setattr__` method.
+- Found 1079 diagnostics
++ Found 1076 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
++ error[unsupported-operator] docker/test_image.py:23:12: Operator `in` is not supported for types `str` and `object`, in comparing `Literal["+"]` with `object`
+- error[unresolved-attribute] docker/test_image.py:21:19: Type `ModuleType` has no attribute `__version__`
++ error[unresolved-attribute] docker/test_image.py:25:23: Type `object` has no attribute `split`
+- error[unresolved-attribute] ignite/engine/engine.py:362:34: Type `(...) -> Unknown` has no attribute `_parent`
++ error[call-non-callable] ignite/engine/engine.py:362:34: Object of type `object` is not callable
++ warning[unused-ignore-comment] ignite/engine/engine.py:934:35: Unused blanket `type: ignore` directive
+- error[unresolved-attribute] ignite/engine/utils.py:8:39: Type `(...) -> Unknown` has no attribute `_parent`
++ error[call-non-callable] ignite/engine/utils.py:8:39: Object of type `object` is not callable
+- warning[possibly-unbound-attribute] tests/ignite/distributed/test_auto.py:101:20: Attribute `batch_size` on type `Unknown | _MpDeviceLoader` is possibly unbound
+- warning[possibly-unbound-attribute] tests/ignite/distributed/test_auto.py:103:20: Attribute `batch_size` on type `Unknown | _MpDeviceLoader` is possibly unbound
+- warning[possibly-unbound-attribute] tests/ignite/distributed/test_auto.py:105:20: Attribute `num_workers` on type `Unknown | _MpDeviceLoader` is possibly unbound
+- warning[possibly-unbound-attribute] tests/ignite/distributed/test_auto.py:107:20: Attribute `num_workers` on type `Unknown | _MpDeviceLoader` is possibly unbound
+- warning[possibly-unbound-attribute] tests/ignite/distributed/test_auto.py:119:27: Attribute `sampler` on type `Unknown | _MpDeviceLoader` is possibly unbound
+- warning[possibly-unbound-attribute] tests/ignite/distributed/test_auto.py:122:20: Attribute `pin_memory` on type `Unknown | _MpDeviceLoader` is possibly unbound
+- Found 2280 diagnostics
++ Found 2276 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
+- error[invalid-argument-type] mkosi/config.py:1806:27: Argument to function `load` is incorrect: Expected `SupportsRead[str | bytes]`, found `(dict[str, Any] & ~str & ~dict[Unknown, Unknown]) | (SupportsRead[str] & ~str & ~dict[Unknown, Unknown])`
+- error[invalid-argument-type] mkosi/config.py:2369:27: Argument to function `load` is incorrect: Expected `SupportsRead[str | bytes]`, found `(dict[str, Any] & ~str & ~dict[Unknown, Unknown]) | (SupportsRead[str] & ~str & ~dict[Unknown, Unknown])`
+- Found 352 diagnostics
++ Found 350 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
++ warning[unused-ignore-comment] tornado/iostream.py:68:31: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] tornado/iostream.py:69:33: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] tornado/iostream.py:70:30: Unused blanket `type: ignore` directive
+- error[unresolved-attribute] tornado/platform/asyncio.py:105:27: Type `<module 'asyncio'>` has no attribute `ProactorEventLoop`
++ warning[unused-ignore-comment] tornado/test/simple_httpclient_test.py:399:70: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] tornado/util.py:366:40: Unused blanket `type: ignore` directive
++ error[unresolved-attribute] tornado/util.py:367:24: Type `object` has no attribute `co_varnames`
++ error[unresolved-attribute] tornado/util.py:367:43: Type `object` has no attribute `co_argcount`
+- Found 508 diagnostics
++ Found 514 diagnostics
+
+bandersnatch (https://github.com/pypa/bandersnatch)
+- error[unresolved-attribute] src/bandersnatch/utils.py:127:50: Type `Self` has no attribute `keep_file`
+- Found 154 diagnostics
++ Found 153 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- error[unresolved-attribute] src/werkzeug/_reloader.py:25:16: Type `<module 'sys'>` has no attribute `real_prefix`
+- error[no-matching-overload] src/werkzeug/datastructures/file_storage.py:126:19: No overload of function `fspath` matches arguments
+- error[invalid-argument-type] src/werkzeug/datastructures/file_storage.py:133:38: Argument to function `copyfileobj` is incorrect: Expected `SupportsWrite[AnyStr]`, found `PathLike[str] | IO[bytes] | (Unknown & ~str) | str`
++ error[invalid-argument-type] src/werkzeug/datastructures/file_storage.py:133:38: Argument to function `copyfileobj` is incorrect: Expected `SupportsWrite[AnyStr]`, found `IO[bytes] | (Unknown & ~str) | str | PathLike[str]`
+- warning[possibly-unbound-attribute] src/werkzeug/datastructures/file_storage.py:136:17: Attribute `close` on type `PathLike[str] | IO[bytes] | (Unknown & ~str) | str` is possibly unbound
++ warning[possibly-unbound-attribute] src/werkzeug/datastructures/file_storage.py:136:17: Attribute `close` on type `IO[bytes] | (Unknown & ~str) | str | PathLike[str]` is possibly unbound
++ warning[unused-ignore-comment] src/werkzeug/debug/__init__.py:349:35: Unused blanket `type: ignore` directive
+- error[invalid-argument-type] src/werkzeug/test.py:387:46: Argument to function `_iter_data` is incorrect: Expected `Mapping[str, Any]`, found `(IO[bytes] & ~AlwaysFalsy & ~str & ~bytes) | (Mapping[str, Any] & ~AlwaysFalsy & ~str & ~bytes) | (Unknown & ~AlwaysFalsy & ~str & ~bytes) | (@Todo(map_with_boundness: intersections with negative contributions) & ~str & ~bytes) | (@Todo(map_with_boundness: intersections with negative contributions) & ~bytes)`
+- error[invalid-argument-type] src/werkzeug/test.py:387:46: Argument to function `_iter_data` is incorrect: Expected `Mapping[str, Any]`, found `(IO[bytes] & ~AlwaysFalsy & ~str & ~bytes) | (Mapping[str, Any] & ~AlwaysFalsy & ~str & ~bytes) | (Unknown & ~AlwaysFalsy & ~str & ~bytes) | (@Todo(map_with_boundness: intersections with negative contributions) & ~str & ~bytes) | (@Todo(map_with_boundness: intersections with negative contributions) & ~bytes)`
+- error[invalid-argument-type] src/werkzeug/test.py:387:46: Argument to function `_iter_data` is incorrect: Expected `Mapping[str, Any]`, found `(IO[bytes] & ~AlwaysFalsy & ~str & ~bytes) | (Mapping[str, Any] & ~AlwaysFalsy & ~str & ~bytes) | (Unknown & ~AlwaysFalsy & ~str & ~bytes) | (@Todo(map_with_boundness: intersections with negative contributions) & ~str & ~bytes) | (@Todo(map_with_boundness: intersections with negative contributions) & ~bytes)`
++ error[non-subscriptable] src/werkzeug/utils.py:91:13: Cannot subscript object of type `object` with no `__getitem__` method
++ error[non-subscriptable] src/werkzeug/utils.py:118:17: Cannot subscript object of type `object` with no `__getitem__` method
++ warning[redundant-cast] src/werkzeug/utils.py:419:24: Value is already of type `PathLike[str] | str`
+- error[unresolved-attribute] src/werkzeug/wsgi.py:370:59: Type `Iterable[bytes]` has no attribute `seekable`
++ error[call-non-callable] src/werkzeug/wsgi.py:370:59: Object of type `object` is not callable
+- error[unresolved-attribute] tests/test_test.py:705:13: Type `Iterable[bytes]` has no attribute `close`
++ error[call-non-callable] tests/test_test.py:705:13: Object of type `object` is not callable
+- Found 462 diagnostics
++ Found 461 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
+- error[unresolved-attribute] test/port_helpers.py:113:48: Type `<module 'socket'>` has no attribute `SO_EXCLUSIVEADDRUSE`
+- error[unresolved-attribute] test/test_exceptions.py:58:20: Type `Exception` has no attribute `_message`
++ warning[unused-ignore-comment] test/test_exceptions.py:57:59: Unused blanket `type: ignore` directive
++ error[unsupported-operator] test/test_exceptions.py:58:20: Operator `in` is not supported for types `object` and `str`
++ warning[unused-ignore-comment] test/test_exceptions.py:62:53: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] test/test_exceptions.py:66:67: Unused blanket `type: ignore` directive
+- Found 463 diagnostics
++ Found 465 diagnostics
+
+jinja (https://github.com/pallets/jinja)
+- warning[possibly-unbound-attribute] src/jinja2/async_utils.py:91:16: Attribute `__aiter__` on type `AsyncIterable[V] | Iterable[V]` is possibly unbound
+- error[no-matching-overload] src/jinja2/async_utils.py:93:41: No overload of function `iter` matches arguments
++ warning[redundant-cast] src/jinja2/filters.py:142:17: Value is already of type `HasHTML`
++ warning[redundant-cast] src/jinja2/filters.py:1054:17: Value is already of type `HasHTML`
+
+comtypes (https://github.com/enthought/comtypes)
+- error[unresolved-attribute] comtypes/client/_generate.py:276:32: Type `ModuleType` has no attribute `__known_symbols__`
++ error[invalid-assignment] comtypes/client/_generate.py:276:13: Object of type `object` is not assignable to `list[Unknown]`
+
+operator (https://github.com/canonical/operator)
+- error[unresolved-attribute] ops/model.py:2070:55: Attribute `name` can only be accessed on instances, not on the class object `type[StatusBase]` itself.
+- error[unresolved-attribute] ops/model.py:2075:23: Attribute `name` can only be accessed on instances, not on the class object `type[StatusBase]` itself.
+- Found 205 diagnostics
++ Found 203 diagnostics
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
+- error[unresolved-attribute] schema_salad/makedoc.py:816:49: Type `IO[Any]` has no attribute `buffer`
++ error[invalid-argument-type] schema_salad/makedoc.py:816:49: Argument to bound method `__init__` is incorrect: Argument type `object` does not satisfy upper bound of type variable `_BufferT_co`
++ error[invalid-argument-type] schema_salad/makedoc.py:816:49: Argument to bound method `__init__` is incorrect: Expected `_WrappedBuffer`, found `object`
+- Found 399 diagnostics
++ Found 400 diagnostics
+
+dedupe (https://github.com/dedupeio/dedupe)
+- error[unresolved-attribute] dedupe/datamodel.py:193:64: Type `Variable` has no attribute `interaction_fields`
++ error[not-iterable] dedupe/datamodel.py:193:64: Object of type `object` is not iterable
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- error[invalid-argument-type] src/hydra_zen/structured_configs/_implementations.py:1130:34: Argument to function `fields` is incorrect: Expected `DataclassInstance`, found `(~None & ~type) | (Unknown & ~type)`
++ error[invalid-argument-type] src/hydra_zen/structured_configs/_implementations.py:1130:34: Argument to function `fields` is incorrect: Expected `DataclassInstance`, found `(~None & ~<Protocol with members '__iter__'> & ~type) | (Unknown & ~type)`
+
+pwndbg (https://github.com/pwndbg/pwndbg)
++ error[invalid-assignment] pwndbg/dbg/lldb/repl/readline.py:24:9: Object of type `(*args) -> Unknown` is not assignable to attribute `set_completion_display_matches_hook` on type `<module 'readline'> & ~<Protocol with members 'set_completion_display_matches_hook'>`
+- error[unresolved-attribute] pwndbg/lib/cache.py:140:37: Type `(...) -> Unknown` has no attribute `__name__`
++ error[unresolved-attribute] pwndbg/lib/cache.py:140:37: Type `((...) -> Unknown) & <Protocol with members 'cache'>` has no attribute `__name__`
+- Found 2805 diagnostics
++ Found 2806 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
+- error[unresolved-attribute] mesonbuild/ast/printer.py:233:24: Type `BaseNode` has no attribute `value`
+- error[unresolved-attribute] mesonbuild/interpreter/interpreter.py:545:25: Type `stat_result` has no attribute `st_file_attributes`
+- error[unresolved-attribute] mesonbuild/interpreter/interpreter.py:546:25: Type `stat_result` has no attribute `st_reparse_tag`
+- error[unresolved-attribute] mesonbuild/mformat.py:725:32: Type `BaseNode` has no attribute `value`
+- error[unresolved-attribute] run_meson_command_tests.py:31:18: Type `<module 'sysconfig'>` has no attribute `_get_default_scheme`
+- error[unresolved-attribute] test cases/python/4 custom target depends extmodule/blaster.py:13:5: Type `<module 'os'>` has no attribute `add_dll_directory`
+- error[unresolved-attribute] test cases/python3/4 custom target depends extmodule/blaster.py:14:5: Type `<module 'os'>` has no attribute `add_dll_directory`
+- error[unresolved-attribute] unittests/allplatformstests.py:1205:34: Type `Compiler | None` has no attribute `is_64`
+- Found 1456 diagnostics
++ Found 1448 diagnostics
+
+altair (https://github.com/vega/altair)
+- warning[possibly-unbound-attribute] altair/utils/html.py:399:12: Attribute `render` on type `Template | @Todo(Inference of subscript on special form) | Literal["standard"]` is possibly unbound
+- error[unresolved-attribute] altair/utils/plugin_registry.py:289:16: Type `dict[str, list[EntryPoint]]` has no attribute `select`
++ error[call-non-callable] altair/utils/plugin_registry.py:289:16: Object of type `object` is not callable
+- Found 1561 diagnostics
++ Found 1560 diagnostics
+
+colour (https://github.com/colour-science/colour)
++ error[invalid-assignment] colour/recovery/tests/test_jakob2019.py:221:13: Object of type `SpectralShape` is not assignable to attribute `_shape` on type `type[TestLUT3D_Jakob2019] & ~<Protocol with members '_LUT'>`
++ error[invalid-assignment] colour/recovery/tests/test_jakob2019.py:222:13: Object of type `MultiSpectralDistributions` is not assignable to attribute `_cmfs` on type `type[TestLUT3D_Jakob2019] & ~<Protocol with members '_LUT'>`
++ error[invalid-assignment] colour/recovery/tests/test_jakob2019.py:222:24: Object of type `SpectralDistribution` is not assignable to attribute `_sd_D65` on type `type[TestLUT3D_Jakob2019] & ~<Protocol with members '_LUT'>`
++ error[invalid-assignment] colour/recovery/tests/test_jakob2019.py:223:13: Object of type `Unknown` is not assignable to attribute `_XYZ_D65` on type `type[TestLUT3D_Jakob2019] & ~<Protocol with members '_LUT'>`
++ error[invalid-assignment] colour/recovery/tests/test_jakob2019.py:224:13: Object of type `Unknown` is not assignable to attribute `_xy_D65` on type `type[TestLUT3D_Jakob2019] & ~<Protocol with members '_LUT'>`
++ error[invalid-assignment] colour/recovery/tests/test_jakob2019.py:226:13: Object of type `RGB_Colourspace` is not assignable to attribute `_RGB_colourspace` on type `type[TestLUT3D_Jakob2019] & ~<Protocol with members '_LUT'>`
++ error[invalid-assignment] colour/recovery/tests/test_jakob2019.py:228:13: Object of type `LUT3D_Jakob2019` is not assignable to attribute `_LUT` on type `type[TestLUT3D_Jakob2019] & ~<Protocol with members '_LUT'>`
+- error[invalid-attribute-access] colour/recovery/tests/test_jakob2019.py:221:13: Cannot assign to instance attribute `_shape` from the class object `type[TestLUT3D_Jakob2019]`
+- error[invalid-attribute-access] colour/recovery/tests/test_jakob2019.py:222:13: Cannot assign to instance attribute `_cmfs` from the class object `type[TestLUT3D_Jakob2019]`
+- error[invalid-attribute-access] colour/recovery/tests/test_jakob2019.py:222:24: Cannot assign to instance attribute `_sd_D65` from the class object `type[TestLUT3D_Jakob2019]`
+- error[unresolved-attribute] colour/recovery/tests/test_jakob2019.py:222:78: Attribute `_shape` can only be accessed on instances, not on the class object `type[TestLUT3D_Jakob2019]` itself.
+- error[invalid-attribute-access] colour/recovery/tests/test_jakob2019.py:223:13: Cannot assign to instance attribute `_XYZ_D65` from the class object `type[TestLUT3D_Jakob2019]`
+- error[unresolved-attribute] colour/recovery/tests/test_jakob2019.py:223:38: Attribute `_sd_D65` can only be accessed on instances, not on the class object `type[TestLUT3D_Jakob2019]` itself.
+- error[invalid-attribute-access] colour/recovery/tests/test_jakob2019.py:224:13: Cannot assign to instance attribute `_xy_D65` from the class object `type[TestLUT3D_Jakob2019]`
+- error[unresolved-attribute] colour/recovery/tests/test_jakob2019.py:224:37: Attribute `_XYZ_D65` can only be accessed on instances, not on the class object `type[TestLUT3D_Jakob2019]` itself.
+- error[invalid-attribute-access] colour/recovery/tests/test_jakob2019.py:226:13: Cannot assign to instance attribute `_RGB_colourspace` from the class object `type[TestLUT3D_Jakob2019]`
+- error[invalid-attribute-access] colour/recovery/tests/test_jakob2019.py:228:13: Cannot assign to instance attribute `_LUT` from the class object `type[TestLUT3D_Jakob2019]`
+- error[unresolved-attribute] colour/recovery/tests/test_jakob2019.py:229:13: Attribute `_LUT` can only be accessed on instances, not on the class object `type[TestLUT3D_Jakob2019]` itself.
+- error[unresolved-attribute] colour/recovery/tests/test_jakob2019.py:229:31: Attribute `_RGB_colourspace` can only be accessed on instances, not on the class object `type[TestLUT3D_Jakob2019]` itself.
+- error[unresolved-attribute] colour/recovery/tests/test_jakob2019.py:229:53: Attribute `_cmfs` can only be accessed on instances, not on the class object `type[TestLUT3D_Jakob2019]` itself.
+- error[unresolved-attribute] colour/recovery/tests/test_jakob2019.py:229:64: Attribute `_sd_D65` can only be accessed on instances, not on the class object `type[TestLUT3D_Jakob2019]` itself.
+- error[unresolved-attribute] colour/utilities/array.py:890:13: Unresolved attribute `DTYPE_INT_DEFAULT` on type `ModuleType`.
+- error[unresolved-attribute] colour/utilities/array.py:940:13: Unresolved attribute `DTYPE_FLOAT_DEFAULT` on type `ModuleType`.
+- Found 664 diagnostics
++ Found 655 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- error[invalid-argument-type] src/_pytest/doctest.py:525:46: Argument to function `unwrap` is incorrect: Expected `(...) -> Any`, found `(Unknown & ~property) | Any | None`
+- error[unresolved-attribute] src/_pytest/helpconfig.py:279:21: Type `object` has no attribute `__file__`
+- error[not-iterable] src/_pytest/junitxml.py:241:44: Object of type `None` is not iterable
+- error[not-iterable] src/_pytest/junitxml.py:241:44: Object of type `ExceptionInfo[BaseException]` is not iterable
+- error[not-iterable] src/_pytest/junitxml.py:241:44: Object of type `TerminalRepr` is not iterable
+- error[unresolved-attribute] src/_pytest/logging.py:209:53: Type `LogRecord` has no attribute `auto_indent`
+- error[unresolved-attribute] src/_pytest/setuponly.py:86:31: Type `FixtureDef[object]` has no attribute `cached_param`
+- error[unresolved-attribute] src/_pytest/skipping.py:114:29: Type `Item` has no attribute `obj`
++ error[unresolved-attribute] src/_pytest/skipping.py:114:29: Type `object` has no attribute `__globals__`
+- error[not-iterable] src/_pytest/terminal.py:1633:24: Object of type `None` is not iterable
+- error[not-iterable] src/_pytest/terminal.py:1633:24: Object of type `ExceptionInfo[BaseException]` is not iterable
+- error[not-iterable] src/_pytest/terminal.py:1633:24: Object of type `TerminalRepr` is not iterable
+- Found 963 diagnostics
++ Found 953 diagnostics
+
+optuna (https://github.com/optuna/optuna)
++ error[invalid-super-argument] optuna/testing/tempfile_pool.py:20:29: `Unknown & ~<Protocol with members '_instance'>` is not an instance or subclass of `<class 'NamedTemporaryFilePool'>` in `super(<class 'NamedTemporaryFilePool'>, Unknown & ~<Protocol with members '_instance'>)` call
+- Found 1334 diagnostics
++ Found 1335 diagnostics
+
+mypy (https://github.com/python/mypy)
+- error[unresolved-attribute] mypy/server/objgraph.py:66:43: Type `object` has no attribute `__closure__`
+- error[unresolved-attribute] mypy/server/objgraph.py:68:22: Type `object` has no attribute `__self__`
+- error[unresolved-attribute] mypy/server/objgraph.py:70:27: Type `object` has no attribute `__self__`
++ error[no-matching-overload] mypy/util.py:392:28: No overload of bound method `__init__` matches arguments
++ error[invalid-assignment] mypy/util.py:394:13: Object of type `object` is not assignable to attribute `__dict__` of type `dict[str, Any]`
++ warning[unused-ignore-comment] mypyc/test-data/fixtures/testutil.py:74:39: Unused blanket `type: ignore` directive
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- warning[possibly-unbound-attribute] bson/codec_options.py:390:45: Attribute `__origin__` on type `(@Todo(unsupported nested subscript in type[X]) & ~AlwaysFalsy) | <class 'dict'>` is possibly unbound
+- error[invalid-argument-type] pymongo/asynchronous/cursor.py:985:56: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `Iterable[Unknown] | SupportsItems[Unknown, Unknown]`
+- error[invalid-argument-type] pymongo/asynchronous/cursor.py:985:56: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `Iterable[Unknown] | SupportsItems[Unknown, Unknown]`
+- error[invalid-argument-type] pymongo/asynchronous/cursor.py:985:56: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `Iterable[Unknown] | SupportsItems[Unknown, Unknown]`
+- error[invalid-argument-type] pymongo/asynchronous/cursor.py:985:56: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `Iterable[Unknown] | SupportsItems[Unknown, Unknown]`
++ warning[redundant-cast] pymongo/asynchronous/cursor.py:987:47: Value is already of type `SupportsItems[Unknown, Unknown]`
++ warning[redundant-cast] pymongo/asynchronous/cursor.py:987:47: Value is already of type `SupportsItems[Unknown, Unknown]`
++ warning[redundant-cast] pymongo/asynchronous/cursor.py:987:47: Value is already of type `SupportsItems[Unknown, Unknown]`
++ warning[redundant-cast] pymongo/asynchronous/cursor.py:987:47: Value is already of type `SupportsItems[Unknown, Unknown]`
+- warning[possibly-unbound-attribute] pymongo/network_layer.py:300:41: Attribute `pending` on type `Unknown | socket | _sslConn` is possibly unbound
++ error[call-non-callable] pymongo/network_layer.py:300:41: Object of type `object` is not callable
+- error[unresolved-attribute] pymongo/socket_checker.py:31:26: Type `BaseException` has no attribute `errno`
+- error[invalid-assignment] pymongo/ssl_support.py:100:13: Object of type `bool` is not assignable to attribute `check_ocsp_endpoint` on type `SSLContext | SSLContext`
+- error[invalid-argument-type] pymongo/synchronous/cursor.py:983:56: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `Iterable[Unknown] | SupportsItems[Unknown, Unknown]`
+- error[invalid-argument-type] pymongo/synchronous/cursor.py:983:56: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `Iterable[Unknown] | SupportsItems[Unknown, Unknown]`
+- error[invalid-argument-type] pymongo/synchronous/cursor.py:983:56: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `Iterable[Unknown] | SupportsItems[Unknown, Unknown]`
+- error[invalid-argument-type] pymongo/synchronous/cursor.py:983:56: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `Iterable[Unknown] | SupportsItems[Unknown, Unknown]`
++ warning[redundant-cast] pymongo/synchronous/cursor.py:985:47: Value is already of type `SupportsItems[Unknown, Unknown]`
++ warning[redundant-cast] pymongo/synchronous/cursor.py:985:47: Value is already of type `SupportsItems[Unknown, Unknown]`
++ warning[redundant-cast] pymongo/synchronous/cursor.py:985:47: Value is already of type `SupportsItems[Unknown, Unknown]`
++ warning[redundant-cast] pymongo/synchronous/cursor.py:985:47: Value is already of type `SupportsItems[Unknown, Unknown]`
+- Found 581 diagnostics
++ Found 578 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
+- error[unresolved-attribute] scrapy/core/downloader/__init__.py:85:17: Type `Spider` has no attribute `download_delay`
+- error[unresolved-attribute] scrapy/core/downloader/__init__.py:88:23: Type `Spider` has no attribute `max_concurrent_requests`
++ error[invalid-assignment] scrapy/core/downloader/__init__.py:85:9: Object of type `object` is not assignable to `int | float`
++ error[invalid-assignment] scrapy/core/downloader/__init__.py:88:9: Object of type `object` is not assignable to `int`
+- error[unresolved-attribute] scrapy/core/scheduler.py:47:26: Type `type` has no attribute `has_pending_requests`
+- error[unresolved-attribute] scrapy/core/scheduler.py:49:26: Type `type` has no attribute `enqueue_request`
+- error[unresolved-attribute] scrapy/core/scheduler.py:51:26: Type `type` has no attribute `next_request`
+- error[unresolved-attribute] scrapy/downloadermiddlewares/httpcompression.py:77:30: Type `Spider` has no attribute `download_maxsize`
+- error[unresolved-attribute] scrapy/downloadermiddlewares/httpcompression.py:79:31: Type `Spider` has no attribute `download_warnsize`
+- error[unresolved-attribute] scrapy/extensions/spiderstate.py:39:29: Type `Spider` has no attribute `state`
+- error[unresolved-attribute] scrapy/http/request/__init__.py:353:37: Type `(...) -> Any` has no attribute `__func__`
+- error[unresolved-attribute] scrapy/utils/ossignal.py:38:23: Type `<module 'signal'>` has no attribute `SIGBREAK`
+- error[unresolved-attribute] tests/test_dependencies.py:20:50: Type `ModuleType` has no attribute `__version__`
++ error[unresolved-attribute] tests/test_dependencies.py:20:50: Type `object` has no attribute `split`
+- Found 1438 diagnostics
++ Found 1430 diagnostics
+
+openlibrary (https://github.com/internetarchive/openlibrary)
+- error[unresolved-attribute] openlibrary/plugins/upstream/account.py:343:42: Type `OLAuthenticationError` has no attribute `response`
+- Found 751 diagnostics
++ Found 750 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- error[unresolved-attribute] paasta_tools/contrib/emit_allocated_cpu_metrics.py:36:16: Type `InstanceConfig` has no attribute `get_max_instances`
++ error[unresolved-attribute] paasta_tools/contrib/emit_allocated_cpu_metrics.py:36:16: Type `InstanceConfig & <Protocol with members 'get_instances'>` has no attribute `get_max_instances`
+- error[unresolved-attribute] paasta_tools/contrib/emit_allocated_cpu_metrics.py:40:27: Type `InstanceConfig` has no attribute `get_instances`
++ error[call-non-callable] paasta_tools/contrib/emit_allocated_cpu_metrics.py:40:27: Object of type `object` is not callable
+
+aiohttp (https://github.com/aio-libs/aiohttp)
+- error[unresolved-attribute] aiohttp/resolver.py:23:23: Type `<module 'socket'>` has no attribute `AI_MASK`
+- Found 185 diagnostics
++ Found 184 diagnostics
+
+pycryptodome (https://github.com/Legrandin/pycryptodome)
+- error[unresolved-attribute] lib/Crypto/PublicKey/RSA.py:592:13: Type `InputComps` has no attribute `d`
+- error[unresolved-attribute] lib/Crypto/PublicKey/RSA.py:594:17: Type `InputComps` has no attribute `p`
++ error[unresolved-attribute] lib/Crypto/PublicKey/RSA.py:594:17: Type `InputComps & <Protocol with members 'd'> & <Protocol with members 'q'>` has no attribute `p`
+- error[unresolved-attribute] lib/Crypto/PublicKey/RSA.py:595:17: Type `InputComps` has no attribute `q`
+- error[unresolved-attribute] lib/Crypto/PublicKey/RSA.py:635:17: Type `InputComps` has no attribute `u`
++ error[unsupported-operator] lib/Crypto/PublicKey/RSA.py:657:16: Operator `<=` is not supported for types `object` and `int`, in comparing `object` with `Literal[1]`
++ error[unsupported-operator] lib/Crypto/PublicKey/RSA.py:669:30: Operator `-` is unsupported between objects of type `object` and `Literal[1]`
++ error[unsupported-operator] lib/Crypto/PublicKey/RSA.py:670:38: Operator `-` is unsupported between objects of type `object` and `Literal[1]`
++ error[unsupported-operator] lib/Crypto/PublicKey/RSA.py:675:20: Operator `<=` is not supported for types `object` and `int`, in comparing `object` with `Literal[1]`
++ error[unsupported-operator] lib/Crypto/PublicKey/RSA.py:675:30: Operator `>=` is not supported for types `object` and `object`
+- Found 1603 diagnostics
++ Found 1605 diagnostics
+
+apprise (https://github.com/caronc/apprise)
+- error[unresolved-attribute] apprise/locale.py:206:26: Type `<module 'ctypes'>` has no attribute `windll`
+- error[invalid-attribute-access] test/test_plugin_twitter.py:552:9: Cannot assign to instance attribute `_user_cache` from the class object `<class 'NotifyTwitter'>`
+- error[invalid-attribute-access] test/test_plugin_twitter.py:554:9: Cannot assign to instance attribute `_whoami_cache` from the class object `<class 'NotifyTwitter'>`
+- Found 3638 diagnostics
++ Found 3635 diagnostics
+
+bokeh (https://github.com/bokeh/bokeh)
+- error[unresolved-attribute] src/bokeh/core/property/descriptors.py:692:13: Type `HasProps` has no attribute `trigger`
++ error[call-non-callable] src/bokeh/core/property/descriptors.py:692:13: Object of type `object` is not callable
+- error[unresolved-attribute] src/bokeh/core/templates.py:78:31: Type `<module 'sys'>` has no attribute `_MEIPASS`
+- error[unresolved-attribute] src/bokeh/plotting/_legends.py:111:58: Type `DataSource` has no attribute `column_names`
++ error[unsupported-operator] src/bokeh/plotting/_legends.py:111:49: Operator `in` is not supported for types `str` and `object`
+- error[unresolved-attribute] src/bokeh/plotting/_legends.py:114:14: Type `DataSource` has no attribute `data`
++ error[unresolved-attribute] src/bokeh/plotting/_legends.py:114:14: Type `DataSource & <Protocol with members 'column_names'>` has no attribute `data`
+- Found 1008 diagnostics
++ Found 1007 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
++ warning[unused-ignore-comment] static_frame/core/container_util.py:1524:82: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] static_frame/core/index_base.py:458:61: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] static_frame/core/index_datetime.py:140:94: Unused blanket `type: ignore` directive
+- error[unresolved-attribute] static_frame/core/platform.py:45:36: Type `ModuleType` has no attribute `__version__`
+- error[invalid-argument-type] static_frame/core/type_blocks.py:2298:45: Argument to function `iterable_to_array_1d` is incorrect: Expected `Iterable[Any]`, found `(Any & ~tuple[Unknown, ...]) | None`
+- error[invalid-argument-type] static_frame/core/type_blocks.py:2298:45: Argument to function `iterable_to_array_1d` is incorrect: Expected `Iterable[Any]`, found `(Any & ~tuple[Unknown, ...]) | None`
+- error[invalid-argument-type] static_frame/core/type_blocks.py:2298:45: Argument to function `iterable_to_array_1d` is incorrect: Expected `Iterable[Any]`, found `(Any & ~tuple[Unknown, ...]) | None`
++ warning[unused-ignore-comment] static_frame/core/util.py:3144:57: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] static_frame/core/util.py:3263:55: Unused blanket `type: ignore` directive
+- Found 2763 diagnostics
++ Found 2764 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
+- error[unresolved-attribute] tests/integration_tests/util.py:566:24: Type `IntegrationInstance` has no attribute `lxc_log`
+- Found 734 diagnostics
++ Found 733 diagnostics
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+- warning[possibly-unbound-attribute] sphinx/builders/gettext.py:87:57: Attribute `uid` on type `Element | MsgOrigin` is possibly unbound
+- error[unresolved-attribute] sphinx/ext/viewcode.py:190:27: Type `BuildEnvironment` has no attribute `_viewcode_modules`
++ error[unresolved-attribute] sphinx/ext/viewcode.py:190:27: Type `object` has no attribute `items`
+- error[unresolved-attribute] sphinx/ext/viewcode.py:190:27: Type `BuildEnvironment` has no attribute `_viewcode_modules`
++ error[unresolved-attribute] sphinx/ext/viewcode.py:190:27: Type `object` has no attribute `items`
+- error[unresolved-attribute] sphinx/ext/viewcode.py:190:27: Type `BuildEnvironment` has no attribute `_viewcode_modules`
++ error[unresolved-attribute] sphinx/ext/viewcode.py:190:27: Type `object` has no attribute `items`
+- error[unresolved-attribute] sphinx/pycode/parser.py:382:44: Type `Assign` has no attribute `annotation`
+- error[unresolved-attribute] sphinx/pycode/parser.py:384:55: Type `Assign` has no attribute `annotation`
+- Found 804 diagnostics
++ Found 801 diagnostics
+
+streamlit (https://github.com/streamlit/streamlit)
++ error[call-non-callable] lib/streamlit/commands/echo.py:82:21: Method `__getitem__` of type `(bound method dict[Unknown, Unknown].__getitem__(key: Unknown, /) -> Unknown) | (bound method dict[int, Any].__getitem__(key: int, /) -> Any)` is not callable on object of type `dict[Unknown, Unknown] | dict[int, Any]`
+- error[unresolved-attribute] lib/streamlit/commands/echo.py:82:38: Type `AST` has no attribute `lineno`
+- error[unresolved-attribute] lib/streamlit/logger.py:64:30: Type `Logger` has no attribute `streamlit_console_handler`
++ error[invalid-argument-type] lib/streamlit/logger.py:64:30: Argument to bound method `removeHandler` is incorrect: Expected `Handler`, found `object`
++ error[invalid-return-type] lib/streamlit/runtime/metrics_util.py:262:16: Return type does not match returned value: Expected `str`, found `object`
+- error[unresolved-attribute] lib/streamlit/runtime/metrics_util.py:252:25: Type `object` has no attribute `__qualname__`
+- error[unresolved-attribute] lib/streamlit/runtime/metrics_util.py:254:25: Type `object` has no attribute `__name__`
+- warning[possibly-unbound-attribute] lib/streamlit/runtime/state/query_params.py:119:24: Attribute `keys` on type `Iterable[tuple[str, Iterable[str]]] | SupportsKeysAndGetItem[str, Iterable[str]]` is possibly unbound
++ error[call-non-callable] lib/streamlit/runtime/state/query_params.py:119:24: Object of type `object` is not callable
+- warning[call-possibly-unbound-method] lib/streamlit/runtime/state/query_params.py:120:47: Method `__getitem__` of type `Iterable[tuple[str, Iterable[str]]] | SupportsKeysAndGetItem[str, Iterable[str]]` is possibly unbound
++ warning[call-possibly-unbound-method] lib/streamlit/runtime/state/query_params.py:120:47: Method `__getitem__` of type `(Iterable[tuple[str, Iterable[str]]] & <Protocol with members 'keys'> & <Protocol with members '__getitem__'>) | SupportsKeysAndGetItem[str, Iterable[str]]` is possibly unbound
+- error[not-iterable] lib/streamlit/runtime/state/query_params.py:122:31: Object of type `Iterable[tuple[str, Iterable[str]]] | SupportsKeysAndGetItem[str, Iterable[str]]` may not be iterable
+- Found 3314 diagnostics
++ Found 3312 diagnostics
+
+rotki (https://github.com/rotki/rotki)
+- error[unresolved-attribute] rotkehlchen/globaldb/handler.py:1210:51: Type `AssetWithOracles` has no attribute `protocol`
+- Found 2148 diagnostics
++ Found 2147 diagnostics
+
+zulip (https://github.com/zulip/zulip)
+- error[unresolved-attribute] zerver/lib/integrations.py:841:20: Type `(Unknown, /) -> Unknown` has no attribute `_all_event_types`
++ error[invalid-return-type] zerver/lib/integrations.py:841:20: Return type does not match returned value: Expected `list[str] | None`, found `object`
+- error[unresolved-attribute] zerver/tests/test_slack_importer.py:173:30: Type `PreparedRequest` has no attribute `params`
++ error[non-subscriptable] zerver/tests/test_slack_importer.py:173:30: Cannot subscript object of type `object` with no `__getitem__` method
+- error[unresolved-attribute] zerver/tests/test_slack_importer.py:174:26: Type `PreparedRequest` has no attribute `params`
++ error[unresolved-attribute] zerver/tests/test_slack_importer.py:174:26: Type `object` has no attribute `get`
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- warning[possibly-unbound-attribute] benchmarks/appsec_iast_django_startup/views.py:30:18: Attribute `_writer` on type `Unknown | Tracer` is possibly unbound
++ error[invalid-assignment] benchmarks/core_api/scenario.py:9:5: Object of type `@Todo(map_with_boundness: intersections with negative contributions)` is not assignable to attribute `dispatch_with_results` on type `<module 'ddtrace.internal.core'> & ~<Protocol with members 'dispatch_with_results'>`
+- error[invalid-assignment] benchmarks/core_api/scenario.py:9:5: Implicit shadowing of function `dispatch_with_results`
+- error[unresolved-attribute] benchmarks/core_api/scenario.py:35:17: Type `<module 'ddtrace.internal.core'>` has no attribute `on_all`
+- error[unresolved-attribute] benchmarks/packages_update_imported_dependencies/scenario.py:19:17: Type `def get_package_distributions() -> Mapping[str, list[Unknown]]` has no attribute `cache_clear`
++ error[call-non-callable] ddtrace/_monkey.py:191:17: Object of type `object` is not callable
++ error[call-non-callable] ddtrace/_monkey.py:209:28: Object of type `object` is not callable
+- error[unresolved-attribute] ddtrace/_monkey.py:191:17: Type `ModuleType` has no attribute `patch_submodules`
+- error[unresolved-attribute] ddtrace/_monkey.py:209:28: Type `ModuleType` has no attribute `get_versions`
+- error[unresolved-attribute] ddtrace/_monkey.py:216:27: Type `ModuleType` has no attribute `get_version`
+- error[unresolved-attribute] ddtrace/appsec/_iast/taint_sinks/weak_cipher.py:145:16: Type `(...) -> Unknown` has no attribute `__func__`
++ error[call-non-callable] ddtrace/appsec/_iast/taint_sinks/weak_cipher.py:145:16: Object of type `object` is not callable
+- error[unresolved-attribute] ddtrace/appsec/_iast/taint_sinks/weak_cipher.py:162:16: Type `(...) -> Unknown` has no attribute `__func__`
++ error[call-non-callable] ddtrace/appsec/_iast/taint_sinks/weak_cipher.py:162:16: Object of type `object` is not callable
+- error[unresolved-attribute] ddtrace/appsec/_iast/taint_sinks/weak_cipher.py:181:16: Type `(...) -> Unknown` has no attribute `__func__`
++ error[call-non-callable] ddtrace/appsec/_iast/taint_sinks/weak_cipher.py:181:16: Object of type `object` is not callable
+- error[unresolved-attribute] ddtrace/appsec/_iast/taint_sinks/weak_hash.py:136:16: Type `(...) -> Unknown` has no attribute `__func__`
++ error[call-non-callable] ddtrace/appsec/_iast/taint_sinks/weak_hash.py:136:16: Object of type `object` is not callable
+- error[unresolved-attribute] ddtrace/appsec/_iast/taint_sinks/weak_hash.py:159:16: Type `(...) -> Unknown` has no attribute `__func__`
++ error[call-non-callable] ddtrace/appsec/_iast/taint_sinks/weak_hash.py:159:16: Object of type `object` is not callable
+- error[unresolved-attribute] ddtrace/appsec/_iast/taint_sinks/weak_hash.py:174:16: Type `(...) -> Unknown` has no attribute `__func__`
++ error[call-non-callable] ddtrace/appsec/_iast/taint_sinks/weak_hash.py:174:16: Object of type `object` is not callable
+- warning[possibly-unbound-attribute] ddtrace/contrib/internal/asyncio/patch.py:61:23: Attribute `__name__` on type `Any | None` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/contrib/internal/asyncio/patch.py:63:27: Attribute `__qualname__` on type `Any | None` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:91:19: Attribute `get_secret_value` on type `str | Unknown` is possibly unbound
++ error[call-non-callable] ddtrace/contrib/internal/langchain/patch.py:91:19: Object of type `object` is not callable
+- warning[possibly-unbound-attribute] ddtrace/contrib/internal/unittest/patch.py:104:58: Attribute `__unittest_skip__` on type `Any | Literal[""]` is possibly unbound
+- error[unresolved-attribute] ddtrace/contrib/internal/unittest/patch.py:128:39: Type `<class 'CIVisibility'>` has no attribute `_unittest_data`
+- error[unresolved-attribute] ddtrace/contrib/internal/unittest/patch.py:151:49: Type `TextTestRunner` has no attribute `test`
+- error[unresolved-attribute] ddtrace/contrib/internal/unittest/patch.py:152:23: Type `TextTestRunner` has no attribute `test`
++ error[unresolved-attribute] ddtrace/contrib/internal/unittest/patch.py:152:23: Type `object` has no attribute `_tests`
+- error[unresolved-attribute] ddtrace/contrib/internal/unittest/patch.py:195:74: Type `<class 'CIVisibility'>` has no attribute `_unittest_data`
+- error[unresolved-attribute] ddtrace/contrib/internal/unittest/patch.py:196:16: Type `<class 'CIVisibility'>` has no attribute `_unittest_data`
+- error[unresolved-attribute] ddtrace/contrib/internal/unittest/patch.py:201:73: Type `<class 'CIVisibility'>` has no attribute `_unittest_data`
+- error[unresolved-attribute] ddtrace/contrib/internal/unittest/patch.py:202:16: Type `<class 'CIVisibility'>` has no attribute `_unittest_data`
+- error[unresolved-attribute] ddtrace/contrib/internal/unittest/patch.py:307:13: Type `<class 'CIVisibility'>` has no attribute `_datadog_entry`
+- error[unresolved-attribute] ddtrace/contrib/internal/unittest/patch.py:318:57: Type `<class 'CIVisibility'>` has no attribute `_datadog_entry`
+- error[unresolved-attribute] ddtrace/contrib/internal/unittest/patch.py:545:61: Type `<class 'CIVisibility'>` has no attribute `_unittest_data`
+- error[unresolved-attribute] ddtrace/contrib/internal/unittest/patch.py:547:13: Type `<class 'CIVisibility'>` has no attribute `_unittest_data`
+- error[unresolved-attribute] ddtrace/contrib/internal/unittest/patch.py:548:66: Type `<class 'CIVisibility'>` has no attribute `_unittest_data`
+- error[unresolved-attribute] ddtrace/contrib/internal/unittest/patch.py:550:26: Type `<class 'CIVisibility'>` has no attribute `_unittest_data`
+- error[unresolved-attribute] ddtrace/contrib/internal/unittest/patch.py:556:33: Type `<class 'CIVisibility'>` has no attribute `_datadog_session_span`
+- warning[possibly-unbound-attribute] ddtrace/contrib/internal/unittest/patch.py:561:51: Attribute `_itr_meta` on type `CIVisibility | None` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/contrib/internal/unittest/patch.py:563:54: Attribute `_itr_meta` on type `CIVisibility | None` is possibly unbound
+- error[unresolved-attribute] ddtrace/debugging/_function/discovery.py:255:25: Type `ModuleType` has no attribute `__dd_code__`
++ error[not-iterable] ddtrace/debugging/_function/discovery.py:255:25: Object of type `object` is not iterable
+- warning[possibly-unbound-attribute] ddtrace/internal/packages.py:57:38: Attribute `packages_distributions` on type `<module 'importlib.metadata'> | Unknown` is possibly unbound
+- error[unresolved-attribute] ddtrace/internal/symbol_db/symbols.py:358:16: Type `FunctionType` has no attribute `__dd_wrapped__`
+- error[unresolved-attribute] ddtrace/internal/writer/writer.py:274:28: Type `WriterClientBase` has no attribute `_headers`
+- warning[possibly-unbound-attribute] ddtrace/llmobs/_integrations/utils.py:123:20: Attribute `to_dict` on type `(Any & ~AlwaysFalsy) | (dict[Any, Any] & ~AlwaysFalsy) | dict[Unknown, Unknown]` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/llmobs/_integrations/utils.py:125:22: Attribute `to_dict` on type `(Unknown & ~AlwaysFalsy) | dict[Unknown, Unknown]` is possibly unbound
++ error[call-non-callable] ddtrace/llmobs/_integrations/utils.py:123:20: Object of type `object` is not callable
++ error[call-non-callable] ddtrace/llmobs/_integrations/utils.py:125:22: Object of type `object` is not callable
+- error[unresolved-attribute] ddtrace/profiling/bootstrap/sitecustomize.py:9:9: Type `<module 'ddtrace.profiling.bootstrap'>` has no attribute `profiler`
+- warning[possibly-unbound-attribute] ddtrace/propagation/_database_monitoring.py:74:51: Attribute `tracer` on type `<module 'ddtrace'>` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/propagation/_database_monitoring.py:76:17: Attribute `tracer` on type `<module 'ddtrace'>` is possibly unbound
+- error[invalid-assignment] ddtrace/vendor/ply/yacc.py:601:29: Object of type `(Unknown & ~AlwaysFalsy) | Unknown` is not assignable to attribute `lexer` on type `(@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy) | (YaccSymbol & ~AlwaysFalsy)`
++ error[invalid-assignment] ddtrace/vendor/ply/yacc.py:601:29: Object of type `(Unknown & ~AlwaysFalsy) | Unknown` is not assignable to attribute `lexer` on type `(@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy & ~<Protocol with members 'lexer'>) | (YaccSymbol & ~AlwaysFalsy & ~<Protocol with members 'lexer'>)`
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/yacc.py:666:50: Attribute `lineno` on type `None | (@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy) | YaccSymbol` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/yacc.py:666:50: Attribute `lineno` on type `None | (@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy) | YaccSymbol` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/yacc.py:668:50: Attribute `lexpos` on type `None | (@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy) | YaccSymbol` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/yacc.py:668:50: Attribute `lexpos` on type `None | (@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy) | YaccSymbol` is possibly unbound
+- error[invalid-assignment] ddtrace/vendor/ply/yacc.py:907:29: Object of type `(Unknown & ~AlwaysFalsy) | Unknown` is not assignable to attribute `lexer` on type `(@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy) | (YaccSymbol & ~AlwaysFalsy)`
++ error[invalid-assignment] ddtrace/vendor/ply/yacc.py:907:29: Object of type `(Unknown & ~AlwaysFalsy) | Unknown` is not assignable to attribute `lexer` on type `(@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy & ~<Protocol with members 'lexer'>) | (YaccSymbol & ~AlwaysFalsy & ~<Protocol with members 'lexer'>)`
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/yacc.py:972:50: Attribute `lineno` on type `None | (@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy) | YaccSymbol` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/yacc.py:972:50: Attribute `lineno` on type `None | (@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy) | YaccSymbol` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/yacc.py:974:50: Attribute `lexpos` on type `None | (@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy) | YaccSymbol` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/yacc.py:974:50: Attribute `lexpos` on type `None | (@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy) | YaccSymbol` is possibly unbound
+- error[invalid-assignment] ddtrace/vendor/ply/yacc.py:1199:29: Object of type `(Unknown & ~AlwaysFalsy) | Unknown` is not assignable to attribute `lexer` on type `(@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy) | (YaccSymbol & ~AlwaysFalsy)`
++ error[invalid-assignment] ddtrace/vendor/ply/yacc.py:1199:29: Object of type `(Unknown & ~AlwaysFalsy) | Unknown` is not assignable to attribute `lexer` on type `(@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy & ~<Protocol with members 'lexer'>) | (YaccSymbol & ~AlwaysFalsy & ~<Protocol with members 'lexer'>)`
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/yacc.py:1259:50: Attribute `lineno` on type `None | (@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy) | YaccSymbol` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/yacc.py:1259:50: Attribute `lineno` on type `None | (@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy) | YaccSymbol` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/yacc.py:1261:50: Attribute `lexpos` on type `None | (@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy) | YaccSymbol` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/yacc.py:1261:50: Attribute `lexpos` on type `None | (@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy) | YaccSymbol` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/vendor/psutil/__init__.py:370:17: Attribute `ppid_map` on type `<module 'ddtrace.vendor.psutil._pslinux'> | <module 'ddtrace.vendor.psutil._pswindows'> | <module 'ddtrace.vendor.psutil._psosx'> | <module 'ddtrace.vendor.psutil._psbsd'> | <module 'ddtrace.vendor.psutil._pssunos'> | <module 'ddtrace.vendor.psutil._psaix'>` is possibly unbound
+- error[unresolved-attribute] tests/commands/ddtrace_run_profiling.py:6:19: Type `<module 'ddtrace.profiling.bootstrap'>` has no attribute `profiler`
+- error[unresolved-attribute] tests/contrib/gunicorn/wsgi_mw_app.py:27:9: Type `<module 'ddtrace.profiling.bootstrap'>` has no attribute `profiler`
+- error[unresolved-attribute] tests/contrib/gunicorn/wsgi_mw_app.py:28:9: Type `<module 'ddtrace.profiling.bootstrap'>` has no attribute `profiler`
+- Found 8646 diagnostics
++ Found 8602 diagnostics
+
+scipy (https://github.com/scipy/scipy)
+- warning[possibly-unbound-attribute] doc/source/conf.py:483:15: Attribute `__wrapped__` on type `ModuleType | Any` is possibly unbound
+- error[unresolved-attribute] scipy/_lib/_array_api.py:469:20: Type `ModuleType` has no attribute `linalg`
+- error[unresolved-attribute] scipy/_lib/_array_api.py:479:20: Type `ModuleType` has no attribute `sum`
+- error[unresolved-attribute] scipy/_lib/_array_api.py:479:27: Type `ModuleType` has no attribute `conj`
++ error[unresolved-attribute] scipy/_lib/_array_api.py:469:20: Type `object` has no attribute `vector_norm`
+- error[unresolved-attribute] scipy/_lib/array_api_compat/array_api_compat/common/_aliases.py:579:22: Type `ModuleType` has no attribute `broadcast_tensors`
+- error[unresolved-attribute] scipy/_lib/array_api_compat/array_api_compat/common/_aliases.py:581:22: Type `ModuleType` has no attribute `broadcast_arrays`
++ error[call-non-callable] scipy/_lib/array_api_compat/array_api_compat/common/_aliases.py:585:16: Object of type `object` is not callable
++ error[call-non-callable] scipy/_lib/array_api_compat/array_api_compat/common/_aliases.py:585:16: Object of type `object` is not callable
++ error[call-non-callable] scipy/_lib/array_api_compat/array_api_compat/common/_aliases.py:585:16: Object of type `object` is not callable
+- error[unresolved-attribute] scipy/_lib/array_api_compat/tests/test_all.py:57:21: Type `ModuleType` has no attribute `__all__`
++ error[no-matching-overload] scipy/_lib/array_api_compat/tests/test_all.py:59:30: No overload of bound method `__init__` matches arguments
++ error[no-matching-overload] scipy/_lib/array_api_compat/tests/test_all.py:60:42: No overload of bound method `__init__` matches arguments
++ error[no-matching-overload] scipy/_lib/array_api_compat/tests/test_all.py:61:25: No overload of bound method `__init__` matches arguments
+- error[unresolved-attribute] scipy/_lib/tests/test_public_api.py:286:24: Type `ModuleType` has no attribute `__all__`
++ error[not-iterable] scipy/_lib/tests/test_public_api.py:290:24: Object of type `object` is not iterable
+- error[unresolved-attribute] scipy/fft/_basic_backend.py:37:27: Type `ModuleType` has no attribute `fft`
+- error[unresolved-attribute] scipy/fft/_basic_backend.py:49:12: Type `ModuleType` has no attribute `asarray`
+- error[unresolved-attribute] scipy/fft/_basic_backend.py:62:27: Type `ModuleType` has no attribute `fft`
+- error[unresolved-attribute] scipy/fft/_basic_backend.py:74:12: Type `ModuleType` has no attribute `asarray`
+- error[unresolved-attribute] scipy/fft/_helper.py:303:16: Type `ModuleType` has no attribute `fft`
++ error[unresolved-attribute] scipy/fft/_helper.py:303:16: Type `object` has no attribute `fftshift`
+- error[unresolved-attribute] scipy/fft/_helper.py:306:12: Type `ModuleType` has no attribute `asarray`
+- error[unresolved-attribute] scipy/fft/_helper.py:345:16: Type `ModuleType` has no attribute `fft`
++ error[unresolved-attribute] scipy/fft/_helper.py:345:16: Type `object` has no attribute `ifftshift`
+- error[unresolved-attribute] scipy/fft/_helper.py:348:12: Type `ModuleType` has no attribute `asarray`
++ error[unresolved-attribute] scipy/integrate/_quadrature.py:1146:11: Type `<module 'scipy.stats'>` has no attribute `_qmc`
+- error[unresolved-attribute] scipy/integrate/_quadrature.py:1088:17: Type `def qmc_quad(func, a, b, *, n_estimates=Literal[8], n_points=Literal[1024], qrng=None, log=Literal[False]) -> Unknown` has no attribute `stats`
+- warning[possibly-unbound-attribute] scipy/integrate/_quadrature.py:1146:11: Attribute `_qmc` on type `<module 'scipy.stats'> | Unknown` is possibly unbound
+- error[unresolved-attribute] scipy/optimize/_root_scalar.py:293:49: Type `ValueError` has no attribute `_x`
+- error[unresolved-attribute] scipy/optimize/_root_scalar.py:295:59: Type `ValueError` has no attribute `_function_calls`
++ error[unresolved-attribute] scipy/optimize/_root_scalar.py:295:59: Type `ValueError & <Protocol with members '_x'>` has no attribute `_function_calls`
+- warning[possibly-unbound-attribute] scipy/signal/_spectral_py.py:481:12: Attribute `size` on type `(Unknown & ~None) | Literal["boxcar"]` is possibly unbound
+- Found 7742 diagnostics
++ Found 7733 diagnostics
+
+sympy (https://github.com/sympy/sympy)
+- error[invalid-assignment] sympy/core/tests/test_basic.py:49:9: Object of type `Literal[1]` is not assignable to attribute `x` on type `Unknown | Basic`
++ error[unsupported-operator] sympy/holonomic/holonomic.py:1760:32: Operator `in` is not supported for types `Unknown` and `<Protocol with members '__iter__'>`, in comparing `Unknown` with `(Unknown & <Protocol with members '__iter__'>) | list[Unknown]`
+- warning[possibly-unbound-attribute] sympy/polys/numberfields/minpoly.py:53:15: Attribute `symbols` on type `Unknown | RationalField` is possibly unbound
++ error[invalid-argument-type] sympy/polys/numberfields/minpoly.py:62:46: Argument to function `len` is incorrect: Expected `Sized`, found `object`
++ error[no-matching-overload] sympy/polys/numberfields/minpoly.py:63:25: No overload of function `__new__` matches arguments
++ error[no-matching-overload] sympy/polys/numberfields/minpoly.py:63:25: No overload of function `__new__` matches arguments
++ error[no-matching-overload] sympy/polys/numberfields/minpoly.py:63:25: No overload of function `__new__` matches arguments
+- warning[possibly-unbound-attribute] sympy/polys/numberfields/minpoly.py:698:44: Attribute `symbols` on type `(Unknown & ~AlwaysFalsy) | FractionField | Unknown | RationalField` is possibly unbound
++ error[unsupported-operator] sympy/polys/numberfields/minpoly.py:698:39: Operator `in` is not supported for types `Integer` and `object`, in comparing `Integer | Dummy` with `object`
+- error[unresolved-attribute] sympy/series/limitseq.py:60:18: Type `Integer` has no attribute `_eval_difference_delta`
++ error[call-non-callable] sympy/series/limitseq.py:60:18: Object of type `object` is not callable
+- warning[possibly-unbound-attribute] sympy/solvers/solvers.py:3249:44: Attribute `inverse` on type `Integer | Unknown | Add` is possibly unbound
+- warning[possibly-unbound-attribute] sympy/solvers/solvers.py:3256:23: Attribute `inverse` on type `Integer | Unknown | Add` is possibly unbound
++ error[call-non-callable] sympy/solvers/solvers.py:3249:44: Object of type `object` is not callable
++ error[call-non-callable] sympy/solvers/solvers.py:3256:23: Object of type `object` is not callable
++ error[invalid-base] sympy/utilities/decorator.py:319:27: Invalid class base with type `Unknown & <Protocol with members '__mro__'>` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 17150 diagnostics
++ Found 17154 diagnostics
+
+manticore (https://github.com/trailofbits/manticore)
+- error[unresolved-attribute] manticore/platforms/linux.py:3248:21: Type `Interruption | Syscall` has no attribute `on_handled`
++ error[call-non-callable] manticore/platforms/linux.py:3248:21: Object of type `object` is not callable
+
+```
+</details>
+
+
+---
+
+_Marked ready for review by @AlexWaygood on 2025-05-12 19:17_
+
+---
+
+_Review requested from @carljm by @AlexWaygood on 2025-05-12 19:17_
+
+---
+
+_Review requested from @sharkdp by @AlexWaygood on 2025-05-12 19:17_
+
+---
+
+_Review requested from @dcreager by @AlexWaygood on 2025-05-12 19:17_
+
+---
+
+_Comment by @AlexWaygood on 2025-05-12 19:20_
+
+The primer report looks great to me!
+
+For comparison with other type checkers:
+- pyright does not have this feature at all: https://pyright-play.net/?pythonVersion=3.12&strict=true&enableExperimentalFeatures=true&code=CYUwZgBGAUAeBcED2AjAViAxgFwJTwCgJiIBLSACwEMBnK7bAJzgBoIAiMJJd-IkgYxAA3EFQA2AfWwBPAA4g4AOi5JcxAMQQhoiSGCIAggDsZBIA
+- Mypy has a version of this feature but it uses `Any` rather than `object` for the type of the member on the synthesized protocol: https://mypy-play.net/?mypy=latest&python=3.12&gist=b8ecbc8c0fe193848c838760925a5675.
+
+  I'd rather hold off from doing that for now, as it's obviously pretty unsound. Once we also implement narrowing for attributes/subscripts and narrowing for `TypeIs`, I think it should be pretty easy to narrow the type of the attribute using idioms such as `if hasattr(x, "foo") and instance(x.foo, Bar)` or `if hasattr(x, "foo") and callable(x.foo)`
+
+---
+
+_Comment by @AlexWaygood on 2025-05-12 20:29_
+
+> ```diff
+> + error[invalid-base] sympy/utilities/decorator.py:319:27: Invalid class base with type `Unknown & <Protocol with members '__mro__'>` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+> ```
+
+fixing this false positive in a followup PR:  #18055
+
+---
+
+_Comment by @AlexWaygood on 2025-05-12 20:46_
+
+> ```diff
+> + error[unresolved-attribute] lib/Crypto/PublicKey/RSA.py:594:17: Type `InputComps & <Protocol with members 'd'> & <Protocol with members 'q'>` has no attribute `p`
+> ```
+
+We should update the `IntersectionBuilder` to merge the synthesized protocols together so that this type is
+
+```
+InputComps & <Protocol with members 'd', 'q'>
+```
+
+rather than
+
+```
+InputComps & <Protocol with members 'd'> & <Protocol with members 'q'>
+```
+
+The merged version is more readable in its display, and probably more performant too. However, there's some other work I'd like to do first before doing that. If this PR is merged, I'll open an issue to remind me to followup on this later.
+
+---
+
+_@carljm approved on 2025-05-12 22:50_
+
+This is awesome!
+
+---
+
+_Merged by @AlexWaygood on 2025-05-12 22:58_
+
+---
+
+_Closed by @AlexWaygood on 2025-05-12 22:58_
+
+---
+
+_Branch deleted on 2025-05-12 22:58_
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/resources/mdtest/narrow/hasattr.md`:17 on 2025-05-13 08:03_
+
+Can we also add a test for the negated constraint (with a TODO, if needed)? This doesn't seem to work yet?
+```py
+    else:
+        reveal_type(x)  # revealed: Foo & ~<Protocol with members 'spam'>
+        reveal_type(x.spam)  # no error?
+```
+
+---
+
+_@sharkdp reviewed on 2025-05-13 08:03_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/narrow/hasattr.md`:17 on 2025-05-13 13:07_
+
+The false negative here appears to be due to some pre-existing TODOs for intersection types. I can reproduce it using `isinstance()` narrowing with `else` branches as well as with `hasattr()` narrowing:
+
+```py
+from typing import reveal_type
+
+class Foo:
+    y: int
+
+def f(x: object):
+    if isinstance(x, Foo):
+        reveal_type(x.y)  # revealed: int
+    else:
+        reveal_type(x.y)  # revealed: @Todo(map with boundness: intersections with negative contributions)
+
+    if hasattr(x, "foo"):
+        reveal_type(x.foo)  # revealed: int
+    else:
+        reveal_type(x.foo)  # revealed: @Todo(map with boundness: intersections with negative contributions)
+```
+
+But you're right, I should have added a test for the `else` branch! I'll make a followup PR.
+
+---
+
+_@AlexWaygood reviewed on 2025-05-13 13:07_
+
+---
+
+_@AlexWaygood reviewed on 2025-05-13 13:15_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/narrow/hasattr.md`:17 on 2025-05-13 13:15_
+
+https://github.com/astral-sh/ruff/pull/18067
+
+---

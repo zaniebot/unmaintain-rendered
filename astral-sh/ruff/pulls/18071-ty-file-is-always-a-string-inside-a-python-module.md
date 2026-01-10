@@ -1,0 +1,749 @@
+```yaml
+number: 18071
+title: "[ty] __file__ is always a string inside a Python module"
+type: pull_request
+state: merged
+author: carljm
+labels:
+  - ty
+assignees: []
+merged: true
+base: main
+head: cjm/dunderfile
+created_at: 2025-05-13T15:14:31Z
+updated_at: 2025-05-13T18:08:12Z
+url: https://github.com/astral-sh/ruff/pull/18071
+synced_at: 2026-01-10T18:51:01Z
+```
+
+# [ty] __file__ is always a string inside a Python module
+
+---
+
+_Pull request opened by @carljm on 2025-05-13 15:14_
+
+## Summary
+
+Understand that `__file__` is always set and a `str` when looked up as an implicit global from a Python file we are type checking.
+
+## Test Plan
+
+mdtests
+
+---
+
+_Review requested from @AlexWaygood by @carljm on 2025-05-13 15:14_
+
+---
+
+_Review requested from @sharkdp by @carljm on 2025-05-13 15:14_
+
+---
+
+_Review requested from @dcreager by @carljm on 2025-05-13 15:14_
+
+---
+
+_Label `ty` added by @carljm on 2025-05-13 15:14_
+
+---
+
+_Comment by @github-actions[bot] on 2025-05-13 15:18_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+paroxython (https://github.com/laowantong/paroxython)
+- error[no-matching-overload] paroxython/map_taxonomy.py:168:47: No overload of function `dirname` matches arguments
+- error[no-matching-overload] paroxython/parse_program.py:79:26: No overload of function `dirname` matches arguments
+- Found 17 diagnostics
++ Found 15 diagnostics
+
+parso (https://github.com/davidhalter/parso)
+- error[no-matching-overload] parso/grammar.py:250:25: No overload of function `dirname` matches arguments
+- Found 83 diagnostics
++ Found 82 diagnostics
+
+mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+- error[invalid-argument-type] mypy_primer/projects.py:55:21: Argument to function `context_diff` is incorrect: Expected `str`, found `str | None`
+- error[invalid-argument-type] mypy_primer/projects.py:56:21: Argument to function `context_diff` is incorrect: Expected `str`, found `str | None`
+- Found 19 diagnostics
++ Found 17 diagnostics
+
+alerta (https://github.com/alerta/alerta)
+- error[no-matching-overload] alerta/utils/logging.py:21:33: No overload of function `dirname` matches arguments
+- Found 482 diagnostics
++ Found 481 diagnostics
+
+pybind11 (https://github.com/pybind/pybind11)
+- error[no-matching-overload] pybind11/commands.py:5:23: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/extra_python_package/test_files.py:14:23: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/extra_setuptools/test_setuphelper.py:10:23: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/test_eval.py:24:29: No overload of function `dirname` matches arguments
+- Found 249 diagnostics
++ Found 245 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
+- error[no-matching-overload] setup.py:10:8: No overload of function `dirname` matches arguments
+- error[no-matching-overload] sockeye_contrib/vistools/generate_graphs.py:112:33: No overload of function `realpath` matches arguments
+- error[no-matching-overload] sockeye_contrib/vistools/test/test_integration.py:19:23: No overload of function `realpath` matches arguments
+- error[no-matching-overload] test/unit/test_utils.py:81:67: No overload of function `dirname` matches arguments
+- Found 403 diagnostics
++ Found 399 diagnostics
+
+flake8 (https://github.com/pycqa/flake8)
+- error[no-matching-overload] tests/unit/plugins/pycodestyle_test.py:9:24: No overload of function `abspath` matches arguments
+- error[invalid-argument-type] tests/unit/test_file_processor.py:15:46: Argument to bound method `__init__` is incorrect: Expected `str`, found `str | None`
+- Found 46 diagnostics
++ Found 44 diagnostics
+
+black (https://github.com/psf/black)
+- error[no-matching-overload] src/blib2to3/pygram.py:174:34: No overload of function `dirname` matches arguments
+- error[no-matching-overload] src/blib2to3/pygram.py:176:9: No overload of function `dirname` matches arguments
+- Found 143 diagnostics
++ Found 141 diagnostics
+
+stone (https://github.com/dropbox/stone)
+- error[no-matching-overload] stone/backends/obj_c_types.py:95:36: No overload of function `dirname` matches arguments
+- error[no-matching-overload] stone/backends/swift_client.py:319:36: No overload of function `dirname` matches arguments
+- error[no-matching-overload] stone/backends/swift_types.py:140:36: No overload of function `dirname` matches arguments
+- Found 181 diagnostics
++ Found 178 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
+- error[no-matching-overload] docs/source/conf.py:74:18: No overload of function `dirname` matches arguments
+- error[no-matching-overload] setup.py:9:31: No overload of function `dirname` matches arguments
+- Found 2276 diagnostics
++ Found 2274 diagnostics
+
+poetry (https://github.com/python-poetry/poetry)
+- error[no-matching-overload] tests/fixtures/git/github.com/demo/no-version/setup.py:10:28: No overload of function `dirname` matches arguments
+- Found 1056 diagnostics
++ Found 1055 diagnostics
+
+dragonchain (https://github.com/dragonchain/dragonchain)
+- error[no-matching-overload] dragonchain/job_processor/contract_job.py:140:45: No overload of function `abspath` matches arguments
+- Found 313 diagnostics
++ Found 312 diagnostics
+
+bandersnatch (https://github.com/pypa/bandersnatch)
+- error[no-matching-overload] src/bandersnatch/tests/plugins/test_storage_plugins.py:37:37: No overload of function `abspath` matches arguments
+- error[no-matching-overload] src/bandersnatch/tests/plugins/test_storage_plugins.py:40:21: No overload of function `abspath` matches arguments
+- Found 150 diagnostics
++ Found 148 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- error[no-matching-overload] tornado/autoreload.py:74:23: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tornado/test/httpserver_test.py:158:22: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tornado/test/iostream_test.py:50:31: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tornado/test/iostream_test.py:51:30: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tornado/test/iostream_test.py:967:26: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tornado/test/iostream_test.py:968:26: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tornado/test/iostream_test.py:1197:30: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tornado/test/iostream_test.py:1198:30: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tornado/test/iostream_test.py:1213:26: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tornado/test/locale_test.py:32:26: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tornado/test/locale_test.py:40:26: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tornado/test/locale_test.py:62:26: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tornado/test/options_test.py:42:29: No overload of function `abspath` matches arguments
+- error[no-matching-overload] tornado/test/options_test.py:246:30: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tornado/test/options_test.py:306:30: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tornado/test/template_test.py:523:43: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tornado/test/web_test.py:62:25: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tornado/test/web_test.py:1108:31: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tornado/test/web_test.py:1456:29: No overload of function `abspath` matches arguments
+- error[no-matching-overload] tornado/test/web_test.py:1506:20: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tornado/test/web_test.py:1838:49: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tornado/test/web_test.py:3311:26: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tornado/testing.py:521:22: No overload of function `dirname` matches arguments
+- Found 534 diagnostics
++ Found 511 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
+- error[no-matching-overload] docs/conf.py:11:42: No overload of function `dirname` matches arguments
+- error[no-matching-overload] dummyserver/socketserver.py:32:27: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/contrib/test_pyopenssl.py:97:29: No overload of function `dirname` matches arguments
+- Found 467 diagnostics
++ Found 464 diagnostics
+
+mkdocs (https://github.com/mkdocs/mkdocs)
+- error[no-matching-overload] mkdocs/__main__.py:237:27: No overload of function `abspath` matches arguments
+- error[no-matching-overload] mkdocs/contrib/search/__init__.py:20:29: No overload of function `abspath` matches arguments
+- error[no-matching-overload] mkdocs/contrib/search/search_index.py:103:37: No overload of function `abspath` matches arguments
+- error[no-matching-overload] mkdocs/localization.py:26:29: No overload of function `abspath` matches arguments
+- error[no-matching-overload] mkdocs/tests/base.py:28:46: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mkdocs/tests/config/config_options_legacy_tests.py:655:21: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mkdocs/tests/config/config_options_legacy_tests.py:706:13: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mkdocs/tests/config/config_options_legacy_tests.py:750:45: No overload of function `abspath` matches arguments
+- error[no-matching-overload] mkdocs/tests/config/config_options_legacy_tests.py:779:18: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mkdocs/tests/config/config_options_legacy_tests.py:798:18: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mkdocs/tests/config/config_options_legacy_tests.py:816:17: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mkdocs/tests/config/config_options_tests.py:856:21: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mkdocs/tests/config/config_options_tests.py:910:13: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mkdocs/tests/config/config_options_tests.py:954:45: No overload of function `abspath` matches arguments
+- error[no-matching-overload] mkdocs/tests/config/config_options_tests.py:983:18: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mkdocs/tests/config/config_options_tests.py:1002:18: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mkdocs/tests/config/config_options_tests.py:1028:17: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mkdocs/tests/integration.py:27:7: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mkdocs/tests/structure/page_tests.py:17:21: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mkdocs/tests/structure/page_tests.py:26:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mkdocs/tests/theme_tests.py:10:28: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mkdocs/theme.py:50:39: No overload of function `dirname` matches arguments
+- Found 369 diagnostics
++ Found 347 diagnostics
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
+- error[no-matching-overload] schema_salad/tests/test_ref_resolver.py:168:50: No overload of function `dirname` matches arguments
+- error[no-matching-overload] schema_salad/tests/util.py:29:25: No overload of function `dirname` matches arguments
+- error[no-matching-overload] schema_salad/tests/util.py:34:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] setup.py:8:13: No overload of function `dirname` matches arguments
+- Found 405 diagnostics
++ Found 401 diagnostics
+
+pwndbg (https://github.com/pwndbg/pwndbg)
+- error[no-matching-overload] pwndbg/lib/version.py:11:50: No overload of function `dirname` matches arguments
+- Found 2240 diagnostics
++ Found 2239 diagnostics
+
+jinja (https://github.com/pallets/jinja)
+- error[no-matching-overload] scripts/generate_identifier_pattern.py:62:22: No overload of function `dirname` matches arguments
+- Found 309 diagnostics
++ Found 308 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- error[no-matching-overload] mitmproxy/tools/web/app.py:836:40: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mitmproxy/tools/web/app.py:837:38: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mitmproxy/version.py:20:41: No overload of function `dirname` matches arguments
+- Found 2173 diagnostics
++ Found 2170 diagnostics
+
+comtypes (https://github.com/enthought/comtypes)
+- error[no-matching-overload] comtypes/test/TestComServer.py:9:46: No overload of function `dirname` matches arguments
+- error[no-matching-overload] comtypes/test/TestComServer.py:27:28: No overload of function `dirname` matches arguments
+- error[no-matching-overload] comtypes/test/TestDispServer.py:10:46: No overload of function `dirname` matches arguments
+- error[no-matching-overload] comtypes/test/TestDispServer.py:26:28: No overload of function `dirname` matches arguments
+- error[no-matching-overload] comtypes/test/test_client.py:26:12: No overload of function `splitdrive` matches arguments
+- error[no-matching-overload] comtypes/test/test_dispinterface.py:147:32: No overload of function `dirname` matches arguments
+- error[no-matching-overload] comtypes/test/test_server_register.py:363:50: No overload of function `dirname` matches arguments
+- error[no-matching-overload] comtypes/test/test_server_register.py:384:50: No overload of function `dirname` matches arguments
+- error[no-matching-overload] comtypes/test/test_server_register.py:439:50: No overload of function `dirname` matches arguments
+- error[no-matching-overload] comtypes/test/test_urlhistory.py:12:24: No overload of function `dirname` matches arguments
+- Found 619 diagnostics
++ Found 609 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
+- error[unsupported-operator] psycopg/psycopg/pq/_pq_ctypes.py:791:10: Operator `+` is unsupported between objects of type `str | None` and `Literal["i"]`
+- error[no-matching-overload] tests/test_typing.py:7:24: No overload of function `abspath` matches arguments
+- Found 1202 diagnostics
++ Found 1200 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- error[no-matching-overload] tests/middleware/test_shared_data.py:29:40: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/middleware/test_shared_data.py:30:47: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/test_formparser.py:211:26: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/test_formparser.py:289:26: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/test_wrappers.py:625:30: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/test_wrappers.py:644:30: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/test_wsgi.py:293:30: No overload of function `dirname` matches arguments
+- Found 467 diagnostics
++ Found 460 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
+- error[no-matching-overload] dulwich/tests/utils.py:68:9: No overload of function `dirname` matches arguments
+- Found 145 diagnostics
++ Found 144 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- error[no-matching-overload] packaging/wheel/relocate.py:64:20: No overload of function `abspath` matches arguments
+- error[no-matching-overload] release/apply-release-changes.py:72:32: No overload of function `basename` matches arguments
+- error[no-matching-overload] test/test_datasets_utils.py:18:21: No overload of function `abspath` matches arguments
+- error[no-matching-overload] test/test_functional_tensor.py:1026:38: No overload of function `abspath` matches arguments
+- error[no-matching-overload] test/test_image.py:34:43: No overload of function `abspath` matches arguments
+- error[no-matching-overload] test/test_io.py:22:42: No overload of function `abspath` matches arguments
+- error[no-matching-overload] test/test_models.py:49:29: No overload of function `abspath` matches arguments
+- error[no-matching-overload] test/test_models.py:116:44: No overload of function `realpath` matches arguments
+- error[no-matching-overload] test/test_onnx.py:413:33: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_ops.py:924:37: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_ops.py:1207:37: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_ops.py:1853:61: No overload of function `abspath` matches arguments
+- error[no-matching-overload] test/test_transforms.py:31:21: No overload of function `abspath` matches arguments
+- error[no-matching-overload] test/test_utils.py:104:41: No overload of function `abspath` matches arguments
+- error[no-matching-overload] test/test_utils.py:128:25: No overload of function `abspath` matches arguments
+- error[no-matching-overload] test/test_utils.py:145:25: No overload of function `abspath` matches arguments
+- error[no-matching-overload] test/test_utils.py:183:41: No overload of function `abspath` matches arguments
+- error[no-matching-overload] test/test_utils.py:377:41: No overload of function `abspath` matches arguments
+- error[no-matching-overload] test/test_utils.py:448:25: No overload of function `abspath` matches arguments
+- error[no-matching-overload] test/test_utils.py:483:41: No overload of function `abspath` matches arguments
+- error[no-matching-overload] test/test_utils.py:550:41: No overload of function `abspath` matches arguments
+- error[no-matching-overload] test/test_video_gpu_decoder.py:14:42: No overload of function `abspath` matches arguments
+- error[no-matching-overload] test/test_video_reader.py:26:42: No overload of function `abspath` matches arguments
+- error[no-matching-overload] test/test_videoapi.py:28:42: No overload of function `abspath` matches arguments
+- error[no-matching-overload] torchvision/__init__.py:19:37: No overload of function `realpath` matches arguments
+- error[no-matching-overload] torchvision/_internally_replaced_utils.py:28:15: No overload of function `dirname` matches arguments
+- Found 2072 diagnostics
++ Found 2046 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
++ warning[unused-ignore-comment] mesonbuild/scripts/pycompile.py:6:1: Unused blanket `type: ignore` directive
+- error[no-matching-overload] run_format_tests.py:79:18: No overload of function `split` matches arguments
+- error[no-matching-overload] run_project_tests.py:1688:18: No overload of function `split` matches arguments
+- error[no-matching-overload] setup.py:15:8: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test cases/python/4 custom target depends extmodule/blaster.py:9:16: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test cases/python3/4 custom target depends extmodule/blaster.py:9:16: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test cases/unit/45 native dep pkgconfig var/cross_pkgconfig.py:9:21: No overload of function `realpath` matches arguments
+- Found 1475 diagnostics
++ Found 1470 diagnostics
+
+mypy (https://github.com/python/mypy)
+- error[no-matching-overload] mypy/build.py:300:12: No overload of function `dirname` matches arguments
+- warning[possibly-unbound-attribute] mypy/build.py:2857:30: Attribute `endswith` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] mypy/main.py:568:34: Attribute `endswith` on type `str | None` is possibly unbound
+- error[no-matching-overload] mypy/modulefinder.py:883:40: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mypy/modulefinder.py:954:56: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mypy/test/config.py:9:37: No overload of function `realpath` matches arguments
+- error[no-matching-overload] mypy/version.py:14:44: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mypyc/__main__.py:20:26: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mypyc/__main__.py:51:30: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mypyc/build.py:208:41: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mypyc/lib-rt/setup.py:30:26: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mypyc/test/config.py:9:37: No overload of function `realpath` matches arguments
+- error[no-matching-overload] mypyc/test/test_cheader.py:16:33: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mypyc/test/test_cheader.py:41:40: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mypyc/test/test_commandline.py:23:26: No overload of function `dirname` matches arguments
+- error[no-matching-overload] mypyc/test/test_external.py:11:25: No overload of function `dirname` matches arguments
+- Found 3368 diagnostics
++ Found 3352 diagnostics
+
+PyGithub (https://github.com/PyGithub/PyGithub)
+- error[no-matching-overload] tests/Framework.py:351:37: No overload of function `dirname` matches arguments
+- Found 329 diagnostics
++ Found 328 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- error[invalid-return-type] src/hydra_zen/wrapper/_implementations.py:945:16: Return type does not match returned value: Expected `DataClass_`, found `@Todo(unsupported type[X] special form) | (((...) -> Any) & dict[Unknown, Unknown]) | (DataClass_ & dict[Unknown, Unknown]) | (list[Any] & dict[Unknown, Unknown]) | dict[Any, Any] | (((...) -> Any) & list[Unknown]) | (DataClass_ & list[Unknown]) | list[Any] | (dict[Any, Any] & list[Unknown])`
++ error[invalid-return-type] src/hydra_zen/wrapper/_implementations.py:945:16: Return type does not match returned value: Expected `DataClass_`, found `@Todo(unsupported type[X] special form) | (((...) -> Any) & dict[Unknown, Unknown]) | (DataClass_ & dict[Unknown, Unknown]) | (list[Any] & dict[Unknown, Unknown]) | dict[Any, Any] | (((...) -> Any) & list[Unknown]) | (DataClass_ & list[Unknown]) | list[Any]`
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- error[no-matching-overload] pymongo/daemon.py:31:14: No overload of function `realpath` matches arguments
+- Found 558 diagnostics
++ Found 557 diagnostics
+
+colour (https://github.com/colour-science/colour)
+- error[no-matching-overload] colour/algebra/tests/test_interpolation.py:489:13: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/characterisation/aces_it.py:288:5: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/examples/algebra/examples_interpolation.py:164:5: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/examples/io/examples_ctl.py:11:9: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/examples/io/examples_ctl.py:156:13: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/examples/io/examples_fichet2021.py:14:9: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/examples/io/examples_ies_tm2714.py:8:31: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/examples/io/examples_luts.py:11:5: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/examples/io/examples_tabular.py:9:31: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/examples/plotting/examples_blindness.py:11:31: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/io/luts/tests/test__init__.py:29:31: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/io/luts/tests/test_cinespace_csp.py:37:31: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/io/luts/tests/test_iridas_cube.py:28:31: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/io/luts/tests/test_lut.py:45:36: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/io/luts/tests/test_resolve_cube.py:36:31: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/io/luts/tests/test_sony_spi1d.py:27:31: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/io/luts/tests/test_sony_spi3d.py:28:31: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/io/luts/tests/test_sony_spimtx.py:27:31: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/io/tests/test_ctl.py:37:36: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/io/tests/test_fichet2021.py:52:36: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/io/tests/test_image.py:48:36: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/io/tests/test_ocio.py:25:36: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/io/tests/test_tabular.py:33:36: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/io/tests/test_tm2714.py:42:36: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/io/tests/test_uprtek_sekonic.py:33:36: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/io/tests/test_xrite.py:23:36: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/plotting/tm3018/components.py:65:50: No overload of function `dirname` matches arguments
+- error[no-matching-overload] colour/quality/cfi2017.py:87:44: No overload of function `dirname` matches arguments
+- error[invalid-argument-type] colour/utilities/tests/test_verbose.py:64:63: Argument to function `show_warning` is incorrect: Expected `str`, found `str | None`
+- error[invalid-argument-type] colour/utilities/tests/test_verbose.py:67:67: Argument to function `show_warning` is incorrect: Expected `str`, found `str | None`
+- error[invalid-argument-type] colour/utilities/tests/test_verbose.py:72:67: Argument to function `show_warning` is incorrect: Expected `str`, found `str | None`
+- Found 679 diagnostics
++ Found 648 diagnostics
+
+arviz (https://github.com/arviz-devs/arviz)
+- error[no-matching-overload] arviz/__init__.py:43:34: No overload of function `dirname` matches arguments
+- error[no-matching-overload] arviz/data/datasets.py:19:50: No overload of function `abspath` matches arguments
+- error[no-matching-overload] arviz/tests/base_tests/test_data.py:1400:32: No overload of function `abspath` matches arguments
+- error[no-matching-overload] arviz/tests/base_tests/test_data.py:1447:32: No overload of function `abspath` matches arguments
+- error[no-matching-overload] arviz/tests/base_tests/test_data.py:1477:32: No overload of function `abspath` matches arguments
+- error[no-matching-overload] arviz/tests/base_tests/test_diagnostics.py:130:32: No overload of function `abspath` matches arguments
+- error[no-matching-overload] arviz/tests/base_tests/test_rcparams.py:34:28: No overload of function `abspath` matches arguments
+- error[no-matching-overload] arviz/tests/base_tests/test_rcparams.py:43:28: No overload of function `abspath` matches arguments
+- error[no-matching-overload] arviz/tests/base_tests/test_rcparams.py:50:28: No overload of function `abspath` matches arguments
+- error[no-matching-overload] arviz/tests/base_tests/test_rcparams.py:110:42: No overload of function `abspath` matches arguments
+- error[no-matching-overload] arviz/tests/external_tests/test_data_cmdstan.py:16:32: No overload of function `abspath` matches arguments
+- error[no-matching-overload] arviz/tests/external_tests/test_data_cmdstanpy.py:114:32: No overload of function `abspath` matches arguments
+- error[no-matching-overload] arviz/tests/external_tests/test_data_emcee.py:85:32: No overload of function `abspath` matches arguments
+- error[no-matching-overload] arviz/tests/helpers.py:362:32: No overload of function `abspath` matches arguments
+- error[no-matching-overload] arviz/tests/helpers.py:563:28: No overload of function `abspath` matches arguments
+- error[no-matching-overload] doc/source/conf.py:24:68: No overload of function `abspath` matches arguments
+- error[no-matching-overload] setup.py:10:32: No overload of function `realpath` matches arguments
+- Found 874 diagnostics
++ Found 857 diagnostics
+
+AutoSplit (https://github.com/Toufool/AutoSplit)
+- error[no-matching-overload] src/utils.py:327:70: No overload of function `abspath` matches arguments
+- Found 53 diagnostics
++ Found 52 diagnostics
+
+optuna (https://github.com/optuna/optuna)
+- error[no-matching-overload] optuna/storages/_rdb/storage.py:1156:36: No overload of function `dirname` matches arguments
+- error[no-matching-overload] optuna/storages/_rdb/storage.py:1158:53: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/storages_tests/journal_tests/create_journal.py:14:20: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/storages_tests/journal_tests/test_log_compatibility.py:9:25: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/storages_tests/rdb_tests/test_storage.py:190:9: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/storages_tests/rdb_tests/test_storage.py:244:9: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/storages_tests/rdb_tests/test_storage.py:293:9: No overload of function `dirname` matches arguments
+- Found 1192 diagnostics
++ Found 1185 diagnostics
+
+altair (https://github.com/vega/altair)
+- error[no-matching-overload] tests/examples_arguments_syntax/__init__.py:18:53: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/examples_methods_syntax/__init__.py:16:51: No overload of function `dirname` matches arguments
+- Found 1514 diagnostics
++ Found 1512 diagnostics
+
+cwltool (https://github.com/common-workflow-language/cwltool)
+- error[no-matching-overload] cwlref-runner/setup.py:6:13: No overload of function `dirname` matches arguments
+- error[no-matching-overload] cwltool/singularity_utils.py:16:40: No overload of function `dirname` matches arguments
+- error[no-matching-overload] setup.py:53:13: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/util.py:40:25: No overload of function `dirname` matches arguments
+- Found 328 diagnostics
++ Found 324 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
+- error[no-matching-overload] cloudinit/config/schema.py:1173:41: No overload of function `abspath` matches arguments
+- error[no-matching-overload] setup.py:27:36: No overload of function `realpath` matches arguments
+- error[no-matching-overload] tests/unittests/analyze/test_boot.py:111:32: No overload of function `abspath` matches arguments
+- error[no-matching-overload] tests/unittests/analyze/test_boot.py:139:32: No overload of function `abspath` matches arguments
+- error[no-matching-overload] tests/unittests/analyze/test_boot.py:170:32: No overload of function `abspath` matches arguments
+- error[no-matching-overload] tests/unittests/sources/test_init.py:857:29: No overload of function `dirname` matches arguments
+- Found 742 diagnostics
++ Found 736 diagnostics
+
+apprise (https://github.com/caronc/apprise)
+- error[no-matching-overload] apprise/asset.py:106:9: No overload of function `dirname` matches arguments
+- error[no-matching-overload] apprise/locale.py:67:32: No overload of function `dirname` matches arguments
+- error[no-matching-overload] apprise/manager.py:63:32: No overload of function `dirname` matches arguments
+- error[no-matching-overload] apprise/manager_attachment.py:55:32: No overload of function `dirname` matches arguments
+- error[no-matching-overload] apprise/manager_config.py:55:32: No overload of function `dirname` matches arguments
+- error[no-matching-overload] apprise/manager_plugins.py:55:32: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/conftest.py:40:30: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/conftest.py:56:27: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/helpers/rest.py:70:25: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_api.py:64:21: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_apprise_attachments.py:47:21: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_apprise_cli.py:434:26: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_attach_file.py:47:21: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_attach_http.py:49:21: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_decorator_notify.py:47:21: No overload of function `dirname` matches arguments
+- error[invalid-argument-type] test/test_decorator_notify.py:98:9: Argument to bound method `notify` is incorrect: Expected `AppriseAttachment | None`, found `tuple[LiteralString, LiteralString]`
++ error[invalid-argument-type] test/test_decorator_notify.py:98:9: Argument to bound method `notify` is incorrect: Expected `AppriseAttachment | None`, found `tuple[str, str]`
+- error[invalid-argument-type] test/test_decorator_notify.py:202:9: Argument to bound method `notify` is incorrect: Expected `AppriseAttachment | None`, found `tuple[LiteralString]`
++ error[invalid-argument-type] test/test_decorator_notify.py:202:9: Argument to bound method `notify` is incorrect: Expected `AppriseAttachment | None`, found `tuple[str]`
+- error[invalid-argument-type] test/test_decorator_notify.py:327:9: Argument to bound method `notify` is incorrect: Expected `AppriseAttachment | None`, found `tuple[LiteralString, LiteralString]`
++ error[invalid-argument-type] test/test_decorator_notify.py:327:9: Argument to bound method `notify` is incorrect: Expected `AppriseAttachment | None`, found `tuple[str, str]`
+- error[no-matching-overload] test/test_persistent_store.py:49:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_apprise_api.py:43:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_bluesky.py:49:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_custom_form.py:45:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_custom_json.py:46:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_custom_xml.py:45:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_discord.py:54:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_email.py:56:29: No overload of function `dirname` matches arguments
+- error[invalid-argument-type] test/test_plugin_email.py:569:48: Argument to bound method `notify` is incorrect: Expected `AppriseAttachment | None`, found `LiteralString`
++ error[invalid-argument-type] test/test_plugin_email.py:569:48: Argument to bound method `notify` is incorrect: Expected `AppriseAttachment | None`, found `str`
+- error[invalid-argument-type] test/test_plugin_email.py:589:48: Argument to bound method `notify` is incorrect: Expected `AppriseAttachment | None`, found `LiteralString`
++ error[invalid-argument-type] test/test_plugin_email.py:589:48: Argument to bound method `notify` is incorrect: Expected `AppriseAttachment | None`, found `str`
+- error[no-matching-overload] test/test_plugin_fcm.py:64:36: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_fcm.py:179:13: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_fcm.py:188:13: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_guilded.py:43:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_lunasea.py:43:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_mailgun.py:45:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_mastodon.py:47:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_matrix.py:62:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_misskey.py:39:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_ntfy.py:45:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_office365.py:47:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_pushbullet.py:45:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_pushover.py:44:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_pushsafer.py:45:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_resend.py:46:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_revolt.py:52:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_sendgrid.py:46:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_ses.py:49:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_signal.py:48:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_slack.py:48:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_smseagle.py:58:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_smtp2go.py:44:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_sparkpost.py:46:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_telegram.py:49:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_title_maxlen.py:43:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_twitter.py:49:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] test/test_plugin_wxpusher.py:47:29: No overload of function `dirname` matches arguments
+- Found 3675 diagnostics
++ Found 3625 diagnostics
+
+django-stubs (https://github.com/typeddjango/django-stubs)
+- error[no-matching-overload] tests/test_generic_consistency.py:11:43: No overload of function `dirname` matches arguments
+- Found 1175 diagnostics
++ Found 1174 diagnostics
+
+bokeh (https://github.com/bokeh/bokeh)
+- error[no-matching-overload] src/bokeh/command/subcommands/__init__.py:54:25: No overload of function `dirname` matches arguments
+- error[no-matching-overload] src/bokeh/core/templates.py:81:31: No overload of function `dirname` matches arguments
+- error[no-matching-overload] src/bokeh/sphinxext/templates.py:56:24: No overload of function `dirname` matches arguments
+- Found 998 diagnostics
++ Found 995 diagnostics
+
+pycryptodome (https://github.com/Legrandin/pycryptodome)
+- error[no-matching-overload] lib/Crypto/Util/_file_system.py:50:33: No overload of function `abspath` matches arguments
+- error[no-matching-overload] lib/Crypto/Util/_file_system.py:50:33: No overload of function `abspath` matches arguments
+- error[no-matching-overload] lib/Crypto/Util/_file_system.py:50:33: No overload of function `abspath` matches arguments
+- Found 1618 diagnostics
++ Found 1615 diagnostics
+
+openlibrary (https://github.com/internetarchive/openlibrary)
+- error[no-matching-overload] openlibrary/admin/code.py:33:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] openlibrary/catalog/add_book/tests/test_add_book.py:34:12: No overload of function `dirname` matches arguments
+- error[no-matching-overload] openlibrary/coverstore/tests/test_coverstore.py:8:27: No overload of function `dirname` matches arguments
+- error[no-matching-overload] openlibrary/coverstore/tests/test_webapp.py:11:27: No overload of function `dirname` matches arguments
+- error[no-matching-overload] openlibrary/i18n/__init__.py:24:8: No overload of function `dirname` matches arguments
+- error[no-matching-overload] openlibrary/i18n/test_po_files.py:9:8: No overload of function `dirname` matches arguments
+- error[no-matching-overload] openlibrary/plugins/admin/tests/conftest.py:10:12: No overload of function `dirname` matches arguments
+- error[no-matching-overload] openlibrary/plugins/openlibrary/code.py:390:12: No overload of function `dirname` matches arguments
+- error[no-matching-overload] openlibrary/plugins/upstream/tests/test_account.py:13:12: No overload of function `dirname` matches arguments
+- error[no-matching-overload] openlibrary/solr/types_generator.py:4:8: No overload of function `dirname` matches arguments
+- error[no-matching-overload] openlibrary/tests/solr/test_types_generator.py:5:8: No overload of function `dirname` matches arguments
+- Found 773 diagnostics
++ Found 762 diagnostics
+
+streamlit (https://github.com/streamlit/streamlit)
+- error[unsupported-operator] lib/streamlit/config.py:395:13: Operator `not in` is not supported for types `str` and `None`, in comparing `Literal["site-packages"]` with `str | None`
+- error[unsupported-operator] lib/streamlit/config.py:396:13: Operator `not in` is not supported for types `str` and `None`, in comparing `Literal["dist-packages"]` with `str | None`
+- error[unsupported-operator] lib/streamlit/config.py:397:13: Operator `not in` is not supported for types `str` and `None`, in comparing `Literal["__pypackages__"]` with `str | None`
+- error[no-matching-overload] lib/streamlit/file_util.py:126:31: No overload of function `normpath` matches arguments
+- error[no-matching-overload] lib/streamlit/watcher/folder_black_list.py:65:43: No overload of function `dirname` matches arguments
+- error[no-matching-overload] lib/tests/streamlit/runtime/scriptrunner/script_cache_test.py:25:25: No overload of function `dirname` matches arguments
+- error[no-matching-overload] lib/tests/streamlit/runtime/scriptrunner/script_runner_test.py:999:17: No overload of function `dirname` matches arguments
+- error[no-matching-overload] lib/tests/streamlit/runtime/scriptrunner/script_runner_test.py:1083:13: No overload of function `dirname` matches arguments
+- error[no-matching-overload] lib/tests/streamlit/streamlit_test.py:41:15: No overload of function `dirname` matches arguments
+- error[no-matching-overload] lib/tests/streamlit/watcher/local_sources_watcher_test.py:36:5: No overload of function `dirname` matches arguments
+- error[no-matching-overload] scripts/check_new_material_symbols.py:26:41: No overload of function `dirname` matches arguments
+- error[no-matching-overload] scripts/update_e2e_snapshots.py:38:41: No overload of function `dirname` matches arguments
+- error[no-matching-overload] scripts/update_emojis.py:31:41: No overload of function `dirname` matches arguments
+- error[no-matching-overload] scripts/update_material_icon_font_and_names.py:38:41: No overload of function `dirname` matches arguments
+- error[no-matching-overload] scripts/update_name.py:29:41: No overload of function `dirname` matches arguments
+- error[no-matching-overload] scripts/update_version.py:56:41: No overload of function `dirname` matches arguments
+- Found 3325 diagnostics
++ Found 3309 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- error[no-matching-overload] benchmarks/appsec_iast_django_startup/settings.py:4:28: No overload of function `abspath` matches arguments
+- error[no-matching-overload] benchmarks/django_simple/app.py:10:28: No overload of function `abspath` matches arguments
+- error[no-matching-overload] benchmarks/errortracking_django_simple/app.py:10:28: No overload of function `abspath` matches arguments
+- error[no-matching-overload] ddtrace/_monkey.py:285:44: No overload of function `dirname` matches arguments
+- error[no-matching-overload] ddtrace/appsec/_constants.py:327:32: No overload of function `abspath` matches arguments
+- error[no-matching-overload] ddtrace/appsec/_iast/_taint_tracking/_vendor/pybind11/pybind11/commands.py:3:23: No overload of function `dirname` matches arguments
+- error[invalid-return-type] ddtrace/appsec/_processor.py:69:12: Return type does not match returned value: Expected `str`, found `(Unknown & ~AlwaysFalsy) | (EnvVariable[None] & ~AlwaysFalsy) | Unknown | LiteralString`
++ error[invalid-return-type] ddtrace/appsec/_processor.py:69:12: Return type does not match returned value: Expected `str`, found `(Unknown & ~AlwaysFalsy) | (EnvVariable[None] & ~AlwaysFalsy) | Unknown | str`
+- error[no-matching-overload] ddtrace/bootstrap/sitecustomize.py:130:21: No overload of function `dirname` matches arguments
+- error[no-matching-overload] ddtrace/settings/asm.py:47:32: No overload of function `dirname` matches arguments
+- error[no-matching-overload] ddtrace/vendor/jsonpath_ng/parser.py:38:28: No overload of function `dirname` matches arguments
+- error[no-matching-overload] ddtrace/vendor/jsonpath_ng/parser.py:40:44: No overload of function `split` matches arguments
+- error[no-matching-overload] lib-injection/sources/sitecustomize.py:35:14: No overload of function `dirname` matches arguments
+- error[no-matching-overload] scripts/integration_registry/_update_integration_registry_versions.py:20:45: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/appsec/appsec/test_appsec_utils.py:50:34: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/appsec/appsec/test_appsec_utils.py:60:34: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/appsec/contrib_appsec/django_app/settings.py:17:44: No overload of function `abspath` matches arguments
+- error[no-matching-overload] tests/appsec/contrib_appsec/flask_app/app.py:17:27: No overload of function `realpath` matches arguments
+- error[no-matching-overload] tests/appsec/iast/conftest.py:143:19: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/appsec/iast/fixtures/propagation_path.py:13:28: No overload of function `abspath` matches arguments
+- error[no-matching-overload] tests/appsec/iast/fixtures/taint_sinks/path_traversal.py:14:64: No overload of function `abspath` matches arguments
+- error[no-matching-overload] tests/appsec/iast/taint_sinks/_taint_sinks_utils.py:12:28: No overload of function `abspath` matches arguments
+- error[no-matching-overload] tests/appsec/iast/taint_sinks/test_code_injection.py:13:28: No overload of function `abspath` matches arguments
+- error[no-matching-overload] tests/appsec/iast/taint_sinks/test_path_traversal.py:17:28: No overload of function `abspath` matches arguments
+- error[no-matching-overload] tests/appsec/iast/taint_sinks/test_path_traversal_redacted.py:22:28: No overload of function `abspath` matches arguments
+- error[no-matching-overload] tests/appsec/iast/taint_sinks/test_ssrf_redacted.py:20:28: No overload of function `abspath` matches arguments
+- error[no-matching-overload] tests/appsec/iast/taint_sinks/test_stacktrace_leak.py:14:30: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/appsec/iast/taint_sinks/test_stacktrace_leak.py:18:30: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/appsec/iast/taint_sinks/test_xss_redacted.py:14:28: No overload of function `abspath` matches arguments
+- error[no-matching-overload] tests/appsec/iast/test_env_var.py:14:19: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/appsec/iast_packages/test_packages.py:967:50: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/appsec/integrations/django_tests/django_app/settings.py:16:44: No overload of function `abspath` matches arguments
+- error[no-matching-overload] tests/appsec/rules.py:4:28: No overload of function `abspath` matches arguments
+- error[no-matching-overload] tests/ci_visibility/api_client/test_ci_visibility_api_client_skippable_real_world_responses.py:23:32: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/ci_visibility/api_client/test_ci_visibility_api_client_skippable_real_world_responses.py:64:32: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/ci_visibility/api_client/test_ci_visibility_api_client_skippable_real_world_responses.py:4405:32: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/conftest.py:329:33: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/aiohttp/app/web.py:17:28: No overload of function `realpath` matches arguments
+- error[no-matching-overload] tests/contrib/anthropic/utils.py:23:43: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/azure_functions/test_azure_functions_snapshot.py:30:26: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/botocore/bedrock_utils.py:130:43: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/celery/test_chained_task.py:20:29: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/cherrypy/web.py:87:25: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/crewai/conftest.py:25:43: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/django/django1_app/settings.py:9:44: No overload of function `abspath` matches arguments
+- error[no-matching-overload] tests/contrib/django/django_app/settings.py:17:44: No overload of function `abspath` matches arguments
+- error[no-matching-overload] tests/contrib/django/test_django_wsgi.py:19:23: No overload of function `splitext` matches arguments
+- error[no-matching-overload] tests/contrib/django/test_django_wsgi.py:19:23: No overload of function `splitext` matches arguments
+- error[no-matching-overload] tests/contrib/django/test_django_wsgi.py:19:23: No overload of function `splitext` matches arguments
+- error[no-matching-overload] tests/contrib/django/test_django_wsgi.py:57:43: No overload of function `abspath` matches arguments
+- error[no-matching-overload] tests/contrib/django_celery/app/proj/settings.py:34:44: No overload of function `abspath` matches arguments
+- error[no-matching-overload] tests/contrib/django_celery/test_django_celery.py:28:27: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/django_celery/test_django_celery.py:28:27: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/django_celery/test_django_celery.py:28:27: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/django_celery/test_django_celery.py:28:27: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/django_celery/test_django_celery.py:28:27: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/django_hosts/django_app/settings.py:9:44: No overload of function `abspath` matches arguments
+- error[no-matching-overload] tests/contrib/djangorestframework/app/settings.py:11:44: No overload of function `abspath` matches arguments
+- error[no-matching-overload] tests/contrib/flask/app.py:16:27: No overload of function `realpath` matches arguments
+- error[no-matching-overload] tests/contrib/flask/test_appsec_flask_pytest_iast_no_snapshot.py:37:65: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/flask/test_appsec_flask_snapshot.py:80:65: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/flask/test_flask_snapshot.py:68:65: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/google_generativeai/test_google_generativeai.py:337:35: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/google_generativeai/test_google_generativeai.py:352:35: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/google_generativeai/test_google_generativeai_llmobs.py:552:39: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/google_generativeai/test_google_generativeai_llmobs.py:580:39: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/jinja2/test_jinja2.py:15:28: No overload of function `realpath` matches arguments
+- error[no-matching-overload] tests/contrib/langchain/conftest.py:149:34: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/langchain/conftest.py:189:34: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/langchain/utils.py:20:43: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/litellm/utils.py:15:43: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/mako/test_mako.py:18:28: No overload of function `realpath` matches arguments
+- error[no-matching-overload] tests/contrib/openai/test_openai_v1.py:522:40: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/openai/test_openai_v1.py:543:40: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/openai/test_openai_v1.py:876:63: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/openai/test_openai_v1.py:916:63: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/openai/test_openai_v1.py:1278:63: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/openai/utils.py:129:43: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/openai_agents/conftest.py:22:43: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/sanic/test_sanic_server.py:11:46: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/contrib/tornado/web/app.py:12:28: No overload of function `realpath` matches arguments
+- warning[possibly-unbound-attribute] tests/debugging/exception/test_replay.py:135:75: Attribute `replace` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/debugging/exception/test_replay.py:202:75: Attribute `replace` on type `str | None` is possibly unbound
+- error[invalid-argument-type] tests/debugging/probe/test_registry.py:25:33: Argument to bound method `get_pending` is incorrect: Expected `str`, found `str | None`
+- error[invalid-argument-type] tests/debugging/probe/test_registry.py:33:33: Argument to bound method `get_pending` is incorrect: Expected `str`, found `str | None`
+- error[invalid-argument-type] tests/debugging/probe/test_registry.py:41:33: Argument to bound method `get_pending` is incorrect: Expected `str`, found `str | None`
+- error[invalid-argument-type] tests/debugging/probe/test_registry.py:57:37: Argument to bound method `get_pending` is incorrect: Expected `str`, found `str | None`
+- error[no-matching-overload] tests/debugging/test_debugger.py:818:24: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/errortracking/test_handled_exceptions.py:222:52: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/integration/test_tracemethods.py:116:33: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/integration/test_tracemethods.py:156:33: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/internal/remoteconfig/test_remoteconfig_client_e2e.py:67:28: No overload of function `abspath` matches arguments
+- error[invalid-assignment] tests/internal/symbol_db/test_symbols.py:65:5: Object of type `str | None` is not assignable to attribute `origin` on type `ModuleSpec | None`
++ error[invalid-assignment] tests/internal/symbol_db/test_symbols.py:65:5: Object of type `str` is not assignable to attribute `origin` on type `ModuleSpec | None`
+- error[invalid-assignment] tests/internal/symbol_db/test_symbols.py:120:5: Object of type `str | None` is not assignable to attribute `origin` on type `ModuleSpec | None`
++ error[invalid-assignment] tests/internal/symbol_db/test_symbols.py:120:5: Object of type `str` is not assignable to attribute `origin` on type `ModuleSpec | None`
+- error[invalid-assignment] tests/internal/symbol_db/test_symbols.py:140:5: Object of type `str | None` is not assignable to attribute `origin` on type `ModuleSpec | None`
++ error[invalid-assignment] tests/internal/symbol_db/test_symbols.py:140:5: Object of type `str` is not assignable to attribute `origin` on type `ModuleSpec | None`
+- error[invalid-argument-type] tests/internal/symbol_db/test_symbols.py:170:9: Argument is incorrect: Expected `str`, found `str | None`
+- warning[possibly-unbound-attribute] tests/internal/test_module.py:312:47: Attribute `replace` on type `str | None` is possibly unbound
+- error[no-matching-overload] tests/llmobs/_utils.py:24:43: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/llmobs/test_llmobs_eval_metric_agentless_writer.py:147:47: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/llmobs/test_llmobs_evaluator_runner.py:97:47: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/llmobs/test_llmobs_service.py:1355:63: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/llmobs/test_llmobs_span_agentless_writer.py:144:47: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/meta/test_conftest.py:25:20: No overload of function `dirname` matches arguments
+- warning[possibly-unbound-attribute] tests/profiling/collector/test_asyncio.py:92:37: Attribute `replace` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/profiling/collector/test_stack.py:110:28: Attribute `replace` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/profiling/collector/test_stack.py:113:29: Attribute `replace` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/profiling/collector/test_threading.py:83:32: Attribute `replace` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/profiling/collector/test_threading.py:108:32: Attribute `replace` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/profiling/collector/test_threading.py:146:37: Attribute `replace` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/profiling/collector/test_threading.py:230:37: Attribute `replace` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/profiling/collector/test_threading.py:264:32: Attribute `replace` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/profiling/collector/test_threading.py:441:9: Attribute `replace` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/profiling/collector/test_threading.py:453:9: Attribute `replace` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/profiling/collector/test_threading.py:497:36: Attribute `replace` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/profiling/collector/test_threading.py:500:36: Attribute `replace` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/profiling/collector/test_threading.py:523:40: Attribute `replace` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/profiling/collector/test_threading.py:526:40: Attribute `replace` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/profiling/collector/test_threading.py:550:40: Attribute `replace` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/profiling/collector/test_threading.py:553:40: Attribute `replace` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/profiling/collector/test_threading.py:569:40: Attribute `replace` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/profiling/collector/test_threading.py:572:40: Attribute `replace` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/profiling/collector/test_threading.py:665:25: Attribute `replace` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/profiling/collector/test_traceback.py:18:17: Attribute `replace` on type `str | None` is possibly unbound
+- error[no-matching-overload] tests/profiling/test_gunicorn.py:22:76: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:18:53: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:18:53: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:18:53: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:18:53: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:18:53: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:34:38: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:34:38: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:34:38: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:34:38: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:34:38: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:49:53: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:49:53: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:49:53: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:49:53: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:49:53: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:67:32: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:67:32: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:67:32: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:67:32: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:67:32: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:79:73: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:79:73: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:79:73: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:79:73: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:79:73: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:99:22: No overload of function `dirname` matches arguments
+- error[no-matching-overload] tests/profiling/test_main.py:99:22: No overload of function `dirname` matches arguments
+- erro...*[Comment body truncated]*
+
+---
+
+_@sharkdp approved on 2025-05-13 15:20_
+
+Thank you!
+
+---
+
+_Merged by @carljm on 2025-05-13 15:20_
+
+---
+
+_Closed by @carljm on 2025-05-13 15:20_
+
+---
+
+_Branch deleted on 2025-05-13 15:20_
+
+---
+
+_Comment by @tekknolagi on 2025-05-13 18:01_
+
+(How) does this handle assignments to `__file__`? Like `__file__ = 5`
+
+---
+
+_Comment by @AlexWaygood on 2025-05-13 18:03_
+
+> (How) does this handle assignments to `__file__`? Like `__file__ = 5`
+
+I don't think we check any assignments in the global scope against their declared type on the stub for `types.ModuleType` yet. E.g. we don't emit a diagnostic for this either, but we should -- `types.ModuleType.__doc__` is annotated with `str | None` in typeshed's stubs, and `Literal[42]` is not assignable to `str | None`:
+
+```py
+__doc__ = 42
+```
+
+---
+
+_Comment by @AlexWaygood on 2025-05-13 18:08_
+
+> I don't think we check any assignments in the global scope against their declared type on the stub for `types.ModuleType` yet.
+
+shouldn't be too hard to fix, I'll tackle it
+
+---
