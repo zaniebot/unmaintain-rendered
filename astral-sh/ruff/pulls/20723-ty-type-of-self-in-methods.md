@@ -1,0 +1,849 @@
+```yaml
+number: 20723
+title: "[ty] type-of-`self` in methods"
+type: pull_request
+state: closed
+author: sharkdp
+labels:
+  - ty
+  - ecosystem-analyzer
+assignees: []
+draft: true
+base: main
+head: david/type-of-self-in-methods
+created_at: 2025-10-06T15:04:27Z
+updated_at: 2025-10-29T21:05:38Z
+url: https://github.com/astral-sh/ruff/pull/20723
+synced_at: 2026-01-10T16:59:49Z
+```
+
+# [ty] type-of-`self` in methods
+
+---
+
+_Pull request opened by @sharkdp on 2025-10-06 15:04_
+
+<!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+## Test Plan
+
+<!-- How was it tested? -->
+
+
+---
+
+_Label `ty` added by @sharkdp on 2025-10-06 15:04_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-10-06 15:04_
+
+---
+
+_Comment by @github-actions[bot] on 2025-10-06 15:06_
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance)
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-10-14 13:32:11.034876357 +0000
++++ new-output.txt	2025-10-14 13:32:14.404884190 +0000
+@@ -1,5 +1,5 @@
+ fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/29ab321/src/function/execute.rs:217:25 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_type_statement.py`: `PEP695TypeAliasType < 'db >::value_type_(Id(d017)): execute: too many cycle iterations`
+-fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/29ab321/src/function/execute.rs:217:25 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(1643f)): execute: too many cycle iterations`
++fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/29ab321/src/function/execute.rs:217:25 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(1683f)): execute: too many cycle iterations`
+ _directives_deprecated_library.py:15:31: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ _directives_deprecated_library.py:30:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+ _directives_deprecated_library.py:36:41: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@__add__`
+@@ -345,6 +345,7 @@
+ enums_member_names.py:30:5: error[type-assertion-failure] Argument does not have asserted type `Literal["RED", "BLUE", "GREEN"]`
+ enums_member_values.py:30:5: error[type-assertion-failure] Argument does not have asserted type `Literal[1, 2, 3]`
+ enums_member_values.py:54:1: error[type-assertion-failure] Argument does not have asserted type `Literal[1]`
++enums_member_values.py:85:9: error[invalid-assignment] Object of type `int` is not assignable to attribute `_value_` of type `str`
+ enums_member_values.py:96:1: error[type-assertion-failure] Argument does not have asserted type `int`
+ enums_members.py:128:21: info[revealed-type] Revealed type: `Unknown | Literal[2]`
+ enums_members.py:129:9: error[type-assertion-failure] Argument does not have asserted type `Unknown`
+@@ -438,7 +439,6 @@
+ generics_self_advanced.py:18:1: error[type-assertion-failure] Argument does not have asserted type `ParentA`
+ generics_self_advanced.py:19:1: error[type-assertion-failure] Argument does not have asserted type `ChildA`
+ generics_self_advanced.py:28:25: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@method1`
+-generics_self_advanced.py:35:9: error[type-assertion-failure] Argument does not have asserted type `Self@method2`
+ generics_self_advanced.py:36:9: error[type-assertion-failure] Argument does not have asserted type `list[Self@method2]`
+ generics_self_advanced.py:37:9: error[type-assertion-failure] Argument does not have asserted type `Self@method2`
+ generics_self_advanced.py:38:9: error[type-assertion-failure] Argument does not have asserted type `Self@method2`
+@@ -448,7 +448,6 @@
+ generics_self_attributes.py:26:33: error[invalid-argument-type] Argument is incorrect: Expected `typing.Self | None`, found `LinkedList[int]`
+ generics_self_attributes.py:29:5: error[invalid-assignment] Object of type `OrdinalLinkedList` is not assignable to attribute `next` of type `typing.Self | None`
+ generics_self_attributes.py:32:5: error[invalid-assignment] Object of type `LinkedList[int]` is not assignable to attribute `next` of type `typing.Self | None`
+-generics_self_basic.py:14:9: error[type-assertion-failure] Argument does not have asserted type `Self@set_scale`
+ generics_self_basic.py:20:16: error[invalid-return-type] Return type does not match returned value: expected `Self@method2`, found `Shape`
+ generics_self_basic.py:33:16: error[invalid-return-type] Return type does not match returned value: expected `Self@cls_method2`, found `Shape`
+ generics_self_basic.py:54:1: error[type-assertion-failure] Argument does not have asserted type `Shape`
+@@ -492,6 +491,7 @@
+ generics_syntax_infer_variance.py:46:1: error[invalid-assignment] Object of type `ShouldBeCovariant3[int | float]` is not assignable to `ShouldBeCovariant3[int]`
+ generics_syntax_infer_variance.py:74:1: error[invalid-assignment] Object of type `ShouldBeCovariant5[int]` is not assignable to `ShouldBeCovariant5[int | float]`
+ generics_syntax_infer_variance.py:75:1: error[invalid-assignment] Object of type `ShouldBeCovariant5[int | float]` is not assignable to `ShouldBeCovariant5[int]`
++generics_syntax_infer_variance.py:82:9: error[invalid-assignment] Cannot assign to final attribute `x` on type `Self@__init__`
+ generics_syntax_infer_variance.py:85:1: error[invalid-assignment] Object of type `ShouldBeCovariant6[int]` is not assignable to `ShouldBeCovariant6[int | float]`
+ generics_syntax_infer_variance.py:86:1: error[invalid-assignment] Object of type `ShouldBeCovariant6[int | float]` is not assignable to `ShouldBeCovariant6[int]`
+ generics_syntax_infer_variance.py:102:1: error[invalid-assignment] Object of type `ShouldBeInvariant1[int]` is not assignable to `ShouldBeInvariant1[int | float]`
+@@ -503,7 +503,6 @@
+ generics_syntax_infer_variance.py:127:1: error[invalid-assignment] Object of type `ShouldBeInvariant3[str, int]` is not assignable to `ShouldBeInvariant3[str, int | float]`
+ generics_syntax_infer_variance.py:128:1: error[invalid-assignment] Object of type `ShouldBeInvariant3[str, int | float]` is not assignable to `ShouldBeInvariant3[str, int]`
+ generics_syntax_infer_variance.py:136:1: error[invalid-assignment] Object of type `ShouldBeInvariant4[int]` is not assignable to `ShouldBeInvariant4[int | float]`
+-generics_syntax_infer_variance.py:144:1: error[invalid-assignment] Object of type `ShouldBeInvariant5[int]` is not assignable to `ShouldBeInvariant5[int | float]`
+ generics_syntax_infer_variance.py:155:1: error[invalid-assignment] Object of type `ShouldBeContravariant1[int]` is not assignable to `ShouldBeContravariant1[int | float]`
+ generics_syntax_infer_variance.py:156:1: error[invalid-assignment] Object of type `ShouldBeContravariant1[int | float]` is not assignable to `ShouldBeContravariant1[int]`
+ generics_syntax_scoping.py:35:7: error[unresolved-reference] Name `T` used when not defined
+@@ -614,7 +613,6 @@
+ generics_variance_inference.py:121:1: error[invalid-assignment] Object of type `ShouldBeInvariant3[str, int]` is not assignable to `ShouldBeInvariant3[str, int | float]`
+ generics_variance_inference.py:122:1: error[invalid-assignment] Object of type `ShouldBeInvariant3[str, int | float]` is not assignable to `ShouldBeInvariant3[str, int]`
+ generics_variance_inference.py:130:1: error[invalid-assignment] Object of type `ShouldBeInvariant4[int]` is not assignable to `ShouldBeInvariant4[int | float]`
+-generics_variance_inference.py:138:1: error[invalid-assignment] Object of type `ShouldBeInvariant5[int]` is not assignable to `ShouldBeInvariant5[int | float]`
+ generics_variance_inference.py:149:1: error[invalid-assignment] Object of type `ShouldBeContravariant1[int]` is not assignable to `ShouldBeContravariant1[int | float]`
+ generics_variance_inference.py:169:1: error[invalid-assignment] Object of type `ShouldBeInvariant6[int | float]` is not assignable to `ShouldBeInvariant6[int]`
+ generics_variance_inference.py:170:1: error[invalid-assignment] Object of type `ShouldBeInvariant6[int]` is not assignable to `ShouldBeInvariant6[int | float]`
+@@ -757,6 +755,8 @@
+ protocols_definition.py:287:1: error[invalid-assignment] Object of type `Concrete5_Bad3` is not assignable to `Template5`
+ protocols_definition.py:288:1: error[invalid-assignment] Object of type `Concrete5_Bad4` is not assignable to `Template5`
+ protocols_definition.py:289:1: error[invalid-assignment] Object of type `Concrete5_Bad5` is not assignable to `Template5`
++protocols_explicit.py:56:9: error[invalid-assignment] Object of type `tuple[int, int, str]` is not assignable to attribute `rgb` of type `tuple[int, int, int]`
++protocols_explicit.py:85:9: error[invalid-attribute-access] Cannot assign to ClassVar `cm1` from an instance of type `Self@__init__`
+ protocols_generic.py:40:1: error[invalid-assignment] Object of type `Concrete1` is not assignable to `Proto1[int, str]`
+ protocols_generic.py:56:5: error[invalid-assignment] Object of type `Box[int | float]` is not assignable to `Box[int]`
+ protocols_generic.py:66:5: error[invalid-assignment] Object of type `Sender[int]` is not assignable to `Sender[int | float]`
+@@ -801,6 +801,11 @@
+ qualifiers_annotated.py:64:8: error[invalid-type-form] Special form `typing.Annotated` expected at least 2 arguments (one type and at least one metadata element)
+ qualifiers_annotated.py:91:1: error[call-non-callable] Object of type `typing.Annotated` is not callable
+ qualifiers_final_annotation.py:18:7: error[invalid-type-form] Type qualifier `typing.Final` expected exactly 1 argument, got 2
++qualifiers_final_annotation.py:52:9: error[invalid-assignment] Cannot assign to final attribute `ID4` on type `Self@__init__`
++qualifiers_final_annotation.py:54:9: error[invalid-assignment] Cannot assign to final attribute `ID5` on type `Self@__init__`
++qualifiers_final_annotation.py:57:13: error[invalid-assignment] Cannot assign to final attribute `ID6` on type `Self@__init__`
++qualifiers_final_annotation.py:59:13: error[invalid-assignment] Cannot assign to final attribute `ID6` on type `Self@__init__`
++qualifiers_final_annotation.py:65:9: error[invalid-assignment] Cannot assign to final attribute `ID7` on type `Self@method1`
+ qualifiers_final_annotation.py:71:1: error[invalid-assignment] Reassignment of `Final` symbol `RATE` is not allowed: Symbol later reassigned here
+ qualifiers_final_annotation.py:81:1: error[invalid-assignment] Cannot assign to final attribute `DEFAULT_ID` on type `<class 'ClassB'>`
+ qualifiers_final_annotation.py:118:9: error[invalid-type-form] Type qualifier `typing.Final` is not allowed in type expressions (only in annotation expressions)
+@@ -898,5 +903,5 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Invalid key access on TypedDict `Movie`: Unknown key "title"
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 900 diagnostics
++Found 905 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+```
+</details>
+
+
+---
+
+_Comment by @github-actions[bot] on 2025-10-06 15:08_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+bidict (https://github.com/jab/bidict)
++ bidict/_base.py:468:48: error[parameter-already-assigned] Multiple values provided for parameter `unwrites` of bound method `_write`
++ bidict/_orderedbase.py:71:9: error[invalid-assignment] Invalid assignment to data descriptor attribute `nxt` on type `Self@__init__` with custom `__set__` method
++ bidict/_orderedbase.py:77:9: error[invalid-assignment] Invalid assignment to data descriptor attribute `nxt` on type `Node` with custom `__set__` method
++ bidict/_orderedbase.py:78:9: error[invalid-assignment] Object of type `Node` is not assignable to attribute `prv` on type `Node | WeakAttr[Node]`
++ bidict/_orderedbase.py:82:9: error[invalid-assignment] Invalid assignment to data descriptor attribute `nxt` on type `Node` with custom `__set__` method
++ bidict/_orderedbase.py:82:24: error[invalid-assignment] Object of type `Self@relink` is not assignable to attribute `prv` on type `Node | WeakAttr[Node]`
++ bidict/_orderedbase.py:110:9: error[invalid-assignment] Invalid assignment to data descriptor attribute `nxt` on type `Node` with custom `__set__` method
++ bidict/_orderedbidict.py:80:9: error[invalid-assignment] Invalid assignment to data descriptor attribute `nxt` on type `Node` with custom `__set__` method
++ bidict/_orderedbidict.py:81:9: error[invalid-assignment] Object of type `Node` is not assignable to attribute `prv` on type `Node | WeakAttr[Node]`
++ bidict/_orderedbidict.py:86:13: error[invalid-assignment] Invalid assignment to data descriptor attribute `nxt` on type `Node` with custom `__set__` method
++ bidict/_orderedbidict.py:91:13: error[invalid-assignment] Invalid assignment to data descriptor attribute `nxt` on type `Node` with custom `__set__` method
+- Found 13 diagnostics
++ Found 24 diagnostics
+
+pyp (https://github.com/hauntsaninja/pyp)
+- pyp.py:468:55: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 6 diagnostics
++ Found 5 diagnostics
+
+zipp (https://github.com/jaraco/zipp)
++ zipp/__init__.py:95:16: error[unresolved-attribute] Type `Self@__getstate__` has no attribute `_saved___init__`
++ zipp/__init__.py:95:43: error[unresolved-attribute] Type `Self@__getstate__` has no attribute `_saved___init__`
++ zipp/__init__.py:442:16: error[no-matching-overload] No overload of bound method `format` matches arguments
+- Found 2 diagnostics
++ Found 5 diagnostics
+
+pegen (https://github.com/we-like-parsers/pegen)
+- src/pegen/grammar_parser.py:160:20: error[invalid-return-type] Return type does not match returned value: expected `tuple[str, str] | None`, found `tuple[Unknown, None]`
++ src/pegen/grammar_parser.py:160:20: error[invalid-return-type] Return type does not match returned value: expected `tuple[str, str] | None`, found `tuple[str, None]`
++ src/pegen/grammar_parser.py:438:31: error[no-matching-overload] No overload of bound method `join` matches arguments
++ src/pegen/python_generator.py:270:51: error[unresolved-attribute] Type `GrammarVisitor` has no attribute `keywords`
++ src/pegen/python_generator.py:271:56: error[unresolved-attribute] Type `GrammarVisitor` has no attribute `soft_keywords`
+- Found 47 diagnostics
++ Found 50 diagnostics
+
+attrs (https://github.com/python-attrs/attrs)
++ src/attr/_make.py:2598:65: error[unresolved-attribute] Type `Self@__getstate__` has no attribute `metadata`
++ tests/test_cmp.py:321:16: warning[possibly-missing-attribute] Attribute `strip` on type `Unknown | str | None` may be missing
++ tests/test_cmp.py:329:16: warning[possibly-missing-attribute] Attribute `strip` on type `Unknown | str | None` may be missing
++ tests/test_cmp.py:389:16: warning[possibly-missing-attribute] Attribute `strip` on type `Unknown | str | None` may be missing
++ tests/test_cmp.py:397:16: warning[possibly-missing-attribute] Attribute `strip` on type `Unknown | str | None` may be missing
++ tests/test_cmp.py:407:18: warning[possibly-missing-attribute] Attribute `__lt__` on type `Unknown | type` may be missing
++ tests/test_cmp.py:415:18: warning[possibly-missing-attribute] Attribute `__le__` on type `Unknown | type` may be missing
++ tests/test_cmp.py:425:18: warning[possibly-missing-attribute] Attribute `__gt__` on type `Unknown | type` may be missing
++ tests/test_cmp.py:435:18: warning[possibly-missing-attribute] Attribute `__ge__` on type `Unknown | type` may be missing
++ tests/test_cmp.py:461:16: warning[possibly-missing-attribute] Attribute `strip` on type `Unknown | str | None` may be missing
++ tests/test_cmp.py:469:16: warning[possibly-missing-attribute] Attribute `strip` on type `Unknown | str | None` may be missing
++ tests/test_cmp.py:479:18: warning[possibly-missing-attribute] Attribute `__lt__` on type `Unknown | type` may be missing
++ tests/test_cmp.py:487:18: warning[possibly-missing-attribute] Attribute `__le__` on type `Unknown | type` may be missing
++ tests/test_cmp.py:495:18: warning[possibly-missing-attribute] Attribute `__gt__` on type `Unknown | type` may be missing
++ tests/test_cmp.py:503:18: warning[possibly-missing-attribute] Attribute `__ge__` on type `Unknown | type` may be missing
++ tests/test_slots.py:985:24: error[unresolved-attribute] Type `<super: <class 'B'>, B>` has no attribute `__getattr__`
+- Found 559 diagnostics
++ Found 575 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
++ src/anyio/_backends/_asyncio.py:166:35: error[invalid-argument-type] Argument to function `_cancel_all_tasks` is incorrect: Expected `AbstractEventLoop`, found `AbstractEventLoop | None`
++ src/anyio/_backends/_asyncio.py:167:17: warning[possibly-missing-attribute] Attribute `run_until_complete` on type `AbstractEventLoop | None` may be missing
++ src/anyio/_backends/_asyncio.py:167:41: warning[possibly-missing-attribute] Attribute `shutdown_asyncgens` on type `AbstractEventLoop | None` may be missing
++ src/anyio/_backends/_asyncio.py:171:21: error[unresolved-attribute] Type `None` has no attribute `run_until_complete`
++ src/anyio/_backends/_asyncio.py:171:72: error[invalid-argument-type] Argument to function `_shutdown_default_executor` is incorrect: Expected `AbstractEventLoop`, found `None`
++ src/anyio/_backends/_asyncio.py:175:17: warning[possibly-missing-attribute] Attribute `close` on type `AbstractEventLoop | None` may be missing
++ src/anyio/_backends/_asyncio.py:182:20: error[invalid-return-type] Return type does not match returned value: expected `AbstractEventLoop`, found `AbstractEventLoop | None`
++ src/anyio/_backends/_asyncio.py:256:17: warning[possibly-missing-attribute] Attribute `call_soon_threadsafe` on type `AbstractEventLoop | None` may be missing
++ src/anyio/_backends/_asyncio.py:495:21: error[unresolved-attribute] Type `Task[Unknown]` has no attribute `uncancel`
+- src/anyio/_backends/_asyncio.py:569:36: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/anyio/_backends/_asyncio.py:574:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/anyio/_core/_fileio.py:407:51: error[unknown-argument] Argument `case_sensitive` does not match any known parameter of bound method `match`
++ src/anyio/_core/_fileio.py:617:57: error[unknown-argument] Argument `walk_up` does not match any known parameter of bound method `relative_to`
++ src/anyio/_core/_tempfile.py:330:15: error[no-matching-overload] No overload of bound method `write` matches arguments
++ src/anyio/_core/_tempfile.py:500:21: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ src/anyio/streams/stapled.py:115:34: error[invalid-argument-type] Argument to bound method `extend` is incorrect: Expected `Iterable[Listener[T_Stream@MultiListener]]`, found `Sequence[Listener[object]]`
+- Found 221 diagnostics
++ Found 233 diagnostics
+
+packaging (https://github.com/pypa/packaging)
+- src/packaging/metadata.py:557:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/packaging/requirements.py:47:13: error[invalid-assignment] Object of type `Any` is not assignable to attribute `_markers` on type `Marker | None`
+- Found 7 diagnostics
++ Found 5 diagnostics
+
+aioredis (https://github.com/aio-libs/aioredis)
++ aioredis/connection.py:206:20: error[invalid-return-type] Return type does not match returned value: expected `ResponseError`, found `Exception | @Todo`
+- aioredis/connection.py:352:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- aioredis/connection.py:803:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ aioredis/lock.py:251:19: error[call-non-callable] Object of type `None` is not callable
++ aioredis/lock.py:279:19: error[call-non-callable] Object of type `None` is not callable
++ aioredis/lock.py:301:19: error[call-non-callable] Object of type `None` is not callable
+- Found 16 diagnostics
++ Found 18 diagnostics
+
+parso (https://github.com/davidhalter/parso)
++ parso/normalizer.py:56:13: error[unresolved-attribute] Type `type` has no attribute `feed_node`
++ parso/normalizer.py:62:13: error[unresolved-attribute] Type `type` has no attribute `feed_node`
++ parso/pgen2/generator.py:100:9: error[invalid-assignment] Cannot assign to object of type `Mapping[str, DFAState[Unknown]]` with no `__setitem__` method
++ parso/pgen2/generator.py:105:17: error[invalid-assignment] Cannot assign to object of type `Mapping[str, DFAState[Unknown]]` with no `__setitem__` method
++ parso/python/pep8.py:679:21: error[unresolved-attribute] Type `Self@_analyse_non_prefix` has no attribute `add_issuadd_issue`
++ parso/python/pep8.py:767:16: error[unresolved-attribute] Type `Self@is_issue` has no attribute `_newline_count`
++ parso/python/tree.py:78:12: error[unresolved-attribute] Type `Self@get_doc_node` has no attribute `type`
++ parso/python/tree.py:79:20: error[unresolved-attribute] Type `Self@get_doc_node` has no attribute `children`
++ parso/python/tree.py:80:14: error[unresolved-attribute] Type `Self@get_doc_node` has no attribute `type`
++ parso/python/tree.py:81:20: error[unresolved-attribute] Type `Self@get_doc_node` has no attribute `children`
++ parso/python/tree.py:81:34: error[unresolved-attribute] Type `Self@get_doc_node` has no attribute `children`
++ parso/python/tree.py:85:27: error[unresolved-attribute] Type `Self@get_doc_node` has no attribute `parent`
++ parso/python/tree.py:110:18: error[unresolved-attribute] Type `Self@get_name_of_position` has no attribute `children`
++ parso/python/tree.py:219:17: warning[possibly-missing-attribute] Attribute `type` on type `BaseNode | None` may be missing
++ parso/python/tree.py:222:24: error[unresolved-attribute] Type `BaseNode | None` has no attribute `name`
++ parso/python/tree.py:228:24: warning[possibly-missing-attribute] Attribute `parent` on type `BaseNode | None` may be missing
++ parso/python/tree.py:235:28: error[unresolved-attribute] Type `BaseNode` has no attribute `get_defined_names`
++ parso/python/tree.py:306:20: error[unresolved-attribute] Type `Self@__eq__` has no attribute `value`
++ parso/python/tree.py:311:21: error[unresolved-attribute] Type `Self@__hash__` has no attribute `value`
++ parso/python/tree.py:371:20: error[unresolved-attribute] Type `Self@__repr__` has no attribute `name`
++ parso/python/tree.py:453:12: warning[possibly-missing-attribute] Attribute `type` on type `BaseNode | None` may be missing
++ parso/python/tree.py:454:25: warning[possibly-missing-attribute] Attribute `parent` on type `BaseNode | None` may be missing
++ parso/python/tree.py:456:12: warning[possibly-missing-attribute] Attribute `type` on type `BaseNode | None` may be missing
++ parso/python/tree.py:457:16: warning[possibly-missing-attribute] Attribute `children` on type `BaseNode | None` may be missing
++ parso/python/tree.py:458:24: warning[possibly-missing-attribute] Attribute `children` on type `BaseNode | None` may be missing
++ parso/python/tree.py:460:24: warning[possibly-missing-attribute] Attribute `children` on type `BaseNode | None` may be missing
++ parso/python/tree.py:806:20: error[unresolved-attribute] Type `Self@get_path_for_name` has no attribute `_aliases`
++ parso/python/tree.py:810:21: error[unresolved-attribute] Type `Self@get_path_for_name` has no attribute `get_paths`
++ parso/tree.py:63:28: warning[possibly-missing-attribute] Attribute `children` on type `BaseNode | None` may be missing
++ parso/tree.py:82:24: warning[possibly-missing-attribute] Attribute `children` on type `BaseNode | None` may be missing
++ parso/tree.py:94:17: warning[possibly-missing-attribute] Attribute `children` on type `BaseNode | None` may be missing
++ parso/tree.py:98:20: warning[possibly-missing-attribute] Attribute `parent` on type `BaseNode | None` may be missing
++ parso/tree.py:120:17: warning[possibly-missing-attribute] Attribute `children` on type `BaseNode | None` may be missing
++ parso/tree.py:124:20: warning[possibly-missing-attribute] Attribute `parent` on type `BaseNode | None` may be missing
+- Found 75 diagnostics
++ Found 109 diagnostics
+
+python-chess (https://github.com/niklasf/python-chess)
++ chess/__init__.py:1558:16: error[invalid-return-type] Return type does not match returned value: expected `Self@copy`, found `BaseBoard`
++ chess/__init__.py:1842:20: error[invalid-return-type] Return type does not match returned value: expected `Self@root`, found `Board`
++ chess/__init__.py:3951:16: error[invalid-return-type] Return type does not match returned value: expected `Self@copy`, found `Board`
+- chess/engine.py:878:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- chess/engine.py:905:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ chess/engine.py:506:20: error[unsupported-operator] Operator `<` is not supported for types `int` and `None`, in comparing `tuple[bool, bool, bool, int, int | None]` with `tuple[bool, bool, bool, int, int | None]`
++ chess/engine.py:512:20: error[unsupported-operator] Operator `<=` is not supported for types `int` and `None`, in comparing `tuple[bool, bool, bool, int, int | None]` with `tuple[bool, bool, bool, int, int | None]`
++ chess/engine.py:518:20: error[unsupported-operator] Operator `>` is not supported for types `int` and `None`, in comparing `tuple[bool, bool, bool, int, int | None]` with `tuple[bool, bool, bool, int, int | None]`
++ chess/engine.py:524:20: error[unsupported-operator] Operator `>=` is not supported for types `int` and `None`, in comparing `tuple[bool, bool, bool, int, int | None]` with `tuple[bool, bool, bool, int, int | None]`
+- chess/pgn.py:353:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ chess/pgn.py:1050:16: error[invalid-return-type] Return type does not match returned value: expected `Self@copy`, found `Headers`
++ chess/variant.py:808:16: error[invalid-return-type] Return type does not match returned value: expected `Self@copy`, found `ThreeCheckBoard`
++ chess/variant.py:814:20: error[invalid-return-type] Return type does not match returned value: expected `Self@root`, found `ThreeCheckBoard`
++ chess/variant.py:822:16: error[invalid-return-type] Return type does not match returned value: expected `Self@mirror`, found `ThreeCheckBoard`
++ chess/variant.py:876:16: error[invalid-return-type] Return type does not match returned value: expected `Self@copy`, found `CrazyhousePocket`
++ chess/variant.py:1061:16: error[invalid-return-type] Return type does not match returned value: expected `Self@copy`, found `CrazyhouseBoard`
++ chess/variant.py:1067:20: error[invalid-return-type] Return type does not match returned value: expected `Self@root`, found `CrazyhouseBoard`
++ chess/variant.py:1075:16: error[invalid-return-type] Return type does not match returned value: expected `Self@mirror`, found `CrazyhouseBoard`
+- Found 12 diagnostics
++ Found 24 diagnostics
+
+nionutils (https://github.com/nion-software/nionutils)
++ nion/utils/ListModel.py:632:59: error[unresolved-attribute] Type `object` has no attribute `listen`
++ nion/utils/ListModel.py:633:57: error[unresolved-attribute] Type `object` has no attribute `listen`
+- Found 8 diagnostics
++ Found 10 diagnostics
+
+pyinstrument (https://github.com/joerick/pyinstrument)
+- pyinstrument/magic/_utils.py:73:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pyinstrument/magic/_utils.py:74:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ pyinstrument/session.py:213:9: error[invalid-assignment] Method `__setitem__` of type `bound method dict[str, str].__setitem__(key: str, value: str, /) -> None` cannot be called with a key of type `str` and a value of type `str | bytes` on object of type `dict[str, str]`
+- Found 41 diagnostics
++ Found 40 diagnostics
+
+kornia (https://github.com/kornia/kornia)
+- kornia/augmentation/container/augment.py:343:99: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ kornia/augmentation/container/augment.py:405:35: error[unresolved-attribute] Type `object` has no attribute `type`
++ kornia/augmentation/container/augment.py:414:35: error[unresolved-attribute] Type `object` has no attribute `type`
+- kornia/augmentation/container/augment.py:473:99: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+
+pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
++ tests/conftest.py:298:54: error[invalid-argument-type] Argument to bound method `run_pytest` is incorrect: Expected `Literal[False]`, found `bool`
+- Found 170 diagnostics
++ Found 171 diagnostics
+
+spack (https://github.com/spack/spack)
++ lib/spack/spack/binary_distribution.py:432:31: error[non-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
++ lib/spack/spack/binary_distribution.py:432:31: error[non-subscriptable] Cannot subscript object of type `float` with no `__getitem__` method
++ lib/spack/spack/binary_distribution.py:437:24: error[non-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
++ lib/spack/spack/binary_distribution.py:437:24: error[non-subscriptable] Cannot subscript object of type `float` with no `__getitem__` method
++ lib/spack/spack/binary_distribution.py:445:25: error[invalid-assignment] Method `__setitem__` of type `bound method dict[MirrorURLAndVersion, int | float].__setitem__(key: MirrorURLAndVersion, value: int | float, /) -> None` cannot be called with a key of type `Unknown` and a value of type `tuple[int | float, Literal[True]]` on object of type `dict[MirrorURLAndVersion, int | float]`
++ lib/spack/spack/binary_distribution.py:450:25: error[invalid-assignment] Method `__setitem__` of type `bound method dict[MirrorURLAndVersion, int | float].__setitem__(key: MirrorURLAndVersion, value: int | float, /) -> None` cannot be called with a key of type `Unknown` and a value of type `tuple[int | float, Literal[False]]` on object of type `dict[MirrorURLAndVersion, int | float]`
++ lib/spack/spack/binary_distribution.py:484:17: error[invalid-assignment] Method `__setitem__` of type `bound method dict[MirrorURLAndVersion, int | float].__setitem__(key: MirrorURLAndVersion, value: int | float, /) -> None` cannot be called with a key of type `@Todo` and a value of type `tuple[int | float, Literal[True]]` on object of type `dict[MirrorURLAndVersion, int | float]`
++ lib/spack/spack/binary_distribution.py:489:17: error[invalid-assignment] Method `__setitem__` of type `bound method dict[MirrorURLAndVersion, int | float].__setitem__(key: MirrorURLAndVersion, value: int | float, /) -> None` cannot be called with a key of type `@Todo` and a value of type `tuple[int | float, Literal[False]]` on object of type `dict[MirrorURLAndVersion, int | float]`
+- lib/spack/spack/builder.py:471:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/builder.py:497:73: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/ci/common.py:196:23: error[invalid-argument-type] Argument to function `win_quote` is incorrect: Expected `str`, found `str | None`
+- lib/spack/spack/ci/gitlab.py:424:61: error[invalid-argument-type] Argument to function `ensure_expected_target_path` is incorrect: Expected `str`, found `Unknown | str | bytes`
++ lib/spack/spack/ci/gitlab.py:424:61: error[invalid-argument-type] Argument to function `ensure_expected_target_path` is incorrect: Expected `str`, found `Unknown | bytes | str`
++ lib/spack/spack/config.py:561:9: error[invalid-assignment] Object of type `ConfigScope` is not assignable to `str`
++ lib/spack/spack/config.py:562:16: error[unresolved-attribute] Type `str` has no attribute `get_section_filename`
++ lib/spack/spack/fetch_strategy.py:688:20: error[no-matching-overload] No overload of bound method `get` matches arguments
++ lib/spack/spack/fetch_strategy.py:1428:16: error[unresolved-attribute] Type `Self@source_id` has no attribute `revision`
++ lib/spack/spack/fetch_strategy.py:1431:12: error[unresolved-attribute] Type `Self@mirror_id` has no attribute `revision`
++ lib/spack/spack/fetch_strategy.py:1433:57: error[unresolved-attribute] Type `Self@mirror_id` has no attribute `revision`
+- lib/spack/spack/install_test.py:407:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/installer.py:1300:74: warning[possibly-missing-attribute] Attribute `poll` on type `Unknown | None` may be missing
++ lib/spack/spack/installer.py:1366:55: warning[possibly-missing-attribute] Attribute `complete` on type `Unknown | None` may be missing
++ lib/spack/spack/llnl/util/tty/color.py:340:32: error[too-many-positional-arguments] Too many positional arguments to bound method `write`: expected 2, got 3
++ lib/spack/spack/llnl/util/tty/color.py:340:32: error[unresolved-attribute] Type `Self@writelines` has no attribute `color`
++ lib/spack/spack/multimethod.py:137:42: error[unresolved-attribute] Type `Self@__call__` has no attribute `__name__`
++ lib/spack/spack/multimethod.py:149:13: error[unresolved-attribute] Type `Self@__call__` has no attribute `__name__`
++ lib/spack/spack/package_base.py:253:33: error[unresolved-attribute] Type `(Self@__init__ & <Protocol with members 'executables'> & ~<Protocol with members 'libraries'>) | (Self@__init__ & <Protocol with members 'libraries'> & ~<Protocol with members 'executables'>)` has no attribute `namespace`
++ lib/spack/spack/package_base.py:253:55: error[unresolved-attribute] Type `(Self@__init__ & <Protocol with members 'executables'> & ~<Protocol with members 'libraries'>) | (Self@__init__ & <Protocol with members 'libraries'> & ~<Protocol with members 'executables'>)` has no attribute `name`
++ lib/spack/spack/package_base.py:266:48: error[unresolved-attribute] Type `(Self@__init__ & <Protocol with members 'executables'> & ~<Protocol with members 'libraries'> & ~<Protocol with members 'determine_version'>) | (Self@__init__ & <Protocol with members 'libraries'> & ~<Protocol with members 'executables'> & ~<Protocol with members 'determine_version'>)` has no attribute `name`
++ lib/spack/spack/package_base.py:266:58: error[unresolved-attribute] Type `(Self@__init__ & <Protocol with members 'executables'> & ~<Protocol with members 'libraries'> & ~<Protocol with members 'determine_version'>) | (Self@__init__ & <Protocol with members 'libraries'> & ~<Protocol with members 'executables'> & ~<Protocol with members 'determine_version'>)` has no attribute `namespace`
++ lib/spack/spack/package_base.py:347:16: error[unresolved-attribute] Type `Self@view_source` has no attribute `spec`
++ lib/spack/spack/package_base.py:353:45: error[unresolved-attribute] Type `Self@view_destination` has no attribute `spec`
++ lib/spack/spack/package_base.py:380:46: error[unresolved-attribute] Type `Self@add_files_to_view` has no attribute `spec`
++ lib/spack/spack/package_base.py:383:42: error[unresolved-attribute] Type `Self@add_files_to_view` has no attribute `spec`
++ lib/spack/spack/package_base.py:1704:21: error[unresolved-attribute] Type `Self@do_patch` has no attribute `patch`
++ lib/spack/spack/provider_index.py:51:20: error[unresolved-attribute] Type `str` has no attribute `intersects`
++ lib/spack/spack/provider_index.py:159:63: error[unresolved-attribute] Type `str` has no attribute `name`
++ lib/spack/spack/provider_index.py:211:52: error[unresolved-attribute] Type `str` has no attribute `fullname`
++ lib/spack/spack/spec.py:2224:34: error[unresolved-attribute] Type `Self@package_hash` has no attribute `_package_hash`
++ lib/spack/spack/spec.py:5460:17: error[call-non-callable] Object of type `None` is not callable
++ lib/spack/spack/spec.py:5460:38: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++ lib/spack/spack/tengine.py:63:54: error[unresolved-attribute] Type `Self@to_dict` has no attribute `context_properties`
++ lib/spack/spack/util/debug.py:71:50: error[invalid-argument-type] Argument to function `fdopen` is incorrect: Expected `int`, found `Unknown | int | None`
++ lib/spack/spack/util/s3.py:140:9: error[invalid-assignment] Object of type `None` is not assignable to attribute `raw` of type `_BufferedReaderStream`
++ lib/spack/spack/vendor/attr/_make.py:2610:65: error[unresolved-attribute] Type `Self@__getstate__` has no attribute `metadata`
++ lib/spack/spack/vendor/jinja2/compiler.py:64:60: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/vendor/jinja2/compiler.py:88:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/vendor/jinja2/environment.py:874:38: error[invalid-argument-type] Argument to function `write_file` is incorrect: Expected `str`, found `CodeType`
+- lib/spack/spack/vendor/jinja2/environment.py:1310:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/environment.py:1364:61: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/environment.py:1414:71: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/environment.py:1607:72: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/idtracking.py:154:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/lexer.py:667:40: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `str | Unknown | int`
++ lib/spack/spack/vendor/jinja2/lexer.py:667:40: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `str | int | Any`
+- lib/spack/spack/vendor/jinja2/nativetypes.py:118:64: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/vendor/jinja2/nodes.py:503:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/nodes.py:214:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/vendor/jinja2/nodes.py:527:74: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/vendor/jinja2/nodes.py:760:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/vendor/jinja2/parser.py:433:9: error[invalid-assignment] Object of type `Expr` is not assignable to attribute `call` of type `Call`
+- lib/spack/spack/vendor/jinja2/parser.py:317:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/parser.py:439:67: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/parser.py:515:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/parser.py:792:49: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/vendor/jinja2/parser.py:1023:37: error[invalid-argument-type] Argument to bound method `extend` is incorrect: Expected `Iterable[Node]`, found `(Node & Top[list[Unknown]]) | list[Node]`
+- lib/spack/spack/vendor/jinja2/runtime.py:428:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/runtime.py:734:17: error[invalid-assignment] Object of type `(Unknown & ~(() -> object)) | bool | (((str | None, /) -> bool) & ~(() -> object))` is not assignable to `bool | None`
+- lib/spack/spack/vendor/jinja2/runtime.py:826:63: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/vendor/jsonschema/exceptions.py:83:13: error[unresolved-attribute] Type `Self@__unicode__` has no attribute `_word_for_schema_in_error_message`
++ lib/spack/spack/vendor/jsonschema/exceptions.py:86:13: error[unresolved-attribute] Type `Self@__unicode__` has no attribute `_word_for_instance_in_error_message`
++ lib/spack/spack/vendor/macholib/ptypes.py:63:44: error[unresolved-attribute] Type `Self@from_mmap` has no attribute `_size_`
++ lib/spack/spack/vendor/macholib/ptypes.py:66:36: error[unresolved-attribute] Type `Self@from_fileobj` has no attribute `_size_`
++ lib/spack/spack/vendor/macholib/ptypes.py:69:37: error[unresolved-attribute] Type `Self@from_str` has no attribute `_endian_`
++ lib/spack/spack/vendor/macholib/ptypes.py:70:54: error[unresolved-attribute] Type `Self@from_str` has no attribute `_format_`
++ lib/spack/spack/vendor/macholib/ptypes.py:86:24: error[unresolved-attribute] Type `Self@to_mmap` has no attribute `_size_`
++ lib/spack/spack/vendor/macholib/ptypes.py:188:35: error[unresolved-attribute] Type `Self@from_tuple` has no attribute `_structmarks_`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:91:22: error[unresolved-attribute] Type `Self@__iter__` has no attribute `_left_list`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:91:39: error[unresolved-attribute] Type `Self@__iter__` has no attribute `_right_list`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:95:62: error[unresolved-attribute] Type `Self@__repr__` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:95:79: error[unresolved-attribute] Type `Self@__repr__` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:95:79: error[unresolved-attribute] Type `Self@__repr__` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:95:79: error[unresolved-attribute] Type `Self@__repr__` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:122:59: error[unresolved-attribute] Type `Self@pop` has no attribute `_right_list`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:122:77: error[unresolved-attribute] Type `Self@pop` has no attribute `_left_list`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:123:58: error[unresolved-attribute] Type `Self@pop` has no attribute `_length`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:123:84: error[unresolved-attribute] Type `Self@pop` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:136:59: error[unresolved-attribute] Type `Self@popleft` has no attribute `_left_list`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:136:76: error[unresolved-attribute] Type `Self@popleft` has no attribute `_right_list`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:137:58: error[unresolved-attribute] Type `Self@popleft` has no attribute `_length`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:137:84: error[unresolved-attribute] Type `Self@popleft` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:158:20: error[unresolved-attribute] Type `Self@_is_empty` has no attribute `_left_list`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:158:44: error[unresolved-attribute] Type `Self@_is_empty` has no attribute `_right_list`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:181:16: error[unresolved-attribute] Type `Self@__len__` has no attribute `_length`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:190:66: error[unresolved-attribute] Type `Self@append` has no attribute `_left_list`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:190:83: error[unresolved-attribute] Type `Self@append` has no attribute `_right_list`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:191:66: error[unresolved-attribute] Type `Self@append` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:200:66: error[unresolved-attribute] Type `Self@appendleft` has no attribute `_right_list`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:200:84: error[unresolved-attribute] Type `Self@appendleft` has no attribute `_left_list`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:201:66: error[unresolved-attribute] Type `Self@appendleft` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:204:12: error[unresolved-attribute] Type `Self@_append` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:204:41: error[unresolved-attribute] Type `Self@_append` has no attribute `_length`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:204:57: error[unresolved-attribute] Type `Self@_append` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:205:16: error[unresolved-attribute] Type `Self@_append` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:208:69: error[unresolved-attribute] Type `Self@_append` has no attribute `_length`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:210:57: error[unresolved-attribute] Type `Self@_append` has no attribute `_length`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:224:23: error[unresolved-attribute] Type `Self@_extend` has no attribute `_length`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:225:12: error[unresolved-attribute] Type `Self@_extend` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:225:55: error[unresolved-attribute] Type `Self@_extend` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:226:37: error[unresolved-attribute] Type `Self@_extend` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:239:68: error[unresolved-attribute] Type `Self@extend` has no attribute `_right_list`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:239:86: error[unresolved-attribute] Type `Self@extend` has no attribute `_left_list`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:240:54: error[unresolved-attribute] Type `Self@extend` has no attribute `_length`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:240:83: error[unresolved-attribute] Type `Self@extend` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:251:68: error[unresolved-attribute] Type `Self@extendleft` has no attribute `_left_list`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:251:85: error[unresolved-attribute] Type `Self@extendleft` has no attribute `_right_list`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:252:54: error[unresolved-attribute] Type `Self@extendleft` has no attribute `_length`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:252:83: error[unresolved-attribute] Type `Self@extendleft` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:261:16: error[unresolved-attribute] Type `Self@count` has no attribute `_left_list`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:261:46: error[unresolved-attribute] Type `Self@count` has no attribute `_right_list`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:272:27: error[unresolved-attribute] Type `Self@remove` has no attribute `_left_list`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:272:57: error[unresolved-attribute] Type `Self@remove` has no attribute `_right_list`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:272:75: error[unresolved-attribute] Type `Self@remove` has no attribute `_length`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:277:31: error[unresolved-attribute] Type `Self@remove` has no attribute `_left_list`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:278:32: error[unresolved-attribute] Type `Self@remove` has no attribute `_right_list`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:278:83: error[unresolved-attribute] Type `Self@remove` has no attribute `_length`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:294:23: error[unresolved-attribute] Type `Self@reverse` has no attribute `_right_list`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:294:41: error[unresolved-attribute] Type `Self@reverse` has no attribute `_left_list`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:294:58: error[unresolved-attribute] Type `Self@reverse` has no attribute `_length`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:315:37: error[unresolved-attribute] Type `Self@__reduce__` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:321:58: error[unresolved-attribute] Type `Self@__getitem__` has no attribute `_maxlen`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:325:55: error[unresolved-attribute] Type `Self@__getitem__` has no attribute `_length`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:327:37: error[unresolved-attribute] Type `Self@__getitem__` has no attribute `_length`
++ lib/spack/spack/vendor/pyrsistent/_pdeque.py:327:66: error[unresolved-attribute] Type `Self@__getitem__` has no attribute `_length`
++ lib/spack/spack/vendor/pyrsistent/_plist.py:103:34: error[unresolved-attribute] Type `Self@reverse & ~AlwaysFalsy` has no attribute `first`
++ lib/spack/spack/vendor/pyrsistent/_plist.py:104:20: error[unresolved-attribute] Type `Self@reverse & ~AlwaysFalsy` has no attribute `rest`
++ lib/spack/spack/vendor/pyrsistent/_plist.py:121:28: error[unresolved-attribute] Type `Self@split & ~AlwaysFalsy` has no attribute `first`
++ lib/spack/spack/vendor/pyrsistent/_plist.py:122:26: error[unresolved-attribute] Type `Self@split & ~AlwaysFalsy` has no attribute `rest`
++ lib/spack/spack/vendor/pyrsistent/_plist.py:134:19: error[unresolved-attribute] Type `Self@__iter__ & ~AlwaysFalsy` has no attribute `first`
++ lib/spack/spack/vendor/pyrsistent/_plist.py:135:18: error[unresolved-attribute] Type `Self@__iter__ & ~AlwaysFalsy` has no attribute `rest`
++ lib/spack/spack/vendor/pyrsistent/_plist.py:155:20: error[unresolved-attribute] Type `Self@__eq__ & ~AlwaysFalsy` has no attribute `first`
++ lib/spack/spack/vendor/pyrsistent/_plist.py:157:25: error[unresolved-attribute] Type `Self@__eq__ & ~AlwaysFalsy` has no attribute `rest`
++ lib/spack/spack/vendor/pyrsistent/_plist.py:191:20: error[unresolved-attribute] Type `Self@_drop` has no attribute `rest`
++ lib/spack/spack/vendor/pyrsistent/_plist.py:213:16: error[unresolved-attribute] Type `Self@remove & ~AlwaysFalsy` has no attribute `first`
++ lib/spack/spack/vendor/pyrsistent/_plist.py:214:45: error[unresolved-attribute] Type `Self@remove & ~AlwaysFalsy` has no attribute `rest`
++ lib/spack/spack/vendor/pyrsistent/_plist.py:216:33: error[unresolved-attribute] Type `Self@remove & ~AlwaysFalsy` has no attribute `first`
++ lib/spack/spack/vendor/pyrsistent/_plist.py:217:20: error[unresolved-attribute] Type `Self@remove & ~AlwaysFalsy` has no attribute `rest`
++ lib/spack/spack/vendor/pyrsistent/_pset.py:36:27: error[unresolved-attribute] Type `Self@__contains__` has no attribute `_map`
++ lib/spack/spack/vendor/pyrsistent/_pset.py:39:21: error[unresolved-attribute] Type `Self@__iter__` has no attribute `_map`
++ lib/spack/spack/vendor/pyrsistent/_pset.py:42:20: error[unresolved-attribute] Type `Self@__len__` has no attribute `_map`
++ lib/spack/spack/vendor/pyrsistent/_pset.py:54:21: error[unresolved-attribute] Type `Self@__hash__` has no attribute `_map`
++ lib/spack/spack/vendor/pyrsistent/_pset.py:96:23: error[unresolved-attribute] Type `Self@remove` has no attribute `_map`
++ lib/spack/spack/vendor/pyrsistent/_pset.py:105:23: error[unresolved-attribute] Type `Self@discard` has no attribute `_map`
+- lib/spack/spack/vendor/ruamel/yaml/comments.py:361:56: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/compat.py:218:81: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/vendor/ruamel/yaml/constructor.py:191:50: error[too-many-positional-arguments] Too many positional arguments to function `construct_scalar`: expected 2, got 3
+- lib/spack/spack/vendor/ruamel/yaml/main.py:1633:80: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/main.py:1634:69: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/parser.py:580:74: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scalarfloat.py:103:31: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scalarfloat.py:104:30: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scalarfloat.py:105:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scalarfloat.py:106:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scalarfloat.py:107:36: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scalarfloat.py:108:29: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scalarfloat.py:109:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scalarfloat.py:110:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scalarint.py:27:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scalarint.py:28:28: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scalarint.py:29:76: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scalarint.py:36:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scalarint.py:37:28: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scalarint.py:38:76: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scalarint.py:45:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scalarint.py:46:28: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scalarint.py:47:76: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scalarint.py:54:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scalarint.py:55:28: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scalarint.py:56:76: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scalarint.py:63:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scalarint.py:64:28: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scalarint.py:65:76: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scanner.py:1253:67: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scanner.py:1624:70: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/ruamel/yaml/scanner.py:2054:30: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/vendor/six.py:97:18: error[unresolved-attribute] Type `Self@__get__` has no attribute `_resolve`
++ lib/spack/spack/vendor/typing_extensions.py:1840:17: error[invalid-assignment] Object of type `(Any & ~Literal["spack.vendor.typing_extensions"]) | None` is not assignable to attribute `__module__` of type `str`
++ lib/spack/spack/vendor/typing_extensions.py:2740:13: error[invalid-assignment] Object of type `(Any & ~Literal["spack.vendor.typing_extensions"]) | None` is not assignable to attribute `__module__` of type `str`
+- Found 7520 diagnostics
++ Found 7608 diagnostics
+
+itsdangerous (https://github.com/pallets/itsdangerous)
+- src/itsdangerous/serializer.py:261:71: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/itsdangerous/serializer.py:263:51: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/itsdangerous/serializer.py:318:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/itsdangerous/serializer.py:320:20: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 8 diagnostics
++ Found 4 diagnostics
+
+bandersnatch (https://github.com/pypa/bandersnatch)
++ src/bandersnatch/mirror.py:263:16: error[invalid-return-type] Return type does not match returned value: expected `int`, found `int | Unknown | None`
+- src/bandersnatch/simple.py:290:25: warning[possibly-missing-attribute] Attribute `append` on type `Any | dict[Unknown | str, Unknown | int] | list[Unknown]` may be missing
++ src/bandersnatch/simple.py:290:25: warning[possibly-missing-attribute] Attribute `append` on type `Any | dict[Unknown | str, Unknown | int | str] | list[Unknown]` may be missing
++ src/bandersnatch/tests/test_mirror.py:236:67: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:325:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:349:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:392:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:443:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:471:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:511:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:557:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:601:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:622:71: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_sync.py:17:70: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/bandersnatch_storage_plugins/swift.py:260:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/bandersnatch_storage_plugins/swift.py:261:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/bandersnatch_storage_plugins/swift.py:262:34: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/bandersnatch_storage_plugins/swift.py:263:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/bandersnatch_storage_plugins/swift.py:283:73: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/bandersnatch_storage_plugins/swift.py:284:71: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 116 diagnostics
++ Found 122 diagnostics
+
+asynq (https://github.com/quora/asynq)
++ asynq/async_task.py:258:12: error[unresolved-attribute] Type `Self@_accept_error` has no attribute `_value`
++ asynq/async_task.py:288:12: error[unresolved-attribute] Type `Self@_queue_exit` has no attribute `_value`
++ asynq/async_task.py:300:12: error[unresolved-attribute] Type `Self@_queue_throw_error` has no attribute `_value`
++ asynq/decorators.py:168:42: error[unresolved-attribute] Type `Self@_fn_wrapper` has no attribute `fn`
++ asynq/decorators.py:174:54: error[unresolved-attribute] Type `Self@asyncio` has no attribute `fn`
++ asynq/decorators.py:188:22: error[unresolved-attribute] Type `Self@_call_pure` has no attribute `fn`
++ asynq/decorators.py:189:38: error[unresolved-attribute] Type `Self@_call_pure` has no attribute `fn`
++ asynq/decorators.py:195:20: error[unresolved-attribute] Type `DecoratorBinder[Unknown]` has no attribute `asynq`
++ asynq/decorators.py:197:20: error[unresolved-attribute] Type `DecoratorBinder[Unknown]` has no attribute `asynq`
++ asynq/decorators.py:201:20: error[unresolved-attribute] Type `DecoratorBinder[Unknown]` has no attribute `asyncio`
++ asynq/decorators.py:203:20: error[unresolved-attribute] Type `DecoratorBinder[Unknown]` has no attribute `asyncio`
++ asynq/decorators.py:225:73: error[unresolved-attribute] Type `Self@__call__` has no attribute `fn`
++ asynq/decorators.py:225:117: error[unresolved-attribute] Type `Self@__call__` has no attribute `fn`
++ asynq/decorators.py:229:73: error[unresolved-attribute] Type `Self@__call__` has no attribute `fn`
++ asynq/decorators.py:229:117: error[unresolved-attribute] Type `Self@__call__` has no attribute `fn`
++ asynq/decorators.py:256:73: error[unresolved-attribute] Type `Self@__call__` has no attribute `fn`
++ asynq/decorators.py:256:117: error[unresolved-attribute] Type `Self@__call__` has no attribute `fn`
++ asynq/decorators.py:260:73: error[unresolved-attribute] Type `Self@__call__` has no attribute `fn`
++ asynq/decorators.py:260:117: error[unresolved-attribute] Type `Self@__call__` has no attribute `fn`
++ asynq/decorators.py:272:14: error[unresolved-attribute] Type `Self@__get__` has no attribute `fn`
++ asynq/decorators.py:273:12: error[unresolved-attribute] Type `Self@__get__` has no attribute `type`
++ asynq/decorators.py:274:18: error[unresolved-attribute] Type `Self@__get__` has no attribute `type`
++ asynq/decorators.py:294:49: error[unresolved-attribute] Type `Self@asyncio` has no attribute `fn`
++ asynq/decorators.py:310:16: error[unresolved-attribute] Type `Self@_call_pure` has no attribute `fn`
++ asynq/generator.py:176:26: error[unresolved-attribute] Type `Self@__repr__` has no attribute `stopped`
+- asynq/tests/test_recursion.py:54:29: warning[division-by-zero] Cannot divide object of type `int` by zero
+- asynq/tests/test_recursion.py:54:29: warning[division-by-zero] Cannot divide object of type `float` by zero
+- asynq/tests/test_recursion.py:61:29: warning[division-by-zero] Cannot divide object of type `int` by zero
+- asynq/tests/test_recursion.py:61:29: warning[division-by-zero] Cannot divide object of type `float` by zero
++ asynq/tools.py:336:13: warning[possibly-missing-attribute] Attribute `dirty` on type `DecoratorBinder[Unknown] | @Todo` may be missing
++ asynq/tools.py:338:13: warning[possibly-missing-attribute] Attribute `dirty` on type `DecoratorBinder[Unknown] | @Todo` may be missing
+- Found 139 diagnostics
++ Found 162 diagnostics
+
+websockets (https://github.com/aaugustin/websockets)
+- src/websockets/asyncio/connection.py:1009:13: error[parameter-already-assigned] Multiple values provided for parameter `pause` of bound method `__init__`
+- src/websockets/asyncio/connection.py:1010:13: error[parameter-already-assigned] Multiple values provided for parameter `resume` of bound method `__init__`
+- src/websockets/legacy/server.py:607:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes`, found `@Todo | Literal[HTTPStatus.SERVICE_UNAVAILABLE, b"Server is shutting down.\n"] | list[Unknown]`
++ src/websockets/legacy/server.py:607:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes`, found `@Todo | bytes | Literal[HTTPStatus.SERVICE_UNAVAILABLE] | list[Unknown]`
+- Found 38 diagnostics
++ Found 36 diagnostics
+
+stone (https://github.com/dropbox/stone)
++ stone/backends/js_client.py:167:27: warning[possibly-missing-attribute] Attribute `name` on type `Unknown | None` may be missing
++ stone/backends/js_client.py:170:29: warning[possibly-missing-attribute] Attribute `name` on type `Unknown | None` may be missing
++ stone/backends/python_types.py:210:24: warning[possibly-missing-attribute] Attribute `name` on type `Unknown | None` may be missing
+- test/test_backend.py:228:25: warning[possibly-missing-attribute] Attribute `verbose` on type `Unknown | None` may be missing
+- test/test_backend.py:272:30: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | None`
+- test/test_backend.py:273:17: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ test/test_python_gen.py:252:24: error[unresolved-attribute] Type `Self@get_a` has no attribute `_a`
++ test/test_python_gen.py:255:24: error[unresolved-attribute] Type `Self@get_c` has no attribute `_c`
++ test/test_python_gen.py:258:24: error[unresolved-attribute] Type `Self@get_d` has no attribute `_d`
++ test/test_python_gen.py:358:24: error[unresolved-attribute] Type `Self@get_t` has no attribute `_t`
+- test/test_python_types.py:173:9: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- Found 86 diagnostics
++ Found 89 diagnostics
+
+pip (https://github.com/pypa/pip)
+- src/pip/_internal/cli/index_command.py:133:9: error[invalid-assignment] Object of type `Any` is not assignable to attribute `prompting` on type `Unknown | MultiDomainBasicAuth | None`
+- src/pip/_internal/cli/index_command.py:134:9: error[invalid-assignment] Object of type `Any` is not assignable to attribute `keyring_provider` on type `Unknown | MultiDomainBasicAuth | None`
+- src/pip/_internal/cli/parser.py:296:34: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Never`
+- src/pip/_internal/index/collector.py:83:40: warning[possibly-missing-attribute] Attribute `method` on type `Unknown | None` may be missing
++ src/pip/_internal/index/package_finder.py:991:21: warning[possibly-missing-attribute] Attribute `version` on type `InstallationCandidate | None` may be missing
+- src/pip/_internal/index/collector.py:314:9: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `Unknown | None`
++ src/pip/_internal/index/package_finder.py:1004:17: warning[possibly-missing-attribute] Attribute `version` on type `InstallationCandidate | None` may be missing
+- src/pip/_internal/network/auth.py:513:21: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `bytes`
+- src/pip/_internal/network/auth.py:523:9: warning[possibly-missing-attribute] Attribute `release_conn` on type `Unknown | None` may be missing
+- src/pip/_internal/network/auth.py:546:17: warning[possibly-missing-attribute] Attribute `url` on type `Unknown | None` may be missing
+- src/pip/_internal/network/auth.py:557:22: error[unsupported-operator] Operator `<` is not supported for types `None` and `int`, in comparing `Unknown | None` with `Literal[400]`
+- src/pip/_internal/network/download.py:135:15: error[no-matching-overload] No overload of function `splitext` matches arguments
+- src/pip/_internal/network/session.py:220:32: error[invalid-argument-type] Argument to function `url_to_path` is incorrect: Expected `str`, found `Unknown | None | str`
+- src/pip/_internal/network/session.py:280:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/pip/_internal/network/session.py:292:66: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/pip/_internal/network/utils.py:45:8: error[unsupported-operator] Operator `<=` is not supported for types `int` and `None`, in comparing `Literal[400]` with `Unknown | None`
+- src/pip/_internal/network/utils.py:45:15: error[unsupported-operator] Operator `<` is not supported for types `None` and `int`, in comparing `Unknown | None` with `Literal[500]`
+- src/pip/_internal/network/utils.py:50:10: error[unsupported-operator] Operator `<=` is not supported for types `int` and `None`, in comparing `Literal[500]` with `Unknown | None`
+- src/pip/_internal/network/utils.py:50:17: error[unsupported-operator] Operator `<` is not supported for types `None` and `int`, in comparing `Unknown | None` with `Literal[600]`
+- src/pip/_internal/network/utils.py:65:22: warning[possibly-missing-attribute] Attribute `stream` on type `Unknown | None` may be missing
+- src/pip/_internal/network/utils.py:95:21: warning[possibly-missing-attribute] Attribute `read` on type `Unknown | None` may be missing
+- src/pip/_internal/operations/prepare.py:291:12: warning[possibly-missing-attribute] Attribute `is_file` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/operations/prepare.py:293:44: warning[possibly-missing-attribute] Attribute `file_path` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/operations/prepare.py:314:48: warning[possibly-missing-attribute] Attribute `filename` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/operations/prepare.py:321:12: warning[possibly-missing-attribute] Attribute `is_wheel` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/operations/prepare.py:326:12: warning[possibly-missing-attribute] Attribute `is_existing_dir` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/operations/prepare.py:328:30: warning[possibly-missing-attribute] Attribute `file_path` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/operations/prepare.py:352:12: warning[possibly-missing-attribute] Attribute `is_vcs` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/operations/prepare.py:354:12: warning[possibly-missing-attribute] Attribute `is_existing_dir` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/operations/prepare.py:396:25: warning[possibly-missing-attribute] Attribute `metadata_link` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/operations/prepare.py:416:13: warning[possibly-missing-attribute] Attribute `filename` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/operations/prepare.py:487:30: warning[possibly-missing-attribute] Attribute `url` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/resolution/legacy/resolver.py:477:20: warning[possibly-missing-attribute] Attribute `scheme` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/resolution/resolvelib/candidates.py:295:12: warning[possibly-missing-attribute] Attribute `is_wheel` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/resolution/resolvelib/candidates.py:295:39: warning[possibly-missing-attribute] Attribute `is_file` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/resolution/resolvelib/candidates.py:296:27: warning[possibly-missing-attribute] Attribute `filename` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/resolution/resolvelib/candidates.py:307:20: warning[possibly-missing-attribute] Attribute `is_wheel` on type `Unknown | Link | None` may be missing
+- src/pip/_internal/resolution/resolvelib/candidates.py:308:20: warning[possibly-missing-attribute] Attribute `is_file` on type `Unknown | Link | None` may be missing
+- src/pip/_vendor/cachecontrol/adapter.py:75:13: warning[possibly-missing-attribute] Attribute `update` on type `Unknown | None | CaseInsensitiveDict` may be missing
++ src/pip/_vendor/cachecontrol/adapter.py:130:36: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/pip/_vendor/cachecontrol/adapter.py:147:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/pip/_vendor/cachecontrol/controller.py:149:12: error[unsupported-operator] Operator `in` is not supported for types `str` and `None`, in comparing `Literal["Range"]` with `Unknown | None | CaseInsensitiveDict`
+- src/pip/_vendor/cachecontrol/serialize.py:55:32: warning[possibly-missing-attribute] Attribute `get` on type `Unknown | None | CaseInsensitiveDict` may be missing
+- src/pip/_vendor/cachecontrol/serialize.py:102:16: warning[possibly-missing-attribute] Attribute `get` on type `Unknown | None | CaseInsensitiveDict` may be missing
++ src/pip/_vendor/distlib/compat.py:935:22: error[unresolved-attribute] Type `Self@__getitem__` has no attribute `configurator`
++ src/pip/_vendor/distlib/compat.py:947:22: error[unresolved-attribute] Type `Self@get` has no attribute `configurator`
++ src/pip/_vendor/distlib/compat.py:972:22: error[unresolved-attribute] Type `Self@__getitem__` has no attribute `configurator`
++ src/pip/_vendor/distlib/compat.py:984:22: error[unresolved-attribute] Type `Self@pop` has no attribute `configurator`
++ src/pip/_vendor/distlib/compat.py:996:22: error[unresolved-attribute] Type `Self@__getitem__` has no attribute `configurator`
++ src/pip/_vendor/distlib/compat.py:1026:13: error[unresolved-attribute] Unresolved attribute `configurator` on type `ConvertingDict`.
++ src/pip/_vendor/distlib/scripts.py:265:28: warning[possibly-missing-attribute] Attribute `_get_launcher` on type `Self@_write_script` may be missing
++ src/pip/_vendor/distlib/scripts.py:267:28: warning[possibly-missing-attribute] Attribute `_get_launcher` on type `Self@_write_script` may be missing
++ src/pip/_vendor/distlib/util.py:1467:17: error[unresolved-attribute] Type `Self@connect` has no attribute `_tunnel`
++ src/pip/_vendor/distlib/util.py:1473:41: error[unresolved-attribute] Type `Self@connect` has no attribute `cert_file`
++ src/pip/_vendor/distlib/util.py:1473:57: error[unresolved-attribute] Type `Self@connect` has no attribute `key_file`
++ src/pip/_vendor/distlib/util.py:1484:36: error[invalid-argument-type] Argument to function `match_hostname` is incorrect: Expected `dict[str, str | tuple[tuple[tuple[str, str], ...], ...] | tuple[tuple[str, str], ...]]`, found `@Todo | None`
++ src/pip/_vendor/distlib/util.py:1572:75: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float | None`, found `str | Unknown`
++ src/pip/_vendor/distlib/util.py:1572:75: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `tuple[str, int] | None`, found `str | Unknown`
++ src/pip/_vendor/distlib/util.py:1572:75: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `SSLContext | None`, found `str | Unknown`
++ src/pip/_vendor/distlib/util.py:1572:75: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool | None`, found `str | Unknown`
++ src/pip/_vendor/distlib/util.py:1572:75: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `str | Unknown`
++ src/pip/_vendor/distlib/util.py:1623:9: error[unresolved-attribute] Type `Self@__exit__` has no attribute `stream`
++ src/pip/_vendor/distlib/util.py:1637:47: error[invalid-argument-type] Argument to function `reader` is incorrect: Expected `bool`, found `Unknown | str`
++ src/pip/_vendor/distlib/util.py:1637:47: error[invalid-argument-type] Argument to function `reader` is incorrect: Expected `bool`, found `Unknown | str`
++ src/pip/_vendor/distlib/util.py:1637:47: error[invalid-argument-type] Argument to function `reader` is incorrect: Expected `bool`, found `Unknown | str`
++ src/pip/_vendor/distlib/util.py:1657:47: error[invalid-argument-type] Argument to function `writer` is incorrect: Expected `bool`, found `Unknown | str`
++ src/pip/_vendor/distlib/util.py:1657:47: error[invalid-argument-type] Argument to function `writer` is incorrect: Expected `bool`, found `Unknown | str`
++ src/pip/_vendor/distlib/util.py:1657:47: error[invalid-argument-type] Argument to function `writer` is incorrect: Expected `bool`, found `Unknown | str`
+- src/pip/_vendor/packaging/metadata.py:518:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/pip/_vendor/packaging/requirements.py:47:13: error[invalid-assignment] Object of type `Any` is not assignable to attribute `_markers` on type `Marker | None`
+- src/pip/_vendor/pkg_resources/__init__.py:1830:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/pip/_vendor/pkg_resources/__init__.py:3319:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/pip/_vendor/pygments/filter.py:70:20: error[call-non-callable] Object of type `None` is not callable
++ src/pip/_vendor/pygments/filters/__init__.py:838:22: error[unresolved-attribute] Type `Self@filter` has no attribute `spaces`
++ src/pip/_vendor/pygments/filters/__init__.py:856:38: error[unresolved-attribute] Type `Self@filter` has no attribute `spaces`
++ src/pip/_vendor/pygments/formatter.py:124:16: error[unresolved-attribute] Type `Self@format` has no attribute `format_unencoded`
++ src/pip/_vendor/pygments/lexer.py:560:18: error[unresolved-attribute] Type `Self@_process_state` has no attribute `flags`
++ src/pip/_vendor/pygments/lexer.py:599:34: error[unresolved-attribute] Type `Self@process_tokendef` has no attribute `tokens`
++ src/pip/_vendor/pygments/lexer.py:709:21: error[unresolved-attribute] Type `Self@get_tokens_unprocessed` has no attribute `_tokens`
++ src/pip/_vendor/pygments/lexer.py:789:21: error[unresolved-attribute] Type `Self@get_tokens_unprocessed` has no attribute `_tokens`
++ src/pip/_vendor/pygments/lexer.py:927:20: error[unresolved-attribute] Type `Self@_proc...*[Comment body truncated]*
+
+---
+
+_Comment by @github-actions[bot] on 2025-10-06 15:09_
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `unresolved-attribute` | 5,914 | 10 | 0 |
+| `invalid-argument-type` | 1,321 | 114 | 121 |
+| `possibly-missing-attribute` | 1,138 | 392 | 24 |
+| `unsupported-operator` | 714 | 545 | 6 |
+| `unused-ignore-comment` | 115 | 901 | 0 |
+| `invalid-return-type` | 340 | 81 | 12 |
+| `invalid-assignment` | 316 | 64 | 18 |
+| `non-subscriptable` | 138 | 87 | 0 |
+| `call-non-callable` | 135 | 13 | 0 |
+| `no-matching-overload` | 70 | 6 | 0 |
+| `not-iterable` | 61 | 14 | 0 |
+| `missing-argument` | 72 | 0 | 0 |
+| `possibly-missing-implicit-call` | 45 | 9 | 10 |
+| `too-many-positional-arguments` | 47 | 0 | 0 |
+| `deprecated` | 28 | 0 | 0 |
+| `unknown-argument` | 24 | 0 | 0 |
+| `possibly-unresolved-reference` | 0 | 19 | 0 |
+| `parameter-already-assigned` | 14 | 4 | 0 |
+| `redundant-cast` | 14 | 0 | 0 |
+| `division-by-zero` | 1 | 4 | 0 |
+| `invalid-await` | 3 | 0 | 1 |
+| `invalid-key` | 2 | 1 | 0 |
+| `type-assertion-failure` | 0 | 3 | 0 |
+| `invalid-attribute-access` | 2 | 0 | 0 |
+| `invalid-context-manager` | 2 | 0 | 0 |
+| `missing-typed-dict-key` | 2 | 0 | 0 |
+| `unsupported-base` | 2 | 0 | 0 |
+| `index-out-of-bounds` | 1 | 0 | 0 |
+| `invalid-parameter-default` | 1 | 0 | 0 |
+| `invalid-super-argument` | 1 | 0 | 0 |
+| `invalid-type-form` | 1 | 0 | 0 |
+| **Total** | **10,524** | **2,267** | **192** |
+
+**[Full report with detailed diff](https://david-type-of-self-in-method.ecosystem-663.pages.dev/diff)** ([timing results](https://david-type-of-self-in-method.ecosystem-663.pages.dev/timing))
+
+
+---
+
+_Comment by @codspeed-hq[bot] on 2025-10-06 15:15_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/david%2Ftype-of-self-in-methods?utm_source=github&utm_medium=comment&utm_content=header)
+
+### Merging #20723 will **degrade performances by 8.76%**
+
+<sub>Comparing <code>david/type-of-self-in-methods</code> (26bca2a) with <code>main</code> (9090aea)</sub>
+
+
+
+### Summary
+
+`❌ 1` regression  
+`✅ 42` untouched  
+`⏩ 9` skipped[^skipped]  
+
+
+> :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/david%2Ftype-of-self-in-methods?utm_source=github&utm_medium=comment&utm_content=acknowledge)._
+
+### Benchmarks breakdown
+
+|     | Mode | Benchmark | `BASE` | `HEAD` | Change |
+| --- | ---- | --------- | ------ | ------ | ------ |
+| ❌ | Simulation | [`` anyio ``](https://codspeed.io/astral-sh/ruff/branches/david%2Ftype-of-self-in-methods?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Aanyio%3A%3Aproject%3A%3Aanyio&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 898.9 ms | 985.3 ms | -8.76% |
+[^skipped]: 9 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/david%2Ftype-of-self-in-methods?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment&utm_content=archive).
+
+
+---
+
+_Closed by @sharkdp on 2025-10-08 09:48_
+
+---
+
+_Comment by @AlexWaygood on 2025-10-13 11:43_
+
+Reopening to get a fresh ecosystem report now https://github.com/astral-sh/ruff/pull/20814 has landed
+
+---
+
+_Reopened by @AlexWaygood on 2025-10-13 11:43_
+
+---
+
+_Label `ecosystem-analyzer` removed by @AlexWaygood on 2025-10-13 11:56_
+
+---
+
+_Label `ecosystem-analyzer` added by @AlexWaygood on 2025-10-13 11:56_
+
+---
+
+_Label `ecosystem-analyzer` removed by @AlexWaygood on 2025-10-13 11:57_
+
+---
+
+_Label `ecosystem-analyzer` added by @AlexWaygood on 2025-10-13 11:57_
+
+---
+
+_Comment by @AlexWaygood on 2025-10-13 12:05_
+
+> Reopening to get a fresh ecosystem report now #20814 has landed
+
+Nice, we're down from 472 new `invalid-super-argument` diagnostics to only 4 🥳
+
+---
+
+_Label `ecosystem-analyzer` removed by @AlexWaygood on 2025-10-14 13:27_
+
+---
+
+_Label `ecosystem-analyzer` added by @AlexWaygood on 2025-10-14 13:27_
+
+---
+
+_Label `ecosystem-analyzer` removed by @AlexWaygood on 2025-10-14 13:30_
+
+---
+
+_Label `ecosystem-analyzer` added by @AlexWaygood on 2025-10-14 13:30_
+
+---
+
+_Comment by @AlexWaygood on 2025-10-14 13:37_
+
+> Nice, we're down from 472 new `invalid-super-argument` diagnostics to only 4 🥳
+
+...And now only 1 (which is a true positive), following https://github.com/astral-sh/ruff/pull/20843
+
+---
+
+_Closed by @sharkdp on 2025-10-29 21:02_
+
+---
+
+_Branch deleted on 2025-10-29 21:05_
+
+---

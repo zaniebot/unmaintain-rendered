@@ -1,0 +1,469 @@
+```yaml
+number: 21145
+title: "Fix bug where classmethods and staticmethods were considered subtypes of `types.FunctionType`"
+type: pull_request
+state: closed
+author: AlexWaygood
+labels:
+  - ty
+  - ecosystem-analyzer
+assignees: []
+draft: true
+base: main
+head: alex/classmethod-is-not-a-function
+created_at: 2025-10-30T15:49:30Z
+updated_at: 2025-10-30T17:14:41Z
+url: https://github.com/astral-sh/ruff/pull/21145
+synced_at: 2026-01-10T16:59:49Z
+```
+
+# Fix bug where classmethods and staticmethods were considered subtypes of `types.FunctionType`
+
+---
+
+_Pull request opened by @AlexWaygood on 2025-10-30 15:49_
+
+Fixes https://github.com/astral-sh/ty/issues/1452
+
+---
+
+_Review requested from @carljm by @AlexWaygood on 2025-10-30 15:49_
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-10-30 15:49_
+
+---
+
+_Review requested from @sharkdp by @AlexWaygood on 2025-10-30 15:49_
+
+---
+
+_Review requested from @dcreager by @AlexWaygood on 2025-10-30 15:49_
+
+---
+
+_Converted to draft by @AlexWaygood on 2025-10-30 15:49_
+
+---
+
+_Comment by @github-actions[bot] on 2025-10-30 15:53_
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance)
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-10-30 15:52:43.228799809 +0000
++++ new-output.txt	2025-10-30 15:52:46.359792522 +0000
+@@ -1,4 +1,4 @@
+-fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/cdd0b85/src/function/execute.rs:419:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(17843)): execute: too many cycle iterations`
++fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/cdd0b85/src/function/execute.rs:419:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(17c43)): execute: too many cycle iterations`
+ _directives_deprecated_library.py:15:31: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ _directives_deprecated_library.py:30:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+ _directives_deprecated_library.py:36:41: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@__add__`
+@@ -737,6 +737,8 @@
+ narrowing_typeis.py:72:9: error[type-assertion-failure] Argument does not have asserted type `int`
+ narrowing_typeis.py:76:9: error[type-assertion-failure] Argument does not have asserted type `int`
+ narrowing_typeis.py:80:9: error[type-assertion-failure] Argument does not have asserted type `int`
++narrowing_typeis.py:84:9: error[type-assertion-failure] Argument does not have asserted type `int`
++narrowing_typeis.py:88:9: error[type-assertion-failure] Argument does not have asserted type `int`
+ narrowing_typeis.py:92:9: error[type-assertion-failure] Argument does not have asserted type `B`
+ narrowing_typeis.py:96:9: error[type-assertion-failure] Argument does not have asserted type `B`
+ narrowing_typeis.py:132:20: error[invalid-argument-type] Argument to function `takes_callable_str` is incorrect: Expected `(object, /) -> str`, found `def simple_typeguard(val: object) -> TypeIs[int]`
+@@ -946,5 +948,5 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Invalid key access on TypedDict `Movie`: Unknown key "title"
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 948 diagnostics
++Found 950 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+```
+</details>
+
+
+---
+
+_Comment by @github-actions[bot] on 2025-10-30 15:54_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+pip (https://github.com/pypa/pip)
+- src/pip/_vendor/rich/style.py:478:37: error[too-many-positional-arguments] Too many positional arguments to bound method `__new__`: expected 1, got 2
+- src/pip/_vendor/rich/style.py:630:37: error[too-many-positional-arguments] Too many positional arguments to bound method `__new__`: expected 1, got 2
+- src/pip/_vendor/rich/style.py:653:37: error[too-many-positional-arguments] Too many positional arguments to bound method `__new__`: expected 1, got 2
+- src/pip/_vendor/rich/style.py:676:37: error[too-many-positional-arguments] Too many positional arguments to bound method `__new__`: expected 1, got 2
+- src/pip/_vendor/rich/style.py:734:41: error[too-many-positional-arguments] Too many positional arguments to bound method `__new__`: expected 1, got 2
+- Found 582 diagnostics
++ Found 577 diagnostics
+
+pyjwt (https://github.com/jpadilla/pyjwt)
+- jwt/jwks_client.py:83:35: error[invalid-argument-type] Argument to function `from_dict` is incorrect: Expected `dict[str, Any]`, found `(PyJWKSet & Top[dict[Unknown, Unknown]]) | (Any & Top[dict[Unknown, Unknown]])`
++ jwt/jwks_client.py:83:35: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `(PyJWKSet & Top[dict[Unknown, Unknown]]) | (Any & Top[dict[Unknown, Unknown]])`
+
+pytest (https://github.com/pytest-dev/pytest)
+- src/_pytest/logging.py:209:53: error[invalid-argument-type] Argument to function `_get_auto_indent` is incorrect: Expected `int | str | None`, found `object`
++ src/_pytest/logging.py:209:53: error[invalid-argument-type] Argument is incorrect: Expected `int | str | None`, found `object`
+
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/cli/cmds/list_deploy_queue.py:85:32: error[invalid-argument-type] Argument to function `red` is incorrect: Expected `str`, found `Unknown | None`
++ paasta_tools/cli/cmds/list_deploy_queue.py:85:32: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `Unknown | None`
+- paasta_tools/cli/cmds/mesh_status.py:119:31: error[invalid-argument-type] Argument to function `red` is incorrect: Expected `str`, found `Unknown | None`
++ paasta_tools/cli/cmds/mesh_status.py:119:31: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `Unknown | None`
+- paasta_tools/cli/cmds/status.py:326:40: error[invalid-argument-type] Argument to function `red` is incorrect: Expected `str`, found `Unknown | None`
++ paasta_tools/cli/cmds/status.py:326:40: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `Unknown | None`
+
+rich (https://github.com/Textualize/rich)
+- rich/style.py:478:37: error[too-many-positional-arguments] Too many positional arguments to bound method `__new__`: expected 1, got 2
+- rich/style.py:630:37: error[too-many-positional-arguments] Too many positional arguments to bound method `__new__`: expected 1, got 2
+- rich/style.py:653:37: error[too-many-positional-arguments] Too many positional arguments to bound method `__new__`: expected 1, got 2
+- rich/style.py:676:37: error[too-many-positional-arguments] Too many positional arguments to bound method `__new__`: expected 1, got 2
+- rich/style.py:734:41: error[too-many-positional-arguments] Too many positional arguments to bound method `__new__`: expected 1, got 2
+- Found 321 diagnostics
++ Found 316 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
+- sockeye/inference.py:1241:53: error[parameter-already-assigned] Multiple values provided for parameter `unshift_target_factors` of function `_assemble_translation`
++ sockeye/inference.py:1241:53: error[parameter-already-assigned] Multiple values provided for parameter `unshift_target_factors`
+
+ignite (https://github.com/pytorch/ignite)
+- examples/notebooks/HandlersTimeProfiler_MNIST.ipynb:cell 16:1:24: error[invalid-argument-type] Argument to function `print_results` is incorrect: Expected `list[list[str | int | float]]`, found `list[list[str | int | float | tuple[str | int | float, str | int | float]]]`
++ examples/notebooks/HandlersTimeProfiler_MNIST.ipynb:cell 16:1:24: error[invalid-argument-type] Argument is incorrect: Expected `list[list[str | int | float]]`, found `list[list[str | int | float | tuple[str | int | float, str | int | float]]]`
+- tests/ignite/engine/test_custom_events.py:238:37: error[invalid-argument-type] Argument to function `default_event_filter` is incorrect: Expected `Engine`, found `None`
++ tests/ignite/engine/test_custom_events.py:238:37: error[invalid-argument-type] Argument is incorrect: Expected `Engine`, found `None`
+- tests/ignite/engine/test_custom_events.py:238:43: error[invalid-argument-type] Argument to function `default_event_filter` is incorrect: Expected `int`, found `None`
++ tests/ignite/engine/test_custom_events.py:238:43: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `None`
+- tests/ignite/handlers/test_checkpoint.py:1077:37: error[invalid-argument-type] Argument to function `load_objects` is incorrect: Expected `str | Mapping[Unknown, Unknown] | Path`, found `list[Unknown]`
++ tests/ignite/handlers/test_checkpoint.py:1077:37: error[invalid-argument-type] Argument is incorrect: Expected `str | Mapping[Unknown, Unknown] | Path`, found `list[Unknown]`
+- tests/ignite/handlers/test_time_profilers.py:858:40: error[invalid-argument-type] Argument to function `print_results` is incorrect: Expected `list[list[str | int | float]]`, found `list[list[str | int | float | tuple[str | int | float, str | int | float]]]`
++ tests/ignite/handlers/test_time_profilers.py:858:40: error[invalid-argument-type] Argument is incorrect: Expected `list[list[str | int | float]]`, found `list[list[str | int | float | tuple[str | int | float, str | int | float]]]`
+- tests/ignite/metrics/test_confusion_matrix.py:53:41: error[invalid-argument-type] Argument to function `normalize` is incorrect: Expected `str`, found `None`
++ tests/ignite/metrics/test_confusion_matrix.py:53:41: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `None`
+
+PyGithub (https://github.com/PyGithub/PyGithub)
+- tests/Framework.py:493:47: error[invalid-argument-type] Argument to function `open` is incorrect: Expected `str`, found `str | None`
++ tests/Framework.py:493:47: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `str | None`
+
+pandera (https://github.com/pandera-dev/pandera)
+- tests/pandas/test_model.py:1687:59: error[invalid-argument-type] Argument to function `from_records` is incorrect: Expected `ndarray[Unknown, Unknown] | list[tuple[Any, ...]] | dict[Any, Any] | DataFrame`, found `list[Unknown | dict[Unknown | str, Unknown | str | float]]`
++ tests/pandas/test_model.py:1687:59: error[invalid-argument-type] Argument is incorrect: Expected `ndarray[Unknown, Unknown] | list[tuple[Any, ...]] | dict[Any, Any] | DataFrame`, found `list[Unknown | dict[Unknown | str, Unknown | str | float]]`
+- tests/pandas/test_model.py:1731:59: error[invalid-argument-type] Argument to function `from_records` is incorrect: Expected `ndarray[Unknown, Unknown] | list[tuple[Any, ...]] | dict[Any, Any] | DataFrame`, found `list[Unknown | dict[Unknown | str, Unknown | str | float]]`
++ tests/pandas/test_model.py:1731:59: error[invalid-argument-type] Argument is incorrect: Expected `ndarray[Unknown, Unknown] | list[tuple[Any, ...]] | dict[Any, Any] | DataFrame`, found `list[Unknown | dict[Unknown | str, Unknown | str | float]]`
+- tests/pandas/test_model.py:1758:59: error[invalid-argument-type] Argument to function `from_records` is incorrect: Expected `ndarray[Unknown, Unknown] | list[tuple[Any, ...]] | dict[Any, Any] | DataFrame`, found `list[Unknown | dict[Unknown | str, Unknown | str | float]]`
++ tests/pandas/test_model.py:1758:59: error[invalid-argument-type] Argument is incorrect: Expected `ndarray[Unknown, Unknown] | list[tuple[Any, ...]] | dict[Any, Any] | DataFrame`, found `list[Unknown | dict[Unknown | str, Unknown | str | float]]`
+
+mypy (https://github.com/python/mypy)
+- mypy/typeshed/stdlib/multiprocessing/pool.pyi:53:66: error[invalid-type-form] Variable of type `def Process(ctx: DefaultContext, *args: Any, **kwds: Any) -> Unknown` is not allowed in a type expression
++ mypy/typeshed/stdlib/multiprocessing/pool.pyi:53:66: error[invalid-type-form] Variable of type `staticmethod Process(ctx: DefaultContext, *args: Any, **kwds: Any) -> Unknown` is not allowed in a type expression
+
+freqtrade (https://github.com/freqtrade/freqtrade)
+- freqtrade/freqtradebot.py:680:62: error[invalid-argument-type] Argument to function `get_pair_longest_lock` is incorrect: Expected `datetime | None`, found `Unknown | Series[Any] | None`
++ freqtrade/freqtradebot.py:680:62: error[invalid-argument-type] Argument is incorrect: Expected `datetime | None`, found `Unknown | Series[Any] | None`
+- freqtrade/optimize/analysis/lookahead.py:137:57: error[invalid-argument-type] Argument to function `get_result` is incorrect: Expected `DataFrame`, found `dict[Unknown, Unknown]`
++ freqtrade/optimize/analysis/lookahead.py:137:57: error[invalid-argument-type] Argument is incorrect: Expected `DataFrame`, found `dict[Unknown, Unknown]`
+- freqtrade/optimize/analysis/lookahead.py:179:13: error[invalid-argument-type] Argument to function `report_signal` is incorrect: Expected `dict[Unknown, Unknown]`, found `DataFrame`
++ freqtrade/optimize/analysis/lookahead.py:179:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[Unknown, Unknown]`, found `DataFrame`
+- freqtrade/optimize/analysis/lookahead.py:186:13: error[invalid-argument-type] Argument to function `report_signal` is incorrect: Expected `dict[Unknown, Unknown]`, found `DataFrame`
++ freqtrade/optimize/analysis/lookahead.py:186:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[Unknown, Unknown]`, found `DataFrame`
+
+Expression (https://github.com/cognitedata/Expression)
+- tests/test_array.py:322:49: error[invalid-argument-type] Argument to function `unfold` is incorrect: Expected `(Literal[0], /) -> Option[tuple[Unknown, Literal[0]]]`, found `def unfolder(state: int) -> Option[tuple[int, int]]`
++ tests/test_array.py:322:49: error[invalid-argument-type] Argument is incorrect: Expected `(Literal[0], /) -> Option[tuple[Unknown, Literal[0]]]`, found `def unfolder(state: int) -> Option[tuple[int, int]]`
+- tests/test_block.py:289:39: error[invalid-argument-type] Argument to function `unfold` is incorrect: Expected `(Literal[0], /) -> Option[tuple[Unknown, Literal[0]]]`, found `def unfolder(state: int) -> Option[tuple[int, int]]`
++ tests/test_block.py:289:39: error[invalid-argument-type] Argument is incorrect: Expected `(Literal[0], /) -> Option[tuple[Unknown, Literal[0]]]`, found `def unfolder(state: int) -> Option[tuple[int, int]]`
+- tests/test_tagged_union.py:331:23: error[invalid-type-form] Variable of type `def Face(suit: Suit, face: Unknown) -> Card` is not allowed in a type expression
++ tests/test_tagged_union.py:331:23: error[invalid-type-form] Variable of type `staticmethod Face(suit: Suit, face: Unknown) -> Card` is not allowed in a type expression
+- tests/test_tagged_union.py:336:32: error[invalid-type-form] Variable of type `def Face(suit: Suit, face: Unknown) -> Card` is not allowed in a type expression
++ tests/test_tagged_union.py:336:32: error[invalid-type-form] Variable of type `staticmethod Face(suit: Suit, face: Unknown) -> Card` is not allowed in a type expression
+
+vision (https://github.com/pytorch/vision)
+- test/test_datasets.py:3158:21: error[invalid-argument-type] Argument to function `_make_scene_folder` is incorrect: Expected `str`, found `Unknown | Path`
++ test/test_datasets.py:3158:21: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `Unknown | Path`
+- test/test_datasets.py:3425:49: error[invalid-argument-type] Argument to function `_create_scene_folder` is incorrect: Expected `str`, found `Path`
++ test/test_datasets.py:3425:49: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `Path`
+- test/test_datasets.py:3429:58: error[invalid-argument-type] Argument to function `_create_annotation_folder` is incorrect: Expected `str`, found `Path`
++ test/test_datasets.py:3429:58: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `Path`
+- test/test_transforms.py:324:53: error[invalid-argument-type] Argument to function `get_params` is incorrect: Expected `list[int | float]`, found `tuple[Unknown | float, Unknown]`
++ test/test_transforms.py:324:53: error[invalid-argument-type] Argument is incorrect: Expected `list[int | float]`, found `tuple[Unknown | float, Unknown]`
+- test/test_transforms.py:324:66: error[invalid-argument-type] Argument to function `get_params` is incorrect: Expected `list[int | float]`, found `tuple[Unknown | float, Unknown]`
++ test/test_transforms.py:324:66: error[invalid-argument-type] Argument is incorrect: Expected `list[int | float]`, found `tuple[Unknown | float, Unknown]`
+
+xarray (https://github.com/pydata/xarray)
+- xarray/tests/test_plot.py:1309:53: error[unresolved-attribute] Object of type `(...) -> Unknown` has no attribute `__name__`
+- xarray/tests/test_plot.py:1329:12: error[unresolved-attribute] Object of type `(...) -> Unknown` has no attribute `__name__`
+- xarray/tests/test_plot.py:1336:12: error[unresolved-attribute] Object of type `(...) -> Unknown` has no attribute `__name__`
+- xarray/tests/test_plot.py:1414:12: error[unresolved-attribute] Object of type `(...) -> Unknown` has no attribute `__name__`
+- Found 1734 diagnostics
++ Found 1730 diagnostics
+
+mkdocs (https://github.com/mkdocs/mkdocs)
++ mkdocs/livereload/__init__.py:281:48: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++ mkdocs/livereload/__init__.py:281:77: error[unknown-argument] Argument `request_id` does not match any known parameter
+- Found 221 diagnostics
++ Found 223 diagnostics
+
+zope.interface (https://github.com/zopefoundation/zope.interface)
+- src/zope/interface/interface.py:739:16: error[missing-argument] No arguments provided for required parameters `bases`, `attrs` of bound method `__new__`
++ src/zope/interface/interface.py:739:16: error[missing-argument] No arguments provided for required parameters `name`, `bases`, `attrs` of function `__new__`
+
+apprise (https://github.com/caronc/apprise)
+- apprise/cli.py:1046:17: error[invalid-argument-type] Argument to function `disk_scan` is incorrect: Expected `str`, found `str | None`
++ apprise/cli.py:1046:17: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `str | None`
+- apprise/cli.py:1115:17: error[invalid-argument-type] Argument to function `disk_prune` is incorrect: Expected `str`, found `str | None`
++ apprise/cli.py:1115:17: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `str | None`
+- tests/test_api.py:525:28: error[invalid-argument-type] Argument to function `instantiate` is incorrect: Expected `str | dict[Unknown, Unknown]`, found `<class 'object'>`
++ tests/test_api.py:525:28: error[invalid-argument-type] Argument is incorrect: Expected `str | dict[Unknown, Unknown]`, found `<class 'object'>`
+- tests/test_apprise_attachments.py:201:51: error[invalid-argument-type] Argument to function `instantiate` is incorrect: Expected `int | None`, found `Literal["invalid"]`
++ tests/test_apprise_attachments.py:201:51: error[invalid-argument-type] Argument is incorrect: Expected `int | None`, found `Literal["invalid"]`
+- tests/test_config_base.py:116:48: error[invalid-argument-type] Argument to function `detect_config_format` is incorrect: Expected `str`, found `object`
++ tests/test_config_base.py:116:48: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `object`
+- tests/test_config_base.py:156:42: error[invalid-argument-type] Argument to function `config_parse` is incorrect: Expected `str`, found `object`
++ tests/test_config_base.py:156:42: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `object`
+- tests/test_config_base.py:276:47: error[invalid-argument-type] Argument to function `config_parse_text` is incorrect: Expected `str`, found `object`
++ tests/test_config_base.py:276:47: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `object`
+- tests/test_config_base.py:599:47: error[invalid-argument-type] Argument to function `config_parse_yaml` is incorrect: Expected `str`, found `object`
++ tests/test_config_base.py:599:47: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `object`
+- tests/test_persistent_store.py:1262:36: error[invalid-argument-type] Argument to function `instantiate` is incorrect: Expected `dict[str, Any]`, found `None`
++ tests/test_persistent_store.py:1262:36: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `None`
+- tests/test_persistent_store.py:1468:9: error[invalid-argument-type] Argument to function `disk_prune` is incorrect: Expected `str | list[str] | None`, found `tuple[Literal["t01"], Literal["invalid"], Literal["-garbag!"]]`
++ tests/test_persistent_store.py:1468:9: error[invalid-argument-type] Argument is incorrect: Expected `str | list[str] | None`, found `tuple[Literal["t01"], Literal["invalid"], Literal["-garbag!"]]`
+- tests/test_persistent_store.py:1506:13: error[invalid-argument-type] Argument to function `disk_prune` is incorrect: Expected `str | list[str] | None`, found `<class 'object'>`
++ tests/test_persistent_store.py:1506:13: error[invalid-argument-type] Argument is incorrect: Expected `str | list[str] | None`, found `<class 'object'>`
+
+cloud-init (https://github.com/canonical/cloud-init)
+- cloudinit/templater.py:62:13: error[invalid-argument-type] Argument to function `format_error_message` is incorrect: Expected `str`, found `str | None`
++ cloudinit/templater.py:62:13: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `str | None`
+- cloudinit/templater.py:63:13: error[invalid-argument-type] Argument to function `format_error_message` is incorrect: Expected `str`, found `Unknown | int`
++ cloudinit/templater.py:63:13: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `Unknown | int`
++ tests/unittests/config/test_cc_growpart.py:394:13: error[invalid-assignment] Object of type `Unknown | ((devpath: str) -> tuple[Unknown, ...])` is not assignable to attribute `device_part_info` on type `Unknown | MockDistro`
++ tests/unittests/config/test_cc_growpart.py:577:9: error[invalid-assignment] Implicit shadowing of function `device_part_info`
+- tests/unittests/config/test_schema.py:1020:17: error[invalid-argument-type] Argument to function `format_error_message` is incorrect: Expected `str`, found `Literal[3]`
++ tests/unittests/config/test_schema.py:1020:17: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `Literal[3]`
+- tests/unittests/test_templating.py:283:13: error[invalid-argument-type] Argument to function `format_error_message` is incorrect: Expected `str`, found `Literal[4]`
++ tests/unittests/test_templating.py:283:13: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `Literal[4]`
+- tests/unittests/test_templating.py:302:13: error[invalid-argument-type] Argument to function `format_error_message` is incorrect: Expected `str`, found `Literal[4]`
++ tests/unittests/test_templating.py:302:13: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `Literal[4]`
+- Found 1139 diagnostics
++ Found 1141 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
+- mesonbuild/backend/ninjabackend.py:3518:55: error[invalid-argument-type] Argument to function `_get_file_from_list` is incorrect: Expected `Environment`, found `Environment | None`
++ mesonbuild/backend/ninjabackend.py:3518:55: error[invalid-argument-type] Argument is incorrect: Expected `Environment`, found `Environment | None`
+- mesonbuild/backend/vs2010backend.py:1656:92: error[invalid-argument-type] Argument to function `get_build_args` is incorrect: Expected `str`, found `Unknown | list[Unknown]`
++ mesonbuild/backend/vs2010backend.py:1656:92: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `Unknown | list[Unknown]`
+- mesonbuild/backend/vs2010backend.py:1851:49: error[invalid-argument-type] Argument to function `relpath` is incorrect: Expected `str`, found `PureWindowsPath`
++ mesonbuild/backend/vs2010backend.py:1851:49: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `PureWindowsPath`
+- mesonbuild/build.py:2128:66: error[invalid-argument-type] Argument to function `from_absolute_file` is incorrect: Expected `str`, found `str | None`
++ mesonbuild/build.py:2128:66: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `str | None`
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-github/prefect_github/repository.py:136:59: error[invalid-argument-type] Argument to function `_get_paths` is incorrect: Expected `str`, found `str | None`
++ src/integrations/prefect-github/prefect_github/repository.py:136:59: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `str | None`
+- src/integrations/prefect-snowflake/prefect_snowflake/credentials.py:210:47: error[invalid-argument-type] Argument to function `_decode_secret` is incorrect: Expected `SecretStr | SecretBytes`, found `SecretBytes | None`
++ src/integrations/prefect-snowflake/prefect_snowflake/credentials.py:210:47: error[invalid-argument-type] Argument is incorrect: Expected `SecretStr | SecretBytes`, found `SecretBytes | None`
+- src/integrations/prefect-snowflake/prefect_snowflake/credentials.py:226:50: error[invalid-argument-type] Argument to function `_compose_pem` is incorrect: Expected `bytes`, found `bytes | None`
++ src/integrations/prefect-snowflake/prefect_snowflake/credentials.py:226:50: error[invalid-argument-type] Argument is incorrect: Expected `bytes`, found `bytes | None`
+- src/integrations/prefect-snowflake/prefect_snowflake/experimental/workers/spcs.py:424:55: error[invalid-argument-type] Argument to function `_slugify_service_name` is incorrect: Expected `str`, found `str | None`
++ src/integrations/prefect-snowflake/prefect_snowflake/experimental/workers/spcs.py:424:55: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `str | None`
+
+setuptools (https://github.com/pypa/setuptools)
+- setuptools/config/_validate_pyproject/error_reporting.py:99:45: error[invalid-argument-type] Argument to function `_simplify_name` is incorrect: Expected `str`, found `Unknown | None`
++ setuptools/config/_validate_pyproject/error_reporting.py:99:45: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `Unknown | None`
+
+openlibrary (https://github.com/internetarchive/openlibrary)
+- openlibrary/plugins/upstream/edits.py:103:56: error[invalid-argument-type] Argument to function `create_title` is incorrect: Expected `int`, found `Unknown | None`
++ openlibrary/plugins/upstream/edits.py:103:56: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Unknown | None`
+- openlibrary/plugins/upstream/edits.py:103:65: error[invalid-argument-type] Argument to function `create_title` is incorrect: Expected `list[str]`, found `Unknown | list[LiteralString]`
++ openlibrary/plugins/upstream/edits.py:103:65: error[invalid-argument-type] Argument is incorrect: Expected `list[str]`, found `Unknown | list[LiteralString]`
+- openlibrary/plugins/upstream/edits.py:104:52: error[invalid-argument-type] Argument to function `create_url` is incorrect: Expected `int`, found `Unknown | None`
++ openlibrary/plugins/upstream/edits.py:104:52: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Unknown | None`
+- openlibrary/plugins/upstream/edits.py:104:61: error[invalid-argument-type] Argument to function `create_url` is incorrect: Expected `list[str]`, found `Unknown | list[LiteralString]`
++ openlibrary/plugins/upstream/edits.py:104:61: error[invalid-argument-type] Argument is incorrect: Expected `list[str]`, found `Unknown | list[LiteralString]`
+- openlibrary/plugins/worksearch/code.py:327:57: error[invalid-argument-type] Argument to function `from_solr_result` is incorrect: Expected `str`, found `str | None`
++ openlibrary/plugins/worksearch/code.py:327:57: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `str | None`
+
+pycryptodome (https://github.com/Legrandin/pycryptodome)
+- lib/Crypto/Hash/CMAC.py:173:28: error[too-many-positional-arguments] Too many positional arguments to bound method `__new__`: expected 1, got 2
+- Found 1775 diagnostics
++ Found 1774 diagnostics
+
+hydpy (https://github.com/hydpy-dev/hydpy)
++ hydpy/models/hland/hland_control.py:459:43: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 2
++ hydpy/models/hland/hland_control.py:461:46: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 2
+- Found 678 diagnostics
++ Found 680 diagnostics
+
+bokeh (https://github.com/bokeh/bokeh)
+- src/bokeh/sphinxext/_internal/bokeh_palette_group.py:91:12: error[unresolved-attribute] Function `visit_html` has no attribute `__func__`
+- src/bokeh/sphinxext/_internal/bokehjs_content.py:113:12: error[unresolved-attribute] Function `visit_html` has no attribute `__func__`
+- src/bokeh/sphinxext/_internal/bokehjs_content.py:113:33: error[unresolved-attribute] Function `depart_html` has no attribute `__func__`
+- src/bokeh/sphinxext/bokeh_plot.py:146:12: error[unresolved-attribute] Function `visit_html` has no attribute `__func__`
+- Found 603 diagnostics
++ Found 599 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- benchmarks/bm/iast_fixtures/str_methods.py:734:49: error[invalid-argument-type] Argument to function `commonprefix` is incorrect: Expected `list[Unknown]`, found `Literal["/usr/local/lib"]`
++ benchmarks/bm/iast_fixtures/str_methods.py:734:49: error[invalid-argument-type] Argument is incorrect: Expected `list[Unknown]`, found `Literal["/usr/local/lib"]`
+- benchmarks/bm/iast_fixtures/str_methods.py:734:49: error[invalid-argument-type] Argument to function `commonprefix` is incorrect: Expected `list[Unknown]`, found `Literal["/usr/lib"]`
++ benchmarks/bm/iast_fixtures/str_methods.py:734:49: error[invalid-argument-type] Argument is incorrect: Expected `list[Unknown]`, found `Literal["/usr/lib"]`
+- ddtrace/_trace/sampler.py:168:29: error[invalid-argument-type] Argument to function `_key` is incorrect: Expected `str | None`, found `Unknown | str | None | int`
++ ddtrace/_trace/sampler.py:168:29: error[invalid-argument-type] Argument is incorrect: Expected `str | None`, found `Unknown | str | None | int`
+- ddtrace/appsec/_iast/_patch_modules.py:99:58: error[invalid-argument-type] Argument to function `force_wrapper` is incorrect: Expected `(...) -> Unknown`, found `Unknown | Literal[""]`
++ ddtrace/appsec/_iast/_patch_modules.py:99:58: error[invalid-argument-type] Argument is incorrect: Expected `(...) -> Unknown`, found `Unknown | Literal[""]`
+- ddtrace/settings/_opentelemetry.py:10:61: error[invalid-argument-type] Argument to function `_get_default_endpoint` is incorrect: Expected `str`, found `Unknown | EnvVariable[Literal["grpc"]]`
++ ddtrace/settings/_opentelemetry.py:10:61: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `Unknown | EnvVariable[Literal["grpc"]]`
+- ddtrace/settings/_opentelemetry.py:15:61: error[invalid-argument-type] Argument to function `_get_default_endpoint` is incorrect: Expected `str`, found `Unknown | DerivedVariable[Unknown]`
++ ddtrace/settings/_opentelemetry.py:15:61: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `Unknown | DerivedVariable[Unknown]`
+- ddtrace/settings/_opentelemetry.py:32:61: error[invalid-argument-type] Argument to function `_get_default_endpoint` is incorrect: Expected `str`, found `Unknown | DerivedVariable[Unknown]`
++ ddtrace/settings/_opentelemetry.py:32:61: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `Unknown | DerivedVariable[Unknown]`
+- tests/appsec/iast/test_patch_modules.py:47:68: error[invalid-argument-type] Argument to function `force_wrapper` is incorrect: Expected `(...) -> Unknown`, found `Literal["test_hook"]`
++ tests/appsec/iast/test_patch_modules.py:47:68: error[invalid-argument-type] Argument is incorrect: Expected `(...) -> Unknown`, found `Literal["test_hook"]`
+- tests/appsec/iast/test_patch_modules.py:55:68: error[invalid-argument-type] Argument to function `force_wrapper` is incorrect: Expected `(...) -> Unknown`, found `Literal["test_hook"]`
++ tests/appsec/iast/test_patch_modules.py:55:68: error[invalid-argument-type] Argument is incorrect: Expected `(...) -> Unknown`, found `Literal["test_hook"]`
+- tests/internal/remoteconfig/test_remoteconfig_client.py:129:101: error[invalid-argument-type] Argument to function `_apply_callback` is incorrect: Expected `ConfigMetadata`, found `dict[Unknown | str, Unknown | str | int]`
++ tests/internal/remoteconfig/test_remoteconfig_client.py:129:101: error[invalid-argument-type] Argument is incorrect: Expected `ConfigMetadata`, found `dict[Unknown | str, Unknown | str | int]`
+- tests/internal/remoteconfig/test_remoteconfig_client.py:381:61: error[invalid-argument-type] Argument to function `_apply_callback` is incorrect: Expected `PubSub`, found `CallbackClass`
++ tests/internal/remoteconfig/test_remoteconfig_client.py:381:61: error[invalid-argument-type] Argument is incorrect: Expected `PubSub`, found `CallbackClass`
+- tests/internal/remoteconfig/test_remoteconfig_client.py:381:97: error[invalid-argument-type] Argument to function `_apply_callback` is incorrect: Expected `ConfigMetadata`, found `dict[Unknown | str, Unknown | str]`
++ tests/internal/remoteconfig/test_remoteconfig_client.py:381:97: error[invalid-argument-type] Argument is incorrect: Expected `ConfigMetadata`, found `dict[Unknown | str, Unknown | str]`
+
+ibis (https://github.com/ibis-project/ibis)
+- ibis/backends/sql/compilers/datafusion.py:92:44: error[invalid-argument-type] Argument to function `to_scale` is incorrect: Expected `str`, found `Literal[TimestampUnit.SECOND, TimestampUnit.MICROSECOND] | str`
++ ibis/backends/sql/compilers/datafusion.py:92:44: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `Literal[TimestampUnit.SECOND, TimestampUnit.MICROSECOND] | str`
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/quilt.py:1183:66: error[invalid-argument-type] Argument to function `_relabel` is incorrect: Expected `Frame | Series[Any, Any]`, found `Bus[Any] | Yarn[Any]`
++ static_frame/core/quilt.py:1183:66: error[invalid-argument-type] Argument is incorrect: Expected `Frame | Series[Any, Any]`, found `Bus[Any] | Yarn[Any]`
+- static_frame/core/quilt.py:1194:25: error[invalid-argument-type] Argument to function `_relabel` is incorrect: Expected `Frame | Series[Any, Any]`, found `Bus[Any] | Yarn[Any]`
++ static_frame/core/quilt.py:1194:25: error[invalid-argument-type] Argument is incorrect: Expected `Frame | Series[Any, Any]`, found `Bus[Any] | Yarn[Any]`
+- static_frame/test/unit/test_display.py:595:39: error[invalid-argument-type] Argument to function `in_category` is incorrect: Expected `type | dtype[Any]`, found `None`
++ static_frame/test/unit/test_display.py:595:39: error[invalid-argument-type] Argument is incorrect: Expected `type | dtype[Any]`, found `None`
+- static_frame/test/unit/test_type_clinic.py:946:6: error[no-matching-overload] No overload of function `warn` matches arguments
++ static_frame/test/unit/test_type_clinic.py:946:6: error[no-matching-overload] No overload matches arguments
+- static_frame/test/unit/test_type_clinic.py:3167:6: error[no-matching-overload] No overload of function `warn` matches arguments
++ static_frame/test/unit/test_type_clinic.py:3167:6: error[no-matching-overload] No overload matches arguments
+
+sympy (https://github.com/sympy/sympy)
+- sympy/physics/secondquant.py:1983:45: error[too-many-positional-arguments] Too many positional arguments to bound method `__new__`: expected 2, got 3
+- sympy/utilities/misc.py:480:26: error[invalid-argument-type] Argument to function `maketrans` is incorrect: Expected `str`, found `Unknown | None | Literal[""]`
++ sympy/utilities/misc.py:480:26: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `Unknown | None | Literal[""]`
+- Found 14031 diagnostics
++ Found 14030 diagnostics
+
+rotki (https://github.com/rotki/rotki)
+- rotkehlchen/tests/unit/test_ethereum_airdrops.py:426:51: error[invalid-argument-type] Argument to function `resolve_asset` is incorrect: Expected `str`, found `Unknown | str | int | dict[Unknown | str, Unknown | str | int] | dict[Unknown | str, Unknown | str]`
++ rotkehlchen/tests/unit/test_ethereum_airdrops.py:426:51: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `Unknown | str | int | dict[Unknown | str, Unknown | str | int] | dict[Unknown | str, Unknown | str]`
+- rotkehlchen/tests/unit/test_tokens.py:196:51: error[unresolved-attribute] Function `find_usd_prices` has no attribute `call_args_list`
+- Found 1681 diagnostics
++ Found 1680 diagnostics
+
+core (https://github.com/home-assistant/core)
++ homeassistant/components/number/__init__.py:473:21: error[invalid-argument-type] Argument is incorrect: Expected `(...) -> Unknown`, found `str & ~AlwaysFalsy`
++ homeassistant/components/number/__init__.py:474:21: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
++ homeassistant/components/number/__init__.py:497:17: error[invalid-argument-type] Argument is incorrect: Expected `(...) -> Unknown`, found `str & ~AlwaysFalsy`
++ homeassistant/components/number/__init__.py:498:17: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
+- homeassistant/components/philips_js/light.py:237:43: error[invalid-argument-type] Argument to function `from_str` is incorrect: Expected `str`, found `str | None | Unknown`
++ homeassistant/components/philips_js/light.py:237:43: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `str | None | Unknown`
++ homeassistant/components/recorder/statistics.py:394:16: error[missing-argument] No argument provided for required parameter 1
++ homeassistant/components/recorder/statistics.py:395:13: error[unknown-argument] Argument `from_unit` does not match any known parameter
++ homeassistant/components/recorder/statistics.py:395:39: error[unknown-argument] Argument `to_unit` does not match any known parameter
++ homeassistant/components/recorder/statistics.py:397:12: error[missing-argument] No argument provided for required parameter 1
++ homeassistant/components/recorder/statistics.py:397:40: error[unknown-argument] Argument `from_unit` does not match any known parameter
++ homeassistant/components/recorder/statistics.py:397:66: error[unknown-argument] Argument `to_unit` does not match any known parameter
++ homeassistant/components/recorder/statistics.py:411:12: error[missing-argument] No argument provided for required parameter 1
++ homeassistant/components/recorder/statistics.py:411:40: error[unknown-argument] Argument `from_unit` does not match any known parameter
++ homeassistant/components/recorder/statistics.py:411:64: error[unknown-argument] Argument `to_unit` does not match any known parameter
++ homeassistant/components/recorder/statistics.py:422:20: error[missing-argument] No argument provided for required parameter 1
++ homeassistant/components/recorder/statistics.py:423:17: error[unknown-argument] Argument `from_unit` does not match any known parameter
++ homeassistant/components/recorder/statistics.py:423:38: error[unknown-argument] Argument `to_unit` does not match any known parameter
++ homeassistant/components/sensor/__init__.py:161:48: error[invalid-argument-type] Argument is incorrect: Expected `(...) -> Unknown`, found `str`
++ homeassistant/components/sensor/__init__.py:161:59: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
++ homeassistant/components/sensor/__init__.py:715:17: error[invalid-argument-type] Argument is incorrect: Expected `(...) -> Unknown`, found `str | None`
++ homeassistant/components/sensor/__init__.py:715:45: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
++ homeassistant/components/sensor/recorder.py:374:55: error[invalid-argument-type] Argument is incorrect: Expected `(...) -> Unknown`, found `(Any & ~UndefinedType) | None`
++ homeassistant/components/sensor/recorder.py:374:67: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
+- homeassistant/components/tomorrowio/weather.py:211:13: error[invalid-argument-type] Argument to function `_translate_condition` is incorrect: Expected `int | None`, found `int | str | float | None`
++ homeassistant/components/tomorrowio/weather.py:211:13: error[invalid-argument-type] Argument is incorrect: Expected `int | None`, found `int | str | float | None`
+- homeassistant/components/vicare/climate.py:287:44: error[invalid-argument-type] Argument to function `to_ha_preset` is incorrect: Expected `str`, found `str | None`
++ homeassistant/components/vicare/climate.py:287:44: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `str | None`
++ homeassistant/helpers/temperature.py:28:62: error[invalid-argument-type] Argument is incorrect: Expected `(...) -> Unknown`, found `str`
++ homeassistant/helpers/temperature.py:28:80: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
+- Found 14272 diagnostics
++ Found 14296 diagnostics
+
+scipy (https://github.com/scipy/scipy)
+- scipy/spatial/transform/tests/test_rotation.py:1201:27: error[invalid-argument-type] Argument to function `identity` is incorrect: Expected `int | tuple[int, ...] | None`, found `float`
++ scipy/spatial/transform/tests/test_rotation.py:1201:27: error[invalid-argument-type] Argument is incorrect: Expected `int | tuple[int, ...] | None`, found `float`
+- scipy/spatial/transform/tests/test_rotation.py:1205:30: error[too-many-positional-arguments] Too many positional arguments to function `identity`: expected 1, got 2
++ scipy/spatial/transform/tests/test_rotation.py:1205:30: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
+- subprojects/highs/src/highspy/highs.py:269:63: error[invalid-argument-type] Argument to function `internal_get_value` is incorrect: Expected `Integral | highs_var | highs_cons | ... omitted 4 union elements`, found `object`
++ subprojects/highs/src/highspy/highs.py:269:63: error[invalid-argument-type] Argument is incorrect: Expected `Integral | highs_var | highs_cons | ... omitted 4 union elements`, found `object`
+
+```
+</details>
+No memory usage changes detected ✅
+
+
+---
+
+_Label `ecosystem-analyzer` added by @AlexWaygood on 2025-10-30 15:55_
+
+---
+
+_Comment by @github-actions[bot] on 2025-10-30 16:01_
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `invalid-argument-type` | 7 | 0 | 79 |
+| `too-many-positional-arguments` | 9 | 12 | 1 |
+| `unknown-argument` | 9 | 0 | 0 |
+| `unresolved-attribute` | 0 | 9 | 0 |
+| `missing-argument` | 4 | 0 | 1 |
+| `invalid-type-form` | 0 | 0 | 3 |
+| `invalid-assignment` | 2 | 0 | 0 |
+| `no-matching-overload` | 0 | 0 | 2 |
+| `parameter-already-assigned` | 0 | 0 | 1 |
+| **Total** | **31** | **21** | **87** |
+
+**[Full report with detailed diff](https://alex-classmethod-is-not-a-fu.ecosystem-663.pages.dev/diff)** ([timing results](https://alex-classmethod-is-not-a-fu.ecosystem-663.pages.dev/timing))
+
+
+---
+
+_Comment by @AlexWaygood on 2025-10-30 16:22_
+
+the minimal repro of the corpus panic is
+
+```py
+from typing_extensions import ParamSpec
+
+ParamSpec("P")
+```
+
+...
+
+---
+
+_Comment by @AlexWaygood on 2025-10-30 16:30_
+
+Going to abandon this for now: it doesn't seem high-priority; I've already spent too much time on it; and this isn't really an attractive fix. A better fix would probably be to add separate `Type::ClassMethod` and `Type::StaticMethod` variants.
+
+---
+
+_Closed by @AlexWaygood on 2025-10-30 16:30_
+
+---
+
+_Branch deleted on 2025-10-30 17:14_
+
+---

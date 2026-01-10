@@ -1,0 +1,836 @@
+```yaml
+number: 13965
+title: "[pyflakes] Fix check of unused imports"
+type: pull_request
+state: open
+author: gpilikin
+labels:
+  - bug
+assignees: []
+base: main
+head: fix/unused_imports
+created_at: 2024-10-28T14:55:44Z
+updated_at: 2025-10-29T15:05:27Z
+url: https://github.com/astral-sh/ruff/pull/13965
+synced_at: 2026-01-10T16:59:49Z
+```
+
+# [pyflakes] Fix check of unused imports
+
+---
+
+_Pull request opened by @gpilikin on 2024-10-28 14:55_
+
+<!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+Fixed incorrect detection of unused imports with submodules. They were always marked as used even though they are not.
+
+For example:
+``` 
+import multiprocessing.pool
+import multiprocessing.process  # marked as used
+
+tp = multiprocessing.pool.ThreadPool()
+...
+```
+
+The solution:
+- Added checking all possible attribute combinations for similar imports and marking them as used ("foo.bar", "foo" etc),  if there are none, the root module itself should be marked as used.
+- Added checks on the use of all imports with submodules.
+
+## Test Plan
+
+<!-- How was it tested? -->
+cargo test
+
+Closes: https://github.com/astral-sh/ruff/issues/60
+
+---
+
+_Marked ready for review by @gpilikin on 2024-10-29 05:40_
+
+---
+
+_Renamed from "[pyflakes] Fix check of unused imports." to "[pyflakes] Fix check of unused imports" by @gpilikin on 2024-10-29 05:42_
+
+---
+
+_Label `bug` added by @dhruvmanila on 2024-11-07 05:00_
+
+---
+
+_Review requested from @charliermarsh by @MichaReiser on 2024-11-20 08:13_
+
+---
+
+_Comment by @MichaReiser on 2024-11-20 08:14_
+
+Wow, nice fix! This is one of the oldest issues that is still open! Unfortunately, I'm not a good fit to review this PR because I have little knowledge of our semantic model. @charliermarsh is probably the best person to review this contribution, but he's currently very busy. That's why it might take a while before we get to it.
+
+---
+
+_Comment by @dylwil3 on 2024-11-23 08:15_
+
+This is awesome! If you resolve the merge conflicts then the ecosystem check will run and we can get a sense if there are any unintended consequences of the change in the semantic model (while we await the review from on high).
+
+---
+
+_Comment by @codspeed-hq[bot] on 2024-11-29 11:38_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/gpilikin%3Afix%2Funused_imports?utm_source=github&utm_medium=comment&utm_content=header)
+
+### Merging #13965 will **degrade performances by 24.48%**
+
+<sub>Comparing <code>gpilikin:fix/unused_imports</code> (8d0d50c) with <code>main</code> (8aac69b)</sub>
+
+
+
+### Summary
+
+`❌ 12` regressions  
+`✅ 20` untouched  
+
+
+> :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/gpilikin%3Afix%2Funused_imports?utm_source=github&utm_medium=comment&utm_content=acknowledge)._
+
+### Benchmarks breakdown
+
+|     | Mode | Benchmark | `BASE` | `HEAD` | Change |
+| --- | ---- | --------- | ------ | ------ | ------ |
+| ❌ | Simulation | [`` linter/all-rules[large/dataset.py] ``](https://codspeed.io/astral-sh/ruff/branches/gpilikin%3Afix%2Funused_imports?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Aall_rules%3A%3Abenchmark_all_rules%3A%3Alinter%2Fall-rules%5Blarge%2Fdataset.py%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 16.8 ms | 18.3 ms | -8.05% |
+| ❌ | Simulation | [`` linter/all-rules[numpy/ctypeslib.py] ``](https://codspeed.io/astral-sh/ruff/branches/gpilikin%3Afix%2Funused_imports?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Aall_rules%3A%3Abenchmark_all_rules%3A%3Alinter%2Fall-rules%5Bnumpy%2Fctypeslib.py%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 4.2 ms | 4.4 ms | -4.77% |
+| ❌ | Simulation | [`` linter/all-rules[numpy/globals.py] ``](https://codspeed.io/astral-sh/ruff/branches/gpilikin%3Afix%2Funused_imports?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Aall_rules%3A%3Abenchmark_all_rules%3A%3Alinter%2Fall-rules%5Bnumpy%2Fglobals.py%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 717.2 µs | 748.3 µs | -4.17% |
+| ❌ | Simulation | [`` linter/all-rules[pydantic/types.py] ``](https://codspeed.io/astral-sh/ruff/branches/gpilikin%3Afix%2Funused_imports?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Aall_rules%3A%3Abenchmark_all_rules%3A%3Alinter%2Fall-rules%5Bpydantic%2Ftypes.py%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 8.6 ms | 9.1 ms | -5.41% |
+| ❌ | Simulation | [`` linter/default-rules[large/dataset.py] ``](https://codspeed.io/astral-sh/ruff/branches/gpilikin%3Afix%2Funused_imports?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Adefault_rules%3A%3Abenchmark_default_rules%3A%3Alinter%2Fdefault-rules%5Blarge%2Fdataset.py%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 3.7 ms | 5 ms | -24.48% |
+| ❌ | Simulation | [`` linter/default-rules[numpy/ctypeslib.py] ``](https://codspeed.io/astral-sh/ruff/branches/gpilikin%3Afix%2Funused_imports?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Adefault_rules%3A%3Abenchmark_default_rules%3A%3Alinter%2Fdefault-rules%5Bnumpy%2Fctypeslib.py%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 908.1 µs | 1,115.9 µs | -18.63% |
+| ❌ | Simulation | [`` linter/default-rules[numpy/globals.py] ``](https://codspeed.io/astral-sh/ruff/branches/gpilikin%3Afix%2Funused_imports?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Adefault_rules%3A%3Abenchmark_default_rules%3A%3Alinter%2Fdefault-rules%5Bnumpy%2Fglobals.py%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 190.9 µs | 212.7 µs | -10.26% |
+| ❌ | Simulation | [`` linter/default-rules[pydantic/types.py] ``](https://codspeed.io/astral-sh/ruff/branches/gpilikin%3Afix%2Funused_imports?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Adefault_rules%3A%3Abenchmark_default_rules%3A%3Alinter%2Fdefault-rules%5Bpydantic%2Ftypes.py%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 1.9 ms | 2.3 ms | -18.82% |
+| ❌ | Simulation | [`` linter/default-rules[unicode/pypinyin.py] ``](https://codspeed.io/astral-sh/ruff/branches/gpilikin%3Afix%2Funused_imports?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Adefault_rules%3A%3Abenchmark_default_rules%3A%3Alinter%2Fdefault-rules%5Bunicode%2Fpypinyin.py%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 352.2 µs | 399.9 µs | -11.93% |
+| ❌ | Simulation | [`` linter/all-with-preview-rules[large/dataset.py] ``](https://codspeed.io/astral-sh/ruff/branches/gpilikin%3Afix%2Funused_imports?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Apreview_rules%3A%3Abenchmark_preview_rules%3A%3Alinter%2Fall-with-preview-rules%5Blarge%2Fdataset.py%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 20.3 ms | 21.8 ms | -6.8% |
+| ❌ | Simulation | [`` linter/all-with-preview-rules[numpy/ctypeslib.py] ``](https://codspeed.io/astral-sh/ruff/branches/gpilikin%3Afix%2Funused_imports?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Apreview_rules%3A%3Abenchmark_preview_rules%3A%3Alinter%2Fall-with-preview-rules%5Bnumpy%2Fctypeslib.py%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 5 ms | 5.2 ms | -4.23% |
+| ❌ | Simulation | [`` linter/all-with-preview-rules[pydantic/types.py] ``](https://codspeed.io/astral-sh/ruff/branches/gpilikin%3Afix%2Funused_imports?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Apreview_rules%3A%3Abenchmark_preview_rules%3A%3Alinter%2Fall-with-preview-rules%5Bpydantic%2Ftypes.py%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 10.3 ms | 10.8 ms | -4.61% |
+
+
+---
+
+_Comment by @github-actions[bot] on 2024-11-29 11:39_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+ℹ️ ecosystem check **detected linter changes**. (+300 -1 violations, +0 -0 fixes in 28 projects; 27 projects unchanged)
+
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/DisnakeDev/disnake/blob/d847f505441d7ccf1ec4b63645ba8eae2cdc8882/disnake/voice_client.py#L48'>disnake/voice_client.py:48:12:</a> F401 `nacl.utils` imported but unused; consider using `importlib.util.find_spec` to test for availability
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+67 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/data.py#L22'>rasa/cli/data.py:22:8:</a> F401 [*] `rasa.utils.common` imported but unused
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/data.py#L6'>rasa/cli/data.py:6:8:</a> F401 [*] `rasa.shared.core.domain` imported but unused
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/export.py#L11'>rasa/cli/export.py:11:8:</a> F401 [*] `rasa.utils.common` imported but unused
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/interactive.py#L22'>rasa/cli/interactive.py:22:8:</a> F401 [*] `rasa.utils.common` imported but unused
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/telemetry.py#L7'>rasa/cli/telemetry.py:7:8:</a> F401 [*] `rasa.cli.utils` imported but unused
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/test.py#L28'>rasa/cli/test.py:28:8:</a> F401 [*] `rasa.utils.common` imported but unused
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/test.py#L8'>rasa/cli/test.py:8:8:</a> F401 [*] `rasa.shared.data` imported but unused
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/train.py#L11'>rasa/cli/train.py:11:8:</a> F401 [*] `rasa.utils.common` imported but unused
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/utils.py#L107'>rasa/cli/utils.py:107:12:</a> F401 [*] `rasa.utils.io` imported but unused
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/core/actions/action.py#L17'>rasa/core/actions/action.py:17:8:</a> F401 [*] `rasa.core` imported but unused
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/core/actions/action.py#L84'>rasa/core/actions/action.py:84:8:</a> F401 [*] `rasa.shared.utils.io` imported but unused
+... 56 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/Snowflake-Labs/snowcli">Snowflake-Labs/snowcli</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/Snowflake-Labs/snowcli/blob/39938dc8665cc8d9d5ea0fc920ba49395fd2d3ae/src/snowflake/cli/_plugins/nativeapp/codegen/setup/native_app_setup_processor.py#L19'>src/snowflake/cli/_plugins/nativeapp/codegen/setup/native_app_setup_processor.py:19:8:</a> F401 [*] `os.path` imported but unused
++ <a href='https://github.com/Snowflake-Labs/snowcli/blob/39938dc8665cc8d9d5ea0fc920ba49395fd2d3ae/tests/test_utils.py#L22'>tests/test_utils.py:22:8:</a> F401 [*] `snowflake.cli._plugins.snowpark.models` imported but unused
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+29 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/f0079293456835acb68721e54d88c7de1c570a11/airflow/dag_processing/manager.py#L47'>airflow/dag_processing/manager.py:47:8:</a> F401 [*] `airflow.models` imported but unused
++ <a href='https://github.com/apache/airflow/blob/f0079293456835acb68721e54d88c7de1c570a11/airflow/models/taskinstance.py#L3722'>airflow/models/taskinstance.py:3722:18:</a> F823 Local variable `operator` referenced before assignment
++ <a href='https://github.com/apache/airflow/blob/f0079293456835acb68721e54d88c7de1c570a11/airflow/task/standard_task_runner.py#L125'>airflow/task/standard_task_runner.py:125:39:</a> F823 Local variable `subprocess` referenced before assignment
++ <a href='https://github.com/apache/airflow/blob/f0079293456835acb68721e54d88c7de1c570a11/airflow/utils/helpers.py#L295'>airflow/utils/helpers.py:295:16:</a> F823 Local variable `jinja2` referenced before assignment
++ <a href='https://github.com/apache/airflow/blob/f0079293456835acb68721e54d88c7de1c570a11/airflow/utils/helpers.py#L36'>airflow/utils/helpers.py:36:12:</a> TC004 Move import `jinja2` out of type-checking block. Import is used for more than type hinting.
++ <a href='https://github.com/apache/airflow/blob/f0079293456835acb68721e54d88c7de1c570a11/dev/breeze/src/airflow_breeze/utils/recording.py#L54'>dev/breeze/src/airflow_breeze/utils/recording.py:54:5:</a> F823 Local variable `click` referenced before assignment
++ <a href='https://github.com/apache/airflow/blob/f0079293456835acb68721e54d88c7de1c570a11/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L37'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py:37:8:</a> TC002 Move third-party import `botocore.waiter` into a type-checking block
++ <a href='https://github.com/apache/airflow/blob/f0079293456835acb68721e54d88c7de1c570a11/providers/src/airflow/providers/amazon/aws/hooks/batch_waiters.py#L35'>providers/src/airflow/providers/amazon/aws/hooks/batch_waiters.py:35:8:</a> F401 [*] `botocore.client` imported but unused
++ <a href='https://github.com/apache/airflow/blob/f0079293456835acb68721e54d88c7de1c570a11/providers/src/airflow/providers/celery/executors/celery_executor_utils.py#L112'>providers/src/airflow/providers/celery/executors/celery_executor_utils.py:112:12:</a> F401 [*] `airflow.jobs.local_task_job_runner` imported but unused
++ <a href='https://github.com/apache/airflow/blob/f0079293456835acb68721e54d88c7de1c570a11/providers/src/airflow/providers/celery/executors/celery_executor_utils.py#L113'>providers/src/airflow/providers/celery/executors/celery_executor_utils.py:113:12:</a> F401 [*] `airflow.macros` imported but unused
+... 19 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/274aa143d33dae9334ef356a9c1b6b48fc79dd30/superset/utils/logging_configurator.py#L21'>superset/utils/logging_configurator.py:21:8:</a> F401 [*] `flask.app` imported but unused
++ <a href='https://github.com/apache/superset/blob/274aa143d33dae9334ef356a9c1b6b48fc79dd30/tests/integration_tests/cli_tests.py#L28'>tests/integration_tests/cli_tests.py:28:8:</a> F401 [*] `superset.cli.importexport` imported but unused
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/binary-husky/gpt_academic">binary-husky/gpt_academic</a> (+1 -1 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/binary-husky/gpt_academic/blob/286f7303be0d81a075a82f7ad0dc501e90633b4b/request_llms/com_sparkapi.py#L12'>request_llms/com_sparkapi.py:12:22:</a> F811 Redefinition of unused `datetime` from line 2
++ <a href='https://github.com/binary-husky/gpt_academic/blob/286f7303be0d81a075a82f7ad0dc501e90633b4b/toolbox.py#L983'>toolbox.py:983:21:</a> F823 Local variable `importlib` referenced before assignment
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+38 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/support/defaults.py#L87'>tests/support/defaults.py:87:12:</a> F401 [*] `bokeh.models` imported but unused
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/test_cross.py#L39'>tests/test_cross.py:39:8:</a> F401 [*] `_pytest.mark` imported but unused
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/server/test_server__server.py#L246'>tests/unit/bokeh/server/test_server__server.py:246:16:</a> F823 Local variable `server` referenced before assignment
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/server/test_server__server.py#L273'>tests/unit/bokeh/server/test_server__server.py:273:5:</a> F823 Local variable `server` referenced before assignment
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/server/test_server__server.py#L299'>tests/unit/bokeh/server/test_server__server.py:299:35:</a> F823 Local variable `server` referenced before assignment
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/server/test_server__server.py#L309'>tests/unit/bokeh/server/test_server__server.py:309:20:</a> F823 Local variable `server` referenced before assignment
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/server/test_server__server.py#L322'>tests/unit/bokeh/server/test_server__server.py:322:20:</a> F823 Local variable `server` referenced before assignment
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/server/test_server__server.py#L335'>tests/unit/bokeh/server/test_server__server.py:335:20:</a> F823 Local variable `server` referenced before assignment
+... 31 additional changes omitted for rule F823
+... 30 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/docker/docker-py">docker/docker-py</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/docker/docker-py/blob/03e43be6af9b21f9f966eb84ca46a159b664ccf4/tests/unit/api_test.py#L643'>tests/unit/api_test.py:643:16:</a> F823 Local variable `socket` referenced before assignment
++ <a href='https://github.com/docker/docker-py/blob/03e43be6af9b21f9f966eb84ca46a159b664ccf4/tests/unit/api_test.py#L653'>tests/unit/api_test.py:653:16:</a> F823 Local variable `socket` referenced before assignment
++ <a href='https://github.com/docker/docker-py/blob/03e43be6af9b21f9f966eb84ca46a159b664ccf4/tests/unit/api_test.py#L663'>tests/unit/api_test.py:663:16:</a> F823 Local variable `socket` referenced before assignment
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/freedomofpress/securedrop/blob/3f737a224de20b17a8b9b8be4a5f7f3f151aaead/securedrop/tests/test_source_user.py#L33'>securedrop/tests/test_source_user.py:33:16:</a> F823 Local variable `source_user` referenced before assignment
++ <a href='https://github.com/freedomofpress/securedrop/blob/3f737a224de20b17a8b9b8be4a5f7f3f151aaead/securedrop/tests/test_source_user.py#L91'>securedrop/tests/test_source_user.py:91:51:</a> F823 Local variable `source_user` referenced before assignment
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+23 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/1be350940f3417f85e21094e60b19bec1858c9ad/ibis/backends/__init__.py#L222'>ibis/backends/__init__.py:222:21:</a> F823 Local variable `pa` referenced before assignment
++ <a href='https://github.com/ibis-project/ibis/blob/1be350940f3417f85e21094e60b19bec1858c9ad/ibis/backends/__init__.py#L30'>ibis/backends/__init__.py:30:23:</a> TC004 Move import `pyarrow` out of type-checking block. Import is used for more than type hinting.
++ <a href='https://github.com/ibis-project/ibis/blob/1be350940f3417f85e21094e60b19bec1858c9ad/ibis/backends/bigquery/__init__.py#L45'>ibis/backends/bigquery/__init__.py:45:23:</a> TC004 Move import `pyarrow` out of type-checking block. Import is used for more than type hinting.
++ <a href='https://github.com/ibis-project/ibis/blob/1be350940f3417f85e21094e60b19bec1858c9ad/ibis/backends/bigquery/__init__.py#L805'>ibis/backends/bigquery/__init__.py:805:16:</a> F823 Local variable `pa` referenced before assignment
++ <a href='https://github.com/ibis-project/ibis/blob/1be350940f3417f85e21094e60b19bec1858c9ad/ibis/backends/datafusion/__init__.py#L171'>ibis/backends/datafusion/__init__.py:171:38:</a> F823 Local variable `df` referenced before assignment
++ <a href='https://github.com/ibis-project/ibis/blob/1be350940f3417f85e21094e60b19bec1858c9ad/ibis/backends/datafusion/__init__.py#L536'>ibis/backends/datafusion/__init__.py:536:16:</a> F823 Local variable `pa` referenced before assignment
++ <a href='https://github.com/ibis-project/ibis/blob/1be350940f3417f85e21094e60b19bec1858c9ad/ibis/backends/impala/__init__.py#L1370'>ibis/backends/impala/__init__.py:1370:16:</a> F823 Local variable `pa` referenced before assignment
++ <a href='https://github.com/ibis-project/ibis/blob/1be350940f3417f85e21094e60b19bec1858c9ad/ibis/backends/impala/__init__.py#L18'>ibis/backends/impala/__init__.py:18:8:</a> F401 `ibis.config` imported but unused; consider removing, adding to `__all__`, or using a redundant alias
++ <a href='https://github.com/ibis-project/ibis/blob/1be350940f3417f85e21094e60b19bec1858c9ad/ibis/backends/impala/__init__.py#L39'>ibis/backends/impala/__init__.py:39:23:</a> TC004 Move import `pyarrow` out of type-checking block. Import is used for more than type hinting.
++ <a href='https://github.com/ibis-project/ibis/blob/1be350940f3417f85e21094e60b19bec1858c9ad/ibis/backends/postgres/tests/test_functions.py#L989'>ibis/backends/postgres/tests/test_functions.py:989:17:</a> F823 Local variable `dt` referenced before assignment
+... 11 additional changes omitted for rule F823
+... 13 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+11 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/langchain-ai/langchain/blob/c55af44711ba9180ce8a51a55a385f31023341b5/libs/community/langchain_community/callbacks/arthur_callback.py#L123'>libs/community/langchain_community/callbacks/arthur_callback.py:123:20:</a> F823 Local variable `arthurai` referenced before assignment
++ <a href='https://github.com/langchain-ai/langchain/blob/c55af44711ba9180ce8a51a55a385f31023341b5/libs/community/langchain_community/callbacks/arthur_callback.py#L63'>libs/community/langchain_community/callbacks/arthur_callback.py:63:17:</a> F823 Local variable `arthurai` referenced before assignment
++ <a href='https://github.com/langchain-ai/langchain/blob/c55af44711ba9180ce8a51a55a385f31023341b5/libs/community/langchain_community/callbacks/clearml_callback.py#L396'>libs/community/langchain_community/callbacks/clearml_callback.py:396:33:</a> F823 Local variable `pd` referenced before assignment
++ <a href='https://github.com/langchain-ai/langchain/blob/c55af44711ba9180ce8a51a55a385f31023341b5/libs/community/langchain_community/callbacks/clearml_callback.py#L466'>libs/community/langchain_community/callbacks/clearml_callback.py:466:48:</a> F823 Local variable `pd` referenced before assignment
++ <a href='https://github.com/langchain-ai/langchain/blob/c55af44711ba9180ce8a51a55a385f31023341b5/libs/community/langchain_community/callbacks/flyte_callback.py#L135'>libs/community/langchain_community/callbacks/flyte_callback.py:135:21:</a> F823 Local variable `flytekit` referenced before assignment
++ <a href='https://github.com/langchain-ai/langchain/blob/c55af44711ba9180ce8a51a55a385f31023341b5/libs/community/langchain_community/document_loaders/mastodon.py#L59'>libs/community/langchain_community/document_loaders/mastodon.py:59:20:</a> F823 Local variable `mastodon` referenced before assignment
++ <a href='https://github.com/langchain-ai/langchain/blob/c55af44711ba9180ce8a51a55a385f31023341b5/libs/community/langchain_community/document_loaders/reddit.py#L68'>libs/community/langchain_community/document_loaders/reddit.py:68:18:</a> F823 Local variable `praw` referenced before assignment
++ <a href='https://github.com/langchain-ai/langchain/blob/c55af44711ba9180ce8a51a55a385f31023341b5/libs/community/langchain_community/document_loaders/twitter.py#L100'>libs/community/langchain_community/document_loaders/twitter.py:100:16:</a> F823 Local variable `tweepy` referenced before assignment
++ <a href='https://github.com/langchain-ai/langchain/blob/c55af44711ba9180ce8a51a55a385f31023341b5/libs/community/langchain_community/document_loaders/twitter.py#L48'>libs/community/langchain_community/document_loaders/twitter.py:48:15:</a> F823 Local variable `tweepy` referenced before assignment
++ <a href='https://github.com/langchain-ai/langchain/blob/c55af44711ba9180ce8a51a55a385f31023341b5/libs/community/langchain_community/document_loaders/twitter.py#L81'>libs/community/langchain_community/document_loaders/twitter.py:81:16:</a> F823 Local variable `tweepy` referenced before assignment
+... 1 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+41 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/mlflow/mlflow/blob/ecbdd766af367b2f6a03a15eba937d13ea4f7c43/dev/update_ml_package_versions.py#L16'>dev/update_ml_package_versions.py:16:8:</a> F401 [*] `urllib.error` imported but unused
++ <a href='https://github.com/mlflow/mlflow/blob/ecbdd766af367b2f6a03a15eba937d13ea4f7c43/examples/hyperparam/search_hyperopt.py#L75'>examples/hyperparam/search_hyperopt.py:75:20:</a> F401 [*] `mlflow.tracking` imported but unused
++ <a href='https://github.com/mlflow/mlflow/blob/ecbdd766af367b2f6a03a15eba937d13ea4f7c43/mlflow/exceptions.py#L123'>mlflow/exceptions.py:123:22:</a> F823 Local variable `json` referenced before assignment
++ <a href='https://github.com/mlflow/mlflow/blob/ecbdd766af367b2f6a03a15eba937d13ea4f7c43/mlflow/fastai/__init__.py#L26'>mlflow/fastai/__init__.py:26:8:</a> F401 `mlflow.tracking` imported but unused; consider removing, adding to `__all__`, or using a redundant alias
++ <a href='https://github.com/mlflow/mlflow/blob/ecbdd766af367b2f6a03a15eba937d13ea4f7c43/mlflow/fastai/callback.py#L10'>mlflow/fastai/callback.py:10:8:</a> F401 [*] `mlflow.tracking` imported but unused
++ <a href='https://github.com/mlflow/mlflow/blob/ecbdd766af367b2f6a03a15eba937d13ea4f7c43/mlflow/langchain/utils/__init__.py#L279'>mlflow/langchain/utils/__init__.py:279:12:</a> F401 `langchain.agents.agent` imported but unused
++ <a href='https://github.com/mlflow/mlflow/blob/ecbdd766af367b2f6a03a15eba937d13ea4f7c43/mlflow/langchain/utils/__init__.py#L280'>mlflow/langchain/utils/__init__.py:280:12:</a> F401 `langchain.chains.base` imported but unused
+... 25 additional changes omitted for rule F401
++ <a href='https://github.com/mlflow/mlflow/blob/ecbdd766af367b2f6a03a15eba937d13ea4f7c43/mlflow/lightgbm/__init__.py#L914'>mlflow/lightgbm/__init__.py:914:5:</a> F823 Local variable `mlflow` referenced before assignment
++ <a href='https://github.com/mlflow/mlflow/blob/ecbdd766af367b2f6a03a15eba937d13ea4f7c43/mlflow/tracking/client.py#L2183'>mlflow/tracking/client.py:2183:36:</a> F823 Local variable `matplotlib` referenced before assignment
++ <a href='https://github.com/mlflow/mlflow/blob/ecbdd766af367b2f6a03a15eba937d13ea4f7c43/mlflow/tracking/client.py#L2372'>mlflow/tracking/client.py:2372:38:</a> F823 Local variable `PIL` referenced before assignment
+... 31 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+13 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/pandas-dev/pandas/blob/fa5c2550e81c3e745eb7948b56adac45454853d5/pandas/_libs/__init__.py#L16'>pandas/_libs/__init__.py:16:8:</a> F401 `pandas._libs.pandas_parser` imported but unused; consider removing, adding to `__all__`, or using a redundant alias
++ <a href='https://github.com/pandas-dev/pandas/blob/fa5c2550e81c3e745eb7948b56adac45454853d5/pandas/io/parquet.py#L164'>pandas/io/parquet.py:164:16:</a> F401 [*] `pyarrow.parquet` imported but unused
++ <a href='https://github.com/pandas-dev/pandas/blob/fa5c2550e81c3e745eb7948b56adac45454853d5/pandas/tests/indexes/datetimes/methods/test_to_pydatetime.py#L7'>pandas/tests/indexes/datetimes/methods/test_to_pydatetime.py:7:8:</a> F401 [*] `dateutil.tz` imported but unused
++ <a href='https://github.com/pandas-dev/pandas/blob/fa5c2550e81c3e745eb7948b56adac45454853d5/pandas/tests/io/test_parquet.py#L1178'>pandas/tests/io/test_parquet.py:1178:18:</a> F823 Local variable `pyarrow` referenced before assignment
++ <a href='https://github.com/pandas-dev/pandas/blob/fa5c2550e81c3e745eb7948b56adac45454853d5/pandas/tests/io/test_sql.py#L56'>pandas/tests/io/test_sql.py:56:12:</a> TC004 Move import `sqlalchemy` out of type-checking block. Import is used for more than type hinting.
++ <a href='https://github.com/pandas-dev/pandas/blob/fa5c2550e81c3e745eb7948b56adac45454853d5/pandas/tests/io/test_sql.py#L607'>pandas/tests/io/test_sql.py:607:14:</a> F823 Local variable `sqlalchemy` referenced before assignment
++ <a href='https://github.com/pandas-dev/pandas/blob/fa5c2550e81c3e745eb7948b56adac45454853d5/pandas/tests/io/test_sql.py#L655'>pandas/tests/io/test_sql.py:655:14:</a> F823 Local variable `sqlalchemy` referenced before assignment
++ <a href='https://github.com/pandas-dev/pandas/blob/fa5c2550e81c3e745eb7948b56adac45454853d5/pandas/tests/io/test_sql.py#L760'>pandas/tests/io/test_sql.py:760:14:</a> F823 Local variable `sqlalchemy` referenced before assignment
++ <a href='https://github.com/pandas-dev/pandas/blob/fa5c2550e81c3e745eb7948b56adac45454853d5/pandas/tests/io/test_sql.py#L778'>pandas/tests/io/test_sql.py:778:14:</a> F823 Local variable `sqlalchemy` referenced before assignment
++ <a href='https://github.com/pandas-dev/pandas/blob/fa5c2550e81c3e745eb7948b56adac45454853d5/pandas/tests/io/test_sql.py#L801'>pandas/tests/io/test_sql.py:801:14:</a> F823 Local variable `sqlalchemy` referenced before assignment
+... 4 additional changes omitted for rule F823
+... 3 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+
+_... Truncated remaining completed project reports due to GitHub comment length restrictions_
+
+<details><summary>Changes by rule (7 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| F401 | 155 | 155 | 0 | 0 | 0 |
+| F823 | 132 | 132 | 0 | 0 | 0 |
+| TC004 | 9 | 9 | 0 | 0 | 0 |
+| RUF100 | 2 | 2 | 0 | 0 | 0 |
+| TC002 | 1 | 1 | 0 | 0 | 0 |
+| TC003 | 1 | 1 | 0 | 0 | 0 |
+| F811 | 1 | 0 | 1 | 0 | 0 |
+
+</p>
+</details>
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+300 -1 violations, +0 -0 fixes in 28 projects; 27 projects unchanged)
+
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/DisnakeDev/disnake/blob/d847f505441d7ccf1ec4b63645ba8eae2cdc8882/disnake/voice_client.py#L48'>disnake/voice_client.py:48:12:</a> F401 `nacl.utils` imported but unused; consider using `importlib.util.find_spec` to test for availability
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+67 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/data.py#L22'>rasa/cli/data.py:22:8:</a> F401 [*] `rasa.utils.common` imported but unused
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/data.py#L6'>rasa/cli/data.py:6:8:</a> F401 [*] `rasa.shared.core.domain` imported but unused
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/export.py#L11'>rasa/cli/export.py:11:8:</a> F401 [*] `rasa.utils.common` imported but unused
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/interactive.py#L22'>rasa/cli/interactive.py:22:8:</a> F401 [*] `rasa.utils.common` imported but unused
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/telemetry.py#L7'>rasa/cli/telemetry.py:7:8:</a> F401 [*] `rasa.cli.utils` imported but unused
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/test.py#L28'>rasa/cli/test.py:28:8:</a> F401 [*] `rasa.utils.common` imported but unused
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/test.py#L8'>rasa/cli/test.py:8:8:</a> F401 [*] `rasa.shared.data` imported but unused
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/train.py#L11'>rasa/cli/train.py:11:8:</a> F401 [*] `rasa.utils.common` imported but unused
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/utils.py#L107'>rasa/cli/utils.py:107:12:</a> F401 [*] `rasa.utils.io` imported but unused
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/core/actions/action.py#L17'>rasa/core/actions/action.py:17:8:</a> F401 [*] `rasa.core` imported but unused
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/core/actions/action.py#L84'>rasa/core/actions/action.py:84:8:</a> F401 [*] `rasa.shared.utils.io` imported but unused
+... 56 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/Snowflake-Labs/snowcli">Snowflake-Labs/snowcli</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/Snowflake-Labs/snowcli/blob/39938dc8665cc8d9d5ea0fc920ba49395fd2d3ae/src/snowflake/cli/_plugins/nativeapp/codegen/setup/native_app_setup_processor.py#L19'>src/snowflake/cli/_plugins/nativeapp/codegen/setup/native_app_setup_processor.py:19:8:</a> F401 [*] `os.path` imported but unused
++ <a href='https://github.com/Snowflake-Labs/snowcli/blob/39938dc8665cc8d9d5ea0fc920ba49395fd2d3ae/tests/test_utils.py#L22'>tests/test_utils.py:22:8:</a> F401 [*] `snowflake.cli._plugins.snowpark.models` imported but unused
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+29 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/f0079293456835acb68721e54d88c7de1c570a11/airflow/dag_processing/manager.py#L47'>airflow/dag_processing/manager.py:47:8:</a> F401 [*] `airflow.models` imported but unused
++ <a href='https://github.com/apache/airflow/blob/f0079293456835acb68721e54d88c7de1c570a11/airflow/models/taskinstance.py#L3722'>airflow/models/taskinstance.py:3722:18:</a> F823 Local variable `operator` referenced before assignment
++ <a href='https://github.com/apache/airflow/blob/f0079293456835acb68721e54d88c7de1c570a11/airflow/task/standard_task_runner.py#L125'>airflow/task/standard_task_runner.py:125:39:</a> F823 Local variable `subprocess` referenced before assignment
++ <a href='https://github.com/apache/airflow/blob/f0079293456835acb68721e54d88c7de1c570a11/airflow/utils/helpers.py#L295'>airflow/utils/helpers.py:295:16:</a> F823 Local variable `jinja2` referenced before assignment
++ <a href='https://github.com/apache/airflow/blob/f0079293456835acb68721e54d88c7de1c570a11/airflow/utils/helpers.py#L36'>airflow/utils/helpers.py:36:12:</a> TC004 Move import `jinja2` out of type-checking block. Import is used for more than type hinting.
++ <a href='https://github.com/apache/airflow/blob/f0079293456835acb68721e54d88c7de1c570a11/dev/breeze/src/airflow_breeze/utils/recording.py#L54'>dev/breeze/src/airflow_breeze/utils/recording.py:54:5:</a> F823 Local variable `click` referenced before assignment
++ <a href='https://github.com/apache/airflow/blob/f0079293456835acb68721e54d88c7de1c570a11/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L37'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py:37:8:</a> TC002 Move third-party import `botocore.waiter` into a type-checking block
++ <a href='https://github.com/apache/airflow/blob/f0079293456835acb68721e54d88c7de1c570a11/providers/src/airflow/providers/amazon/aws/hooks/batch_waiters.py#L35'>providers/src/airflow/providers/amazon/aws/hooks/batch_waiters.py:35:8:</a> F401 [*] `botocore.client` imported but unused
++ <a href='https://github.com/apache/airflow/blob/f0079293456835acb68721e54d88c7de1c570a11/providers/src/airflow/providers/celery/executors/celery_executor_utils.py#L112'>providers/src/airflow/providers/celery/executors/celery_executor_utils.py:112:12:</a> F401 [*] `airflow.jobs.local_task_job_runner` imported but unused
++ <a href='https://github.com/apache/airflow/blob/f0079293456835acb68721e54d88c7de1c570a11/providers/src/airflow/providers/celery/executors/celery_executor_utils.py#L113'>providers/src/airflow/providers/celery/executors/celery_executor_utils.py:113:12:</a> F401 [*] `airflow.macros` imported but unused
+... 19 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/274aa143d33dae9334ef356a9c1b6b48fc79dd30/superset/utils/logging_configurator.py#L21'>superset/utils/logging_configurator.py:21:8:</a> F401 [*] `flask.app` imported but unused
++ <a href='https://github.com/apache/superset/blob/274aa143d33dae9334ef356a9c1b6b48fc79dd30/tests/integration_tests/cli_tests.py#L28'>tests/integration_tests/cli_tests.py:28:8:</a> F401 [*] `superset.cli.importexport` imported but unused
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/binary-husky/gpt_academic">binary-husky/gpt_academic</a> (+1 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/binary-husky/gpt_academic/blob/286f7303be0d81a075a82f7ad0dc501e90633b4b/request_llms/com_sparkapi.py#L12'>request_llms/com_sparkapi.py:12:22:</a> F811 Redefinition of unused `datetime` from line 2
++ <a href='https://github.com/binary-husky/gpt_academic/blob/286f7303be0d81a075a82f7ad0dc501e90633b4b/toolbox.py#L983'>toolbox.py:983:21:</a> F823 Local variable `importlib` referenced before assignment
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+38 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/support/defaults.py#L87'>tests/support/defaults.py:87:12:</a> F401 [*] `bokeh.models` imported but unused
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/test_cross.py#L39'>tests/test_cross.py:39:8:</a> F401 [*] `_pytest.mark` imported but unused
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/server/test_server__server.py#L246'>tests/unit/bokeh/server/test_server__server.py:246:16:</a> F823 Local variable `server` referenced before assignment
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/server/test_server__server.py#L273'>tests/unit/bokeh/server/test_server__server.py:273:5:</a> F823 Local variable `server` referenced before assignment
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/server/test_server__server.py#L299'>tests/unit/bokeh/server/test_server__server.py:299:35:</a> F823 Local variable `server` referenced before assignment
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/server/test_server__server.py#L309'>tests/unit/bokeh/server/test_server__server.py:309:20:</a> F823 Local variable `server` referenced before assignment
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/server/test_server__server.py#L322'>tests/unit/bokeh/server/test_server__server.py:322:20:</a> F823 Local variable `server` referenced before assignment
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/server/test_server__server.py#L335'>tests/unit/bokeh/server/test_server__server.py:335:20:</a> F823 Local variable `server` referenced before assignment
+... 31 additional changes omitted for rule F823
+... 30 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/docker/docker-py">docker/docker-py</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/docker/docker-py/blob/03e43be6af9b21f9f966eb84ca46a159b664ccf4/tests/unit/api_test.py#L643'>tests/unit/api_test.py:643:16:</a> F823 Local variable `socket` referenced before assignment
++ <a href='https://github.com/docker/docker-py/blob/03e43be6af9b21f9f966eb84ca46a159b664ccf4/tests/unit/api_test.py#L653'>tests/unit/api_test.py:653:16:</a> F823 Local variable `socket` referenced before assignment
++ <a href='https://github.com/docker/docker-py/blob/03e43be6af9b21f9f966eb84ca46a159b664ccf4/tests/unit/api_test.py#L663'>tests/unit/api_test.py:663:16:</a> F823 Local variable `socket` referenced before assignment
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/freedomofpress/securedrop/blob/3f737a224de20b17a8b9b8be4a5f7f3f151aaead/securedrop/tests/test_source_user.py#L33'>securedrop/tests/test_source_user.py:33:16:</a> F823 Local variable `source_user` referenced before assignment
++ <a href='https://github.com/freedomofpress/securedrop/blob/3f737a224de20b17a8b9b8be4a5f7f3f151aaead/securedrop/tests/test_source_user.py#L91'>securedrop/tests/test_source_user.py:91:51:</a> F823 Local variable `source_user` referenced before assignment
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+23 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/1be350940f3417f85e21094e60b19bec1858c9ad/ibis/backends/__init__.py#L222'>ibis/backends/__init__.py:222:21:</a> F823 Local variable `pa` referenced before assignment
++ <a href='https://github.com/ibis-project/ibis/blob/1be350940f3417f85e21094e60b19bec1858c9ad/ibis/backends/__init__.py#L30'>ibis/backends/__init__.py:30:23:</a> TC004 Move import `pyarrow` out of type-checking block. Import is used for more than type hinting.
++ <a href='https://github.com/ibis-project/ibis/blob/1be350940f3417f85e21094e60b19bec1858c9ad/ibis/backends/bigquery/__init__.py#L45'>ibis/backends/bigquery/__init__.py:45:23:</a> TC004 Move import `pyarrow` out of type-checking block. Import is used for more than type hinting.
++ <a href='https://github.com/ibis-project/ibis/blob/1be350940f3417f85e21094e60b19bec1858c9ad/ibis/backends/bigquery/__init__.py#L805'>ibis/backends/bigquery/__init__.py:805:16:</a> F823 Local variable `pa` referenced before assignment
++ <a href='https://github.com/ibis-project/ibis/blob/1be350940f3417f85e21094e60b19bec1858c9ad/ibis/backends/datafusion/__init__.py#L171'>ibis/backends/datafusion/__init__.py:171:38:</a> F823 Local variable `df` referenced before assignment
++ <a href='https://github.com/ibis-project/ibis/blob/1be350940f3417f85e21094e60b19bec1858c9ad/ibis/backends/datafusion/__init__.py#L536'>ibis/backends/datafusion/__init__.py:536:16:</a> F823 Local variable `pa` referenced before assignment
++ <a href='https://github.com/ibis-project/ibis/blob/1be350940f3417f85e21094e60b19bec1858c9ad/ibis/backends/impala/__init__.py#L1370'>ibis/backends/impala/__init__.py:1370:16:</a> F823 Local variable `pa` referenced before assignment
++ <a href='https://github.com/ibis-project/ibis/blob/1be350940f3417f85e21094e60b19bec1858c9ad/ibis/backends/impala/__init__.py#L18'>ibis/backends/impala/__init__.py:18:8:</a> F401 `ibis.config` imported but unused; consider removing, adding to `__all__`, or using a redundant alias
++ <a href='https://github.com/ibis-project/ibis/blob/1be350940f3417f85e21094e60b19bec1858c9ad/ibis/backends/impala/__init__.py#L39'>ibis/backends/impala/__init__.py:39:23:</a> TC004 Move import `pyarrow` out of type-checking block. Import is used for more than type hinting.
++ <a href='https://github.com/ibis-project/ibis/blob/1be350940f3417f85e21094e60b19bec1858c9ad/ibis/backends/postgres/tests/test_functions.py#L989'>ibis/backends/postgres/tests/test_functions.py:989:17:</a> F823 Local variable `dt` referenced before assignment
+... 11 additional changes omitted for rule F823
+... 13 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+11 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/langchain-ai/langchain/blob/c55af44711ba9180ce8a51a55a385f31023341b5/libs/community/langchain_community/callbacks/arthur_callback.py#L123'>libs/community/langchain_community/callbacks/arthur_callback.py:123:20:</a> F823 Local variable `arthurai` referenced before assignment
++ <a href='https://github.com/langchain-ai/langchain/blob/c55af44711ba9180ce8a51a55a385f31023341b5/libs/community/langchain_community/callbacks/arthur_callback.py#L63'>libs/community/langchain_community/callbacks/arthur_callback.py:63:17:</a> F823 Local variable `arthurai` referenced before assignment
++ <a href='https://github.com/langchain-ai/langchain/blob/c55af44711ba9180ce8a51a55a385f31023341b5/libs/community/langchain_community/callbacks/clearml_callback.py#L396'>libs/community/langchain_community/callbacks/clearml_callback.py:396:33:</a> F823 Local variable `pd` referenced before assignment
++ <a href='https://github.com/langchain-ai/langchain/blob/c55af44711ba9180ce8a51a55a385f31023341b5/libs/community/langchain_community/callbacks/clearml_callback.py#L466'>libs/community/langchain_community/callbacks/clearml_callback.py:466:48:</a> F823 Local variable `pd` referenced before assignment
++ <a href='https://github.com/langchain-ai/langchain/blob/c55af44711ba9180ce8a51a55a385f31023341b5/libs/community/langchain_community/callbacks/flyte_callback.py#L135'>libs/community/langchain_community/callbacks/flyte_callback.py:135:21:</a> F823 Local variable `flytekit` referenced before assignment
++ <a href='https://github.com/langchain-ai/langchain/blob/c55af44711ba9180ce8a51a55a385f31023341b5/libs/community/langchain_community/document_loaders/mastodon.py#L59'>libs/community/langchain_community/document_loaders/mastodon.py:59:20:</a> F823 Local variable `mastodon` referenced before assignment
++ <a href='https://github.com/langchain-ai/langchain/blob/c55af44711ba9180ce8a51a55a385f31023341b5/libs/community/langchain_community/document_loaders/reddit.py#L68'>libs/community/langchain_community/document_loaders/reddit.py:68:18:</a> F823 Local variable `praw` referenced before assignment
++ <a href='https://github.com/langchain-ai/langchain/blob/c55af44711ba9180ce8a51a55a385f31023341b5/libs/community/langchain_community/document_loaders/twitter.py#L100'>libs/community/langchain_community/document_loaders/twitter.py:100:16:</a> F823 Local variable `tweepy` referenced before assignment
++ <a href='https://github.com/langchain-ai/langchain/blob/c55af44711ba9180ce8a51a55a385f31023341b5/libs/community/langchain_community/document_loaders/twitter.py#L48'>libs/community/langchain_community/document_loaders/twitter.py:48:15:</a> F823 Local variable `tweepy` referenced before assignment
++ <a href='https://github.com/langchain-ai/langchain/blob/c55af44711ba9180ce8a51a55a385f31023341b5/libs/community/langchain_community/document_loaders/twitter.py#L81'>libs/community/langchain_community/document_loaders/twitter.py:81:16:</a> F823 Local variable `tweepy` referenced before assignment
+... 1 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+41 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/mlflow/mlflow/blob/ecbdd766af367b2f6a03a15eba937d13ea4f7c43/dev/update_ml_package_versions.py#L16'>dev/update_ml_package_versions.py:16:8:</a> F401 [*] `urllib.error` imported but unused
++ <a href='https://github.com/mlflow/mlflow/blob/ecbdd766af367b2f6a03a15eba937d13ea4f7c43/examples/hyperparam/search_hyperopt.py#L75'>examples/hyperparam/search_hyperopt.py:75:20:</a> F401 [*] `mlflow.tracking` imported but unused
++ <a href='https://github.com/mlflow/mlflow/blob/ecbdd766af367b2f6a03a15eba937d13ea4f7c43/mlflow/exceptions.py#L123'>mlflow/exceptions.py:123:22:</a> F823 Local variable `json` referenced before assignment
++ <a href='https://github.com/mlflow/mlflow/blob/ecbdd766af367b2f6a03a15eba937d13ea4f7c43/mlflow/fastai/__init__.py#L26'>mlflow/fastai/__init__.py:26:8:</a> F401 `mlflow.tracking` imported but unused; consider removing, adding to `__all__`, or using a redundant alias
++ <a href='https://github.com/mlflow/mlflow/blob/ecbdd766af367b2f6a03a15eba937d13ea4f7c43/mlflow/fastai/callback.py#L10'>mlflow/fastai/callback.py:10:8:</a> F401 [*] `mlflow.tracking` imported but unused
++ <a href='https://github.com/mlflow/mlflow/blob/ecbdd766af367b2f6a03a15eba937d13ea4f7c43/mlflow/langchain/utils/__init__.py#L279'>mlflow/langchain/utils/__init__.py:279:12:</a> F401 `langchain.agents.agent` imported but unused
++ <a href='https://github.com/mlflow/mlflow/blob/ecbdd766af367b2f6a03a15eba937d13ea4f7c43/mlflow/langchain/utils/__init__.py#L280'>mlflow/langchain/utils/__init__.py:280:12:</a> F401 `langchain.chains.base` imported but unused
+... 25 additional changes omitted for rule F401
++ <a href='https://github.com/mlflow/mlflow/blob/ecbdd766af367b2f6a03a15eba937d13ea4f7c43/mlflow/lightgbm/__init__.py#L914'>mlflow/lightgbm/__init__.py:914:5:</a> F823 Local variable `mlflow` referenced before assignment
++ <a href='https://github.com/mlflow/mlflow/blob/ecbdd766af367b2f6a03a15eba937d13ea4f7c43/mlflow/tracking/client.py#L2183'>mlflow/tracking/client.py:2183:36:</a> F823 Local variable `matplotlib` referenced before assignment
++ <a href='https://github.com/mlflow/mlflow/blob/ecbdd766af367b2f6a03a15eba937d13ea4f7c43/mlflow/tracking/client.py#L2372'>mlflow/tracking/client.py:2372:38:</a> F823 Local variable `PIL` referenced before assignment
+... 31 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+13 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pandas-dev/pandas/blob/fa5c2550e81c3e745eb7948b56adac45454853d5/pandas/_libs/__init__.py#L16'>pandas/_libs/__init__.py:16:8:</a> F401 [*] `pandas._libs.pandas_parser` imported but unused; consider removing, adding to `__all__`, or using a redundant alias
++ <a href='https://github.com/pandas-dev/pandas/blob/fa5c2550e81c3e745eb7948b56adac45454853d5/pandas/io/parquet.py#L164'>pandas/io/parquet.py:164:16:</a> F401 [*] `pyarrow.parquet` imported but unused
++ <a href='https://github.com/pandas-dev/pandas/blob/fa5c2550e81c3e745eb7948b56adac45454853d5/pandas/tests/indexes/datetimes/methods/test_to_pydatetime.py#L7'>pandas/tests/indexes/datetimes/methods/test_to_pydatetime.py:7:8:</a> F401 [*] `dateutil.tz` imported but unused
++ <a href='https://github.com/pandas-dev/pandas/blob/fa5c2550e81c3e745eb7948b56adac45454853d5/pandas/tests/io/test_parquet.py#L1178'>pandas/tests/io/test_parquet.py:1178:18:</a> F823 Local variable `pyarrow` referenced before assignment
++ <a href='https://github.com/pandas-dev/pandas/blob/fa5c2550e81c3e745eb7948b56adac45454853d5/pandas/tests/io/test_sql.py#L56'>pandas/tests/io/test_sql.py:56:12:</a> TC004 Move import `sqlalchemy` out of type-checking block. Import is used for more than type hinting.
++ <a href='https://github.com/pandas-dev/pandas/blob/fa5c2550e81c3e745eb7948b56adac45454853d5/pandas/tests/io/test_sql.py#L607'>pandas/tests/io/test_sql.py:607:14:</a> F823 Local variable `sqlalchemy` referenced before assignment
++ <a href='https://github.com/pandas-dev/pandas/blob/fa5c2550e81c3e745eb7948b56adac45454853d5/pandas/tests/io/test_sql.py#L655'>pandas/tests/io/test_sql.py:655:14:</a> F823 Local variable `sqlalchemy` referenced before assignment
++ <a href='https://github.com/pandas-dev/pandas/blob/fa5c2550e81c3e745eb7948b56adac45454853d5/pandas/tests/io/test_sql.py#L760'>pandas/tests/io/test_sql.py:760:14:</a> F823 Local variable `sqlalchemy` referenced before assignment
++ <a href='https://github.com/pandas-dev/pandas/blob/fa5c2550e81c3e745eb7948b56adac45454853d5/pandas/tests/io/test_sql.py#L778'>pandas/tests/io/test_sql.py:778:14:</a> F823 Local variable `sqlalchemy` referenced before assignment
++ <a href='https://github.com/pandas-dev/pandas/blob/fa5c2550e81c3e745eb7948b56adac45454853d5/pandas/tests/io/test_sql.py#L801'>pandas/tests/io/test_sql.py:801:14:</a> F823 Local variable `sqlalchemy` referenced before assignment
+... 4 additional changes omitted for rule F823
+... 3 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+
+_... Truncated remaining completed project reports due to GitHub comment length restrictions_
+
+<details><summary>Changes by rule (7 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| F401 | 155 | 155 | 0 | 0 | 0 |
+| F823 | 132 | 132 | 0 | 0 | 0 |
+| TC004 | 9 | 9 | 0 | 0 | 0 |
+| RUF100 | 2 | 2 | 0 | 0 | 0 |
+| TC002 | 1 | 1 | 0 | 0 | 0 |
+| TC003 | 1 | 1 | 0 | 0 | 0 |
+| F811 | 1 | 0 | 1 | 0 | 0 |
+
+</p>
+</details>
+
+
+
+
+---
+
+_Comment by @gpilikin on 2024-11-29 11:44_
+
+> This is awesome! If you resolve the merge conflicts then the ecosystem check will run and we can get a sense if there are any unintended consequences of the change in the semantic model (while we await the review from on high).
+
+Thanks, I'll fix the formatter and clippy and come back.
+And how problematic is the reduction in execution speed?
+
+---
+
+_Comment by @MichaReiser on 2024-11-29 11:46_
+
+>  And how problematic is the reduction in execution speed?
+
+It's not great but it requires understanding if the regression is due to Ruff doing more (solving a more complicated problem or if the regression isn't inherent to the problem itself, and instead related to how the code is written
+
+---
+
+_Comment by @gpilikin on 2024-11-29 11:53_
+
+> > And how problematic is the reduction in execution speed?
+> 
+> It's not great but it requires understanding if the regression is due to Ruff doing more (solving a more complicated problem or if the regression isn't inherent to the problem itself, and instead related to how the code is written
+
+Got it, thanks, I'll see what I can optimize then and maybe come back with questions.
+
+---
+
+_@MichaReiser reviewed on 2024-11-29 12:14_
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_python_semantic/src/model.rs`:534 on 2024-11-29 12:14_
+
+I suspect that building the `full_name` here is part of the reason why there's a 20% perf regression. 
+
+---
+
+_Comment by @schlamar on 2024-12-19 12:25_
+
+@gpilikin Could you please verify that this would fix the issue in #15057 
+
+---
+
+_Comment by @gpilikin on 2024-12-19 14:02_
+
+> @gpilikin Could you please verify that this would fix the issue in #15057
+
+@schlamar Good example! I hadn't thought of that example. Fix this in my last commit, you mb try) 
+I'll add it to unit testing later.
+
+---
+
+_Review comment by @dylwil3 on `crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs`:322 on 2024-12-20 06:17_
+
+```suggestion
+            if already_checked_imports.contains(&name) {
+                continue;
+            }
+            {
+                already_checked_imports.insert(name);
+            }
+```
+
+---
+
+_Review comment by @dylwil3 on `crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs`:280 on 2024-12-20 06:17_
+
+```suggestion
+    let mut already_checked_imports: HashSet<&str> = HashSet::new();
+```
+
+---
+
+_@dylwil3 requested changes on 2024-12-20 06:18_
+
+Can you see if changing the `HashSet` to have `&str` entries helps the performance regression?
+
+---
+
+_@gpilikin reviewed on 2025-01-14 12:58_
+
+---
+
+_Review comment by @gpilikin on `crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs`:280 on 2025-01-14 12:58_
+
+ok, I'll take a look 
+
+---
+
+_Review comment by @dylwil3 on `crates/ruff_python_semantic/src/model.rs`:529 on 2025-01-14 18:04_
+
+Does this also need to be a `String`?
+
+---
+
+_Review comment by @dylwil3 on `crates/ruff_python_semantic/src/model.rs`:528 on 2025-01-14 18:05_
+
+isn't this already handled right above?
+
+---
+
+_Review comment by @dylwil3 on `crates/ruff_python_semantic/src/model.rs`:574 on 2025-01-14 18:07_
+
+Do we really need to loop over this twice?
+
+---
+
+_Review comment by @dylwil3 on `crates/ruff_python_semantic/src/model.rs`:542 on 2025-01-14 18:10_
+
+Do we need to collect this into a vector if we're just gonna iterate over it anyway?
+
+---
+
+_Review comment by @dylwil3 on `crates/ruff_python_semantic/src/model.rs`:542 on 2025-01-14 18:11_
+
+Even better, if you're only doing this to get `binding_ids`, which again we just iterate over, why not use iterator constructions directly?
+
+---
+
+_@dylwil3 requested changes on 2025-01-14 18:13_
+
+Thanks for the changes! I think there's room for some more performance improvements. I've pointed out a few but I can try to take a closer look later.
+
+---
+
+_@gpilikin reviewed on 2025-01-15 07:26_
+
+---
+
+_Review comment by @gpilikin on `crates/ruff_python_semantic/src/model.rs`:534 on 2025-01-15 07:26_
+
+Quite possibly, I tried to implement it on vectors. 
+It's also probably worth building a full_name when creating attributes, but I haven't figured out how to do that yet.
+
+---
+
+_@gpilikin reviewed on 2025-03-28 13:21_
+
+---
+
+_Review comment by @gpilikin on `crates/ruff_python_semantic/src/model.rs`:542 on 2025-03-28 13:21_
+
+Thanks for review. 
+Okay, let's try to implement it in a different way.
+I agree that it is possible not to store a vector with ancestor_ids.
+
+---
+
+_@gpilikin reviewed on 2025-03-28 13:23_
+
+---
+
+_Review comment by @gpilikin on `crates/ruff_python_semantic/src/model.rs`:574 on 2025-03-28 13:23_
+
+Ideally, this should of course be in the method resolve_load.
+As well as mark all imports with submodules if the root module is used.
+
+---
+
+_@gpilikin reviewed on 2025-03-28 13:34_
+
+---
+
+_Review comment by @gpilikin on `crates/ruff_python_semantic/src/model.rs`:542 on 2025-03-28 13:34_
+
+I'm trying to fix this in https://github.com/gpilikin/ruff/blob/fix/unused_imports_v2/crates/ruff_python_semantic/src/model.rs#L571
+
+But I'm not sure if that's it at all.
+
+---
+
+_Comment by @Daverball on 2025-04-10 09:16_
+
+If I am not mistaken, this should also fix #15723 and make #16186 unnecessary. It might be worth copying over some test cases from that PR to verify, whether or not those cases have been fixed.
+
+---
+
+_Comment by @gpilikin on 2025-05-12 12:02_
+
+> If I am not mistaken, this should also fix #15723 and make #16186 unnecessary. It might be worth copying over some test cases from that PR to verify, whether or not those cases have been fixed.
+
+I've tested the cases you mentioned in PR https://github.com/astral-sh/ruff/pull/16186 locally - they all pass. Can you take a look at https://github.com/gpilikin/ruff/pull/3
+
+---
+
+_Comment by @TimotheusBachinger on 2025-06-30 08:18_
+
+hey guys! thanks for your work on that very old issue! are you still looking into it to get it landed?
+
+---
+
+_Comment by @gpilikin on 2025-07-08 10:31_
+
+> hey guys! thanks for your work on that very old issue! are you still looking into it to get it landed?
+
+Thank you. Yes, I come back to this problem from time to time, since I don't have much free time. I am glad to hear any suggestions.
+
+---
+
+_Comment by @MichaReiser on 2025-10-21 07:28_
+
+@dylwil3 should we close this PR now that your F401 improvement landed under preview?
+
+---
+
+_Comment by @Daverball on 2025-10-21 07:54_
+
+> @dylwil3 should we close this PR now that your F401 improvement landed under preview?
+
+It looks like @dylwil3's improvement was tailored to F401 and thus didn't improve the situation with `TC001-004`. I think at a minimum the same common cases should be covered in those rules, before we can close this PR. Although I haven't taken a detailed look at how he implemented this improvement, so it's possible the `flake8-type-checking` rules can be improved with very little effort (like replacing `bindings_ids()` with `all_bindings()`, which is all it would've taken with @gpilikin's approach).
+
+---
+
+_Comment by @Daverball on 2025-10-22 08:42_
+
+After taking a closer look I can confirm that @dylwil3's improvement can't really easily be used for the `flake8-type-checking` rules, so we would need something like #16186 after all. Using #20200 as inspiration I may be able to come up with a more robust algorithm that handles more of the edge-cases correctly.
+
+Even though I can see the issues with the TIHI model for import bindings, it would be a lot easier to perform this sort of analysis, if it were represented in the semantic model itself, rather than having to transform the model for multiple rules. But maybe we can just do something like with annotations where there's a cache of the TIHI representation of bindings that can be created and accessed by any rule that needs it. It definitely seems faster to do the transformation in a second pass, since overlapping imports are rare, but attribute accesses aren't, so you definitely don't want to pay an additional cost for every attribute access, if you can instead just check the overlapping imports and then revisit all their references and re-assign them.
+
+---
