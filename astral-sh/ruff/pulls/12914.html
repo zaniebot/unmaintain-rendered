@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ruff`] - allow private variables for `RUF006` - astral-sh/ruff #12914</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>ruff</code>] - allow private variables for <code>RUF006</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12914">#12914</a>
+        opened by <a href="https://github.com/diceroll123">@diceroll123</a>
+        on 2024-08-16 03:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/diceroll123">@diceroll123</a> on 2024-08-16 03:51</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Changes RUF006 to allow private vars.</p>
+<p>I believe this is a reasonable addition, private declarations surely satisfy the underlying needs.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-16 04:05</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-16 06:42</div>
+            <div class="timeline-body"><p>We should document this pattern and explain the reasoning why we allow it.</p>
+<p>To me it's not entirely clear if allowing it is in the spirit of the rule. I suspect you're coming from rusts <code>let _ = returns_result()</code> convention that allows suppressing the <code>must_use</code> error?.</p>
+<p>@AlexWaygood any thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-08-16 06:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> had review dismissed on 2024-08-16 12:29</div>
+            <div class="timeline-body"><p>@MichaReiser this makes sense to me. This rule isn't a stylistic rule, it's a correctness rule. You need to have a reference to the <code>asyncio</code> task or it will be garbage-collected, which is almost never what you want. From the perspective of Python's garbage collector, it doesn't matter whether you assign it to a private name or a public name.</p>
+<p>In my opinion, the docs for this rule already explain the motivation for the rule quite well, so I don't think extra documentation is required here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-16 13:08</div>
+            <div class="timeline-body"><p>I discussed this offline with @MichaReiser and I think I misunderstood what this PR was trying to do.</p>
+<p>@diceroll123, the fixture snippet you've added looks like this:</p>
+<pre><code class="language-py">import asyncio
+
+def f():
+    loop = asyncio.get_event_loop()
+    _task = loop.create_task(main())
+</code></pre>
+<p>Ruff will indeed emit a RUF006 error on this currently, but it's not because it's a private variable. It's because the function could exit immediately after the <code>loop.create_task()</code> call, which will lead to the <code>_task</code> variable immediately being cleaned up since it's only a local variable. If you change your example to this, Ruff no longer complains about it:</p>
+<pre><code class="language-py">import asyncio
+
+def f():
+    global _task
+    loop = asyncio.get_event_loop()
+    _task = loop.create_task(main())
+</code></pre>
+<p>I'm no longer convinced I agree with the change being proposed here. I think the bug that the rule is trying to protect you from applies just as much to tasks assigned to variables that start with underscores. Could you maybe give a little more detail about your motivation for making this PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/diceroll123">@diceroll123</a> on 2024-08-17 05:26</div>
+            <div class="timeline-body"><p>Hm, good points all around.</p>
+<p>The usage in my codebase that made me make this PR is deep within a forever-running async loop, so I suppose I overlooked what Alex has brought up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @MichaReiser on 2024-08-17 06:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @diceroll123 by @MichaReiser on 2024-08-19 10:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-27 18:19</div>
+            <div class="timeline-body"><p>Hey @diceroll123 -- I'm going to close this for now. But please feel free to open a new PR if you still think you have an example of something that's clearly a false positive! (Or just ping me, I'll happily reopen :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-08-27 18:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:01 UTC
+    </footer>
+</body>
+</html>

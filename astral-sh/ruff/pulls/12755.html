@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skip checking a file if it failed to read - astral-sh/ruff #12755</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Skip checking a file if it failed to read</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12755">#12755</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-08-08 14:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-08 14:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Up to know, there was the risk of a race condition between when we discovered the files of a package and when we called <code>check_file</code>
+because a file could have been deleted in the meantime before the file watch notification came in. This PR changes <code>check_file</code> to raise an error (diagnostic) if that happens.</p>
+<p>I explored a few different designs and ultimately ended with using an accumulator. It's not the nicest API.</p>
+<p><strong><code>try_source_text</code> function with specify</strong></p>
+<p>My first approach was to introduce a <code>try_source_text</code> that returns a <code>Result&lt;SourceText, SourceTextError&gt;</code> and uses <code>specify</code> (Salsa) to cache the read source text
+when the file could be read successfully. Unfortunately, this doesn't work because <code>specify</code> requires that the query arguments are tracked Salsa structs, but <code>File</code> is an input.</p>
+<p><strong><code>try_source_text</code> query</strong>
+My second approach was to change <code>source_text</code> to <code>try_source_text</code> that returns a <code>Result&lt;SourceText, SourceTextError</code> (now a salsa query) and
+to introduce a new <code>source_text</code> function (not a salsa query) that invokes the fallback logic.</p>
+<p>This could technically work but there are a few caveats:</p>
+<ul>
+<li>Every (uncached) <code>source_text</code> call would create an empty fallback notebook. This should not be too bad because we only do this when we have a very specific race.</li>
+<li><code>std::io::Error</code> doesn't implement <code>Eq</code>. That means <code>source_text</code> can no longer use Salsa's backdating optimization (because the <code>Result</code> no longer implements <code>Eq</code>)</li>
+</ul>
+<p><strong>Accumulator</strong></p>
+<p>I do this in this PR: I use a salsa accumulator to emit a diagnostic in source text and explicitly consume the diagnostic in <code>check_file</code>.</p>
+<p>I would have preferred if the test for reading the file was more explicit (e.g., by using a <code>Result</code>), but I also think the way it is now is fine.
+However, we'll have to add these checks everywhere where we perform file-centric operations (<code>check</code>, <code>fix</code>, <code>format</code>).</p>
+<p>We don't need the check for other operations like providing auto-completion because the fallback of an empty document is sufficient in that case.
+The fallback primarily exists to avoid creating additional diagnostics because the text is empty.</p>
+<h2>Should we just change <code>source_text</code> to always return a <code>Result</code>.</h2>
+<p>Besides the points mentioned above: Changing <code>source_text</code> to return a <code>Result</code> would require making all queries that transitively read a file's source text (which is almost all queries)
+to return a <code>Result</code>. That would be very painful without having a clear upside. In most cases, assuming the file is empty is actually a pretty good default (e.g., it results in an *import not found** error when trying to import a symbol from that file. This is not 100% accurate but good enough considering that this is a race condition.</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p>See the added integration test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-08-08 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-08-08 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-08 15:18</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/Chat_finetuning_data_prep.ipynb:6:18:25: Unparenthesized generator expression cannot be used here
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_box.ipynb:13:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_confluence.ipynb:15:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_gmail.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_jira.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_notion.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_doc.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_text.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sql_database.ipynb:2:2:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_middleware_azure_function.ipynb:37:1:13: Simple statements must be separated by newlines or semicolons
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/Chat_finetuning_data_prep.ipynb:6:18:25: Unparenthesized generator expression cannot be used here
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_box.ipynb:13:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_confluence.ipynb:15:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_gmail.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_jira.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_notion.ipynb:15:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_doc.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_text.ipynb:28:1:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_sql_database.ipynb:2:2:5: Simple statements must be separated by newlines or semicolons
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_middleware_azure_function.ipynb:37:1:13: Simple statements must be separated by newlines or semicolons
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-08 17:14</div>
+            <div class="timeline-body"><p>I think what @carljm would prefer is:</p>
+<ul>
+<li>Add a <code>has_read_errors()</code> method to <code>SourceText</code> and set it to true if reading the file failed.</li>
+<li>Define <code>Diagnostics</code> in <code>ruff_db</code> and pull the diagnostics in <code>RootDatabase::check</code> and <code>RootDatabase::check_file</code>.</li>
+</ul>
+<p>Finding a generic abstraction for <code>Diagnostics</code> will complicate migrating to a type checker CLI</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-08 19:51</div>
+            <div class="timeline-body"><p>I thought about this more. I don't mind adding a flag to source text and testing that flag instead of branching based on whether there are Diagnostics.</p>
+<p>But I do prefer to defer the decision on whether we want a single Diagnostic type or not because that's less clear to me, but I plan to look into it next week.</p>
+<p>That's why I would prefer keeping the accumulator as is (querying an accumulator in a query is supported by salsa).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-08 20:36</div>
+            <div class="timeline-body"><p>I think you've represented my preferences accurately :)</p>
+<p>I don't like making logical decisions in dependent queries based on the diagnostic output of called queries; it feels too fragile and too tightly coupled to implementation details. So I would definitely prefer if this PR were changed to put an explicit flag on <code>Parsed</code> instead if there were any I/O errors.</p>
+<p>Best IMO would be if we rearranged <code>Parsed</code> such that you can only get access to the source text by calling a method which returns a <code>Result</code>, so it's not even possible to silently get the empty text when there were errors; you have to choose some way to handle the error.</p>
+<p>IMO the question of whether we use a single Diagnostic type and a single global accumulator or we use leveled aggregation of Diagnostics is a very different question, which I don't have a firm opinion on yet and I have no problem with deferring it from this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-08-08 20:41</div>
+            <div class="timeline-body"><p>Tbh it seems to me that just having <code>source_text</code> query return a <code>Result</code> is a pretty good option here: it's the most idiomatic/intuitive way to represent this. The <code>Result</code> doesn't have to carry the original <code>std::io::Error</code>, it can carry our own error type that does implement <code>Eq</code>, so back-dating can still work. Caller queries shouldn't care about the details of the I/O error anyway, those details just belong in the user diagnostic.</p>
+<p>And the concern about all dependent queries then also having to return a <code>Result</code> doesn't make sense to me. The whole point of this PR is that caller queries should be aware if there was a file read error and handle it in some way. It's better if they have to be aware of it. Returning a <code>Result</code> achieves that. It doesn't force them to propagate the <code>Result</code>; they can instead match on it and handle the <code>Err</code> branch however they want (e.g. abort checking, or whatever makes sense.) They have all the same options for handling that situation that they will have no matter how we signal the error to them. There is no law requiring use of the <code>?</code> operator to unwrap a <code>Result</code> ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-08-08 23:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-09 05:49</div>
+            <div class="timeline-body"><blockquote>
+<p>Tbh it seems to me that just having source_text query return a Result is a pretty good option here: it's the most idiomatic/intuitive way to represent this. The Result doesn't have to carry the original std::io::Error, it can carry our own error type that does implement Eq, so back-dating can still work. Caller queries shouldn't care about the details of the I/O error anyway, those details just belong in the user diagnostic.</p>
+</blockquote>
+<p>We could do that, although I would then just return an <code>Option</code>. But I don't think we should do it...</p>
+<blockquote>
+<p>And the concern about all dependent queries then also having to return a Result doesn't make sense to me. The whole point of this PR is that caller queries should be aware if there was a file read error and handle it in some way.</p>
+</blockquote>
+<p>To me, the only two options are:</p>
+<ol>
+<li><code>source_text</code> emits the diagnostic and performs the recovery itself as it does today</li>
+<li>All queries that use <code>source_text</code> or transitively depend on it return <code>Result</code></li>
+</ol>
+<p>The middle ground doesn't make sense to me. It only introduces unclear responsibilities:B</p>
+<p>If <code>source_text</code> returns an <code>Result</code>, is it then the responsibility of <code>parsed_module</code> to do the error recovery? I don't think it should because we could then as well have done the error recovery in <code>source_text</code>. That leaves the question about which query should then do the error recovery? It would have to be the top queries: <code>format</code>, <code>lint_syntax</code>, <code>lint_semantic</code> because they can then decide not to emit diagnostics. That's option 2 and it introduces the ambiguity of who's now responsible for emitting a diagnostic. Only one method should push a diagnostic of we end up with duplicates but we can't know which queries are called in a single execution. It can be <code>format</code> only or <code>format</code>, <code>lint</code> and <code>type_check</code>.</p>
+<p>Returning a <code>Result</code> would work better in a non-Salsa world where <code>check_file</code> would read the result, deal with any IO errors and call into <code>lint_syntax</code> when there are none, passing the source code as an argument. But this doesn't work in a salsa design where queries <strong>pull</strong> the information they need. There's not even a need for <code>check_file</code> to call <code>source_text</code> at all because it doesn't <strong>need</strong> to pass the result as an argument to any functions it calls. That means, requiring explicit error handling doesn't really work (unless we propagate the error everywhere through) because:</p>
+<ul>
+<li>The methods that <strong>should</strong> handle the error have no need to call <code>source_text</code>, and therefore, don't profit from any explicit error handling</li>
+<li>The methods that don't care about error handling (because they should be resilient to errors, similar to the parser) don't really know what to do, other than implementing their own error recovery mechanism</li>
+</ul>
+<p>That's why I still think that doing the error recovery in <code>source_text</code> is the right approach. I think adding a boolean flag to <code>SourceText</code> indicating whether the read has failed and can be used to make such decisions does make sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-08-09 05:57</div>
+            <div class="timeline-body"><p>I agree that there should be clear responsibilities. To me, clear responsibilities means that whatever layer wants to be able to make a different decision depending on whether there was an error, is the (only) layer that should handle the error, and report an appropriate diagnostic to the user depending on its specific needs.</p>
+<p>To me, that means that <code>source_text</code> should return a <code>Result</code> (or <code>Option</code>, if callers never need to distinguish different failure modes, which seems plausible) and not report any diagnostic or provide any fallback, <code>parsed_module</code> should propagate the error/option and likewise not report any diagnostic or provide any fallback, and any queries that call <code>parsed_module</code> should &quot;catch&quot; the error/option and take action as appropriate for their particular case, including possibly reporting a diagnostic. (And not propagate the error/option, of course.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-09 06:01</div>
+            <div class="timeline-body"><blockquote>
+<p>To me, that means that source_text should return a Result (or Option, if callers never need to distinguish different failure modes, which seems plausible) and not report any diagnostic or provide any fallback, parsed_module should propagate the error/option and likewise not report any diagnostic or provide any fallback, and any queries that call parsed_module should &quot;catch&quot; the error/option and take action as appropriate for their particular case, including possibly reporting a diagnostic. (And not propagate the error/option, of course.)</p>
+</blockquote>
+<p>Yeah, but I don't see how this can work (as explained above)</p>
+<ul>
+<li>Multiple queries call <code>parsed_module</code> at different stages. There's no guarantee in which order or which queries are executed. We would report the same diagnostic multiple times or never</li>
+<li>Let's say <code>parsed_module</code> propagates the error. But which query catches it? <code>semantic_index</code>? It can't, because <code>lint_syntax</code> would then still not have to deal with handling the error. So it has to propagate and so do all type inference methods all the way up to <code>lint_syntax</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-08-09 06:09</div>
+            <div class="timeline-body"><p>I would need to look at the details of who actually calls <code>parsed_module</code>, but I need to go to sleep now instead :) I think the more principled approach is to propagate as much as needed to avoid that problem, but I'm also fine with falling back to empty plus setting a flag if you prefer to go that route!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-09 06:14</div>
+            <div class="timeline-body"><p>Everything calls <code>parsed_module</code> transitively. Every <code>SemanticIndex</code> method ;) My worry is that it would make our code extremely cumbersome. All code in type inference would have to deal with the possibility that the semantic index is <code>None</code> because we can't statically assert that it is guaranteed to be non-none when doing type inference.</p>
+<p>I'm happy to discuss this more in person but I do think a flag is the best way to go. It's also closest to what we already to with our AST where incorrect identifiers are &quot;marked&quot; as invalid and require explicit checking, because for most code, it doesn't matter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-09 08:28</div>
+            <div class="timeline-body"><p>Overall, this seems a fundamental design question and I think our two options really are:</p>
+<ol>
+<li>Handle the error in <code>source_text</code> and recover</li>
+<li>Propagate the query through the entire semantic analysis and bubble it up all the way to <code>check_file</code>. But that would mean that all our query methods (and all methods that use anything derived from a query) become <code>Result</code>. I don't think it's worth the complexity that it introduces.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-09 08:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_workspace/src/workspace.rs</code>:368 on 2024-08-09 08:41</div>
+            <div class="timeline-body"><p>Note: Querying both <code>source_text(...).has_read_error()</code> and the diagnostics is slightly less efficient than only testing for diagnostics because <code>source_text</code> now gets called twice: Once by the query itself to read the <code>has_read_error</code> flag and once when resolving the accumulated diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-08-09 19:02</div>
+            <div class="timeline-body"><p>Looks good, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-08-12 07:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-08-12 07:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-12 07:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:01 UTC
+    </footer>
+</body>
+</html>

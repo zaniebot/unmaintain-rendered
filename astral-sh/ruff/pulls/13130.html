@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] infer basic (name-based) annotation expressions - astral-sh/ruff #13130</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] infer basic (name-based) annotation expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13130">#13130</a>
+        opened by <a href="https://github.com/chriskrycho">@chriskrycho</a>
+        on 2024-08-27 23:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/chriskrycho">@chriskrycho</a> on 2024-08-27 23:18</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<ul>
+<li>Introduce methods for inferring annotation and type expressions.</li>
+<li>Correctly infer explicit return types from functions where they are simple names that can be resolved in scope.</li>
+</ul>
+<p>Contributes to astral-sh/ty#244 by way of helping unlock call expressions (this does not remotely finish that, as it stands, but it gets us moving that direction).</p>
+<h2>Test Plan</h2>
+<p>Added a test for function return types which use the name form of an annotation expression, since this is aiming toward call expressions. When we extend this to working for other annotation and type expression positions, we should add explicit tests for those as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @chriskrycho on 2024-08-27 23:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @chriskrycho on 2024-08-27 23:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @chriskrycho on 2024-08-27 23:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-08-27 23:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:322 on 2024-08-28 09:10</div>
+            <div class="timeline-body"><p>nit: the function will always have a <em>return type</em>, even if it doesn't have a <em>return annotation</em>. If it doesn't have a return annotation, we will either just infer the function's return type as <code>Unknown</code> (what mypy does), or analyse the body of the function to figure out the return type (what pyright does)</p>
+<pre><code class="language-suggestion">    /// type inferred from this function's return annotation
+    /// (if it has a return annotation)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1378 on 2024-08-28 09:13</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    }
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1393 on 2024-08-28 09:15</div>
+            <div class="timeline-body"><p>Maybe make this a debug assertion? I think it's unlikely it'll ever trigger; it feels more like a &quot;sanity check&quot; to me</p>
+<pre><code class="language-suggestion">                debug_assert!(
+                    name.ctx.is_load(),
+                    &quot;name in a type expression is always 'load' but got: '{:?}'&quot;,
+                    name.ctx
+                );
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-28 09:22</div>
+            <div class="timeline-body"><p>Nice! A couple of nitpicks below.</p>
+<p>Here's some high-level thoughts that shouldn't block this PR, just things we could think about as followups:</p>
+<ul>
+<li>it might be nice if <code>infer_annotation_expression</code> took a custom <code>TypeExpression</code> enum as its input argument rather than the <code>ast::Expr</code> enum, to codify the fact that a valid type expression necessarily excludes certain Python expression nodes entirely, such as <code>Expr::Call</code>s, <code>Expr::Lambda</code>s, <code>Expr::Named</code>, etc.</li>
+<li>currently we're not looking at any qualifiers an annotation expression might or might not include that wrap the annotation's type expression. But in the long run, we'll want to take note of those and record them somewhere. It might make sense for <code>infer_annotation_expression</code> to return something like <code>(HasSet&lt;TypeQualifier&gt;, Type&lt;'db&gt;)</code> rather than simply <code>Type&lt;'db&gt;</code>.</li>
+</ul>
+<p>Again, these high-level comments are just me thinking out loud about how we might want this code to work in the long run; not really anything you need to respond to in this PR!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-28 12:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:322 on 2024-08-28 12:16</div>
+            <div class="timeline-body"><p>I agree with this nit, but I have a nit on the nit 😆  although we use the term &quot;infer&quot; pretty broadly, I wouldn't choose to use that term when we're specifically referring to simply resolving an annotation expression to a type:</p>
+<pre><code class="language-suggestion">    /// annotated return type for this function, if any
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-08-28 12:27</div>
+            <div class="timeline-body"><p>Replying to a couple of the high-level thoughts here, though I agree that neither of them should be implemented in this PR:</p>
+<blockquote>
+<ul>
+<li>it might be nice if <code>infer_annotation_expression</code> took a custom <code>TypeExpression</code> enum as its input argument rather than the <code>ast::Expr</code> enum, to codify the fact that a valid type expression necessarily excludes certain Python expression nodes entirely, such as <code>Expr::Call</code>s, <code>Expr::Lambda</code>s, <code>Expr::Named</code>, etc.</li>
+</ul>
+</blockquote>
+<p>I'm not sure about this. It implies that we would then need to have some other method that takes an <code>ast::Expr</code>, emits diagnostics for invalid forms, and returns the custom enum. But it seems to me that it will be simpler, clearer, and more efficient if that is the job of <code>infer_annotation_expression</code> itself. Why match twice when we can match once, emit diagnostics on invalid forms and perform correct resolution of valid forms?</p>
+<p>It seems to me like this is an idea we can keep in mind if at some point things reach a level of complexity where it really concretely improves type safety (for instance, if we have built up a large collection of methods that are subsidiary to <code>infer_annotation_expression</code> and all should operate only on a valid type expression form -- but I'm not convinced this will ever happen, because I think the subsidiary methods are more likely to operate on a specific expression kind instead), but this isn't something we should be a priori aiming for, or introducing for its own sake if its only taken by a single method.</p>
+<blockquote>
+<p>currently we're not looking at any qualifiers an annotation expression might or might not include that wrap the annotation's type expression. But in the long run, we'll want to take note of those and record them somewhere. It might make sense for <code>infer_annotation_expression</code> to return something like <code>(HasSet&lt;TypeQualifier&gt;, Type&lt;'db&gt;)</code> rather than simply <code>Type&lt;'db&gt;</code>.</p>
+</blockquote>
+<p>Yes, agreed. Probably best to sort out the details here once we are adding support for a type qualifier, so we can design it in context with how the information is used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1393 on 2024-08-28 12:57</div>
+            <div class="timeline-body"><p>Seems reasonable—here I was following the example of the <code>panic!</code> on <code>infer_function_type_params</code> (in a <code>let...else</code>), though in that case it's necessary simply for using the construct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-28 12:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-28 12:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:322 on 2024-08-28 12:59</div>
+            <div class="timeline-body"><p>DOUBLE NIT. I love it. 😁</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-28 13:35</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2239 on 2024-08-29 20:48</div>
+            <div class="timeline-body"><p>This isn't <em>quite</em> right -- quoted annotations can be used for forward references in Python (something I'm currently struggling with in https://github.com/astral-sh/ruff/pull/12951), so <code>&quot;hello&quot;</code> might actually be a valid type annotation if <code>hello</code> resolves to a symbol in scope. See https://peps.python.org/pep-0484/#forward-references. (But you're correct that all of the others are not generally valid in type annotations. Except for inside <code>Literal</code> slices. And also <code>Ellipsis</code>, that also has some special meaning in type annotations 😄.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-29 20:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:181 on 2024-08-29 21:16</div>
+            <div class="timeline-body"><p>I think this is too noisy to keep around at INFO level (which I believe is the default.) It might even be too noisy at DEBUG. We will look up types for lots of expressions, and looking up types is generally not an interesting operation (as opposed to, say, actually inferring the types in the first place.)</p>
+<p>Also, it would be weird to trace <code>try_expression_ty</code> but not <code>expression_ty</code> above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:186 on 2024-08-29 21:16</div>
+            <div class="timeline-body"><p>Same comment as above; I think we shouldn't instrument this. (Also because <code>Definition</code> is quite a verbose debug dump.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:195 on 2024-08-29 21:17</div>
+            <div class="timeline-body"><p>This also doesn't seem worth instrumenting?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:313 on 2024-08-29 21:19</div>
+            <div class="timeline-body"><p>These three infer-region calls do seem worth instrumenting, in principle, except that I think they always correspond 1:1 with calls to the Salsa queries <code>infer_scope_types</code>, <code>infer_definition_types</code>, <code>infer_deferred_types</code>, and <code>infer_expression_types</code> above. Which I think makes it mostly noise to have both? So I would remove these, too.</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:323 on 2024-08-29 21:25</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:369 on 2024-08-29 21:26</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:426 on 2024-08-29 21:26</div>
+            <div class="timeline-body"><p>Isn't this also duplicative of the existing span in <code>infer_definition_types</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:429 on 2024-08-29 21:27</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:441 on 2024-08-29 21:27</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:446 on 2024-08-29 21:29</div>
+            <div class="timeline-body"><p>This again doesn't seem that useful to me, in that it will always correspond 1:1 with an <code>infer_scope_types</code> call (which is already traced), whenever that scope is a module scope. I guess it could be useful to know that the scope is a module scope, but that would be more clearly done by improving the <code>infer_scope_types</code> trace span.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:473 on 2024-08-29 21:31</div>
+            <div class="timeline-body"><p>Type parameters can't be deferred, but parameter annotations can be.</p>
+<pre><code class="language-suggestion">        // TODO: this should also be applied to parameter annotations.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:528 on 2024-08-29 21:33</div>
+            <div class="timeline-body"><p>I think this is too noisy also -- clearly (given the implementation) it will always correspond to a call to <code>infer_definition_types</code>, which is already traced.</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:535 on 2024-08-29 21:34</div>
+            <div class="timeline-body"><p>And this is just a one-liner that always calls <code>infer_definition</code>, which always calls <code>infer_definition_types</code>.</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:540 on 2024-08-29 21:34</div>
+            <div class="timeline-body"><p>This one also feels redundant to me with the existing tracing of <code>infer_definition_types</code>.</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:574 on 2024-08-29 21:35</div>
+            <div class="timeline-body"><p>nit: it's only the annotations on parameters that might be deferred, not the entire parameter.</p>
+<pre><code class="language-suggestion">            // TODO: this should also be applied to parameter annotations.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:662 on 2024-08-29 21:39</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:667 on 2024-08-29 21:39</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:709 on 2024-08-29 21:39</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:590 on 2024-08-29 21:41</div>
+            <div class="timeline-body"><p>I just generally think it's too noisy to have default tracing turned on for this level of detail, particularly at <code>INFO</code>; and it seems a little arbitrary that we'd do it for parameters but not all the other nooks and crannies of the AST. IMO having trace spans by default for the various Salsa query entry points is about the right level of abstraction; if you're debugging a more detailed issue in a particular area of inference, you can add <code>dbg!()</code> calls at the points that are interesting for what you're debugging.</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:612 on 2024-08-29 21:42</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:625 on 2024-08-29 21:42</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:651 on 2024-08-29 21:42</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:646 on 2024-08-29 21:43</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        _parameter_with_default: &amp;ast::ParameterWithDefault,
+        definition: Definition&lt;'db&gt;,
+    ) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1349 on 2024-08-29 21:44</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1824 on 2024-08-29 21:44</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2124 on 2024-08-29 21:45</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2253 on 2024-08-29 21:52</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2239 on 2024-08-29 21:53</div>
+            <div class="timeline-body"><p>Yeah, we should move <code>StringLiteral</code> out of this section and have a dedicated comment for it <code>TODO: stringified annotations</code>, and then update this comment for the rest of them to not use a string as an example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2119 on 2024-08-29 21:55</div>
+            <div class="timeline-body"><p>I think it's likely that we should remove the universal <code>infer_</code> prefix from methods here, but looking at this now, it's something I think we want to consider carefully in its own PR, and I don't like having this PR leave us in a halfway state that sort of suggests we are committed to that direction, but requires another PR to complete it. I'd rather just stay fully consistent with the existing pattern for now.</p>
+<pre><code class="language-suggestion">    fn infer_annotation_expression(&amp;mut self, expression: &amp;ast::Expr) -&gt; Type&lt;'db&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2267 on 2024-08-29 21:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2278 on 2024-08-29 21:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-29 21:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2239 on 2024-08-29 21:56</div>
+            <div class="timeline-body"><p>Oh, right, I forgot about that part (even though I was mucking around with it just yesterday)! Will update. I was wondering about <code>Ellipsis</code>, too. I will note that it is a “TODO” rather than a “nothing to see here” and go look up what it does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2287 on 2024-08-29 21:57</div>
+            <div class="timeline-body"><p>Update here also in accordance with the comment above about string literals and string annotations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2134 on 2024-08-29 22:02</div>
+            <div class="timeline-body"><p>I think I would prefer a different approach here, to reduce duplication. I think <code>infer_annotation_expression</code> should handle any valid annotation-expression-only forms, and just defer everything else to <code>infer_type_expression</code> blindly. Because any valid type expression is also a valid annotation expression, and we shouldn't need to double-encode information here in <code>infer_annotation_expression</code> about what is or isn't a valid type expression.</p>
+<p>Given that as of this PR we aren't handling <em>any</em> annotation-expression-only forms, that means that for now, <code>infer_annotation_expression</code> should be just a comment like <code>TODO handle annotation-expression-only special forms</code> and then  just defer everything to <code>infer_type_expression</code>.</p>
+<p>Are there problems with this approach that I'm missing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2262 on 2024-08-29 22:02</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    fn infer_type_expression(&amp;mut self, expression: &amp;ast::Expr) -&gt; Type&lt;'db&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2254 on 2024-08-29 22:05</div>
+            <div class="timeline-body"><p>Given that we will in the future have standalone type expressions, I think it's important that <code>infer_type_expression</code> insert the expression type, so I think this should also move down to <code>infer_type_expression</code>.</p>
+<p>For now I don't think we need it in <code>infer_annotation_expression</code> at all (in keeping with the above comment about making it a very light wrapper around <code>infer_type_expression</code>). In future it should insert <em>something</em> into the map for whatever annotation-only special forms it handles; we can figure that out when the time comes to handle those special forms.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> requested changes on 2024-08-29 22:08</div>
+            <div class="timeline-body"><p>Great work! In terms of the broad strokes, this looks excellent.</p>
+<p>A lot of my comments are basically just a single comment that I don't think we should add such fine-grained tracing of type inference by default; if we did it everywhere, it'd be so noisy in any realistic case that you'd never be able to find anything. When debugging at that level, it works better IMO to manually add the specific <code>dbg!()</code> calls that are relevant to the case you're debugging. Open to discussing this if you think I'm missing the value of this tracing!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on 2024-08-29 22:46</div>
+            <div class="timeline-body"><p>Ha, very strongly agreed re: tracing instrumentation – I was going to ask if you thought <em>any</em> of those were valuable to keep, and I think the answer here is basically “no”. I’ll double check on the annotation-vs.-type-expressions thing as well and respond on that specific comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-29 22:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:181 on 2024-08-29 22:47</div>
+            <div class="timeline-body"><p>Agreed, I’m going to remove basically all of these; I meant to and failed to call it out on Discord earlier!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-29 22:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:181 on 2024-08-29 22:47</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-29 22:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:186 on 2024-08-29 22:47</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-29 22:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:195 on 2024-08-29 22:47</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-29 22:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:426 on 2024-08-29 22:49</div>
+            <div class="timeline-body"><p>It is! I originally added it because I wanted to see if we ended up getting this far, and so wanted to just emit an event. Then I figured out how to read the tree better. (Aside: misreading the tree of traces is why I was wrong on my 95%-confident thing earlier: we were <em>successfully</em> getting out of all the paths represented by those traces.)</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-29 22:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:446 on 2024-08-29 22:49</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-29 22:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:473 on 2024-08-29 22:49</div>
+            <div class="timeline-body"><p>Ahhhh, good to know. 👍🏼</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-29 22:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:620 on 2024-08-29 22:50</div>
+            <div class="timeline-body"><p>This is a good thing to do, I <em>believe</em>, but it should be in the <em>next</em> PR, which will wire up very basic parameter inference.</p>
+<pre><code class="language-suggestion">        self.infer_optional_expression(parameter.annotation.as_deref());
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-29 22:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2119 on 2024-08-29 22:52</div>
+            <div class="timeline-body"><p>I debated on exactly that point, so fair enough. I’ll do that in a separate commit from the rest of the batch so I make sure I get everything correctly wired up with the rename refactor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2254 on 2024-08-29 22:53</div>
+            <div class="timeline-body"><p>Ah, that makes sense, yes. Will do. 👍🏼</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-29 22:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-29 22:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2239 on 2024-08-29 22:59</div>
+            <div class="timeline-body"><p>Did that in a3d82a8f.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-29 23:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2134 on 2024-08-29 23:01</div>
+            <div class="timeline-body"><p>That approach seems perfectly reasonable. I debated doing it that way initially, and simply didn’t have a strong enough sense of the tradeoff there—reviewing the grammar, though, I see what you mean. There just isn’t that much which is specific to annotation expressions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-08-29 23:18</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/chriskrycho:rk-basic-annotation-expressions">CodSpeed Performance Report</a></h2>
+<h3>Merging astral-sh/ruff#13130 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>chriskrycho:rk-basic-annotation-expressions</code> (407c27e) with <code>main</code> (34b4732)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 32</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-30 12:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2134 on 2024-08-30 12:59</div>
+            <div class="timeline-body"><p>Done (see 6af652ce)!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2262 on 2024-08-30 13:00</div>
+            <div class="timeline-body"><p>Went back to <code>infer_*</code> in 0eaf748d. 🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-30 13:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2125 on 2024-08-30 15:00</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                self.infer_name_expression(name).instance()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-08-30 15:01</div>
+            <div class="timeline-body"><p>Looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-30 15:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2125 on 2024-08-30 15:10</div>
+            <div class="timeline-body"><p>Ha! An artifact of <em>so much tracing</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-08-30 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-08-30 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-30 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-03 07:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:80 on 2024-09-03 07:40</div>
+            <div class="timeline-body"><p>We should change this to an actual sentence rather than the method name. Tracing messages are user facing (not <code>trace</code> but we might decide to make them user facing in the future).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2090 on 2024-09-03 07:41</div>
+            <div class="timeline-body"><p>What's the motivation for placing each method in its own impl block?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-03 07:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-03 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:80 on 2024-09-03 14:22</div>
+            <div class="timeline-body"><p>This function is a partially-broken temporary crutch just to get us through until we have fixpoint iteration and full deferred resolution of annotations in the necessary places; it should go away. So I'm not too worried about this particular trace message sticking around for a long time. But this is a good point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2090 on 2024-09-03 14:25</div>
+            <div class="timeline-body"><p>The idea was not &quot;each method&quot; but &quot;each set of related methods&quot;, though at the moment it is just one method for annotation expressions and one for type expressions; that will change. It was just a way to more clearly separate inference of value expressions from inference of annotation expressions and type expressions.</p>
+<p>This was Chris' idea and it seemed fine to me, but I'm also fine with just using comment headers to achieve the same separation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-03 14:25</div>
+            <div class="timeline-body"></div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

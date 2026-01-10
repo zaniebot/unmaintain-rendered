@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fallback to kernelspec to check if it's a Python notebook - astral-sh/ruff #12875</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fallback to kernelspec to check if it's a Python notebook</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12875">#12875</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-08-14 03:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-14 03:26</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds a fallback logic for <code>is_python_notebook</code> to check the <code>kernelspec.language</code> field.</p>
+<p>Reference implementation in VS Code: https://github.com/microsoft/vscode/blob/1c31e758985efe11bc0453a45ea0bb6887e670a4/extensions/ipynb/src/deserializers.ts#L20-L22</p>
+<p>It's also required for the kernel to provide the <code>language</code> they're implementing based on https://jupyter-client.readthedocs.io/en/stable/kernels.html#kernel-specs reference although that's for the <code>kernel.json</code> file but is also included in the notebook metadata.</p>
+<p>Closes: #12281</p>
+<h2>Test Plan</h2>
+<p>Add a test case for <code>is_python_notebook</code> and include the test notebook for round trip validation.</p>
+<p>The test notebook contains two cells, one is JavaScript (denoted via the <code>vscode.languageId</code> metadata) and the other is Python (no metadata). The notebook metadata only contains <code>kernelspec</code> and the <code>language_info</code> is absent.</p>
+<p>I also verified that this is a valid notebook by opening it in Jupyter Lab, VS Code and using <code>nbformat</code> validator.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">notebook</span> added by @dhruvmanila on 2024-08-14 03:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-08-14 03:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-14 03:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_notebook/src/notebook.rs</code>:419 on 2024-08-14 03:29</div>
+            <div class="timeline-body"><p>I'm not exactly sure why was the default value <code>true</code> in case <code>language_info</code> is absent but that doesn't seem correct to me. If we can't infer the language from either <code>language_info</code> or <code>kernelspec</code>, we'll now return <code>false</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-14 03:42</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-14 05:01</div>
+            <div class="timeline-body"><p>Need to look at what's going on with the notebooks in ecosystem output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-14 05:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_notebook/src/notebook.rs</code>:419 on 2024-08-14 05:04</div>
+            <div class="timeline-body"><p>Ok, so the notebooks in the ecosystem diff doesn't have both <code>language_info</code> and <code>kernelspec</code> in which case we're not marking it as Python notebook. I think I'd need to revert this change to return <code>true</code> in this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_notebook/src/notebook.rs</code>:422 on 2024-08-14 06:56</div>
+            <div class="timeline-body"><p>I think defaulting to <code>true</code> is good for most notebooks. If this proves a problem, we can look at specific notebooks or decide to introduce an option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-08-14 06:56</div>
+            <div class="timeline-body"><p>Awesome. Thanks @dhruvmanila for pushing this changes before the release!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.6" by @MichaReiser on 2024-08-14 06:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-14 07:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_notebook/src/notebook.rs</code>:422 on 2024-08-14 07:05</div>
+            <div class="timeline-body"><p>Sounds good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-08-14 07:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-08-14 07:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-14 07:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:01 UTC
+    </footer>
+</body>
+</html>

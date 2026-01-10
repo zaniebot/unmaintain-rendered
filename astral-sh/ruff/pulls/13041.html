@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Support files outside of any workspace - astral-sh/ruff #13041</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Support files outside of any workspace</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13041">#13041</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-08-22 06:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-22 06:56</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds basic support for files outside of any workspace in the red knot server.</p>
+<p>This also limits the red knot server to only work in a single workspace. The server will not start if there are multiple workspaces.</p>
+<h2>Test Plan</h2>
+<p>https://github.com/user-attachments/assets/de601387-0ad5-433c-9d2c-7b6ae5137654</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2024-08-22 06:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-22 09:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_server/src/server/api.rs</code>:90 on 2024-08-22 09:44</div>
+            <div class="timeline-body"><p>I want this entire logic in the <code>Session</code> but the borrow checker always complains when I do something like:</p>
+<pre><code class="language-rs">        self.workspaces
+            .range_mut(..=path.as_ref().to_path_buf())
+            .next_back()
+            .map(|(_, db)| db)
+			.unwrap_or_else(|| self.default_workspace_db_mut())
+</code></pre>
+<p>There are two mutable references:</p>
+<pre><code>error[E0500]: closure requires unique access to `*self` but it is already borrowed
+   --&gt; crates/red_knot_server/src/session.rs:104:29
+    |
+97  |           &amp;mut self,
+    |           - let's call the lifetime of this reference `'1`
+...
+100 |           self.workspaces
+    |           ---------------
+    |           |
+    |  _________borrow occurs here
+    | |
+101 | |             .range_mut(..=path.as_ref().to_path_buf())
+102 | |             .next_back()
+103 | |             .map(|(_, db)| db)
+104 | |             .unwrap_or_else(|| self.default_workspace_db_mut())
+    | |_____________________________^^_----___________________________- returning this value requires that `self.workspaces` is borrowed for `'1`
+    |                               |  |
+    |                               |  second borrow occurs due to use of `*self` in closure
+    |                               closure construction occurs here
+
+For more information about this error, try `rustc --explain E0500`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-22 09:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_server/src/server/api/notifications/did_close.rs</code>:40 on 2024-08-22 09:45</div>
+            <div class="timeline-body"><p>I don't think it's required for the server to sync the file when it's closed. The concern here was that when an unsaved file content is either accepted or discarded, it might require us to sync it but the client will send us the <code>didChange</code> request before the <code>didClose</code>. So, at this point the file content is already in sync.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-22 09:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_server/src/server/api/requests/diagnostic.rs</code>:71 on 2024-08-22 09:47</div>
+            <div class="timeline-body"><p>This is just to make sure the diagnostics are highlighted for at most one character. Without this, it would spill over to the next line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-22 09:51</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-08-22 11:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2024-08-22 11:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-08-22 11:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2024-08-22 11:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/server/api/notifications/did_close.rs</code>:40 on 2024-08-22 11:43</div>
+            <div class="timeline-body"><p>I think calling <code>sync</code> is necessary when the file is a virtual file to mark it as &quot;deleted&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/server/api/notifications/did_open.rs</code>:37 on 2024-08-22 11:44</div>
+            <div class="timeline-body"><p>I'm not sure if <code>file_created</code> is the correct event here. The analyzer might already have seen the file when traversing the file system. I think it is only virtual files which would be &quot;created&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/server/api.rs</code>:87 on 2024-08-22 11:47</div>
+            <div class="timeline-body"><p>Nit: We may want to consider using system path in the LSP as well to remove the back and forth between different types</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/server/api.rs</code>:90 on 2024-08-22 11:48</div>
+            <div class="timeline-body"><p>This seems to work</p>
+<pre><code class="language-rust">    pub(crate) fn workspace_db_for_path_or_default(&amp;self, path: impl AsRef&lt;Path&gt;) -&gt; &amp;RootDatabase {
+        self.workspace_db_for_path(path)
+            .unwrap_or_else(|| self.default_workspace_db())
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/server/api.rs</code>:90 on 2024-08-22 11:51</div>
+            <div class="timeline-body"><p>This also compiles fine for me...</p>
+<pre><code class="language-rust">    pub(crate) fn workspace_db_for_path(&amp;self, path: impl AsRef&lt;Path&gt;) -&gt; &amp;RootDatabase {
+        self.workspaces
+            .range(..=path.as_ref().to_path_buf())
+            .next_back()
+            .map(|(_, db)| db)
+            .unwrap_or_else(|| self.default_workspace_db())
+    }
+</code></pre>
+<p>Not sure if I'm doing something wrong. But I think you face the problem with <code>workspace_db_for_path_mut</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/server/api.rs</code>:90 on 2024-08-22 12:00</div>
+            <div class="timeline-body"><p>But yeah, not sure why the <code>mut</code> case doesn't work. Sounds like a borrow checker limitation? Maybe @BurntSushi has an idea</p>
+<p>I tried to hint rust as best as I can but it just won't believe that we only return one mutable borrow</p>
+<pre><code class="language-rust">        let workspace = self
+            .workspaces
+            .range_mut(..=path.as_ref().to_path_buf())
+            .next_back();
+
+        if let Some((_, db)) = workspace {
+            return db;
+        }
+        drop(workspace);
+
+        return self.workspaces.values_mut().next().unwrap();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-08-22 12:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-22 12:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_server/src/server/api.rs</code>:90 on 2024-08-22 12:06</div>
+            <div class="timeline-body"><blockquote>
+<p>Not sure if I'm doing something wrong. But I think you face the problem with <code>workspace_db_for_path_mut</code>?</p>
+</blockquote>
+<p>Yes, it's for the mutable version.</p>
+<blockquote>
+<p>I tried to with as many hints as possible but it just won't believe that we only return one mutable borrow</p>
+</blockquote>
+<p>Yeah, I tried a couple of them myself, all raised the same error</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-22 12:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_server/src/server/api/notifications/did_close.rs</code>:40 on 2024-08-22 12:09</div>
+            <div class="timeline-body"><p>Shouldn't that need to happen explicitly by updating the file status? This means it requires a dedicated <code>ChangedEvent</code> as done in https://github.com/astral-sh/ruff/pull/13044.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-08-22 15:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_server/src/server/api.rs</code>:90 on 2024-08-22 15:22</div>
+            <div class="timeline-body"><p>Nothing is immediately popping out at me here. This might be something that is fixed by Polonius. Specifically, this might be the problem you're hitting? https://blog.rust-lang.org/inside-rust/2023/10/06/polonius-update.html#background-on-polonius</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-22 15:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/server/api.rs</code>:90 on 2024-08-22 15:28</div>
+            <div class="timeline-body"><p>Thanks. Yes, that might be it.</p>
+<p>An alternative solution could be to accept a closure that applies the mutation to the <code>db</code>. Not as nice but  hopefully that works?</p>
+<p>Otherwise transmute your way to happiness :joy:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-23 06:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_server/src/server/api.rs</code>:90 on 2024-08-23 06:36</div>
+            <div class="timeline-body"><blockquote>
+<p>An alternative solution could be to accept a closure that applies the mutation to the <code>db</code>. Not as nice but hopefully that works?</p>
+</blockquote>
+<p>Huh, this works but it gets a little bit complicated because we need to move the <code>path</code> to the <code>ChangedEvent</code> (and also that the path could be system or virtual). I'll keep the existing logic for now with a TODO to link to this discussion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_server/src/server/api/notifications/did_open.rs</code>:37 on 2024-08-23 06:40</div>
+            <div class="timeline-body"><p>Yeah, I think that's correct. I think we might not need to emit any event here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-23 06:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-23 06:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_server/src/server/api/notifications/did_open.rs</code>:37 on 2024-08-23 06:43</div>
+            <div class="timeline-body"><p>Or maybe it's required when publishing diagnostics for clients that doesn't support pull diagnostics. I'm thinking of adding a new event kind like <code>Opened(SystemPathBuf)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-23 06:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_server/src/server/api.rs</code>:87 on 2024-08-23 06:47</div>
+            <div class="timeline-body"><p>Yeah, I think that should be done after adding virtual file support because then there will be two paths.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-08-23 06:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-08-23 06:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-23 06:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

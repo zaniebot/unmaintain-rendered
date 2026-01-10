@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ci: persist a warm cache across jobs - astral-sh/ruff #12798</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ci: persist a warm cache across jobs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12798">#12798</a>
+        opened by <a href="https://github.com/DonIsaac">@DonIsaac</a>
+        on 2024-08-11 02:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/DonIsaac">@DonIsaac</a> on 2024-08-11 02:48</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>I saw on Twitter that you guys want some help with faster CI.</p>
+<p>This PR updates <code>Swatinem/rust-cache@v2</code> steps for testing jobs and other long-running tasks (except for release builds) to share cached build artifacts across jobs.</p>
+<p>Each platform (linux/windows, didn't see tests for MacOS) gets its own warm cache. Caches are read by all branches, but only saved when CI runs on <code>main</code>.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>This is what Oxc's CI does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-08-11 02:54</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/DonIsaac:don/ci/shared-warm-caching">CodSpeed Performance Report</a></h2>
+<h3>Merging #12798 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>DonIsaac:don/ci/shared-warm-caching</code> (c7279a0) with <code>main</code> (e05953a)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 32</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-11 03:09</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/Chat_finetuning_data_prep.ipynb:6:18:25: Unparenthesized generator expression cannot be used here
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_google_drive.ipynb:2:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_redshift.ipynb:13:1:1: Got unexpected token `
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/Chat_finetuning_data_prep.ipynb:6:18:25: Unparenthesized generator expression cannot be used here
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_google_drive.ipynb:2:1:1: Expected an expression
+error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_redshift.ipynb:13:1:1: Got unexpected token `
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-12 06:44</div>
+            <div class="timeline-body"><p>Thanks for this PR. Could you tell us a bit more on why this is expected to improve CI times other than OXC is using it?</p>
+<p>I think I tried something similar in the past without seeing improved build times</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-12 06:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/ci.yaml</code>:172 on 2024-08-12 06:47</div>
+            <div class="timeline-body"><p>I think we should avoid specying the shard key unless there are multiple jobs that use the same cache.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DonIsaac">@DonIsaac</a> on 2024-08-13 03:27</div>
+            <div class="timeline-body"><p>It has to do with <a href="https://github.com/Swatinem/rust-cache/blob/9bdad043e88c75890e36ad3bbc8d27f0090dd609/src/config.ts#L60">this line of code</a>. Without a shared key, each job has its own cache. Adding a shared key should reduce the number of duplicate caches created by each job. By only saving on jobs that run on main, we should see less cache invalidation. The hypothesis is that each branch syncs with main and is more likely to have code in common with main than other PRs, so the creation of new PRs shouldn't blow the cache.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/DonIsaac">@DonIsaac</a> on <code>.github/workflows/ci.yaml</code>:172 on 2024-08-13 03:28</div>
+            <div class="timeline-body"><p>Do we know if caches can be shared across builds on different architectures?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/DonIsaac">@DonIsaac</a> reviewed on 2024-08-13 03:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-13 11:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/ci.yaml</code>:172 on 2024-08-13 11:04</div>
+            <div class="timeline-body"><p>I don't think it makes sense to share caches across architectures because the output is different for each architecture.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-13 11:05</div>
+            <div class="timeline-body"><blockquote>
+<p>It has to do with <a href="https://github.com/Swatinem/rust-cache/blob/9bdad043e88c75890e36ad3bbc8d27f0090dd609/src/config.ts#L60">this line of code</a>. Without a shared key, each job has its own cache. Adding a shared key should reduce the number of duplicate caches created by each job. By only saving on jobs that run on main, we should see less cache invalidation. The hypothesis is that each branch syncs with main and is more likely to have code in common with main than other PRs, so the creation of new PRs shouldn't blow the cache.</p>
+</blockquote>
+<p>That makes sense. But doesn't it mean that we only have to specify the shared key for cached that should be re-used across at least two jobs? For example, there's only a single job using <code>warm-wasm</code>. Couldn't we use the default cache key instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-13 11:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/ci.yaml</code>:142 on 2024-08-13 11:05</div>
+            <div class="timeline-body"><p>I would prefer some more specific cache key names. For example: <code>linux-test</code> or <code>linux-debug</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-13 11:07</div>
+            <div class="timeline-body"><p>Should we also change the caching of <code>clipyy</code>, <code>check-formatter-instability-and-black-similarity</code> etc?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DonIsaac">@DonIsaac</a> on 2024-08-13 12:21</div>
+            <div class="timeline-body"><p>These are good points, I'll remove and add these respectively.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-13 13:09</div>
+            <div class="timeline-body"><blockquote>
+<p>These are good points, I'll remove and add these respectively.</p>
+</blockquote>
+<p>Thanks. Overall this looks reasonable to me. We can merge it after updating all jobs and removing unnecessary shard-keys to see if it has any positive impact.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ci</span> added by @MichaReiser on 2024-08-13 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-13 13:46</div>
+            <div class="timeline-body"><p>There are a few other things to keep in mind</p>
+<ol>
+<li>Saving the cache takes time, how does this trade-off with the savings of the shared cache?</li>
+<li>Is the cache entry going to increase in size now? Presumably if more jobs are sharing it with slightly different builds it's additive? How much does it increase by? How much time does it add to download the larger cache?</li>
+<li>GitHub imposes a cache size limit, once we reach it entries are evicted. Does this approach help with that or not?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-13 13:56</div>
+            <div class="timeline-body"><p>What I understand is that we would have fewer caches because we only store them on main. The cache size should be unchanged because it's still the same caches. Saving fewer caches should give us some time back on non-main runs because we skip the caching step entirely</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-13 14:05</div>
+            <div class="timeline-body"><p>Ah I misunderstood some of the discussion here and thought we were <em>previously</em> only saving the cache changes for <code>main</code> (I made this change over in uv at some point), that changes my caveats. This comes with other trade-offs though, for example, if a pull request add dependencies we have to build them on every commit to the pull request instead of populating a cache on the first run.</p>
+<p>Edit: Not sure how I missed this because <a href="https://github.com/astral-sh/ruff/pull/12798#issuecomment-2285271968">this comment</a></p>
+<blockquote>
+<p>By only saving on jobs that run on main, we should see less cache invalidation. The hypothesis is that each branch syncs with main and is more likely to have code in common with main than other PRs, so the creation of new PRs shouldn't blow the cache.</p>
+</blockquote>
+<p>Clearly addresses my note at (3)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-13 14:11</div>
+            <div class="timeline-body"><p>Regarding</p>
+<blockquote>
+<p>If a pull request add dependencies we have to build them on every commit to the pull request instead of populating a cache on the first run.</p>
+</blockquote>
+<p>I think this was a real problem in uv and I reverted the change. Maybe Ruff's dependencies are more stable? Maybe we can toggle the key based on changes to the <code>Cargo.toml</code>? Seems kind of tricky.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-13 15:16</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this was a real problem in uv and I reverted the change. Maybe Ruff's dependencies are more stable? Maybe we can toggle the key based on changes to the Cargo.toml? Seems kind of tricky.</p>
+</blockquote>
+<p>Interesting. Would love to hear more about the specific problem you ran into. What I understand is that the builds for PRs adding dependencies will take longer because they have to build the added/changed dependencies. But I wouldn't expect that they take that much longer and it's mainly renovate that tinkers with dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-13 15:19</div>
+            <div class="timeline-body"><p>I wish I knew which pull request it was, but the pipelines have changed a lot over there it seems hard to track down. More of a note than blocking feedback, we can revisit if it causes a specific problem here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DonIsaac">@DonIsaac</a> on 2024-08-13 19:51</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>These are good points, I'll remove and add these respectively.</p>
+</blockquote>
+<p>Thanks. Overall this looks reasonable to me. We can merge it after updating all jobs and removing unnecessary shard-keys to see if it has any positive impact.</p>
+</blockquote>
+<p><code>warm-wasm</code> is used by two jobs, so I'll leave that one. I've removed <code>warm-windows</code> and <code>warm-msrv</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2024-08-14 07:09</div>
+            <div class="timeline-body"><p>I think there must have been some confusion because using <code>warm</code> for all jobs and only saving it in one job will give us worse performance for most jobs.</p>
+<ul>
+<li>We should only specify <code>shared-key</code> when two or more jobs use the same cache. In our case that could be <code>cargo-test-linux</code> and maybe <code>mkdocs</code>?</li>
+<li>Jobs should only use the same <code>shared-key</code> if they use the same target. Clippy, Windows, fuzz, test scripts all use different targets as far as I know</li>
+<li>I would prefer to use more specific names than<code>warm</code></li>
+<li>There are still multiple jobs that don't use the new optimization (benchmarks, <code>check-formatter-instability-and-black-similarity</code>, <code>pre-commit</code>, <code>python-package</code>, <code>cargo-build-release</code>, <code>cargo-test-windows</code>). Is there a specific reason for it?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DonIsaac">@DonIsaac</a> on 2024-08-14 11:16</div>
+            <div class="timeline-body"><p>Today is quite busy for me, I'll get back to this tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-03 07:47</div>
+            <div class="timeline-body"><p>I close this for now. Feel free to re-open if you plan to follow up on the comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-09-03 07:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:01 UTC
+    </footer>
+</body>
+</html>

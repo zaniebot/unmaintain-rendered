@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] add IntersectionBuilder - astral-sh/ruff #12791</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] add IntersectionBuilder</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12791">#12791</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-08-09 23:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-08-09 23:17</div>
+            <div class="timeline-body"><p>For type narrowing, we'll need intersections (since applying type narrowing is just a type intersection.)</p>
+<p>Add <code>IntersectionBuilder</code>, along with some tests for it and <code>UnionBuilder</code> (renamed from <code>UnionTypeBuilder</code>).</p>
+<p>We use smart builders to ensure that we always keep these types in disjunctive normal form (DNF). That means that we never have deeply nested trees of unions and intersections: unions flatten into unions, intersections flatten into intersections, and intersections distribute over unions, so the most complex tree we can ever have is a union of intersections. We also never have a single-element union or a single-positive-element intersection; these both just simplify to the contained type.</p>
+<p>Maintaining these invariants means that <code>UnionBuilder</code> doesn't necessarily end up building a <code>Type::Union</code> (e.g. if you only add a single type to the union, it'll just return that type instead), and <code>IntersectionBuilder</code> doesn't necessarily build a <code>Type::Intersection</code> (if you add a union to the intersection, we distribute the intersection over that union, and <code>IntersectionBuilder</code> will end up returning a <code>Type::Union</code> of intersections).</p>
+<p>We also simplify intersections by ensuring that if a type and its negation are both in an intersection, they simplify out. (In future this should also respect subtyping, not just type identity, but we don't have subtyping yet.) We do implement subtyping of <code>Never</code> as a special case for now.</p>
+<p>Most of this PR is unused for now until type narrowing lands; I'm just breaking it out to reduce the review fatigue of a single massive PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-08-09 23:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-08-09 23:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-08-09 23:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-09 23:30</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:296 on 2024-08-10 00:00</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            1 =&gt; self.elements[0],
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:318 on 2024-08-10 00:01</div>
+            <div class="timeline-body"><p>nit: Does <code>Type</code> add anything here? <code>IntersectionBuilder</code>/<code>IntersectionBuilderInner</code> might be slightly shorter than <code>IntersectionTypeBuilder</code>/<code>InnerIntersectionTypeBuilder</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:352 on 2024-08-10 00:12</div>
+            <div class="timeline-body"><p>hmm, I find the <code>.fold()</code> here quite hard to grok. I suppose it's just personal preference, but I'd find this easier to parse:</p>
+<pre><code class="language-suggestion">            let mut builder = IntersectionTypeBuilder::empty(self.db);
+            for element in union.elements(self.db) {
+                let new_union_element = self.clone().add_positive(element);
+                builder
+                    .intersections
+                    .extend(new_union_element.intersections);
+            }
+            builder
+</code></pre>
+<p>I <em>think</em> it's equivalent? Your tests seem to pass, anyway :-)</p>
+<p>(Same comment applies for your <code>add_negative()</code> method below)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:468 on 2024-08-10 00:13</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            (1, 0) =&gt; self.positive[0],
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-10 00:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-10 00:15</div>
+            <div class="timeline-body"><p>(Have only skimmed so far; will look in more depth over the weekend or next week :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:352 on 2024-08-10 13:19</div>
+            <div class="timeline-body"><p>Some added docs here would also be great. Even after rewriting it in imperative style, it took me a <em>little</em> bit of time to figure out what was going on here. I believe you're applying the transformation where <code>A &amp; (B | C)</code> -&gt; <code>(A &amp; B) | (A &amp; C)</code>. Correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-10 13:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:406 on 2024-08-10 13:20</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">#[derive(Debug, Clone, Default)]
+struct InnerIntersectionTypeBuilder&lt;'db&gt; {
+    positive: FxOrderSet&lt;Type&lt;'db&gt;&gt;,
+    negative: FxOrderSet&lt;Type&lt;'db&gt;&gt;,
+}
+
+impl&lt;'db&gt; InnerIntersectionTypeBuilder&lt;'db&gt; {
+    fn new() -&gt; Self {
+        Self::default()
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:411 on 2024-08-10 13:21</div>
+            <div class="timeline-body"><p>I guess <code>inter</code> is short for <code>intersection</code> here, but at first glance I assumed it was a typo and you meant to write <code>inner</code> :P</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:454 on 2024-08-10 13:26</div>
+            <div class="timeline-body"><p>This isn't correct: <code>None</code> intersects with <code>object</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:448 on 2024-08-10 13:26</div>
+            <div class="timeline-body"><p>subtyping or assignability? ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:436 on 2024-08-10 13:27</div>
+            <div class="timeline-body"><p>I assume you don't both with <code>.shrink_to_fit()</code> calls here because it'll probably cost more than it's worth for such a frequently called method, and you'll reclaim the memory in the <code>build()</code> method anyway. Is that right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:591 on 2024-08-10 13:34</div>
+            <div class="timeline-body"><p>You might want to add a comment here about how we could simplify this further once we have greater understanding of assignability/subtyping; otherwise it might be confusing if somebody else tries to implement it later and this test starts failing.</p>
+<p>...Hmm, but perhaps that applies for quite a few tests being added here. Not sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-08-10 13:35</div>
+            <div class="timeline-body"><p>Overall this looks great. I love the builder interfaces.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-11 04:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:318 on 2024-08-11 04:53</div>
+            <div class="timeline-body"><p>Yep, agreed, I'll remove <code>Type</code> from both of these names.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-11 04:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:352 on 2024-08-11 04:57</div>
+            <div class="timeline-body"><p>I think it is preference, and I prefer the fold :) I'll add comments to see if I can make it clearer, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-11 04:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:448 on 2024-08-11 04:59</div>
+            <div class="timeline-body"><p>Subtyping. Intersections and unions can't be simplified based on assignability. <code>T &amp; Any</code> doesn't simplify; that was the whole point of my talk! ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-11 05:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:436 on 2024-08-11 05:00</div>
+            <div class="timeline-body"><p>Right, it only makes sense to <code>shrink_to_fit</code> when we are turning things immutable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-11 05:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:591 on 2024-08-11 05:02</div>
+            <div class="timeline-body"><p>Ah hm, yeah, good point -- my favorite option would be to rework this to use types where it is correct not to simplify; that might actually not be too hard, using <code>Any</code>. I'll make that change, thanks for pointing this out!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-11 05:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:591 on 2024-08-11 05:08</div>
+            <div class="timeline-body"><p>I also noticed while updating the tests that the self-canceling code should not apply to <code>Any</code> or <code>Unknown</code>: <code>Any &amp; ~Any</code> does not simplify to <code>Never</code>, because the two <code>Any</code> are both unknown types and might not be the same type; it should instead simplify to <code>Any</code>. I just added a TODO for this, it doesn't need to be fixed in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-11 05:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:454 on 2024-08-11 05:08</div>
+            <div class="timeline-body"><p>Ah shoot, great catch. There actually isn't any test in this PR depending on this clause, so I just removed it for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-08-11 05:25</div>
+            <div class="timeline-body"><p>Thanks for the great review!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-08-11 05:30</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/cjm/union-intersection">CodSpeed Performance Report</a></h2>
+<h3>Merging #12791 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>cjm/union-intersection</code> (106e2d8) with <code>main</code> (4b9ddc4)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 32</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] add IntersectionTypeBuilder" to "[red-knot] add IntersectionBuilder" by @AlexWaygood on 2024-08-11 11:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:395 on 2024-08-12 07:48</div>
+            <div class="timeline-body"><p>Not sure if it's worth short-circuiting here if <code>intersection</code> contains exactly one element (to avoid allocating a hash set)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:265 on 2024-08-12 07:50</div>
+            <div class="timeline-body"><p>It might be helpful to turn some of your PR comments into a document. For example, that a union builder isn't guaranteed to return a union. It might be useful to extract the builders into their own <code>types/builder</code> module so that you can make your PR comment a module level comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-08-12 07:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-12 16:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:395 on 2024-08-12 16:18</div>
+            <div class="timeline-body"><p>Yeah, this makes sense! One interesting Rust note here, <code>build</code> consumes the builder, I wasn't sure of the best way to take ownership of the one element in a vec when I know it has only one element; <code>self.intersections[0].build(db)</code> obviously doesn't work because I can't move out of the vec. I settled on <code>self.intersections.pop().unwrap().build(db)</code> which also requires having <code>build</code> take <code>mut self</code> instead of <code>self</code> -- all that should be fine, just wondered if there was a simpler way I was missing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-12 16:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:395 on 2024-08-12 16:30</div>
+            <div class="timeline-body"><p>Not really. Maybe <code>into_iter().next().unwrap()</code> but that's equally bad.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-08-12 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-08-12 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-12 18:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:01 UTC
+    </footer>
+</body>
+</html>

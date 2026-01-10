@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add symbols defined by `match` statements - astral-sh/ruff #12926</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add symbols defined by <code>match</code> statements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12926">#12926</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-08-16 10:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-16 10:56</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds symbols introduced by <code>match</code> statements.</p>
+<p>There are three patterns that introduces new symbols:</p>
+<ul>
+<li><code>as</code> pattern</li>
+<li>Sequence pattern</li>
+<li>Mapping pattern</li>
+</ul>
+<p>The recursive nature of the visitor makes sure that all symbols are added.</p>
+<h2>Test Plan</h2>
+<p>Add test case for all types of patterns that introduces a symbol.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2024-08-16 10:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-08-16 11:01</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/match-stmt-symbols">CodSpeed Performance Report</a></h2>
+<h3>Merging #12926 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>dhruv/match-stmt-symbols</code> (c08d870) with <code>main</code> (aefadde)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 32</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-16 11:10</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-08-16 11:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2024-08-16 11:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-08-16 11:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2024-08-16 11:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:1032 on 2024-08-16 15:35</div>
+            <div class="timeline-body"><p>At runtime this pattern does actually bind the name <code>_</code>:</p>
+<pre><code>&gt;&gt;&gt; match 3:
+...     case _: pass
+...
+&gt;&gt;&gt; _
+3
+</code></pre>
+<p>So perhaps we should as well?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-08-16 15:37</div>
+            <div class="timeline-body"><p>Looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-16 15:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:1032 on 2024-08-16 15:41</div>
+            <div class="timeline-body"><p>Wait what? I tried this locally and it gives me a <code>NameError</code> on 3.10 to 3.13:</p>
+<pre><code class="language-py">match 1:
+    case _:
+        print(_)
+</code></pre>
+<p>Running it from the command-line:</p>
+<pre><code class="language-console">✘ python3.13 type_inference/stmt_match.py
+Traceback (most recent call last):
+  File &quot;/Users/dhruv/playground/ruff/type_inference/stmt_match.py&quot;, line 5, in &lt;module&gt;
+    print(_)
+          ^
+NameError: name '_' is not defined
+</code></pre>
+<p>Maybe this is specific to the REPL?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-16 15:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:1032 on 2024-08-16 15:42</div>
+            <div class="timeline-body"><p>The REPL always binds the <code>_</code> symbol to the result of whatever expression was last evaluated, so this could indeed be something REPL-specific</p>
+<pre><code class="language-pycon">Python 3.12.4 (main, Jun 12 2024, 09:54:41) [Clang 15.0.0 (clang-1500.3.9.4)] on darwin
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; 42
+42
+&gt;&gt;&gt; _
+42
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-16 15:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:1032 on 2024-08-16 15:45</div>
+            <div class="timeline-body"><p>Ah, good call! Totally forgot about that REPL feature. That's a funny combination of separate special-casing around underscores, it really looked like the match statement was binding 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-08-20 05:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-08-20 05:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-20 05:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:01 UTC
+    </footer>
+</body>
+</html>

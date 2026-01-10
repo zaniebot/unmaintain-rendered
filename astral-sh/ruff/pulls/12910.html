@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add support for relative imports - astral-sh/ruff #12910</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add support for relative imports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12910">#12910</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-08-15 21:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-15 21:29</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support for relative import statements, e.g. <code>from .foo import bar</code>, <code>from . import bar</code>, or <code>from ...foo import bar</code>.</p>
+<h2>Test Plan</h2>
+<p>Several tests added to <code>infer.rs</code>.</p>
+<p>Co-authored-by: Carl Meyer <a href="mailto:carl@astral.sh">carl@astral.sh</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-08-15 21:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-08-15 21:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-08-15 21:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-15 21:30</div>
+            <div class="timeline-body"><p>(I'm expecting this to have a significant impact on the <code>tomllib</code> benchmark, since lots of relative imports in <code>tomllib</code> that we previously couldn't understand at all will now be understood)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-15 21:42</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-08-16 05:00</div>
+            <div class="timeline-body"><p>I'll let @MichaReiser review this, since I helped write it :)</p>
+<p>You'll have to update the expected number of errors in the benchmark before we'll get to see benchmark results.</p>
+<p>And it looks like Clippy has a complaint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @carljm on 2024-08-16 05:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/module_name.rs</code>:188 on 2024-08-16 06:01</div>
+            <div class="timeline-body"><p>We could avoid the need to return an <code>Error</code> if we make the <code>Argument</code> a <code>ModuleName</code>.</p>
+<p>Nit: I think <code>push</code> is sufficient because we don't allow pushing at the front and it better aligns with the <code>str</code> API.</p>
+<pre><code class="language-suggestion">    pub fn join(&amp;mut self, other &amp;ModuleName {
+    	self.0.push(&amp;other.0);
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:840 on 2024-08-16 06:03</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">        let mut level = level.get();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:887 on 2024-08-16 06:04</div>
+            <div class="timeline-body"><p>I think we should add a TODO here to raise an error if the module name is not a valid identifier or how do we do this for non-relative paths?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1828 on 2024-08-16 06:05</div>
+            <div class="timeline-body"><p>Can we add a TODO here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1873 on 2024-08-16 06:05</div>
+            <div class="timeline-body"><p>Can we add a test for a file that's not a module and verify what pyright's behavior is in that case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-08-16 06:06</div>
+            <div class="timeline-body"><p>This looks great. Again, much simpler than I expected and nice that the <code>file_to_module</code> provides everything that we need.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-16 07:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/module_name.rs</code>:188 on 2024-08-16 07:43</div>
+            <div class="timeline-body"><blockquote>
+<p>We could avoid the need to return an <code>Error</code> if we make the <code>Argument</code> a <code>ModuleName</code>.</p>
+</blockquote>
+<p>Great idea!</p>
+<blockquote>
+<p>Nit: I think <code>push</code> is sufficient because we don't allow pushing at the front</p>
+</blockquote>
+<p>Hmm, I don't think my current name is great but I don't like <code>push</code>, because I'd expect a <code>push</code> method to only accept a single component (like <code>Vec::push</code>), which isn't what this method does (the string it accepts could be a single component, but it could also be a string representing multiple components).</p>
+<blockquote>
+<p>it better aligns with the <code>str</code> API.</p>
+</blockquote>
+<p>I don't think this is a great reason because the fact that this type wraps a string currently is an implementation detail. Conceptually, an absolute module name is a list of identifier strings separated by dots, so in terms of the semantics of the type it could just as easily wrap a <code>Vec</code> (or <code>SmallVec</code>, etc)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-16 07:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/module_name.rs</code>:188 on 2024-08-16 07:50</div>
+            <div class="timeline-body"><p>How about <code>extend</code> or <code>join</code>. Because your concerns about <code>push</code> also apply to <code>push_tail</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-16 09:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:887 on 2024-08-16 09:18</div>
+            <div class="timeline-body"><p>Other than <code>from foo import *</code> imports (which will anyway require their own branch of logic), I don't think it's possible for any components of the module name here to not be a valid identifier. The source code would fail to parse, so we'd never get here. So I'm not sure how to add a test for this.</p>
+<p>Ideally the <code>ruff_python_ast::nodes::Identifier</code> node would have invariants around it that ensured that it never wrapped a string that wasn't a valid Python identifier: if so, we could also implement a more efficient conversion from <code>ruff_python_ast::nodes::Identifier</code> to <code>ModuleName</code>, that skips some of the checks performed by the <code>ModuleName</code> constructor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-08-16 09:35</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex/relative-imports">CodSpeed Performance Report</a></h2>
+<h3>Merging #12910 will <strong>degrade performances by 29.01%</strong></h3>
+<p><sub>Comparing <code>alex/relative-imports</code> (79c1853) with <code>main</code> (9b73532)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>❌ 2 (👁 2)</code> regressions
+<code>✅ 29</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>alex/relative-imports</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>linter/all-rules[numpy/globals.py]</code> | 779.1 µs | 727.8 µs | +7.05% |
+| 👁 | <code>red_knot_check_file[cold]</code> | 43.4 ms | 51 ms | -14.9% |
+| 👁 | <code>red_knot_check_file[incremental]</code> | 1.9 ms | 2.7 ms | -29.01% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-16 09:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:887 on 2024-08-16 09:59</div>
+            <div class="timeline-body"><p>Fair, although this makes assumptions about what the parser does. The parser could decide to recover from <code>a.5.b</code> because that gives a better overall parse result than stopping after <code>a.5</code>.</p>
+<p>I think it would be good to at least log a debug or warning because it would be an unexpected outcome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-16 10:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:92 on 2024-08-16 10:00</div>
+            <div class="timeline-body"><p>Woohoo nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-16 10:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:887 on 2024-08-16 10:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Fair, although this makes assumptions about what the parser does. The parser could decide to recover from <code>a.5.b</code> because that gives a better overall parse result than stopping after <code>a.5</code>.</p>
+</blockquote>
+<p>Okay, but even if it decides to do error recovery, the parser should still mark the node as invalid somehow, correct? And if so, we shouldn't <em>ever</em> get here; it would be fruitless to attempt to do type analysis on a module that's known to contain invalid syntax (which is what this would be)</p>
+<blockquote>
+<p>I think it would be good to at least log a debug or warning because it would be an unexpected outcome.</p>
+</blockquote>
+<p>fair enough</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-16 10:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:887 on 2024-08-16 10:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Okay, but even if it decides to do error recovery, the parser should still mark the node as invalid somehow</p>
+</blockquote>
+<p>Ideally yes, and we should handle it here. Adding a log should help us find this if we ever forget.</p>
+<blockquote>
+<p>it would be fruitless to attempt to do type analysis on a module that's known to contain invalid syntax (which is what this would be)</p>
+</blockquote>
+<p>I don't agree with this. Doing type inference on programs with invalid syntax is a primary goal and we should do the best we can or Red Knot won't be suited for editors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-16 10:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:887 on 2024-08-16 10:17</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't agree with this. Doing type inference on programs with invalid syntax is a primary goal and we should do the best we can or Red Knot won't be suited for editors.</p>
+</blockquote>
+<p>Interesting. From our previous discussions I understood that having an error-recoverable parser that could offer helpful error messages in cases of invalid syntax was a primary goal, but that being able to offer diagnostics and perform semantic analysis on modules with invalid syntax was not a goal that we expected to achieve in the foreseeable future. Was my understanding incorrect? Or are you saying that it's only a non-goal for <em>Ruff</em>, and that we plan on supporting modules with invalid syntax from the very start with red-knot?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-16 10:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:887 on 2024-08-16 10:20</div>
+            <div class="timeline-body"><p>We de-prioritized the recoverable semantic analysis work in Ruff, but Red Knot should support it from the very start. We may want to spend some more time to think about how we want to do that. @carljm general idea is to just return <code>Unknown</code> or <code>Unbound</code> in these cases but I start to think that it may involve more than just that. For example, we may want to avoid raising exceptions for calls to a function where the function's declaration contains syntax errors because that likely only contributes noise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-16 10:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:897 on 2024-08-16 10:40</div>
+            <div class="timeline-body"><p>Are these tracing calls the kind of thing you were thinking of @MichaReiser? I also added a <code>tracing::trace!()</code> call to <code>infer_import_from_definition</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-16 11:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:897 on 2024-08-16 11:34</div>
+            <div class="timeline-body"><p>LGTM. Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-08-16 11:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-08-16 11:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-16 11:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/module_name.rs</code>:185 on 2024-08-16 15:19</div>
+            <div class="timeline-body"><p>Nice, I also had a thought late last night that this is the name we should have used for this method, so glad you all settled on the same thing 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-16 15:22</div>
+            <div class="timeline-body"></div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:01 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Handle multiple comprehension targets - astral-sh/ruff #13213</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Handle multiple comprehension targets</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13213">#13213</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-09-02 12:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-09-02 12:41</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Part of #13085, this PR updates the comprehension definition to handle multiple targets.</p>
+<h2>Test Plan</h2>
+<p>Update existing semantic index test case for comprehension with multiple targets. Running corpus tests shouldn't panic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2024-09-02 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Handle multiple for comprehension targets" to "[red-knot] Handle multiple comprehension targets" by @dhruvmanila on 2024-09-02 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-09-02 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2024-09-02 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-09-02 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2024-09-02 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-02 12:55</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2024-09-02 13:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:159 on 2024-09-03 18:42</div>
+            <div class="timeline-body"><p>I was wondering if we'll also need access to the <code>if</code> portion of the generator here, but I think we won't; that expression should be handled separately as a <code>Constraint</code>, it's not part of the <code>Definition</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1656 on 2024-09-03 19:15</div>
+            <div class="timeline-body"><p>We've inherited some awfully confusing naming from the CPython grammar and AST :( If we have <code>[y for x in [] for y in x]</code>, that's a single &quot;list comprehension&quot;, whose AST node has a <code>generators</code> attribute containing two... Comprehensions, <code>for x in []</code> and <code>for y in x</code>. So not only is the term &quot;generator&quot; overloaded here from its usual meaning, but we're also using the term &quot;comprehension&quot; itself to mean two entirely different things, one of which is part of the other 🤯</p>
+<p>(To be clear, this is not a critique of this PR, just a lament for the state of naming in this part of the AST. We could fix this in our AST, but then we'd be inventing our own naming scheme that doesn't match the CPython AST, and that doesn't seem great either.)</p>
+<p>One way to maybe clarify this naming a bit would be to switch from <code>list_comprehension</code>, <code>dict_comprehension</code>, etc all through these method names to instead use <code>listcomp</code>, <code>dictcomp</code>, etc when we are referring to the outer expression, and reserve the full word &quot;comprehension&quot; for the thing actually named <code>Comprehension</code> in the AST, which is just the inner <code>for x in y</code> part. I wouldn't exactly call that <em>clear</em>, but given what we're working with, it might at least be better? It at least matches the names used in the AST and avoids using the word &quot;comprehension&quot; to mean two different things.</p>
+<p>In any case, I don't like the names <code>infer_comprehensions_scope</code> and <code>infer_comprehension_scope</code> for these two methods. The individual &quot;Comprehension&quot; nodes inside a list/set/dict/gen-comp are not different scopes, so the use of &quot;scope&quot; here is misleading.</p>
+<p>If we go with my suggestion above to rename e.g. <code>infer_list_comprehension_expression</code> to <code>infer_listcomp_expression</code>, then I think we could name these two just <code>infer_comprehensions</code> and <code>infer_comprehension</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1663 on 2024-09-03 19:17</div>
+            <div class="timeline-body"><p>In the parallel code above in <code>infer_first_comprehension_iter</code> you changed all the naming from <code>generator*</code> to <code>comprehension*</code>, which is reasonable since <code>generators</code> attribute is a list of <code>Comprehension</code> nodes. Let's at least be consistent and use the same naming both here and in <code>infer_first_comprehension_iter</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-09-03 19:29</div>
+            <div class="timeline-body"><p>Looks good! My only issue is with the name(s) <code>infer_comprehension(s)_scope</code>, otherwise this makes sense. Thanks for taking care of this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-04 04:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:159 on 2024-09-04 04:44</div>
+            <div class="timeline-body"><p>Yeah, that's what I thought as well which is the reason to limit this. It can easily be reverted in the future if there's a need.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-04 04:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1656 on 2024-09-04 04:52</div>
+            <div class="timeline-body"><p>I agree with the sentiment, thanks for sharing that.</p>
+<blockquote>
+<p>(To be clear, this is not a critique of this PR, just a lament for the state of naming in this part of the AST. We could fix this in our AST, but then we'd be inventing our own naming scheme that doesn't match the CPython AST, and that doesn't seem great either.)</p>
+</blockquote>
+<p>I think, if we want, we <em>can</em> change the names in our AST as we've done so in the past as well (https://github.com/astral-sh/ruff/pull/8064, https://github.com/astral-sh/ruff/pull/6379, https://github.com/astral-sh/ruff/pull/6253, etc.). There are other recommendations here: https://github.com/astral-sh/ruff/discussions/6183</p>
+<blockquote>
+<p>One way to maybe clarify this naming a bit would be to switch from <code>list_comprehension</code>, <code>dict_comprehension</code>, etc all through these method names to instead use <code>listcomp</code>, <code>dictcomp</code>, etc when we are referring to the outer expression, and reserve the full word &quot;comprehension&quot; for the thing actually named <code>Comprehension</code> in the AST, which is just the inner <code>for x in y</code> part.</p>
+</blockquote>
+<p>From my perspective, both <code>listcomp</code> and <code>list_comprehension</code> seems equivalent as the former seems like a short version of the latter. Is the reason for recommending <code>listcomp</code> because of it's presence in the CPython AST?</p>
+<blockquote>
+<p>In any case, I don't like the names <code>infer_comprehensions_scope</code> and <code>infer_comprehension_scope</code> for these two methods. The individual &quot;Comprehension&quot; nodes inside a list/set/dict/gen-comp are not different scopes, so the use of &quot;scope&quot; here is misleading.</p>
+</blockquote>
+<p>Makes sense. I can change this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-09-04 05:06</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/comprehension-multiple-target">CodSpeed Performance Report</a></h2>
+<h3>Merging #13213 will <strong>improve performances by 4.66%</strong></h3>
+<p><sub>Comparing <code>dhruv/comprehension-multiple-target</code> (b72afe7) with <code>main</code> (3c4ec82)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>✅ 31</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>dhruv/comprehension-multiple-target</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>linter/default-rules[pydantic/types.py]</code> | 1.9 ms | 1.8 ms | +4.66% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-09-04 05:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-09-04 05:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-04 05:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-04 05:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1656 on 2024-09-04 05:51</div>
+            <div class="timeline-body"><p>I've not renamed the <code>list_comprehension</code> to <code>listcomp</code> as I feel like the &quot;expression&quot; prefix in <code>list_comprehension_expression</code> gives a signal that this is different than a simple &quot;comprehension&quot;. Regardless, I don't have a strong opinion, so I'm happy to rename it if you think <code>listcomp</code> is better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-04 14:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1656 on 2024-09-04 14:20</div>
+            <div class="timeline-body"><p>Yeah, mostly what my suggestion was aiming for was to hew very closely to the AST naming, in hopes that this would at least give some guideposts to readers. But I'm OK with your approach and relying on <code>_expression</code> to distinguish.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove output format `text` and use format `full` by default - astral-sh/ruff #12010</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove output format <code>text</code> and use format <code>full</code> by default</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12010">#12010</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-06-24 09:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-24 09:04</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR removes support for the output format <code>text</code> in favor of <code>concise</code> and makes <code>full</code>  the new default (it was already the default for preview mode). The <code>OutputFormat::Text</code> is still defined in code so that we can error when it's being used.</p>
+<p>Resolves #7349</p>
+<h2>Test Plan</h2>
+<p>I tested that using <code>--output-format</code> on the CLI errors:</p>
+<pre><code class="language-shell">❯ cargo run --bin ruff -- check --output-format text
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.12s
+     Running `target/debug/ruff check --output-format text`
+ruff failed
+  Cause: `--output-format=text` is deprecated. Use `--output-format=full` or `--output-format=concise` instead.
+
+❯ cargo run --bin ruff -- check --config=&quot;output-format='text'&quot;
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.12s
+     Running `target/debug/ruff check '--config=output-format='\''text'\'''`
+ruff failed
+  Cause: The Setting `output_format=text` has been deprecated. Update your `--config` CLI arguments to use `output-format=&quot;concise&quot;` or  `output-format=&quot;full&quot;` instead.
+</code></pre>
+<p>I verified that using <code>output-format=&quot;text&quot;</code> in the settings errors</p>
+<pre><code class="language-shell">❯ ../ruff/target/debug/ruff check test.py
+ruff failed
+  Cause: The Setting `output_format=text` has been deprecated. Update `pyproject.toml` to use `output-format=&quot;concise&quot;` or  `output-format=&quot;full&quot;` instead.
+</code></pre>
+<ul>
+<li>I verified that using <code>concise</code> in the settings or on the CLI works as expected</li>
+<li>I verified that ruff defaults to <code>full</code> when no <code>output-format</code> is specified on the CLI or in the settings.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Remove output format `text` and use format `full` by defualt" to "Remove output format `text` and use format `full` by default" by @MichaReiser on 2024-06-24 09:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @MichaReiser on 2024-06-24 09:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @snowsignal by @MichaReiser on 2024-06-24 09:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @MichaReiser on 2024-06-24 09:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @MichaReiser on 2024-06-24 09:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2024-06-24 09:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-24 09:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/tests/integration_test.rs</code>:1223 on 2024-06-24 09:07</div>
+            <div class="timeline-body"><p>This looks like a bug but it isn't. Or, it is a bug in the test rule that always emits an empty range instead of emitting an actual range.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.5.0" by @MichaReiser on 2024-06-24 09:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-24 09:18</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-24 13:43</div>
+            <div class="timeline-body"><p>I'm a little worried about making this change when the full format is half-complete (#7352)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-24 15:54</div>
+            <div class="timeline-body"><p>@zanieb what's the part that you're worried about?</p>
+<p>I think showing the code frame for diagnostics is already an improvement by itself worth shipping and the format name <code>full</code> is generic enough to allow us to also show fixes in a future version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-24 15:56</div>
+            <div class="timeline-body"><p>It just doesn't feel as useful over the concise output without the fixes being shown (seen feedback from one user about this). Oh well though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-24 16:03</div>
+            <div class="timeline-body"><p>I personally find the source text in the rust compiler extremely useful. I don't think I ever look at the line number to get context on where I need to fix something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> approved on 2024-06-25 06:47</div>
+            <div class="timeline-body"><p>LGTM - it might be nice to have a small test plan :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-06-25 08:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-25 08:34</div>
+            <div class="timeline-body"><p>I updated the PR to keep the <code>Text</code> option for now  but I made the usage of <code>Text</code> a hard error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff/src/args.rs</code>:929 on 2024-06-25 08:38</div>
+            <div class="timeline-body"><p>We may want to use a word other than &quot;deprecated&quot; here, since that usually implies &quot;available but discouraged&quot;, while this is just a hard error. What about: <code>--output-format=text is no longer supported</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-06-25 08:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-06-26 07:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-06-26 07:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-26 07:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.5.0" by @MichaReiser on 2024-08-12 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.7" by @MichaReiser on 2024-08-12 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.7" by @MichaReiser on 2024-08-12 14:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:00 UTC
+    </footer>
+</body>
+</html>

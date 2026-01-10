@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add definition for with items - astral-sh/ruff #12920</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add definition for with items</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12920">#12920</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-08-16 08:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-16 08:22</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds symbols and definitions introduced by <code>with</code> statements.</p>
+<p>The symbols and definitions are introduced for each with item. The type inference is updated to call the definition region type inference instead.</p>
+<h2>Test Plan</h2>
+<p>Add test case to check for symbol table and definitions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2024-08-16 08:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-16 08:36</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-08-16 10:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2024-08-16 10:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-08-16 10:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2024-08-16 10:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-16 11:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:627 on 2024-08-16 11:41</div>
+            <div class="timeline-body"><p>Nit: I prefer to use <code>expect</code>. It's shorter</p>
+<pre><code class="language-suggestion">        let optional_vars = optional_vars.as_deref().expect(&quot;With item definition without optional vars&quot;);
+        };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-16 11:41</div>
+            <div class="timeline-body"><p>If this lands after https://github.com/astral-sh/ruff/pull/12919, then add <code>HasTy</code> implementation for <code>WithItem</code> and pull the type in the corpus test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:631 on 2024-08-16 16:09</div>
+            <div class="timeline-body"><p>Let's add a TODO for correct type inference here (but it's out of scope for this PR, since it requires features we don't have, like inferring types from a call).</p>
+<p>The correct type for optional-vars here is the return type of the <code>__enter__</code> method on the type of <code>context_expr</code>.</p>
+<p>This gets even a bit more complex when we consider unpacking, which I'll address in another comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:217 on 2024-08-16 16:12</div>
+            <div class="timeline-body"><p>Unfortunately with-statements allow for unpacking assignment:</p>
+<pre><code>&gt;&gt;&gt; class MyContext:
+...     def __enter__(self):
+...             return 1, 2
+...     def __exit__(*a, **kw):
+...             pass
+...
+&gt;&gt;&gt; with MyContext() as (a, b):
+...     pass
+...
+&gt;&gt;&gt; a
+1
+&gt;&gt;&gt; b
+2
+</code></pre>
+<p>This means we need to store a bit more information in <code>DefinitionKind::WithItem</code>, like we do for <code>DefinitionKind::Assignment</code> -- each symbol in the unpacking expression gets its own <code>Definition</code>, and we will need to store both the overall <code>WithItem</code> node and the specific target <code>Name</code> node in order to handle this correctly in type inference. (We don't yet handle unpacking assignment for regular assignments in inference either, but you can use the way we handle them in creating Definitions as a model.)</p>
+<p>Let's also add a semantic-index test for an unpacking assignment from a with-item, as in the above example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> requested changes on 2024-08-16 16:13</div>
+            <div class="timeline-body"><p>Looks good! Unfortunately unpacking throws in a wrinkle that we need to handle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-08-16 19:33</div>
+            <div class="timeline-body"><blockquote>
+<p>add <code>HasTy</code> implementation for <code>WithItem</code> and pull the type in the corpus test</p>
+</blockquote>
+<p>I think we probably shouldn't implement <code>HasTy</code> for <code>WithItem</code>, because it is not an expression, and it is not clear what the type of it should be. Is it the type of the <code>context_expr</code>, or the type of the <code>optional_vars</code> (which will be derived from the return type of <code>__enter__</code> on the <code>context_expr</code>)? The <code>optional_vars</code> are the only part of <code>WithItem</code> where there's a definition, but if anything the type of <code>context_expr</code> would make more sense as the overall type of the <code>WithItem</code>. Where we have this kind of unclarity for a non-Expr nodeI think it is better not to implement <code>HasTy</code> at all, and require asking for the type of the specific part you want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-20 05:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:217 on 2024-08-20 05:42</div>
+            <div class="timeline-body"><p>Make sense. Thanks for explaining. I've updated the code to reflect this change in https://github.com/astral-sh/ruff/pull/12920/commits/ba8bec693640c47c882e546d6aaf0ec33fe7c097 and added a test case for unpacking assignment in https://github.com/astral-sh/ruff/pull/12920/commits/aceee2e02e048222b56b5cc70664b8f215769b6c.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2024-08-20 05:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-08-21 23:04</div>
+            <div class="timeline-body"><p>Looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-08-22 02:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-08-22 02:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-22 02:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:01 UTC
+    </footer>
+</body>
+</html>

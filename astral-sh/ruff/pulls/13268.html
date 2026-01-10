@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Only include rules with diagnostics in SARIF metadata - astral-sh/ruff #13268</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Only include rules with diagnostics in SARIF metadata</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13268">#13268</a>
+        opened by <a href="https://github.com/RussellLuo">@RussellLuo</a>
+        on 2024-09-06 12:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/RussellLuo">@RussellLuo</a> on 2024-09-06 12:02</div>
+            <div class="timeline-body"><p>This PR can be considered as a follow-up of #13180.</p>
+<h2>Motivation</h2>
+<p>The current Ruff's SARIF output contains all the 800+ rules, the vast majority of which have no relevance to the errors in results. IMO, this results in a large output and a lot of noise.</p>
+<h2>Proposal</h2>
+<p>Per <a href="https://github.com/microsoft/sarif-tutorials/blob/main/docs/1-Introduction.md#a-simple-example">the SARIF example</a>, other linters such as ESLint only emits rules relevant to the errors in results. I think this could be an approach worth considering.</p>
+<pre><code class="language-json">{
+  &quot;version&quot;: &quot;2.1.0&quot;,
+  &quot;$schema&quot;: &quot;http://json.schemastore.org/sarif-2.1.0-rtm.4&quot;,
+  &quot;runs&quot;: [
+    {
+      &quot;tool&quot;: {
+        &quot;driver&quot;: {
+          &quot;name&quot;: &quot;ESLint&quot;,
+          &quot;informationUri&quot;: &quot;https://eslint.org&quot;,
+          &quot;rules&quot;: [
+            {
+              &quot;id&quot;: &quot;no-unused-vars&quot;,
+              &quot;shortDescription&quot;: {
+                &quot;text&quot;: &quot;disallow unused variables&quot;
+              },
+              &quot;helpUri&quot;: &quot;https://eslint.org/docs/rules/no-unused-vars&quot;,
+              &quot;properties&quot;: {
+                &quot;category&quot;: &quot;Variables&quot;
+              }
+            }
+          ]
+        }
+      },
+      &quot;artifacts&quot;: [
+        {
+          &quot;location&quot;: {
+            &quot;uri&quot;: &quot;file:///C:/dev/sarif/sarif-tutorials/samples/Introduction/simple-example.js&quot;
+          }
+        }
+      ],
+      &quot;results&quot;: [
+        {
+          &quot;level&quot;: &quot;error&quot;,
+          &quot;message&quot;: {
+            &quot;text&quot;: &quot;'x' is assigned a value but never used.&quot;
+          },
+          &quot;locations&quot;: [
+            {
+              &quot;physicalLocation&quot;: {
+                &quot;artifactLocation&quot;: {
+                  &quot;uri&quot;: &quot;file:///C:/dev/sarif/sarif-tutorials/samples/Introduction/simple-example.js&quot;,
+                  &quot;index&quot;: 0
+                },
+                &quot;region&quot;: {
+                  &quot;startLine&quot;: 1,
+                  &quot;startColumn&quot;: 5
+                }
+              }
+            }
+          ],
+          &quot;ruleId&quot;: &quot;no-unused-vars&quot;,
+          &quot;ruleIndex&quot;: 0
+        }
+      ]
+    }
+  ]
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-06 12:22</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-08 18:26</div>
+            <div class="timeline-body"><p>Thanks for the follow up.</p>
+<p>I'm not sure if reducing the rules to the reported tools is the right behavior. According to the <a href="https://docs.oasis-open.org/sarif/sarif/v2.1.0/cs01/sarif-v2.1.0-cs01.html#_Toc16012512">spec</a></p>
+<blockquote>
+<p>A toolComponent object MAY contain a property named rules whose value is an array of zero or more unique (§3.7.3) reportingDescriptor objects (§3.49) each of which provides information about an analysis rule supported by the tool component.</p>
+</blockquote>
+<p>The way I understand this is that the <code>rules</code> table should list all rules supported by the tool and not just rules seen in this analysis run. Do you have a resource that states if it is okay for the rules table to only include the reported rules?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2024-09-08 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RussellLuo">@RussellLuo</a> on 2024-09-09 00:00</div>
+            <div class="timeline-body"><p>@MichaReiser Thanks for the reply!</p>
+<p>I have found two resources that might be relevant:</p>
+<ol>
+<li><p><a href="https://github.com/microsoft/sarif-tutorials/blob/819b0f62f47ecde9a8f24dfc387c41926f5edabe/docs/2-Basics.md#rule-metadata">Rule metadata</a></p>
+<blockquote>
+<p>Rule metadata is optional. An analysis tool can choose not to include it at all, to include metadata for only those rules that are relevant to the results, or to include metadata for all rules known to the tool.<a href="https://github.com/microsoft/sarif-tutorials/blob/819b0f62f47ecde9a8f24dfc387c41926f5edabe/docs/2-Basics.md#note-13">13</a></p>
+</blockquote>
+</li>
+<li><p><a href="https://docs.oasis-open.org/sarif/sarif/v2.1.0/cs01/sarif-v2.1.0-cs01.html#_Toc16012891">Appendix E. (Informative) Locating rule and notification metadata</a></p>
+<blockquote>
+<p>The SARIF format allows rule and notification metadata to be included in a SARIF log file (see §3.19.23 and §3.19.24). A SARIF log file does not need to include any metadata. This raises the questions of when metadata should be included in a log file, and how to locate the metadata if it is not included in the log file.</p>
+<p>Metadata should be included in a log file in the following circumstances:</p>
+<p>· The log file is intended to be viewed in a tool such as a log file viewer that needs to display metadata related to each result or notification even when the tool is not connected to a network.</p>
+<p>· The log file is intended to be uploaded to a result management system which requires information about every rule specified by every result, and which might not have prior knowledge of the rules specified by the results in this log file.</p>
+<p>· Neither of the above applies, but the increased log file size due to the metadata is not considered significant.</p>
+</blockquote>
+</li>
+</ol>
+<p>To summarize, including only the rules relevant to the results or including all rules is okay, but IMO the latter would result in a large output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/message/sarif.rs</code>:31 on 2024-09-09 11:26</div>
+            <div class="timeline-body"><p>We can simplify this to</p>
+<pre><code class="language-suggestion">				let unique_rules: HashSet&lt;_&gt; = results.iter().filter_map(|result| result.rule).collect();
+        let mut rules: Vec&lt;SarifRule&gt; = unique_rules.into_iter().map(SarifRule::from).collect();
+        rules.sort_by(|a, b| a.code.cmp(&amp;b.code));
+</code></pre>
+<p>and then use <code>rules</code> on line 46. This avoids allocating unnecessary <code>String</code>s</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-09-09 11:27</div>
+            <div class="timeline-body"><p>Thanks. These two sections are extremely helpful.</p>
+<p>From the Appendix E:</p>
+<blockquote>
+<p>Metadata should be included in a log file in the following circumstances:</p>
+</blockquote>
+<p>Our challenge is that we can't make assumptions about the use case and I don't fully understand the following scenario:</p>
+<blockquote>
+<p>The log file is intended to be uploaded to a result management system which requires information about every rule specified by every result, and which might not have prior knowledge of the rules specified by the results in this log file.</p>
+</blockquote>
+<p>What do you make of this scenario?</p>
+<p>Either way. I'm slightly leaning towards moving forward with this until someone comes up with a use case where they need all metadata.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/RussellLuo">@RussellLuo</a> on <code>crates/ruff_linter/src/message/sarif.rs</code>:31 on 2024-09-09 12:09</div>
+            <div class="timeline-body"><p>Wow, this is fantastic!</p>
+<p>(This PR is my second time writing Rust code. Learned a lot!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/RussellLuo">@RussellLuo</a> reviewed on 2024-09-09 12:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RussellLuo">@RussellLuo</a> on 2024-09-09 12:42</div>
+            <div class="timeline-body"><blockquote>
+<p>What do you make of this scenario?</p>
+</blockquote>
+<p>To answer this question, let me analyze the second section (from spec) step by step.</p>
+<blockquote>
+<p>The log file is intended to be viewed in a tool such as a log file viewer that needs to display metadata related to each result or notification even when the tool is not connected to a network.</p>
+</blockquote>
+<p>Regarding &quot;display metadata related to each result&quot;, my understanding is that rules are primarily prepared for the results.</p>
+<blockquote>
+<p>The log file is intended to be uploaded to a result management system which requires information about every rule specified by every result, and which might not have prior knowledge of the rules specified by the results in this log file.</p>
+</blockquote>
+<p>From &quot;requires information about every rule specified by every result&quot;, again, I think rules are mainly used as additional details about the corresponding results.</p>
+<blockquote>
+<p>Neither of the above applies, but the increased log file size due to the metadata is not considered significant.</p>
+</blockquote>
+<p>I'm currently using Ruff through <a href="https://megalinter.io/">MegaLinter</a>, which provides a webhook mechanism to send the SARIF output. Therefore, I'm concerned about the size of the HTTP request body (of the webhook).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-09 13:39</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm currently using Ruff through <a href="https://megalinter.io/">MegaLinter</a>, which provides a webhook mechanism to send the SARIF output. Therefore, I'm concerned about the size of the HTTP request body (of the webhook).</p>
+</blockquote>
+<p>I wouldn't be too concerned about that. I would suspect that the JSON file, even with all rule metadata, is still less than 1 MB, and HTTP compression should bring that down to 100 KB.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RussellLuo">@RussellLuo</a> on 2024-09-09 14:13</div>
+            <div class="timeline-body"><p>Given this code snippet:</p>
+<pre><code class="language-python"># test.py
+import os
+
+def greet():
+    print('hello {name}'.format())
+</code></pre>
+<p>I just performed a quick test:</p>
+<pre><code class="language-bash"># Using the official Ruff
+$ ruff check --output-format=sarif test.py &gt; official_result.json
+$ du -sh official_result.json 
+2.0M	official_result.json
+# Using my local Ruff
+$ ./target/debug/ruff check --output-format=sarif test.py &gt; local_result.json
+$ du -sh local_result.json   
+8.0K	local_result.json
+</code></pre>
+<p>Overall, I agree with you that the size of the request body is not a big deal (although smaller is perhaps better). To my understanding of the <a href="https://docs.oasis-open.org/sarif/sarif/v2.1.0/cs01/sarif-v2.1.0-cs01.html#_Toc16012891">spec</a>, as described above, I think the rules are primarily used in conjunction with results. I'm not sure if there are scenarios where all rules are needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Remove unnecessary SARIF rules" to "Only include rules with diagnostics in SARIF metadata" by @MichaReiser on 2024-09-09 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-09-09 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-09-09 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-09 21:24</div>
+            <div class="timeline-body"><p>Thanks for making this contribution. This does sound reasonable to me and we can always revert back to the previous behavior if there's an actual use case for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-10 00:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

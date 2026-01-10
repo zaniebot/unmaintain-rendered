@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>red-knot: infer string literal types - astral-sh/ruff #13113</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>red-knot: infer string literal types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13113">#13113</a>
+        opened by <a href="https://github.com/chriskrycho">@chriskrycho</a>
+        on 2024-08-26 17:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/chriskrycho">@chriskrycho</a> on 2024-08-26 17:39</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Introduce a <code>StringLiteralType</code> with corresponding <code>Display</code> type and a relatively basic test that the resulting representation is as expected.</p>
+<p>Note: we currently always allocate for <code>StringLiteral</code> types. This may end up being a perf issue later, at which point we may want to look at other ways of representing <code>value</code> here, i.e. with some kind of smarter string structure which can reuse types. That is most likely to show up with e.g. concatenation.</p>
+<p>Contributes to astral-sh/ty#244.</p>
+<h2>Test Plan</h2>
+<p>Added a test for individual strings with both single and double quotes as well as concatenated strings with both forms.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @chriskrycho on 2024-08-26 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @chriskrycho on 2024-08-26 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @chriskrycho on 2024-08-26 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-26 17:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:285 on 2024-08-26 17:41</div>
+            <div class="timeline-body"><p>I expect this is probably something in the space of what we say for <code>BytesLiteral</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-26 17:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2328 on 2024-08-26 17:42</div>
+            <div class="timeline-body"><p>Should these have quotes in them? Or is this the expected form?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:56 on 2024-08-26 17:55</div>
+            <div class="timeline-body"><p>I don't think we should need this for strings; they are already guaranteed to be valid UTF-8. We can just write the string directly.</p>
+<p>(If you think there's a case where we need this, we should have a test that fails without it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2328 on 2024-08-26 17:59</div>
+            <div class="timeline-body"><p>These should have quotes; see the examples at https://typing.readthedocs.io/en/latest/spec/literal.html#literal</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> requested changes on 2024-08-26 18:00</div>
+            <div class="timeline-body"><p>Couple small changes, but generally looks great!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-26 18:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2328 on 2024-08-26 18:04</div>
+            <div class="timeline-body"><p>(Quotes are necessary to disambiguate <code>Literal[&quot;1&quot;]</code>, a string literal type, from <code>Literal[1]</code>, an int literal type.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-26 18:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2328 on 2024-08-26 18:10</div>
+            <div class="timeline-body"><p>That latter bit was my concern, so 👍🏼 – will push a fix for that shortly!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-26 18:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:56 on 2024-08-26 18:10</div>
+            <div class="timeline-body"><p>Ah, very good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-26 18:15</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-08-26 18:40</div>
+            <div class="timeline-body"><p>Excellent!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-08-26 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-08-26 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:284 on 2024-08-26 18:42</div>
+            <div class="timeline-body"><p>This is a somewhat annoying and pedantic nitpick from me, but: this comment isn't <em>strictly</em> accurate. In between <code>Literal[&lt;some string value&gt;]</code> and <code>str</code>, there's another Python type: <a href="https://typing.readthedocs.io/en/latest/spec/literal.html#literalstring"><code>typing.LiteralString</code></a>. Explaining exactly how <code>LiteralString</code> works would take quite a few words and isn't really relevant to this PR 😄 but for now I think I'd just use this as the TODO comment instead:</p>
+<pre><code class="language-suggestion">                // TODO defer to `typing.LiteralString`/`builtins.str`
+                // methods from typeshed's stubs
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:390 on 2024-08-26 18:43</div>
+            <div class="timeline-body"><p>Maybe we could use <code>Box&lt;str&gt;</code> here, to save a bit of space, since the data should always be immutable? Though it maybe wouldn't make much difference</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-26 18:46</div>
+            <div class="timeline-body"><p>Nice! (Sorry for the post-merge review; I've been out for most of the day)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-26 18:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:284 on 2024-08-26 18:58</div>
+            <div class="timeline-body"><p>I guess the relevance to this specific TODO comment is that for many members of a string <code>Literal</code>, we can infer the return type as a <code>LiteralString</code> instead of <code>str</code>? This is true. It doesn't seem critical to me to reflect that detail in this TODO comment, though it certainly doesn't hurt. (The other nitpick on the TODO for both this and bytes is that for some methods we can probably safely infer an actual <code>Literal</code> type for the member, e.g. we can infer <code>Literal[&quot;foo&quot;].upper()</code> to be <code>Literal[&quot;FOO&quot;]</code> -- but I also didn't think we needed to mention that in the TODO.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-26 19:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:390 on 2024-08-26 19:00</div>
+            <div class="timeline-body"><p>Great call; this is probably worth doing, considering it saves an entire usize of memory, which is eight ascii characters (on a 64-bit system); it could halve the memory used for a lot of small string literal types. (Not really, if you consider the Salsa interning overhead as well. But still, not insignificant if there are lots of small string literals.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:284 on 2024-08-26 19:02</div>
+            <div class="timeline-body"><p>Right, yeah -- as I say, it's kind of a pedantic nitpick. But given the problems that mypy has had with implementing <code>LiteralString</code> (well, it still doesn't actually have an implementation, because it requires rewriting a lot of assumptions across the code), I'd prefer for us to keep <code>LiteralString</code> in mind from the very beginning when thinking about implementing <code>str</code> and <code>Literal[&lt;some string value&gt;]</code> types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-26 19:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-26 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-26 23:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:390 on 2024-08-26 23:06</div>
+            <div class="timeline-body"><p>Ah! Yeah, I consistently forget that <code>Box&lt;str&gt;</code> is an option. 👍🏼</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-26 23:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:284 on 2024-08-26 23:09</div>
+            <div class="timeline-body"><p>Will update in a follow-on PR tomorrow – and I am personally a <em>big</em> fan of pedantic nitpicks when it comes to stuff like this. 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-08-27 23:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

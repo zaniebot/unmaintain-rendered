@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pep8-naming`] Don't flag `from` imports following conventional import names (`N817`) - astral-sh/ruff #12946</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pep8-naming</code>] Don't flag <code>from</code> imports following conventional import names (<code>N817</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12946">#12946</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-08-17 11:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-17 11:34</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ruff/issues/12940</p>
+<p>https://github.com/astral-sh/ruff/pull/12922 changes <code>N817</code> to not flag imports that follow an import convention.
+I missed to handle <code>from .. import</code> imports as part of this PR. This PR implements the same logic for <code>from .. import</code> imports.</p>
+<h2>Test Plan</h2>
+<p>Added test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-08-17 11:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-08-17 11:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pep8_naming/rules/camelcase_imported_as_acronym.rs</code>:100 on 2024-08-17 11:39</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    let full_name = if let Stmt::ImportFrom(import_from) = stmt {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pep8_naming/rules/camelcase_imported_as_acronym.rs</code>:108 on 2024-08-17 11:41</div>
+            <div class="timeline-body"><p>I'd prefer to assert the invariant here: <code>module</code> should never be non-<code>None</code> if <code>level == 0</code> (that would be invalid syntax)</p>
+<pre><code class="language-suggestion">        if import_from.level != 0 {
+            return false;
+        }
+        let module = import_from
+            .module
+            .as_ref()
+            .expect(&quot;Expected `module` to always be non-`None` for a non-relative `import from` statement&quot;);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/pep8_naming/N817.py</code>:9 on 2024-08-17 11:46</div>
+            <div class="timeline-body"><p>I didn't spot the leading dots here at first:</p>
+<pre><code class="language-suggestion"># Always an error (relative import)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-08-17 11:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-17 11:48</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-17 11:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pep8_naming/rules/camelcase_imported_as_acronym.rs</code>:100 on 2024-08-17 11:52</div>
+            <div class="timeline-body"><p>I prefer the <code>as_import_from_stmt</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-17 11:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pep8_naming/rules/camelcase_imported_as_acronym.rs</code>:108 on 2024-08-17 11:52</div>
+            <div class="timeline-body"><p>I prefer the more error resilient code in case we ever change how the parser recovers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-17 12:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pep8_naming/rules/camelcase_imported_as_acronym.rs</code>:100 on 2024-08-17 12:00</div>
+            <div class="timeline-body"><p>Interesting -- why? To me it seems like it's more verbose and adds unnecessary indirection here. Obviously not a big issue, just curious!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-08-17 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-08-17 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-17 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/darosio">@darosio</a> on 2024-08-21 03:42</div>
+            <div class="timeline-body"><p>Could you please confirm that this fix is working also for jupyter (.ipynb) files?
+Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-21 03:59</div>
+            <div class="timeline-body"><p>@darosio I think this should work for Jupyter notebooks as well. Is there an issue that you're facing?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:01 UTC
+    </footer>
+</body>
+</html>

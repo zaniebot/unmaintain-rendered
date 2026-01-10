@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-pyi`] Teach various rules that annotations might be stringized - astral-sh/ruff #12951</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-pyi</code>] Teach various rules that annotations might be stringized</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12951">#12951</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-08-17 14:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-17 14:11</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #12928.</p>
+<p>Most <code>flake8-pyi</code> rules don't currently consider the possibility that annotations can be stringized -- <code>foo: &quot;typing.Any&quot;</code> means the same thing to a type checker as <code>foo: typing.Any</code>. This PR adds a general-purpose helper to <code>ruff_linter/src/rules/flake8_pyi/rules/helpers.rs</code>, and uses it in several <code>flake8-pyi</code> rules to reduce false positives and false negatives on stringized annotations.</p>
+<p>I <em>haven't</em> attempted to exhaustively account for stringized annotations in every <code>flake8-pyi</code> rule. In some rules, this would have significantly complicated the logic, for marginal gain.</p>
+<h2>Test Plan</h2>
+<p>Several new fixtures and snapshots added.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">linter</span> added by @AlexWaygood on 2024-08-17 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-17 14:33</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+1 -0 violations, +0 -0 fixes in 1 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/freedomofpress/securedrop/blob/dbdccc593e1aeab149dbd6019709394ec1e6dc9c/securedrop/models.py#L330'>securedrop/models.py:330:29:</a> PYI032 [*] Prefer `object` to `Any` for the second parameter to `__eq__`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PYI032 | 1 | 1 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+1 -0 violations, +0 -0 fixes in 1 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/freedomofpress/securedrop/blob/dbdccc593e1aeab149dbd6019709394ec1e6dc9c/securedrop/models.py#L330'>securedrop/models.py:330:29:</a> PYI032 [*] Prefer `object` to `Any` for the second parameter to `__eq__`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PYI032 | 1 | 1 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2024-08-19 09:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-08-19 09:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-08-19 09:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/any_eq_ne_annotation.rs</code>:82 on 2024-08-19 09:21</div>
+            <div class="timeline-body"><p>The downside of <code>match_maybe_stringized_annotation</code> is that we now end up re-parsing the same string-type annotation for every rule, which is somewhat expensive.</p>
+<p>We could instead:</p>
+<ul>
+<li>Make it a method on <code>Checker</code> or <code>SemanticModel</code> so that we could add caching if we wanted to (a simple cache could use a single slot)</li>
+<li>We could integrate the rule into <code>visit_deferred_string_type_definitions</code> and re-use the parsed type annotation. However, that would be a more invasive change</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-19 09:22</div>
+            <div class="timeline-body"><p>I leave the final review to @charliermarsh who's more familiar with that aspect of ruff</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-19 16:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/any_eq_ne_annotation.rs</code>:82 on 2024-08-19 16:00</div>
+            <div class="timeline-body"><blockquote>
+<ul>
+<li>We could integrate the rule into <code>visit_deferred_string_type_definitions</code></li>
+</ul>
+</blockquote>
+<p>I think that would be tricky because most of these <code>flake8-pyi</code> rules need to look at the surrounding function as a whole, rather than just a single annotation inside the function</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-29 11:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/any_eq_ne_annotation.rs</code>:82 on 2024-08-29 11:22</div>
+            <div class="timeline-body"><p>I centralized some of the logic into a method on <code>Checker</code> in https://github.com/astral-sh/ruff/pull/12951/commits/87a0c9c25b2dba76370e0139dc3fefa0d1c07aad so that it would be easy to add caching in the future</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-08-29 15:52</div>
+            <div class="timeline-body"><p>Looks good though I have roughly the same concern as Micha. Caching this would make sense to me. (We already parse these once per file anyway.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-30 10:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Looks good though I have roughly the same concern as Micha. Caching this would make sense to me.</p>
+</blockquote>
+<p>I separated this out into a standalone PR: #13158</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-09-02 10:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-09-02 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-09-02 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-02 13:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:01 UTC
+    </footer>
+</body>
+</html>

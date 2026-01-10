@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add basic red knot benchmark - astral-sh/ruff #13026</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add basic red knot benchmark</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13026">#13026</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-08-21 09:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-21 09:09</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds a basic benchmark runner for red knot. These benchmarks are different from codspeed in that they benchmark
+entire projects. They are not micro-benchmarks.</p>
+<p>The benchmarks aren't representive! Don't draw any conclusion from them today.
+Red Knot only implements a tiny tiny subset of Mypy's and Pyright's functionality.</p>
+<p>This work is inspired by <a href="https://github.com/hauntsaninja/mypy_primer/">mypy primer</a> but it serves
+a different purpose. We may want to add Red Knot to mypy primer when we have a more complete feature set (and a published binary)</p>
+<h2>Test Plan</h2>
+<p>Ran the benchmarks for each project and verified the diagnostics I saw:</p>
+<pre><code class="language-shell">uv run benchmark -p black --mypy --verbose
+</code></pre>
+<p>I'm a bit surprised that I e.g. see an error for Black. I would appreciate it if someone could verify that the diagnostics are reasonable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-21 09:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:26 on 2024-08-21 09:10</div>
+            <div class="timeline-body"><p>Not sure if we should remove this one again. I don't have an incremental benchmark yet but the idea would be to switch between two revisions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-08-21 09:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-21 09:26</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:236 on 2024-08-21 09:49</div>
+            <div class="timeline-body"><p>(It would be good if we could at least add <code>// TODO</code> inline comments to these. There are some places where it will be &quot;correct&quot; for us to infer something as <code>Unknown</code>, but these are not that -- here we're just using <code>Unknown</code> as a placeholder until we implement the correct logic.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/README.md</code>:16 on 2024-08-21 09:51</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">Red Knot only implements a tiny fraction of Mypy's and Pyright's functionality,
+so the benchmarks aren't in any way a fair comparison today. However,
+they'll become more meaningful as we build out more type checking features in Red Knot.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/pyproject.toml</code>:20 on 2024-08-21 09:52</div>
+            <div class="timeline-body"><p>just because I know this will annoy you ;)</p>
+<pre><code class="language-suggestion">    &quot;E501&quot;,  # We use ruff format
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/__init__.py</code>:69 on 2024-08-21 09:56</div>
+            <div class="timeline-body"><p>You need to be quite careful with the <code>shlex</code> module as it might not produce strings that work on Windows. There are some wrapper functions in <code>mypy_primer</code> to deal with this problem. See discussion in https://github.com/hauntsaninja/mypy_primer/pull/99.</p>
+<p>I think it would also be fine for now to keep this as it is and just put in the &quot;Known limitations&quot; section of the README that we haven't tried running this script on Windows yet</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:64 on 2024-08-21 10:04</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        if path is None:
+            path = Path(__file__) / &quot;../../../../../target/release/red_knot&quot;
+            self.path = path.resolve()
+        else:
+            self.path = path
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:89 on 2024-08-21 10:08</div>
+            <div class="timeline-body"><p><code>project.include</code> is typed as being <code>list[str]</code>, so <code>project.include[0]</code> will always be truthy unless it's the empty string <code>&quot;&quot;</code>. Why are we specifically checking that <code>project.include[0]</code> isn't an empty string? Seems kinda unlikely to me that it would be</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:99 on 2024-08-21 10:08</div>
+            <div class="timeline-body"><p>nit</p>
+<pre><code class="language-suggestion">class Mypy(Tool):
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:187 on 2024-08-21 10:11</div>
+            <div class="timeline-body"><p>it's generally considered more idiomatic to use the <code>/</code> operator when working with pathlib. I almost never see the <code>joinpath</code> method being used 😆</p>
+<pre><code class="language-suggestion">        return self.bin / &quot;{name}{extension}&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:183 on 2024-08-21 10:11</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        return self.path / bin_dir
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:203 on 2024-08-21 10:14</div>
+            <div class="timeline-body"><p>By default, all stdout and stderr is printed to the terminal when running subprocesses via <code>subprocess.run()</code>. So this will result in stderr being printed to the terminal twice if the subprocess fails. If you want to suppress stderr from the subprocess unless it fails, I'd do this:</p>
+<pre><code class="language-suggestion">        try:
+            subprocess.run(command, cwd=parent, check=True, text=True, capture_output=True)
+        except subprocess.CalledProcessError as e:
+            print(e.stderr)
+            raise
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:193 on 2024-08-21 10:15</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        return Venv(root / &quot;venv&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:223 on 2024-08-21 10:15</div>
+            <div class="timeline-body"><p>(Same comment as above regarding <code>subprocess.run()</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/projects.py</code>:31 on 2024-08-21 10:17</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        # Don't do anything if `checkout_dir` is a local path 
+        if os.path.exists(os.path.join(checkout_dir, &quot;.git&quot;)):
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-21 10:21</div>
+            <div class="timeline-body"><p>Some comments from reading through the code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-21 10:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/knot_benchmark/pyproject.toml</code>:20 on 2024-08-21 10:23</div>
+            <div class="timeline-body"><p>My toml formatter doesn't like two spaces and neither do i 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-21 10:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/knot_benchmark/src/benchmark/__init__.py</code>:69 on 2024-08-21 10:24</div>
+            <div class="timeline-body"><p>Hmm. I copied that from uv. But yes, mentioning it in the readme sounds like a good idea</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:89 on 2024-08-21 10:25</div>
+            <div class="timeline-body"><p>I guess that's me writing JS. I assume python throws if it is an out of bounds access?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-21 10:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-21 10:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:89 on 2024-08-21 10:26</div>
+            <div class="timeline-body"><p>Yeah, <code>IndexError</code> if it's an empty list and you try to index into it. And there's not <code>.get()</code> method for lists like there is in Rust, sadly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:187 on 2024-08-21 10:26</div>
+            <div class="timeline-body"><p>Yeah, not a huge fan of magic operator overloads. It gives the impression that these are numbers. That's why I intentionally used the method but I'm open to changing it if we find this more idiomatic</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-21 10:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-21 10:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/knot_benchmark/src/benchmark/projects.py</code>:31 on 2024-08-21 10:28</div>
+            <div class="timeline-body"><p>That's not the intention. It's to detect if the project has already been cloned</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-21 10:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/projects.py</code>:31 on 2024-08-21 10:29</div>
+            <div class="timeline-body"><p>Even more reason to add a comment then (though not the one I suggested), since I clearly misunderstood ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:187 on 2024-08-21 10:30</div>
+            <div class="timeline-body"><p>Python developers will be accustomed to seeing <code>/</code> used when working with pathlib, and I think would mostly (like I was) be quite surprised to see <code>joinpath</code> being used throughout instead of <code>/</code>. But I know that not everybody on the team has a huge amount of experience with Python, so I guess there's a tradeoff there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-21 10:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-21 10:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/README.md</code>:10 on 2024-08-21 10:52</div>
+            <div class="timeline-body"><pre><code>~/dev/ruff (knot-mypy-pyright-benchmarks) % uv run benchmark                  
+   Built ruff @ file:///Users/alexw/dev/ruff
+Installed 1 package in 1ms
+error: Failed to spawn: `benchmark`
+  Caused by: No such file or directory (os error 2)
+</code></pre>
+<p>Do I need to <code>cd</code> into the <code>scripts/knot_benchmark</code> directory as an intermediate step?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-21 10:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/knot_benchmark/README.md</code>:10 on 2024-08-21 10:55</div>
+            <div class="timeline-body"><p>Possibly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-21 10:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:89 on 2024-08-21 10:57</div>
+            <div class="timeline-body"><p>I actually got an <code>IndexError</code> when I tried running the benchmark locally, so we do need to check the length of the list before indexing into it here:</p>
+<pre><code>~/dev/ruff (knot-mypy-pyright-benchmarks)⚡ [1] % cd scripts/knot_benchmark       
+~/dev/ruff/scripts/knot_benchmark (knot-mypy-pyright-benchmarks)⚡ % uv run benchmark             
+Using Python 3.12.4
+Creating virtualenv at: .venv
+   Built knot-benchmark @ file:///Users/alexw/dev/ruff/scripts/knot_benchmark
+Installed 6 packages in 12ms
+black (cold)
+Benchmark 1: knot
+  Time (mean ± σ):      71.3 ms ±   5.3 ms    [User: 58.6 ms, System: 9.1 ms]
+  Range (min … max):    67.4 ms …  87.1 ms    41 runs
+ 
+  Warning: Ignoring non-zero exit code.
+  Warning: Statistical outliers were detected. Consider re-running this benchmark on a quiet system without any interferences from other programs.
+ 
+Benchmark 2: Pyright
+  Time (mean ± σ):      1.946 s ±  0.010 s    [User: 3.711 s, System: 0.131 s]
+  Range (min … max):    1.930 s …  1.958 s    10 runs
+ 
+  Warning: Ignoring non-zero exit code.
+ 
+Benchmark 3: mypy
+  Time (mean ± σ):      1.552 s ±  0.013 s    [User: 1.468 s, System: 0.081 s]
+  Range (min … max):    1.539 s …  1.584 s    10 runs
+ 
+  Warning: Ignoring non-zero exit code.
+ 
+Summary
+  knot ran
+   21.78 ± 1.64 times faster than mypy
+   27.30 ± 2.04 times faster than Pyright
+black (warm)
+Benchmark 1: mypy
+  Time (mean ± σ):     314.5 ms ±   2.1 ms    [User: 271.6 ms, System: 40.1 ms]
+  Range (min … max):   312.2 ms … 319.0 ms    10 runs
+ 
+  Warning: Ignoring non-zero exit code.
+ 
+Traceback (most recent call last):
+  File &quot;/Users/alexw/dev/ruff/scripts/knot_benchmark/.venv/bin/benchmark&quot;, line 8, in &lt;module&gt;
+    sys.exit(main())
+             ^^^^^^
+  File &quot;/Users/alexw/dev/ruff/scripts/knot_benchmark/src/benchmark/run.py&quot;, line 136, in main
+    if (command := suite.command(benchmark, project, venv))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/Users/alexw/dev/ruff/scripts/knot_benchmark/src/benchmark/cases.py&quot;, line 46, in command
+    return self.cold_command(project, venv)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/Users/alexw/dev/ruff/scripts/knot_benchmark/src/benchmark/cases.py&quot;, line 88, in cold_command
+    if directory := project.include[0]:
+                    ~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-21 10:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/README.md</code>:10 on 2024-08-21 10:59</div>
+            <div class="timeline-body"><p>It (<a href="https://github.com/astral-sh/ruff/pull/13026#discussion_r1724856235">nearly</a>) worked after I did that, so I think the answer is &quot;yes&quot; 😄</p>
+<pre><code class="language-suggestion">1. `cd` into the benchmark directory: `cd scripts/knot_benchmark`
+1. Run benchmarks: `uv run benchmark`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-22 13:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:64 on 2024-08-22 13:34</div>
+            <div class="timeline-body"><p>I'm okay with the <code>/</code> stuff but I prefer the inline <code>or</code> (I'm a huge fan of single assignments)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-22 13:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:64 on 2024-08-22 13:36</div>
+            <div class="timeline-body"><p>Fair enough!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:139 on 2024-08-22 13:39</div>
+            <div class="timeline-body"><p>wow, bizarre. Do we also need to specify <code>--venv=venv</code> along with this argument, so that it knows which subdirectory inside the <code>--venv-path</code> directory the venv is in? https://github.com/microsoft/pyright/blob/main/docs/import-resolution.md#configuring-your-python-environment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-22 13:41</div>
+            <div class="timeline-body"><p>Basically this all looks good to me in terms of structure, nothing sticks out</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-22 13:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:183 on 2024-08-22 13:49</div>
+            <div class="timeline-body"><p>It hurts me a lot but I forfeit ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-22 13:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:139 on 2024-08-22 13:53</div>
+            <div class="timeline-body"><p>Yes we do. But there's no <code>venv</code> CLI option. So we have to create a config</p>
+<pre><code class="language-python">    for project in projects:
+        with tempfile.TemporaryDirectory() as cwd:
+            cwd = Path(cwd)
+            project.clone(cwd)
+
+            venv = Venv.create(cwd)
+            venv.install(project.dependencies)
+
+            # Set the `venv` config for pyright. Pyright only respects the `--venvpath`
+            # CLI option when `venv` is set in the configuration... 🤷‍♂️
+            with open(cwd / &quot;pyrightconfig.json&quot;, &quot;w&quot;) as f:
+                f.write(json.dumps(dict(venv=venv.name)))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-22 13:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/run.py</code>:26 on 2024-08-22 13:55</div>
+            <div class="timeline-body"><p>It's unrelated to this PR, but the output we get if you run with <code>--verbose</code> makes me think that we should possibly consider emitting paths relative to the first-party root rather than absolute paths in our diagnostic messages</p>
+<details>
+
+<pre><code>ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:55:26: Name 'line' used when not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:57:33: Name 'line' used when not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:58:22: Name 'line' used when not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:73:20: Name 'line' used when not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:75:38: Name 'line' used when not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:81:29: Name 'line' used when not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:82:33: Name 'i' used when not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:187:30: Name 'orig_quote' used when possibly not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:192:65: Name 'new_quote' used when possibly not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:193:67: Name 'new_quote' used when possibly not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:194:68: Name 'orig_quote' used when possibly not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:195:36: Name 'orig_quote' used when possibly not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:195:55: Name 'orig_quote' used when possibly not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:206:57: Name 'new_quote' used when possibly not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:210:28: Name 'orig_quote' used when possibly not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:210:46: Name 'orig_quote' used when possibly not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:211:58: Name 'orig_quote' used when possibly not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:212:59: Name 'new_quote' used when possibly not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:225:28: Name 'm' used when not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:229:8: Name 'new_quote' used when possibly not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:237:50: Name 'orig_quote' used when possibly not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:240:23: Name 'new_quote' used when possibly not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:240:44: Name 'new_quote' used when possibly not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:262:65: Name 'new_quote' used when possibly not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:263:67: Name 'new_quote' used when possibly not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:267:43: Name 'middle' used when not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:277:19: Name 'middle' used when not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:279:60: Name 'new_quote' used when possibly not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:279:73: Name 'segment' used when not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:280:12: Name 'segment' used when not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:282:13: Name 'middle' used when not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:285:62: Name 'new_quote' used when possibly not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:288:8: Name 'new_quote' used when possibly not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:293:29: Name 'middle' used when not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:303:9: Name 'middle' used when not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:305:21: Name 'new_quote' used when possibly not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:386:28: Name 'char' used when not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/strings.py:388:20: Name 'i' used when not defined.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/files.py:20:1: Import 'mypy_extensions' could not be resolved.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/files.py:28:16: Import 'tomllib' could not be resolved.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/files.py:42:12: Import 'colorama' could not be resolved.
+ERROR /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpgxwknamp/src/black/files.py:433:9: Import 'colorama.initialise' could not be resolved.
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-22 13:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/knot_benchmark/src/benchmark/run.py</code>:26 on 2024-08-22 13:56</div>
+            <div class="timeline-body"><p>Yeah, we absolutely should once we have proper diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-22 13:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/run.py</code>:26 on 2024-08-22 13:58</div>
+            <div class="timeline-body"><p>The output from mypy and pyright with <code>--verbose</code> all looks like more or less what I'd expect, though, so that's another positive signal that this benchmark script is doing what we want it to!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-22 14:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/run.py</code>:26 on 2024-08-22 14:07</div>
+            <div class="timeline-body"><blockquote>
+<p>It's unrelated to this PR, but the output we get if you run with <code>--verbose</code> makes me think that we should possibly consider emitting paths relative to the first-party root rather than absolute paths in our diagnostic messages</p>
+</blockquote>
+<p>(It seems like this is what mypy does, but pyright seems to use absolute paths in its diagnostic messages, like we currently do)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/projects.py</code>:30 on 2024-08-22 14:23</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        # Skip cloning if the project has already been cloned (the script doesn't yet support updating)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-08-22 14:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-22 14:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:139 on 2024-08-22 14:24</div>
+            <div class="timeline-body"><p>pyright's config setup is so odd...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-08-22 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-22 14:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/projects.py</code>:30 on 2024-08-22 14:34</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        # Skip cloning if the project has already been cloned (the script doesn't yet support updating)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-08-23 06:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-08-23 06:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-23 06:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hauntsaninja">@hauntsaninja</a> reviewed on 2024-08-23 06:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:204 on 2024-08-23 06:59</div>
+            <div class="timeline-body"><p>Worth adding <code>--exclude-newer</code>? While you pin the commit, you don't pin the deps</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

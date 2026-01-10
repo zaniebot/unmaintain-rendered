@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add definitions and limited type inference for exception handlers - astral-sh/ruff #13267</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add definitions and limited type inference for exception handlers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13267">#13267</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-09-06 11:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-06 11:52</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds definitions, type inference and type-checking for exception handlers to red-knot.</p>
+<p>In the following snippet, we now recognise <code>e</code> and <code>f</code> as being a validly defined symbols:</p>
+<pre><code class="language-py">try:
+    x
+except NameError as e:
+    print(e)
+except (TypeError, AttributeError) as f:
+    print(f)
+</code></pre>
+<p>We also now infer the type of <code>e</code> as being <code>Type::Instance(builtins.NameError)</code>, and the type of <code>f</code> as being <code>Type::Instance(builtins.TypeError) | Type::Instance(builtins.AttributeError)</code>. We also check all <code>except</code> blocks to validate that exception handlers are only applied to <code>BaseException</code> subclasses or tuples of <code>BaseException</code> subclasses. I.e., we'll catch invalid <code>except</code> blocks such as the following:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; try:
+...     x
+... except NameError():  # instance of `NameError` caught, not `NameError` itself
+...     pass
+... 
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 2, in &lt;module&gt;
+NameError: name 'x' is not defined
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 3, in &lt;module&gt;
+TypeError: catching classes that do not inherit from BaseException is not allowed
+&gt;&gt;&gt; try:
+...     x
+... except (NameError, (TypeError, AttributeError)):  # Nested tuples aren't allowed
+...     pass
+... 
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 2, in &lt;module&gt;
+NameError: name 'x' is not defined
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 3, in &lt;module&gt;
+TypeError: catching classes that do not inherit from BaseException is not allowed
+</code></pre>
+<h2>Outstanding issues</h2>
+<p>Exception-handler bindings are somewhat unique. For example, in this snippet, the <code>e</code> variable does not persist after the <code>except</code> block has finished:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; try:
+...     x
+... except NameError as e:
+...     pass
+... 
+&gt;&gt;&gt; e
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+NameError: name 'e' is not defined
+</code></pre>
+<p>But in <em>this</em> snippet, it does:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; try:
+...     x
+... except NameError as f:
+...     e = f
+... 
+&gt;&gt;&gt; e
+NameError(&quot;name 'x' is not defined&quot;)
+</code></pre>
+<p>This strange inconsistency is because <code>except</code> handlers don't introduce a new scope for their variables; instead, the bound variable is literally <code>del</code>'d by the interpreter after the <code>except</code> block ends (to clean up probably-undesirable reference cycles). So, any variable that was <em>not</em> initially bound by the except handler will persist beyond the <code>except</code> block -- but these specific definitions will not.</p>
+<p>In fact -- any definitions that override the name bound by the except handler are also <code>del</code>'d! E.g.</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; try:
+...     x
+... except NameError as e:
+...     print(&quot;Got here!&quot;)
+...     e = 42
+...     f = 56
+... 
+Got here!
+&gt;&gt;&gt; f
+56
+&gt;&gt;&gt; e
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+NameError: name 'e' is not defined
+</code></pre>
+<p>I don't know how we want to model this, so this PR doesn't attempt to do so. My proposal is that we open a followup issue after this to explore ways of modelling this.</p>
+<p>Other outstanding issues that this PR doesn't yet implement:</p>
+<ul>
+<li>control flow for <code>except</code> blocks</li>
+<li>Currently the logic only checks that the caught exceptions are a class or tuple of classes. But we should also check whether any caught classes are actually subclasses of <code>BaseException</code>.</li>
+</ul>
+<h2>Test Plan</h2>
+<ul>
+<li><code>cargo test -p red_knot_python_semantic</code></li>
+<li><code>cargo test -p red_knot_workspace</code></li>
+<li><code>bench -p ruff_benchmark -- red_knot</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-09-06 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-09-06 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-09-06 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs</code>:227 on 2024-09-06 11:54</div>
+            <div class="timeline-body"><p>An <code>ast::Identifier</code> may be an AST node, but it definitely isn't an expression, so I'm not sure if this is really correct. <code>except</code> handlers don't use <code>ast::Name</code> nodes for the symbols they bound, however, so I'm not sure how to do this otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:767 on 2024-09-06 11:56</div>
+            <div class="timeline-body"><p>It seems silly to collect the invalid nodes into a <code>Vec&lt;&gt;</code> only to immediately iterate over them, but I couldn't make the borrow checker happy otherwise (it was complaining about immutable and mutable borrows in the same scope).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-06 11:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:767 on 2024-09-06 12:01</div>
+            <div class="timeline-body"><p>Yeah that's simply not possible because <code>add_diagnostic</code> takes <code>&amp;mut self</code> and <code>Iterator::next</code> requires a <code>&amp;self</code> because of <code>self.infer_handled_exception_types</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-06 12:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:825 on 2024-09-06 12:03</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    fn infer_except_handler_definition(
+        &amp;mut self,
+        symbol_name: &amp;ast::Identifier,
+        handled_exceptions: &amp;'db ast::Expr,
+        definition: Definition&lt;'db&gt;,
+    ) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:845 on 2024-09-06 12:04</div>
+            <div class="timeline-body"><p>We can simplify the lifetimes here because all AST nodes have the lifetime <code>'db</code>.</p>
+<pre><code class="language-suggestion">    fn infer_handled_exception_types(
+        &amp;self,
+        handled_exceptions: &amp;'db ast::Expr,
+    ) -&gt; ExceptionHandlerTypeIterator&lt;'_, 'db&gt; {
+        match handled_exceptions {
+            ast::Expr::Tuple(multiple_exceptions) =&gt; ExceptionHandlerTypeIterator::Multiple {
+                exceptions: multiple_exceptions.into_iter(),
+                inference_builder: self,
+            },
+            single_exception =&gt; ExceptionHandlerTypeIterator::Single {
+                exception: Some(single_exception),
+                inference_builder: self,
+            },
+        }
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2472 on 2024-09-06 12:06</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">enum ExceptHandlerType&lt;'db&gt; {
+    Valid {
+        exception_ty: Type&lt;'db&gt;,
+    },
+    Invalid {
+        node: &amp;'db ast::Expr,
+        node_ty: Type&lt;'db&gt;,
+    },
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2492 on 2024-09-06 12:06</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">enum ExceptionHandlerTypeIterator&lt;'b, 'db&gt; {
+    Single {
+        exception: Option&lt;&amp;'db ast::Expr&gt;,
+        inference_builder: &amp;'b TypeInferenceBuilder&lt;'db&gt;,
+    },
+    Multiple {
+        exceptions: std::slice::Iter&lt;'db, ast::Expr&gt;,
+        inference_builder: &amp;'b TypeInferenceBuilder&lt;'db&gt;,
+    },
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:831 on 2024-09-06 12:13</div>
+            <div class="timeline-body"><p>You could get away without introducing your own iterator type by using a slice iterator instead</p>
+<pre><code class="language-rust">    fn infer_handled_exception_types(
+        &amp;self,
+        handled_exceptions: &amp;'db ast::Expr,
+    ) -&gt; impl Iterator&lt;Item = ExceptHandlerType&lt;'db&gt;&gt; + '_ {
+        let exceptions = match handled_exceptions {
+            ast::Expr::Tuple(multiple_exceptions) =&gt; multiple_exceptions.elts.as_slice(),
+            single_exception =&gt; std::slice::from_ref(single_exception),
+        };
+
+        exceptions.into_iter().map(move |exception| {
+            let node_ty = self
+                .types
+                .expression_ty(exception.scoped_ast_id(self.db, self.scope));
+
+            let ty = match node_ty {
+                Type::Class(exception_class) =&gt; ExceptHandlerType::Valid {
+                    exception_ty: Type::Instance(exception_class),
+                },
+                Type::Any | Type::Unknown =&gt; ExceptHandlerType::Valid {
+                    exception_ty: node_ty,
+                },
+                invalid_ty =&gt; ExceptHandlerType::Invalid {
+                    node: exception,
+                    node_ty: invalid_ty,
+                },
+            };
+
+            ty
+        })
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:896 on 2024-09-06 12:15</div>
+            <div class="timeline-body"><p>What's the reason that we need to treat the name as an expression?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-06 12:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-06 12:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:831 on 2024-09-06 12:17</div>
+            <div class="timeline-body"><p>Thanks, TIL!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-06 12:22</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-06 12:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:831 on 2024-09-06 12:24</div>
+            <div class="timeline-body"><p><code>std::slice::from_ref</code> is awesome :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-06 12:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:896 on 2024-09-06 12:52</div>
+            <div class="timeline-body"><p>This is the same issue I highlighted in https://github.com/astral-sh/ruff/pull/13267/files#r1746998476, more or less. The fundamental issue is that all our infrastructure currently assumes that the &quot;target&quot; of a definition will be an <code>ast::Expr</code> node, but that isn't true for except-handler definitions.</p>
+<p><code>HasScopedId::scoped_ast_id()</code> needs to be called in <code>infer_except_handler_definition()</code> on an <code>ast::Identifier</code> node in order to store the type associated with this definition. This means that <code>HasScopedId::scoped_ast_id()</code> must be implemented for <code>ast::Identifier</code>; but <code>HasScopedId::scoped_ast_id()</code> won't work for the <code>ast::Identifier</code> nodes here unless we also store them in the <code>AstIds::expressions_map</code>. Otherwise we end up with this crash:</p>
+<pre><code>---- types::infer::tests::except_handler stdout ----
+thread 'types::infer::tests::except_handler' panicked at crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs:37:29:
+no entry found for key
+</code></pre>
+<p>I suppose we could store the except-handler IDs in a different map? <code>AstIds::identifiers_map</code>? And look up the <code>Identifier</code> node in that map from the <code>HasScopedId::scoped_ast_id</code> implementation for <code>ast::Identifier</code>? It seems a little wasteful to create a separate <code>HashMap</code> just for this purpose, though, since the vast majority of definitions have <code>Expr</code> nodes as their targets -- except-handler definitions are somewhat unique here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-06 13:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:896 on 2024-09-06 13:06</div>
+            <div class="timeline-body"><p>What's the reason that we need to store the type of the symbol? It's not an expression. Isn't it enough to just store the type of the definition?</p>
+<p>The main issue I see is from a linter API perspective where calling <code>.ty</code> on an except handler is not possible but maybe the solution here is that <code>ExceptHandler</code> implements <code>HasTy</code>?</p>
+<p>Edit: Do we need to implement <code>HasTy</code> for <code>ExceptHandler</code> and explicitly call it in the corpus test?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-06 13:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:896 on 2024-09-06 13:23</div>
+            <div class="timeline-body"><p>I see what you mean. Sorry, I guess I'm still getting to grips with some of the semantic-index code. I pushed https://github.com/astral-sh/ruff/pull/13267/commits/7b507e8ddc0d859f2a4b4b47bde9c7244fb195d9, and all tests seem to pass, at least for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-06 13:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:896 on 2024-09-06 13:35</div>
+            <div class="timeline-body"><blockquote>
+<p>Edit: Do we need to implement <code>HasTy</code> for <code>ExceptHandler</code> and explicitly call it in the corpus test?</p>
+</blockquote>
+<p>I'm not sure it would be correct for <code>ExceptHandler</code> to implement <code>HasTy</code>. What would be the type of <code>ExceptHandler</code>s like these? In the first one, the <code>name</code> field is set to <code>None</code>; in the second one, <code>name</code> and <code>type_</code> are both <code>None</code>:</p>
+<pre><code class="language-py">try:
+    x
+except NameError:
+    pass
+
+try:
+    y
+except:
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-06 13:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:896 on 2024-09-06 13:50</div>
+            <div class="timeline-body"><p>Good point. I think the way it would be done is to call <code>.ty</code> on the handled exception expression? Interested to hear what @carljm thinks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2024-09-06 13:52</div>
+            <div class="timeline-body"><p>FYI, normal ruff already have some issues modeling deleted functions etc, and this might be related to reducing false positives on those rules as well. I think the current infra just doesn't handle del statements well, period.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-06 13:55</div>
+            <div class="timeline-body"><blockquote>
+<p>FYI, normal ruff already have some issues modeling deleted functions etc, and this might be related to reducing false positives on those rules as well. I think the current infra just doesn't handle del statements well, period.</p>
+</blockquote>
+<p>red-knot uses an entirely different semantic model from Ruff, and we should aim to improve on Ruff's existing semantic model where possible :D especially since existing type checkers like mypy model this behaviour correctly: https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=160e76a009c773676db6c370ffb716de</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-06 23:54</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't know how we want to model this, so this PR doesn't attempt to do so. My proposal is that we open a followup issue after this to explore ways of modelling this.</p>
+</blockquote>
+<p>I agree that it can be out of scope for this PR. I haven't created an issue for it, but I did add it to the roadmap doc.</p>
+<p>I think we should do this at the same time that we add support for the <code>del</code> statement, and the implementation should basically be to act as if there is an invisible <code>del e</code> at the end of an <code>except e:</code> block. (That's literally how it works in bytecode.)</p>
+<p>And I don't think <code>del</code> support should be too hard, it's just another <code>Definition</code>, which assigns <code>Unbound</code> to the name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:894 on 2024-09-07 00:18</div>
+            <div class="timeline-body"><p>I don't think we should need to add the type as a standalone expression, because there's no unpacking to multiple names here. The unpacking / multiple-target cases are where we need a standalone expression, so that we can query its type directly as a cached Salsa query, and avoid inferring its type multiple times (once for each <code>Definition</code> for each target name it can be unpacked to.) In this case, there's no unpacking, so only one Definition can possibly include this expression, so we can just infer its type as part of the Definition without any duplication. (And it's more efficient to avoid standalone expressions and the extra ingredients/queries they imply, when possible.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:896 on 2024-09-07 00:20</div>
+            <div class="timeline-body"><p>This is something we generally do if we're about to set a <code>self.current_assignment</code>, which we aren't doing here. So I don't think we really need this? But it also doesn't hurt anything -- it should still be true that there isn't any other current assignment when we're visiting an except handler.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:902 on 2024-09-07 00:22</div>
+            <div class="timeline-body"><p>Again, since there's no unpacking, and thus a maximum of one Definition per exception handler, I would probably simplify this to just store a reference to the entire except-handler node as part of the <code>Definition</code>. We can get to all the parts of it from there easily, and it makes the <code>Definition</code> a bit smaller. It also simplifies this code, because we can just treat the node itself directly as an <code>Into&lt;DefinitionNodeRef&gt;</code>, we don't have to construct it explicitly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:895 on 2024-09-07 00:24</div>
+            <div class="timeline-body"><p>I think we can have this just once, instead of both here and in the <code>else</code>, and put it above, outside the <code>if let Some(symbol_name) ...</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:177 on 2024-09-07 00:26</div>
+            <div class="timeline-body"><p>Like I mentioned above, I don't think we need this struct at all; we can instead just have the <code>DefinitionNodeRef::ExceptHandler</code> variant directly wrap an <code>&amp;'a ast::ExceptHandler</code>, and implement <code>From&lt;&amp;'a ast::ExceptHandler&gt;</code> for <code>DefinitionNodeRef</code>, more like we do for functions, classes, annassign, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:269 on 2024-09-07 00:34</div>
+            <div class="timeline-body"><p>Here as well, I think <code>DefinitionKind::ExceptHandler</code> can directly wrap an <code>AstNodeRef&lt;ast::ExceptHandler&gt;</code>; more like e.g. AnnAssign; we don't need the <code>ExceptHandlerDefinitionKind</code> struct at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:303 on 2024-09-07 00:36</div>
+            <div class="timeline-body"><p>It will be fine here for the <code>DefinitionNodeKey</code> for an except handler to be a NodeKey for the entire except handler node, because there's no ambiguity; a given except handler can only ever have zero or one <code>Definition</code> associated with it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:775 on 2024-09-07 00:41</div>
+            <div class="timeline-body"><p>Why not emit the diagnostic in <code>infer_handled_exception_types</code> and avoid the need for the <code>filter_map</code> and the <code>ExceptHandlerType</code> enum entirely?</p>
+<p>EDIT: on second thought, I'm guessing you did this to avoid double-emitting diagnostics? But we don't want to allow double inference to happen and then use tricks like this to avoid double-emitting diagnostics. Double-inference is something that should never happen, and double-emitting diagnostics is just a sign we need to fix that. The right fix is to defer to <code>self.infer_definition</code> as I described above, and then you can just emit the diagnostic in <code>infer_handled_exception_types</code> without risking double diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:754 on 2024-09-07 00:44</div>
+            <div class="timeline-body"><p>We need to avoid double-inferring the except handler in the case where someone queries for it as an individual Definition (thus we enter only at <code>infer_except_handler_definition</code>), but we also query types for the entire scope (thus arriving here.) That means what we need to do here is check whether this except-handler is one that we would have created a <code>Definition</code> for (i.e. does it have a capture name), and if so, all we should do is call <code>self.infer_definition</code> on it, which will use the <code>infer_definition_types</code> query and then populate those types into our own scope types. If not, then we can just infer types for the parts of the except handler and move on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:854 on 2024-09-07 00:51</div>
+            <div class="timeline-body"><p>Really this entire match statement should become a single call to a generalized &quot;is assignable to&quot; helper; a union of exception types is assignable to <code>BaseException</code>, so the only question we need to ask here is &quot;is the type assignable to <code>BaseException</code>&quot;. Support for subtype-of / assignable-to checks is one of the next priority items on our list.</p>
+<p>I think it's great that you went ahead and made a start on the validation here, but let's add a TODO referencing generalized assignable-to checking, and then I'm not sure the other comments even need to be TODOs in their own right (since we won't likely make those fixes here), they can just mention what's known-missing from the current code to avoid anyone being confused.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:866 on 2024-09-07 00:54</div>
+            <div class="timeline-body"><p>This can go away along with the <code>add_standalone_expression</code> call in the semantic builder, and just become an <code>infer_expression</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:869 on 2024-09-07 00:55</div>
+            <div class="timeline-body"><p>I think once we make some of the other changes mentioned here (e.g. eliminate the need for <code>ExceptHandlerType</code>), <code>infer_handled_exception_types</code> can probably just directly return the union.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2486 on 2024-09-07 00:57</div>
+            <div class="timeline-body"><p>Interesting question here whether an invalid exception type should contribute <code>Unknown</code> or <code>Never</code> to the union. I think it should be <code>Never</code> instead. If we don't know the type of one of the exception types, that'll already contribute <code>Unknown</code>. If we do know the type, and it's not valid, then that is never going to catch an exception or become part of the type of the target name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4274 on 2024-09-07 00:58</div>
+            <div class="timeline-body"><p>Here's where I think we should type <code>e</code> as <code>Never</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4246 on 2024-09-07 00:58</div>
+            <div class="timeline-body"><p>And here I think we should have just <code>TypeError</code> rather than <code>TypeError | Unknown</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4291 on 2024-09-07 00:59</div>
+            <div class="timeline-body"><p>If the point of this test is that <code>foo</code> doesn't cause a problem, why do we need this clause in this test? It seems like a repeat of the above test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:36 on 2024-09-07 00:59</div>
+            <div class="timeline-body"><p>🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> requested changes on 2024-09-07 01:00</div>
+            <div class="timeline-body"><p>Awesome! I think there are a few things to tweak/simplify here, but the shape looks great. So sweet to see that bogus &quot;undefined name&quot; error in tomllib go away.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-07 05:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:896 on 2024-09-07 05:37</div>
+            <div class="timeline-body"><p>I didn't see this code anymore when I reviewed the current version of the PR, so I think it must have already been removed? I don't actually think we should make the assumption anywhere that assignment targets must be Name nodes; that's not true for imports either.</p>
+<p>Regarding <code>HasTy</code>, I generally think it's not important that we implement it for all non-expression definition nodes, if it's not self-evident that all nodes of that kind will have a clear and obvious type. I think the main problem here is bare <code>except</code> -- if it weren't for that, we <em>could</em> implement <code>HasTy</code> for all <code>ExceptHandler</code> nodes, and it could be the handled-exceptions union that we get from analyzing the handled-exceptions (the fact that the exception isn't captured in a name doesn't stop us from implementing <code>HasTy</code>).</p>
+<p>But I also don't think it's <em>important</em> that we implement <code>HasTy</code> for except-handler nodes, and since the bare <code>except</code> problem is a little thorny, I would probably just not bother.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-07 10:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:894 on 2024-09-07 10:08</div>
+            <div class="timeline-body"><p>Is this the change you're suggesting for this function?</p>
+<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/semantic_index/builder.rs b/crates/red_knot_python_semantic/src/semantic_index/builder.rs
+index 80210a11c..668ad4b77 100644
+--- a/crates/red_knot_python_semantic/src/semantic_index/builder.rs
++++ b/crates/red_knot_python_semantic/src/semantic_index/builder.rs
+@@ -889,22 +889,18 @@ where
+             body,
+             range: _,
+         }) = except_handler;
+-        if let Some(type_) = type_ {
++        if let Some(handled_exceptions) = type_ {
++            self.visit_expr(handled_exceptions);
+             if let Some(symbol_name) = name {
+-                self.add_standalone_expression(type_);
+-                self.visit_expr(type_);
+-                debug_assert!(self.current_assignment.is_none());
+                 let symbol =
+                     self.add_or_update_symbol(symbol_name.id.clone(), SymbolFlags::IS_DEFINED);
+                 self.add_definition(
+                     symbol,
+                     ExceptHandlerDefinitionNodeRef {
+                         symbol_name,
+-                        handled_exceptions: type_,
++                        handled_exceptions,
+                     },
+                 );
+-            } else {
+-                self.visit_expr(type_);
+             }
+         }
+         self.visit_body(body);
+</code></pre>
+<p>It causes the tests I added to panic:</p>
+<pre><code>failures:
+
+---- types::infer::tests::except_handler stdout ----
+thread 'types::infer::tests::except_handler' panicked at crates/red_knot_python_semantic/src/semantic_index.rs:207:33:
+no entry found for key
+
+---- types::infer::tests::invalid_except_handler stdout ----
+thread 'types::infer::tests::invalid_except_handler' panicked at crates/red_knot_python_semantic/src/semantic_index.rs:207:33:
+no entry found for key
+
+---- types::infer::tests::unknown_type_in_except_handler_does_not_cause_spurious_diagnostic stdout ----
+thread 'types::infer::tests::unknown_type_in_except_handler_does_not_cause_spurious_diagnostic' panicked at crates/red_knot_python_semantic/src/semantic_index.rs:207:33:
+no entry found for key
+
+
+failures:
+    types::infer::tests::except_handler
+    types::infer::tests::invalid_except_handler
+    types::infer::tests::unknown_type_in_except_handler_does_not_cause_spurious_diagnostic
+
+test result: FAILED. 236 passed; 3 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.18s
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-07 10:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:902 on 2024-09-07 10:10</div>
+            <div class="timeline-body"><p>An <code>ExceptHandler</code> node only creates a definition if the <code>type_</code> and <code>name</code> fields of the <code>ExceptHandler</code> are both <code>Some()</code>. I.e., <code>ExceptHandler</code>s like these do not create definitions (for the first one, <code>name</code> and <code>type_</code> are both <code>None</code>; for the second one, <code>type_</code> is <code>ast::Name(&quot;NameError&quot;)</code> but <code>name</code> is still <code>None</code>):</p>
+<pre><code class="language-py">try:
+    x
+except:
+    pass
+
+try:
+    x
+except NameError:
+    pass
+</code></pre>
+<p>If we stored a reference to the entire except-handler node here rather than storing references to the symbol name and the handled exceptions (respectively an <code>Identifier</code> and an <code>Expr</code>), we'd have to do unnecessary type narrowing or unwrapping at later stages. It seems to me like it would be much less type-safe and much less ergonomic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-07 10:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:177 on 2024-09-07 10:12</div>
+            <div class="timeline-body"><p>Same response as https://github.com/astral-sh/ruff/pull/13267#discussion_r1748035302</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-07 10:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:894 on 2024-09-07 10:17</div>
+            <div class="timeline-body"><p>Did you also change the code I mentioned in <code>infer.rs</code> that currently calls <code>infer_expression_types</code> salsa query on this expression, but should instead just use <code>self.infer_expression</code>? That call to <code>infer_expression_types</code> query  requires this call to <code>add_standalone_expression</code> here -- but we don't need either one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-07 10:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:854 on 2024-09-07 10:18</div>
+            <div class="timeline-body"><p>Yeah, I realised after sleeping on it that my current approach of distinguishing between a literal tuple in the AST and other nodes is hopelessly naive. You can of course have dynamic tuples in <code>except</code> blocks:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; EXCEPTIONS = (TypeError, AttributeError)
+&gt;&gt;&gt; try:
+...     object.foo
+... except EXCEPTIONS:
+...     pass
+... 
+&gt;&gt;&gt; 
+</code></pre>
+<p>So it may be better to just axe all this type-checking until we have the tools to do it properly. There's certainly no way we can check if something is a consistent subtype of <code>tuple[type[BaseException], ...] | type[BaseException]</code> right now, and only permitting a literal tuple of exceptions else risks emitting false positives on user code :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-07 10:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:902 on 2024-09-07 10:21</div>
+            <div class="timeline-body"><p>Once the inference code is fixed to avoid double inference, we will unavoidably have to do this type narrowing and unwrapping again once in inference either way, because we will run into the exception handler in scope visiting and have to a) decide if it is a kind of except handler that creates a definition, and b) unwrap the relevant parts of it again. The only difference is whether we have to do the unwrapping in <code>infer_except_handler</code> (in your version, so we can find the Definition) or in <code>infer_except_handler_definition</code> (if the Definition just stores the whole node). So there is no gain in either type safety or ergonomics. But there is a small loss in efficiency and ergonomics on this side due to the extra wrapping types needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-07 10:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:894 on 2024-09-07 10:28</div>
+            <div class="timeline-body"><p>I don't like that this results in a panic instead of somehow being enforced by the type system; I would rather that we can use a salsa query on any expression. But that's a necessary concession to salsa performance issues. And since our base representation is the AST, which we can't mutate, we are left with this fundamental issue that some <code>ast::Expr</code> have a matching <code>Expression</code> tracked struct we can query on and some do not, and the type system doesn't know the difference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Add definitions, type inference and type checking for exception handlers" to "[red-knot] Add definitions and limited type inference for exception handlers" by @AlexWaygood on 2024-09-07 10:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-07 14:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:894 on 2024-09-07 14:38</div>
+            <div class="timeline-body"><blockquote>
+<p>Did you also change the code I mentioned in <code>infer.rs</code> that currently calls <code>infer_expression_types</code> salsa query on this expression, but should instead just use <code>self.infer_expression</code>? That call to <code>infer_expression_types</code> query requires this call to <code>add_standalone_expression</code> here -- but we don't need either one.</p>
+</blockquote>
+<p>Yup, making that change at the same time fixed it. Thanks :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-07 14:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4274 on 2024-09-07 14:43</div>
+            <div class="timeline-body"><p><code>foo</code> isn't necessarily an invalid object to be caught by an exception handler, though. We just don't know, because we weren't able to resolve <code>nonexistent_module</code> and inspect where it came from. It could be perfectly valid (maybe <code>nonexistent_module</code> is a C extension that doesn't have stubs), and we've already emitted an error at the import statement complaining that we couldn't resolve the import.</p>
+<p>Inferring <code>Never</code> for <code>e</code> could create lots of false-positive errors when the <code>e</code> variable is actually used, since <code>Never</code> has no attributes or methods.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-09-07 14:44</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex/redknot-except-defs">CodSpeed Performance Report</a></h2>
+<h3>Merging #13267 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>alex/redknot-except-defs</code> (73eb467) with <code>main</code> (346dbf4)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 32</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:902 on 2024-09-07 14:59</div>
+            <div class="timeline-body"><p>So you want me to do something like this diff? It seems to me like there is clearly a loss of type safety here: I have to add a <code>.expect()</code> call in <code>infer_except_handler_definition()</code> that's unnecessary in the code as I currently have it:</p>
+<details>
+<summary>Diff</summary>
+
+<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/semantic_index/builder.rs b/crates/red_knot_python_semantic/src/semantic_index/builder.rs
+index 668ad4b77..0c00472c3 100644
+--- a/crates/red_knot_python_semantic/src/semantic_index/builder.rs
++++ b/crates/red_knot_python_semantic/src/semantic_index/builder.rs
+@@ -883,12 +883,13 @@ where
+     }
+ 
+     fn visit_except_handler(&amp;mut self, except_handler: &amp;'ast ast::ExceptHandler) {
+-        let ast::ExceptHandler::ExceptHandler(ast::ExceptHandlerExceptHandler {
++        let ast::ExceptHandler::ExceptHandler(except_handler) = except_handler;
++        let ast::ExceptHandlerExceptHandler {
+             name,
+             type_,
+             body,
+             range: _,
+-        }) = except_handler;
++        } = except_handler;
+         if let Some(handled_exceptions) = type_ {
+             self.visit_expr(handled_exceptions);
+             if let Some(symbol_name) = name {
+@@ -898,7 +899,7 @@ where
+                     symbol,
+                     ExceptHandlerDefinitionNodeRef {
+                         symbol_name,
+-                        handled_exceptions,
++                        except_handler,
+                     },
+                 );
+             }
+diff --git a/crates/red_knot_python_semantic/src/semantic_index/definition.rs b/crates/red_knot_python_semantic/src/semantic_index/definition.rs
+index cce6de9db..aa05fa468 100644
+--- a/crates/red_knot_python_semantic/src/semantic_index/definition.rs
++++ b/crates/red_knot_python_semantic/src/semantic_index/definition.rs
+@@ -172,7 +172,7 @@ pub(crate) struct ComprehensionDefinitionNodeRef&lt;'a&gt; {
+ #[derive(Copy, Clone, Debug)]
+ pub(crate) struct ExceptHandlerDefinitionNodeRef&lt;'a&gt; {
+     pub(crate) symbol_name: &amp;'a ast::Identifier,
+-    pub(crate) handled_exceptions: &amp;'a ast::Expr,
++    pub(crate) except_handler: &amp;'a ast::ExceptHandlerExceptHandler,
+ }
+ 
+ #[derive(Copy, Clone, Debug)]
+@@ -262,11 +262,9 @@ impl DefinitionNodeRef&lt;'_&gt; {
+                 index,
+             }),
+             DefinitionNodeRef::ExceptHandler(ExceptHandlerDefinitionNodeRef {
+-                handled_exceptions,
++                except_handler,
+                 ..
+-            }) =&gt; DefinitionKind::ExceptHandler(ExceptHandlerDefinitionKind {
+-                handled_exceptions: AstNodeRef::new(parsed, handled_exceptions),
+-            }),
++            }) =&gt; DefinitionKind::ExceptHandler(AstNodeRef::new(parsed.clone(), except_handler)),
+         }
+     }
+ 
+@@ -322,18 +320,7 @@ pub enum DefinitionKind {
+     ParameterWithDefault(AstNodeRef&lt;ast::ParameterWithDefault&gt;),
+     WithItem(WithItemDefinitionKind),
+     MatchPattern(MatchPatternDefinitionKind),
+-    ExceptHandler(ExceptHandlerDefinitionKind),
+-}
+-
+-#[derive(Clone, Debug)]
+-pub struct ExceptHandlerDefinitionKind {
+-    handled_exceptions: AstNodeRef&lt;ast::Expr&gt;,
+-}
+-
+-impl ExceptHandlerDefinitionKind {
+-    pub(crate) fn handled_exceptions(&amp;self) -&gt; &amp;ast::Expr {
+-        self.handled_exceptions.node()
+-    }
++    ExceptHandler(AstNodeRef&lt;ast::ExceptHandlerExceptHandler&gt;),
+ }
+ 
+ #[derive(Clone, Debug)]
+diff --git a/crates/red_knot_python_semantic/src/types/infer.rs b/crates/red_knot_python_semantic/src/types/infer.rs
+index 3ddf821ae..486e34fc4 100644
+--- a/crates/red_knot_python_semantic/src/types/infer.rs
++++ b/crates/red_knot_python_semantic/src/types/infer.rs
+@@ -426,10 +426,7 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+                 );
+             }
+             DefinitionKind::ExceptHandler(except_handler_definition) =&gt; {
+-                self.infer_except_handler_definition(
+-                    except_handler_definition.handled_exceptions(),
+-                    definition,
+-                );
++                self.infer_except_handler_definition(except_handler_definition, definition);
+             }
+         }
+     }
+@@ -805,9 +802,12 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+ 
+     fn infer_except_handler_definition(
+         &amp;mut self,
+-        handled_exceptions: &amp;'db ast::Expr,
++        except_handler: &amp;'db ast::ExceptHandlerExceptHandler,
+         definition: Definition&lt;'db&gt;,
+     ) {
++        let handled_exceptions = except_handler.type_.as_deref().expect(
++            &quot;`type_` should always be `Some()` for an exception handler that creates a definition&quot;,
++        );
+         let node_ty = self.infer_expression(handled_exceptions);
+ 
+         // TODO: anything that's a consistent subtype of
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-07 14:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-07 16:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4274 on 2024-09-07 16:55</div>
+            <div class="timeline-body"><p>FWIW, both mypy and pyright infer <code>Any</code>/<code>Unknown</code> in this situation:</p>
+<ul>
+<li>https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=bcdb068154c1fa6bac71335781c392b4</li>
+<li>https://pyright-play.net/?pythonVersion=3.13&amp;strict=true&amp;code=GYJw9gtgBAJmCmBnA%2BgOzAF2fAHgS0QyjwgAcwQjgwwBYAKAYxAE8AuBqLqHB3AY3ikqNKAENEUeB3rcoIeADd4YgDbIMLUvAAU8AJQMgA</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-08 05:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:902 on 2024-09-08 05:10</div>
+            <div class="timeline-body"><p>Good point, yeah. I think that's good enough reason that the single node we pass through the definition can be the handled-types expression rather than the entire handler. But I still think we have unnecessary complexity that can be removed. Will make it a different comment, since this thread is on &quot;outdated&quot; code in the PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:303 on 2024-09-08 05:19</div>
+            <div class="timeline-body"><p>The idea here was that we don't really need the symbol name here at all, this could be the except handler node, or it could be the handled-exceptions expression, with no loss in correctness.</p>
+<p>But, it does cost very little to use the symbol name here, and although it's not required in any way, it's arguably clearer for the definition node key to be the specific name/identifier node that is defined, when that works out. And, if we are going to pass through the handled-exceptions expression instead of the except handler node, then we do need <code>ExceptHandlerDefinitionNodeRef</code> either way (whether it contains the symbol name or not), because we can't just implement <code>From&lt;ast::Expr&gt; for DefinitionNodeRef</code> -- we wouldn't know what kind of expression we're dealing with. So I think what you currently have makes good sense.</p>
+<p>Thanks for bearing with me! My main concern was to have as much parity as feasible between how we handle the different cases, but it turns out every case is a little different! This looks good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:269 on 2024-09-08 05:20</div>
+            <div class="timeline-body"><p>I think this remains true, but I think it's still reasonable to prefer to have <code>ExceptHandlerDefinitionKind</code>, so as to clarify that the node we are referencing is specifically the handled-exceptions expression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4274 on 2024-09-08 05:26</div>
+            <div class="timeline-body"><p>Oh, I think I just commented on the wrong case! <code>foo</code> should be <code>Unknown</code> here, and I definitely agree that if one of the caught exception types is <code>Unknown</code>, that should be valid and should contribute <code>Unknown</code> to the resulting union.</p>
+<p>Where I think we might want <code>Never</code> is for types that we <em>know</em> are not <code>BaseException</code> subtypes; the cases where the previous version of this PR emitted a diagnostic. But this version of the PR no longer attempts to detect such cases at all (which I think makes sense), so it's a moot question for this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:821 on 2024-09-08 05:33</div>
+            <div class="timeline-body"><p>It looks to me like we will still have double-inference of some except handlers in this version of the PR, because now we are entirely missing the code that we need to add in <code>infer_try_statement</code>, which needs to check, for each handler, whether it is one that would create a definition (that is, it has a <code>name</code>), and if so, call <code>self.infer_definition(handler.name)</code> (this is where it matters which node is used as the DefinitionNodeKey; that's what we have to look up the definition by), which will use the per-definition inference query to infer that handler and merge the types back into the scope-level inference.</p>
+<p>Otherwise, with the current code in this PR, scope-level inference and definition-level inference will separately double-infer the same except handler (and thus, in the future, potentially double-emit diagnostics.)</p>
+<p>Fixing https://github.com/astral-sh/ruff/issues/13168 will allow us to catch these double-inference cases automatically, instead of having to watch for it in code review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-08 05:34</div>
+            <div class="timeline-body"><p>Thanks for pushing back on preferring the sub-node for type safety!</p>
+<p>This version looks good, except that I think it will still do double-inference; we need to add the use of <code>self.infer_definition(...)</code> when appropriate in <code>infer_try_statement</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-08 06:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4274 on 2024-09-08 06:36</div>
+            <div class="timeline-body"><p>Gotcha! I think we're in agreement. Thanks for clarifying!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-08 22:24</div>
+            <div class="timeline-body"><p>Hmmm. Coming back to this again, I'm reconsidering the argument I put forward in https://github.com/astral-sh/ruff/pull/13267#discussion_r1748289271... because I'm not sure what our behaviour should be if we come across an except handler with invalid syntax!</p>
+<p>Specifically, what should we do for this?</p>
+<pre><code class="language-py">try:
+    x
+except as e:
+    pass
+</code></pre>
+<p>Currently my PR does not create a definition for <code>e</code> there. But I think that's maybe wrong -- I think we should probably create a definition for <code>e</code> and assign it the type <code>Unknown</code>. Even though this snippet has invalid syntax, it's reasonably clear that the intent is for <code>e</code> to be bound here, I think. And as soon as you concede that an <code>ExceptHandlerExceptHandler</code> node with <code>type_</code> set to <code>None</code> can still create a definition, the argument for having a separate struct rather than just using <code>AstNodeRef&lt;ExceptHandlerExceptHandler&gt;</code> falls apart.</p>
+<p>WDYT -- does my reasoning make sense w.r.t. what we should do there in the face of invalid syntax?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-08 22:31</div>
+            <div class="timeline-body"><p>Heh, I thought of that particular case, had to double-check myself that it was invalid syntax, and then set it aside as not requiring consideration. I need to form a stronger habit of considering what we'll do for invalid syntax! Thanks for considering this.</p>
+<p>I agree that this looks like an argument for simply keeping the entire except-handler node in the Definition, as I'd originally suggested. It means the panic you (reasonably) wanted to avoid instead turns into a &quot;fallback to Unknown.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-08 22:32</div>
+            <div class="timeline-body"><p>Nice, I'll do that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-08 22:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4323 on 2024-09-08 22:56</div>
+            <div class="timeline-body"><p>I checked manually that we do emit a diagnostic informing the user about invalid syntax in this snippet (though the message we give currently isn't great; I wasn't sure at first whether it was a diagnostic or an internal panic!).</p>
+<p>It would be nice if <code>assert_file_diagnostics()</code> also included diagnostics we emit due to syntax errors so that we got a complete picture of the diagnostics we were emitting. But considering that we're about to implement a whole new set of testing infrastructure, I don't know if that's worth spendingn time on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:821 on 2024-09-08 22:56</div>
+            <div class="timeline-body"><p>I <em>think</em> this should be fixed now after my latest pushes!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-08 22:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-09-08 22:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:821 on 2024-09-09 02:47</div>
+            <div class="timeline-body"><p>Yes, looks good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4240 on 2024-09-09 02:51</div>
+            <div class="timeline-body"><p>This is more a commentary on testing philosophy than a request for you to change this, but the way I generally think about tests is to aim for each test to be clear about what it's testing, and to be minimalist in every other aspect. This leads to more focused test failures (so when a test fails, you have a good idea where to look for the cause, rather than one breakage causing many seemingly unrelated tests to fail), and tests whose purpose are easier for a reader to understand.</p>
+<p>So I would say, we have tests elsewhere (at least I think we do!) that builtins can be accessed either implicitly or via <code>import builtins</code>, and nothing in our exception-handler code does or should do anything special regarding this (it's just normal expression type resolution.) So I don't see much reason why the wrinkles of <code>import builtins</code> or using an Attribute node as an exception type belong in this test at all. It just makes the reader wonder why they are there, and if they are missing something about their importance.</p>
+<p>Of course this philosophy has its limits; some very basic syntactic forms are of course relied on by many tests, because you need them in order to even use the feature you want to test. But both <code>import builtins</code> and exception handling are rather specific, less common features, so I would generally not have them in the same test together unless I am intentionally testing some very particular interaction of precisely those two things. And in that case, it would be in a very specific separate test whose name clearly indicates what unusual interaction we are testing, it wouldn't be in a generic <code>except_handler</code> test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-09-09 03:00</div>
+            <div class="timeline-body"><p>Looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-09 11:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4240 on 2024-09-09 11:30</div>
+            <div class="timeline-body"><p>Thanks for the great comment. I did want to include an exception class from another module <em>somewhere</em> in my tests -- it probably isn't <em>necessary</em> since we obviously demonstrate support for cross-module resolution elsewhere, but it felt useful to show that we'd infer the types even across module boundaries. But you're absolutely right that the separation of my tests wasn't very clean! And also, the distinction between <code>builtins.AttributeError</code> and <code>TypeError</code> was a bad way of demonstrating this, since they are both looked up in the same namespace anyway. I've cleaned the tests up somewhat in https://github.com/astral-sh/ruff/pull/13267/commits/73eb467237a66aa2f79f314015405bb37869fa76</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-09 11:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4246 on 2024-09-09 11:32</div>
+            <div class="timeline-body"><p>I'm not entirely happy that the display of <code>Type::Instance(re.error)</code> here is <code>error</code> (the fully qualified name would be much more helpful!), but that's definitely out of scope for this PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-09-09 11:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-09-09 11:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-09 11:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use dynamic builtins list based on Python version - astral-sh/ruff #13172</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use dynamic builtins list based on Python version</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13172">#13172</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-08-30 23:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-30 23:00</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes https://github.com/astral-sh/ruff/issues/13037.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-30 23:01</div>
+            <div class="timeline-body"><p>I used this Python script then did some manual editing:</p>
+<pre><code class="language-python">import subprocess
+import json
+
+def enumerate_builtins_by_version(python_version):
+    cmd = [
+        &quot;uv&quot;, &quot;run&quot;, &quot;--python&quot;, f&quot;{python_version}&quot;, &quot;--no-project&quot;, &quot;python&quot;,
+        &quot;-c&quot;,
+        &quot;&quot;&quot;
+import sys
+import builtins
+import json
+
+python_version = f&quot;{sys.version_info.major}.{sys.version_info.minor}&quot;
+builtin_list = sorted(dir(builtins))
+
+print(json.dumps(builtin_list))
+        &quot;&quot;&quot;
+    ]
+    result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+    return json.loads(result.stdout)
+
+if __name__ == &quot;__main__&quot;:
+    python_versions = [&quot;3.8&quot;, &quot;3.9&quot;, &quot;3.10&quot;, &quot;3.11&quot;, &quot;3.12&quot;, &quot;3.13&quot;]
+    all_results = {}
+    for version in python_versions:
+        print(f&quot;\nRunning for Python {version}&quot;)
+        result = enumerate_builtins_by_version(version)
+        all_results[version] = result
+
+    print(&quot;\nRust code for listing builtins:&quot;)
+    print(&quot;match (major, minor) {&quot;)
+    for version, builtins in all_results.items():
+        major, minor = version.split('.')
+        print(f&quot;    ({major}, {minor}) =&gt; &amp;[&quot;)
+        for builtin in builtins:
+            print(f'        &quot;{builtin}&quot;,')
+        print(&quot;    ],&quot;)
+    print(&quot;    _ =&gt; &amp;[],&quot;)
+    print(&quot;}&quot;)
+
+    print(&quot;\nRust code for checking if a string is a builtin:&quot;)
+    print(&quot;matches!(minor, {&quot;)
+
+    # Collect all unique builtins across versions
+    all_builtins = set()
+    for builtins in all_results.values():
+        all_builtins.update(builtins)
+
+    print(&quot;pub fn is_known_standard_library(minor_version: u8, module: &amp;str) -&gt; bool {&quot;)
+    print(&quot;    matches!(&quot;)
+    print(&quot;        (minor_version, module),&quot;)
+    print(&quot;        (&quot;)
+
+    # Print the builtins that are common to all versions
+    common_builtins = set.intersection(*map(set, all_results.values()))
+    for builtin in sorted(common_builtins):
+        print(f'            (_, &quot;{builtin}&quot;),')
+
+    # Print version-specific builtins
+    for version, builtins in all_results.items():
+        _, minor = version.split('.')
+        version_specific = set(builtins) - common_builtins
+        if version_specific:
+            for builtin in sorted(version_specific):
+                print(f'            ({minor}, &quot;{builtin}&quot;),')
+
+    print(&quot;        )&quot;)
+    print(&quot;    )&quot;)
+    print(&quot;}&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-08-30 23:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-08-30 23:29</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/charlie/builtins">CodSpeed Performance Report</a></h2>
+<h3>Merging #13172 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>charlie/builtins</code> (de081b6) with <code>main</code> (3abd5c0)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 32</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @charliermarsh on 2024-08-30 23:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_builtins/helpers.rs</code>:12 on 2024-08-31 17:41</div>
+            <div class="timeline-body"><p>What's the use case (when checking a Jupyter notebook) for distinguishing between Python builtins and IPython builtins? Since we're refactoring the <code>is_python_builtin</code> function anyway, should we just make it a function that also accepts the <code>PySourceType</code> as well as the Python minor version? (And get rid of the <code>is_ipython_builtin</code> function?)</p>
+<p>It seems less error-prone: currently you have to remember to call both functions if you want to know if a symbol is a builtin symbol in a notebook file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_stdlib/src/builtins.rs</code>:362 on 2024-08-31 17:45</div>
+            <div class="timeline-body"><p>What version of Python 3.13 do you have installed locally? I think <code>IncompleteInputError</code> was removed from builtins in June: https://github.com/python/cpython/pull/119680</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_stdlib/src/builtins.rs</code>:194 on 2024-08-31 17:47</div>
+            <div class="timeline-body"><p>Same here, I don't think <code>IncompleteInputError</code> exists on the latest 3.13 version</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-31 17:48</div>
+            <div class="timeline-body"><p>Nice! I wonder if we should check the script you used into the repo, similar to what we do for <code>scripts/generate_known_standard_library.py</code> and <code>scripts/generate_builtin_modules.py</code>? But it also shouldn't be too hard to update when 3.14 comes around</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-01 16:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_stdlib/src/builtins.rs</code>:362 on 2024-09-01 16:20</div>
+            <div class="timeline-body"><p>I have <code>3.13.0b1</code> -- thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-01 16:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_builtins/helpers.rs</code>:12 on 2024-09-01 16:20</div>
+            <div class="timeline-body"><p>I'll try this out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-01 16:21</div>
+            <div class="timeline-body"><p>I think I'm gonna punt on adding the script. It was mostly written by GPT and still requires some massaging of the outputs, and future updates to the generated output should be easy, I think...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-01 16:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_builtins/helpers.rs</code>:12 on 2024-09-01 16:27</div>
+            <div class="timeline-body"><p>Oh, I think the motivation here is that the builtins check is in <code>uv_python_stdlib</code> which doesn't depend on <code>PySourceType</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-01 16:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_builtins/helpers.rs</code>:12 on 2024-09-01 16:33</div>
+            <div class="timeline-body"><p>Ah I see. You could probably just do it with a boolean <code>include_ipython_builtins</code> parameter... but also this doesn't need to be done in this PR!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-09-01 16:34</div>
+            <div class="timeline-body"><p>LGTM, though the CI has a complaint about the docs somewhere</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-09-01 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-01 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-01 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-01 17:13</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+1 -0 violations, +0 -0 fixes in 1 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/pytest-dev/pytest">pytest-dev/pytest</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/pytest-dev/pytest/blob/4604387ae444a4f3478243f6d12f40b0cc48e121/testing/_py/test_local.py#L22'>testing/_py/test_local.py:22:45:</a> F821 Undefined name `EncodingWarning`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| F821 | 1 | 1 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+1 -14 violations, +0 -0 fixes in 2 projects; 52 projects unchanged)</p>
+<details><summary><a href="https://github.com/python-trio/trio">python-trio/trio</a> (+0 -14 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/python-trio/trio/blob/51b2dffb916ae513e1c44b1afc243cdda072e690/src/trio/_core/_run.py#L54'>src/trio/_core/_run.py:54:32:</a> A004 Import `BaseExceptionGroup` is shadowing a Python builtin
+- <a href='https://github.com/python-trio/trio/blob/51b2dffb916ae513e1c44b1afc243cdda072e690/src/trio/_core/_tests/test_exceptiongroup_gc.py#L16'>src/trio/_core/_tests/test_exceptiongroup_gc.py:16:32:</a> A004 Import `ExceptionGroup` is shadowing a Python builtin
+- <a href='https://github.com/python-trio/trio/blob/51b2dffb916ae513e1c44b1afc243cdda072e690/src/trio/_core/_tests/test_run.py#L49'>src/trio/_core/_tests/test_run.py:49:32:</a> A004 Import `BaseExceptionGroup` is shadowing a Python builtin
+- <a href='https://github.com/python-trio/trio/blob/51b2dffb916ae513e1c44b1afc243cdda072e690/src/trio/_core/_tests/test_run.py#L49'>src/trio/_core/_tests/test_run.py:49:52:</a> A004 Import `ExceptionGroup` is shadowing a Python builtin
+- <a href='https://github.com/python-trio/trio/blob/51b2dffb916ae513e1c44b1afc243cdda072e690/src/trio/_highlevel_open_tcp_listeners.py#L16'>src/trio/_highlevel_open_tcp_listeners.py:16:32:</a> A004 Import `ExceptionGroup` is shadowing a Python builtin
+- <a href='https://github.com/python-trio/trio/blob/51b2dffb916ae513e1c44b1afc243cdda072e690/src/trio/_highlevel_open_tcp_stream.py#L15'>src/trio/_highlevel_open_tcp_stream.py:15:32:</a> A004 Import `BaseExceptionGroup` is shadowing a Python builtin
+- <a href='https://github.com/python-trio/trio/blob/51b2dffb916ae513e1c44b1afc243cdda072e690/src/trio/_highlevel_open_tcp_stream.py#L15'>src/trio/_highlevel_open_tcp_stream.py:15:52:</a> A004 Import `ExceptionGroup` is shadowing a Python builtin
+- <a href='https://github.com/python-trio/trio/blob/51b2dffb916ae513e1c44b1afc243cdda072e690/src/trio/_tests/test_highlevel_open_tcp_listeners.py#L27'>src/trio/_tests/test_highlevel_open_tcp_listeners.py:27:32:</a> A004 Import `BaseExceptionGroup` is shadowing a Python builtin
+- <a href='https://github.com/python-trio/trio/blob/51b2dffb916ae513e1c44b1afc243cdda072e690/src/trio/_tests/test_highlevel_open_tcp_stream.py#L25'>src/trio/_tests/test_highlevel_open_tcp_stream.py:25:32:</a> A004 Import `BaseExceptionGroup` is shadowing a Python builtin
+- <a href='https://github.com/python-trio/trio/blob/51b2dffb916ae513e1c44b1afc243cdda072e690/src/trio/_tests/test_testing_raisesgroup.py#L14'>src/trio/_tests/test_testing_raisesgroup.py:14:32:</a> A004 Import `ExceptionGroup` is shadowing a Python builtin
+- <a href='https://github.com/python-trio/trio/blob/51b2dffb916ae513e1c44b1afc243cdda072e690/src/trio/_tests/type_tests/raisesgroup.py#L24'>src/trio/_tests/type_tests/raisesgroup.py:24:32:</a> A004 Import `BaseExceptionGroup` is shadowing a Python builtin
+- <a href='https://github.com/python-trio/trio/blob/51b2dffb916ae513e1c44b1afc243cdda072e690/src/trio/_tests/type_tests/raisesgroup.py#L24'>src/trio/_tests/type_tests/raisesgroup.py:24:52:</a> A004 Import `ExceptionGroup` is shadowing a Python builtin
+- <a href='https://github.com/python-trio/trio/blob/51b2dffb916ae513e1c44b1afc243cdda072e690/src/trio/testing/_check_streams.py#L30'>src/trio/testing/_check_streams.py:30:32:</a> A004 Import `BaseExceptionGroup` is shadowing a Python builtin
+- <a href='https://github.com/python-trio/trio/blob/51b2dffb916ae513e1c44b1afc243cdda072e690/src/trio/testing/_raises_group.py#L45'>src/trio/testing/_raises_group.py:45:32:</a> A004 Import `BaseExceptionGroup` is shadowing a Python builtin
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pytest-dev/pytest">pytest-dev/pytest</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pytest-dev/pytest/blob/4604387ae444a4f3478243f6d12f40b0cc48e121/testing/_py/test_local.py#L22'>testing/_py/test_local.py:22:45:</a> F821 Undefined name `EncodingWarning`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| A004 | 14 | 0 | 14 | 0 | 0 |
+| F821 | 1 | 1 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dhruvmanila on 2024-09-05 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bonastreyair">@bonastreyair</a> on 2024-09-06 06:30</div>
+            <div class="timeline-body"><p>for some reason running using python 3.11 <code>anext</code> does not get properly detected.
+I am getting this error:</p>
+<blockquote>
+<p>F821 Undefined name <code>anext</code></p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/bonastreyair">@bonastreyair</a> on <code>crates/ruff_python_stdlib/src/builtins.rs</code>:90 on 2024-09-06 06:32</div>
+            <div class="timeline-body"><p><code>anext</code> is now missing, it does not appear in the new built-in list</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bonastreyair">@bonastreyair</a> reviewed on 2024-09-06 06:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bonastreyair">@bonastreyair</a> reviewed on 2024-09-06 06:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/bonastreyair">@bonastreyair</a> on <code>crates/ruff_python_stdlib/src/builtins.rs</code>:115 on 2024-09-06 06:38</div>
+            <div class="timeline-body"><p>as you can see here it does not appear the <code>anext</code> builtin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-06 06:44</div>
+            <div class="timeline-body"><p>@bonastreyair, what <code>--target-version</code> do you set when running Ruff? <code>anext</code> was added in Python 3.10. If you look closely you can see that we do still recognize <code>anext</code> as a Python builtin, but only if <code>--target-version</code> is set to Python 3.10 or newer. If it's set to an older version, we assume that you'll be interested in knowing that <code>anext</code> doesn't exist on that older version :-)</p>
+<p>https://github.com/astral-sh/ruff/blob/a4ebe7d34407ea353762ebde1fef4a718edddb55/crates/ruff_python_stdlib/src/builtins.rs#L185-L187</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-06 06:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_stdlib/src/builtins.rs</code>:186 on 2024-09-06 06:45</div>
+            <div class="timeline-body"><p>@bonastreyair <code>anext</code> is in the list if targeting python 3.10 or newer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bonastreyair">@bonastreyair</a> on 2024-09-06 06:51</div>
+            <div class="timeline-body"><blockquote>
+<p>@bonastreyair, what <code>--target-version</code> do you set when running Ruff? <code>anext</code> was added in Python 3.10. If you look closely you can see that we do still recognize <code>anext</code> as a Python builtin, but only if <code>--target-version</code> is set to Python 3.10 or newer. If it's set to an older version, we assume that you'll be interested in knowing that <code>anext</code> doesn't exist on that older version :-)</p>
+<p>https://github.com/astral-sh/ruff/blob/a4ebe7d34407ea353762ebde1fef4a718edddb55/crates/ruff_python_stdlib/src/builtins.rs#L185-L187</p>
+</blockquote>
+<p>I am using pre-commit with python target version 3.11 and in pyproject.toml with python3.11 so I don't know what is going wrong (even during CI it fails where only python3.11 is installed)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bonastreyair">@bonastreyair</a> reviewed on 2024-09-06 06:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/bonastreyair">@bonastreyair</a> on <code>crates/ruff_python_stdlib/src/builtins.rs</code>:186 on 2024-09-06 06:57</div>
+            <div class="timeline-body"><p>sorry for the confusion did not spot that in the code I will investigate further why it is not working on my end then...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bonastreyair">@bonastreyair</a> on 2024-09-06 07:58</div>
+            <div class="timeline-body"><p>fixed adding <code>target-version = &quot;py310&quot;</code> in the <code>pyproject.toml</code> under the <code>[tool.ruff]</code> section</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

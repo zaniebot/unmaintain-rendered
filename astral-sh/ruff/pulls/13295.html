@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add heterogeneous tuple type variant - astral-sh/ruff #13295</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add heterogeneous tuple type variant</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13295">#13295</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-09-09 20:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-09-09 20:50</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds a new <code>Type</code> variant called <code>TupleType</code> which is used for heterogeneous elements.</p>
+<h3>Display notes</h3>
+<ul>
+<li>For an empty tuple, I'm using <code>tuple[()]</code> as described in the docs: https://docs.python.org/3/library/typing.html#annotating-tuples</li>
+<li>For nested elements, it'll use the literal type instead of builtin type unlike Pyright which does <code>tuple[Literal[1], tuple[int, int]]</code> instead of <code>tuple[Literal[1], tuple[Literal[2], Literal[3]]]</code>. Also, mypy would give <code>tuple[builtins.int, builtins.int]</code> instead of <code>tuple[Literal[1], Literal[2]]</code></li>
+</ul>
+<h2>Test Plan</h2>
+<p>Update test case to account for the display change and add cases for multiple elements and nested tuple elements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2024-09-09 20:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:368 on 2024-09-09 21:03</div>
+            <div class="timeline-body"><p><a href="https://github.com/python/typeshed/blob/65170f4a2ef8dc81d3678624ac2a4610d1c6045e/stdlib/typing.pyi#L210"><code>typing.Tuple</code></a> won't tell us much here ;) all the interesting stuff is in <code>builtins.pyi</code></p>
+<pre><code class="language-suggestion">                // TODO: defer to `builtins.tuple` methods from typeshed's stubs
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1561 on 2024-09-09 21:03</div>
+            <div class="timeline-body"><p>Seems like you did this ;)</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-09 21:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:199 on 2024-09-09 21:03</div>
+            <div class="timeline-body"><p>Maybe we should use <code>TupleLiteral</code> instead? This is because there could also be <code>tuple[int, str]</code> or <code>tuple[int, ...]</code>. Later, we could merge them under the same enum and have them as a single variant in <code>Type::Tuple</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:482 on 2024-09-09 21:04</div>
+            <div class="timeline-body"><p>This isn't correct: <code>typeshed_symbol_ty</code> looks things up in the (fictional) <code>_typeshed</code> module in typeshed, but we want to look things up in the <code>builtins</code> module:</p>
+<p>https://github.com/astral-sh/ruff/blob/62c7d8f6ba118c85e65f79be2f3c0f992ad32b09/crates/red_knot_python_semantic/src/stdlib.rs#L57-L63</p>
+<pre><code class="language-suggestion">            Type::Tuple(_) =&gt; builtins_symbol_ty(db, &quot;tuple&quot;),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-09 21:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-09 21:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1561 on 2024-09-09 21:07</div>
+            <div class="timeline-body"><p>I think there's still types like <code>tuple[int, str]</code> or <code>tuple[int, ...]</code>? Maybe I should update the comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-09 21:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:368 on 2024-09-09 21:09</div>
+            <div class="timeline-body"><p>Oh, thanks, that makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-09 21:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:199 on 2024-09-09 21:11</div>
+            <div class="timeline-body"><p><code>TupleLiteral</code> sounds reasonable to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1561 on 2024-09-09 21:11</div>
+            <div class="timeline-body"><p>Ah, fair point. Yeah, a more specific comment might be better!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-09 21:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-09-09 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2024-09-09 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-09-09 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-09 21:30</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:199 on 2024-09-10 00:28</div>
+            <div class="timeline-body"><p>I saw there was some discussion of this already, but I'm not sure I see the rationale for calling this <code>TupleLiteral</code> vs just <code>Tuple</code>. The current representation in this PR can already handle all tuple types other than <code>tuple[T, ...]</code>, and it wouldn't take much to add support for that, too (though I'm not suggesting we do it in this PR, and I'm not sure yet whether we should support that via this variant or via the regular builtin tuple type from typeshed). This representation can definitely already handle more tuple types than just literals.</p>
+<p>Unless I'm missing the rationale, I would just call this <code>Type::Tuple</code>, and the contained struct <code>TupleType</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:368 on 2024-09-10 00:32</div>
+            <div class="timeline-body"><p>We won't actually want to do this for all or even most methods. For example, we will want to special-case <code>__getitem__</code> to return an overloaded callable type which knows exactly which type to return (or raises an error) for each index it might be called with. We'll similarly need to special case many other methods: <code>__len__</code>, <code>__contains__</code>, <code>__iter__</code>, <code>count</code>, <code>index</code>, possibly some others as well.</p>
+<pre><code class="language-suggestion">                // TODO: implement tuple methods
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:672 on 2024-09-10 00:34</div>
+            <div class="timeline-body"><p>Since this should be immutable once constructed, and we will have a lot of these and they'll be long-lived, do you think it makes sense to use a boxed slice instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1562 on 2024-09-10 00:36</div>
+            <div class="timeline-body"><p>I don't understand the reference to <code>tuple[int, str]</code> here -- it seems to me that this representation can already represent that type just fine. The only one it can't represent is <code>tuple[int, ...]</code>. (We don't yet ever infer <code>tuple[int, str]</code>, e.g. from an annotation, but that just requires adding a bit of handling to <code>infer_annotation_expression</code>, it doesn't require any change to the code added in this PR.)</p>
+<p>I also don't think this TODO belongs at this spot in the code. This code (for inferring a tuple type from a literal) is already fully correct, there's nothing more to be done here. If the TODO belongs anywhere it's in <code>types.rs</code>, in the list of <code>Type</code> variants, as a TODO that we don't yet have a representation for variable-length homogenous tuples (<code>tuple[T, ...]</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4027 on 2024-09-10 00:36</div>
+            <div class="timeline-body"><p>We can remove this todo; this test is correct after this PR, there's nothing left to do here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-10 00:40</div>
+            <div class="timeline-body"><p>Awesome, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-10 17:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:672 on 2024-09-10 17:20</div>
+            <div class="timeline-body"><p>Yeah, make sense, thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-10 17:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1562 on 2024-09-10 17:20</div>
+            <div class="timeline-body"><p>That makes sense, thanks. I'll update the TODO and it's location</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-09-10 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-09-10 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-10 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-09-10 17:58</div>
+            <div class="timeline-body"><p>Looks great!!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:03 UTC
+    </footer>
+</body>
+</html>

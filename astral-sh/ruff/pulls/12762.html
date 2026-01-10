@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`RUF031`: Ignore unparenthesized tuples in subscripts when the subscript is obviously a type annotation or type alias - astral-sh/ruff #12762</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>RUF031</code>: Ignore unparenthesized tuples in subscripts when the subscript is obviously a type annotation or type alias</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12762">#12762</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-08-08 18:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-08 18:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #12758. Previously with the setting <code>lint.ruff.parenthesize-tuple-in-subscript = true</code>, RUF031 would have complained about annotations such as <code>dict[str, int]</code>, telling you that you should spell them as <code>dict[(str, int)]</code> instead. That feels somewhat silly -- although it is of course a subscription in exactly the same way as a dictionary key lookup, it's not really what the rule is trying to detect.</p>
+<p>This PR fixes most of those cases. Unfortunately it doesn't fix cases like this, where it's ambiguous whether the variable is a type alias or not:</p>
+<pre><code class="language-py">import typing
+X = typing.Callable[[str, int], bool]  # RUF031 here
+</code></pre>
+<p>Faced with this, however, users have a fairly simple workaround: make it explicit that it's a type alias, and the false positive will go away</p>
+<pre><code class="language-py">import typing
+X: typing.TypeAlias = typing.Callable[[str, int], bool]
+</code></pre>
+<h2>Test Plan</h2>
+<p><code>cargo test -p ruff_linter --lib</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-08-08 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-08-08 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @AlexWaygood on 2024-08-08 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-08 18:54</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -1 violations, +0 -0 fixes in 1 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/utils/test_train_utils.py#L117'>tests/utils/test_train_utils.py:117:67:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF031 | 1 | 0 | 1 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-08 18:58</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+0 -1 violations, +0 -0 fixes)</p>
+<p>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</p>
+<ul>
+<li><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/utils/test_train_utils.py#L117">tests/utils/test_train_utils.py:117:67:</a> RUF031 [*] Avoid parentheses for tuples in subscripts.</li>
+</ul>
+</blockquote>
+<p>Oh, that's ugly. It sorta feels like a shame that we'll no longer be emitting a diagnostic there 😆</p>
+<p>I suppose we <em>could</em> only ignore the rule for type annotations/aliases if <code>lint.ruff.parenthesize-tuple-in-subscript = true</code>, and continue to apply the rule everywhere if <code>lint.ruff.parenthesize-tuple-in-subscript = false</code>? But that feels conceptually harder to explain</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-08-08 19:11</div>
+            <div class="timeline-body"><p>Does it make sense to say in the docstring for the rule that we skip annotations, or is that too in the weeds?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-08 19:13</div>
+            <div class="timeline-body"><p>That's a good idea. I'll add some more docs tomorrow (it's late now where I am :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-08-08 19:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/ruff/rules/incorrectly_parenthesized_tuple_in_subscript.rs</code>:68 on 2024-08-08 19:26</div>
+            <div class="timeline-body"><p>Should we also do <code>semantic.in_simple_string_type_definition()</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-09 05:56</div>
+            <div class="timeline-body"><p>I think it might make sense to cover generics as well (https://github.com/astral-sh/ruff/issues/12773#issuecomment-2277195957) like:</p>
+<pre><code class="language-py">class Foo(Generic[T1, T2]):
+	...
+</code></pre>
+<p>(It can be done as a follow-up.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-09 06:27</div>
+            <div class="timeline-body"><blockquote>
+<p>such as dict[str, int], telling you that you should spell them as dict[(str, int)] instead. That feels somewhat silly -- although it is of course a subscription in exactly the same way as a dictionary key lookup, it's not really what the rule is trying to detect.</p>
+</blockquote>
+<p>I find it hard to following this reasoning but it's probably just me not writing enough python. Isn't this as &quot;silly&quot; as doing the same in regular subscripts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-09 19:28</div>
+            <div class="timeline-body"><blockquote>
+<p>I find it hard to following this reasoning but it's probably just me not writing enough python. Isn't this as &quot;silly&quot; as doing the same in regular subscripts?</p>
+</blockquote>
+<p>Type annotations just have their own specific conventions around them. And the subscription has a very different meaning in a typing context. You're not &quot;looking up&quot; a value at an index or key in a typing context in the same way; and I think the vast majority of people aren't even aware that they're creating implicit tuples in a type annotation context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/incorrectly_parenthesized_tuple_in_subscript.rs</code>:68 on 2024-08-09 19:31</div>
+            <div class="timeline-body"><p>It's not needed -- if the <code>SIMPLE_STRING_TYPE_DEFINITION</code> flag has been set on the semantic model, the <code>TYPE_DEFINITION</code> flag will also have been set:</p>
+<p>https://github.com/astral-sh/ruff/blob/c4e651921ba1911a04102e2052c9fe56f185309d/crates/ruff_linter/src/checkers/ast/mod.rs#L2196-L2204</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-09 19:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-08-09 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-08-09 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-09 19:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:01 UTC
+    </footer>
+</body>
+</html>

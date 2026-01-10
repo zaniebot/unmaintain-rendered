@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow `is` and `is` not for direct type comparisons - astral-sh/ruff #7905</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow <code>is</code> and <code>is</code> not for direct type comparisons</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7905">#7905</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-10-11 00:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-11 00:33</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates our E721 implementation and semantics to match the updated <code>pycodestyle</code> logic, which I think is an improvement. Specifically, we now allow <code>type(obj) is int</code> for exact type comparisons, which were previously impossible. So now, we're largely just linting against code like <code>type(obj) == int</code>.</p>
+<p>This change is gated to preview mode.</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/7904.</p>
+<h2>Test Plan</h2>
+<p>Updated the test fixture and ensured parity with latest Flake8.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2023-10-11 00:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/type_comparison.rs</code>:73 on 2023-10-11 00:34</div>
+            <div class="timeline-body"><p>Unlike pycodestyle, our rule is symmetric... so, e.g., we flag both <code>type(x) == int</code> and <code>int == type(x)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-11 00:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-11 00:47</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>ℹ️ ecosystem check <strong>detected changes</strong>. (+3, -1, 0 error(s))</p>
+<details><summary>rotki (+3, -1)</summary>
+<p>
+
+<pre>
+- [*] 11 fixable with the `--fix` option (225 hidden fixes can be enabled with the `--unsafe-fixes` option).
++ [*] 13 fixable with the `--fix` option (225 hidden fixes can be enabled with the `--unsafe-fixes` option).
++ <a href='https://github.com/rotki/rotki/blob/1b0e71f8476f8cc9003891ac2e4c8cce960414c3/rotkehlchen/tests/api/test_settings.py#L146'>rotkehlchen/tests/api/test_settings.py:146:81:</a> RUF100 [*] Unused `noqa` directive (unused: `E721`)
++ <a href='https://github.com/rotki/rotki/blob/1b0e71f8476f8cc9003891ac2e4c8cce960414c3/rotkehlchen/tests/api/test_settings.py#L150'>rotkehlchen/tests/api/test_settings.py:150:80:</a> RUF100 [*] Unused `noqa` directive (unused: `E721`)
+</pre>
+
+</p>
+</details>
+Rules changed: 1
+
+<p>| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| RUF100 | 2 | 2 | 0 |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/type_comparison.rs</code>:28 on 2023-10-11 04:32</div>
+            <div class="timeline-body"><p>I think that the &quot;Use instead&quot; section needs to contain the following:</p>
+<pre><code class="language-python">if type(obj) is type(1):
+	pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/type_comparison.rs</code>:102 on 2023-10-11 04:34</div>
+            <div class="timeline-body"><p>This isn't present in the refactored code, is that an expected behavior?</p>
+<p>The following doesn't get violated then:</p>
+<pre><code class="language-python">if type(foo) == types.LambdaType:
+    ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2023-10-11 04:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-12 13:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/type_comparison.rs</code>:102 on 2023-10-12 13:16</div>
+            <div class="timeline-body"><p>Yeah, they removed this from pycodestyle with the understanding that a user-defined <code>types</code> would be a lot more common than accessing the standard library's <code>types</code>. I'm torn on it but figured it's fine to follow suit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-17 04:38</div>
+            <div class="timeline-body"><p>This may need to go out under preview \cc @zanieb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-20 18:50</div>
+            <div class="timeline-body"><p>@zanieb - What do you think of this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-20 19:21</div>
+            <div class="timeline-body"><p>I agree preview makes sense for this change.</p>
+<p>Perhaps we should clarify in the versioning policy that we will confine changes in the <em>scope</em> of rules to minor releases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-10-20 23:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-10-20 23:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-20 23:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-10-20 23:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/CharString">@CharString</a> reviewed on 2024-08-22 19:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/CharString">@CharString</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/type_comparison.rs</code>:73 on 2024-08-22 19:04</div>
+            <div class="timeline-body"><p><code>is</code> is commutative, but <code>==</code> isn't in Python:</p>
+<pre><code>[ins] In [14]: (a == b) == (b == a)
+Out[14]: False
+
+[ins] In [15]: (a is b) == (b is a)
+Out[15]: True
+</code></pre>
+<p>But I don't think that matters for this linter rule. :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:00 UTC
+    </footer>
+</body>
+</html>

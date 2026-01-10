@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[async-function-with-timeout] Disable check for asyncio before Python 3.11 (ASYNC109) - astral-sh/ruff #13023</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[async-function-with-timeout] Disable check for asyncio before Python 3.11 (ASYNC109)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13023">#13023</a>
+        opened by <a href="https://github.com/jessekv">@jessekv</a>
+        on 2024-08-21 07:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jessekv">@jessekv</a> on 2024-08-21 07:28</div>
+            <div class="timeline-body"><p>Some (occasionally tangential) discussion is found here: https://github.com/astral-sh/ruff/issues/12353</p>
+<h2>Summary</h2>
+<p>Before, the diagnostic was raised for all supported versions of Python. However, <code>asyncio</code> only introduced <code>asyncio.timeout</code> in python version 3.11.</p>
+<p>Now, the diagnostic is not raised when using <code>asyncio</code> with Python versions before 3.11</p>
+<h2>Test Plan</h2>
+<p>It's a policy tweak leveraging well-tested library features. I don't see an obvious need for an additional test, but I would be happy to receive guidance on how to add a test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-08-21 07:34</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/vdwees:main">CodSpeed Performance Report</a></h2>
+<h3>Merging #13023 will <strong>improve performances by 10.62%</strong></h3>
+<p><sub>Comparing <code>vdwees:main</code> (ad23c48) with <code>main</code> (cfe25ab)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>✅ 31</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>vdwees:main</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>linter/all-with-preview-rules[numpy/globals.py]</code> | 911 µs | 823.5 µs | +10.62% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-21 07:43</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-22 07:59</div>
+            <div class="timeline-body"><p>Thanks. This does make sense to me. However, it does mean that the rule now deviates from the upstream rule (I'm not sure if <code>flake8-async</code> has access to the target Python version). @AlexWaygood what's your take on this?</p>
+<p>https://github.com/python-trio/flake8-async/blob/225f15a98db4bb8ce4600127fd0fe90bc5c9c04b/flake8_async/visitors/visitors.py#L43C7-L60</p>
+<p>It would be great if we can add a test demonstrating that this is working as expected (flags asyncio but not anyio)</p>
+<p>You can add the test here</p>
+<p>https://github.com/astral-sh/ruff/blob/45f459bafd0663fd650dcd5750247f10a9f9126b/crates/ruff_linter/src/rules/flake8_async/mod.rs#L18-L39</p>
+<p>and you can use the code below (you have to change the path to the python file)</p>
+<pre><code class="language-rust">    #[test]
+    fn async109_python_310_or_odler() -&gt; Result&lt;()&gt; {
+        let diagnostics = test_path(
+            Path::new(&quot;flake8_async&quot;).join(&quot;path_to_test_File&quot;),
+            &amp;LinterSettings {
+                target_version: PythonVersion::Py310,
+                ..LinterSettings::for_rule(Rule::AsyncFunctionWithTimeout)
+            },
+        )?;
+        assert_messages!(diagnostics);
+        Ok(())
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-08-22 07:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-22 15:42</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks. This does make sense to me. However, it does mean that the rule now deviates from the upstream rule (I'm not sure if <code>flake8-async</code> has access to the target Python version). @AlexWaygood what's your take on this?</p>
+</blockquote>
+<p>Yeah, this change definitely makes sense to me! There are third-party libraries backporting <code>asyncio.timeout</code> to earlier Python versions, but I think that's irrelevant to the changes this PR is making. So this looks good, once it has a test added!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2024-08-22 16:08</div>
+            <div class="timeline-body"><p>Perfect. Let's add a test and then merge this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2024-08-23 07:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-08-23 07:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-08-23 08:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-08-23 08:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

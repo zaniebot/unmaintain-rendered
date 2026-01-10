@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Improve the accuracy of the unresolved-import check - astral-sh/ruff #13055</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Improve the accuracy of the unresolved-import check</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13055">#13055</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-08-22 12:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-22 12:34</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR attempts to address @carljm's post-merge review of #13007:</p>
+<ul>
+<li>Reduce false positives from the check by emitting the diagnostic before transforming the <code>Unbound</code> type into <code>Unknown</code>. I'm <a href="https://github.com/astral-sh/ruff/pull/13007#discussion_r1726880479">still unsure</a> that this fixes all problems, but I agree that it's definitely an improvement on the status quo.</li>
+<li>Get rid of the <code>ModuleResolutionEnum</code></li>
+<li>Use more active voice in error messages</li>
+</ul>
+<h2>Test Plan</h2>
+<ul>
+<li><code>cargo test -p red_knot_python_semantic --lib</code></li>
+<li><code>cargo codspeed build --features codspeed -p ruff_benchmark &amp;&amp; cargo codspeed run</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-08-22 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-08-22 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-08-22 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-22 12:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:986 on 2024-08-22 12:37</div>
+            <div class="timeline-body"><p>Several things feel like they become more awkward about this function as a result of getting rid of the <code>ModuleResolutionError</code> enum, FWIW:</p>
+<ul>
+<li>It now has to take <code>&amp;mut self</code> rather than <code>&amp;self</code>, since we emit diagnostics directly from this method</li>
+<li>It has to be passed the <code>import_from</code> node as an additional argument so that it can emit diagnostics directly. This is annoying because the <code>import_from</code> node has its own <code>.level</code> field, but we don't want that to be used from this method because we only call this method if we've already determined that <code>level &gt; 0</code>, which is enforced by the fact that the type signature takes a <code>NonZeroU32</code>.</li>
+<li>Because the diagnostic could be emitted in several places from this function, I had to factor it out into a separate helper function</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-22 12:52</div>
+            <div class="timeline-body"><p>In case it isn't clear: my goal with the PRs relating to this check isn't necessarily to create a &quot;perfect unresolved-import&quot; check; I agree that that isn't really a priority right now. What I'm interested in is whether our current infrastructure propagates enough information for us to be able to emit precise diagnostics for end users, that have helpful error messages -- because if not, then that could require more significant refactors to our architecture (which I think we'd rather know about sooner rather than later).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-22 12:55</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:986 on 2024-08-22 19:44</div>
+            <div class="timeline-body"><p>I don't find the first or third bullet bothersome. The second I agree is irritating. It seems like one way to make things cleaner would be to make the signature just <code>fn import_from_module_name(&amp;mut self, import_from: &amp;ast::StmtImportFrom) -&gt; Option&lt;ModuleName&gt;</code> and always call it (i.e. incorporate the outer <code>match</code> from the callsite into it.) This method only has one call site so it's pretty much arbitrary where we draw the boundary around it.</p>
+<p>If you strongly prefer using an error enum, I'm open to sticking with that; I just find it generally simpler and clearer to emit diagnostics where they occur and avoid temporary extra representations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1129 on 2024-08-22 21:06</div>
+            <div class="timeline-body"><p>I'm happy with this error message; if you prefer hewing closer to the runtime error and going with <code>Cannot import '{}' from module '{}'</code>, I'm fine with that, too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-08-22 21:07</div>
+            <div class="timeline-body"><p>Looks good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-27 10:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1129 on 2024-08-27 10:34</div>
+            <div class="timeline-body"><p>I actually quite like this message. I think it's specifically the term &quot;attribute&quot; that I'd like to avoid here -- although it's accurate, it's also confusing IMO, because people don't <em>think</em> of <code>from</code> imports as attribute accesses (even though they are), and because we'll likely have an <code>attribute-access</code> or <code>unknown-attribute</code> error code that's separate to the <code>unresolved-import</code> error code. Referring to a &quot;member&quot; rather than an &quot;attribute&quot; sidesteps this without being less precise (in my opinion), and is also slightly more specific than the runtime error message about <em>why</em> the import failed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-27 11:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:986 on 2024-08-27 11:30</div>
+            <div class="timeline-body"><blockquote>
+<p>It seems like one way to make things cleaner would be to make the signature just <code>fn import_from_module_name(&amp;mut self, import_from: &amp;ast::StmtImportFrom) -&gt; Option&lt;ModuleName&gt;</code> and always call it (i.e. incorporate the outer <code>match</code> from the callsite into it.) This method only has one call site so it's pretty much arbitrary where we draw the boundary around it.</p>
+</blockquote>
+<p>I just tried that locally. It <em>works</em>... but it still feels messy, however, in my opinion, because it's hard to keep track of where we're emitting tracing logs to note invalid syntax. Since the various errors are handled inside <code>relative_module_name()</code>, it makese sense to do the logging inside that method. But the caller of the method has to handle the fact that the object returned from <code>relative_module_name()</code> could be <code>None</code>, and it feels very strange to discard the <code>None</code> and replace it with <code>Type::Unknown</code> at the callsite without doing any logging <em>there</em>. So you end up having to add a verbose comment to the callsite explaining that you've already done the logging inside the helper function -- at which point, you really start to wonder if this is the best design, or if it wouldn't be better for the helper function to be stateless and propagate errors to the caller for the caller to log tracing messages about 😄</p>
+<blockquote>
+<p>If you strongly prefer using an error enum, I'm open to sticking with that; I just find it generally simpler and clearer to emit diagnostics where they occur and avoid temporary extra representations.</p>
+</blockquote>
+<p>In general I absolutely agree... but here, it feels like there's just too many branches</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-08-27 13:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-08-27 13:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-27 13:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

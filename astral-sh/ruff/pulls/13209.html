@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Remove match pattern definition visitor - astral-sh/ruff #13209</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Remove match pattern definition visitor</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13209">#13209</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-09-02 09:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-09-02 09:37</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR is based on this discussion: https://github.com/astral-sh/ruff/pull/13147#discussion_r1739408653.</p>
+<p><strong>Todo</strong></p>
+<ul>
+<li>[x] Add documentation for <code>MatchPatternState</code></li>
+</ul>
+<h2>Test Plan</h2>
+<p><code>cargo insta test</code> and <code>cargo clippy</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2024-09-02 09:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2024-09-02 09:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-09-02 09:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2024-09-02 09:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:1155 on 2024-09-02 09:38</div>
+            <div class="timeline-body"><p>This isn't related to the change in this PR but something that's good to test for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:39 on 2024-09-02 09:38</div>
+            <div class="timeline-body"><p>Any recommendation for the name here (<code>MatchPatternState</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:829 on 2024-09-02 09:39</div>
+            <div class="timeline-body"><p>I think I might want to limit the <code>pattern_state</code> to be <code>Some</code> only during the <code>pattern</code> visit. Currently, it's <code>Some</code> during the entire <code>MatchCase</code> visit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:831 on 2024-09-02 09:39</div>
+            <div class="timeline-body"><p>This includes a bunch of <code>unwrap</code>s similar to this. Let me think about if there's a way to avoid them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-02 09:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-02 09:50</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-03 07:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:39 on 2024-09-03 07:55</div>
+            <div class="timeline-body"><p>I'm leaning towards naming it <code>CurrentMatchCase</code> to match <code>current_assignment</code>. It makes it clear that both follow the same schema.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:819 on 2024-09-03 07:56</div>
+            <div class="timeline-body"><p>Should we add a debug assertion here that <code>self.pattern_state</code> is <code>None</code> before entering or is it possible to have nested patterns (in which case we would need to restore the old pattern instead of setting it to <code>None</code>).</p>
+<p>For example, what about</p>
+<pre><code class="language-python">match &quot;a&quot;:
+	case x:
+		match &quot;b&quot;
+			case y:
+				print(&quot;Blub&quot;)
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:831 on 2024-09-03 07:59</div>
+            <div class="timeline-body"><p>I would probably move the <code>self.pattern_state</code> out of the let arms to the top of the function so that we only have a single <code>unwrap</code></p>
+<p>(at the top of `visit_pattern)</p>
+<pre><code>let mut pattern_state = self.pattern_state.as_mut().unwrap();
+</code></pre>
+<p>I guess this doesn't work because the borrow checker will get all mad at you because we call other methods on <code>self</code>.</p>
+<p>My normal solution would be to just <code>take</code> the value when entering the method and restore it when exiting, but I think that doesn't work as well because the value must be set for <code>walk_pattern</code> in case there are nested patterns.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-09-03 08:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-03 08:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:819 on 2024-09-03 08:24</div>
+            <div class="timeline-body"><p>Good point. I need to consider the nested case such as the one you've mentioned.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-03 08:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:819 on 2024-09-03 08:26</div>
+            <div class="timeline-body"><p>Actually, it shouldn't matter because the context is only relevant when visiting the pattern. So, we can just reset it when visiting the case body. https://github.com/astral-sh/ruff/pull/13209#discussion_r1740620907</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-03 08:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:819 on 2024-09-03 08:28</div>
+            <div class="timeline-body"><p>I'll make this less confusing by inlining the <code>walk_match_case</code> function here and reset it right after visiting the pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-03 08:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:819 on 2024-09-03 08:29</div>
+            <div class="timeline-body"><p>Makes sense. We just need to be careful to re-set the current value before we first walk the body, and only then visit later match cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-03 08:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:831 on 2024-09-03 08:39</div>
+            <div class="timeline-body"><blockquote>
+<p>I guess this doesn't work because the borrow checker will get all mad at you because we call other methods on <code>self</code>.</p>
+<p>My normal solution would be to just <code>take</code> the value when entering the method and restore it when exiting, but I think that doesn't work as well because the value must be set for <code>walk_pattern</code> in case there are nested patterns.</p>
+</blockquote>
+<p>Correct on both points.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:831 on 2024-09-03 08:43</div>
+            <div class="timeline-body"><p>Another solution would be to override the <code>visit_pattern</code> to accept the state as a parameter but that means that the <code>walk_pattern</code> logic needs to be inlined as well to pass in the parameter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-03 08:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-09-03 08:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-09-03 08:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-03 08:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-03 17:47</div>
+            <div class="timeline-body"><p>Is there a need for <code>CurrentMatchCase</code> to be separate from <code>CurrentAssignment</code>, or could it just be an enum variant of <code>CurrentAssignment</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-09-03 18:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there a need for <code>CurrentMatchCase</code> to be separate from <code>CurrentAssignment</code>, or could it just be an enum variant of <code>CurrentAssignment</code>?</p>
+</blockquote>
+<p>That's a good point. The reason for using a separate struct is because the definition isn't based on <code>ExprName</code> but using an <code>Identifier</code>. We <em>could</em> include it in <code>CurrentAssignment</code> but it can't be used inside <code>visit_expr</code> and it would involve two unwrap call (a) for <code>current_assignment</code> being an <code>Option</code> and (b) for <code>CurrentAssignment</code> to get the expected variant (e.g., <code>self.current_assignment.unwrap().as_match_case().unwrap()</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-03 18:19</div>
+            <div class="timeline-body"><p>Makes sense! That seems like a solid enough reason to me.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

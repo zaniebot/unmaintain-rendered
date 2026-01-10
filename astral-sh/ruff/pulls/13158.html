@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a method to `Checker` for cached parsing of stringified type annotations - astral-sh/ruff #13158</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a method to <code>Checker</code> for cached parsing of stringified type annotations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13158">#13158</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-08-30 10:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-30 10:20</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds a method to <code>ruff_linter::checkers::ast::Checker</code> for cached parsing of stringified type annotations. It was decided in review of #12951 that this would be desirable, since <code>ruff_python_parser::typing::parse_type_annotation</code> can be quite expensive. However, since we already have a number of linter rules that call <code>ruff_python_parser::typing::parse_type_annotation</code>, it seemed to me like this would make sense as a standalone PR. (Adding caching was also more complicated than I expected, so separating this into its own PR should make life easier for reviewers.) If this is accepted, I'll rebase #12951 on top of it.</p>
+<p>The PR should be easiest to review commit-by-commit. Each commit on its own passes the entire test suite. The first two commits do some refactoring to lay the groundwork for adding the new method. The third commit adds the new method and makes use of it in <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>; the final commit makes use of the new method in various linter rules that currently use <code>ruff_python_parser::typing::parse_type_annotation</code>.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @AlexWaygood on 2024-08-30 10:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @AlexWaygood on 2024-08-30 10:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-08-30 10:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @AlexWaygood on 2024-08-30 10:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-30 10:31</div>
+            <div class="timeline-body"><p>This doesn't seem to have any impact on the Codspeed benchmarks one way or another as a standalone PR (but I don't know how many stringified annotations we have in those benchmarks?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-30 10:39</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-30 16:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:267 on 2024-08-30 16:42</div>
+            <div class="timeline-body"><p>Why is the arena necessary here? Doesn't the cache store owned data?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-01 00:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:267 on 2024-09-01 00:18</div>
+            <div class="timeline-body"><p>I just pushed https://github.com/astral-sh/ruff/pull/13158/commits/8ff61ad8f16aa9b88f45f653b170acd711769aac to clarify the design of the cache a little bit.</p>
+<p>The <code>HashMap</code> in the cache has to be behind a <code>RefCell</code> or we can't call <code>Checker::parse_type_annotation</code> with an <code>&amp;self</code> reference, and having it take an <code>&amp;mut self</code> reference causes all sorts of borrow checker complaints. If the <code>HashMap</code> behind the <code>RefCell</code> owns the data, however, it's impossible to return a reference to the data from the cache's <code>lookup_or_parse()</code> method, or the borrow checker complains that the data returned by <code>lookup_or_parse()</code> borrows data owned by the current function. So the parsed annotations have to be stored in some kind of external storage outside of the <code>RefCell&lt;HashMap&gt;</code>, with the <code>RefCell&lt;HashMap&gt;</code> only storing references to the data.</p>
+<p>If there's a better way of doing this, I'd love to know about it. But I've been puzzling over this for much of the afternoon, and can't really see it :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @AlexWaygood on 2024-09-01 10:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-02 10:23</div>
+            <div class="timeline-body"><blockquote>
+<p>This doesn't seem to have any impact on the Codspeed benchmarks one way or another as a standalone PR (but I don't know how many stringified annotations we have in those benchmarks?)</p>
+</blockquote>
+<p>I don't think we have any benchmark containing stringified annotations. You could try to run some hyperfine benchmarks over a project that does use stringified annotations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:182 on 2024-09-02 10:29</div>
+            <div class="timeline-body"><p>Nit: I'm leaning towards caching only successfully parsed annotations, considering that annotations with syntax errors should be rare. This would help reduce the size of every element in the arena.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:183 on 2024-09-02 10:29</div>
+            <div class="timeline-body"><p>Nit: Maybe <code>by_offset</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:2265 on 2024-09-02 10:32</div>
+            <div class="timeline-body"><p>Can you tell me more about what is inside the cache that is no longer valid? I don't see that this loop modifies the AST in anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:181 on 2024-09-02 10:35</div>
+            <div class="timeline-body"><p>Nit: I would move this type to the end of the file. It seems less important than <code>Checker</code> (which is the main thing in this file)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:267 on 2024-09-02 10:41</div>
+            <div class="timeline-body"><p>I don't think there's a better way.</p>
+<p>As you said, the value returned by <code>lookup_or_parse</code> must be copy to avoid borrowing a value that's behind a <code>RefCell</code>.</p>
+<p>This is accomplished by storing references that outlive the <code>Cache</code> (and <code>Checker</code>))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-09-02 10:42</div>
+            <div class="timeline-body"><p>Nice. Looks good to me.</p>
+<p>The only part that's unclear to me is why we need to reset the cache. It would be nice if it could be avoided. If not, then it would help to extend the comment so that it explains what data gets invalidated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-09-02 11:05</div>
+            <div class="timeline-body"><p>This is more of a general comment, since I thought about adding something similar for my ongoing work on flake8-type-checking.</p>
+<p>I am not sure to what degree this would be viable, but why not just eagerly parse string annotations, store them all on the checker as a struct that contains both the string and the parsed expression add that struct to the deferred string annotations vector instead of just the string and then visit the expression where we currently parse the annotation in the checker. That should preserve the same semantics for bindings and references.</p>
+<p>I realize there are some corner cases with nested strings like <code>'list[&quot;str&quot;]'</code> where parsing either would still need to be deferred or the nested case would need to be handled eagerly while parsing the annotation, adding an arbitrary number of string / expression pairs, rather than only a single one. But it still seems viable to me, unless I'm forgetting an important detail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-02 11:15</div>
+            <div class="timeline-body"><p>I thought about that too because we always end up parsing all type annotations.</p>
+<p>My conclusion was that doing it inside of <code>Checker</code> would require one additional AST pass, which is unfortunate. It would be nice if we could do this directly in the parser but that's probably more involved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-02 11:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:2265 on 2024-09-02 11:21</div>
+            <div class="timeline-body"><p>Sure. Consider the following annotation:</p>
+<pre><code class="language-py">x: &quot;list['str']&quot;
+</code></pre>
+<p>The first time we visit the AST, we see <code>&quot;list['str']&quot;</code> and identify it as a stringified annotation. We store it in <code>self.visit.string_type_definitions</code> to be analyzed later.</p>
+<p>After the entire tree has been visited, we look through <code>self.visit.string_type_definitions</code> and find <code>&quot;list['str']&quot;</code>. We parse it, and it becomes <code>list['str']</code>. After parsing it, we call <code>self.visit_expr()</code> on the <code>list['str']</code> node, and that <code>visit_expr</code> call is going to find <code>'str'</code> inside that node and identify it as a string type definition, appending it to <code>self.visit.string_type_definitions</code>, ensuring that there will be one more iteration of this loop. Unfortunately, the <code>TextRange</code> of <code>'str'</code> here will be <em>relative to the parsed <code>list['str']</code> node</em> rather than <em>relative to the original module</em>, meaning the cache (which uses <code>TextSize</code> as the key) becomes invalid on the second iteration of this loop.</p>
+<p>Does that make sense? Can you see a better way round this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-02 11:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:2265 on 2024-09-02 11:23</div>
+            <div class="timeline-body"><p>(The effect of this is that without clearing the cache on each iteration of this loop, we can have an infinite loop on some snippets. I observed this when running <code>cargo test -p ruff_linter</code> on an early version of this PR, and it took a while to debug 😆)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-02 11:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:2265 on 2024-09-02 11:26</div>
+            <div class="timeline-body"><p>Makes sense. It might make sense to paste this excellent explanation into the comment :)</p>
+<p>No, I don't have another workaround other than using ptr-comparison and storing expression references similar to https://github.com/astral-sh/ruff/blob/d6851076388624d4c76c68d0cf8e72fd29e4a6e6/crates/ruff_python_formatter/src/comments/node_key.rs#L9-L12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-02 11:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:2265 on 2024-09-02 11:30</div>
+            <div class="timeline-body"><blockquote>
+<p>Makes sense. It might make sense to paste this excellent explanation into the comment :)</p>
+</blockquote>
+<p>I'll do so!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-09-02 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-09-02 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-02 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2024-09-05 15:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

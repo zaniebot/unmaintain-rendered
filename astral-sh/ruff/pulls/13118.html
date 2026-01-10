@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-implicit-str-concat`] Normalize octals before merging concatenated strings in `single-line-implicit-string-concatenation` (`ISC001`) - astral-sh/ruff #13118</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-implicit-str-concat</code>] Normalize octals before merging concatenated strings in <code>single-line-implicit-string-concatenation</code> (<code>ISC001</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13118">#13118</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2024-08-26 22:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-08-26 22:16</div>
+            <div class="timeline-body"><p>This PR pads the last octal (if there is one) to three digits before concatenating strings in the fix for <code>ISC001</code>.</p>
+<p>For example: <code>&quot;\12&quot;&quot;0&quot;</code> is fixed to <code>&quot;\0120&quot;</code>.</p>
+<p>Closes #12936.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-26 22:30</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-27 14:46</div>
+            <div class="timeline-body"><p>This is very clever. Good job! Two small points:</p>
+<ol>
+<li>The <code>.to_string()</code> call on line 175 will clone the underlying data, which could be quite costly -- and is unnecessary in the happy path, since most strings don't have octal escapes in them. We can avoid this by using a <a href="https://doc.rust-lang.org/std/borrow/enum.Cow.html"><code>Cow</code></a> -- something like this? (The diff is relative to your branch)</li>
+</ol>
+<pre><code class="language-diff">--- a/crates/ruff_linter/src/rules/flake8_implicit_str_concat/rules/implicit.rs
++++ b/crates/ruff_linter/src/rules/flake8_implicit_str_concat/rules/implicit.rs
+@@ -1,3 +1,5 @@
++use std::borrow::Cow;
++
+ use itertools::Itertools;
+ 
+ use ruff_diagnostics::{Diagnostic, Edit, Fix, FixAvailability, Violation};
+@@ -173,11 +175,11 @@ fn concatenate_strings(a_range: TextRange, b_range: TextRange, locator: &amp;Locator
+     }
+ 
+     let mut a_body =
+-        a_text[a_leading_quote.len()..a_text.len() - a_trailing_quote.len()].to_string();
++        Cow::Borrowed(&amp;a_text[a_leading_quote.len()..a_text.len() - a_trailing_quote.len()]);
+     let b_body = &amp;b_text[b_leading_quote.len()..b_text.len() - b_trailing_quote.len()];
+ 
+     if a_leading_quote.find(['r', 'R']).is_none() {
+-        a_body = normalize_ending_octal(&amp;a_body);
++        normalize_ending_octal(&amp;mut a_body);
+     }
+ 
+     let concatenation = format!(&quot;{a_leading_quote}{a_body}{b_body}{a_trailing_quote}&quot;);
+@@ -191,10 +193,10 @@ fn concatenate_strings(a_range: TextRange, b_range: TextRange, locator: &amp;Locator
+ 
+ /// Pads an octal at the end of the string
+ /// to three digits, if necessary.
+-fn normalize_ending_octal(text: &amp;str) -&gt; String {
++fn normalize_ending_octal(text: &amp;mut Cow&lt;'_, str&gt;) {
+     // Early return for short strings
+     if text.len() &lt; 2 {
+-        return text.to_string();
++        return;
+     }
+ 
+     let mut rev_bytes = text.bytes().rev();
+@@ -202,20 +204,19 @@ fn normalize_ending_octal(text: &amp;str) -&gt; String {
+         // &quot;\y&quot; -&gt; &quot;\00y&quot;
+         if has_odd_consecutive_backslashes(&amp;rev_bytes) {
+             let prefix = &amp;text[..text.len() - 2];
+-            return format!(&quot;{prefix}\\00{}&quot;, last_byte as char);
++            *text = Cow::Owned(format!(&quot;{prefix}\\00{}&quot;, last_byte as char));
+         }
+         // &quot;\xy&quot; -&gt; &quot;\0xy&quot;
+-        if let Some(penultimate_byte @ b'0'..=b'7') = rev_bytes.next() {
++        else if let Some(penultimate_byte @ b'0'..=b'7') = rev_bytes.next() {
+             if has_odd_consecutive_backslashes(&amp;rev_bytes) {
+                 let prefix = &amp;text[..text.len() - 3];
+-                return format!(
++                *text = Cow::Owned(format!(
+                     &quot;{prefix}\\0{}{}&quot;,
+                     penultimate_byte as char, last_byte as char
+-                );
++                ));
+             }
+         }
+     }
+-    text.to_string()
+ }
+</code></pre>
+<ol start="2">
+<li>I wonder if it's necessary to normalize the ending octal in the first string if the second string doesn't start with a digit. E.g. if I understand correctly, something like <code>&quot;\12&quot; &quot;foo&quot;</code> will be fixed as <code>&quot;\012foo&quot;</code> according to the logic in your PR -- but I <em>think</em> it's safe to not apply the normalization logic in this case, and instead fix it as <code>\12foo</code>? What do you think?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-27 14:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_implicit_str_concat/rules/implicit.rs</code>:228 on 2024-08-27 14:59</div>
+            <div class="timeline-body"><p>nit: I'd probably rewrite the function like this, so that it receives an owned value rather than receiving a borrowed value that it immediately clones:</p>
+<pre><code class="language-suggestion">fn has_odd_consecutive_backslashes(mut itr: impl Iterator&lt;Item = u8&gt;) -&gt; bool {
+    let mut odd_backslashes: bool = false;
+    while let Some(b'\\') = itr.next() {
+        odd_backslashes = !odd_backslashes;
+    }
+    odd_backslashes
+}
+</code></pre>
+<p>And then explicitly call <code>rev_bytes.clone()</code> at each callsite before passing the iterator into this function. That makes the signature of this function slightly less complicated, and it also makes the code more explicit about each clone that we're doing. (The clone shouldn't be <em>that</em> expensive here for an iterator instance, but it's still good to be explicit about it!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-08-27 17:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/flake8_implicit_str_concat/rules/implicit.rs</code>:228 on 2024-08-27 17:04</div>
+            <div class="timeline-body"><p>Good suggestion! implemented</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-08-27 17:17</div>
+            <div class="timeline-body"><p>Re putting the <code>Cow</code>s to pasture:</p>
+<p>The borrow checker complained when I tried to implement the fix you suggested (assuming I did it correctly), because I borrow <code>text</code> here:</p>
+<pre><code class="language-rust">let mut rev_bytes = text.bytes().rev();
+</code></pre>
+<p>and then try to modify it with <code>*text = Cow::Owned(...)</code>. I can try to mess around, but it's not immediately obvious how to avoid a clone/copy/some other memory allocation.</p>
+<p>More fundamentally, I'm hoping you could help with a Rust confusion here. I would've thought that the <code>.to_string</code> wouldn't be much added cost because we eventually convert everything to a <code>String</code> (even on the happy path) here:</p>
+<pre><code class="language-rust">let concatenation = format!(&quot;{a_leading_quote}{a_body}{b_body}{a_trailing_quote}&quot;);
+</code></pre>
+<p>Maybe a more minimal version of my question is: Do you gain much in terms or memory/performance by doing</p>
+<pre><code class="language-rust">let a = &amp;&quot;xyz&quot;;
+let s = format!(&quot;{a}&quot;)
+// then a drops out of scope
+</code></pre>
+<p>vs</p>
+<pre><code class="language-rust">let a = &quot;xyz&quot;.to_string();
+let s = format!(&quot;{a}&quot;)
+// then a drops out of scope
+</code></pre>
+<p>?</p>
+<p>Or does the compiler end up making those roughly the same?</p>
+<p>(Obviously the first code is better in this contrived example, but the question remains.)</p>
+<p>Sorry for the long-ish question, and thanks for the very helpful review!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-27 17:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Or does the compiler end up making those roughly the same?</p>
+</blockquote>
+<p>Ummmm... I'm not entirely sure exactly what optimisations are permitted here! You may well be right that the compiler is smart enough to &quot;see through&quot; the allocation and optimise it away -- but I'm not sure if that's a permitted optimisation, or if it's one the compiler's smart enough to make. I <em>could</em> go and try to investigate exactly whether it does make this optimisation or not -- but I'm not sure the exact optimisations the compiler is likely to make here are things we should be relying on anyway ;) So I think it's better to use a <code>Cow</code> here!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-27 17:50</div>
+            <div class="timeline-body"><blockquote>
+<p>The borrow checker complained when I tried to implement the fix you suggested (assuming I did it correctly), because I borrow <code>text</code> here:</p>
+</blockquote>
+<p>I pushed the change I was suggesting to your PR branch in https://github.com/astral-sh/ruff/pull/13118/commits/25805a2992889918b3b5626c5e60139ca756037d :-) the key to avoiding the borrow-checker complaints is to have <code>normalize_ending_octal()</code> mutate the existing value <em>in-place</em> rather than returning a new value</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-08-27 17:50</div>
+            <div class="timeline-body"><p>Thanks again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-08-27 17:51</div>
+            <div class="timeline-body"><p>Makes sense, and thank you that was very helpful!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[flake8-implicit-str-concat] Normalize octals before concatenating strings in `single-line-implicit-string-concatenation (ISC001)`" to "[`flake8-implicit-str-concat`] Normalize octals before merging concatenated strings in `single-line-implicit-string-concatenation` (`ISC001`)" by @AlexWaygood on 2024-08-27 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-08-27 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2024-08-27 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-08-27 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-08-27 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-27 17:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

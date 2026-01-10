@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add type inference for loop variables inside comprehension scopes - astral-sh/ruff #13251</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add type inference for loop variables inside comprehension scopes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13251">#13251</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-09-05 11:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-05 11:23</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This adds type inference for loop variables inside comprehension scopes. The type-inference tests are passing, but it seems to currently trigger a panic in the corpus tests.</p>
+<p>Async comprehensions will require different logic, so for now loop variables in these are inferred as <code>Unknown</code> still. In order to distinguish between async comprehension definitions and synchronous comprehensions definitions, a new <code>is_async</code> field is added to <code>ComprehensionDefinitionKind</code> and various other structs for tracking comprehension definitions.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test -p red_knot_python_semantic</code> and <code>cargo test -p red_knot_workspace</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-09-05 11:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[WIP] Add type inference for loop variables inside comprehension scopes" to "[WIP] [red-knot] Add type inference for loop variables inside comprehension scopes" by @AlexWaygood on 2024-09-05 11:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-05 11:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1721 on 2024-09-05 11:26</div>
+            <div class="timeline-body"><p>It might not be the first parent in case there are nested comprehensions like <code>[[x for x in iter1] for y in iter2]</code>, you might need to traverse up until there's a non-comprehension scope.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-09-05 11:33</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex/comprehension-inference">CodSpeed Performance Report</a></h2>
+<h3>Merging #13251 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>alex/comprehension-inference</code> (86aacad) with <code>main</code> (ac720cd)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 32</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-05 11:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1721 on 2024-09-05 11:37</div>
+            <div class="timeline-body"><p>I just pushed a test for that. It seems to work fine :)</p>
+<p>I think the nonlocal name lookup happens automatically now, following https://github.com/astral-sh/ruff/commit/3c4ec82aee18c8438a5f807853edcf703e0816a0. We need to look it up in the parent scope because it is <em>not</em> valid for the iterable to reference any variables defined in <em>this</em> scope. But looking it up in the parent scope doesn't mean that it will stop at the parent scope; it will continue iterating up through the parent scopes until it finds a definition (or infer <code>Unbound</code> if it can't)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-05 11:41</div>
+            <div class="timeline-body"><p>Just FYI: I think the benchmark is panicking now. I see some <code>std::io::Write</code> show up in the benchmarks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-05 11:54</div>
+            <div class="timeline-body"><p>lots of things are currently broken here 😆 I just figured I'd make a draft PR to show where I'm at (and in case it's obvious to anybody else what the cause of the panics is)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-05 12:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1721 on 2024-09-05 12:02</div>
+            <div class="timeline-body"><p>Oh interesting, thanks for clarifying</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-05 12:20</div>
+            <div class="timeline-body"><blockquote>
+<p>lots of things are currently broken here 😆 I just figured I'd make a draft PR to show where I'm at (and in case it's obvious to anybody else what the cause of the panics is)</p>
+</blockquote>
+<p>Haha, okay. I was shocked by the performance regression, so I had to take a quick look at why it was that bad. I was relieved to see that it was probably caused by the benchmark crashing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-05 12:22</div>
+            <div class="timeline-body"><blockquote>
+<p>I was shocked by the performance regression, so I had to take a quick look at why it was that bad. I was relieved to see that it was probably caused by the benchmark crashing.</p>
+</blockquote>
+<p>Oh the PR also currently adds a <code>dbg!()</code> call in quite a hot location so that I can see what's going on more clearly. I assume that doesn't help 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[WIP] [red-knot] Add type inference for loop variables inside comprehension scopes" to "[red-knot] Add type inference for loop variables inside comprehension scopes" by @AlexWaygood on 2024-09-09 19:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2024-09-09 19:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-09-09 19:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-09-09 19:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-09 19:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1448 on 2024-09-09 19:26</div>
+            <div class="timeline-body"><p>(This gets you a much better error message as it tells you what <code>previous</code> was in the error message)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-09 19:38</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-09 19:39</div>
+            <div class="timeline-body"><blockquote>
+<p>Haha, okay. I was shocked by the performance regression, so I had to take a quick look at why it was that bad. I was relieved to see that it was probably caused by the benchmark crashing.</p>
+</blockquote>
+<p>All gone now 🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1764 on 2024-09-09 19:42</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // Two things are different if it's the first comprehension:
+        // (1) We must lookup the `ScopedExpressionId` of the iterable expression in the outer scope,
+        //     because that's the scope we visit it in in the semantic index builder
+        // (2) We must *not* call `self.extend()` on the result of the type inference,
+        //     because `ScopedExpressionId` are only meaningful within their own scope, so
+        //     we'd add types for random wrong expressions in the current scope
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4387 on 2024-09-09 19:47</div>
+            <div class="timeline-body"><p>Should we also have a test for the case where the inner comprehension actually does iterate over a name defined by the outer comprehension, instead of a name defined in the outer outer scope?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-09-09 19:56</div>
+            <div class="timeline-body"><p>Looks great!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-09 19:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4387 on 2024-09-09 19:58</div>
+            <div class="timeline-body"><p>Sure!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-09-09 20:20</div>
+            <div class="timeline-body"><p>All of the tests! Looks excellent, merge away</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-09 20:20</div>
+            <div class="timeline-body"><p>Thanks very much for the help debugging this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-09-09 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-09-09 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-09 20:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

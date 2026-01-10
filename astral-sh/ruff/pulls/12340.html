@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Improve debuggability - astral-sh/ruff #12340</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Improve debuggability</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12340">#12340</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-07-15 18:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-15 18:00</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR requires that all implementers of <code>ruff_db::db::Db</code> also implement <code>Debug</code>. The reason for doing this is it makes it much easier to debug variables that are typed as <code>&amp;'db dyn Db</code>, and it means that we can simply <code>#[derive(Debug)]</code> on structs that have <code>db: &amp;'db dyn Db</code> fields.</p>
+<p><code>Debug</code> needs to be manually implemented for all <code>TestDb</code> and <code>Program</code> classes, unfortunately, as <code>salsa::Storage</code> does not implement <code>Debug</code>, and all <code>TestDb</code> structs have a field of type <code>salsa::Storage</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-07-15 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-07-15 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-07-15 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-15 18:14</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-15 18:19</div>
+            <div class="timeline-body"><p>I'm not sure how useful a debug implementation on Db is that prints all its fields. Printing any Db will just result in a massive wall of text.</p>
+<p>The main pain point seems to be that you can't derive debug on structs containing Db. If that's the real problem, maybe a wrapper struct that stores a reference to a Db with a simple Debug implementation that only prints <Db> is better suited for the task</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-16 10:23</div>
+            <div class="timeline-body"><p>I've revised the PR so that the <code>Debug</code> implementations for the <code>TestDb</code> and <code>Program</code> structs only give a summary of what's in the database by default, but give a more verbose description of the contents if you use the alternate representation (<code>#?</code> rather than <code>?</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-07-16 10:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-16 11:15</div>
+            <div class="timeline-body"><blockquote>
+<p>I've revised the PR so that the Debug implementations for the TestDb and Program structs only give a summary of what's in the database by default, but give a more verbose description of the contents if you use the alternate representation (#? rather than ?).</p>
+</blockquote>
+<p>I'm not sure if this distinction is that useful because <code>dbg</code> always uses the alternate representation. I still think a wrapper struct to enable the root cause, being able to automatically derive <code>Debug</code> is the better approach.</p>
+<p>Taking one step back. What are the main use cases that we're trying to solve here? What are cases where you wanted to use <code>dbg</code> on a struct that can't implement <code>dbg</code> because of <code>db</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @carljm on 2024-07-20 00:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-01 21:28</div>
+            <div class="timeline-body"><p>I think my preferred solution here would be to start a discussion on the salsa zulip on whether <code>Storage</code> should implement a dummy <code>Debug</code>. It should then be trivial to derive <code>Debug</code> for all database implementations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-14 08:49</div>
+            <div class="timeline-body"><p>@AlexWaygood are you planning on following up on this PR or should we close it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-14 08:54</div>
+            <div class="timeline-body"><p>It's not a priority so we can just close for now if you're looking to get the PR count down ;)</p>
+<p>I can open a separate PR if I get to it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-08-14 08:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-14 08:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:00 UTC
+    </footer>
+</body>
+</html>

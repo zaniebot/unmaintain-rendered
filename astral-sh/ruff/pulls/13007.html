@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Improve the `unresolved-import` check - astral-sh/ruff #13007</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Improve the <code>unresolved-import</code> check</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13007">#13007</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-08-20 12:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-20 12:55</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR improves the <code>unresolved-import</code> check so that it once again is able to recognise unresolved <code>import from</code> imports. It adds the same tests as #12986, but doesn't add the <code>UnknownTypeKind</code> enum that that PR introduces.</p>
+<p>I've had to comment out some assertions in the tests for now. One case that passes with #12986 but doesn't work with this PR is this:</p>
+<ul>
+<li><code>src/a.py</code>: <code>import foo as foo</code></li>
+<li><code>src/b.py</code>: <code>from a import foo</code></li>
+</ul>
+<p>This should only cause an <code>unresolved-import</code> diagnostic to be emitted on <code>a.py</code>, and this is the case with #12986, but with this PR <code>unresolved-import</code> diagnostics are emitted on both files.</p>
+<p>Another case that passes with #12986 but not with this PR is the case where a symbol that exists, but has an inferred type of <code>Unknown</code>, is imported from another module. This should not trigger an <code>unresolved-import</code> diagnostic, but does with this PR, as it's hard to determine the root cause of the <code>Unknown</code> type.</p>
+<p>Overall, this PR feels to me like it's an improvement on the status quo, but inferior to #12986. It's also a less significant change than #12986, however, since it's not a significant change to the design of how we think about types in red-knot, so the idea is that it should be possible to land this and then rebase #12986 on top of it.</p>
+<h2>Test Plan</h2>
+<p>Several tests added to <code>crates/red_knot_python_semantic/src/types.rs</code> and <code>crates/red_knot_python_semantic/src/types/infer.rs</code>. The assertions in the benchmarks have also been updated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-08-20 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-08-20 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-08-20 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-20 13:30</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-20 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1791 on 2024-08-20 14:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-20 14:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1022 on 2024-08-20 14:57</div>
+            <div class="timeline-body"><p>I still find it odd that we have to do the &quot;unbound&quot; check everywhere where we call <code>.member</code>. Do we not always want to emit a diagnostic when failing to resolve a member?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-20 15:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1022 on 2024-08-20 15:11</div>
+            <div class="timeline-body"><p>We do, but it will need to be different error codes. It would be very counterintuitive for users if <code>import foo</code> triggers an <code>unresolved-import</code> error code and <code>from foo import bar</code> triggers an <code>unresolved-member</code> error code. Users will expect all import-related failures to be the same error code and all attribute-access-related failures to be a different error code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-20 15:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1022 on 2024-08-20 15:18</div>
+            <div class="timeline-body"><p>That makes sense. We might just want to parameterize the <code>member</code> method. But maybe that's not worth it? I don't know. Have you looked at how mypy/pyright do this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-20 15:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1022 on 2024-08-20 15:32</div>
+            <div class="timeline-body"><blockquote>
+<p>We might just want to parameterize the <code>member</code> method.</p>
+</blockquote>
+<p>Not sure exactly what you mean; could you clarify?</p>
+<blockquote>
+<p>Have you looked at how mypy/pyright do this?</p>
+</blockquote>
+<p>Mypy has a very different architecture to the one we're building. It resolves all imports eagerly in a first pass before it does any other type checking; <code>module-not-found</code> errors are emitted during this first pass here: <a href="https://github.com/python/mypy/blob/fe15ee69b9225f808f8ed735671b73c31ae1bed8/mypy/build.py#L2600-L2700">https://github.com/python/mypy/blob/fe15ee69b9225f808f8ed735671b73c31ae1bed8/mypy/build.py#L2600-L2700</a>.</p>
+<p>I'm not as familiar with pyright's codebase but I can dig in now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-20 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1022 on 2024-08-20 15:50</div>
+            <div class="timeline-body"><p>Hmm... it seems both mypy and pyright in fact do what you'd prefer here -- they both use &quot;attribute-access&quot; error codes for <code>from x import y</code> imports:</p>
+<ul>
+<li>pyright: <a href="https://pyright-play.net/?pyrightVersion=1.1.368&amp;code=GYJw9gtgBAxmA28CmMAuBLMA7AzgOgEMAjGKdCABzBFSmDDCA">https://pyright-play.net/?pyrightVersion=1.1.368&amp;code=GYJw9gtgBAxmA28CmMAuBLMA7AzgOgEMAjGKdCABzBFSmDDCA</a></li>
+<li>mypy: <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=3110174b575f8d8eba319462c45a8ddf">https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=3110174b575f8d8eba319462c45a8ddf</a></li>
+</ul>
+<p>Pyright's error code is <code>reportAttributeAccessIssue</code>; mypy's is <code>attr-defined</code>, which both seem equally bad. In terms of error messages, pyright definitely wins, though: pyright has:</p>
+<pre><code>&quot;foo&quot; is unknown import symbol
+</code></pre>
+<p>whereas mypy has</p>
+<pre><code>Module &quot;collections.abc&quot; has no attribute &quot;foo&quot; 
+</code></pre>
+<p>I'm somewhat surprised by this. But given this precedent, I'm okay with emitting the diagnostic from <code>.member()</code>, if you'd prefer. Though I hope we still aspire to be more user-friendly in our error messages than either mypy or pyright.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-20 16:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1022 on 2024-08-20 16:04</div>
+            <div class="timeline-body"><p>I'm not suggesting that we should use a simple error message. I'm only raising the question if we should change <code>member</code> so that it always requires handling the error where the member might be unbound by either returning a <code>Result</code> or having a closure or similar to create a diagnostic if the member is unbound.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-20 16:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1022 on 2024-08-20 16:05</div>
+            <div class="timeline-body"><p>Oh, I agree that that makes a lot of sense! I can make that change</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-20 16:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1022 on 2024-08-20 16:20</div>
+            <div class="timeline-body"><p>Hmmm... if the inferred type of a member access is a union, e.g. <code>int | Unbound</code>, would you expect that to be represented as an <code>Ok()</code> or an <code>Err()</code> variant (if we return an <code>Result</code> from <code>.member()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-20 16:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1022 on 2024-08-20 16:31</div>
+            <div class="timeline-body"><blockquote>
+<p>having a closure or similar to create a diagnostic if the member is unbound.</p>
+</blockquote>
+<p>This might be doable, but after looking at it for a little bit I think it would still be quite a large refactor and design change. I think it's out of the scope of this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:432 on 2024-08-21 10:50</div>
+            <div class="timeline-body"><p>Hmm, I'm not so sure about this and getting predictable diagnostic if we omit some might be difficult to achieve (or at least, requires a post-processing step).</p>
+<p>The reason why I'm unsure if that's indeed the desired behavior is that diagnostics that are a consequence of the import are missing then become harder to understand if the missing import violation only comes later in the list of diagnostics (because of how paths get sorted). One such example could be a strict mode that creates a warning whenever the type checker infers <code>Unknown</code>.</p>
+<p>The other reason why I think we should remove this TODO is because the elimination of the second diagnostic has to happen at a higher level than <code>check_types</code>. Calling <code>check_types</code> should return all diagnostics for that file. It's up to <code>workspace.check</code> to decide if some diagnostics should be suppressed across files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-08-21 10:54</div>
+            <div class="timeline-body"><p>I would still have preferred to implement a holistic solution to how we handle unresolved members rather than implementing a one off solution because I'm worried that we (I for example) end up copying this pattern. That was also the reason why I intentionally didn't implement this diagnostic in my original PR.</p>
+<p>I'm okay with merging if you find the parity important but I ask you to at least add a TODO comment to make it clear that this pattern <em>should not</em> be copied.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-21 11:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:432 on 2024-08-21 11:12</div>
+            <div class="timeline-body"><p>I'm not sure that producing a bogus diagnostic here and then filtering it out at a higher level would be appropriate. I don't think we should produce an <code>unresolved-import</code> diagnostic here at all, because there is no unresolved import here. The import is fully resolved to a symbol that exists in the symbol table of <code>a.py</code>. The fact that the symbol in <code>a.py</code> has been inferred as having type <code>Unknown</code> is immaterial to whether the import of that symbol from <code>a.py</code> into <code>b.py</code> can be resolved.</p>
+<p>Note that this a general problem with the lint currently for any symbol that has a type inferred as <code>Unknown</code>, not just symbols that are inferred as <code>Unknown</code> because of unresolved imports specifically. This is the cause of six of the new false-positive errors in the benchmark. It's one of the problems that would be fixed if we adopted something like #12986.</p>
+<p>For now, I'll change the comment from a TODO into an explanatory note, so that it's clear that we don't yet have agreement on where the problem should be solved</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-21 11:14</div>
+            <div class="timeline-body"><blockquote>
+<p>I would still have preferred to implement a holistic solution to how we handle unresolved members</p>
+</blockquote>
+<p>Well, so would I! #12986 was my attempt 😆 The idea behind this PR was to try to implement as many of the fixes implemented there as possible without fundamentally reworking red-knot's design, so that it would be clearer exactly what the pros and cons of doing so would be.</p>
+<blockquote>
+<p>I ask you to at least add a TODO comment to make it clear that this pattern <em>should not</em> be copied.</p>
+</blockquote>
+<p>I'll add this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-21 11:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:432 on 2024-08-21 11:21</div>
+            <div class="timeline-body"><p>Oh I see. I misunderstood the test case.</p>
+<p>I assumed that we only wanted to emit one diagnostic for:</p>
+<pre><code class="language-python"># a .py
+import random # let's pretend this import doesn't exist
+
+# b.py
+import random
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:432 on 2024-08-21 11:22</div>
+            <div class="timeline-body"><p>It could make sense to split this out into its own test and mark it with <code>ignore</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-21 11:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-21 11:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:432 on 2024-08-21 11:23</div>
+            <div class="timeline-body"><blockquote>
+<p>It could make sense to split this out into its own test and mark it with <code>ignore</code>.</p>
+</blockquote>
+<p>Sounds good</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-08-21 13:15</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex/redknot-import-from">CodSpeed Performance Report</a></h2>
+<h3>Merging #13007 will <strong>improve performances by 4.16%</strong></h3>
+<p><sub>Comparing <code>alex/redknot-import-from</code> (2c1fb1d) with <code>main</code> (785c399)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>✅ 31</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>alex/redknot-import-from</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>linter/default-rules[unicode/pypinyin.py]</code> | 354.7 µs | 340.6 µs | +4.16% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-08-21 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-08-21 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-21 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-22 00:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1022 on 2024-08-22 00:08</div>
+            <div class="timeline-body"><p>I'm not convinced there is any problem with reporting an error on <code>from foo import bar</code> (where the module <code>foo</code> does exist, but has no top-level symbol <code>bar</code>) as an attribute-access error code. If I had to pick between the pyright or mypy error messages above, I would prefer the mypy one (the pyright one gives less useful context). The fact that the attribute access occurred as part of a from-import will be clear from the error location; it doesn't have to be part of the error message or code. I wouldn't want to make design decisions based on the hypothesis that this is confusing to users without clear evidence that it is (e.g. a history of users filing issues on mypy about that error code or message); personally I find it intuitive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-22 00:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1022 on 2024-08-22 00:42</div>
+            <div class="timeline-body"><p>I don't think we should return an <code>Option</code> or <code>Result</code> from <code>member()</code>, for the reason @AlexWaygood  mentions above: we can have a possibly-unbound name (currently represented as a union with Unbound), and it's not clear how that should look in a binary representation.</p>
+<p>We could design our own representation for &quot;Type plus definitely-bound/maybe-unbound/definitely-unbound state&quot; and use that instead of <code>Type::Unbound</code>. This will complicate some APIs and I think be somewhat less efficient, but it would have the advantage that it would force handling Unbound early, which I think is desirable. In general I don't think we want Unbound escaping from the scope where it originated; it should instead result in a diagnostic and be eliminated from the type (replaced with <code>Unknown</code> if we have no other type information; probably just disappear from the type if we do.) I do think this alternative to <code>Type::Unbound</code> is worth exploring and seeing what kind of impact it will have.</p>
+<p>I was thinking that we would push diagnostics inside <code>member()</code> to simplify the handling of Unbound, and I think I still favor that approach. If we do want to make distinctions in error codes/messages based on context from the caller of <code>member()</code>, I think we can always pass in context to make that possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-22 00:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:441 on 2024-08-22 00:49</div>
+            <div class="timeline-body"><p>Since there's been some discussion in this PR of error message wording and the implications it might have for where we push diagnostics: I think we should avoid passive voice here, aim for simple statements of fact in error messages, and avoid more complex words like &quot;resolved&quot; that don't add clarity. E.g. I think this error message should be something like &quot;Module 'bar' not found.&quot; or &quot;Module 'bar' does not exist.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-22 00:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:455 on 2024-08-22 00:55</div>
+            <div class="timeline-body"><p>Here I think describing it as a failed attribute access would actually be much clearer than the vague &quot;Could not resolve&quot; which doesn't really communicate anything! This message also doesn't currently clarify that <code>'a'</code> is a module (though it could be taken as implied.) I actually can't think of an error message here that I think would be better than &quot;Module <code>a</code> has no attribute <code>thing</code>.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-22 00:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:461 on 2024-08-22 00:57</div>
+            <div class="timeline-body"><p>I think when we issue the error on the import in <code>a.py</code>, we should set the type of <code>foo</code> in <code>a</code> to <code>Unknown</code>, not <code>Unbound</code>, which should avoid this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:940 on 2024-08-22 00:59</div>
+            <div class="timeline-body"><p>Why not just emit the diagnostics inside this function, return an <code>Option</code>, and avoid the need for <code>ModuleResolutionError</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-22 00:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1035 on 2024-08-22 01:01</div>
+            <div class="timeline-body"><p>I don't think we should be emitting a diagnostic at all if the imported symbol is of type <code>Unknown</code>. <code>Unknown</code> might <em>result</em> from an error in the other module, but in that case the diagnostic should occur in the other module; importing a value of unknown type is not an error.</p>
+<p>I think just removing this clause would fix the ignored test; what would it break?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-22 01:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-22 01:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1064 on 2024-08-22 01:04</div>
+            <div class="timeline-body"><p>I don't see the advantage of returning a <code>Result</code> vs just emitting the diagnostic directly in this method, as the previous code did.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-22 01:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1035 on 2024-08-22 01:26</div>
+            <div class="timeline-body"><p>Yeah, the only reason we have to check for Unknown here is that we intentionally replaced Unbound with Unknown just a few lines above. If we wait to do it after, the bug in the ignored test goes away, and all tests pass:</p>
+<pre><code>diff --git a/crates/red_knot_python_semantic/src/types.rs b/crates/red_knot_python_semantic/src/types.rs
+index 173c957d1..c4ff40220 100644
+--- a/crates/red_knot_python_semantic/src/types.rs
++++ b/crates/red_knot_python_semantic/src/types.rs
+@@ -451,9 +451,6 @@ mod tests {
+         );
+     }
+
+-    #[ignore = &quot;\
+-A spurious second 'Unresolved import' diagnostic message is emitted on `b.py`, \
+-despite the symbol existing in the symbol table for `a.py`&quot;]
+     #[test]
+     fn resolved_import_of_symbol_from_unresolved_import() {
+         let mut db = setup_db();
+diff --git a/crates/red_knot_python_semantic/src/types/infer.rs b/crates/red_knot_python_semantic/src/types/infer.rs
+index 9b183727e..28dc8f2e3 100644
+--- a/crates/red_knot_python_semantic/src/types/infer.rs
++++ b/crates/red_knot_python_semantic/src/types/infer.rs
+@@ -1012,15 +1012,9 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+             asname: _,
+         } = alias;
+
+-        // If a symbol is unbound in the module the symbol was originally defined in,
+-        // when we're trying to import the symbol from that module into &quot;our&quot; module,
+-        // the runtime error will occur immediately (rather than when the symbol is *used*,
+-        // as would be the case for a symbol with type `Unbound`), so it's appropriate to
+-        // think of the type of the imported symbol as `Unknown` rather than `Unbound`
+         let member_ty = module_ty
+             .unwrap_or(Type::Unbound)
+-            .member(self.db, &amp;Name::new(&amp;name.id))
+-            .replace_unbound_with(self.db, Type::Unknown);
++            .member(self.db, &amp;Name::new(&amp;name.id));
+
+         if matches!(module_ty, Err(ModuleResolutionError::UnresolvedModule)) {
+             self.add_diagnostic(
+@@ -1032,7 +1026,7 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+                     module.unwrap_or_default()
+                 ),
+             );
+-        } else if module_ty.is_ok() &amp;&amp; member_ty.is_unknown() {
++        } else if module_ty.is_ok() &amp;&amp; member_ty.is_unbound() {
+             self.add_diagnostic(
+                 AnyNodeRef::Alias(alias),
+                 &quot;unresolved-import&quot;,
+@@ -1044,6 +1038,8 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+             );
+         }
+
++        let member_ty = member_ty.replace_unbound_with(self.db, Type::Unknown);
++
+         self.types.definitions.insert(definition, member_ty);
+     }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-08-22 01:35</div>
+            <div class="timeline-body"><p>While I'm making notes on this PR of things that I'd like to address in this area: we've now started to accumulate some tests in <code>types.rs</code> that (as far as I can see) are indistinguishable in purpose and kind from the tests we already have in <code>infer.rs</code>. Maybe all of the tests should be moved out to <code>types.rs</code> instead of <code>infer.rs</code>, or should actually live in their own file (or better should be in a more concise testing framework), but I don't think we should be accumulating these tests in two different files without a clear rationale for which tests go in which file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-22 11:02</div>
+            <div class="timeline-body"><blockquote>
+<p>While I'm making notes on this PR of things that I'd like to address in this area: we've now started to accumulate some tests in <code>types.rs</code> that (as far as I can see) are indistinguishable in purpose and kind from the tests we already have in <code>infer.rs</code>. Maybe all of the tests should be moved out to <code>types.rs</code> instead of <code>infer.rs</code>, or should actually live in their own file (or better should be in a more concise testing framework), but I don't think we should be accumulating these tests in two different files without a clear rationale for which tests go in which file.</p>
+</blockquote>
+<p>I think the idea is that the tests in <code>types.rs</code> are specifically testing which diagnostics are emitted, whereas the tests in <code>infer.rs</code> are (currently) solely focussed on which types are inferred</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-22 11:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1035 on 2024-08-22 11:30</div>
+            <div class="timeline-body"><p>Thanks, I think you're right that this fixes the tests I added (and skipped) in this PR. Here's an interesting edge case that you might not have considered, though. What should we do for something like this?</p>
+<pre><code class="language-py"># foo.py
+for x in range(0):
+    pass
+
+# bar.py
+from foo import x
+</code></pre>
+<p>Running <code>python bar.py</code> fails with <code>ImportError</code> at runtime because <code>x</code> is not defined in <code>foo.py</code> (due to the iterable being empty), but neither mypy nor pyright catches this. Arguably we should infer the type of <code>x</code> after the <code>for</code> loop has completed as being <code>int | Unbound</code> -- should we flag any union that includes <code>Unbound</code> as one of the elements with an <code>unresolved-import</code> diagnostic? Probably not, I don't think -- the import <em>might</em> succeed, it just also might not. So let's say (for argument's sake) we use the error code <code>import-possibly-unbound</code> for that.</p>
+<p>So then what if we have something like this, where the symbol definitely exists in <code>foo.py</code>, but is also definitely unbound? (Mypy and pyright <em>do</em> both catch this one.) Should that have the error code <code>unresolved-import</code>, or <code>import-possibly-unbound</code>?</p>
+<pre><code class="language-py"># foo.py
+x: int
+
+# bar.py
+from foo import x
+</code></pre>
+<p>These are somewhat obscure edge cases, so I think what you propose here is a strict improvement on what I implemented in this PR; I'll make a fixup PR to address your suggestions. But my point is that we may still at some point need some context propagated regarding the cause of the error -- whether that error is represented as <code>Unknown</code> or <code>Unbound</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-22 11:37</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the idea is that the tests in types.rs are specifically testing which diagnostics are emitted, whereas the tests in infer.rs are (currently) solely focussed on which types are inferred</p>
+</blockquote>
+<p>My initial idea was to only test that <code>typecheck</code> emits diagnostic and I picked the only existing diagnostic. My intention isn't to test specific diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-22 11:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:455 on 2024-08-22 11:49</div>
+            <div class="timeline-body"><p>Do people really think of <code>from collections import deque</code> as an &quot;attribute access&quot; of <code>deque</code> from the <code>collections</code> module? I certainly don't. Of course that's what's happening under the hood, but even at runtime this detail is hidden -- the import fails with <code>ImportError</code> rather than <code>AttributeError</code>, and there's no mention of attempting to access an attribute:</p>
+<pre><code>% python -c &quot;from collections import foo&quot;                
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+ImportError: cannot import name 'foo' from 'collections' (/Users/alexw/.pyenv/versions/3.12.4/lib/python3.12/collections/__init__.py)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-22 11:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:441 on 2024-08-22 11:51</div>
+            <div class="timeline-body"><p>(FWIW, I didn't change this error message in this PR)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-08-22 19:05</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the idea is that the tests in <code>types.rs</code> are specifically testing which diagnostics are emitted, whereas the tests in <code>infer.rs</code> are (currently) solely focussed on which types are inferred</p>
+</blockquote>
+<p>Ah! Yes, I see that distinction does seem to apply currently. I think longer-term it doesn't necessarily make sense to split tests according to this distinction, though. At some point I suspect ~all of our tests will be tests of diagnostics, which can include a diagnostic from <code>reveal_type()</code> as one edge case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-22 19:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1035 on 2024-08-22 19:27</div>
+            <div class="timeline-body"><p>Yeah, great points and great questions! I had the <code>x: int</code> case in mind last night when thinking again about representation of unbound-ness in a different comment on this PR.</p>
+<p>I agree that maybe-unbound is a different error class than definitely-unbound (and arguable whether maybe-unbound should trigger an error on import at all.)</p>
+<p>I think we do want a representation of &quot;definitely unbound and typed&quot; that we use for imports, so e.g. we can error if you import from <code>x: int</code> (as long as it's not a stub), but we can still type check the importing module treating <code>x</code> as <code>int</code> rather than <code>Unknown</code>. (Not sure how important this is, but it seems marginally better.) I think this can be handled by declared vs inferred types.</p>
+<p>What's less clear to me is if we need a representation of &quot;definitely unbound and typed&quot; for inferred types. It would mean that within a scope we could also check code following <code>x: int</code> and emit diagnostics both for &quot;x is not bound&quot; and for use of x that isn't valid for an int. Maybe that's useful?</p>
+<p>Like I mentioned above in a different comment, I'm pretty open to exploring other representations of unbound to make it orthogonal to types; the main question for me is if we can avoid it regressing in perf, and if not, do we gain enough from it to be worth the regression?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

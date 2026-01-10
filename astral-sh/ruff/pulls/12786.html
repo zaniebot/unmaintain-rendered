@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eagerly validate typeshed versions - astral-sh/ruff #12786</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Eagerly validate typeshed versions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12786">#12786</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-08-09 13:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-09 13:39</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This should be the last PR in the module resolver validation stack.</p>
+<p>It makes the typeshed version file parsing eagerly by moving it into <code>SearchPaths::from_settings</code>. This allows us to exit Red Knot early if the <code>VERSIONS</code> file is missing or incorrect. I added custom logic to the file watching to handle changes to the VERSIONS file (and added a test for it).</p>
+<p>Handling changes to the <code>VERSIONS</code> file introduces some complexity because <code>Program::update_search_paths</code> takes a <code>SearchPathSettings</code> struct but we no longer know the <code>SearchPathSettings</code> in <code>apply_changes</code>.</p>
+<p>A possible solution to this problem is to expose a method <code>Program::reload_versions_file instead</code>, which would do the trick just fine. However, I disliked that it is very low-level. We may have other cases where we need to reload the search-path settings, and I want to avoid introducing special case methods for each of those.</p>
+<p>That's why I started looking into how we want to support configurations. What we need in <code>apply_changes</code> is access to what the user configured. The approach follows the same as Ruff's:</p>
+<ul>
+<li><code>*Configuration</code>: The configuration that uses <code>Option</code> in most places to know whether the user provided a value or not. Configurations from different sources can be merged (e.g. CLI overrides the <code>pyproject.toml</code> configuration)</li>
+<li><code>*Settings</code>: A <em>resolved</em> configuration in the sense that Red Knot fills in default values and e.g. merges values from different configurations (resolves the <code>target-python</code> version).</li>
+</ul>
+<p>This PR does not add support for loading or deserializing configurations. It just builds out some of the infrastructure.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+<pre><code class="language-bash">cargo run -q --bin red_knot -- --current-directory=../test -v --custom-typeshed-dir ./blaaa
+INFO Target version: 3.8
+Red Knot failed
+  Cause: Invalid search path settings
+  Cause: Failed to read the custom typeshed versions file '/home/micha/astral/test/blaaa/stdlib/VERSIONS': No such file or directory (os error 2)
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-08-09 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-09 15:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/module_resolver/resolver.rs</code>:139 on 2024-08-09 15:24</div>
+            <div class="timeline-body"><p>An alternative to storing <code>typeshed_versions</code> on <code>SearchPaths</code> would be to store the <code>TypeshedVersions</code> alongside the <code>SearchPath</code> (for the Custom or vendored stdlib variants). I don't really have an opinion on what's better. Let me know if you have  ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-08-09 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-08-09 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-08-09 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-09 15:39</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-09 15:59</div>
+            <div class="timeline-body"><p>If I understand correctly, this PR appears to treat the <code>VERSIONS</code> file as something that we can parse once upfront, and never parse again. That's true if we're using a vendored typeshed, but not if we're using a custom typeshed. The user might edit the <code>VERSIONS</code> file in between two queries; we need to be able to react to that and re-parse the <code>VERSIONS</code> file if our cached version is stale. That's why it's a Salsa query on <code>main</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-09 16:09</div>
+            <div class="timeline-body"><blockquote>
+<p>If I understand correctly, this PR appears to treat the VERSIONS file as something that we can parse once upfront, and never parse again. That's true if we're using a vendored typeshed, but not if we're using a custom typeshed. The user might edit the VERSIONS file in between two queries; we need to be able to react to that and re-parse the VERSIONS file if our cached version is stale. That's why it's a Salsa query on main.</p>
+</blockquote>
+<p>Hmm I missed this point. I have to add some manual file-watching to trigger a reload in this case. It also forces us to explicitly think about what should happen if parsing the VERSION files fails when we were able to parse it successfully before (in watch mode)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @MichaReiser on 2024-08-14 11:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-08-14 11:31</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/eagerly-resolve-typeshed-versions">CodSpeed Performance Report</a></h2>
+<h3>Merging #12786 will <strong>degrade performances by 6.56%</strong></h3>
+<p><sub>Comparing <code>eagerly-resolve-typeshed-versions</code> (ba1a840) with <code>main</code> (f873d2a)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1</code> regressions
+<code>✅ 31</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/eagerly-resolve-typeshed-versions">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>eagerly-resolve-typeshed-versions</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>linter/all-rules[numpy/globals.py]</code> | 726.4 µs | 777.3 µs | -6.56% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_workspace/src/workspace.rs</code>:87 on 2024-08-14 17:17</div>
+            <div class="timeline-body"><p>We may want to store the entire <code>WorkspaceSettings</code> on <code>Workspace</code> long term but it isn't clear to me if we actually want to do this. That's why I went with storing the absolute minimum</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-14 17:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-14 17:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_workspace/src/workspace/settings.rs</code>:82 on 2024-08-14 17:18</div>
+            <div class="timeline-body"><p>I'm a bit annoyed that we now have <code>SearchPathConfiguration</code>, <code>SearchPathSettings</code> and <code>SearchPaths</code> but I think the structs make sense:</p>
+<ul>
+<li><code>SearchPathConfiguration</code>: The input as provided by the user</li>
+<li><code>SearchPathSettings</code>: The resolved but not necessarily validated settings</li>
+<li><code>SearchPaths</code>: The resolved and validated search paths.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-08-14 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @MichaReiser on 2024-08-14 17:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-08-15 09:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-16 22:03</div>
+            <div class="timeline-body"><p>I skimmed this and it looks reasonable to me, but I'd rather have @AlexWaygood take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-20 19:26</div>
+            <div class="timeline-body"><p>I plan to merge this tomorrow afternoon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/tests/file_watching.rs</code>:807 on 2024-08-21 13:47</div>
+            <div class="timeline-body"><p>What does this comment mean? This test doesn't look like it involves <code>site-packages</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/module_resolver/path.rs</code>:303 on 2024-08-21 13:49</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// but `stdlib/VERSIONS` could not be read.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/module_resolver/path.rs</code>:315 on 2024-08-21 13:49</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Failed to discover the site-packages for the configured virtual environment.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/module_resolver/path.rs</code>:334 on 2024-08-21 13:50</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                write!(f, &quot;Failed to discover the site-packages directory: {error}&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/module_resolver/resolver.rs</code>:297 on 2024-08-21 13:52</div>
+            <div class="timeline-body"><p>Kinda weird to me that this is called <code>Typeshed</code>, when it only provides information about the <code>VERSIONS</code> file (doesn't provide any information about the typeshed stubs themselves). But not a huge deal, and I don't immediately have a better suggestion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/module_resolver/resolver.rs</code>:708 on 2024-08-21 13:55</div>
+            <div class="timeline-body"><p>The reason I put this in its own module (tiny though it is) was because it felt strange to me to import it from <code>resolver.rs</code> in <code>path.rs</code>, considering that <code>path.rs</code> is a &quot;lower-level&quot; module than <code>resolver.rs</code>. But maybe that's just me &quot;thinking in Python&quot; a bit too much, where it's really important to avoid cyclic dependencies between modules :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/module_resolver/resolver.rs</code>:697 on 2024-08-21 13:56</div>
+            <div class="timeline-body"><p>These probably don't need to be <code>pub(crate)</code> anymore now that the whole module resolver is a submodule of <code>red_knot_python_semantic</code> (probably my oversight in the earlier PR)</p>
+<pre><code class="language-suggestion">    pub(super) db: &amp;'db dyn Db,
+    pub(super) target_version: PythonVersion,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/module_resolver/typeshed/versions.rs</code>:118 on 2024-08-21 13:57</div>
+            <div class="timeline-body"><p>Does this need to be <code>pub(crate)</code> or could it be <code>pub(super)</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/src/db/changes.rs</code>:29 on 2024-08-21 13:58</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // Changes to a custom stdlib path's VERSIONS
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/src/workspace.rs</code>:329 on 2024-08-21 13:58</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    &quot;Found {} source files in package '{}'&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-08-21 14:00</div>
+            <div class="timeline-body"><p>Looks fantastic. Thanks for working on this, and sorry for the slow review!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-21 15:34</div>
+            <div class="timeline-body"><p>Uff, rebasing this PR after so long is painful</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-21 15:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/module_resolver/resolver.rs</code>:708 on 2024-08-21 15:40</div>
+            <div class="timeline-body"><p>I think this is how it is intended in Rust where lower level modules have access to the parent but the inner modules are private to the parent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-21 15:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/module_resolver/resolver.rs</code>:708 on 2024-08-21 15:42</div>
+            <div class="timeline-body"><p>Ah I guess the real solution here would be to make <code>path</code> a submodule of <code>resolver</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-08-21 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-08-21 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-21 15:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:01 UTC
+    </footer>
+</body>
+</html>

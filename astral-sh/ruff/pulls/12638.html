@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`fastapi`] Implement `fast-api-unused-path-parameter` (`FAST003`) - astral-sh/ruff #12638</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>fastapi</code>] Implement <code>fast-api-unused-path-parameter</code> (<code>FAST003</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12638">#12638</a>
+        opened by <a href="https://github.com/Matthieu-LAURENT39">@Matthieu-LAURENT39</a>
+        on 2024-08-02 18:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Matthieu-LAURENT39">@Matthieu-LAURENT39</a> on 2024-08-02 18:10</div>
+            <div class="timeline-body"><p>This adds the <code>fast-api-unused-path-parameter</code> lint rule, as described in #12632.</p>
+<p>I'm still pretty new to rust, so the code can probably be improved, feel free to tell me if there's any changes i should make.</p>
+<p>Also, i needed to add the <code>add_parameter</code> edit function, not sure if it was in the scope of the PR or if i should've made another one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add fastapi-unused-path-parameter" to "[fastapi] Implement fast-api-unused-path-parameter (FAST003)" by @Matthieu-LAURENT39 on 2024-08-02 23:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @Matthieu-LAURENT39 on 2024-08-02 23:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-02 23:37</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_unused_path_parameter.rs</code>:99 on 2024-08-03 07:43</div>
+            <div class="timeline-body"><p>Regular expressions are fairly expensive to construct. That's why we should try to only construct them once by e.g. using Lazy</p>
+<p>https://github.com/astral-sh/ruff/blob/fe7d965334e6299d23ffbaee9c296edd58e0f1c5/crates/ruff_python_formatter/tests/normalizer.rs#L63-L77</p>
+<p>But I think we can do even better here and avoid using a regex all together. It seems all we need is to find a <code>:</code> and then take everything up to <code>}</code>. This can be done by first doing two <code>split_once</code> calls (first by <code>:</code>, then by <code>}</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_unused_path_parameter.rs</code>:96 on 2024-08-03 07:44</div>
+            <div class="timeline-body"><p>I think we can use lifetimes here to avoid allocating strings because we only return sub-slices</p>
+<pre><code class="language-suggestion">fn extract_path_params_from_route(input: &amp;str) -&gt; Vec&lt;(&amp;str, Range&lt;usize&gt;)&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_unused_path_parameter.rs</code>:154 on 2024-08-03 07:46</div>
+            <div class="timeline-body"><p>I think we can avoid calling <code>to_string</code> here and instead just use the borrowed <code>&amp;str</code></p>
+<pre><code class="language-suggestion">        .map(|arg| &amp;arg.parameter.name)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_unused_path_parameter.rs</code>:146 on 2024-08-03 07:58</div>
+            <div class="timeline-body"><p>It would be nice if we can avoid returning a <code>Vec</code> from <code>extract_path_params_from_route</code> to reduce the number of allocations (allocations are rather expensive).</p>
+<p>I think it could be possible but you probably have to write your own iterator type</p>
+<pre><code class="language-rust">fn extract_path_params_from_route(input: &amp;str) -&gt; PathParamsIter {
+	PathParamsIter {
+		rest: input,
+		offset: TextSize::default()
+	}
+}
+
+struct PathParamsIter&lt;'a&gt; {
+	rest: &amp;'a str,
+	offset: TextSize,
+}
+
+impl&lt;'a&gt; Iterator for PathParamsIter&lt;'a&gt; {
+	type Item = (&amp;'a str, TextRange);
+
+	fn next(&amp;mut self) {
+	 // TODO do we have to split off the `{`, `:` and `}` from name etc?
+		let (before_curly, after_curly) = self.rest.split_once('{')?;
+		let (name, after_colon) = after_curly.split_once(':')?;
+		let (up_to_curly, rest) = after_colon.split_once('}')?;
+		let offset = self.offset;
+		let len = self.rest.text_len() - rest.text_len();
+
+		self.offset += len;
+		self.rest = rest;
+
+		Some(name.trim(), TextRange::at(offset, len)
+	}
+}
+
+impl FusedIterator for PathParamsIter&lt;'_&gt; {}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-03 07:59</div>
+            <div class="timeline-body"><p>Thanks. Overall looking good. I have to review it a bit more closely but I left a few comments on how we can improve performance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Matthieu-LAURENT39">@Matthieu-LAURENT39</a> on 2024-08-03 10:22</div>
+            <div class="timeline-body"><p>Somehow VSCode didn't show the code blocks inside your reviews so i implemented that from scratch :sweat_smile:
+Works pretty well though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-03 12:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_unused_path_parameter.rs</code>:117 on 2024-08-03 12:25</div>
+            <div class="timeline-body"><p>Since path parameters use the same format as f-strings, could we use our parser here instead? Just parse the path, extract the f-string segments? You can see <a href="https://play.ruff.rs/8847ec0d-dcd0-417d-ba75-b372b96a3115">here</a> that its evaluated to a literal element, followed by an <code>FStringExpressionElement</code> where the <code>:</code> part is the <code>FStringFormatSpec</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Matthieu-LAURENT39">@Matthieu-LAURENT39</a> reviewed on 2024-08-03 12:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Matthieu-LAURENT39">@Matthieu-LAURENT39</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_unused_path_parameter.rs</code>:117 on 2024-08-03 12:42</div>
+            <div class="timeline-body"><p>Path parameters can use invalid identifier names. For example, <code>/route/{path-name}</code>, which the f-string parser doesn't support. However, we just ignore invalid identifiers in the rule anyways since fastapi normalizes them in an undocumented way, so i don't think this is a blocker to using that parser.
+Also, fastapi doesn't handle the <code>{name!r}</code> and <code>{name=}</code> special syntaxes and would normalize them as <code>name_r</code> and <code>name</code> respectively, but this is a very obscure edge-case so it doesn't matter much. We do need to at least disable the rule if there is a conversion or debug_text in the f-string to avoid complaining about the wrong name though.
+If those aren't a problem, i'll switch to the f-string parser</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-08-03 16:58</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/Matthieu-LAURENT39:fastapi_unused_path_parameter">CodSpeed Performance Report</a></h2>
+<h3>Merging #12638 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>Matthieu-LAURENT39:fastapi_unused_path_parameter</code> (288bd10) with <code>main</code> (80efb86)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 32</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-05 08:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_unused_path_parameter.rs</code>:117 on 2024-08-05 08:02</div>
+            <div class="timeline-body"><p>I leave this up to you @charliermarsh but cloning the AST, then parsing it seems very heavy weight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-06 02:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_unused_path_parameter.rs</code>:117 on 2024-08-06 02:34</div>
+            <div class="timeline-body"><p>Ok yeah, let's just skip the parser idea for now then.</p>
+<p>Does FastAPI allow you to escape curly braces? Like <code>/foo{{bar}}/</code> to represent a literal <code>{</code> and <code>}</code> in the path, as with f-strings?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Matthieu-LAURENT39">@Matthieu-LAURENT39</a> reviewed on 2024-08-06 16:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Matthieu-LAURENT39">@Matthieu-LAURENT39</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_unused_path_parameter.rs</code>:117 on 2024-08-06 16:18</div>
+            <div class="timeline-body"><p>it doesn't, it will just be treated as if you had a path attribute named <code>bar</code> (without curly braces).
+Although i'm pretty sure it's because of the aforementioned undocumented normalizing behavior.</p>
+<p>Should i revert the commits using the f-string parser?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-08-13 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-08-13 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-13 14:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_unused_path_parameter.rs</code>:117 on 2024-08-13 14:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Should i revert the commits using the f-string parser?</p>
+</blockquote>
+<p>Yeah I think that would be great, considering that fast-api doesn't support f-strings?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Matthieu-LAURENT39">@Matthieu-LAURENT39</a> on 2024-08-13 19:40</div>
+            <div class="timeline-body"><p>reverted to the old parsing system that doesn't use the f-string parser, as per the conversation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tiangolo">@tiangolo</a> on 2024-08-16 00:39</div>
+            <div class="timeline-body"><p>Amazing! :rocket:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-16 01:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-16 01:09</div>
+            <div class="timeline-body"><p>Reviewing now!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-08-16 01:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[fastapi] Implement fast-api-unused-path-parameter (FAST003)" to "[`fastapi`] Implement `fast-api-unused-path-parameter` (`FAST003`)" by @charliermarsh on 2024-08-16 01:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-08-16 01:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-16 01:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:00 UTC
+    </footer>
+</body>
+</html>

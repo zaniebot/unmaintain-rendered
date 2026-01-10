@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enable multithreading for pyright - astral-sh/ruff #13227</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Enable multithreading for pyright</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13227">#13227</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-09-03 11:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-03 11:20</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Enable multithreading for pyright for a fairer comparison.</p>
+<pre><code>uv run benchmark  --min-runs=3 --project=black
+black (cold)
+Benchmark 1: knot
+  Time (mean ± σ):      34.4 ms ±   1.7 ms    [User: 126.6 ms, System: 74.6 ms]
+  Range (min … max):    31.8 ms …  39.2 ms    75 runs
+ 
+  Warning: Ignoring non-zero exit code.
+ 
+Benchmark 2: Pyright
+  Time (mean ± σ):     245.0 ms ±   4.3 ms    [User: 156.2 ms, System: 32.6 ms]
+  Range (min … max):   238.0 ms … 252.4 ms    12 runs
+ 
+  Warning: Ignoring non-zero exit code.
+ 
+Benchmark 3: mypy
+  Time (mean ± σ):      3.270 s ±  0.042 s    [User: 3.128 s, System: 0.135 s]
+  Range (min … max):    3.222 s …  3.302 s    3 runs
+ 
+  Warning: Ignoring non-zero exit code.
+ 
+Summary
+  knot ran
+    7.11 ± 0.37 times faster than Pyright
+   94.97 ± 4.76 times faster than mypy
+black (warm)
+Benchmark 1: mypy
+  Time (mean ± σ):     478.5 ms ±  18.8 ms    [User: 416.1 ms, System: 61.1 ms]
+  Range (min … max):   459.0 ms … 507.8 ms    6 runs
+ 
+  Warning: Ignoring non-zero exit code.
+</code></pre>
+<p>It improves pyright's performance from ~3s to 245ms</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-09-03 11:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:137 on 2024-09-03 11:24</div>
+            <div class="timeline-body"><p>If I run <code>uv run benchmark</code> with <code>-vv</code> locally on this PR branch, it's clear that pyright is no longer resolving any third-party types installed into the virtual environment, because the <code>--venvpath</code> flag requires a value:</p>
+<pre><code class="language-suggestion">            &quot;--threads&quot;,
+            &quot;--venvpath&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-03 11:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-09-03 11:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-09-03 11:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-03 11:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:137 on 2024-09-03 11:25</div>
+            <div class="timeline-body"><pre><code>  /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpm3ut7zl3/src/black/cache.py:12:6 - error: Import &quot;platformdirs&quot; could not be resolved (reportMissingImports)
+  /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpm3ut7zl3/src/black/cache.py:14:6 - error: Import &quot;_black_version&quot; could not be resolved (reportMissingImports)
+  /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpm3ut7zl3/src/black/cache.py:144:59 - error: Expression of type &quot;dict[str, tuple[float | int | str, ...]]&quot; is incompatible with declared type &quot;Dict[str, Tuple[float, int, str]]&quot; (reportAssignmentType)
+/private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpm3ut7zl3/src/black/concurrency.py
+  /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpm3ut7zl3/src/black/concurrency.py:18:6 - warning: Import &quot;mypy_extensions&quot; could not be resolved from source (reportMissingModuleSource)
+  /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpm3ut7zl3/src/black/concurrency.py:34:16 - error: Import &quot;uvloop&quot; could not be resolved (reportMissingImports)
+/private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpm3ut7zl3/src/black/files.py
+  /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpm3ut7zl3/src/black/files.py:20:6 - warning: Import &quot;mypy_extensions&quot; could not be resolved from source (reportMissingModuleSource)
+  /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpm3ut7zl3/src/black/files.py:21:6 - error: Import &quot;packaging.specifiers&quot; could not be resolved (reportMissingImports)
+  /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpm3ut7zl3/src/black/files.py:22:6 - error: Import &quot;packaging.version&quot; could not be resolved (reportMissingImports)
+  /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpm3ut7zl3/src/black/files.py:23:6 - error: Import &quot;pathspec&quot; could not be resolved (reportMissingImports)
+  /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpm3ut7zl3/src/black/files.py:24:6 - error: Import &quot;pathspec.patterns.gitwildmatch&quot; could not be resolved (reportMissingImports)
+  /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpm3ut7zl3/src/black/files.py:42:12 - warning: Import &quot;colorama&quot; could not be resolved from source (reportMissingModuleSource)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-03 11:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-03 11:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:137 on 2024-09-03 11:41</div>
+            <div class="timeline-body"><p>I filed #13228</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

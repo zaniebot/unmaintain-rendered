@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>#12044 hardcoded_sql_expressions bug - astral-sh/ruff #13106</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>#12044 hardcoded_sql_expressions bug</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13106">#13106</a>
+        opened by <a href="https://github.com/DataEnggNerd">@DataEnggNerd</a>
+        on 2024-08-26 09:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/DataEnggNerd">@DataEnggNerd</a> on 2024-08-26 09:03</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR tried to fix #12044 raised for identifying all patterns which will be classified as prone to sql injections.</p>
+<h2>Test Plan</h2>
+<p>Created  <code>tests/test.py</code> will statements included in bug issue to check the implementation identifies all patterns.</p>
+<p>With the current change, only 2 scenarios are getting caught. Below is the log</p>
+<pre><code class="language-shell">cargo run -p ruff -- check --select S tests/test.py --no-cache
+   Compiling ruff v0.6.2 (/Users/santhosh/Projects/personal/ruff/crates/ruff)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 4.87s
+     Running `target/debug/ruff check --select S tests/test.py --no-cache`
+tests/test.py:24:1: S608 Possible SQL injection vector through string-based query construction
+   |
+22 | foo = &quot;foo&quot;
+23 |
+24 | f&quot;SELECT * FROM {foo}.table&quot;
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ S608
+   |
+
+tests/test.py:27:1: S608 Possible SQL injection vector through string-based query construction
+   |
+27 | / f&quot;&quot;&quot;SELECT * FROM
+28 | | {foo}.table
+29 | | &quot;&quot;&quot;
+   | |___^ S608
+30 |
+31 |   f&quot;&quot;&quot;SELECT *
+   |
+
+Found 2 errors.
+</code></pre>
+<p>While when testing at online regex platforms, it is matching all the possible pattern in the test file. Below is the screenshot.
+<img src="https://github.com/user-attachments/assets/2848e84f-c0a0-4a22-bd6e-1d4342dd839b" alt="Screenshot 2024-08-26 at 2 32 56 PM" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @dhruvmanila on 2024-08-26 09:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-26 13:22</div>
+            <div class="timeline-body"><p>Looking at this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-26 13:33</div>
+            <div class="timeline-body"><p>I think there's more to it. The initial <code>\b</code> suggests that something like <code>\nSELECT</code> won't be matched because the &quot;select&quot; should be a complete word i.e., there should be some &quot;gap&quot; before the &quot;select&quot; word (newline doesn't count).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-26 13:34</div>
+            <div class="timeline-body"><p>It makes sense to use word boundary because we don't want to match <code>deselect ...</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DataEnggNerd">@DataEnggNerd</a> on 2024-08-26 13:36</div>
+            <div class="timeline-body"><p>Shall I rewrite regex to match this rule?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-26 13:42</div>
+            <div class="timeline-body"><p>I don't really have a good solution here, Rust regex engine doesn't support lookbehind other that could've been used probably.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-26 13:44</div>
+            <div class="timeline-body"><p>Or, if you're interested you can remove the regex completely and implement a custom parser ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-26 13:50</div>
+            <div class="timeline-body"><blockquote>
+<p>Or, if you're interested you can remove the regex completely and implement a custom parser ;)</p>
+</blockquote>
+<p>Here's our <code>noqa</code> comment parser: https://github.com/astral-sh/ruff/blob/99df859e20e9527cbfea0b7f88d40c5f195dc57d/crates/ruff_linter/src/noqa.rs#L423-L584</p>
+<p>But, it's totally fine otherwise and a regex solution will be good as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DataEnggNerd">@DataEnggNerd</a> on 2024-08-26 16:48</div>
+            <div class="timeline-body"><p>@dhruvmanila Thanks for the suggestions. I will try implementing with Rust first. ✨</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @DataEnggNerd on 2024-08-26 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-28 06:09</div>
+            <div class="timeline-body"><blockquote>
+<p>@dhruvmanila Thanks for the suggestions. I will try implementing with Rust first. ✨</p>
+</blockquote>
+<p>Feel free to ask any questions either on GitHub or Discord.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DataEnggNerd">@DataEnggNerd</a> on 2024-08-29 03:19</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>@dhruvmanila Thanks for the suggestions. I will try implementing with Rust first. ✨</p>
+</blockquote>
+<p>Feel free to ask any questions either on GitHub or Discord.</p>
+</blockquote>
+<p>For sure! Will be starting by this weekend.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

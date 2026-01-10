@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>red-knot: infer multiplication for strings and integers - astral-sh/ruff #13117</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>red-knot: infer multiplication for strings and integers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13117">#13117</a>
+        opened by <a href="https://github.com/chriskrycho">@chriskrycho</a>
+        on 2024-08-26 22:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/chriskrycho">@chriskrycho</a> on 2024-08-26 22:00</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The resulting type when multiplying a string literal by an integer literal is one of two types:</p>
+<ul>
+<li><code>StringLiteral</code>, in the case where it is a reasonably small resulting string (arbitrarily bounded here to 4096 bytes, roughly a page on many operating systems), including the fully expanded string.</li>
+<li><code>LiteralString</code>, matching Pyright etc., for strings larger than that.</li>
+</ul>
+<p>Additionally:</p>
+<ul>
+<li>Switch to using <code>Box&lt;str&gt;</code> instead of <code>String</code> for the internal value of <code>StringLiteral</code>, saving some non-trivial byte overhead (and keeping the total number of allocations the same).</li>
+<li>Be clearer and more accurate about which types we ought to defer to in <code>StringLiteral</code> and <code>LiteralString</code> member lookup.</li>
+</ul>
+<h2>Test Plan</h2>
+<p>Added a test case covering multiplication times integers: positive,  negative, zero, and in and out of bounds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @chriskrycho on 2024-08-26 22:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @chriskrycho on 2024-08-26 22:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @chriskrycho on 2024-08-26 22:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-26 22:25</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:190 on 2024-08-26 22:48</div>
+            <div class="timeline-body"><p>Suggested edit to the doc comment:</p>
+<pre><code class="language-suggestion">    /// A string known to originate only from literal values, but whose value is not known (unlike StringLiteral above).
+</code></pre>
+<p>Also suggest placing this next to StringLiteral.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:289 on 2024-08-26 22:51</div>
+            <div class="timeline-body"><p>Let's actually separate these cases and take into account @AlexWaygood's comment at https://github.com/astral-sh/ruff/pull/13113#discussion_r1731661129 -- that the <code>member</code> implementation for <code>StringLiteral</code> should in many cases be <code>LiteralString</code>, not based on the type annotations on <code>builtins.str</code> in typeshed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:224 on 2024-08-26 22:52</div>
+            <div class="timeline-body"><p>Nit: for this name to be accurate, we should also enforce it in <code>infer_string_literal_expression</code>, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2412 on 2024-08-26 22:54</div>
+            <div class="timeline-body"><p>Seems like in practice multiplying by a negative always results in empty string, so we could go with <code>Literal[&quot;&quot;]</code> here instead of <code>LiteralString</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-08-26 22:55</div>
+            <div class="timeline-body"><p>Looks good! A few suggested changes, all minor.</p>
+<p>I'd also like to follow up on https://github.com/astral-sh/ruff/pull/13113#discussion_r1731661713, either in this PR or another one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-27 10:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1789 on 2024-08-27 10:15</div>
+            <div class="timeline-body"><p>Is the multiplication here safe from overflow? Considering https://github.com/astral-sh/ruff/pull/13117/files#r1731915249 as well, I wonder if something like this might be better for this branch:</p>
+<pre><code class="language-rs">            (Type::StringLiteral(s), Type::IntLiteral(n), ast::Operator::Mult)
+            | (Type::IntLiteral(n), Type::StringLiteral(s), ast::Operator::Mult) =&gt; {
+                if n &lt; 1 {
+                    Type::StringLiteral(StringLiteralType::new(self.db, String::new()))
+                } else if let Ok(n) = usize::try_from(n) {
+                    if n.checked_mul(s.value(self.db).len())
+                        .is_some_and(|new_length| new_length &lt;= Self::MAX_STRING_LITERAL_SIZE)
+                    {
+                        let new_literal = s.value(self.db).repeat(n);
+                        Type::StringLiteral(StringLiteralType::new(self.db, new_literal))
+                    } else {
+                        Type::LiteralString
+                    }
+                } else {
+                    // This throws away the conversion error because we don't
+                    // care: it just means the value was too large.
+                    Type::LiteralString
+                }
+            }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-27 10:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:289 on 2024-08-27 10:18</div>
+            <div class="timeline-body"><p>To be clear here -- typeshed has lots of overloads in its <code>str</code> stub for <code>LiteralString</code>, so we should be able to use the typeshed <code>str</code> stub even for <code>LiteralString</code>. But what we'll need to do is make sure that we process the member access as e.g. <code>str.capitalize(&lt;instance of LiteralString&gt;)</code> rather than <code>str.capitalize(&lt;instance of str&gt;)</code>, so that we correctly make use of the first overload in places like <a href="https://github.com/python/typeshed/blob/f58dac1d62d33bb2255b762783d06463c40f5065/stdlib/builtins.pyi#L440-L443">https://github.com/python/typeshed/blob/f58dac1d62d33bb2255b762783d06463c40f5065/stdlib/builtins.pyi#L440-L443</a> rather than the second one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-27 14:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1789 on 2024-08-27 14:34</div>
+            <div class="timeline-body"><p>Ah, good call; I thought about overflow on the <code>try_from</code> but not the multiplication. Will update!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-08-27 15:33</div>
+            <div class="timeline-body"><p>Nice, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-08-27 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-08-27 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-27 16:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-08-27 23:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-03 07:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1255 on 2024-09-03 07:26</div>
+            <div class="timeline-body"><p>This seems problematic because we now have no way of knowing whether we omitted a string literal type from inference or if it is an empty string in the source code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-03 07:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1785 on 2024-09-03 07:27</div>
+            <div class="timeline-body"><p>Can't this result in string literals that are larger than <code>MAX_STRING_LITERAL_SIZE</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-03 07:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1255 on 2024-09-03 07:31</div>
+            <div class="timeline-body"><p>For example in <code>a + b</code> we concatenated the strings. If <code>a &gt; MAX_STRING_LITERAL_SIZE</code> then the concatenated string is just <code>b</code> but that's not the correct literal value.</p>
+<p>I also think it's relevant when displaying the type. We should display a &quot;truncated&quot; string type as <code>Literal[str]</code> and not <code>Literal[&quot;&quot;]</code></p>
+<p>Overall it seems valuable to me knowing whether we degraded the string literal from a specific string to any string literal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-03 07:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1255 on 2024-09-03 07:33</div>
+            <div class="timeline-body"><p>Yeah sorry I misread; I deleted my comment here. But please see my comment https://github.com/astral-sh/ruff/issues/13224#issuecomment-2325801446 on your issue regarding followups.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

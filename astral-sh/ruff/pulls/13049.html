@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic concurrent checking - astral-sh/ruff #13049</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Basic concurrent checking</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13049">#13049</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-08-22 09:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-22 09:00</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR makes <code>workspace.check</code> to check the files concurrently.</p>
+<p>This PR doesn't explore more advanced scheduling. For example, we could try to not only schedule the workspace files
+but also the dependencies of those files. This would give us better performance where a project has few first-party modules but depends on many third-party modules.</p>
+<p>The main downside of concurrent checking is that the logs become harder to read, especially when using <code>-vvv</code> because the output of different threads is intertwined. I don't have a good solution for this yet other than using <code>RAYON_NUM_THREADS=1</code> to explicitly fall-back to a single thread.</p>
+<h2>Test Plan</h2>
+<p>Checking black goes down from 108ms to 34ms (12 cores)</p>
+<h3>Main</h3>
+<pre><code>black (cold)
+Benchmark 1: knot
+  Time (mean ± σ):     125.2 ms ±   3.8 ms    [User: 89.3 ms, System: 35.7 ms]
+  Range (min … max):   117.7 ms … 133.3 ms    24 runs
+ 
+  Warning: Ignoring non-zero exit code.
+ 
+jinja (cold)
+Benchmark 1: knot
+  Time (mean ± σ):     139.1 ms ±   9.2 ms    [User: 100.1 ms, System: 38.8 ms]
+  Range (min … max):   125.0 ms … 155.7 ms    22 runs
+ 
+  Warning: Ignoring non-zero exit code.
+ 
+isort (cold)
+Benchmark 1: knot
+  Time (mean ± σ):      85.2 ms ±   2.3 ms    [User: 60.1 ms, System: 25.0 ms]
+  Range (min … max):    80.6 ms …  89.1 ms    32 runs
+ 
+  Warning: Ignoring non-zero exit code.
+</code></pre>
+<h3>Concurrent</h3>
+<pre><code>uv run benchmark  --min-runs=3 --knot
+black (cold)
+Benchmark 1: knot
+  Time (mean ± σ):      36.1 ms ±   1.1 ms    [User: 125.6 ms, System: 71.7 ms]
+  Range (min … max):    33.3 ms …  39.4 ms    77 runs
+ 
+  Warning: Ignoring non-zero exit code.
+ 
+jinja (cold)
+Benchmark 1: knot
+  Time (mean ± σ):      32.6 ms ±   1.5 ms    [User: 140.8 ms, System: 88.7 ms]
+  Range (min … max):    29.5 ms …  36.4 ms    88 runs
+ 
+  Warning: Ignoring non-zero exit code.
+ 
+isort (cold)
+Benchmark 1: knot
+  Time (mean ± σ):      30.7 ms ±   1.2 ms    [User: 82.4 ms, System: 46.7 ms]
+  Range (min … max):    28.4 ms …  34.4 ms    89 runs
+ 
+  Warning: Ignoring non-zero exit code.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-08-22 09:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-08-22 09:06</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/concurrent=checking">CodSpeed Performance Report</a></h2>
+<h3>Merging #13049 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>concurrent=checking</code> (acbed7c) with <code>main</code> (1f2cb09)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 32</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-22 09:20</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "A very basic prototype for concurrent checking" to "Basic concurrent checking" by @MichaReiser on 2024-08-23 07:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-08-23 08:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-08-23 08:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-08-23 08:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-08-23 22:54</div>
+            <div class="timeline-body"><p>Awesome!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-08-24 08:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-08-24 08:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-24 08:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

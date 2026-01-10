@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't raise PT017 if exception is used in assertion message - astral-sh/ruff #11873</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't raise PT017 if exception is used in assertion message</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11873">#11873</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-06-14 13:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-14 13:23</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ruff/issues/11869</p>
+<h2>Test Plan</h2>
+<p>Added test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-06-14 13:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-14 13:48</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-14 13:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_pytest_style/PT017.py</code>:21 on 2024-06-14 13:53</div>
+            <div class="timeline-body"><p>This isn't a great example, because it's not valid Python. The <code>e</code> binding doesn't last outside the <code>except</code> block:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def allow_exception_in_message():
+...     try:
+...         something()
+...     except Exception as e:
+...         something_else()
+...     print(e)
+... 
+&gt;&gt;&gt; def something(): raise Exception
+... 
+&gt;&gt;&gt; def something_else(): pass
+... 
+&gt;&gt;&gt; allow_exception_in_message()
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;&lt;stdin&gt;&quot;, line 6, in allow_exception_in_message
+UnboundLocalError: cannot access local variable 'e' where it is not associated with a value
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-14 14:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_pytest_style/PT017.py</code>:21 on 2024-06-14 14:01</div>
+            <div class="timeline-body"><p>I updated the example</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_pytest_style/PT017.py</code>:20 on 2024-06-14 14:04</div>
+            <div class="timeline-body"><p>To me this feels like exactly the kind of thing the rule is trying to catch, rather than something we should avoid emitting a diagnostic for: I commented at https://github.com/astral-sh/ruff/issues/11869#issuecomment-2168117376. If you want to use the value of the exception in the assertion message, you can do that using <code>pytest.raises()</code>:</p>
+<pre><code class="language-py">def allow_exception_in_message():
+    x = 0
+    with pytest.raises(ZeroDivisionError) as exc_info:
+        1 / x
+    assert x == 0, exc_info.value
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-14 14:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-14 14:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_pytest_style/PT017.py</code>:20 on 2024-06-14 14:43</div>
+            <div class="timeline-body"><p>I'm leaning towards agreeing with Alex here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-06-14 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-12 07:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:00 UTC
+    </footer>
+</body>
+</html>

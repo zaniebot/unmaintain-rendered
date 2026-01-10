@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use ZIP file size metadata to allocate string - astral-sh/ruff #13032</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use ZIP file size metadata to allocate string</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13032">#13032</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-08-21 12:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-21 12:24</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>We spend about 1.4% in <code>VendoredFileSystem::read_to_string</code>. Let's pre-allocate the string with the right size by using the zip file metadata
+as a heuristic (don't trust it!)</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+<p>I verified that total spend in <code>VendoredFileSystem::read_to_string</code> goes down to 1.1% and it no longer shows up as a large contributor to <code>malloc</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-08-21 12:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-08-21 12:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-21 12:27</div>
+            <div class="timeline-body"><p>Hmm. In https://github.com/astral-sh/ruff/pull/11863#discussion_r1639337339, you argued against doing this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-08-21 12:30</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/vendored-alloc-string-with-right-size">CodSpeed Performance Report</a></h2>
+<h3>Merging #13032 will <strong>improve performances by 8.11%</strong></h3>
+<p><sub>Comparing <code>vendored-alloc-string-with-right-size</code> (170ffb4) with <code>main</code> (a35cdbb)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>✅ 31</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>vendored-alloc-string-with-right-size</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>linter/default-rules[numpy/globals.py]</code> | 183.9 µs | 170.1 µs | +8.11% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-21 12:36</div>
+            <div class="timeline-body"><p>Yeah, I now saw in the benchmarks (still need to verify that it helped) that I was wrong.</p>
+<p>Reading through the code:</p>
+<pre><code>    fn read_to_string(&amp;mut self, buf: &amp;mut String) -&gt; Result&lt;usize&gt; {
+        default_read_to_string(self, buf, None)
+    }
+</code></pre>
+<p>the last argument is the size hint... Oh well, it is <code>None</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-21 12:38</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-08-21 12:38</div>
+            <div class="timeline-body"><p>Thanks for explaining, sounds good!</p>
+<p>(Is it worth adding a comment explaining the reasoning you just gave me?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-08-21 12:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-08-21 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-08-21 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-21 12:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

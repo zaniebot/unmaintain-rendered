@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix virtual environment details in `knot_benchmark` - astral-sh/ruff #13228</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix virtual environment details in <code>knot_benchmark</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13228">#13228</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-09-03 11:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-03 11:39</div>
+            <div class="timeline-body"><p>Following https://github.com/astral-sh/ruff/pull/13227, pyright is looking for a virtual environment in a directory called '--threads', and no such directory exists. This PR fixes that, which slows pyright down again when checking black from 251.9ms to 1.751s on my machine</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix `--venv-path` for pyright in `knot_benchmark`" to "Fix `--venvpath` for pyright in `knot_benchmark`" by @AlexWaygood on 2024-09-03 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-03 11:50</div>
+            <div class="timeline-body"><p>I think this is a fairer comparison between mypy/pyright/redknot... but I'm still seeing lots of errors regarding missing imports from both mypy and pyright if I run <code>uv run benchmark --project black -vv</code> locally.</p>
+<p>Mypy:</p>
+<pre><code>src/blackd/middlewares.py:3:1: error: Cannot find implementation or library stub for module named &quot;aiohttp.web_request&quot;  [import-not-found]
+src/blackd/middlewares.py:4:1: error: Cannot find implementation or library stub for module named &quot;aiohttp.web_response&quot;  [import-not-found]
+src/black/output.py:11:1: error: Cannot find implementation or library stub for module named &quot;click&quot;  [import-not-found]
+src/black/report.py:9:1: error: Cannot find implementation or library stub for module named &quot;click&quot;  [import-not-found]
+src/black/cache.py:12:1: error: Cannot find implementation or library stub for module named &quot;platformdirs&quot;  [import-not-found]
+src/black/files.py:21:1: error: Cannot find implementation or library stub for module named &quot;packaging.specifiers&quot;  [import-not-found]
+src/black/files.py:22:1: error: Cannot find implementation or library stub for module named &quot;packaging.version&quot;  [import-not-found]
+src/black/files.py:34:1: error: Cannot find implementation or library stub for module named &quot;tomli&quot;  [import-not-found]
+</code></pre>
+<p>Pyright:</p>
+<pre><code>  /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmp1lb8nym4/src/black/files.py:20:6 - warning: Import &quot;mypy_extensions&quot; could not be resolved from source (reportMissingModuleSource)
+  /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmp1lb8nym4/src/black/files.py:21:6 - error: Import &quot;packaging.specifiers&quot; could not be resolved (reportMissingImports)
+  /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmp1lb8nym4/src/black/files.py:22:6 - error: Import &quot;packaging.version&quot; could not be resolved (reportMissingImports)
+  /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmp1lb8nym4/src/black/files.py:23:6 - error: Import &quot;pathspec&quot; could not be resolved (reportMissingImports)
+  /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmp1lb8nym4/src/black/files.py:24:6 - error: Import &quot;pathspec.patterns.gitwildmatch&quot; could not be resolved (reportMissingImports)
+  /private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmp1lb8nym4/src/black/files.py:42:12 - warning: Import &quot;colorama&quot; could not be resolved from source (reportMissingModuleSource)
+</code></pre>
+<p>So something else may be going wrong somewhere...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-03 11:59</div>
+            <div class="timeline-body"><p>Thanks. I was just about to revert the commit because I don't see any performance improvements by just using the max number of threads (but e.g. 4 threads is faster on my machine for black).</p>
+<blockquote>
+<p>So something else may be going wrong somewhere...</p>
+</blockquote>
+<p>This is what I pointed out in the original PR summary and asked for help:</p>
+<blockquote>
+<p>I'm a bit surprised that I e.g. see an error for Black. I would appreciate it if someone could verify that the diagnostics are reasonable.</p>
+</blockquote>
+<p>https://github.com/astral-sh/ruff/pull/13026</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-09-03 11:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-09-03 11:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-03 12:01</div>
+            <div class="timeline-body"><blockquote>
+<p>This is what I pointed out in the original PR summary and asked for help:</p>
+</blockquote>
+<p>Yeah, it's odd! I checked the output of the tools at the time and I don't remember seeing anything like this. I remember everything looking similar to what I'd expect at the time. I'm looking into it now.</p>
+<p>Adding the <code>--verbose</code> flag to pyright's invocation in the script indicates that it is successfully finding the virtual environment:</p>
+<pre><code>Could not resolve source for 'mypy_extensions' in file '/private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpesdbtb92/src/black/nodes.py'
+  Looking in root directory of execution environment 'file:///private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpesdbtb92'
+  Attempting to resolve using root path 'file:///private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpesdbtb92'
+  Looking in extraPath 'file:///private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpesdbtb92/src'
+  Attempting to resolve using root path 'file:///private/var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpesdbtb92/src'
+  Finding python search paths
+  Found path 'file:///var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpesdbtb92/venv/lib'; looking for site-packages
+  Did not find 'file:///var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpesdbtb92/venv/lib/site-packages', so looking for python subdirectory
+  Found path 'file:///var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpesdbtb92/venv/lib/python3.12/site-packages'
+  Did not find 'file:///var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpesdbtb92/venv/lib64'
+  Found path 'file:///var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpesdbtb92/venv/Lib'; looking for site-packages
+  Did not find 'file:///var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpesdbtb92/venv/Lib/site-packages', so looking for python subdirectory
+  Found path 'file:///var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpesdbtb92/venv/Lib/python3.12/site-packages'
+  Found the following 'site-packages' dirs
+    file:///var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpesdbtb92/venv/lib/python3.12/site-packages
+  Looking in python search path 'file:///var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpesdbtb92/venv/lib/python3.12/site-packages'
+  Attempting to resolve using root path 'file:///var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmpesdbtb92/venv/lib/python3.12/site-packages'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-03 12:04</div>
+            <div class="timeline-body"><p>Yeah it's not that all packages are missing, just some. The packages that are missing are also missing in the dependencies arrays (which I took from mypy-primer)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-03 12:07</div>
+            <div class="timeline-body"><blockquote>
+<p>The packages that are missing are also missing in the dependencies arrays (which I took from mypy-primer)</p>
+</blockquote>
+<p>In the logs I posted above, I see mypy errors about not being able to resolve <code>click</code>, and pyright errors about not being able to resolve <code>packaging</code>. Both of those should be <code>py.typed</code> packages we have installed into the virtual environment, no?</p>
+<p>https://github.com/astral-sh/ruff/blob/c2aac5f8263841725728d82fc643023466f576b8/scripts/knot_benchmark/src/benchmark/projects.py#L96-L109</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-03 12:12</div>
+            <div class="timeline-body"><p>This is the only error that I get when running mypy over black</p>
+<pre><code>Benchmark 1: mypy
+src/blackd/__init__.py:91:22: error: List item 0 has incompatible type &quot;Callable[[Request, Callable[[Request], Awaitable[StreamResponse]]], Awaitable[StreamResponse]]&quot;; expected &quot;Middleware&quot;  [list-item]
+Warning: unused section(s) in pyproject.toml: module = ['tests.data.*']
+Found 1 error in 1 file (checked 40 source files)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-09-03 13:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix `--venvpath` for pyright in `knot_benchmark`" to "Fix virtual environment details in `knot_benchmark`" by @AlexWaygood on 2024-09-03 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-03 13:35</div>
+            <div class="timeline-body"><p>(We debugged this offline -- it seems like something changed in uv between v0.3 and v0.4? We're not sure what, but specifying <code>--python</code> for the <code>uv pip install</code> fixes things, and is more explicit anyway 😄)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-09-03 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-09-03 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-03 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-09-03 13:36</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex/redknot-bench">CodSpeed Performance Report</a></h2>
+<h3>Merging #13228 will <strong>degrade performances by 4.45%</strong></h3>
+<p><sub>Comparing <code>alex/redknot-bench</code> (61ee689) with <code>main</code> (c2aac5f)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1</code> regressions
+<code>✅ 31</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/alex/redknot-bench">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>alex/redknot-bench</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>linter/default-rules[pydantic/types.py]</code> | 1.8 ms | 1.9 ms | -4.45% |</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add control flow support for match statement - astral-sh/ruff #13241</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add control flow support for match statement</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13241">#13241</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-09-04 12:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-09-04 12:25</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support for control flow for match statement.</p>
+<p>It also adds the necessary infrastructure required for narrowing constraints in case blocks and implements the logic for <code>PatternMatchSingleton</code> which is either <code>None</code> / <code>True</code> / <code>False</code>. Even after this the inferred type doesn't get simplified completely, there's a TODO for that in the test code.</p>
+<h2>Test Plan</h2>
+<p>Add test cases for control flow for (a) when there's a wildcard pattern and (b) when there isn't. There's also a test case to verify the narrowing logic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2024-09-04 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-09-04 12:31</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/match-control-flow">CodSpeed Performance Report</a></h2>
+<h3>Merging #13241 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>dhruv/match-control-flow</code> (540ba2a) with <code>main</code> (ac720cd)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 32</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-09 18:12</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-09-09 18:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2024-09-09 18:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-09-09 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2024-09-09 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:235 on 2024-09-09 18:55</div>
+            <div class="timeline-body"><p>Can we implement a custom constructor on <code>PatternConstraint</code> that encapsulates a bit more of this? Details like <code>count::Count::default()</code> and creating <code>AstNodeRef</code> don't feel like things we should need to be worrying about here in the builder.</p>
+<p>(Probably there's existing code in here like <code>add_standalone_expression</code> that the same comment could be made about...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:648 on 2024-09-09 18:59</div>
+            <div class="timeline-body"><p>Can't we fairly easily address this TODO right now, just by making this an <code>if let</code> and putting a bunch of the below code inside the <code>if</code>? (Or alternatively just returning early here instead of panicking, if all the below code would go inside the <code>if</code>)</p>
+<p>If we do this in this PR, we should also add a test.</p>
+<p>But if it's not trivial it's also fine to do in another PR. I would just prefer if we avoid adding panics like this, if we can.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3542 on 2024-09-09 19:05</div>
+            <div class="timeline-body"><p>This feels like the same test as the previous one, effectively? Is there value in having both?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3877 on 2024-09-09 19:16</div>
+            <div class="timeline-body"><p>Thinking through the simplification we do, I'm pretty sure this is actually what we we end up with, because we normalize to disjunctive normal form (union of intersections), so <code>(None | 1) &amp; None</code> distributes to <code>(None &amp; None) | (1 &amp; None)</code> which simplifies to <code>(None | (1 &amp; None))</code>, which flattens into the outer union, giving:</p>
+<pre><code class="language-suggestion">        // `Literal[0] | None | (Literal[1] &amp; None)`
+</code></pre>
+<p>The simplification we are missing here is knowing that <code>1 &amp; None</code> is a subtype of <code>None</code>, and therefore simplifies out of the union entirely, leaving just <code>0 | None</code> in the union, which is the right answer.</p>
+<p>(I added the wrapping parens in the union and intersection displays locally and verified what I've said here is actually correct this time!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:35 on 2024-09-09 19:18</div>
+            <div class="timeline-body"><p>I don't think expressions need to be privileged in the naming here, we can rename to <code>all_narrowing_constraints_for_expression</code> for better parity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:186 on 2024-09-09 19:24</div>
+            <div class="timeline-body"><p>An intersection with only one positive value in it always simplifies back to just that value, so we don't need to build an intersection at all here, it's a no-op. Given that intersection builders allocate, this might help with the regression.</p>
+<pre><code class="language-suggestion">            self.constraints.insert(symbol, ty);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3139 on 2024-09-09 19:25</div>
+            <div class="timeline-body"><p>Does this deserve tests of its own?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-09-09 19:26</div>
+            <div class="timeline-body"><p>This looks great! Probably the most important comment is the intersection builder one which may help with perf, everything looks correct to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:88 on 2024-09-09 19:29</div>
+            <div class="timeline-body"><p>We should only do this if we've actually found a case below that we know how to handle, otherwise it's wasted Salsa work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-09 19:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-09 19:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3542 on 2024-09-09 19:33</div>
+            <div class="timeline-body"><p>There's an additional definition that's outside the match statement and wanted to make sure that it's being accounted for and the new logic doesn't interfere in any way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-09 19:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:648 on 2024-09-09 19:36</div>
+            <div class="timeline-body"><p>Yeah, that should be trivial to address in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-09 19:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3139 on 2024-09-09 19:43</div>
+            <div class="timeline-body"><p>Yeah, makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-09 19:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3139 on 2024-09-09 19:53</div>
+            <div class="timeline-body"><p>Thanks, that did uncover a bug where the first case pattern in the above example wasn't being considered a wildcard.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2024-09-09 19:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:235 on 2024-09-09 20:43</div>
+            <div class="timeline-body"><p>I'll add this in a follow-up PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-09 20:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-09-09 20:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-09-09 20:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-09 20:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

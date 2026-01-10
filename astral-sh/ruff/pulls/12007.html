@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove deprecated `extend-ignore` and `extend-unfixable` options - astral-sh/ruff #12007</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove deprecated <code>extend-ignore</code> and <code>extend-unfixable</code> options</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12007">#12007</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-06-24 07:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-24 07:18</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR removes the deprecated <code>lint.extend-ignore</code> and <code>lint.extend-unfixable</code> options.  The options were deprecated in https://github.com/astral-sh/ruff/pull/2312 (0.0.238)</p>
+<p>Part of https://github.com/astral-sh/ruff/issues/7650</p>
+<h2>Test Plan</h2>
+<p>Running ruff with a configuration containing <code>extend-ignore</code> or <code>extend-unfixable</code> now fails</p>
+<pre><code>❯ ../ruff/target/debug/ruff check test.py --no-cache
+ruff failed
+  Cause: Failed to parse /home/micha/astral/test/pyproject.toml
+  Cause: TOML parse error at line 38, column 1
+   |
+38 | [tool.ruff.lint]
+   | ^^^^^^^^^^^^^^^^
+unknown field `extend-ignore`
+</code></pre>
+<p>Changing the option to <code>ignore</code> &quot;ignores&quot; the rule as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-24 07:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:1264 on 2024-06-24 07:27</div>
+            <div class="timeline-body"><p>This is a bit unfortunate. We never added deprecation warnings to the CLI. I'm inclined to keep and hide the CLI options for now but add a deprecation warning instead.</p>
+<p>It also seems that python-lsp-ruff is using the CLI option :(</p>
+<p>https://github.com/python-lsp/python-lsp-ruff/blob/34acd6ed6daaaa3f2756a1a1cf1bfc2d76df7d0f/pylsp_ruff/plugin.py#L611-L612</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2024-06-24 07:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @MichaReiser on 2024-06-24 07:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-06-24 07:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.5.0" by @MichaReiser on 2024-06-24 08:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @MichaReiser on 2024-06-24 08:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2024-06-24 08:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-24 10:49</div>
+            <div class="timeline-body"><p>Yeah, I would vote not to remove these. They were never properly deprecated. Honestly, I would vote not to deprecate them, even (or to un-deprecate them). I think it would be surprising to users that they don't exist. If they didn't exist, I would consider adding them, even though they're undifferentiated from <code>ignore</code> and <code>unfixable</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-24 10:49</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered linter errors</strong>. (no lint changes; 4 project errors)</p>
+<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (error)</summary>
+<p>
+
+<pre><code>ruff failed
+  Cause: Failed to parse /home/runner/work/ruff/ruff/checkouts/latchbio:latch/pyproject.toml
+  Cause: TOML parse error at line 18, column 1
+   |
+18 | [tool.ruff]
+   | ^^^^^^^^^^^
+unknown field `extend-ignore`
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/python-trio/trio">python-trio/trio</a> (error)</summary>
+<p>
+
+<pre><code>ruff failed
+  Cause: Failed to parse /home/runner/work/ruff/ruff/checkouts/python-trio:trio/pyproject.toml
+  Cause: TOML parse error at line 102, column 1
+    |
+102 | [tool.ruff.lint]
+    | ^^^^^^^^^^^^^^^^
+unknown field `extend-ignore`
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/mesonbuild/meson-python">mesonbuild/meson-python</a> (error)</summary>
+<p>
+
+<pre><code>ruff failed
+  Cause: Failed to parse /home/runner/work/ruff/ruff/checkouts/mesonbuild:meson-python/pyproject.toml
+  Cause: TOML parse error at line 80, column 1
+   |
+80 | [tool.ruff]
+   | ^^^^^^^^^^^
+unknown field `extend-ignore`
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/pdm-project/pdm">pdm-project/pdm</a> (error)</summary>
+<p>
+
+<pre><code>ruff failed
+  Cause: Failed to parse /home/runner/work/ruff/ruff/checkouts/pdm-project:pdm/pyproject.toml
+  Cause: TOML parse error at line 169, column 1
+    |
+169 | [tool.ruff.lint]
+    | ^^^^^^^^^^^^^^^^
+unknown field `extend-ignore`
+</code></pre>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered linter errors</strong>. (no lint changes; 4 project errors)</p>
+<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (error)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre><code>ruff failed
+  Cause: Failed to parse /home/runner/work/ruff/ruff/checkouts/latchbio:latch/pyproject.toml
+  Cause: TOML parse error at line 18, column 1
+   |
+18 | [tool.ruff]
+   | ^^^^^^^^^^^
+unknown field `extend-ignore`
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/python-trio/trio">python-trio/trio</a> (error)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre><code>ruff failed
+  Cause: Failed to parse /home/runner/work/ruff/ruff/checkouts/python-trio:trio/pyproject.toml
+  Cause: TOML parse error at line 102, column 1
+    |
+102 | [tool.ruff.lint]
+    | ^^^^^^^^^^^^^^^^
+unknown field `extend-ignore`
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/mesonbuild/meson-python">mesonbuild/meson-python</a> (error)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre><code>ruff failed
+  Cause: Failed to parse /home/runner/work/ruff/ruff/checkouts/mesonbuild:meson-python/pyproject.toml
+  Cause: TOML parse error at line 80, column 1
+   |
+80 | [tool.ruff]
+   | ^^^^^^^^^^^
+unknown field `extend-ignore`
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/pdm-project/pdm">pdm-project/pdm</a> (error)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre><code>ruff failed
+  Cause: Failed to parse /home/runner/work/ruff/ruff/checkouts/pdm-project:pdm/pyproject.toml
+  Cause: TOML parse error at line 169, column 1
+    |
+169 | [tool.ruff.lint]
+    | ^^^^^^^^^^^^^^^^
+unknown field `extend-ignore`
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-24 11:47</div>
+            <div class="timeline-body"><p>I'll create an issue to follow up on this. Closing as per @charliermarsh's comment.</p>
+<p>Follow up in https://github.com/astral-sh/ruff/issues/12014</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-06-24 11:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-12 07:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:00 UTC
+    </footer>
+</body>
+</html>

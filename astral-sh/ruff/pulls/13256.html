@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[refurb] Implement `slice-to-remove-prefix-or-suffix` (`FURB188`) - astral-sh/ruff #13256</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[refurb] Implement <code>slice-to-remove-prefix-or-suffix</code> (<code>FURB188</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13256">#13256</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2024-09-05 17:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-09-05 17:51</div>
+            <div class="timeline-body"><p>This PR implements <code>FURB188</code> which suggests the use of <code>removeprefix</code>/<code>removesuffix</code> in order to remove prefixes and suffixes from strings, rather than slicing the string conditionally upon the output of <code>startswith</code>/<code>endswith</code>.</p>
+<p>Tested using same test suite as <code>refurb</code>.</p>
+<p>Moves the needle on #1348.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-09-05 17:52</div>
+            <div class="timeline-body"><p>Not super happy with how gnarly the implementation is - so open to any feedback/tips to clean it up. I've tried to add comments wherever possible so hopefully it is at least readable.</p>
+<p>Definitely found myself wishing that Rust supported matching patterns involving structs with heavily nested <code>Box</code>es... (https://github.com/rust-lang/rust/issues/87121)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-05 18:05</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+7 -0 violations, +0 -0 fixes in 3 projects; 51 projects unchanged)</p>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/util/compiler.py#L511'>src/bokeh/util/compiler.py:511:9:</a> FURB188 [*] Prefer `removesuffix` over conditionally replacing with slice.
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/support/plugins/file_server.py#L63'>tests/support/plugins/file_server.py:63:9:</a> FURB188 [*] Prefer `removeprefix` over conditionally replacing with slice.
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/rotki/rotki/blob/43d3e445fb4a4cf4010b74692df00ed267ec3e34/rotkehlchen/assets/converters.py#L57'>rotkehlchen/assets/converters.py:57:5:</a> FURB188 [*] Prefer `removesuffix` over conditionally replacing with slice.
++ <a href='https://github.com/rotki/rotki/blob/43d3e445fb4a4cf4010b74692df00ed267ec3e34/rotkehlchen/exchanges/bitfinex.py#L575'>rotkehlchen/exchanges/bitfinex.py:575:9:</a> FURB188 [*] Prefer `removeprefix` over conditionally replacing with slice.
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/indico/indico">indico/indico</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/indico/indico/blob/20bbc71b63ff3a7dc72fab9a0b27ea81b7ec1be8/indico/cli/devserver.py#L220'>indico/cli/devserver.py:220:9:</a> FURB188 [*] Prefer `removeprefix` over conditionally replacing with slice.
++ <a href='https://github.com/indico/indico/blob/20bbc71b63ff3a7dc72fab9a0b27ea81b7ec1be8/indico/core/db/sqlalchemy/colors.py#L31'>indico/core/db/sqlalchemy/colors.py:31:13:</a> FURB188 [*] Prefer `removeprefix` over conditionally replacing with slice.
++ <a href='https://github.com/indico/indico/blob/20bbc71b63ff3a7dc72fab9a0b27ea81b7ec1be8/indico/modules/networks/fields.py#L44'>indico/modules/networks/fields.py:44:9:</a> FURB188 [*] Prefer `removeprefix` over conditionally replacing with slice.
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| FURB188 | 7 | 7 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:290 on 2024-09-07 14:00</div>
+            <div class="timeline-body"><p>A little less nested:</p>
+<pre><code class="language-suggestion">    if body_name != test_name || test_name != else_or_target_name {
+        return None;
+    }
+
+    let (affix_kind, bound) = match func_name {
+        &quot;startswith&quot; if slice.upper.is_none() =&gt; (AffixKind::StartsWith, slice.lower.as_ref()?),
+        &quot;endswith&quot; if slice.lower.is_none() =&gt; (AffixKind::EndsWith, slice.upper.as_ref()?),
+        _ =&gt; return None,
+    };
+
+    Some(RemoveAffixData {
+        text: body_name,
+        bound,
+        affix_query: AffixQuery {
+            kind: affix_kind,
+            affix,
+        },
+    })
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:245 on 2024-09-07 14:07</div>
+            <div class="timeline-body"><p>I wonder if we <em>need</em> to exclude other valid assignment targets, like attribute expressions. We could possibly use our <a href="https://github.com/astral-sh/ruff/blob/a7c936878db8d9906c6ca91c8a1301aee80ee78a/crates/ruff_python_ast/src/comparable.rs#L1-L16"><code>ComparableExpr</code></a> struct to facilitate comparisons of other kinds of assignment targets. It shouldn't really matter what kind of assignment target it is, as long as it's the same in all three places -- i.e. this should be fine for us to flag and fix:</p>
+<pre><code class="language-py">import foo.bar
+
+SUFFIX = &quot;suffix&quot;
+
+x = foo.bar.baz[:len(SUFFIX)] if foo.bar.baz.endswith(SUFFIX) else foo.bar.baz
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:4 on 2024-09-07 14:10</div>
+            <div class="timeline-body"><p>teeny tiny nit:</p>
+<pre><code class="language-suggestion">use ruff_python_ast as ast;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:306 on 2024-09-07 14:12</div>
+            <div class="timeline-body"><p>should this be a method on <code>RemoveAffixData</code>, if the function takes no other arguments?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:328 on 2024-09-07 14:15</div>
+            <div class="timeline-body"><p>Is truncating the number the correct thing to do here, if it's larger than <code>u32::MAX</code>? If <code>x</code> <em>happens</em> by random chance to be exactly equal to <code>u32::MAX</code>, I think this equality comparison would then incorrectly evaluate to <code>true</code>. Maybe this would be better?</p>
+<pre><code class="language-suggestion">            // Only support prefix removal for size at most `u32::MAX`
+            u32::try_from(string_val.len()).is_ok_and(|length| x == &amp;ast::Int::from(length))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:340 on 2024-09-07 14:17</div>
+            <div class="timeline-body"><p>This won't work if somebody is annoying and does something like this:</p>
+<pre><code class="language-py">from builtins import len as builtins_len
+</code></pre>
+<p>You want to use something like <code>checker.semantic().match_builtin_expr(func, &quot;len&quot;)</code>, which will recognise even <code>builtins_len</code> as a reference to the <code>builtins.len()</code> function</p>
+<p>https://github.com/astral-sh/ruff/blob/a4ebe7d34407ea353762ebde1fef4a718edddb55/crates/ruff_python_semantic/src/model.rs#L308-L326</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:365 on 2024-09-07 14:19</div>
+            <div class="timeline-body"><p>same as above:</p>
+<pre><code class="language-suggestion">                    // Only support prefix removal for size at most `u32::MAX`
+                    u32::try_from(string_val.len()).is_ok_and(|length| x == &amp;ast::Int::from(length))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:421 on 2024-09-07 14:21</div>
+            <div class="timeline-body"><p>I think you might be able to do this more simply (and probably more cheaply) using some of the techniques I showed you in https://github.com/astral-sh/ruff/pull/13275 (string formatting, using <code>checker.locator().slice(&lt;expr_node&gt;)</code> to get the node as it exists in the source)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:498 on 2024-09-07 14:22</div>
+            <div class="timeline-body"><p>nit: some docstrings for the fields on these structs would be nice ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-07 14:22</div>
+            <div class="timeline-body"><p>Nice! I can see that a lot of work went into this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:158 on 2024-09-08 07:51</div>
+            <div class="timeline-body"><p>Nit: We normally use <code>_impl</code> to signal that this is the main implementation.</p>
+<p>Or you use <code>affix_remove_data</code> to indicate that it applies to all nodes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:198 on 2024-09-08 07:52</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">    let [statement] = body.as_slice() else {
+        return None;
+    };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:213 on 2024-09-08 07:53</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">    let [target] = targets.as_slice() else {
+        return None;
+    };
+    let else_or_target_name = &amp;target.as_name_expr()?.id;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:267 on 2024-09-08 07:53</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">    let [affix] = func_args.as_slice() else {
+        return None;
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:327 on 2024-09-08 07:54</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            let length = u32::from(string_val.text_len())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:340 on 2024-09-08 07:55</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">                .is_some_and(|name| &amp;name.id == &quot;len&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:384 on 2024-09-08 07:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    .is_some_and(|name| &amp;name.id == &quot;len&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-08 07:56</div>
+            <div class="timeline-body"><p>I only skimmed over the rust code and left a few NIT comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-09-08 07:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-09-08 07:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-09-09 04:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:290 on 2024-09-09 04:56</div>
+            <div class="timeline-body"><p>Done (though it looks a little different because I implemented one of your other suggestions as well)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-09-09 04:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:245 on 2024-09-09 04:57</div>
+            <div class="timeline-body"><p>Rule expanded! (there's a typo in your example though: the slice needs a <code>-</code> preceding <code>len</code>). Test fixture updated as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-09-09 04:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:4 on 2024-09-09 04:58</div>
+            <div class="timeline-body"><p>Well if you leave it around that's how you get lice! Nit picked</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-09-09 04:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:306 on 2024-09-09 04:59</div>
+            <div class="timeline-body"><p>This now takes the <code>checker</code> as argument so that I can use the <code>builtins</code> suggestion you made below - so I've left this as a function on its own.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-09-09 04:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:328 on 2024-09-09 04:59</div>
+            <div class="timeline-body"><p>Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-09-09 04:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:340 on 2024-09-09 04:59</div>
+            <div class="timeline-body"><p>Nice! Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-09-09 04:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:365 on 2024-09-09 04:59</div>
+            <div class="timeline-body"><p>Also done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-09-09 05:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:421 on 2024-09-09 05:00</div>
+            <div class="timeline-body"><p>Great idea! Implemented</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-09-09 05:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:498 on 2024-09-09 05:00</div>
+            <div class="timeline-body"><p>Minimal docstrings added</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-09-09 05:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:158 on 2024-09-09 05:00</div>
+            <div class="timeline-body"><p>Changed to <code>affix_removal_data</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-09-09 05:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:198 on 2024-09-09 05:00</div>
+            <div class="timeline-body"><p>picked</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-09-09 05:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:213 on 2024-09-09 05:00</div>
+            <div class="timeline-body"><p>picked</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-09-09 05:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:267 on 2024-09-09 05:01</div>
+            <div class="timeline-body"><p>picked (but with <code>as_ref</code> not <code>as_slice</code> since that's a <code>Box&lt;[T]&gt;</code> sorta thing)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-09-09 05:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:327 on 2024-09-09 05:03</div>
+            <div class="timeline-body"><p>I used @AlexWaygood 's suggestion here instead - somehow couldn't get the <code>TextLen</code> trait to speak to <code>&amp;StringLiteralValue</code> but maybe I was doing something wrong...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-09-09 05:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:340 on 2024-09-09 05:04</div>
+            <div class="timeline-body"><p>Used <code>match_builtin_expr</code> instead</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-09-09 05:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:384 on 2024-09-09 05:04</div>
+            <div class="timeline-body"><p>same as above</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-09-09 05:06</div>
+            <div class="timeline-body"><p>Wow @AlexWaygood and @MichaReiser  - what a fantastic and thorough code review! Thanks so much! Learning a lot from you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:327 on 2024-09-09 10:42</div>
+            <div class="timeline-body"><p>It would be great to include a specific test for a situation where a user does something like <code>from builtins import len as builtins_len</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:369 on 2024-09-09 10:43</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                checker.semantic().match_builtin_expr(func, &quot;len&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:296 on 2024-09-09 10:46</div>
+            <div class="timeline-body"><p>The <code>Checker</code> is something of a huge class with a huge amount of &quot;power&quot; behind it. In this function I <em>think</em> we only need an immutable reference to the <code>SemanticModel</code>, so I think it would more clearly indicate the scope of the things this function needs to do if the signature were instead</p>
+<pre><code class="language-suggestion">fn affix_matches_slice_bound(data: &amp;RemoveAffixData, checker: &amp;SemanticModel) -&gt; bool {
+</code></pre>
+<p>And then in the body of the function you'd do <code>semantic.match_builtin_expr(func, &quot;len&quot;)</code> instead of <code>checker.semantic().match_builtin_expr(func, &quot;len&quot;)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:295 on 2024-09-09 10:47</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// This function verifies that `bound == -len(suffix)` in two cases:
+///   - `suffix` is a string literal and `bound` is a number literal
+///   - `suffix` is an expression and `bound` is
+///     exactly `-len(suffix)` (as AST nodes, prior to evaluation.)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:232 on 2024-09-09 10:48</div>
+            <div class="timeline-body"><p>nit: indentation of 2 spaces for MarkDown bullet points, and keep the whole bullet indented by the same margin ;)</p>
+<pre><code class="language-suggestion">///   - `value` and `else_or_target_name`
+///     are equal to a common name `text`
+///   - `test` is of the form `text.startswith(prefix)`
+///     or `text.endswith(suffix)`
+///   - `slice` has no upper bound in the case of a prefix,
+///     and no lower bound in the case of a suffix
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:10 on 2024-09-09 10:50</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// the string to a slice after checking `.startswith()` or `.endswith()`, respectively.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @MichaReiser on 2024-09-09 10:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:34 on 2024-09-09 10:51</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// The methods [`str.removeprefix`] and [`str.removesuffix`],
+/// introduced in Python 3.9, have the same behavior
+/// and are more readable and efficient.
+///
+/// ## Example
+/// ```python
+/// filename[:-4] if filename.endswith(&quot;.txt&quot;) else filename
+/// ```
+///
+/// ```python
+/// if text.startswith(&quot;pre&quot;):
+///     text = text[3:]
+/// ```
+///
+/// Use instead:
+/// ```python
+/// filename = filename.removesuffix(&quot;.txt&quot;)
+/// ```
+///
+/// ```python
+/// text = text.removeprefix(&quot;pre&quot;)
+/// ```
+///
+/// [`str.removeprefix`]: https://docs.python.org/3/library/stdtypes.html#str.removeprefix
+/// [`str.removesuffix`]: https://docs.python.org/3/library/stdtypes.html#str.removesuffix
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:59 on 2024-09-09 10:57</div>
+            <div class="timeline-body"><p>It's a little more verbose, but I'd be tempted to use methods on <code>AffixKind</code> for this, e.g.</p>
+<details>
+
+<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs b/crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs
+index e68bc711c..a7f5585e5 100644
+--- a/crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs
++++ b/crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs
+@@ -53,15 +53,13 @@ impl AlwaysFixableViolation for SliceToRemovePrefixOrSuffix {
+     }
+ 
+     fn fix_title(&amp;self) -&gt; String {
+-        let (to_replace, replacement) = match self.affix_kind {
+-            AffixKind::StartsWith =&gt; (&quot;`startswith`&quot;, &quot;`removeprefix`&quot;),
+-            AffixKind::EndsWith =&gt; (&quot;`endswith`&quot;, &quot;`removesuffix`&quot;),
+-        };
++        let method_name = self.affix_kind.as_str();
++        let replacement = self.affix_kind.replacement();
+         let context = match self.stmt_or_expression {
+             StmtOrExpr::Statement =&gt; &quot;assignment&quot;,
+             StmtOrExpr::Expression =&gt; &quot;ternary expression&quot;,
+         };
+-        format!(&quot;Use {replacement} instead of {context} conditional upon {to_replace}.&quot;)
++        format!(&quot;Use {replacement} instead of {context} conditional upon {method_name}.&quot;)
+     }
+ }
+ 
+@@ -438,6 +436,22 @@ enum AffixKind {
+     EndsWith,
+ }
+ 
++impl AffixKind {
++    const fn as_str(self) -&gt; &amp;'static str {
++        match self {
++            Self::StartsWith =&gt; &quot;startswith&quot;,
++            Self::EndsWith =&gt; &quot;endswith&quot;,
++        }
++    }
++
++    const fn replacement(self) -&gt; &amp;'static str {
++        match self {
++            Self::StartsWith =&gt; &quot;removeprefix&quot;,
++            Self::EndsWith =&gt; &quot;removesuffix&quot;,
++        }
++    }
++}
++
+</code></pre>
+</details>
+
+<p>It feels slightly more elegant to push this logic elsewhere, and it feels like something a variant of <code>AffixKind</code> would &quot;naturally&quot; know about itself 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:446 on 2024-09-09 10:59</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Node representing the prefix or suffix being passed to the string method.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:462 on 2024-09-09 11:00</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">#[derive(Debug)]
+struct RemoveAffixData&lt;'a&gt; {
+    /// Node representing the string whose prefix or suffix we want to remove
+    text: &amp;'a ast::Expr,
+    /// Node representing the bound used to slice the string
+    bound: &amp;'a ast::Expr,
+    /// Contains the prefix or suffix used in `text.startswith(prefix)` or `text.endswith(suffix)`
+    affix_query: AffixQuery&lt;'a&gt;,
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-09 11:02</div>
+            <div class="timeline-body"><p>Very nice indeed! Basically just nits remaining, though there is one other location where I think you should use <code>match_builtin_expr()</code> for correctness</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-09-09 14:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:327 on 2024-09-09 14:14</div>
+            <div class="timeline-body"><p>done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-09-09 14:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:369 on 2024-09-09 14:15</div>
+            <div class="timeline-body"><p>done (but just with <code>semantic</code> as per below)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:296 on 2024-09-09 14:15</div>
+            <div class="timeline-body"><p>done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-09-09 14:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-09-09 14:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:59 on 2024-09-09 14:15</div>
+            <div class="timeline-body"><p>done! I initially changed the <code>self</code> to <code>&amp;self</code> to satisfy the <a href="https://rust-lang.github.io/api-guidelines/naming.html">naming conventions</a>, but I guess clippy insisted I pass <code>self</code> by value (as you suggest), and none of the conventions seem to involve &quot;owned --&gt; borrowed&quot; ... so I kept the name as in your suggestion</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-09-09 14:16</div>
+            <div class="timeline-body"><p>Thanks again! I think I picked the remaining nits.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:330 on 2024-09-09 14:21</div>
+            <div class="timeline-body"><p><code>semantic.match_builtin_expr()</code> is unfortunately more expensive than what you had before (we need to resolve the qualified name, which involves several hashmap lookups and some complex AST matching), so we should probably switch the order of these conditions:</p>
+<pre><code class="language-suggestion">            arguments.len() == 1
+                &amp;&amp; semantic.match_builtin_expr(func, &quot;len&quot;)
+</code></pre>
+<p>(I should have thought of this earlier, sorry!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:371 on 2024-09-09 14:22</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                arguments.len() == 1
+                    &amp;&amp; semantic.match_builtin_expr(func, &quot;len&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:403 on 2024-09-09 14:23</div>
+            <div class="timeline-body"><p>We can do this slightly more simply now that you've added the <code>AffixKind::replacement()</code> method!</p>
+<pre><code class="language-suggestion">    let replacement = affix_query.kind.replacement();
+    format!(&quot;{text_str} = {text_str}.{replacement}({affix_str})&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:427 on 2024-09-09 14:25</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    let replacement = affix_query.kind.replacement();
+    format!(&quot;{text_str}.{replacement}({affix_str})&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-09-09 14:26</div>
+            <div class="timeline-body"><p>Fab! Some <em>tiny</em> last remaining comments:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-09 14:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:59 on 2024-09-09 14:29</div>
+            <div class="timeline-body"><p>Yeah, for an enum this tiny, copying the data can actually be more efficient than borrowing <code>self</code>, even though that's not good practice for perhaps 90% of methods in Rust :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:56 on 2024-09-09 14:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        let replacement = self.affix_kind.replacement();
+        format!(&quot;Prefer `{replacement}` over conditionally replacing with slice.&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-09 14:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:319 on 2024-09-09 14:39</div>
+            <div class="timeline-body"><p>I think this is what @MichaReiser was suggesting earlier (I checked locally and this version seems to compile! You need to add an import of the <code>ruff_text_size::TextLen</code> trait though)</p>
+<pre><code class="language-suggestion">        ) =&gt; num
+            .as_int()
+            .and_then(ast::Int::as_u32) // Only support prefix removal for size at most `u32::MAX`
+            .is_some_and(|x| x == string_val.to_str().text_len().to_u32()),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:353 on 2024-09-09 14:43</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                // Only support prefix removal for size at most `u32::MAX`
+                value
+                    .as_int()
+                    .and_then(ast::Int::as_u32)
+                    .is_some_and(|x| x == string_val.to_str().text_len().to_u32())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-09 14:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-09-09 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:56 on 2024-09-09 14:54</div>
+            <div class="timeline-body"><p>This one I kept as is, because of this suggestion from a previous PR: https://github.com/astral-sh/ruff/pull/12691#discussion_r1704822876</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-09 14:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:56 on 2024-09-09 14:55</div>
+            <div class="timeline-body"><p>Oh nice, thank you! I didn't consider the docs-generation impact of this :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-09-09 15:01</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:401 on 2024-09-09 15:02</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    let affix_str = locator.slice(affix_query.affix);
+    let replacement = affix_query.kind.replacement();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:423 on 2024-09-09 15:02</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    let affix_str = locator.slice(affix_query.affix);
+    let replacement = affix_query.kind.replacement();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-09 15:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-09-09 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-09-09 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-09 15:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

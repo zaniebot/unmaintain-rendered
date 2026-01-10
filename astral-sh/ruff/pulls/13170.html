@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] introduce basic parameter annotation expression inference - astral-sh/ruff #13170</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] introduce basic parameter annotation expression inference</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13170">#13170</a>
+        opened by <a href="https://github.com/chriskrycho">@chriskrycho</a>
+        on 2024-08-30 22:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/chriskrycho">@chriskrycho</a> on 2024-08-30 22:39</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Function definitions now have the types for parameters lazily available, just like return types. This only supports basic explicit type annotations, no special forms, in line with the rest of the existing annotation inference.</p>
+<h2>Test Plan</h2>
+<p>Tests that normal function declaration statements have the type annotations correctly attached to their parameters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-30 22:42</div>
+            <div class="timeline-body"><p>This presently results in a failure on <code>types::infer::tests::ellipsis_type</code>. The expectation is that the type inferred in <code>x = ...</code> should be <code>Unknown | Literal[EllipsisType]</code> (as it was prior to now), but it is resolving as <code>Unknown | Literal[EllipsisType] | Literal[ellipsis]</code>. It is unclear why!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-30 22:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:381 on 2024-08-30 22:49</div>
+            <div class="timeline-body"><p>I think this should just be <code>self.node(db)</code> -- we don't have to avoid calling <code>self.definition(db)</code> twice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chriskrycho">@chriskrycho</a> reviewed on 2024-08-30 22:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chriskrycho">@chriskrycho</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:381 on 2024-08-30 22:56</div>
+            <div class="timeline-body"><p>Ah, good point; then we can simplify the call below to just be <code>self.definition(db)</code> inline as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:389 on 2024-08-30 22:57</div>
+            <div class="timeline-body"><p>Let's give this a doc comment to clarify its expected semantics.</p>
+<p>I think the current semantics here are a little odd, given the name <code>params</code>, since it will iterate over all parameter annotations, skipping un-annotated parameters, and with no way to associate the iterated types with parameter names. I think at the very least this should probably iterate all parameters, and return pairs of <code>(param-node, annotated-type-or-unknown)</code>? Though I'm not sure that iterating all params is the right model here at all, given how this will be used. We may want a full-fledged <code>Signature</code> struct, that carries full information about all parameters and their types.</p>
+<p>...I guess what I'm saying is maybe we'll need to design this API along with building out our initial use of it in checking call validity, to see what shape it should have?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-30 22:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-08-30 23:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:465 on 2024-08-30 23:01</div>
+            <div class="timeline-body"><p>It's not correct to defer <em>all</em> of parameter inference, only annotations (not defaults). So I think we can't just move <code>infer_parameters</code> in here, it'll need to get split up. We could just have <code>infer_parameter_defaults</code> and <code>infer_parameter_annotations</code>. Or we can call <code>infer_parameters</code> in both non-deferred and deferred cases, and do the <code>is_stub</code> checking down in <code>infer_parameter_with_default</code> and <code>infer_parameter</code>. Either could be OK, not sure which will work out nicer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @chriskrycho on 2024-09-04 21:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Use `Unknown` rather than `Unbound` for unresolved imports - astral-sh/ruff #12932</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Use <code>Unknown</code> rather than <code>Unbound</code> for unresolved imports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12932">#12932</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-08-16 14:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-16 14:12</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>If an import statement succeeds, it always binds a symbol. Symbols introduced by import statements can always be used successfully by other statements and expressions; you'll never get a <code>NameError</code> from trying to use a symbol introduced by an import statement. As such, it doesn't make sense to think of unresolved imports as &quot;unbound&quot;: an unbound symbol causes a runtime <code>NameError</code> when you try to use it elsewhere, but here the runtime error (providing our type analysis is correct) will occur at the import statement itself, not when the symbol introduced by the runtime statement is used elsewhere.</p>
+<p>This PR therefore updates red-knot to infer <code>Unknown</code> rather than <code>Unbound</code> in these cases.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-08-16 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-08-16 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-08-16 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-16 14:27</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @MichaReiser removed by @MichaReiser on 2024-08-16 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-16 14:28</div>
+            <div class="timeline-body"><p>Makes sense to me but I rather have carl review it ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-08-16 17:34</div>
+            <div class="timeline-body"><p>Yeah, I think this is correct, thanks for the fix!</p>
+<p>The awkwardness is that it makes the &quot;unresolved imports&quot; lint rule slightly less clearly correct, because is it now possible that type Unknown on an import doesn't mean unresolved import, but rather successful import of a value of type Unknown in the module we imported from? One way to clarify this would be to clarify our use of Unknown to say that it <em>always</em> originates from a type error (never from just lack-of-annotation), which is currently true. In this case we could reasonably say that Unknown type on an import always means the import failed to resolve. In any case I don't think this is a critical issue for this PR, since we're focusing on building a type checker right now, not a type-aware linter. So as long as we issue the right diagnostic at the moment of failing to resolve an import, it's not currently critical that we can later revisit and draw the same conclusion just from the type. If it later becomes critical, it may be an option to literally look at the presence or absence of the diagnostic, or in some other way store more metadata.</p>
+<p>Relatedly, I think if we want to be consistent about this, then in <code>infer_import_from_definition</code>, where we call <code>.member</code> on the module type, we should call <code>.replace_unbound_with(Type::Unknown)</code> on the resulting type. Because importing an unbound name from an actually-existing module is also just another kind of unresolved import, and should also result in <code>Type::Unknown</code> (not <code>Type::Unbound</code>) in the importing module. I think it would make sense to add that (and a test for it) in this PR; what do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-16 17:49</div>
+            <div class="timeline-body"><blockquote>
+<p>The awkwardness is that it makes the &quot;unresolved imports&quot; lint rule slightly less clearly correct, because is it now possible that type Unknown on an import doesn't mean unresolved import, but rather successful import of a value of type Unknown in the module we imported from?</p>
+</blockquote>
+<p>Yup. And I <em>assume</em> this is the reason why the number of diagnostics in the benchmark is going up slightly? I want to check before merging.</p>
+<blockquote>
+<p>or in some other way store more metadata.</p>
+</blockquote>
+<p>Yeah... I think I've mentioned to you before that mypy tracks quite a few different subkinds of <code>Any</code> so that it knows whether it's a result of an error, something being untyped, an explicit <code>Any</code> annotation, or something else: <a href="https://github.com/python/mypy/blob/fe15ee69b9225f808f8ed735671b73c31ae1bed8/mypy/types.py#L187-L215">https://github.com/python/mypy/blob/fe15ee69b9225f808f8ed735671b73c31ae1bed8/mypy/types.py#L187-L215</a>. We could consider doing something similar.</p>
+<blockquote>
+<p>Relatedly, I think if we want to be consistent about this, then in <code>infer_import_from_definition</code>, where we call <code>.member</code> on the module type, we should call <code>.replace_unbound_with(Type::Unknown)</code> on the resulting type. Because importing an unbound name from an actually-existing module is also just another kind of unresolved import, and should also result in <code>Type::Unknown</code> (not <code>Type::Unbound</code>) in the importing module. I think it would make sense to add that (and a test for it) in this PR; what do you think?</p>
+</blockquote>
+<p>Yes, that makes sense to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-16 18:27</div>
+            <div class="timeline-body"><p>So on <code>main</code> the diagnostics are:</p>
+<details>
+
+<pre><code>[crates/ruff_benchmark/benches/red_knot.rs:91:17] &amp;result = List(
+    [
+        &quot;Line 69 is too long (89 characters)&quot;,
+        &quot;Use double quotes for strings&quot;,
+        &quot;Use double quotes for strings&quot;,
+        &quot;Use double quotes for strings&quot;,
+        &quot;Use double quotes for strings&quot;,
+        &quot;Use double quotes for strings&quot;,
+        &quot;Use double quotes for strings&quot;,
+        &quot;Use double quotes for strings&quot;,
+        &quot;/src/tomllib/_parser.py:7:29: Unresolved import 'Iterable'&quot;,
+        &quot;/src/tomllib/_parser.py:153:22: Name 'key' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:153:27: Name 'flag' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:159:16: Name 'k' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:161:25: Name 'k' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:168:16: Name 'k' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:169:22: Name 'k' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:170:25: Name 'k' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:180:16: Name 'k' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:182:31: Name 'k' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:206:16: Name 'k' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:207:22: Name 'k' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:208:25: Name 'k' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:232:43: Name 'Iterable' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:330:32: Name 'header' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:330:41: Name 'key' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:333:26: Name 'cont_key' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:334:71: Name 'cont_key' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:337:31: Name 'cont_key' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:628:75: Name 'e' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:686:23: Name 'parse_float' used when not defined.&quot;,
+    ],
+)
+</code></pre>
+</details>
+
+<p>And with this PR the diagnostics are:</p>
+<details>
+
+<pre><code>[crates/ruff_benchmark/benches/red_knot.rs:107:17] &amp;result = List(
+    [
+        &quot;Line 69 is too long (89 characters)&quot;,
+        &quot;Use double quotes for strings&quot;,
+        &quot;Use double quotes for strings&quot;,
+        &quot;Use double quotes for strings&quot;,
+        &quot;Use double quotes for strings&quot;,
+        &quot;Use double quotes for strings&quot;,
+        &quot;Use double quotes for strings&quot;,
+        &quot;Use double quotes for strings&quot;,
+        &quot;/src/tomllib/_parser.py:7:29: Unresolved import 'Iterable'&quot;,
+        &quot;/src/tomllib/_parser.py:10:20: Unresolved import 'Any'&quot;,
+        &quot;/src/tomllib/_parser.py:13:5: Unresolved import 'RE_DATETIME'&quot;,
+        &quot;/src/tomllib/_parser.py:14:5: Unresolved import 'RE_LOCALTIME'&quot;,
+        &quot;/src/tomllib/_parser.py:15:5: Unresolved import 'RE_NUMBER'&quot;,
+        &quot;/src/tomllib/_parser.py:20:21: Unresolved import 'Key'&quot;,
+        &quot;/src/tomllib/_parser.py:20:26: Unresolved import 'ParseFloat'&quot;,
+        &quot;/src/tomllib/_parser.py:153:22: Name 'key' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:153:27: Name 'flag' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:159:16: Name 'k' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:161:25: Name 'k' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:168:16: Name 'k' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:169:22: Name 'k' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:170:25: Name 'k' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:180:16: Name 'k' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:182:31: Name 'k' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:206:16: Name 'k' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:207:22: Name 'k' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:208:25: Name 'k' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:330:32: Name 'header' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:330:41: Name 'key' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:333:26: Name 'cont_key' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:334:71: Name 'cont_key' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:337:31: Name 'cont_key' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:628:75: Name 'e' used when not defined.&quot;,
+        &quot;/src/tomllib/_parser.py:686:23: Name 'parse_float' used when not defined.&quot;,
+    ],
+)
+</code></pre>
+</details>
+
+<p>So, as expected, this PR means that the &quot;unresolved import&quot; lint becomes less accurate: existing symbols imported from other modules that are <code>Type::Unknown</code> in other modules are now misunderstood by that lint as &quot;unresolved imports&quot;; this causes six new errors from that lint. But the &quot;name used when not defined&quot; lint becomes more accurate: this error (which wasn't correct) goes away:</p>
+<pre><code>        &quot;/src/tomllib/_parser.py:232:43: Name 'Iterable' used when not defined.&quot;,
+</code></pre>
+<p>(<code>Iterable</code> <em>was</em> defined -- via an <code>import</code> statement -- it was just that red-knot was failing to follow that import to the definition.)</p>
+<p>This looks okay to me (we'll just need to add more metadata in the future to track exactly what the cause of the <code>Unknown</code> was), so for now I'll add a TODO noting the inaccuracy of the import lint and adjust the assertion in the benchmark code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-08-16 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-08-16 19:09</div>
+            <div class="timeline-body"><p>Looks great, thank you!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-08-16 19:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-08-16 19:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-16 19:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:01 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Condense literals display by types - astral-sh/ruff #13185</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Condense literals display by types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13185">#13185</a>
+        opened by <a href="https://github.com/Slyces">@Slyces</a>
+        on 2024-08-31 17:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Slyces">@Slyces</a> on 2024-08-31 17:29</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Fixes #11785 by condensing string literals by type.</p>
+<p>Currently supports (in this order of display):</p>
+<ul>
+<li>Integer Literals: <code>Literal[0] | Literal[1]</code> → <code>Literal[0, 1]</code></li>
+<li>String Literals: <code>Literal[&quot;a&quot;] | Literal[&quot;b&quot;]</code> → <code>Literal[&quot;a&quot;, &quot;b&quot;]</code></li>
+<li>Bytes Literals: <code>Literal[b&quot;\x00&quot;] | Literal[b&quot;\x07&quot;]</code> → <code>Literal[b&quot;\x00&quot;, b&quot;\x07&quot;]</code></li>
+<li>Booleans Literals: <code>Literal[False] | Literal[True]</code> → <code>Literal[False, True]</code></li>
+<li>Classes: <code>Literal[A] | Literal[B]</code> → <code>Literal[A, B]</code></li>
+<li>Functions: <code>Literal[bar] | Literal[foo]</code> → <code>Literal[bar, foo]</code></li>
+</ul>
+<p>Behaviour for all other types is unchanged.</p>
+<h2>Notes</h2>
+<p>This affects one existing test because this gives priority to condensed unions (e.g. classes) over non condensed types, which happened in 1 test case.</p>
+<h2>Test Plan</h2>
+<p>Adds a unit test in <code>crates/red_knot_python_semantic/src/types/display.rs</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @Slyces on 2024-08-31 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @Slyces on 2024-08-31 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @Slyces on 2024-08-31 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-08-31 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "#11785 condense literals display by types" to "[red-knot] Condense literals display by types" by @AlexWaygood on 2024-08-31 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-31 19:59</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:107 on 2024-09-01 05:52</div>
+            <div class="timeline-body"><p>We should actually remove the support for boolean types here, because both boolean literal types should never appear in the same union, they should be replaced by the <code>bool</code> type. See https://github.com/astral-sh/ruff/pull/13178</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:101 on 2024-09-01 05:54</div>
+            <div class="timeline-body"><p>This is getting close to the point where I'm not totally comfortable having <code>UnionType</code> effectively replicate the <code>Display</code> logic of each other kind of literal type -- but I think I am ok with it for now. We can always consolidate in future if it starts causing issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:94 on 2024-09-01 05:55</div>
+            <div class="timeline-body"><p>Slightly tempted to suggest either using a struct instead of <code>all_literals</code>, or using constants instead of the magic number indices -- but I think this code is all close enough together that it's fine as-is. Using a struct would be significantly more code with arguable benefit, and using constants just doesn't seem necessary when all the indices are used once, in order, in close proximity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-01 05:56</div>
+            <div class="timeline-body"><p>Thank you, this is great!!</p>
+<p>I'd like to remove the boolean support (see inline comment), but otherwise this looks good to merge to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Slyces">@Slyces</a> on 2024-09-01 11:13</div>
+            <div class="timeline-body"><p>I removed the support for bool literals.</p>
+<p>I think I'd like to give a go at your 2 improvement comments:</p>
+<ul>
+<li>Use a struct to hold the different groups of literals (vs. <code>Vec&lt;Vec&lt;String&gt;&gt;</code>)</li>
+<li>Refactor the logic of each type's string representation (to avoid duplicating logic in indivdual <code>Display</code> &amp; <code>UnionType</code>'s <code>Display</code>)</li>
+</ul>
+<p>I can either do this in this PR or in 1 or 2 separate PRs, as you'd like :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-01 15:31</div>
+            <div class="timeline-body"><p>Sure, that'd be excellent! The first one (struct instead of vec of vecs) I'm not totally convinced will be a net improvement, but if you try it and feel that it is, that's great.</p>
+<p>The second one I think we should probably do; maybe simplest to just go ahead and do it in this PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Slyces">@Slyces</a> on 2024-09-01 16:49</div>
+            <div class="timeline-body"><p>I've got the 2 improvements:</p>
+<ul>
+<li>85169b8f36c53996c571ac141a3b9d2d07809ac9 introduces a private function (<code>representation</code>) to avoid the duplicated logic. I think this is better for sure, would love if you have a better idea for naming though</li>
+<li>8c5e6acbecca175592e2139aff7406dd84eca37b uses an enum to store the different groups in a hashmap (instead of relying on a <code>Vec&lt;Vec&lt;_&gt;&gt;</code>. I don't know 100% if it's better, I'd like your feedback on that. If you prefer the previous iteration, I can easily revert<ul>
+<li>Note: I also tried with <code>&quot;function&quot;, ...</code> static strings in the hashmap, but I think the enum is better</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-09-01 20:22</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/Slyces:feat/#11785-condense-literals">CodSpeed Performance Report</a></h2>
+<h3>Merging #13185 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>Slyces:feat/#11785-condense-literals</code> (5f0a27e) with <code>main</code> (599103c)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 32</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:29 on 2024-09-02 08:17</div>
+            <div class="timeline-body"><p>Returning a <code>String</code> here results in an unnecessary allocation. What we can do to avoid the string allocation is to change the method to <code>write_representation(&amp;self, f: &amp;mut Formatter) -&gt; std::fmt::Result</code> and directly write into the target output string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:81 on 2024-09-02 08:20</div>
+            <div class="timeline-body"><p>I think I would simplify this code by:</p>
+<ol>
+<li>Adding a <code>is_literal</code> method to <code>Type</code> that returns true if <code>self</code> is a <code>Class</code>, <code>Function</code>, Int<code>, Boolean</code>, <code>String</code> or <code>Bytes</code> Literal.</li>
+<li>Change the method here to:</li>
+</ol>
+<pre><code class="language-rust">let is_literal = self.ty.is_literal();
+
+if is_literal {
+	f.write_str(&quot;Literal[&quot;)?;
+}
+
+match self.ty {
+	...
+}
+
+if is_literal {
+	f.write_str(&quot;]&quot;)?;
+}
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:109 on 2024-09-02 08:21</div>
+            <div class="timeline-body"><p>Should this also include <code>Boolean</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:133 on 2024-09-02 08:24</div>
+            <div class="timeline-body"><p>We generally try to preserve the source order of unions. Grouping them here would undo that ordering. I'm inclined that we should only group subsequent elements but I'm not sure. I'm interested to hear more opinions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:151 on 2024-09-02 08:26</div>
+            <div class="timeline-body"><p>Pushing the <code>string</code> here is expensive because it results in many unnecessary allocations. It would be better to just push the type and directly write the representation to the target buffer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:133 on 2024-09-02 08:26</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        let mut literals_representation_map = FxHashMap::&lt;CondensedLiteral, Vec&lt;String&gt;&gt;::new();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-02 08:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:81 on 2024-09-02 09:50</div>
+            <div class="timeline-body"><p>I thought about having this information in <code>Type</code> as it's way cleaner, but I was hesitant to code outside of <code>display.rs</code>. Thank you for the suggestion 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-09-02 09:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-09-02 09:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:133 on 2024-09-02 09:51</div>
+            <div class="timeline-body"><p>Would you mean trying to remember the order in which we encounter the first element of each group, and condense literals in that order?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-02 10:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:133 on 2024-09-02 10:30</div>
+            <div class="timeline-body"><blockquote>
+<p>We generally try to preserve the source order of unions. Grouping them here would undo that ordering. I'm inclined that we should only group subsequent elements but I'm not sure. I'm interested to hear more opinions.</p>
+</blockquote>
+<p>I would prefer that we convert <code>Literal[1] | str | Literal[2]</code> to <code>Literal[1, 2] | str</code>. The former is much more verbose and isn't at all idiomatic (we even have lint rules against doing this if you're annotating your own code). It would be pretty clunky for us to show that in error messages, in my opinion. However, within the groups, I agree that it would be good to preserve the order as much as possible.</p>
+<p>It's interesting that mypy and pyright take quite different approaches here. Mypy appears to always display unions as a flat list of elements, but it exactly preserves the order as the user gave them. Pyright always condenses <code>Literal</code> elements inside a union (even <code>Literal</code> elements of different types), but does not preserve the order of the union elements at all:</p>
+<ul>
+<li>https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=2a5ec4068b420e5dd94b5f4c1844bd20</li>
+<li>https://pyright-play.net/?pythonVersion=3.13&amp;strict=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoAySMApiAIYA2AsAFB0AmJwUwYYAFHVD1AB4AuQsTJUA2gEYAulAA%2BUAM4wQc4aQqUxAJikAabrzhCi68RN1QdqpSH21eUAF7GRGsQCI2YdxYAsWiwAjd0DyEHcpOgBKKABaAD4oADkwFBIBAx4QEgA3EioAfXgEEg4%2BKMyobLzC4tK4CvteavzKIsRSxyigA</li>
+</ul>
+<p>Of the two I like pyright's approach more overall, but I would prefer it if we could preserve order as much as possible nonetheless</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-09-02 12:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:133 on 2024-09-02 12:58</div>
+            <div class="timeline-body"><p>Thank you so much for your comment and the comparison with existing implementations.</p>
+<blockquote>
+<p>However, within the groups, I agree that it would be good to preserve the order as much as possible</p>
+</blockquote>
+<p>Can I understand this as:</p>
+<ul>
+<li>We do group literals by type as stated in the issue (unlike pyright)</li>
+<li>Within groups (e.g. ints) we show them in order of appearance<ul>
+<li>To be clear, this would break the previous implementation of sorting ints</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Of the two I like pyright's approach more overall, but I would prefer it if we could preserve order as much as possible nonetheless</p>
+</blockquote>
+<p>Can I understand that as showing the groups in order of appearance?</p>
+<p>Example:</p>
+<pre><code>Literal[1, 2] | None | Literal[&quot;A&quot;] | Literal[0] | Literal[&quot;B&quot;] | Unbound
+    
+-&gt; Literal[1, 2, 0] | None | Literal[&quot;A&quot;, &quot;B&quot;] | Unbound
+</code></pre>
+<p>Here, we would:</p>
+<ul>
+<li>Condense by literal group</li>
+<li>Preserve order inside groups (order of appearance)</li>
+<li>Preserve order outside groups (order of appearance of the first element of the group)</li>
+</ul>
+<p>That would be similar to what pyright does, except that they always place <code>Literal[...]</code> at the end and don't split them by type</p>
+<p>All my apologies if I didn't understand correctly :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-09-02 14:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:151 on 2024-09-02 14:13</div>
+            <div class="timeline-body"><p>I applied all your performance improvements comments in the last commit, I think the code is much cleaner. Thank you again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @Slyces on 2024-09-02 21:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @Slyces on 2024-09-02 21:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-09-03 07:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-09-03 07:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-09-03 07:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-03 07:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-03 14:46</div>
+            <div class="timeline-body"><p>Thank you for this contribution, and for working through all the review comments!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>

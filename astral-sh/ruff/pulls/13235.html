@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make mypy pass on black in `knot_benchmark` - astral-sh/ruff #13235</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make mypy pass on black in <code>knot_benchmark</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13235">#13235</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-09-03 20:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-03 20:07</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This fixes one of the problems highlighted in astral-sh/ty#241 in the <code>knot_benchmark</code> script. The issue was that recent versions of <code>aiohttp</code> led to typing errors in black. These were fixed in https://github.com/psf/black/commit/699b45aef7c05cbec25019ed3c990f97e8b3c944, but we pinned a commit of black prior to that in <code>knot_benchmark</code>; meanwhile, we were installing the latest version of <code>aiohttp</code>, because our dependencies for the projects being benchmarked were not pinned.</p>
+<p>This PR bumps the pinned commit of black to a newer version, and adds a <code>--exclude-newer</code> flag (set to today's date) to the installation command so that we won't be impacted by issues like this in the future.</p>
+<h2>Test Plan</h2>
+<pre><code>~/dev/ruff/scripts/knot_benchmark (alex/black-bench)⚡ % uv run benchmark --project=black -vv --mypy --min-runs=1 --benchmark cold
+2024-09-03 21:02:05 INFO Cloned black to /var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmp35jq5s6j.
+black (cold)
+2024-09-03 21:02:05 INFO Running ['hyperfine', '-i', '--show-output', '--warmup', '3', '--min-runs', '1', '--command-name', 'mypy', '--prepare', '', '/Users/alexw/dev/ruff/scripts/knot_benchmark/.venv/bin/mypy --python-executable /var/folders/gd/1czdxc454j15y8gns2krv8vc0000gn/T/tmp35jq5s6j/venv/bin/python src --no-incremental --cache-dir /dev/null']
+Benchmark 1: mypy
+Warning: unused section(s) in pyproject.toml: module = ['tests.data.*']
+Success: no issues found in 40 source files
+Warning: unused section(s) in pyproject.toml: module = ['tests.data.*']
+Success: no issues found in 40 source files
+Warning: unused section(s) in pyproject.toml: module = ['tests.data.*']
+Success: no issues found in 40 source files
+Warning: unused section(s) in pyproject.toml: module = ['tests.data.*']
+Success: no issues found in 40 source files
+Warning: unused section(s) in pyproject.toml: module = ['tests.data.*']
+Success: no issues found in 40 source files
+  Time (mean ± σ):      1.485 s ±  0.012 s    [User: 1.398 s, System: 0.084 s]
+  Range (min … max):    1.476 s …  1.493 s    2 runs
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-09-03 20:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-09-03 20:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-09-03 21:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-09-04 06:18</div>
+            <div class="timeline-body"><p>Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:211 on 2024-09-04 06:19</div>
+            <div class="timeline-body"><p>Should we make this a more prominent constant that's easier to find / is defined in <code>projects</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-04 06:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-04 09:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:211 on 2024-09-04 09:17</div>
+            <div class="timeline-body"><p>I think in practice it would only make it harder to discover the value of the constant if we defined it as a global somewhere -- if I wanted to find out the exact command passed when installing dependencies I would grep for <code>&quot;uv pip&quot;</code> or <code>&quot;pip&quot;</code> in the source code, and I'd find this list of arguments fairly easily. (I know this because it's exactly what I did while debugging https://github.com/astral-sh/ruff/pull/13228 ;) But if this value was defined in another file, I'd then have to add an additional step of going to look in that other file.</p>
+<p>I'll add a comment about why we pass the argument, however!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-04 09:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/knot_benchmark/src/benchmark/cases.py</code>:211 on 2024-09-04 09:20</div>
+            <div class="timeline-body"><p>I would find a comment at the top of projects useful just in case someone wonders why the dependencies are all outdated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-09-04 09:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-09-04 09:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-04 09:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:39:02 UTC
+    </footer>
+</body>
+</html>
