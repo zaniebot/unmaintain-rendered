@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] No panic for illegal self-referential f-string annotations - astral-sh/ruff #14629</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] No panic for illegal self-referential f-string annotations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14629">#14629</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2024-11-27 09:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-27 09:19</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I went down another rabbit hole trying to fix all sorts of panics related to illegal type expressions. Some highlights from the linter corpus:</p>
+<pre><code class="language-py">x: f&quot;{x}&quot;
+x: (y := x)
+x: lambda y: y
+type X = Annotated[int, lambda: re.compile(&quot;x&quot;)]
+</code></pre>
+<p>This fixes the last two remaining entries in <code>KNOWN_FAILURES</code> except for those related to salsa-cycles. But I really don't know if the approach taken here — to infer <code>Type::Unknown</code> for sub-expressions of illegal expressions — is the right one. And even if it is, I'm not sure if my implementation of it is fully correct (see for example the exception for expressions with an inner scope). I thought I'd still open a PR so we can discuss the general problem.</p>
+<p>Side remark: After having fixed a few of those panics over the last weeks, my impression is that our approach to upholding the invariant &quot;we infer and store a type for each and every expression, even if illegal in this context&quot; is extremely brittle. The only way we enforce it right now is through the corpus tests. But there is an exponentially large number of branches in type inference (or alternatively: an exponentially large number of weird edge cases like the above), which makes me think that we might need another way to enforce this constraint, e.g. at the (Rust) type-system level instead of the test level.</p>
+<h2>Test Plan</h2>
+<pre><code class="language-rs">cargo nextest run -p red_knot_workspace -- --ignored linter_af linter_gz
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-11-27 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2024-11-27 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2024-11-27 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2024-11-27 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-27 09:26</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-27 10:36</div>
+            <div class="timeline-body"><blockquote>
+<p>Side remark: After having fixed a few of those panics over the last weeks, my impression is that our approach to upholding the invariant &quot;we infer and store a type for each and every expression, even if illegal in this context&quot; is extremely brittle. The only way we enforce it right now is through the corpus tests. But there is an exponentially large number of branches in type inference (or alternatively: an exponentially large number of weird edge cases like the above), which makes me think that we might need another way to enforce this constraint, e.g. at the (Rust) type-system level instead of the test level.</p>
+</blockquote>
+<p>I definitely agree with this, if it's possible. But I haven't thought at all about how we might redesign our infrastructure to make this possible!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/literal/literal.md</code>:79 on 2024-11-27 10:37</div>
+            <div class="timeline-body"><p>Hmm, I think this is a regression? We added support for <code>Literal[...]</code> annotations in https://github.com/astral-sh/ruff/pull/13874</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/string.md</code>:128 on 2024-11-27 10:38</div>
+            <div class="timeline-body"><p>Is this not a regression? I think the existing error was correct here -- this looks like a quoted annotation, and the quoted expression is not a valid type annotation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:30 on 2024-11-27 10:41</div>
+            <div class="timeline-body"><p>There are several type annotations on this line, and it's hard to tell which annotation this is referring to without counting the columns. Could we improve the error message so it specifies which variable or annotation the diagnostic is complaining about?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-27 10:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-27 12:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/literal/literal.md</code>:79 on 2024-11-27 12:01</div>
+            <div class="timeline-body"><p>Note that this is not <code>typing.Literal</code>, but <code>other.Literal</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-27 12:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/literal/literal.md</code>:79 on 2024-11-27 12:03</div>
+            <div class="timeline-body"><p>Oh, thanks! In that case, I think this is a true positive, and we should remove the TODO?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-27 12:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:30 on 2024-11-27 12:05</div>
+            <div class="timeline-body"><p>Including arbitrary expressions is something that I'm always worried about because it can lead to very long messages, but including the name might be an option or David can come up with something that avoids this.</p>
+<p>What should help here is when we have rich diagnostics that also show a code frame</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-27 12:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:30 on 2024-11-27 12:07</div>
+            <div class="timeline-body"><p>When I wrote that error message, I was looking for something like a <code>ast::Expr::human_readable_name()</code> method that would return &quot;lambda expression&quot; for a <code>Expr::Lambda</code> etc., but didn't find anything.</p>
+<p>I'm happy to improve this error message though once we agree that this is even the right approach to begin with.</p>
+<blockquote>
+<p>What should help here is when we have rich diagnostics that also show a code frame</p>
+</blockquote>
+<p>:+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-27 12:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:30 on 2024-11-27 12:08</div>
+            <div class="timeline-body"><blockquote>
+<p>What should help here is when we have rich diagnostics that also show a code frame</p>
+</blockquote>
+<p>That should help for sure, but it's also useful to have important information in the summary line for when a user is using <code>--output-format=concise</code>. I found <code>--output-format=concise</code> to be very useful when filing PRs to upgrade projects to Ruff 0.8, because there were many new violations on some codebases, and it was very hard to scroll through them all when using the default verbose output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-27 12:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/literal/literal.md</code>:79 on 2024-11-27 12:09</div>
+            <div class="timeline-body"><p>Yes, seems like I was similarly confused when I added the TODO. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-27 12:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/string.md</code>:128 on 2024-11-27 12:17</div>
+            <div class="timeline-body"><blockquote>
+<p>Is this not a regression?</p>
+</blockquote>
+<p>Hm... maybe?</p>
+<p>We do emit diagnostics for wrong string-kinds in annotations (all the other examples here). But in general, we do not emit any diagnostic for invalid expressions <em>inside correct string annotations</em>. Something like <code>x: &quot;lambda y: y&quot;</code> does not lead to a diagnostic on <code>main</code>. So having <code>x: &quot;b'int'&quot;</code> <em>not</em> emit a diagnostic either seems consistent to me.</p>
+<p>If we generally want to show errors for all these cases, we can also do that, I believe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-27 12:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/string.md</code>:128 on 2024-11-27 12:28</div>
+            <div class="timeline-body"><p>I see. I think we probably <em>do</em> want errors for these cases? But if this is consistent with what we have currently elsewhere, then it's probably better to leave it as you have it for now, and tackle it in isolation as a followup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-27 12:37</div>
+            <div class="timeline-body"><blockquote>
+<p>But I really don't know if the approach taken here — to infer <code>Type::Unknown</code> for sub-expressions of illegal expressions — is the right one. And even if it is, I'm not sure if my implementation of it is fully correct (see for example the exception for expressions with an inner scope). I thought I'd still open a PR so we can discuss the general problem.</p>
+</blockquote>
+<p>Yeah, I'm not sure about this either. I think there are two reasons why we want to infer types for all sub-expressions:</p>
+<ol>
+<li>So that you get a useful tool-tip telling you what the type of something is when you hover over a subexpression of a type annotation in a red-knot-powered IDE</li>
+<li>In the long term, we want to rewrite Ruff to use red-knot as a semantic-inference backend, and we may have rules that want to know the type of subexpressions of annotations even when the overall annotation is invalid. (Some rules might want type information even if the rule itself is not about enforcing valid annotations or types.)</li>
+</ol>
+<p>I think inferring <code>Unknown</code> for all subexpressions of invalid annotations is probably <em>okay</em> for the first of these (if the annotation is invalid, it's invalid), but probably not great for the second of these.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-11-28 05:36</div>
+            <div class="timeline-body"><blockquote>
+<p>our approach to upholding the invariant &quot;we infer and store a type for each and every expression, even if illegal in this context&quot; is extremely brittle.</p>
+</blockquote>
+<p>Yeah, I agree. I'm having a hard time thinking of how we could enforce this invariant in the type system. (At least without major re-architecting.)</p>
+<p>I think I am reaching the conclusion that we should just have a default fallback to <code>Unknown</code> for any expression that we've failed to store a type for, and if we discover cases where we have <code>Unknown</code> where there should be a more precise type, we treat that as a bug like any other type inference bug, fix it and add a test.</p>
+<p>I think this seems like the right answer to me in particular due to invalid syntax, because a) we can't reasonably expect to cover the full space of possible invalid syntax with any testing strategy, and b) I think, in general, <code>Unknown</code> is the right answer for invalid syntax cases that we cannot understand otherwise.</p>
+<blockquote>
+<p>I think inferring Unknown for all subexpressions of invalid annotations is probably okay for the first of these (if the annotation is invalid, it's invalid), but probably not great for the second of these.</p>
+</blockquote>
+<p>I'm not sure it isn't the best option for the second, too. How symbols in type expressions are interpreted is contextual, and if we've departed from a valid context, I think it's reasonable to say that we really don't know what the type of sub-expressions should be.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-11-28 05:39</div>
+            <div class="timeline-body"><p>I would be more inclined to switch to a default fallback of Unknown at lookup time (instead of panic), rather than adding all this infrastructure to walk a tree and store an explicit Unknown for everything in it.</p>
+<p>But I don't feel strongly about it, and won't object if this PR is merged as-is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-28 11:47</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>I think inferring Unknown for all subexpressions of invalid annotations is probably okay for the first of these (if the annotation is invalid, it's invalid), but probably not great for the second of these.</p>
+</blockquote>
+<p>I'm not sure it isn't the best option for the second, too. How symbols in type expressions are interpreted is contextual, and if we've departed from a valid context, I think it's reasonable to say that we really don't know what the type of sub-expressions should be.</p>
+</blockquote>
+<p>But remember that we won't just be using red-knot from the linter for its type-inference capabilities, but also for its more general &quot;symbol-aware&quot; capabilities.</p>
+<p>For example, take <a href="https://docs.astral.sh/ruff/rules/duplicate-literal-member/">PYI062</a>. This rule tries to detect duplicate members in a literal slice. When it's ported to red-knot, it will need to work largely off the AST, as it does now, because in our red-knot representation of a <code>Literal</code> annotation we'll eagerly deduplicate <code>Literal</code> elements as we add them to a <code>UnionType</code>. But the rule still needs to know that the symbol <code>Literal</code> is actually the symbol <code>typing.Literal</code> or <code>typing_extensions.Literal</code> before it starts traversing the AST, and for that it needs red-knot's multifile type-inference capabilities. It doesn't really matter for that rule whether the <code>Literal</code> slice occurs in the context of an annotation that is overall invalid; it can still do an accurate analysis of the <code>Literal</code> slice inside the invalid annotation. But if we infer <code>Unknown</code> for all subexpressions in the annotation, we won't be able to inform that rule whether or not the symbol <code>Literal</code> is actually <code>typing(_extensions).Literal</code> or if it's some other <code>Literal</code> symbol.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-11-28 14:08</div>
+            <div class="timeline-body"><p>Yes, I understood all of that from your first comment. This is the assumption I'm not sure I agree with:</p>
+<blockquote>
+<p>It doesn't really matter for that rule whether the Literal slice occurs in the context of an annotation that is overall invalid; it can still do an accurate analysis of the Literal slice inside the invalid annotation.</p>
+</blockquote>
+<p>I'm not sure it's reasonable to expect that rule to fire inside an arbitrary invalid context, because the meaning of these expressions is contextual.</p>
+<p>For example, the first &quot;argument&quot; to <code>Annotated</code> is not a type expression: should that lint rule fire on a <code>Literal</code> slice that occurs there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-28 14:38</div>
+            <div class="timeline-body"><blockquote>
+<p>For example, the first &quot;argument&quot; to <code>Annotated</code> is not a type expression: should that lint rule fire on a <code>Literal</code> slice that occurs there?</p>
+</blockquote>
+<p>Yes, I think it should! It's just as much an error to have duplicate elements in a <code>Literal</code> slice even if the <code>Literal</code> is not part of a type expression, because the typing module at runtime eagerly deduplicates elements:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from typing import Literal
+&gt;&gt;&gt; Literal[1, 1]
+typing.Literal[1]
+</code></pre>
+<p>So even if the <code>Literal</code> is part of the first argument to <code>Annotated</code> for whatever reason, it's always going to be incorrect to pass duplicate elements to the <code>Literal</code> slice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-12-02 19:26</div>
+            <div class="timeline-body"><p>Yes, I see that it would be nice to correctly infer the type of a reference to something like <code>typing.Literal</code> in any context.</p>
+<p>I wish we weren't constrained by Salsa query granularity, so we didn't have to do the extra work of type inference on expressions that are useless for type checking, just because a lint rule or an LSP hover might (but probably in many cases never will) ask for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-03 12:58</div>
+            <div class="timeline-body"><blockquote>
+<p>I wish we weren't constrained by Salsa query granularity, so we didn't have to do the extra work of type inference on expressions that are useless for type checking, just because a lint rule or an LSP hover might (but probably in many cases never will) ask for it.</p>
+</blockquote>
+<p>Right. Though the consolation here is that invalid annotations should generally be pretty rare in well-written code, so the &quot;extra cost&quot; of inferring sub-expressions in these invalid annotations should be pretty minimal, I'd wager.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-28 07:02</div>
+            <div class="timeline-body"><p>Is this still something we want or should we close this PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-28 23:12</div>
+            <div class="timeline-body"><p>I think probably not? I'm not sure what exactly we changed that fixed this, but the original motivating example in the description no longer panics, even when included in the test corpus (so that we try to pull types for all expressions.)</p>
+<p>(I do still think we should switch at some point to defaulting to <code>Unknown</code> for expressions we failed to store a type for -- and treating this as an ordinary bug when it matters -- rather than panicking. But I don't think this will be an invasive change, so there's no particular rush to do it. We could do it for the alpha?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-04-28 23:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:03:26 UTC
+    </footer>
+</body>
+</html>

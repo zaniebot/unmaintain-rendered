@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Check for invalid overload usages - astral-sh/ruff #17609</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Check for invalid overload usages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17609">#17609</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-04-24 13:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-24 13:50</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Part of #15383, this PR adds the core infrastructure to check for invalid overloads and adds a diagnostic to raise if there are &lt; 2 overloads for a given definition.</p>
+<h3>Design notes</h3>
+<p>The requirements to check the overloads are:</p>
+<ul>
+<li>Requires <code>FunctionType</code> which has the <code>to_overloaded</code> method</li>
+<li>The <code>FunctionType</code> <strong>should</strong> be for the function that is either the implementation or the last overload if the implementation doesn't exists</li>
+<li>Avoid checking any <code>FunctionType</code> that are part of an overload chain</li>
+<li>Consider visibility constraints</li>
+</ul>
+<p>This required a couple of iteration to make sure all of the above requirements are fulfilled.</p>
+<h4>1. Use a set to deduplicate</h4>
+<p>The logic would first collect all the <code>FunctionType</code> that are part of the overload chain except for the implementation or the last overload if the implementation doesn't exists. Then, when iterating over all the function declarations within the scope, we'd avoid checking these functions. But, this approach would fail to consider visibility constraints as certain overloads <em>can</em> be behind a version check. Those aren't part of the overload chain but those aren't a separate overload chain either.</p>
+<details><summary>Implementation:</summary>
+<p>
+
+<pre><code class="language-rs">fn check_overloaded_functions(&amp;mut self) {
+    let function_definitions = || {
+        self.types
+            .declarations
+            .iter()
+            .filter_map(|(definition, ty)| {
+                // Filter out function literals that result from anything other than a function
+                // definition e.g., imports.
+                if let DefinitionKind::Function(function) = definition.kind(self.db()) {
+                    ty.inner_type()
+                        .into_function_literal()
+                        .map(|ty| (ty, definition.symbol(self.db()), function.node()))
+                } else {
+                    None
+                }
+            })
+    };
+
+    // A set of all the functions that are part of an overloaded function definition except for
+    // the implementation function and the last overload in case the implementation doesn't
+    // exists. This allows us to collect all the function definitions that needs to be skipped
+    // when checking for invalid overload usages.
+    let mut overloads: HashSet&lt;FunctionType&lt;'db&gt;&gt; = HashSet::default();
+
+    for (function, _) in function_definitions() {
+        let Some(overloaded) = function.to_overloaded(self.db()) else {
+            continue;
+        };
+        if overloaded.implementation.is_some() {
+            overloads.extend(overloaded.overloads.iter().copied());
+        } else if let Some((_, previous_overloads)) = overloaded.overloads.split_last() {
+            overloads.extend(previous_overloads.iter().copied());
+        }
+    }
+
+    for (function, function_node) in function_definitions() {
+        let Some(overloaded) = function.to_overloaded(self.db()) else {
+            continue;
+        };
+        if overloads.contains(&amp;function) {
+            continue;
+        }
+
+        // At this point, the `function` variable is either the implementation function or the
+        // last overloaded function if the implementation doesn't exists.
+
+        if overloaded.overloads.len() &lt; 2 {
+            if let Some(builder) = self
+                .context
+                .report_lint(&amp;INVALID_OVERLOAD, &amp;function_node.name)
+            {
+                let mut diagnostic = builder.into_diagnostic(format_args!(
+                    &quot;Function `{}` requires at least two overloads&quot;,
+                    &amp;function_node.name
+                ));
+                if let Some(first_overload) = overloaded.overloads.first() {
+                    diagnostic.annotate(
+                        self.context
+                            .secondary(first_overload.focus_range(self.db()))
+                            .message(format_args!(&quot;Only one overload defined here&quot;)),
+                    );
+                }
+            }
+        }
+    }
+ }
+</code></pre>
+</p>
+</details> 
+
+<h4>2. Define a <code>predecessor</code> query</h4>
+<p>The <code>predecessor</code> query would return the previous <code>FunctionType</code> for the given <code>FunctionType</code> i.e., the current logic would be extracted to be a query instead. This could then be used to make sure that we're checking the entire overload chain once. The way this would've been implemented is to have a <code>to_overloaded</code> implementation which would take the root of the overload chain instead of the leaf. But, this would require updates to the use-def map to somehow be able to return the <em>following</em> functions for a given definition.</p>
+<h4>3. Create a successor link</h4>
+<p>This is what Pyrefly uses, we'd create a forward link between two functions that are involved in an overload chain. This means that for a given function, we can get the successor function. This could be used to find the <em>leaf</em> of the overload chain which can then be used with the <code>to_overloaded</code> method to get the entire overload chain. But, this would also require updating the use-def map to be able to &quot;see&quot; the <em>following</em> function.</p>
+<h3>Implementation</h3>
+<p>This leads us to the final implementation that this PR implements which is to consider the overloaded functions using:</p>
+<ul>
+<li>Collect all the <strong>function symbols</strong> that are defined <strong>and</strong> called within the same file. This could potentially be an overloaded function</li>
+<li>Use the public bindings to get the leaf of the overload chain and use that to get the entire overload chain via <code>to_overloaded</code> and perform the check</li>
+</ul>
+<p>This has a limitation that in case a function redefines an overload, then that overload will not be checked. For example:</p>
+<pre><code class="language-py">from typing import overload
+
+@overload
+def f() -&gt; None: ...
+@overload
+def f(x: int) -&gt; int: ...
+
+# The above overload will not be checked as the below function with the same name
+# shadows it
+
+def f(*args: int) -&gt; int: ...
+</code></pre>
+<h2>Test Plan</h2>
+<p>Update existing mdtest and add snapshot diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2025-04-24 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-04-24 13:56</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv%2Fcheck-invalid-overloads">CodSpeed Performance Report</a></h2>
+<h3>Merging #17609 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>dhruv/check-invalid-overloads</code> (382b15b) with <code>main</code> (7d46579)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 33</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-24 21:35</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1028 on 2025-04-24 21:47</div>
+            <div class="timeline-body"><p>This is the second part which tries to get the <code>FunctionType</code> to check using the public bindings from use-def map.</p>
+<p>The <code>overloaded_function_symbols</code> is trying to collect all the <code>ScopedSymbolId</code> that's an overloaded function. We can't directly use the <code>FunctionType</code> there because we need the <code>FunctionType</code> corresponding to the final function which should be what <code>public_bindings</code> would give.</p>
+<p>cc @carljm</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-24 21:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-24 21:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4412 on 2025-04-24 21:48</div>
+            <div class="timeline-body"><p>This is the first part which adds the <code>FunctionType</code> that needs to be checked which is only added if it's defined and called in the same scope.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:6141 on 2025-04-24 23:08</div>
+            <div class="timeline-body"><p>This is the sort of API we should generally avoid providing publicly on types (unless it is protected by a local Salsa query), because types travel across modules freely, and anytime type inference on one module would access this field, it would create a cross-module direct AST dependency, causing too much invalidation.</p>
+<p>I think the actual usage of this function in this file should actually be OK, but I would still recommend we protect it better from mis-use. One way to do that would be to make it accept a <code>File</code> that we expect the function to be defined in, and if that file is not the same as <code>self.body_scope((db).file(db)</code>, we short-circuit and return <code>None</code>.</p>
+<p>Another option would be to make this a method on <code>TypeInferenceBuilder</code> instead -- then it doesn't need to take a <code>File</code>, it can just check against <code>self.file()</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1033 on 2025-04-24 23:45</div>
+            <div class="timeline-body"><p>This line will create extra Salsa dependencies. Since we are taking care above to only include functions defined in this file, that should be OK, but it will still be more efficient if we only do this when we actually need it -- that is, inside the actual error condition <code>if</code> body below. Ideally also inside the <code>if let Some(builder) { ... }</code> so we don't do it if diagnostics are not enabled here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4406 on 2025-04-24 23:50</div>
+            <div class="timeline-body"><p>This line is the source of the test failure (and probably most of the regression, too.) If you look at the body of <code>FunctionType::definition</code>, you'll see that it accesses the semantic index, which means it has a direct dependency on the AST of the file the function is defined in. We are calling this unconditionally on every <code>FunctionLiteral</code> called, including those imported from other modules, so this will create direct dependencies to the ASTs of those modules.</p>
+<p>One way we can prevent this is to first check that <code>function.body_scope(self.db()).file(self.db()) == self.file()</code> and only if that is true, go ahead and get the definition and do the full scope-match check.</p>
+<p>It would probably make sense to add a warning in a doc comment on <code>FunctionType::definition</code> also.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-24 23:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-04-25 00:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @dhruvmanila on 2025-04-25 00:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-25 13:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:6141 on 2025-04-25 13:58</div>
+            <div class="timeline-body"><p>I've added an assertion to this function. Note that the same is being used for other methods like <code>full_range</code> and <code>focus_range</code> but I think those can come from other file because they're being used in the language server.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-25 13:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1033 on 2025-04-25 13:59</div>
+            <div class="timeline-body"><p>I'm not sure if it's possible to move it inside the <code>if let Some(builder) { ... }</code> branch because the <code>report_lint</code> requires the <code>Ranged</code> value which is the function name node. I don't think I can use <code>focus_range</code> because that also accesses the <code>node</code> in the same way as this method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-25 14:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4406 on 2025-04-25 14:01</div>
+            <div class="timeline-body"><p>Thank you, this was the case. I've added a warning note as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-04-25 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-04-25 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-04-25 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-04-25 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-25 14:18</div>
+            <div class="timeline-body"><p>This PR only adds a single check, I'm thinking of creating a &quot;help wanted&quot; issue that lists down the other checks as the core infrastructure is now in place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-04-25 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-25 17:05</div>
+            <div class="timeline-body"><blockquote>
+<h2><code>mypy_primer</code> results</h2>
+<p>Changes were detected when running on open source projects</p>
+<pre><code class="language-diff">pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
++ error[lint:invalid-overload] /tmp/mypy_primer/projects/pytest-robotframework/pytest_robotframework/__init__.py:327:9: Function `__call__` requires at least two overloads
++ error[lint:invalid-overload] /tmp/mypy_primer/projects/pytest-robotframework/pytest_robotframework/__init__.py:470:5: Function `keyword` requires at least two overloads
+- Found 357 diagnostics
++ Found 359 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
++ error[lint:invalid-overload] /tmp/mypy_primer/projects/pydantic/pydantic/json_schema.py:2539:9: Function `__init__` requires at least two overloads
+- Found 923 diagnostics
++ Found 924 diagnostics
+
+setuptools (https://github.com/pypa/setuptools)
++ error[lint:invalid-overload] /tmp/mypy_primer/projects/setuptools/setuptools/_distutils/sysconfig.py:578:5: Function `get_config_var` requires at least two overloads
+- Found 1084 diagnostics
++ Found 1085 diagnostics
+
+django-stubs (https://github.com/typeddjango/django-stubs)
++ error[lint:invalid-overload] /tmp/mypy_primer/projects/django-stubs/django-stubs/db/models/constraints.pyi:61:9: Function `__init__` requires at least two overloads
++ error[lint:invalid-overload] /tmp/mypy_primer/projects/django-stubs/django-stubs/utils/html.pyi:27:5: Function `format_html` requires at least two overloads
++ error[lint:invalid-overload] /tmp/mypy_primer/projects/django-stubs/django-stubs/contrib/admin/options.pyi:136:9: Function `lookup_allowed` requires at least two overloads
+- Found 1415 diagnostics
++ Found 1418 diagnostics
+</code></pre>
+</blockquote>
+<p>These all look like false positives where one of the overloads is additionally decorated with <code>@deprecated</code>. I guess that's because <code>deprecated</code> is actually a class (<code>@deprecated</code> created a callable instance of <code>typing_extensions.deprecated</code>), and <code>deprecated.__call__</code> <a href="https://github.com/python/typeshed/blob/ebf4d17c8d1ba2be348c51be39faec4d0303d8fa/stdlib/typing_extensions.pyi#L476">is a generic function</a>, and we don't understand generic functions that use old-style <code>TypeVar</code>s yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-25 17:08</div>
+            <div class="timeline-body"><blockquote>
+<p>These all look like false positives where one of the overloads is additionally decorated with <code>@deprecated</code>. I guess that's because <code>deprecated</code> is actually a class (<code>@deprecated</code> created a callable instance of <code>typing_extensions.deprecated</code>), and <code>deprecated.__call__</code> <a href="https://github.com/python/typeshed/blob/ebf4d17c8d1ba2be348c51be39faec4d0303d8fa/stdlib/typing_extensions.pyi#L476">is a generic function</a>, and we don't understand generic functions that use old-style <code>TypeVar</code>s yet.</p>
+</blockquote>
+<p>Yes, sorry I meant to add that to the PR description as I looked at them but somehow missed to do so. Thank you for looking at it.</p>
+<p>We don't support <code>@deprecated</code> decorator yet. In general, I think this issue will pop-up if there are any other non-special cased decorator that are present in addition to <code>@overload</code> because the inferred type would change to something other than <code>FunctionType</code> which is then not included in the overload chain.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:6149 on 2025-04-25 21:32</div>
+            <div class="timeline-body"><p>nit: I'd probably make this just a <code>debug_assert_eq!</code>, we probably don't need to pay for this check in release builds, it should be an issue that is caught in dev</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:6180 on 2025-04-25 21:33</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// a cross-module dependency directly on the full AST which will lead to
+    /// cache over-invalidation.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4411 on 2025-04-25 21:41</div>
+            <div class="timeline-body"><p>minor nit: given that we now do this check a couple places, it could be a method <code>FunctionType::defined_in_file(db, file)</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/overloads.md_-_Overloads_-_Invalid_-_At_least_two_overloads.snap</code>:32 on 2025-04-25 21:45</div>
+            <div class="timeline-body"><p>nit: This reads slightly off to me, because the function doesn't <em>require</em> at least two overloads, it could have zero and that would also be fine. I think one way to address this would be to say &quot;Overloaded function <code>func1</code>...&quot; instead of just &quot;Function <code>func1</code>...&quot; -- if it is specified that it is an overloaded function, then it is true that it requires at least two overloads.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-25 21:49</div>
+            <div class="timeline-body"><p>Looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-25 22:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4411 on 2025-04-25 22:26</div>
+            <div class="timeline-body"><p>Are you referring to the <code>function.body_scope(self.db()).file(self.db())</code> part or the entire equality check? I'm guessing it's the former as I couldn't find the latter part.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-25 22:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/overloads.md_-_Overloads_-_Invalid_-_At_least_two_overloads.snap</code>:32 on 2025-04-25 22:26</div>
+            <div class="timeline-body"><p>Yeah, that makes sense. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-25 22:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4411 on 2025-04-25 22:37</div>
+            <div class="timeline-body"><p>I meant the entire equality check. Don't we do it both here and in the assertion you added in <code>FunctionType::node</code>?</p>
+<p>I mean, extracting a <code>FunctionType::file()</code> method isn't necessarily a bade idea either...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-28 13:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4411 on 2025-04-28 13:58</div>
+            <div class="timeline-body"><blockquote>
+<p>I mean, extracting a <code>FunctionType::file()</code> method isn't necessarily a bade idea either...</p>
+</blockquote>
+<p>Yeah, I've added this instead of the equality check method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-04-28 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-29 16:01</div>
+            <div class="timeline-body"><p>I looked at the mypy-primer failure in https://github.com/astral-sh/ruff/pull/17681 which is on <code>porcupine</code> project, it started happening after https://github.com/astral-sh/ruff/pull/16538 was merged. It seems that for the following code:</p>
+<pre><code class="language-py">from typing import Any, Callable, TypeVar
+
+_T = TypeVar(&quot;_T&quot;)
+
+
+# https://github.com/python/typing/issues/769
+def copy_type(f: _T) -&gt; Callable[[Any], _T]:
+    return lambda x: x
+
+
+@copy_type(open)
+def backup_open():
+    pass
+</code></pre>
+<p>The inference builder binds the <code>backup_open</code> definition to the builtin <code>open</code> function which looks correct. This means that the overload check for <code>backup_open</code> which is defined in the current scope is actually being done on <code>open</code> which is defined elsewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-29 21:03</div>
+            <div class="timeline-body"><p>Looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-04-30 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-04-30 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-30 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @dhruvmanila on 2025-04-30 14:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:03:26 UTC
+    </footer>
+</body>
+</html>

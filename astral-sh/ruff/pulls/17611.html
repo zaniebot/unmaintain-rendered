@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add config option to disable `typing_extensions` imports  - astral-sh/ruff #17611</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add config option to disable <code>typing_extensions</code> imports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17611">#17611</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-04-24 15:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-24 15:31</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR resolves https://github.com/astral-sh/ruff/issues/9761 by adding a linter configuration option to disable
+<code>typing_extensions</code> imports. As mentioned <a href="https://github.com/astral-sh/ruff/issues/9761#issuecomment-2790492853">here</a>, it would be ideal if we could
+detect whether or not <code>typing_extensions</code> is available as a dependency
+automatically, but this seems like a much easier fix in the meantime.</p>
+<p>The default for the new option, <code>typing-extensions</code>, is <code>true</code>,
+preserving the current behavior. Setting it to <code>false</code> will bail out of the new
+<code>Checker::typing_importer</code> method, which has been refactored from the
+<code>Checker::import_from_typing</code> method in https://github.com/astral-sh/ruff/pull/17340),
+with <code>None</code>, which is then handled specially by each rule that calls it.</p>
+<p>I considered some alternatives to a config option, such as checking if <code>typing_extensions</code> has been imported or checking for a <code>TYPE_CHECKING</code> block we could use, but I think defaulting to allowing <code>typing_extensions</code> imports and allowing the user to disable this with an option is both simple to implement and pretty intuitive.</p>
+<h2>Test Plan</h2>
+<p>New linter tests exercising several combinations of Python versions and the new config option for PYI019. I also added tests for the other affected rules, but only in the case where the new config option is enabled. The rules' existing tests also cover the default case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-04-24 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @ntBre on 2025-04-24 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-24 15:38</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-04-24 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-04-24 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-04-25 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:553 on 2025-04-28 08:16</div>
+            <div class="timeline-body"><p>We could use a pattern similar to @BurntSushi's <code>InferContext::report_lint</code> where the inital function returns an <code>Option&lt;Builder&gt;</code> and the builder allows you to perform the typing import.</p>
+<pre><code class="language-rust">pub(crate) fn typing_importer(&amp;self, version_added_to_typing: PythonVersion) -&gt; Option&lt;TypingImporte&gt; {
+	let source_module = if self.target_version() &gt;= version_added_to_typing {            &quot;typing&quot;
+	} else if self.settings.disable_typing_extensions {
+  	return None;
+	} else {
+		&quot;typing_extensions&quot;
+	};
+	
+	Some(TypingImporter { checker: self, source_module })
+}
+
+pub struct TypingImporter&lt;'a&gt; {
+	checker: &amp;'a Checker,
+	source_module: &amp;'static src
+}
+
+impl TypingImporter&lt;'_&gt; {
+	pub fn import(member: &amp;str, position: TextSize) -&gt; Result&lt;(Edit, String), ResolutionError&gt; {
+		... 
+	}
+}
+</code></pre>
+<p>I'm a bit undecided if <code>member</code> should be passed to <code>typing_importer</code> to avoid accidential reuse.</p>
+<p>A simpler alternative would be to return <code>Option&lt;Result&lt;...&gt;</code>, but that's a bit less common but could be fine too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:321 on 2025-04-28 08:21</div>
+            <div class="timeline-body"><p>Do we need to update the rule's fix availability documentation (same for other rules) to explain that the fix isn't available if typing extensions isn't available?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/options.rs</code>:531 on 2025-04-28 08:27</div>
+            <div class="timeline-body"><p>bikeshedding: The <code>disable</code> prefix is uncommon in our existing settings and simply <code>typing_extensions</code> would be more idiomatic or <code>allow_typing_extensions</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-04-28 08:28</div>
+            <div class="timeline-body"><p>This looks good to me. I agree with you, the way <code>typing_import</code> works today is a bit awkward where it's very easy to omit the fix instead of omitting the diagnostic. I added an inline suggestion on what you could try to improve the ergonomics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-28 12:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_workspace/src/options.rs</code>:531 on 2025-04-28 12:56</div>
+            <div class="timeline-body"><p>Ah, I always like options that default to <code>false</code> so that I can use <code>bool::default</code> :laughing: but either of those names is fine with me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-28 12:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:321 on 2025-04-28 12:56</div>
+            <div class="timeline-body"><p>Yes, very good point, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:553 on 2025-04-28 13:02</div>
+            <div class="timeline-body"><p>Oh, I like that idea, I'll give it a try!</p>
+<p>I vaguely remember trying <code>Option&lt;Result&gt;</code> and not liking it for some reason, but maybe that was when I thought <code>try_set_optional_fix</code> was still going to work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-28 13:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-28 13:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:553 on 2025-04-28 13:06</div>
+            <div class="timeline-body"><p>I feel like we do want <code>member</code> passed to <code>typing_importer</code> because it's the piece that needs to be tied most closely to the <code>PythonVersion</code>. I don't remember seeing any places where intentional reuse would be very helpful, so avoiding the accidental cases makes sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-28 16:11</div>
+            <div class="timeline-body"><p>Thanks again for the suggestions! I've updated the code to:</p>
+<ul>
+<li>use your <code>TypingImporter</code> idea</li>
+<li>add an <code>## Availability</code> section to each affected rule<ul>
+<li>I called it <code>Availability</code> instead of the more typical <code>Fix availability</code> because it affects the diagnostic too</li>
+<li>I left out any rules using <code>PythonVersion::lowest</code>, which should not be possible to affect with this change</li>
+</ul>
+</li>
+<li>rename the option to <code>typing_extensions</code> with a default value of <code>true</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-28 16:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:246 on 2025-04-28 16:29</div>
+            <div class="timeline-body"><p>Should we move this now out of <code>try_generate_fix</code> because it also affects the diagnostic generation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-28 16:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_annotations/helpers.rs</code>:134 on 2025-04-28 16:31</div>
+            <div class="timeline-body"><p>Is it okay that we treat &quot;typing-extensions&quot; not being available the same as the import failing (will this suppress the diagnostic or only fail to generate the fix?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_for_self.rs</code>:187 on 2025-04-28 16:32</div>
+            <div class="timeline-body"><p>Same here. I think it would be nice if we resolve the importer before calling <code>replace_custom_typevar_with_self</code> to make it clear that a failure to resolve the importer means we shouldn't emit a diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-28 16:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-28 16:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:246 on 2025-04-28 16:55</div>
+            <div class="timeline-body"><p>Yes, good catch, thank you! We can actually revert most of the new code here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-28 17:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_annotations/helpers.rs</code>:134 on 2025-04-28 17:05</div>
+            <div class="timeline-body"><p>I believe all of the calls in this file are okay because they use <code>PythonVersion::lowest</code>. I think we could even <code>expect</code> or <code>unwrap</code> instead of the first <code>?</code>, if we wanted, because we should always get a <code>TypingImporter</code> for any supported Python version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-28 17:55</div>
+            <div class="timeline-body"><p>I went through all of the changed rules and made changes similar to your suggestions above to restructure the code to call <code>typing_importer</code> first, return early if <code>None</code>, and only then to call <code>import</code>. This reverted many of the other code changes I had to make in the first draft.</p>
+<p>It also made two functions that were only very similar before now identical: <code>duplicate_union_member::generate_union_fix</code> and <code>redundant_numerical_union::generate_union_fix</code>, so I factored these out into the parent module.</p>
+<p>The only change we might not is in the very last commit, where I used <code>anyhow::Context</code> to convert one of the <code>PythonVersion::lowest</code> cases directly into an <code>Err</code>. As mentioned above, I think this is safe because this import should always be available in <code>typing</code> for any Python version we support. We could even <code>unwrap</code> if we wanted, but this is a bit safer just in case.</p>
+<p>Thanks for catching these additional benefits of the new API!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-04-28 17:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-04-28 18:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-04-28 18:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-28 18:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:03:27 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`refurb`] Mark fix as safe for `readlines-in-for` (`FURB129`) - astral-sh/ruff #17644</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>refurb</code>] Mark fix as safe for <code>readlines-in-for</code> (<code>FURB129</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17644">#17644</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2025-04-26 15:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-04-26 15:22</div>
+            <div class="timeline-body"><p>This PR promotes the fix applicability of <a href="https://docs.astral.sh/ruff/rules/readlines-in-for/#readlines-in-for-furb129">readlines-in-for (FURB129)</a> to always safe.</p>
+<p>In the original PR (https://github.com/astral-sh/ruff/pull/9880), the author marked the rule as unsafe because Ruff's type inference couldn't quite guarantee that we had an <code>IOBase</code> object in hand. Some false positives were recorded in the test fixture. However, before the PR was merged, Charlie added the necessary type inference and the false positives went away.</p>
+<p>According to the <a href="https://docs.python.org/3/library/io.html#io.IOBase">Python documentation</a>, I believe this fix is safe for any proper implementation of <code>IOBase</code>:</p>
+<blockquote>
+<p><a href="https://docs.python.org/3/library/io.html#io.IOBase">IOBase</a> (and its subclasses) supports the iterator protocol, meaning that an <a href="https://docs.python.org/3/library/io.html#io.IOBase">IOBase</a> object can be iterated over yielding the lines in a stream. Lines are defined slightly differently depending on whether the stream is a binary stream (yielding bytes), or a text stream (yielding character strings). See <a href="https://docs.python.org/3/library/io.html#io.IOBase.readline">readline()</a> below.</p>
+</blockquote>
+<p>and then in the <a href="https://docs.python.org/3/library/io.html#io.IOBase.readlines">documentation for <code>readlines</code></a>:</p>
+<blockquote>
+<p>Read and return a list of lines from the stream. hint can be specified to control the number of lines read: no more lines will be read if the total size (in bytes/characters) of all lines so far exceeds hint. [...]
+Note that it’s already possible to iterate on file objects using for line in file: ... without calling file.readlines().</p>
+</blockquote>
+<p>I believe that a careful reading of our <a href="https://docs.astral.sh/ruff/versioning/#version-changes">versioning policy</a> requires that this change be deferred to a minor release - but please correct me if I'm wrong!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @dylwil3 on 2025-04-26 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @dylwil3 on 2025-04-26 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">do-not-merge</span> added by @dylwil3 on 2025-04-26 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.12" by @dylwil3 on 2025-04-26 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`refurb`] Mark fix as safe for readlines-in-for (FURB129)" to "[`refurb`] Mark fix as safe for `readlines-in-for` (`FURB129`)" by @dylwil3 on 2025-04-26 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-26 15:29</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -0 violations, +10 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -0 violations, +10 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/7a4e726bc63079fca21c4ecf31ae5d22460e67d5/dev/airflow_perf/sql_queries.py#L145'>dev/airflow_perf/sql_queries.py:145:41:</a> FURB129 Instead of calling `readlines()`, iterate over file object directly
++ <a href='https://github.com/apache/airflow/blob/7a4e726bc63079fca21c4ecf31ae5d22460e67d5/dev/airflow_perf/sql_queries.py#L145'>dev/airflow_perf/sql_queries.py:145:41:</a> FURB129 [*] Instead of calling `readlines()`, iterate over file object directly
+- <a href='https://github.com/apache/airflow/blob/7a4e726bc63079fca21c4ecf31ae5d22460e67d5/dev/breeze/src/airflow_breeze/global_constants.py#L553'>dev/breeze/src/airflow_breeze/global_constants.py:553:21:</a> FURB129 Instead of calling `readlines()`, iterate over file object directly
++ <a href='https://github.com/apache/airflow/blob/7a4e726bc63079fca21c4ecf31ae5d22460e67d5/dev/breeze/src/airflow_breeze/global_constants.py#L553'>dev/breeze/src/airflow_breeze/global_constants.py:553:21:</a> FURB129 [*] Instead of calling `readlines()`, iterate over file object directly
+- <a href='https://github.com/apache/airflow/blob/7a4e726bc63079fca21c4ecf31ae5d22460e67d5/devel-common/src/sphinx_exts/redirects.py#L44'>devel-common/src/sphinx_exts/redirects.py:44:21:</a> FURB129 Instead of calling `readlines()`, iterate over file object directly
++ <a href='https://github.com/apache/airflow/blob/7a4e726bc63079fca21c4ecf31ae5d22460e67d5/devel-common/src/sphinx_exts/redirects.py#L44'>devel-common/src/sphinx_exts/redirects.py:44:21:</a> FURB129 [*] Instead of calling `readlines()`, iterate over file object directly
+- <a href='https://github.com/apache/airflow/blob/7a4e726bc63079fca21c4ecf31ae5d22460e67d5/providers/google/tests/system/google/cloud/gcs/resources/transform_script.py#L26'>providers/google/tests/system/google/cloud/gcs/resources/transform_script.py:26:39:</a> FURB129 Instead of calling `readlines()`, iterate over file object directly
++ <a href='https://github.com/apache/airflow/blob/7a4e726bc63079fca21c4ecf31ae5d22460e67d5/providers/google/tests/system/google/cloud/gcs/resources/transform_script.py#L26'>providers/google/tests/system/google/cloud/gcs/resources/transform_script.py:26:39:</a> FURB129 [*] Instead of calling `readlines()`, iterate over file object directly
+- <a href='https://github.com/apache/airflow/blob/7a4e726bc63079fca21c4ecf31ae5d22460e67d5/scripts/ci/pre_commit/newsfragments.py#L36'>scripts/ci/pre_commit/newsfragments.py:36:43:</a> FURB129 Instead of calling `readlines()`, iterate over file object directly
++ <a href='https://github.com/apache/airflow/blob/7a4e726bc63079fca21c4ecf31ae5d22460e67d5/scripts/ci/pre_commit/newsfragments.py#L36'>scripts/ci/pre_commit/newsfragments.py:36:43:</a> FURB129 [*] Instead of calling `readlines()`, iterate over file object directly
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| FURB129 | 10 | 0 | 0 | 10 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-04-28 07:35</div>
+            <div class="timeline-body"><p>This sounds reasonable to me. Yes, I think this needs to be gated behind preview</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> removed by @dylwil3 on 2025-04-28 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">do-not-merge</span> removed by @dylwil3 on 2025-04-28 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dylwil3 on 2025-04-28 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.12" by @dylwil3 on 2025-04-28 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dylwil3 on 2025-04-28 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-04-28 14:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:03:27 UTC
+    </footer>
+</body>
+</html>

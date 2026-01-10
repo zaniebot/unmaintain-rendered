@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create `TypeVarInstance` type for legacy typevars - astral-sh/ruff #16538</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Create <code>TypeVarInstance</code> type for legacy typevars</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16538">#16538</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-03-06 16:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-03-06 16:23</div>
+            <div class="timeline-body"><p>We are currently representing type variables using a <code>KnownInstance</code> variant, which wraps a <code>TypeVarInstance</code> that contains the information about the typevar (name, bounds, constraints, default type).  We were previously only constructing that type for PEP 695 typevars.  This PR constructs that type for legacy typevars as well.</p>
+<p>It also detects functions that are generic because they use legacy typevars in their parameter list. With the existing logic for inferring specializations of function calls (#17301), that means that we are correctly detecting that the definition of <code>reveal_type</code> in the typeshed is generic, and inferring the correct specialization of <code>_T</code> for each call site.</p>
+<p>This does not yet handle legacy generic classes; that will come in a follow-on PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-03-06 16:25</div>
+            <div class="timeline-body"><p>Leaving this as draft for now; there's one mdtest regression (an incorrect <code>unresolved-reference</code> error) that I still have to track down.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-03-06 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-20 15:18</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">packaging (https://github.com/pypa/packaging)
++ error[lint:no-matching-overload] src/packaging/_manylinux.py:195:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/packaging/_manylinux.py:198:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/packaging/_manylinux.py:201:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/packaging/_manylinux.py:231:22: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/packaging/_manylinux.py:234:26: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/packaging/_manylinux.py:235:21: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/packaging/_musllinux.py:30:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/packaging/_parser.py:83:12: No overload of bound method `__init__` matches arguments
+- warning[lint:unused-ignore-comment] src/packaging/metadata.py:439:65: Unused blanket `type: ignore` directive
++ warning[lint:possibly-unbound-attribute] src/packaging/metadata.py:576:13: Attribute `params` on type `str | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/packaging/metadata.py:576:13: Attribute `params` on type `str | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/packaging/metadata.py:576:13: Attribute `params` on type `str | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
++ error[lint:no-matching-overload] src/packaging/version.py:205:25: No overload of bound method `__init__` matches arguments
+- Found 22 diagnostics
++ Found 33 diagnostics
+
+nionutils (https://github.com/nion-software/nionutils)
++ error[lint:invalid-argument-type] nion/utils/test/ListModel_test.py:510:33: Argument to this function is incorrect: Argument type `FlattenedListModel` does not satisfy upper bound of type variable `_SupportsCloseT`
+- Found 33 diagnostics
++ Found 34 diagnostics
+
+bidict (https://github.com/jab/bidict)
++ error[lint:no-matching-overload] bidict/_dup.py:57:34: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] bidict/_dup.py:59:32: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] bidict/_dup.py:61:35: No overload of bound method `__init__` matches arguments
+- Found 4 diagnostics
++ Found 7 diagnostics
+
+paroxython (https://github.com/laowantong/paroxython)
++ error[lint:no-matching-overload] paroxython/derived_labels_db.py:189:38: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] paroxython/label_programs.py:49:37: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] paroxython/list_programs.py:89:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] paroxython/parse_program.py:76:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] paroxython/parse_program.py:284:22: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] paroxython/parse_program.py:289:77: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] paroxython/parse_program.py:316:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] paroxython/parse_program.py:333:31: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] paroxython/parse_program.py:366:15: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] paroxython/preprocess_source.py:455:40: No overload of bound method `__init__` matches arguments
+- Found 34 diagnostics
++ Found 44 diagnostics
+
+parso (https://github.com/davidhalter/parso)
++ error[lint:invalid-argument-type] parso/__init__.py:57:28: Argument to this function is incorrect: Expected `str`, found `None`
++ error[lint:no-matching-overload] parso/python/diff.py:495:27: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/diff.py:508:31: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:228:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:289:21: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:381:23: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:385:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:429:23: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:445:31: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:508:31: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:518:23: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:528:23: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:538:27: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:546:27: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:554:27: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:564:27: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:594:27: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:597:23: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:621:23: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:624:15: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:631:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:644:15: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:645:11: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:650:16: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/utils.py:132:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/utils.py:180:12: No overload of bound method `__init__` matches arguments
+- Found 80 diagnostics
++ Found 106 diagnostics
+
+pegen (https://github.com/we-like-parsers/pegen)
+- error[lint:unresolved-attribute] src/pegen/parser.py:85:19: Type `(@Todo(Support for `typing.TypeVar` instances in type expressions), /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions) | None` has no attribute `__name__`
++ error[lint:unresolved-attribute] src/pegen/parser.py:28:19: Type `F` has no attribute `__name__`
++ error[lint:call-non-callable] src/pegen/parser.py:32:20: Object of type `F` is not callable
++ error[lint:call-non-callable] src/pegen/parser.py:37:16: Object of type `F` is not callable
++ error[lint:unresolved-attribute] src/pegen/parser.py:48:19: Type `F` has no attribute `__name__`
++ error[lint:call-non-callable] src/pegen/parser.py:66:20: Object of type `F` is not callable
++ error[lint:unresolved-attribute] src/pegen/parser.py:85:19: Type `(P, /) -&gt; T | None` has no attribute `__name__`
++ error[lint:invalid-argument-type] src/pegen/parser.py:332:45: Argument to this function is incorrect: Expected `() -&gt; str`, found `(bound method TextIO.readline(limit: int = Literal[-1], /) -&gt; AnyStr) | @Todo(Support for `typing.TypeAlias`)`
+- Found 52 diagnostics
++ Found 58 diagnostics
+
+attrs (https://github.com/python-attrs/attrs)
++ error[lint:no-matching-overload] src/attr/_make.py:480:12: No overload of bound method `__init__` matches arguments
+- info[revealed-type] tests/dataclass_transform_example.py:21:1: Revealed type: `(with_converter: int = @Todo(Support for `typing.TypeVar` instances in type expressions)) -&gt; None`
++ info[revealed-type] tests/dataclass_transform_example.py:21:1: Revealed type: `(with_converter: int = Unknown) -&gt; None`
++ error[lint:invalid-argument-type] tests/test_annotations.py:123:28: Argument to this function is incorrect: Argument type `Literal[C]` does not satisfy upper bound of type variable `_A`
++ error[lint:invalid-argument-type] tests/test_annotations.py:416:28: Argument to this function is incorrect: Argument type `Literal[C]` does not satisfy upper bound of type variable `_A`
++ error[lint:invalid-argument-type] tests/test_annotations.py:518:28: Argument to this function is incorrect: Argument type `Literal[C]` does not satisfy upper bound of type variable `_A`
++ error[lint:invalid-argument-type] tests/test_annotations.py:540:28: Argument to this function is incorrect: Argument type `Literal[C]` does not satisfy upper bound of type variable `_A`
++ error[lint:invalid-argument-type] tests/test_annotations.py:548:28: Argument to this function is incorrect: Argument type `Literal[D]` does not satisfy upper bound of type variable `_A`
++ error[lint:invalid-argument-type] tests/test_annotations.py:565:28: Argument to this function is incorrect: Argument type `Literal[A]` does not satisfy upper bound of type variable `_A`
++ error[lint:invalid-argument-type] tests/test_annotations.py:599:28: Argument to this function is incorrect: Argument type `Literal[A]` does not satisfy upper bound of type variable `_A`
++ error[lint:invalid-argument-type] tests/test_annotations.py:619:28: Argument to this function is incorrect: Argument type `Literal[A]` does not satisfy upper bound of type variable `_A`
++ error[lint:invalid-argument-type] tests/test_annotations.py:620:28: Argument to this function is incorrect: Argument type `Literal[B]` does not satisfy upper bound of type variable `_A`
++ error[lint:invalid-argument-type] tests/test_annotations.py:667:28: Argument to this function is incorrect: Argument type `Literal[A]` does not satisfy upper bound of type variable `_A`
++ error[lint:invalid-argument-type] tests/test_annotations.py:668:28: Argument to this function is incorrect: Argument type `Literal[B]` does not satisfy upper bound of type variable `_A`
++ error[lint:invalid-argument-type] tests/test_annotations.py:683:28: Argument to this function is incorrect: Argument type `Literal[A]` does not satisfy upper bound of type variable `_A`
++ error[lint:invalid-argument-type] tests/test_annotations.py:687:28: Argument to this function is incorrect: Argument type `Literal[A]` does not satisfy upper bound of type variable `_A`
++ error[lint:no-matching-overload] tests/test_funcs.py:251:22: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/test_funcs.py:253:27: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/test_funcs.py:455:22: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/test_funcs.py:457:17: No overload of bound method `__init__` matches arguments
++ error[lint:unresolved-attribute] tests/test_make.py:144:14: Type `Literal[42]` has no attribute `default`
++ error[lint:no-matching-overload] tests/test_make.py:204:16: No overload of bound method `__init__` matches arguments
++ error[lint:invalid-argument-type] tests/test_make.py:1242:32: Argument to this function is incorrect: Argument type `type` does not satisfy upper bound of type variable `_A`
++ error[lint:invalid-argument-type] tests/test_make.py:1253:32: Argument to this function is incorrect: Argument type `type` does not satisfy upper bound of type variable `_A`
+- error[lint:invalid-argument-type] tests/test_validators.py:228:32: Argument to this function is incorrect: Expected `((@Todo(Support for `typing.TypeVar` instances in type expressions), @Todo(Support for `typing.TypeVar` instances in type expressions), int, /) -&gt; @Todo(specialized non-generic class) | None) | None`, found `() -&gt; Unknown`
++ error[lint:invalid-argument-type] tests/test_validators.py:228:32: Argument to this function is incorrect: Expected `((Literal[&quot;a&quot;], Literal[&quot;a&quot;], int, /) -&gt; @Todo(specialized non-generic class) | None) | None`, found `() -&gt; Unknown`
++ error[lint:invalid-argument-type] tests/typing_example.py:490:28: Argument to this function is incorrect: Argument type `type` does not satisfy upper bound of type variable `_A`
+- Found 674 diagnostics
++ Found 697 diagnostics
+
+more-itertools (https://github.com/more-itertools/more-itertools)
+- error[lint:invalid-argument-type] more_itertools/more.py:2441:38: Argument to this function is incorrect: Expected `(...) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Unknown | Literal[bool]`
++ error[lint:invalid-argument-type] more_itertools/more.py:2441:38: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `Unknown | Literal[bool]`
+- error[lint:invalid-argument-type] more_itertools/more.py:2997:44: Argument to this function is incorrect: Expected `(...) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[repeat]`
++ error[lint:invalid-argument-type] more_itertools/more.py:2997:44: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `Literal[repeat]`
+- error[lint:invalid-argument-type] more_itertools/recipes.py:98:27: Argument to this function is incorrect: Expected `(...) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[zip]`
++ error[lint:invalid-argument-type] more_itertools/recipes.py:98:27: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `Literal[zip]`
+- error[lint:invalid-argument-type] more_itertools/recipes.py:897:22: Argument to this function is incorrect: Expected `(...) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[slice]`
++ error[lint:invalid-argument-type] more_itertools/recipes.py:897:22: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `Literal[slice]`
+
+pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
++ error[lint:no-matching-overload] pytest_robotframework/__init__.py:502:12: No overload of function `keyword` matches arguments
++ error[lint:no-matching-overload] pytest_robotframework/__init__.py:569:9: No overload of function `keyword` matches arguments
+- error[lint:missing-argument] pytest_robotframework/__init__.py:502:12: No argument provided for required parameter `fn` of function `keyword`
+- error[lint:unknown-argument] pytest_robotframework/__init__.py:503:9: Argument `name` does not match any known parameter of function `keyword`
+- error[lint:unknown-argument] pytest_robotframework/__init__.py:503:20: Argument `tags` does not match any known parameter of function `keyword`
+- error[lint:unknown-argument] pytest_robotframework/__init__.py:503:31: Argument `module` does not match any known parameter of function `keyword`
+- error[lint:unknown-argument] pytest_robotframework/__init__.py:503:46: Argument `wrap_context_manager` does not match any known parameter of function `keyword`
+- error[lint:missing-argument] pytest_robotframework/__init__.py:569:9: No argument provided for required parameter `fn` of function `keyword`
+- error[lint:unknown-argument] pytest_robotframework/__init__.py:569:17: Argument `name` does not match any known parameter of function `keyword`
+- error[lint:unknown-argument] pytest_robotframework/__init__.py:569:28: Argument `tags` does not match any known parameter of function `keyword`
+- error[lint:unknown-argument] pytest_robotframework/__init__.py:569:39: Argument `module` does not match any known parameter of function `keyword`
+- error[lint:unknown-argument] pytest_robotframework/__init__.py:569:54: Argument `wrap_context_manager` does not match any known parameter of function `keyword`
+- error[lint:missing-argument] tests/fixtures/test_python/test_keyword_decorator_context_manager_that_doesnt_suppress.py:14:2: No argument provided for required parameter `fn` of function `keyword`
+- error[lint:unknown-argument] tests/fixtures/test_python/test_keyword_decorator_context_manager_that_doesnt_suppress.py:14:10: Argument `wrap_context_manager` does not match any known parameter of function `keyword`
+- error[lint:missing-argument] tests/fixtures/test_python/test_keyword_decorator_context_manager_that_raises_in_body_and_exit.py:14:2: No argument provided for required parameter `fn` of function `keyword`
+- error[lint:unknown-argument] tests/fixtures/test_python/test_keyword_decorator_context_manager_that_raises_in_body_and_exit.py:14:10: Argument `wrap_context_manager` does not match any known parameter of function `keyword`
+- error[lint:missing-argument] tests/fixtures/test_python/test_keyword_decorator_context_manager_that_raises_in_exit.py:14:2: No argument provided for required parameter `fn` of function `keyword`
+- error[lint:unknown-argument] tests/fixtures/test_python/test_keyword_decorator_context_manager_that_raises_in_exit.py:14:10: Argument `wrap_context_manager` does not match any known parameter of function `keyword`
+- error[lint:missing-argument] tests/fixtures/test_python/test_keyword_decorator_custom_name_and_tags.py:6:2: No argument provided for required parameter `fn` of function `keyword`
+- error[lint:unknown-argument] tests/fixtures/test_python/test_keyword_decorator_custom_name_and_tags.py:6:10: Argument `name` does not match any known parameter of function `keyword`
+- error[lint:unknown-argument] tests/fixtures/test_python/test_keyword_decorator_custom_name_and_tags.py:6:26: Argument `tags` does not match any known parameter of function `keyword`
+- error[lint:missing-argument] tests/fixtures/test_python/test_keyword_decorator_returns_context_manager_that_isnt_used.py:14:2: No argument provided for required parameter `fn` of function `keyword`
+- error[lint:unknown-argument] tests/fixtures/test_python/test_keyword_decorator_returns_context_manager_that_isnt_used.py:14:10: Argument `wrap_context_manager` does not match any known parameter of function `keyword`
+- error[lint:missing-argument] tests/type_tests.py:18:6: No argument provided for required parameter `fn` of function `keyword`
+- error[lint:unknown-argument] tests/type_tests.py:18:14: Argument `name` does not match any known parameter of function `keyword`
+- error[lint:unknown-argument] tests/type_tests.py:18:30: Argument `tags` does not match any known parameter of function `keyword`
+- error[lint:type-assertion-failure] tests/type_tests.py:21:9: Actual type `Unknown` is not the same as asserted type `() -&gt; None`
++ error[lint:type-assertion-failure] tests/type_tests.py:21:9: Actual type `Never` is not the same as asserted type `() -&gt; None`
+- error[lint:missing-argument] tests/type_tests.py:36:6: No argument provided for required parameter `fn` of function `keyword`
+- error[lint:unknown-argument] tests/type_tests.py:36:14: Argument `wrap_context_manager` does not match any known parameter of function `keyword`
+- error[lint:type-assertion-failure] tests/type_tests.py:41:9: Actual type `Unknown` is not the same as asserted type `() -&gt; @Todo(specialized non-generic class)`
++ error[lint:type-assertion-failure] tests/type_tests.py:41:9: Actual type `(...) -&gt; Unknown` is not the same as asserted type `() -&gt; @Todo(specialized non-generic class)`
+- error[lint:missing-argument] tests/type_tests.py:44:6: No argument provided for required parameter `fn` of function `keyword`
+- error[lint:unknown-argument] tests/type_tests.py:44:14: Argument `wrap_context_manager` does not match any known parameter of function `keyword`
+- error[lint:type-assertion-failure] tests/type_tests.py:49:9: Actual type `Unknown` is not the same as asserted type `() -&gt; @Todo(specialized non-generic class)`
++ error[lint:type-assertion-failure] tests/type_tests.py:49:9: Actual type `(...) -&gt; Unknown` is not the same as asserted type `() -&gt; @Todo(specialized non-generic class)`
+- error[lint:missing-argument] tests/type_tests.py:61:6: No argument provided for required parameter `fn` of function `keyword`
+- error[lint:unknown-argument] tests/type_tests.py:61:14: Argument `wrap_context_manager` does not match any known parameter of function `keyword`
+- error[lint:missing-argument] tests/type_tests.py:66:6: No argument provided for required parameter `fn` of function `keyword`
+- error[lint:unknown-argument] tests/type_tests.py:66:14: Argument `wrap_context_manager` does not match any known parameter of function `keyword`
+- Found 352 diagnostics
++ Found 322 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
+- error[lint:invalid-argument-type] src/anyio/_backends/_asyncio.py:2634:13: Argument to this function is incorrect: Expected `() -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[DatagramProtocol]`
++ error[lint:invalid-argument-type] src/anyio/_backends/_asyncio.py:2634:13: Argument to this function is incorrect: Expected `() -&gt; Unknown`, found `Literal[DatagramProtocol]`
+- error[lint:invalid-argument-type] src/anyio/_backends/_asyncio.py:2634:13: Argument to this function is incorrect: Expected `() -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[DatagramProtocol]`
++ error[lint:invalid-argument-type] src/anyio/_backends/_asyncio.py:2634:13: Argument to this function is incorrect: Expected `() -&gt; Unknown`, found `Literal[DatagramProtocol]`
+- error[lint:invalid-argument-type] src/anyio/_backends/_asyncio.py:2634:13: Argument to this function is incorrect: Expected `() -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[DatagramProtocol]`
++ error[lint:invalid-argument-type] src/anyio/_backends/_asyncio.py:2634:13: Argument to this function is incorrect: Expected `() -&gt; Unknown`, found `Literal[DatagramProtocol]`
++ error[lint:invalid-argument-type] src/anyio/_core/_tempfile.py:299:21: Argument to this function is incorrect: Argument type `BytesIO` does not satisfy upper bound of type variable `_BufferT_co`
++ error[lint:invalid-argument-type] src/anyio/_core/_tempfile.py:299:21: Argument to this function is incorrect: Expected `_WrappedBuffer`, found `BytesIO`
+- warning[lint:redundant-cast] src/anyio/from_thread.py:290:16: Value is already of type `Unknown`
++ error[lint:no-matching-overload] src/anyio/streams/memory.py:62:16: No overload of bound method `__init__` matches arguments
++ error[lint:invalid-return-type] src/anyio/streams/memory.py:124:24: Return type does not match returned value: Expected `T_co`, found `T_Item`
+- Found 137 diagnostics
++ Found 140 diagnostics
+
+starlette (https://github.com/encode/starlette)
++ error[lint:no-matching-overload] starlette/requests.py:154:20: No overload of bound method `__init__` matches arguments
+- warning[lint:possibly-unbound-attribute] starlette/requests.py:114:20: Attribute `endswith` on type `@Todo(Support for `typing.TypeVar` instances in type expressions) | None` is possibly unbound
+- error[lint:unsupported-operator] starlette/requests.py:115:17: Operator `+=` is unsupported between objects of type `None` and `Literal[&quot;/&quot;]`
++ error[lint:no-matching-overload] starlette/schemas.py:60:21: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] starlette/schemas.py:77:43: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] starlette/schemas.py:84:43: No overload of bound method `__init__` matches arguments
+- error[lint:invalid-argument-type] tests/conftest.py:20:9: Argument to this function is incorrect: Expected `(...) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[TestClient]`
++ error[lint:invalid-argument-type] tests/conftest.py:20:9: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `Literal[TestClient]`
+- error[lint:type-assertion-failure] tests/test_config.py:23:5: Actual type `Unknown` is not the same as asserted type `str | None`
++ error[lint:type-assertion-failure] tests/test_config.py:23:5: Actual type `None` is not the same as asserted type `str | None`
+- error[lint:type-assertion-failure] tests/test_config.py:24:5: Actual type `Unknown` is not the same as asserted type `str`
++ error[lint:type-assertion-failure] tests/test_config.py:24:5: Actual type `Literal[&quot;&quot;]` is not the same as asserted type `str`
+- error[lint:type-assertion-failure] tests/test_config.py:27:5: Actual type `Unknown` is not the same as asserted type `bool`
++ error[lint:type-assertion-failure] tests/test_config.py:27:5: Actual type `Literal[False]` is not the same as asserted type `bool`
+- error[lint:type-assertion-failure] tests/test_config.py:28:5: Actual type `Unknown` is not the same as asserted type `bool | None`
++ error[lint:type-assertion-failure] tests/test_config.py:28:5: Actual type `None` is not the same as asserted type `bool | None`
+- Found 197 diagnostics
++ Found 199 diagnostics
+
+kornia (https://github.com/kornia/kornia)
++ error[lint:no-matching-overload] kornia/augmentation/container/ops.py:138:21: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kornia/augmentation/container/patch.py:268:26: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kornia/contrib/models/rt_detr/architecture/hgnetv2.py:131:21: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kornia/contrib/models/rt_detr/architecture/hgnetv2.py:132:21: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kornia/contrib/models/rt_detr/architecture/hgnetv2.py:133:21: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kornia/contrib/models/rt_detr/architecture/hgnetv2.py:134:21: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kornia/contrib/models/rt_detr/architecture/hgnetv2.py:141:21: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kornia/contrib/models/rt_detr/architecture/hgnetv2.py:142:21: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kornia/contrib/models/rt_detr/architecture/hgnetv2.py:143:21: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kornia/contrib/models/rt_detr/architecture/hgnetv2.py:144:21: No overload of bound method `__init__` matches arguments
+- error[lint:invalid-argument-type] kornia/feature/dedode/transformer/dinov2.py:336:26: Argument to this function is incorrect: Expected `(...) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[NestedTensorBlock]`
++ error[lint:invalid-argument-type] kornia/feature/dedode/transformer/dinov2.py:336:26: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `Literal[NestedTensorBlock]`
+- error[lint:invalid-argument-type] kornia/feature/dedode/transformer/dinov2.py:350:26: Argument to this function is incorrect: Expected `(...) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[NestedTensorBlock]`
++ error[lint:invalid-argument-type] kornia/feature/dedode/transformer/dinov2.py:350:26: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `Literal[NestedTensorBlock]`
+- error[lint:invalid-argument-type] kornia/feature/dedode/transformer/dinov2.py:364:26: Argument to this function is incorrect: Expected `(...) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[NestedTensorBlock]`
++ error[lint:invalid-argument-type] kornia/feature/dedode/transformer/dinov2.py:364:26: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `Literal[NestedTensorBlock]`
+- error[lint:invalid-argument-type] kornia/feature/dedode/transformer/dinov2.py:378:26: Argument to this function is incorrect: Expected `(...) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[NestedTensorBlock]`
++ error[lint:invalid-argument-type] kornia/feature/dedode/transformer/dinov2.py:378:26: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `Literal[NestedTensorBlock]`
++ error[lint:no-matching-overload] kornia/feature/sold2/backbones.py:59:23: No overload of bound method `__init__` matches arguments
+- error[lint:call-non-callable] kornia/filters/kernels_geometry.py:172:17: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (key: slice, /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
++ error[lint:call-non-callable] kornia/filters/kernels_geometry.py:172:17: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; _T_co, (key: slice, /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
+- error[lint:call-non-callable] kornia/filters/kernels_geometry.py:203:31: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (key: slice, /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
++ error[lint:call-non-callable] kornia/filters/kernels_geometry.py:203:31: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; _T_co, (key: slice, /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
+- error[lint:call-non-callable] kornia/filters/kernels_geometry.py:203:44: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (key: slice, /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
++ error[lint:call-non-callable] kornia/filters/kernels_geometry.py:203:44: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; _T_co, (key: slice, /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
+- error[lint:call-non-callable] kornia/filters/kernels_geometry.py:203:57: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (key: slice, /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
++ error[lint:call-non-callable] kornia/filters/kernels_geometry.py:203:57: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; _T_co, (key: slice, /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
+- error[lint:call-non-callable] kornia/geometry/boxes.py:349:21: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (key: slice, /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int, int] | None`
+- error[lint:call-non-callable] kornia/geometry/boxes.py:352:21: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (key: slice, /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int, int] | None`
+- error[lint:call-non-callable] kornia/geometry/boxes.py:355:22: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (key: slice, /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int, int] | None`
+- error[lint:call-non-callable] kornia/geometry/boxes.py:358:22: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (key: slice, /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int, int] | None`
++ error[lint:call-non-callable] kornia/geometry/boxes.py:349:21: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; _T_co, (key: slice, /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int, int] | None`
++ error[lint:call-non-callable] kornia/geometry/boxes.py:352:21: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; _T_co, (key: slice, /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int, int] | None`
++ error[lint:call-non-callable] kornia/geometry/boxes.py:355:22: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; _T_co, (key: slice, /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int, int] | None`
++ error[lint:call-non-callable] kornia/geometry/boxes.py:358:22: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; _T_co, (key: slice, /) -&gt; @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int, int] | None`
+- Found 1003 diagnostics
++ Found 1014 diagnostics
+
+aioredis (https://github.com/aio-libs/aioredis)
++ error[lint:no-matching-overload] aioredis/client.py:337:25: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] aioredis/client.py:462:38: No overload of function `__new__` matches arguments
+- Found 29 diagnostics
++ Found 31 diagnostics
+
+porcupine (https://github.com/Akuli/porcupine)
++ error[lint:invalid-return-type] porcupine/actions.py:127:12: Return type does not match returned value: Expected `(FileTab, /) -&gt; bool`, found `partial`
++ error[lint:invalid-argument-type] porcupine/plugins/autocomplete.py:544:43: Argument to this function is incorrect: Expected `(EventWithData, /) -&gt; str | None`, found `partial`
++ error[lint:no-matching-overload] porcupine/plugins/filemanager.py:242:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] porcupine/plugins/filemanager.py:247:19: No overload of bound method `__init__` matches arguments
+- error[lint:invalid-return-type] porcupine/plugins/pastebin.py:192:16: Return type does not match returned value: Expected `str`, found `@Todo(Support for `typing.TypeVar` instances in type expressions) | None`
++ error[lint:invalid-return-type] porcupine/plugins/pastebin.py:192:16: Return type does not match returned value: Expected `str`, found `Unknown | None`
++ error[lint:invalid-argument-type] porcupine/plugins/pastebin.py:385:48: Argument to this function is incorrect: Expected `(bool, str | Unknown, /) -&gt; None`, found `partial`
++ error[lint:invalid-argument-type] porcupine/plugins/python_tools.py:69:9: Argument to this function is incorrect: Expected `(FileTab, /) -&gt; None`, found `partial`
++ error[lint:invalid-argument-type] porcupine/plugins/python_tools.py:76:9: Argument to this function is incorrect: Expected `(FileTab, /) -&gt; None`, found `partial`
++ error[lint:invalid-return-type] porcupine/plugins/run/no_terminal.py:421:16: Return type does not match returned value: Expected `(() -&gt; None) | None`, found `partial`
++ error[lint:invalid-argument-type] porcupine/plugins/urls.py:84:64: Argument to this function is incorrect: Expected `() -&gt; None`, found `partial`
++ error[lint:no-matching-overload] porcupine/tabs.py:999:16: No overload of bound method `__init__` matches arguments
++ error[lint:invalid-argument-type] porcupine/utils.py:796:38: Argument to this function is incorrect: Expected `str | _T`, found `str | None`
+- Found 157 diagnostics
++ Found 168 diagnostics
+
+pylox (https://github.com/sco1/pylox)
++ error[lint:no-matching-overload] pylox/preprocessor.py:90:32: No overload of bound method `__init__` matches arguments
+- error[lint:invalid-argument-type] tests/scanning/test_identifiers.py:18:25: Argument to this function is incorrect: Expected `(...) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[Token]`
++ error[lint:invalid-argument-type] tests/scanning/test_identifiers.py:18:25: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `Literal[Token]`
+- error[lint:invalid-argument-type] tests/scanning/test_keywords.py:17:25: Argument to this function is incorrect: Expected `(...) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[Token]`
++ error[lint:invalid-argument-type] tests/scanning/test_keywords.py:17:25: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `Literal[Token]`
+- error[lint:invalid-argument-type] tests/scanning/test_punctuators.py:17:25: Argument to this function is incorrect: Expected `(...) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[Token]`
++ error[lint:invalid-argument-type] tests/scanning/test_punctuators.py:17:25: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `Literal[Token]`
+- Found 41 diagnostics
++ Found 42 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
+- error[lint:invalid-argument-type] sockeye/inference.py:350:50: Argument to this function is incorrect: Expected `Sized`, found `(@Todo(Support for `typing.TypeVar` instances in type expressions) &amp; ~list) | None | @Todo(list comprehension type)`
++ error[lint:invalid-argument-type] sockeye/inference.py:350:50: Argument to this function is incorrect: Expected `Sized`, found `(Unknown &amp; ~list) | None | @Todo(list comprehension type)`
+- error[lint:invalid-argument-type] sockeye/inference.py:352:34: Argument to this function is incorrect: Expected `Sized`, found `(@Todo(Support for `typing.TypeVar` instances in type expressions) &amp; ~list) | None | @Todo(list comprehension type)`
++ error[lint:invalid-argument-type] sockeye/inference.py:352:34: Argument to this function is incorrect: Expected `Sized`, found `(Unknown &amp; ~list) | None | @Todo(list comprehension type)`
+- error[lint:invalid-argument-type] sockeye/test_utils.py:224:34: Argument to this function is incorrect: Expected `list`, found `None | @Todo(Support for `typing.TypeVar` instances in type expressions)`
++ error[lint:invalid-argument-type] sockeye/test_utils.py:224:34: Argument to this function is incorrect: Expected `list`, found `None | Unknown`
+
+check-jsonschema (https://github.com/python-jsonschema/check-jsonschema)
++ error[lint:invalid-argument-type] src/check_jsonschema/schema_loader/resolver.py:62:45: Argument to this function is incorrect: Argument type `Unknown | str | None` does not satisfy constraints of type variable `AnyStr`
++ error[lint:invalid-argument-type] src/check_jsonschema/schema_loader/resolver.py:62:45: Argument to this function is incorrect: Expected `str`, found `Unknown | str | None`
+- Found 60 diagnostics
++ Found 62 diagnostics
+
+ppb-vector (https://github.com/ppb/ppb-vector)
++ error[lint:unsupported-operator] ppb_vector/__init__.py:472:25: Operator `*` is unsupported between objects of type `SupportsFloat` and `Unknown | int | float`
+- Found 150 diagnostics
++ Found 151 diagnostics
+
+python-chess (https://github.com/niklasf/python-chess)
+- error[lint:call-non-callable] chess/__init__.py:880:20: Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)]` is not callable on object of type `list`
++ error[lint:call-non-callable] chess/__init__.py:880:20: Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)]` is not callable on object of type `list`
+- error[lint:call-non-callable] chess/__init__.py:1437:44: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] chess/__init__.py:1437:44: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] chess/__init__.py:1557:27: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] chess/__init__.py:1557:27: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] chess/__init__.py:1558:27: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] chess/__init__.py:1558:27: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] chess/__init__.py:1577:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] chess/__init__.py:1577:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] chess/__init__.py:1578:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] chess/__init__.py:1578:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:unsupported-operator] chess/engine.py:1634:29: Operator `+=` is unsupported between objects of type `None` and `(int &amp; ~AlwaysFalsy) | float`
++ error[lint:unsupported-operator] chess/engine.py:1638:29: Operator `+=` is unsupported between objects of type `None` and `(int &amp; ~AlwaysFalsy) | float`
++ error[lint:unsupported-operator] chess/engine.py:1642:29: Operator `-=` is unsupported between objects of type `None` and `Literal[1]`
+- error[lint:call-non-callable] chess/gaviota.py:1551:46: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] chess/gaviota.py:1551:46: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] chess/gaviota.py:1553:46: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] chess/gaviota.py:1553:46: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] chess/gaviota.py:1899:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] chess/gaviota.py:1899:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] chess/gaviota.py:1899:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] chess/gaviota.py:1899:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] chess/gaviota.py:1899:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] chess/gaviota.py:1899:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] chess/gaviota.py:1910:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] chess/gaviota.py:1910:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] chess/gaviota.py:1910:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] chess/gaviota.py:1910:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] chess/gaviota.py:1910:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] chess/gaviota.py:1910:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] chess/polyglot.py:256:44: Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)]` is not callable on object of type `list`
++ error[lint:call-non-callable] chess/polyglot.py:256:44: Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)]` is not callable on object of type `list`
+- error[lint:call-non-callable] chess/polyglot.py:258:42: Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)]` is not callable on object of type `list`
++ error[lint:call-non-callable] chess/polyglot.py:258:42: Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)]` is not callable on object of type `list`
++ error[lint:no-matching-overload] chess/polyglot.py:378:16: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] chess/polyglot.py:425:25: No overload of bound method `__init__` matches arguments
+- error[lint:invalid-argument-type] chess/svg.py:170:19: Argument to this function is incorrect: Expected `str`, found `@Todo(Support for `typing.TypeVar` instances in type expressions) | None`
++ error[lint:invalid-argument-type] chess/svg.py:170:19: Argument to this function is incorrect: Expected `str`, found `Unknown | None`
+- error[lint:call-non-callable] chess/syzygy.py:446:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] chess/syzygy.py:446:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] chess/syzygy.py:447:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] chess/syzygy.py:447:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] chess/variant.py:682:35: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] chess/variant.py:682:35: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] chess/variant.py:683:35: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] chess/variant.py:683:35: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] chess/variant.py:686:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] chess/variant.py:686:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] chess/variant.py:687:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] chess/variant.py:687:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] chess/variant.py:829:26: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] chess/variant.py:829:26: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] chess/variant.py:830:26: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] chess/variant.py:830:26: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] chess/variant.py:833:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] chess/variant.py:833:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] chess/variant.py:834:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] chess/variant.py:834:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; _T, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- Found 78 diagnostics
++ Found 83 diagnostics
+
+kopf (https://github.com/nolar/kopf)
++ error[lint:invalid-assignment] kopf/_cogs/aiokits/aioenums.py:54:9: Object of type `FlagReasonT | Unknown` is not assignable to `FlagReasonT | None`
++ error[lint:no-matching-overload] kopf/_cogs/aiokits/aiotasks.py:344:43: No overload of bound method `__init__` matches arguments
++ error[lint:call-non-callable] kopf/_cogs/clients/auth.py:41:30: Object of type `_F` is not callable
++ error[lint:call-non-callable] kopf/_cogs/clients/auth.py:51:34: Object of type `_F` is not callable
++ error[lint:no-matching-overload] kopf/_cogs/structs/diffs.py:74:29: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kopf/_cogs/structs/diffs.py:119:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kopf/_cogs/structs/diffs.py:124:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kopf/_cogs/structs/diffs.py:170:15: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kopf/_cogs/structs/diffs.py:172:15: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kopf/_cogs/structs/diffs.py:183:15: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kopf/_core/actions/application.py:142:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kopf/_core/actions/progression.py:279:22: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kopf/_core/actions/progression.py:298:16: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kopf/_core/engines/posting.py:67:13: No overload of bound method `__init__` matches arguments
++ error[lint:call-non-callable] kopf/_core/intents/callbacks.py:254:20: Object of type `_FnT` is not callable
++ error[lint:invalid-argument-type] kopf/_core/intents/handlers.py:35:45: Argument to this function is incorrect: Argument type `CauseT &amp; ChangingCause` does not satisfy upper bound of type variable `_DataclassT`
++ error[lint:no-matching-overload] kopf/_core/reactor/orchestration.py:198:16: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kopf/_core/reactor/orchestration.py:245:16: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kopf/_core/reactor/queueing.py:204:32: No overload of bound method `__init__` matches arguments
++ error[lint:call-non-callable] kopf/_kits/webhacks.py:86:24: Object of type `_ServerFn` is not callable
++ error[lint:invalid-argument-type] kopf/_kits/webhooks.py:228:33: Argument to this function is incorrect: Argument type `socket` does not satisfy upper bound of type variable `_SupportsCloseT`
+- Found 136 diagnostics
++ Found 157 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- warning[lint:unused-ignore-comment] strawberry/aiohttp/views.py:210:60: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] strawberry/asgi/__init__.py:192:60: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] strawberry/chalice/views.py:114:60: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] strawberry/channels/handlers/http_handler.py:271:12: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] strawberry/channels/handlers/http_handler.py:345:12: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] strawberry/channels/handlers/ws_handler.py:157:12: Unused blanket `type: ignore` directive
+- error[lint:invalid-argument-type] strawberry/codegen/query_codegen.py:356:17: Argument to this function is incorrect: Expected `(...) -&gt; @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[GraphQLFragmentType]`
++ error[lint:invalid-argument-type] strawberry/codegen/query_codegen.py:356:17: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `Literal[GraphQLFragmentType]`
++ error[lint:no-matching-overload] strawberry/directive.py:75:19: No overload of bound method `__init__` matches arguments
+- error[lint:unresolved-attribute] strawberry/directive.py:134:25: Type `(...) -&gt; Unknown` has no attribute `__name__`
++ error[lint:unresolved-attribute] strawberry/directive.py:134:25: Type `(...) -&gt; T` has no attribute `__name__`
+- warning[lint:unused-ignore-comment] strawberry/django/views.py:223:77: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] strawberry/django/views.py:283:77: Unused blanket `type: ignore` directive
++ error[lint:no-matching-overload] strawberry/experimental/pydantic/object_type.py:105:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] strawberry/experimental/pydantic/object_type.py:202:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] strawberry/extensions/context.py:89:24: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] strawberry/extensions/context.py:97:24: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] strawberry/extensions/context.py:129:20: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] strawberry/extensions/context.py:141:16: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] strawberry/extensions/context.py:155:20: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] strawberry/extensions/context.py:162:16: No overload of bound method `__init__` matches arguments
+- warning[lint:unused-ignore-comment] strawberry/federation/object_type.py:89:24: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] strawberry/flask/views.py:111:60: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] strawberry/flask/views.py:174:60: Unused blanket `type: ignore` directive
+- warning[lint:redundant-cast] strawberry/http/async_base_view.py:309:19: Value is already of type `Unknown`
+- warning[lint:unused-ignore-comment] strawberry/quart/views.py:92:60: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] strawberry/sanic/views.py:152:60: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] strawberry/types/enum.py:150:45: Unused blanket `type: ignore` directive
++ error[lint:no-matching-overload] strawberry/types/fields/resolver.py:137:25: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] strawberry/types/fields/resolver.py:166:20: No overload of bound method `__init__` matches arguments
+- warning[lint:unused-ignore-comment] strawberry/types/object_type.py:144:66: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] strawberry/types/object_type.py:160:41: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] strawberry/types/object_type.py:379:19: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] strawberry/types/object_type.py:452:19: Unused blanket `type: ignore` directive
+- Found 590 diagnostics
++ Found 582 diagnostics
+
+flake8 (https://github.com/pycqa/flake8)
++ error[lint:no-matching-overload] src/flake8/plugins/finder.py:139:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/flake8/plugins/finder.py:163:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/flake8/plugins/finder.py:169:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/flake8/plugins/finder.py:173:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/flake8/plugins/finder.py:210:23: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/flake8/plugins/finder.py:224:18: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/flake8/plugins/finder.py:225:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/flake8/plugins/finder.py:299:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/flake8/plugins/finder.py:344:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/flake8/plugins/finder.py:345:18: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/flake8/style_guide.py:409:17: No overload of bound method `__init__` matches arguments
++ error[lint:invalid-argument-type] src/flake8/utils.py:193:33: Argument to this function is incorrect: Argument type `BytesIO` does not satisfy upper bound of type variable `_BufferT_co`
++ error[lint:invalid-argument-type] src/flake8/utils.py:193:33: Argument to this function is incorrect: Expected `_WrappedBuffer`, found `BytesIO`
++ error[lint:no-matching-overload] tests/integration/test_checker.py:85:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/integration/test_checker.py:88:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/integration/test_checker.py:273:44: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/integration/test_checker.py:338:17: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.p...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-03-20 16:59</div>
+            <div class="timeline-body"><p>The <code>mypy_primer</code> changes are because we're now interpreting the legacy <code>TypeVar</code>s in the typeshed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-04-18 17:27</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Flegacy-typevar-instance">CodSpeed Performance Report</a></h2>
+<h3>Merging #16538 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>dcreager/legacy-typevar-instance</code> (30f116f) with <code>main</code> (5096824)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 33</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-22 18:46</div>
+            <div class="timeline-body"><p>This is working in local tests!  It depends on #17552.  I will hold off on moving this out of draft until that is merged.  I also have some more cleanup I want to do on this PR.  But we're close!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4387 on 2025-04-22 19:12</div>
+            <div class="timeline-body"><p>Because we infer a specialization for each call to <code>reveal_type</code>, and then apply that specialization to the return type, we can reveal that instead of the parameter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/builtins.md</code>:43 on 2025-04-22 21:25</div>
+            <div class="timeline-body"><p>Though updating <code>reveal_type</code> to reveal the return type means that every custom signature for it needs to be generic and plumb through the return type correctly. That seems too brittle, so I will probably revert this part.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-04-22 21:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-23 19:33</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-23 22:22</div>
+            <div class="timeline-body"><p>A lot of the new ecosystem diagnostics of the form:</p>
+<pre><code>No overload of bound method `__init__` matches arguments
+</code></pre>
+<p>which are coming from <code>NamedTuple</code> subclasses.</p>
+<hr />
+<p>Also a (partly) true positive!</p>
+<pre><code class="language-diff">+ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/parso/parso/__init__.py:57:28: Argument to this function is incorrect: Expected `str`, found `None`
+</code></pre>
+<p>which looks like is coming from the <code>version</code> argument. This is only a <em>partly</em> true positive, because ideally the &quot;found&quot; type would be <code>str | None</code>.  It's not because <code>dict.pop</code> has the following two overloads:</p>
+<pre><code class="language-py">    @overload
+    def pop(self, key: _KT, default: _VT, /) -&gt; _VT: ...
+    @overload
+    def pop(self, key: _KT, default: _T, /) -&gt; _VT | _T: ...
+</code></pre>
+<p><code>_KT</code> and <code>_VT</code> should be bound by the class's generic scope, but since we're not handling legacy generic classes yet, they make it to the method definitions not bound by an enclosing generic scope.  So we're currently considering those equivalent to:</p>
+<pre><code class="language-py">    @overload
+    def pop[_KT, _VT](self, key: _KT, default: _VT, /) -&gt; _VT: ...
+    @overload
+    def pop[_KT, _T, _VT](self, key: _KT, default: _T, /) -&gt; _VT | _T: ...
+</code></pre>
+<p>The first one matches, making the result <code>None</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:777 on 2025-04-24 06:03</div>
+            <div class="timeline-body"><p>I haven't checked this fully but this function is called indirectly from <code>Type::try_call</code>, meaning we shouldn't access any AST nodes in it. This might be the cause for the significant incremental perf regression</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-24 06:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-04-24 13:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:777 on 2025-04-24 13:20</div>
+            <div class="timeline-body"><p>Thanks for catching that!  I can try to move the check that needs this back up into <code>infer.rs</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-04-24 14:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:777 on 2025-04-24 14:44</div>
+            <div class="timeline-body"><p>Done! Doing that also let me actually add the diagnostics for invalid legacy typevar construction</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:777 on 2025-04-24 14:45</div>
+            <div class="timeline-body"><p>(Note that we still pass the <code>containing_assignment</code> in as a parameter, since that's the definition we need to record for a legacy typevar. We just don't access its <code>kind</code> field here)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-04-24 14:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-24 14:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:777 on 2025-04-24 14:49</div>
+            <div class="timeline-body"><p>Are these changes local because line 771 still access the <code>kind</code> field, which then access <code>assignment.target</code>?</p>
+<p>edit: Never mind, user error</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-04-24 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:777 on 2025-04-24 14:54</div>
+            <div class="timeline-body"><p>I'm not sure whether I did &quot;submit comment&quot; or &quot;push&quot; first, but the changes should be up now if I messed up the order earlier</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:777 on 2025-04-24 15:19</div>
+            <div class="timeline-body"><p>Unfortunately this did not fix the performance regression</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-04-24 15:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-24 15:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:777 on 2025-04-24 15:47</div>
+            <div class="timeline-body"><p>Yeah, unfortunately not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-24 15:57</div>
+            <div class="timeline-body"><blockquote>
+<p>A lot of the new ecosystem diagnostics of the form:</p>
+<pre><code>No overload of bound method `__init__` matches arguments
+</code></pre>
+</blockquote>
+<p>These are coming from how the typeshed is trying to model that <code>NamedTuple</code> is both a base class (that only exists to override the metaclass) and a callable function.  It has the following to model the latter (leaving out a deprecation that isn't relevant here):</p>
+<pre><code class="language-py">    @overload
+    def __init__(self, typename: str, fields: Iterable[tuple[str, Any]], /) -&gt; None: ...
+
+    @overload
+    def __init__(self, typename: str, fields: None = None, /, **kwargs: Any) -&gt; None: ...
+</code></pre>
+<p>And those &quot;block&quot; the constructors that the named tuple would inherit from <code>tuple</code>.</p>
+<p>cf https://github.com/astral-sh/ruff/issues/16994</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-24 16:16</div>
+            <div class="timeline-body"><p>I've gone through the new ecosystem checks, and they all seem to be legit new false positives for things we already know we need to tackle, and that are now visible because of handling legacy generic functions.</p>
+<p>I'm also going to see if I can get to the bottom of the performance regression, but I'm going to go ahead and mark this as ready for review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-04-24 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-04-24 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-04-24 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-04-24 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_assignable_to.md</code>:587 on 2025-04-24 21:48</div>
+            <div class="timeline-body"><p>I guess restoring this will take two things: 1) support for legacy Generic classes, and then 2) somewhat smarter typevar solving that can descend into types (a <code>Callable</code> type, in the case of the <code>partial.__new__</code> signature) and structurally match up typevars.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:778 on 2025-04-24 22:11</div>
+            <div class="timeline-body"><p>Is it important to get all known cases into here rather than <code>infer.rs</code>, or does the combination of a) needing access to the containing assignment and b) needing to emit several diagnostics suggest that it might be simpler to just fully handle this case out in <code>infer.rs</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/generics.rs</code>:388 on 2025-04-24 22:31</div>
+            <div class="timeline-body"><p>Do you envision this heuristic surviving after the point where we do complete structural induction to find all nested typevars?</p>
+<p>This is maybe looking further forward, but we've talked about how we could eliminate the duplication between <code>is_subtype_of</code> and <code>is_assignable_to</code> by having them both delegate to a common implementation that takes a strategy parameter (possibly in the form of a closure) to determine how dynamic types are handled. I wonder if the structural induction and collection of constraints that we'll ultimately need here could actually be implemented as just another strategy parameter to this single common implementation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:221 on 2025-04-24 22:46</div>
+            <div class="timeline-body"><p>This (and the new <code>InferExpressionTypes</code> struct) would be my strong bet for the source of the regression on this PR. This adds a whole new ingredient table which has to be validated on each new revision. For some queries it doesn't make a big difference, but I expect <code>infer_expression_types</code> is a relatively hot query.</p>
+<p>It may be that eventually, in order to support bidirectional checking, we have to add some kind of <code>type context</code> argument to all these queries anyway, and so we are going to have to pay this extra-argument cost regardless. But I suspect that for now, we would eliminate the regression if we could eliminate the need for this extra argument. (Or, for that matter, if we could include it directly in the existing <code>Expression</code> ingredient when it is created in semantic index building, which seems plausible since this is a static relationship derived directly from the shape of the AST.)</p>
+<p>The other thing this extra argument will mean is that if we infer types for the same <code>expression</code>, but sometimes we pass in Some <code>containing_assignment</code> and sometimes we pass in <code>None</code>, we will end up inferring all the types for that expression tree twice, repeating work and doubling storage and re-validation costs. I'm not sure if that can actually occur in this PR or not, but it doesn't seem like there are any type-level safeguards ensuring it can't. If it does happen, that would definitely explain some of the regression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:69 on 2025-04-24 22:52</div>
+            <div class="timeline-body"><p>Have you looked at the cause of this? We were so close to zero tomllib false positives 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-24 22:53</div>
+            <div class="timeline-body"><p>This looks really good! My main hesitation is all the <code>containing_assignment</code> threading. It's very noisy, and I suspect is also the cause of the regression. I wonder if we can either move more of the TypeVar-call-handling out to <code>infer_call_expression</code>, or attach the containing definition directly to the <code>Expression</code> ingredient in semantic index building, to avoid this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:221 on 2025-04-25 19:51</div>
+            <div class="timeline-body"><p>That's a good suggestion to track this on the semantic index side.  I'm going to try doing that part in isolation in a separate PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-04-25 19:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:69 on 2025-04-26 13:20</div>
+            <div class="timeline-body"><p>This is https://github.com/astral-sh/ruff/issues/16994. The diagnostic is on the <code>Output</code> reference <a href="https://github.com/astral-sh/ruff/blob/4bcf1778fa0a223653c75ef44695428ae309430f/crates/ruff_benchmark/resources/tomllib/_parser.py#L76">here</a>.  <code>Output</code> <a href="https://github.com/astral-sh/ruff/blob/4bcf1778fa0a223653c75ef44695428ae309430f/crates/ruff_benchmark/resources/tomllib/_parser.py#L227">inherits from <code>NamedTuple</code></a>, which is the cause of a lot of the new ecosystem false positives, too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_assignable_to.md</code>:587 on 2025-04-26 13:24</div>
+            <div class="timeline-body"><p>That's right!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:778 on 2025-04-26 13:25</div>
+            <div class="timeline-body"><p>I had been trying to follow a general rule of &quot;put as much here as possible&quot;, but I like your reasoning for moving it all into <code>infer.rs</code>.  That (combined with the semantic index suggestion) seems to have (mostly) solved the performance regression</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/generics.rs</code>:388 on 2025-04-26 13:30</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you envision this heuristic surviving after the point where we do complete structural induction to find all nested typevars?</p>
+</blockquote>
+<p>It's more that it will go away with a more sophisticated constraint solver.  There's a comment below about how we currently handle only a very specific pattern of unions: <code>T | ...</code> (where the union contains <em>one</em> typevar as a top-level element).  This clause is largely so that when we see <code>f[T](x: T | None)</code> and call it as <code>f(None)</code>, we don't infer <code>T = None</code>. A better constraint solver should be able to find the minimal type mapping that satisfies the union — in this case specifically that it doesn't need to bind <code>T</code> at all to satisfy this union.</p>
+<blockquote>
+<p>This is maybe looking further forward, but we've talked about how we could eliminate the duplication between <code>is_subtype_of</code> and <code>is_assignable_to</code> by having them both delegate to a common implementation that takes a strategy parameter (possibly in the form of a closure) to determine how dynamic types are handled. I wonder if the structural induction and collection of constraints that we'll ultimately need here could actually be implemented as just another strategy parameter to this single common implementation?</p>
+</blockquote>
+<p>I like that a lot!  I think it would help with this heuristic, but the full solver would probably want to do something different for the &quot;simple&quot; type variants, too, so my hunch is that it would still end up with its own type inductor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:221 on 2025-04-26 13:36</div>
+            <div class="timeline-body"><p>It was simple enough that I didn't need a separate PR!  Implemented this, and the incremental performance regression is down to 2%</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/expression.rs</code>:56 on 2025-04-26 13:39</div>
+            <div class="timeline-body"><p>I don't love how this is so specialized to <code>StmtAssign</code>. We're not currently creating a standalone expression for annotated assignments, which means we currently raise a false positive for</p>
+<pre><code class="language-py">T: TypeVar = TypeVar(&quot;T&quot;)
+</code></pre>
+<p>Are there any concerns with adding a standalone expression for annotated assignments too?  Then I could make this <code>ast::Stmt</code> (or maybe a separate enum that only allows <code>StmtAssign</code> and <code>StmtAnnAssign</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-04-26 13:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-26 13:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/expression.rs</code>:56 on 2025-04-26 13:47</div>
+            <div class="timeline-body"><p>I would be happy with disallowing <code>T: TypeVar = TypeVar(&quot;T&quot;)</code>! I don't think it really makes sense to add the annotation there: it will be ignored by us anyway. It indicates to me that the user is confused about how TypeVars work, and perhaps doesn't realise that a simple <code>T = TypeVar(&quot;T&quot;)</code> assignment will also be considered a declaration by us. Mypy disallows an annotation in this situation: https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=4dad759b00a84071f89fbe9b5e041dcb</p>
+<p>I'm also okay with allowing it, though. No strong opinion, as long as we don't emit a <em>confusing</em> error message if somebody does this 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-26 14:40</div>
+            <div class="timeline-body"><p>Congrats on fixing the performance regression!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-28 13:02</div>
+            <div class="timeline-body"><p>There are 20,064 new diagnostics on this PR (an overall increase in diagnostics of 27%). 19,038 of these are of the form <em>&quot;No overload of bound method <code>__init__</code> matches arguments&quot;</em>, and the majority (all?) seem to be related to <code>NamedTuple</code> construction. We should probably work on silencing them somehow after this PR has been merged.</p>
+<p>That still leaves 1,026 new diagnostics on this branch that have various other causes. I understand that this PR increases our coverage a lot, so it's entirely possible that all new diagnostics are unrelated to the changes here. But it might be worth studying this a bit more? (unless you already did, @dcreager)</p>
+<p>I uploaded an <a href="https://shark.fish/diff-legacy-typevars.html">experimental new diff view</a> of the ecosystem changes. I filtered out the 19k <code>invalid-overload</code> diagnostics mentioned above, to make this easier to scan.</p>
+<p>Some things that stand out to me:</p>
+<ul>
+<li>lot's of <code>call-new-callable</code> diagnostics related to <code>pytest</code> decorators which seem strange:<pre>
+[error] call-non-callable - <a href="https://github.com/graphql-python/graphql-core/blob/main/tests/utilities/test_strip_ignored_characters_fuzz.py#L79">tests/utilities/test_strip_ignored_characters_fuzz.py:79:5</a> - Object of type `Literal[10]` is not callable
+</pre>
+
+</li>
+<li>A lot of errors related to assignability of <code>partial</code> instances, which I hoped had been fixed <a href="https://github.com/astral-sh/ruff/pull/17590">here</a>.</li>
+<li>Some <code>invalid-legacy-type-variable</code> errors in vendored <code>typing_extensions</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-28 19:24</div>
+            <div class="timeline-body"><blockquote>
+<p>There are 20,064 new diagnostics on this PR (an overall increase in diagnostics of 27%). 19,038 of these are of the form <em>&quot;No overload of bound method <code>__init__</code> matches arguments&quot;</em>, and the majority (all?) seem to be related to <code>NamedTuple</code> construction. We should probably work on silencing them somehow after this PR has been merged.</p>
+</blockquote>
+<p>Yep, those are because of the <code>NamedTuple.__init__</code> overloads in typeshed: https://github.com/astral-sh/ruff/pull/16538#issuecomment-2828133733</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-28 20:29</div>
+            <div class="timeline-body"><p>I'm interested in trying to put this PR on top of #17618 to see what effect it has on the diagnostics that this PR adds. I'm going to try it locally and see. This shouldn't block this PR from merging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-28 20:39</div>
+            <div class="timeline-body"><blockquote>
+<p>lot's of <code>call-new-callable</code> diagnostics related to <code>pytest</code> decorators which seem strange:</p>
+</blockquote>
+<p>This looks to be coming from <a href="https://github.com/pytest-dev/pytest/blob/8173aa812253aa263b43cd52c80d605470d0c13f/src/_pytest/mark/structures.py#L356-L364">here</a>:</p>
+<pre><code class="language-py">    @overload
+    def __call__(self, arg: Markable) -&gt; Markable:  # type: ignore[overload-overlap]
+        pass
+
+    @overload
+    def __call__(self, *args: object, **kwargs: object) -&gt; MarkDecorator:
+        pass
+
+    def __call__(self, *args: object, **kwargs: object):
+</code></pre>
+<p>where <code>Markable</code> is a legacy typevar with a <code>Callable</code> bound. I'm also interested in @dhruvmanila's experiment to test this with intersection overloads — it seems like we should fall through to the <code>(*args, **kwargs)</code> overload if the first overload doesn't match (because of the argument, say <code>Literal[10]</code>, not being callable)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-28 20:45</div>
+            <div class="timeline-body"><blockquote>
+<p>where <code>Markable</code> is a legacy typevar with a <code>Callable</code> bound</p>
+</blockquote>
+<p>Minor additional comment: the bound is <code>Union[Callable[..., object], type]</code>, if that changes anything (I don't see why it would; still not compatible with <code>Literal[10]</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-28 21:23</div>
+            <div class="timeline-body"><p>Out of curiosity, I looked into the pytest decorator <code>call-non-callable</code> diagnostics. In <code>pytest.mark.whatever</code>, the &quot;whatever&quot; is actually arbitrary: <code>pytest.mark</code> is <a href="https://github.com/pytest-dev/pytest/blob/main/src/_pytest/mark/structures.py#L537">an object with a <code>__getattr__</code> implementation</a> returning an instance of <code>_pytest.mark.MarkDecorator</code>. <code>MarkDecorator</code> then has <a href="https://github.com/pytest-dev/pytest/blob/main/src/_pytest/mark/structures.py#L356-L364">this overloaded <code>__call__</code> method</a>, where <code>Markable</code> <a href="https://github.com/pytest-dev/pytest/blob/main/src/_pytest/mark/structures.py#L278">is a bound TypeVar</a>. So I think what is happening is that we don't yet respect typevar bounds when inferring types in a generic function, so we wrongly pick the first overload even when the argument in e.g. <code>pytest.mark.timeout(10)</code> is not assignable to the upper bound of <code>Markable</code>, which means we should pick the second overload.</p>
+<p>None of that is to say it needs fixing in this PR, it can be a follow-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-28 21:31</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm interested in trying to put this PR on top of #17618 to see what effect it has on the diagnostics that this PR adds. I'm going to try it locally and see. This shouldn't block this PR from merging.</p>
+</blockquote>
+<p>It <em>does</em> seem to be reducing the number of overall diagnostics but not by much compared to what already exists. Ref https://github.com/astral-sh/ruff/pull/17690. I haven't looked closely to the diagnostics that it's removing, I can do that a bit later if it'd be useful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/expression.rs</code>:56 on 2025-04-28 21:31</div>
+            <div class="timeline-body"><p>It would be preferable not to add a standalone expression for every annotated assignment; the more standalone expressions, the more memos, and the slower incremental re-validation gets. If we really need to, we probably can, but I don't think <code>T: TypeVar = TypeVar(&quot;T&quot;)</code> is a sufficiently motivating use case. As Alex says, I think it would be fine to just error on that; <code>T = TypeVar(&quot;T&quot;)</code> is effectively a syntactic special form.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-28 21:37</div>
+            <div class="timeline-body"><p>This looks good to me! Obviously it would be good to follow up with some attention to the new false positives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-28 21:38</div>
+            <div class="timeline-body"><p>Oh oops, looks like I was looking into the call-non-callable at the same time as others :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-28 21:39</div>
+            <div class="timeline-body"><blockquote>
+<p>it seems like we should fall through to the <code>(*args, **kwargs)</code> overload if the first overload doesn't match (because of the argument, say <code>Literal[10]</code>, not being callable)</p>
+</blockquote>
+<p>Isn't the issue here simply that we <a href="https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/src/types/generics.rs#L358">pay no attention to bounds</a>, so the first overload always matches?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-28 23:43</div>
+            <div class="timeline-body"><blockquote>
+<p>It <em>does</em> seem to be reducing the number of overall diagnostics but not by much compared to what already exists. Ref #17690. I haven't looked closely to the diagnostics that it's removing, I can do that a bit later if it'd be useful.</p>
+</blockquote>
+<p>Most of the changes I'm seeing in https://github.com/astral-sh/ruff/pull/17690 are consistent with what I'm already seeing in https://github.com/astral-sh/ruff/pull/17618, but I've noticed that almost 1/3rd of <code>call-non-callable</code> diagnostics are removed:</p>
+<pre><code class="language-diff">  ┃ Diagnostic ID                      ┃ Severity ┃ Removed ┃ Added ┃ Net Change ┃
+- │ lint:call-non-callable             │ error    │      98 │   497 │       +399 │
++ │ lint:call-non-callable             │ error    │     124 │   158 │        +34 │
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-29 00:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Isn't the issue here simply that we <a href="https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/src/types/generics.rs#L358">pay no attention to bounds</a>, so the first overload always matches?</p>
+</blockquote>
+<p>Ah yes, you're right! I had thought it would be caught by the type-checking code, but if we infer this type mapping and then substitute that for the formal parameter annotation, it will pass.  That's worth handling here, I think, and not in a follow-on PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-04-29 00:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/expression.rs</code>:56 on 2025-04-29 00:18</div>
+            <div class="timeline-body"><blockquote>
+<p>As Alex says, I think it would be fine to just error on that;
+...
+No strong opinion, as long as we don't emit a <em>confusing</em> error message if somebody does this 😄</p>
+</blockquote>
+<p>The main issue with this is that <em>customizing</em> the error message will require the same extra plumbing as allowing it, since we'd need to detect that the <code>TypeVar</code> call occurs in an annotated assignment.  Otherwise we'll have the default error message <code>A legacy `typing.TypeVar` must be immediately assigned to a variable</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-04-29 00:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/expression.rs</code>:56 on 2025-04-29 00:19</div>
+            <div class="timeline-body"><blockquote>
+<p>Otherwise we'll have the default error message <code>A legacy `typing.TypeVar` must be immediately assigned to a variable</code>.</p>
+</blockquote>
+<p>Which, to be clear, I'm okay with, certainly for now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-29 12:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Ah yes, you're right! I had thought it would be caught by the type-checking code, but if we infer this type mapping and then substitute that for the formal parameter annotation, it will pass. That's worth handling here, I think, and not in a follow-on PR.</p>
+</blockquote>
+<p>We now check the bounds and constraints when inferring specializations, which removed all of the <code>pytest</code>-related <code>call-non-callable</code> errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-29 12:59</div>
+            <div class="timeline-body"><p>I'm going to go ahead and merge so that I can proceed with legacy generic classes. My apologies to our poor ecosystem graphs... :joy:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-04-29 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-04-29 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-29 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-29 13:13</div>
+            <div class="timeline-body"><p>I'm going to look at those <code>NamedTuple</code> false positives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:79 on 2025-04-29 13:57</div>
+            <div class="timeline-body"><p>nit: we don't normally import <code>reveal_type</code> in mdtests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:86 on 2025-04-29 14:00</div>
+            <div class="timeline-body"><p>Would it be worth also having similar tests for legacy typevars with bounds/constraints? Both to show we handle the bounds and constraints correctly, and that the full diagnostic highlights them correctly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-29 14:04</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:79 on 2025-04-29 14:15</div>
+            <div class="timeline-body"><p>it creates noisy <code>undefined-reveal</code> diagnostics in mdtests where <code>snapshot-diagnostics</code> are enabled if you don't import it explicitly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-29 14:15</div>
+            <div class="timeline-body"></div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:03:26 UTC
+    </footer>
+</body>
+</html>

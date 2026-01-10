@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] No errors for definitions of `TypedDict`s - astral-sh/ruff #17674</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] No errors for definitions of <code>TypedDict</code>s</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17674">#17674</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-04-28 08:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-28 08:01</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Do not emit errors when defining <code>TypedDict</code>s:</p>
+<pre><code class="language-py">from typing_extensions import TypedDict
+
+# No error here
+class Person(TypedDict):
+    name: str
+    age: int | None
+
+# No error for this alternative syntax
+Message = TypedDict(&quot;Message&quot;, {&quot;id&quot;: int, &quot;content&quot;: str})
+</code></pre>
+<h2>Ecosystem analysis</h2>
+<ul>
+<li>Removes ~ 450 false positives for <code>TypedDict</code> definitions.</li>
+<li>Changes a few diagnostic messages.</li>
+<li>Adds a few (&lt; 10) false positives, for example:<pre><code class="language-diff">+ error[lint:unresolved-attribute] /tmp/mypy_primer/projects/hydra-zen/src/hydra_zen/structured_configs/_utils.py:262:5: Type `Literal[DataclassOptions]` has no attribute `__required_keys__`
++ error[lint:unresolved-attribute] /tmp/mypy_primer/projects/hydra-zen/src/hydra_zen/structured_configs/_utils.py:262:42: Type `Literal[DataclassOptions]` has no attribute `__optional_keys__`
+</code></pre>
+</li>
+<li>New true positive
+https://github.com/zulip/zulip/blob/4f8263cd7f4d00fc9b9e7d687ab98b0cc8737308/corporate/lib/remote_billing_util.py#L155-L157<pre><code class="language-diff">+ error[lint:invalid-assignment] /tmp/mypy_primer/projects/zulip/corporate/lib/remote_billing_util.py:155:5: Object of type `RemoteBillingIdentityDict | LegacyServerIdentityDict | None` is not assignable to `LegacyServerIdentityDict | None`
+</code></pre>
+</li>
+</ul>
+<h2>Test Plan</h2>
+<p>New Markdown tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-04-28 08:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-28 08:04</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">packaging (https://github.com/pypa/packaging)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/packaging/src/packaging/licenses/_spdx.py:6:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/packaging/src/packaging/licenses/_spdx.py:10:21: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/packaging/src/packaging/markers.py:52:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/packaging/src/packaging/metadata.py:64:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- warning[lint:redundant-cast] /tmp/mypy_primer/projects/packaging/src/packaging/metadata.py:522:16: Value is already of type `Unknown`
+- Found 27 diagnostics
++ Found 22 diagnostics
+
+paroxython (https://github.com/laowantong/paroxython)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/paroxython/paroxython/user_types.py:88:21: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/paroxython/paroxython/user_types.py:99:23: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/paroxython/paroxython/user_types.py:115:15: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 37 diagnostics
++ Found 34 diagnostics
+
+com2ann (https://github.com/ilevkivskyi/com2ann)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/com2ann/src/test_cli.py:25:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 11 diagnostics
++ Found 10 diagnostics
+
+pyinstrument (https://github.com/joerick/pyinstrument)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/context_manager.py:17:29: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 88 diagnostics
++ Found 87 diagnostics
+
+pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pytest-robotframework/pytest_robotframework/_internal/robot/utils.py:55:20: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 357 diagnostics
++ Found 356 diagnostics
+
+aioredis (https://github.com/aio-libs/aioredis)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/aioredis/aioredis/client.py:3848:26: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/aioredis/aioredis/connection.py:105:26: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/aioredis/aioredis/connection.py:1180:21: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 32 diagnostics
++ Found 29 diagnostics
+
+kornia (https://github.com/kornia/kornia)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kornia/kornia/feature/adalam/core.py:30:20: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kornia/kornia/feature/keynet.py:32:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kornia/kornia/feature/scale_space_detector.py:265:23: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 1006 diagnostics
++ Found 1003 diagnostics
+
+pyjwt (https://github.com/jpadilla/pyjwt)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pyjwt/jwt/types.py:8:18: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pyjwt/jwt/types.py:16:15: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pyjwt/jwt/types.py:54:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 191 diagnostics
++ Found 188 diagnostics
+
+starlette (https://github.com/encode/starlette)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/starlette/starlette/testclient.py:66:21: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/starlette/tests/test_routing.py:755:17: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 206 diagnostics
++ Found 204 diagnostics
+
+ppb-vector (https://github.com/ppb/ppb-vector)
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/ppb-vector/ppb_vector/__init__.py:24:18: Object of type `_SpecialForm` is not callable
+- Found 151 diagnostics
++ Found 150 diagnostics
+
+kopf (https://github.com/nolar/kopf)
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/kopf/kopf/_cogs/clients/creating.py:21:5: Object of type `RawBody | dict` is not assignable to `RawBody | None`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/kopf/kopf/_cogs/clients/creating.py:21:5: Object of type `dict` is not assignable to `RawBody | None`
+- warning[lint:redundant-cast] /tmp/mypy_primer/projects/kopf/kopf/_cogs/clients/creating.py:27:17: Value is already of type `Unknown`
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/clients/errors.py:36:22: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/clients/errors.py:42:24: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/clients/errors.py:52:17: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/configs/progress.py:51:22: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/structs/bodies.py:65:15: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/structs/bodies.py:78:15: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/structs/bodies.py:87:16: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/structs/bodies.py:98:16: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/structs/bodies.py:104:16: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/structs/bodies.py:116:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/structs/bodies.py:121:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/structs/bodies.py:210:23: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/structs/bodies.py:218:22: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/structs/patches.py:27:21: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/structs/reviews.py:15:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/structs/reviews.py:21:23: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/structs/reviews.py:27:16: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/structs/reviews.py:33:21: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/structs/reviews.py:38:21: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/structs/reviews.py:43:21: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/structs/reviews.py:48:22: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/structs/reviews.py:66:15: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/structs/reviews.py:72:22: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/structs/reviews.py:77:23: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/structs/reviews.py:86:16: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/structs/reviews.py:92:34: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_cogs/structs/reviews.py:99:27: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/kopf/kopf/_core/engines/admission.py:441:23: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/kopf/kopf/_core/reactor/processing.py:443:81: Argument to this function is incorrect: Expected `BodyEssence`, found `Unknown | None`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/kopf/kopf/_core/reactor/processing.py:443:81: Argument to this function is incorrect: Expected `BodyEssence`, found `BodyEssence | None`
+- Found 171 diagnostics
++ Found 142 diagnostics
+
+python-chess (https://github.com/niklasf/python-chess)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/python-chess/chess/engine.py:228:16: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 81 diagnostics
++ Found 80 diagnostics
+
+pip (https://github.com/pypa/pip)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pip/src/pip/_internal/commands/search.py:24:22: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_vendor/distro/distro.py:56:5: Object of type `Literal[dict]` is not assignable to `_SpecialForm`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_vendor/distro/distro.py:56:5: Object of type `Literal[dict]` is not assignable to `typing.TypedDict`
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pip/src/pip/_vendor/distro/distro.py:61:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pip/src/pip/_vendor/distro/distro.py:67:16: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pip/src/pip/_vendor/packaging/licenses/_spdx.py:6:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pip/src/pip/_vendor/packaging/licenses/_spdx.py:10:21: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pip/src/pip/_vendor/packaging/markers.py:52:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pip/src/pip/_vendor/packaging/metadata.py:64:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- warning[lint:redundant-cast] /tmp/mypy_primer/projects/pip/src/pip/_vendor/packaging/metadata.py:522:16: Value is already of type `Unknown`
+- Found 1097 diagnostics
++ Found 1089 diagnostics
+
+aiohttp-devtools (https://github.com/aio-libs/aiohttp-devtools)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/aiohttp-devtools/aiohttp_devtools/runserver/main.py:17:17: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 67 diagnostics
++ Found 66 diagnostics
+
+twine (https://github.com/pypa/twine)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/twine/twine/package.py:110:23: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 22 diagnostics
++ Found 21 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/scrapy/docs/_ext/scrapydocs.py:13:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/scrapy/scrapy/core/downloader/handlers/http11.py:58:16: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/scrapy/scrapy/http/request/__init__.py:45:21: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/scrapy/scrapy/logformatter.py:31:26: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/scrapy/scrapy/pipelines/files.py:82:16: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/scrapy/scrapy/pipelines/media.py:36:16: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/scrapy/scrapy/pipelines/media.py:250:36: Unused blanket `type: ignore` directive
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/scrapy/scrapy/pipelines/media.py:247:13: Attribute `cleanFailure` on type `FileInfo | Unknown` is possibly unbound
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/scrapy/scrapy/pipelines/media.py:248:13: Object of type `list` is not assignable to attribute `frames` on type `FileInfo | Unknown`
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/scrapy/scrapy/pipelines/media.py:269:31: Attribute `value` on type `FileInfo | Unknown` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/scrapy/scrapy/pipelines/media.py:271:17: Attribute `value` on type `FileInfo | Unknown` is possibly unbound
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/scrapy/scrapy/utils/log.py:245:12: Return type does not match returned value: Expected `tuple[int, str, @Todo(specialized non-generic class)]`, found `tuple[@Todo(Support for `typing.TypeVar` instances in type expressions) | None, (@Todo(Support for `typing.TypeVar` instances in type expressions) &amp; ~AlwaysFalsy) | Literal[&quot;&quot;], @Todo(specialized non-generic class)]`
+- Found 1491 diagnostics
++ Found 1489 diagnostics
+
+yarl (https://github.com/aio-libs/yarl)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/yarl/yarl/_url.py:90:17: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/yarl/yarl/_url.py:100:25: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 167 diagnostics
++ Found 165 diagnostics
+
+PyWinCtl (https://github.com/Kalmat/PyWinCtl)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/PyWinCtl/src/pywinctl/_main.py:995:16: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/PyWinCtl/src/pywinctl/_main.py:1003:16: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 85 diagnostics
++ Found 83 diagnostics
+
+poetry (https://github.com/python-poetry/poetry)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/poetry/tests/integration/test_utils_vcs_git.py:44:22: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 1114 diagnostics
++ Found 1113 diagnostics
+
+dragonchain (https://github.com/dragonchain/dragonchain)
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/types.py:27:15: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/types.py:28:11: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/types.py:29:13: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/types.py:30:16: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/types.py:31:19: Object of type `_SpecialForm` is not callable
+- Found 340 diagnostics
++ Found 335 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/urllib3/src/urllib3/contrib/socks.py:75:27: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/urllib3/src/urllib3/util/ssl_.py:84:36: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 442 diagnostics
++ Found 440 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pydantic/pydantic/_internal/_core_metadata.py:13:20: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pydantic/pydantic/_internal/_generate_schema.py:2614:20: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pydantic/pydantic/_internal/_generics.py:100:31: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pydantic/pydantic/_internal/_schema_gather.py:13:20: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pydantic/pydantic/config.py:36:18: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pydantic/pydantic/fields.py:52:28: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pydantic/pydantic/fields.py:734:20: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/pydantic/pydantic/json_schema.py:529:44: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/pydantic/pydantic/json_schema.py:1554:54: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/pydantic/pydantic/json_schema.py:1556:49: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/pydantic/pydantic/v1/annotated_types.py:13:73: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/pydantic/pydantic/v1/annotated_types.py:24:40: Unused blanket `type: ignore` directive
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pydantic/pydantic/v1/config.py:46:22: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pydantic/pydantic/v1/error_wrappers.py:16:30: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pydantic/pydantic/v1/networks.py:44:17: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pydantic/pydantic/v1/networks.py:56:21: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/pydantic/pydantic/v1/validators.py:621:67: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/pydantic/pydantic/v1/validators.py:632:70: Unused blanket `type: ignore` directive
+- Found 923 diagnostics
++ Found 913 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/paasta/paasta_tools/autoscaling/utils.py:38:27: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/paasta/paasta_tools/autoscaling/utils.py:50:29: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/paasta/paasta_tools/contrib/rightsizer_soaconfigs_update.py:154:33: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/paasta/paasta_tools/contrib/rightsizer_soaconfigs_update.py:168:31: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/paasta/paasta_tools/contrib/rightsizer_soaconfigs_update.py:176:34: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/paasta/paasta_tools/contrib/rightsizer_soaconfigs_update.py:195:32: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/paasta/paasta_tools/kubernetes/remote_run.py:57:24: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 955 diagnostics
++ Found 948 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/tornado/tornado/ioloop.py:495:26: Object of type `_SpecialForm` is not callable
+- Found 380 diagnostics
++ Found 379 diagnostics
+
+dedupe (https://github.com/dedupeio/dedupe)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/dedupe/dedupe/_typing.py:83:20: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 127 diagnostics
++ Found 126 diagnostics
+
+mkdocs (https://github.com/mkdocs/mkdocs)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/mkdocs/mkdocs/structure/toc.py:13:17: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/mkdocs/mkdocs/utils/templates.py:25:23: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 178 diagnostics
++ Found 176 diagnostics
+
+speedrun.com_global_scoreboard_webapp (https://github.com/Avasam/speedrun.com_global_scoreboard_webapp)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/speedrun.com_global_scoreboard_webapp/backend/models/core_models.py:43:23: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/speedrun.com_global_scoreboard_webapp/backend/models/core_models.py:50:25: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/speedrun.com_global_scoreboard_webapp/backend/models/src_dto.py:9:30: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/speedrun.com_global_scoreboard_webapp/backend/models/src_dto.py:14:24: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/speedrun.com_global_scoreboard_webapp/backend/models/src_dto.py:21:21: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/speedrun.com_global_scoreboard_webapp/backend/models/src_dto.py:38:17: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/speedrun.com_global_scoreboard_webapp/backend/models/src_dto.py:64:18: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/speedrun.com_global_scoreboard_webapp/backend/models/src_dto.py:87:25: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/speedrun.com_global_scoreboard_webapp/backend/models/src_dto.py:102:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/speedrun.com_global_scoreboard_webapp/backend/models/src_dto.py:110:25: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/speedrun.com_global_scoreboard_webapp/backend/models/src_dto.py:116:28: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/speedrun.com_global_scoreboard_webapp/backend/models/src_dto.py:121:20: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/speedrun.com_global_scoreboard_webapp/backend/models/src_dto.py:127:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/speedrun.com_global_scoreboard_webapp/backend/models/src_dto.py:138:20: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/speedrun.com_global_scoreboard_webapp/backend/models/src_dto.py:143:22: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/speedrun.com_global_scoreboard_webapp/backend/models/src_dto.py:148:21: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/speedrun.com_global_scoreboard_webapp/backend/models/src_dto.py:156:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/speedrun.com_global_scoreboard_webapp/backend/models/src_dto.py:161:17: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 192 diagnostics
++ Found 174 diagnostics
+
+operator (https://github.com/canonical/operator)
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/_private/harness.py:81:15: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/_private/harness.py:93:21: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/_private/harness.py:95:14: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/_private/harness.py:102:17: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/_private/harness.py:110:14: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/charm.py:55:25: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/charm.py:61:22: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/charm.py:62:24: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/charm.py:77:25: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/charm.py:83:18: Object of type `_SpecialForm` is not callable
+- error[lint:invalid-base] /tmp/mypy_primer/projects/operator/ops/charm.py:86:26: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/model.py:81:15: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/model.py:94:16: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/model.py:102:20: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/model.py:105:16: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/pebble.py:87:15: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/pebble.py:115:12: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/pebble.py:116:11: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/pebble.py:117:12: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/pebble.py:133:13: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/pebble.py:150:17: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/pebble.py:162:13: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/pebble.py:174:12: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/pebble.py:184:21: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/pebble.py:185:21: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/pebble.py:186:16: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/pebble.py:197:13: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/pebble.py:212:20: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/pebble.py:250:19: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/pebble.py:255:22: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/pebble.py:267:21: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/pebble.py:283:21: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/pebble.py:284:17: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/pebble.py:298:19: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/pebble.py:314:14: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/pebble.py:315:13: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/pebble.py:316:22: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/pebble.py:318:20: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/operator/ops/pebble.py:330:19: Object of type `_SpecialForm` is not callable
+- Found 284 diagnostics
++ Found 245 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/mitmproxy/mitmproxy/addons/tlsconfig.py:87:15: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 1341 diagnostics
++ Found 1340 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/channels/handlers/base.py:18:23: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/channels/handlers/ws_handler.py:64:24: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/http/__init__.py:11:27: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/http/types.py:12:16: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/litestar/controller.py:85:23: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/litestar/controller.py:90:28: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/sanic/context.py:8:30: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_transport_ws/types.py:7:29: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_transport_ws/types.py:14:28: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_transport_ws/types.py:21:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_transport_ws/types.py:28:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_transport_ws/types.py:35:31: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_transport_ws/types.py:42:24: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_transport_ws/types.py:50:26: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_transport_ws/types.py:56:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_transport_ws/types.py:64:20: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_transport_ws/types.py:72:23: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_ws/types.py:7:29: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_ws/types.py:12:27: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_ws/types.py:18:20: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_ws/types.py:24:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_ws/types.py:29:34: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_ws/types.py:33:30: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_ws/types.py:38:28: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_ws/types.py:43:26: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_ws/types.py:51:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_ws/types.py:57:20: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_ws/types.py:63:23: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_ws/types.py:68:34: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/test/client.py:23:12: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/strawberry/strawberry/types/execution.py:107:20: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 624 diagnostics
++ Found 593 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/src/graphql/error/graphql_error.py:36:29: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/src/graphql/execution/incremental_publisher.py:59:30: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/src/graphql/execution/incremental_publisher.py:123:32: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/src/graphql/execution/incremental_publisher.py:187:32: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/src/graphql/execution/incremental_publisher.py:259:50: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/src/graphql/execution/incremental_publisher.py:362:39: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/src/graphql/execution/incremental_publisher.py:454:40: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/src/graphql/execution/incremental_publisher.py:553:53: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/src/graphql/language/location.py:18:31: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/src/graphql/type/definition.py:220:30: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/src/graphql/type/definition.py:466:26: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/src/graphql/type/definition.py:632:29: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/src/graphql/type/definition.py:1209:30: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/src/graphql/type/definition.py:1382:31: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/src/graphql/type/directives.py:40:30: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/src/graphql/type/schema.py:63:27: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- warning[lint:redundant-cast] /tmp/mypy_primer/projects/graphql-core/src/graphql/utilities/build_client_schema.py:278:30: Value is already of type `Unknown`
+- warning[lint:redundant-cast] /tmp/mypy_primer/projects/graphql-core/src/graphql/utilities/build_client_schema.py:313:30: Value is already of type `Unknown`
+- warning[lint:redundant-cast] /tmp/mypy_primer/projects/graphql-core/src/graphql/utilities/build_client_schema.py:348:30: Value is already of type `Unknown`
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/src/graphql/utilities/get_introspection_query.py:181:28: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/src/graphql/utilities/get_introspection_query.py:189:31: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/src/graphql/utilities/get_introspection_query.py:193:22: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/src/graphql/utilities/get_introspection_query.py:198:27: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/src/graphql/utilities/get_introspection_query.py:217:29: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/src/graphql/utilities/get_introspection_query.py:282:29: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/src/graphql/utilities/get_introspection_query.py:287:32: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/graphql-core/src/graphql/utilities/get_introspection_query.py:307:22: Object of type `_SpecialForm` is not callable
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/graphql-core/tests/execution/test_subscribe.py:55:9: Object of type `_SpecialForm` is not callable
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/tests/pyutils/test_merge_kwargs.py:9:15: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/graphql-core/tests/type/test_definition.py:1292:20: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 694 diagnostics
++ Found 664 diagnostics
+
+PyGithub (https://github.com/PyGithub/PyGithub)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/PyGithub/github/AdvisoryCredit.py:40:20: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/PyGithub/github/AdvisoryVulnerability.py:43:42: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/PyGithub/github/AdvisoryVulnerability.py:52:35: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/PyGithub/github/PullRequest.py:127:21: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 351 diagnostics
++ Found 347 diagnostics
+
+pyodide (https://github.com/pyodide/pyodide)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pyodide/pyodide-build/pyodide_build/recipe/skeleton.py:22:15: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pyodide/pyodide-build/pyodide_build/recipe/skeleton.py:40:20: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pyodide/src/tests/test_typeconversions.py:1974:17: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/pyodide/src/tests/test_typeconversions.py:1978:17: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 1266 diagnostics
++ Found 1262 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/cloud-init/cloudinit/config/schema.py:81:22: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/cloud-init/cloudinit/netinfo.py:44:17: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 727 diagnostics
++ Found 725 diagnostics
+
+rclip (https://github.com/yurijmikhalevich/rclip)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/rclip/rclip/db.py:7:22: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/rclip/rclip/main.py:23:17: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 31 diagnostics
++ Found 29 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
++ error[lint:unresolved-attribute] /tmp/mypy_primer/projects/hydra-zen/src/hydra_zen/structured_configs/_utils.py:262:5: Type `Literal[DataclassOptions]` has no attribute `__required_keys__`
++ error[lint:unresolved-attribute] /tmp/mypy_primer/projects/hydra-zen/src/hydra_zen/structured_configs/_utils.py:262:42: Type `Literal[DataclassOptions]` has no attribute `__optional_keys__`
++ error[lint:unresolved-attribute] /tmp/mypy_primer/projects/hydra-zen/src/hydra_zen/structured_configs/_utils.py:266:5: Type `Literal[StrictDataclassOptions]` has no attribute `__required_keys__`
++ error[lint:unresolved-attribute] /tmp/mypy_primer/projects/hydra-zen/src/hydra_zen/structured_configs/_utils.py:266:48: Type `Literal[StrictDataclassOptions]` has no attribute `__optional_keys__`
++ error[lint:unresolved-attribute] /tmp/mypy_primer/projects/hydra-zen/src/hydra_zen/structured_configs/_utils.py:385:13: Type `Literal[StrictDataclassOptions]` has no attribute `__required_keys__`
+- error[lint:invalid-base] /tmp/mypy_primer/projects/hydra-zen/src/hydra_zen/typing/_implementations.py:54:17: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/hydra-zen/src/hydra_zen/typing/_implementations.py:290:18: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/hydra-zen/src/hydra_zen/typing/_implementations.py:304:18: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/hydra-zen/src/hydra_zen/typing/_implementations.py:312:18: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/hydra-zen/src/hydra_zen/typing/_implementations.py:395:30: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/hydra-zen/src/hydra_zen/wrapper/_implementations.py:974:17: Object of type `_SpecialForm` is not callable
+- Found 631 diagnostics
++ Found 630 diagnostics
+
+cwltool (https://github.com/common-workflow-language/cwltool)
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/cwltool/cwltool/cwlprov/__init__.py:104:14: Object of type `_SpecialForm` is not callable
+- error[lint:invalid-base] /tmp/mypy_primer/projects/cwltool/cwltool/cwlprov/__init__.py:115:17: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/cwltool/cwltool/cwlprov/__init__.py:127:18: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/cwltool/cwltool/utils.py:84:17: Object of type `_SpecialForm` is not callable
+- Found 409 diagnostics
++ Found 405 diagnostics
+
+AutoSplit (https://github.com/Toufool/AutoSplit)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/AutoSplit/src/capture_method/__init__.py:39:14: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/AutoSplit/src/user_profile.py:21:23: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/AutoSplit/src/utils.py:84:24: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 76 diagnostics
++ Found 73 diagnostics
+
+openlibrary (https://github.com/internetarchive/openlibrary)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/openlibrary/openlibrary/book_providers.py:132:22: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/openlibrary/openlibrary/core/bookshelves.py:21:29: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/openlibrary/openlibrary/core/lending.py:300:26: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/openlibrary/openlibrary/core/lending.py:327:35: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/openlibrary/openlibrary/core/lists/model.py:32:25: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/openlibrary/openlibrary/core/lists/model.py:41:21: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/openlibrary/openlibrary/core/lists/model.py:465:27: Argument to this function is incorrect: Expected `Thing | str | AnnotatedSeed`, found `str | ThingReferenceDict | AnnotatedSeedDict`
+- error[lint:invalid-base] /tmp/mypy_primer/projects/openlibrary/openlibrary/core/models.py:221:26: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/openlibrary/openlibrary/core/ratings.py:9:26: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/openlibrary/openlibrary/plugins/upstream/table_of_contents.py:62:20: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/openlibrary/openlibrary/solr/data_provider.py:118:33: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/openlibrary/openlibrary/solr/solr_types.py:6:20: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/openlibrary/openlibrary/solr/updater/work.py:173:15: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/openlibrary/openlibrary/solr/updater/work.py:177:24: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 795 diagnostics
++ Found 783 diagnostics
+
+django-stubs (https://github.com/typeddjango/django-stubs)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/django-stubs/django-stubs/contrib/admin/filters.pyi:19:26: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/django-stubs/django-stubs/contrib/admin/helpers.pyi:24:25: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/django-stubs/django-stubs/contrib/admin/helpers.pyi:98:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/django-stubs/django-stubs/contrib/admin/options.pyi:62:26: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/django-stubs/django-stubs/contrib/admin/utils.pyi:70:24: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/django-stubs/django-stubs/contrib/gis/geoip2.pyi:16:21: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/django-stubs/django-stubs/contrib/gis/geoip2.pyi:35:24: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/django-stubs/django-stubs/test/client.pyi:190:18: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/django-stubs/mypy_django_plugin/lib/helpers.py:61:26: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- Found 1425 diagnostics
++ Found 1416 diagnostics
+
+bokeh (https://github.com/bokeh/bokeh)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/bokeh/src/bokeh/_specs.pyi:55:17: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/bokeh/src/bokeh/_specs.pyi:60:17: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/bokeh/src/bokeh/_specs.pyi:65:16: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
++ error[lint:non-subscriptable] /tmp/mypy_primer/projects/bokeh/src/bokeh/_specs.pyi:72:49: Cannot subscript object of type `UnionType` with no `__getitem__` method
+- error[lint:invalid-base] /tmp/mypy_primer/projects/bokeh/src/bokeh/core/has_props.py:757:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/bokeh/src/bokeh/core/has_props.py:762:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/bokeh/src/bokeh/core/has_props.py:766:16: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/bokeh/src/bokeh/core/has_props.pyi:159:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/bokeh/src/bokeh/core/has_props.pyi:164:19: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/bokeh/src/bokeh/core/has_props.pyi:168:16: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/bokeh/src/bokeh/core/property_aliases.pyi:49:10: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/bokeh/src/bokeh/core/property_aliases.pyi:53:12: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/bokeh/src/bokeh/core/property_aliases.pyi:59:15: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/bokeh/src/bokeh/core/property_aliases.pyi:98:21: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/bokeh/src/bokeh/core/serialization.py:95:11: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/bokeh/src/bokeh/core/serialization.py:98:14: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/bokeh/src/bokeh/core/serialization.py:102:17: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/bokeh/src/bokeh/core/serialization.py:106:17: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/bokeh/src/bokeh/core/serialization.py:110:16: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/bokeh/src/bokeh/core/serialization.py:116:14: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/bokeh/src/bokeh/core/serialization.py:120:14: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/bokeh/src/bokeh/core/serialization.py:124:16: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/bokeh/src/bokeh/core/serialization.py:128:16: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/bokeh/src/bokeh/core/serialization.py:134:17: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/bokeh/src/bokeh/core/serialization.py:139:20: Invalid class base with type `_SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- erro...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-28 08:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:7725 on 2025-04-28 08:54</div>
+            <div class="timeline-body"><p><code>TypedDict</code> might take parameters in the future: https://peps.python.org/pep-0764/, but for now, we emit a diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-04-28 09:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-04-28 09:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-04-28 09:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-04-28 09:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-28 09:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/literal_string.md</code>:46 on 2025-04-28 09:40</div>
+            <div class="timeline-body"><p>We previously failed to infer types for the inner <code>&quot;foo&quot;</code> expression. I believe this has not been caught because no such construct was part of the panic test corpus. We did however have a file that has a (draft, proposed) <a href="https://peps.python.org/pep-0764/">PEP-764</a> inline TypedDict annotation (<code>person: TypedDict[{&quot;name&quot;: str, age: int}] = …</code>, which is why it was surfaced here when I added <code>TypedDict</code> to the same match case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/penguinolog">@penguinolog</a> reviewed on 2025-04-28 09:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/penguinolog">@penguinolog</a> on <code>crates/red_knot_python_semantic/resources/mdtest/typed_dict.md</code>:12 on 2025-04-28 09:59</div>
+            <div class="timeline-body"><p>I'll add <code>TODO</code> for <code>NotRequired</code> elements (and <code>total=False</code> for the functional syntax)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/unsupported_special_forms.md</code>:95 on 2025-04-28 10:05</div>
+            <div class="timeline-body"><p>I think we just forgot to define a <code>TypeVar</code> here 😆 can we add <code>T = TypeVar(&quot;T&quot;)</code> immediately above this to get rid of the <code>unresolved-reference</code> diagnostic? I think it distracts from what this is meant to be testing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3908 on 2025-04-28 10:24</div>
+            <div class="timeline-body"><p>The <code>typing_extensions</code> version includes a few more parameters for experimental features that have not yet been standardised (but where the PEPs are currently being discussed):</p>
+<pre><code class="language-pycon">% uvx --with=typing_extensions python
+Installed 1 package in 2ms
+Python 3.13.1 (main, Jan  3 2025, 12:04:03) [Clang 15.0.0 (clang-1500.3.9.4)] on darwin
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; from typing_extensions import TypedDict
+&gt;&gt;&gt; import inspect
+&gt;&gt;&gt; inspect.signature(TypedDict)
+&lt;Signature (typename, fields=&lt;sentinel&gt;, /, *, total=True, closed=None, extra_items=typing_extensions.NoExtraItems, **kwargs)&gt;
+</code></pre>
+<p>It may not be worth attempting to reproduce the stub in full here since we anyway don't support these features yet -- you could just add a <code>**kwargs: Any</code> parameter at the end, so that users who do provide these arguments don't get false positives?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/class_base.rs</code>:173 on 2025-04-28 10:26</div>
+            <div class="timeline-body"><p>If we did this instead:</p>
+<pre><code class="language-suggestion">                    Self::try_from_type(db, todo_type!(&quot;TypedDict&quot;))
+</code></pre>
+<p>would it get rid of the new false positives we see in the primer report such as</p>
+<pre><code class="language-diff">+ error[lint:unresolved-attribute] /tmp/mypy_primer/projects/hydra-zen/src/hydra_zen/structured_configs/_utils.py:262:5: Type `Literal[DataclassOptions]` has no attribute `__required_keys__`
++ error[lint:unresolved-attribute] /tmp/mypy_primer/projects/hydra-zen/src/hydra_zen/structured_configs/_utils.py:262:42: Type `Literal[DataclassOptions]` has no attribute `__optional_keys__`
+</code></pre>
+<p>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:7725 on 2025-04-28 10:28</div>
+            <div class="timeline-body"><p>The next release of <code>typing_extensions</code> will support subscripted inline <code>TypedDict</code>s (I merged support for it the other day): https://github.com/python/typing_extensions/pull/580</p>
+<p>The PEP is still under discussion, but I'd say its chances are pretty high for being accepted in more-or-less its current form, and <code>typing_extensions</code> usually adds support for experimental features that are still under discussion so that users can play around with the proposed feature</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-04-28 10:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-28 10:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/unsupported_special_forms.md</code>:95 on 2025-04-28 10:46</div>
+            <div class="timeline-body"><p>Of course. I thought it should be a type variable, but wasn't sure if that was intended to be implicitly declared…</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-28 11:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/class_base.rs</code>:173 on 2025-04-28 11:06</div>
+            <div class="timeline-body"><p>It would, but I'm not sure what other changes that would imply. Let me evaluate that as a separate step.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-28 11:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/class_base.rs</code>:173 on 2025-04-28 11:08</div>
+            <div class="timeline-body"><p>that makes sense to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-04-28 11:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-04-28 11:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-28 11:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:03:27 UTC
+    </footer>
+</body>
+</html>

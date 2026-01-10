@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Fix recording of negative visibility constraints - astral-sh/ruff #17731</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Fix recording of negative visibility constraints</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17731">#17731</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-04-30 07:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-30 07:15</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>We were previously recording wrong reachability constraints for negative branches. Instead of <code>[cond] AND (NOT [True])</code> below, we were recording <code>[cond] AND (NOT ([cond] AND [True]))</code>, i.e. we were negating not just the last predicate, but the <code>AND</code>-ed reachability constraint from last clause. With this fix, we now record the correct constraints for the example from #17723:</p>
+<pre><code class="language-py">def _(cond: bool):
+    if cond:
+        # reachability: [cond]
+        if True:
+            # reachability: [cond] AND [True]
+            pass
+        else:
+            # reachability: [cond] AND (NOT [True])
+            x
+</code></pre>
+<p>closes #17723</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Regression test.</li>
+<li>Verified the ecosystem changes</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-04-30 07:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-30 07:18</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">kornia (https://github.com/kornia/kornia)
+- warning[lint:unresolved-reference] kornia/utils/helpers.py:302:35: Name `A_LU` used when not defined
+- warning[lint:unresolved-reference] kornia/utils/helpers.py:302:41: Name `pivots` used when not defined
+- warning[lint:unresolved-reference] kornia/utils/helpers.py:305:41: Name `A_LU` used when not defined
+- warning[lint:unresolved-reference] kornia/utils/helpers.py:305:47: Name `pivots` used when not defined
+- Found 1014 diagnostics
++ Found 1010 diagnostics
+
+flake8-pyi (https://github.com/PyCQA/flake8-pyi)
+- error[lint:unresolved-attribute] pyi.py:2043:31: Type `&lt;module 'ast'&gt;` has no attribute `TypeVar`
+- Found 33 diagnostics
++ Found 32 diagnostics
+
+aiortc (https://github.com/aiortc/aiortc)
+- warning[lint:unresolved-reference] src/aiortc/rtcsctptransport.py:530:31: Name `expected_tsn` used when not defined
+- warning[lint:unresolved-reference] src/aiortc/rtcsctptransport.py:531:20: Name `ordered` used when not defined
+- Found 131 diagnostics
++ Found 129 diagnostics
+
+pip (https://github.com/pypa/pip)
+- error[lint:unresolved-attribute] src/pip/_vendor/typing_extensions.py:4527:20: Type `&lt;module 'typing'&gt;` has no attribute `_eval_type`
+- error[lint:unresolved-attribute] src/pip/_vendor/typing_extensions.py:4534:16: Type `&lt;module 'typing'&gt;` has no attribute `_eval_type`
+- Found 1244 diagnostics
++ Found 1242 diagnostics
+
+pyodide (https://github.com/pyodide/pyodide)
+- warning[lint:unresolved-reference] pyodide-build/pyodide_build/pywasmcross.py:332:9: Name `symbol_lines` used when not defined
+- warning[lint:unresolved-reference] pyodide-build/pyodide_build/pywasmcross.py:342:68: Name `symbol_lines` used when not defined
+- Found 1258 diagnostics
++ Found 1256 diagnostics
+
+pycryptodome (https://github.com/Legrandin/pycryptodome)
+- warning[lint:unresolved-reference] lib/Crypto/SelfTest/Hash/test_BLAKE2.py:293:42: Name `input_data` used when not defined
+- warning[lint:unresolved-reference] lib/Crypto/SelfTest/Hash/test_BLAKE2.py:293:54: Name `key` used when not defined
+- Found 2184 diagnostics
++ Found 2182 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- warning[lint:possibly-unresolved-reference] static_frame/core/util.py:1269:32: Name `rows` used when possibly not defined
+- Found 4764 diagnostics
++ Found 4763 diagnostics
+
+jax (https://github.com/google/jax)
+- error[lint:unresolved-attribute] jax/_src/export/_export.py:763:41: Type `None` has no attribute `_aval`
+- warning[lint:unresolved-reference] jax/_src/interpreters/ad.py:284:67: Name `aux` used when not defined
+- Found 6082 diagnostics
++ Found 6080 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-04-30 07:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-04-30 07:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-04-30 07:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-04-30 07:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-30 07:32</div>
+            <div class="timeline-body"><p>Merging this without review, as the fix is relatively obvious in hindsight (after two hours of debugging :cry:).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-04-30 07:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-04-30 07:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-30 07:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-04-30 13:43</div>
+            <div class="timeline-body"><p>:+1: post-merge review looks good!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:03:27 UTC
+    </footer>
+</body>
+</html>

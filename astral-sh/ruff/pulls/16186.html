@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-type-checking`] Avoid `TC004` false positives for submodules - astral-sh/ruff #16186</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-type-checking</code>] Avoid <code>TC004</code> false positives for submodules</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16186">#16186</a>
+        opened by <a href="https://github.com/Daverball">@Daverball</a>
+        on 2025-02-16 15:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Daverball">@Daverball</a> on 2025-02-16 15:25</div>
+            <div class="timeline-body"><p>Closes #15723</p>
+<p>This is not a perfect solution, since we still end up with some false negatives, but it's still a lot better than having false positives.</p>
+<h2>Summary</h2>
+<p>Submodule imports create a binding on the base module, if we have more than one submodule import for the same base module we may incorrectly attribute a runtime reference to a typing only import, if we don't make sure that the reference starts with the same name segments as the import.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-16 15:30</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -1 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/scikit-build/scikit-build-core">scikit-build/scikit-build-core</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/scikit-build/scikit-build-core/blob/7568be0570ff095ffc63edc55413bc9c67fde4eb/src/scikit_build_core/resources/_editable_redirect.py#L11'>src/scikit_build_core/resources/_editable_redirect.py:11:12:</a> TC004 Move import `importlib.machinery` out of type-checking block. Import is used for more than type hinting.
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| TC004 | 1 | 0 | 1 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/mod.rs</code>:539 on 2025-02-24 08:52</div>
+            <div class="timeline-body"><p>Actually it's still quite a bit more complex than that, since we can have partial overlaps and complete overlaps of bindings, so whether or not we can look at the references of a shadowing import depends on how it overlaps with our import and whether or not those overlapping imports are in a runtime context or not.</p>
+<p>We also don't properly take into account the fact that the parent module will be fully imported by a submodule import. So for the parent module we would need to check if there are any bindings in runtime context at all in order to avoid false negatives, e.g. for a runtime use of <code>os.sep</code> with a typing only import of <code>os.path</code>. <code>os.path</code> should be flagged if there isn't also a runtime <code>os</code> import.</p>
+<p>So for something like</p>
+<pre><code class="language-python">import a
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    import a.b
+    import a.b.d
+
+x = a.b  # leads to TC004 for `import a.b`
+
+import a.b.c
+
+y = a.b  # fine
+z = a.b.d  # leads to TC004 for `import a.b.d`
+</code></pre>
+<p>For reference <code>x</code> we would need to detect that the shadowed binding <code>a</code> for <code>import a</code> doesn't include <code>a.b</code>, but for reference <code>y</code> we would need to detect that <code>import a.b.c</code> fully covers the shadowed <code>import a.b</code>, so we don't have to worry about it. But for <code>z</code> <code>import a.b.c</code> doesn't fully cover <code>import a.b.d</code>, so we do need to look at the references to <code>import a.b.d</code> for checking whether or not <code>import a.b.d</code> has any runtime references. So the combinatorics quickly get out of hand here.</p>
+<p>The approach chosen in this PR still seems like a reasonable compromise however, since it will catch some things with submodule imports, while incorrectly flagging fewer imports that shouldn't be flagged. I.e. we raise the false negative rate slightly, but we get rid of the false positives we're most likely to encounter in the wild.</p>
+<p>Anything more accurate would probably need multi-file analysis and some degree of type inference, so we actually know which attributes are currently available at runtime in the current scope and through which binding.</p>
+<p>Another approach we could take is to just never emit <code>TC004</code> if we're shadowing another binding. This would completely get rid of any false positives. But I feel the approach this PR has taken is more balanced.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2025-02-24 08:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-28 07:18</div>
+            <div class="timeline-body"><p>@ntBre or @dylwil3 would you have time to review this pr and feel comfortable to do so? I'm leaning towards relying on @Daverball expertise here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-04-28 07:54</div>
+            <div class="timeline-body"><p>@MichaReiser Currently, I would probably defer this PR in favor of getting #13965 to a state, where it can be merged, since that seems like a more complete solution for the problem to me, that benefits the whole semantic model and not just a single rule.</p>
+<p>I'll try to find some time to take a closer look at the approach taken in the other PR to see if I can come up with some changes, beyond the ones that have already been proposed, that reduce the overhead. I had a similar idea for solving this problem more generally, but assumed it would add too much overhead, for too little benefit, so I didn't pursue it further at the time. But given that I now know that there are other rules that would benefit from this, it might be worth pursuing after all.</p>
+<p>If we don't think we can push #13965 forward any time soon, and reviewing this PR can be done quickly, with a low amount of effort, then it still might be a reasonable stop gap measure, otherwise I'd probably put this into draft until we know for sure whether or not #13965 will happen. Especially since we will probably need to or at least want to revert this change, once it does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-30 06:41</div>
+            <div class="timeline-body"><p>Thanks @Daverball. @dylwil3 considers picking up #13965</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:03:26 UTC
+    </footer>
+</body>
+</html>

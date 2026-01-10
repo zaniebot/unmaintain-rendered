@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-annotations`] Fix parsing of &quot;complex&quot; forward reference type annotations in `any-type` (ANN401) - astral-sh/ruff #14700</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-annotations</code>] Fix parsing of &quot;complex&quot; forward reference type annotations in <code>any-type</code> (ANN401)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14700">#14700</a>
+        opened by <a href="https://github.com/sbrugman">@sbrugman</a>
+        on 2024-12-01 15:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-12-01 15:28</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Fixes #14695.</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>The root cause was tricky to find.
+&quot;Complex&quot; forward reference type annotations are handled differently. Forward references are &quot;complex&quot; in this case when the raw contents (without quotes) of the expression with the parsed contents is not contained in the string literal.
+https://github.com/astral-sh/ruff/blob/84748be16341b76e073d117329f7f5f4ee2941ad/crates/ruff_python_parser/src/typing.rs#L65</p>
+<p>Annotations are recursively parsed, for instance:
+<code>&quot;'int'&quot;</code> (complex) =&gt; <code>&quot;int&quot;</code> (simple)</p>
+<p>The raw contents of the expression &quot;in\x74&quot; is not contained in the string literal <code>int</code> and hence requires multiple complex parsing steps: <code>&quot;'in\x74'&quot;</code> (complex) -&gt; <code>&quot;in\x74&quot;</code> (complex). This is rare, and probably that's why the bug went unnoticed.</p>
+<p>Parsed type annotations are cached by their start offset:
+https://github.com/astral-sh/ruff/blob/84748be16341b76e073d117329f7f5f4ee2941ad/crates/ruff_linter/src/checkers/ast/mod.rs#L2544</p>
+<p>As it turned out, for these complex annotations the starting offset was not properly updated (removing the quotes), as well already do for the simple annotations. This caused an infinite loop, and eventually a stack overflow.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>Extended the test suite with regression tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-02 00:49</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-12-02 05:02</div>
+            <div class="timeline-body"><p>Do you think this is an issue that should be solved holistically (https://github.com/astral-sh/ruff/issues/10586)? Because the <code>relocate_expr</code> is actually incorrect in the first place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-12-02 05:05</div>
+            <div class="timeline-body"><blockquote>
+<p>As it turned out, for these complex annotations the starting offset was not properly updated (removing the quotes), as well already do for the simple annotations.</p>
+</blockquote>
+<p>Sorry, I'm a bit confused still. Why are we using the range without quotes for the parsed expression in case of complex annotation? Because for simple annotations, we just use the range without quotes for the original string expression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-12-05 05:43</div>
+            <div class="timeline-body"><p>I think an ideal solution here would be to fix the <code>relocate_expr</code> to transform the entire parsed tree accordingly and then move the <code>range_exluding_quotes</code> in <code>parse_type_annotation</code> which then passes to both <code>parse_simple_type_annotation</code> and <code>parse_complex_type_annotation</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-28 07:03</div>
+            <div class="timeline-body"><p>This PR has been stale for quite some time. I'll close it. If someone's interested to work on this, feel free to pick up this PR (taking the feedback into consideration)</p>
+<p>As always. Thanks @sbrugman for your work on this</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:03:26 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ruff] Resolve type alias for annotations (RUF012) - astral-sh/ruff #16210</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ruff] Resolve type alias for annotations (RUF012)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16210">#16210</a>
+        opened by <a href="https://github.com/vladNed">@vladNed</a>
+        on 2025-02-17 12:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/vladNed">@vladNed</a> on 2025-02-17 12:18</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Check on mutable class default was not resolving the annotation that was a type alias thus the default values might have been flagged as mutable.</p>
+<p>Added a helper function similar to <code>map_subscript</code> in order to check bindings on annotation to resolve to the final type.</p>
+<p>Resolves #16174</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Checked with type aliases with both mutable and immutable</li>
+<li>Checked the original behavior was intact.</li>
+</ul>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-17 12:25</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vladNed">@vladNed</a> on 2025-02-17 12:47</div>
+            <div class="timeline-body"><p>figured that there should be a loop for type inference to resolve until final if a alias is mapped to another alias.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vladNed">@vladNed</a> on 2025-02-17 15:18</div>
+            <div class="timeline-body"><p>added a small improvement, should be good for review now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:210 on 2025-02-18 07:05</div>
+            <div class="timeline-body"><p>I think we can avoid the clone here</p>
+<pre><code class="language-suggestion">    let Some(expr_name) = expr.as_name_expr() else {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:224 on 2025-02-18 07:09</div>
+            <div class="timeline-body"><p>Should we use <code>find_assigned_value</code> instead? This will only look in the current scope and will work with forward references as well.</p>
+<p>https://github.com/astral-sh/ruff/blob/f58a54f043aab836706a22eb3f9b4d450477ba99/crates/ruff_python_semantic/src/analyze/typing.rs#L1137-L1151</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-18 07:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-02-18 07:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/vladNed">@vladNed</a> reviewed on 2025-02-19 07:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/vladNed">@vladNed</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:224 on 2025-02-19 07:41</div>
+            <div class="timeline-body"><p>@dhruvmanila I tested with <code>find_assigned_value</code> but its not fixing the forwarded value. If you import the type it does not resolves it completely.</p>
+<p>I tried using multiple method with <code>ResolvedReferences</code> and with <code>resolve_qualified_name</code> but I didn't had any success on this.</p>
+<p>Is there any function that resolves a <code>FromImport</code> to an <code>Exp</code> somehow ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-03 06:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:224 on 2025-03-03 06:06</div>
+            <div class="timeline-body"><p>Sorry for the late reply, I somehow missed this in the notification.</p>
+<p>Can you provide an example of what you're trying to test here?</p>
+<blockquote>
+<p>Is there any function that resolves a <code>FromImport</code> to an <code>Exp</code> somehow ?</p>
+</blockquote>
+<p>Do you mean to follow the import and resolve it to the expression that defines it? That's not possible as it requires multi-file analysis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-28 07:19</div>
+            <div class="timeline-body"><p>Thank you for your work @vladNed. I'm closing this PR because it has become stale. Anyone interested to work on this, feel free to open a new PR with the changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-04-28 07:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:03:26 UTC
+    </footer>
+</body>
+</html>

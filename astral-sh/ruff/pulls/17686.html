@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] ruff_db: render file paths in diagnostics as relative paths if possible - astral-sh/ruff #17686</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] ruff_db: render file paths in diagnostics as relative paths if possible</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17686">#17686</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-04-28 17:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-28 17:05</div>
+            <div class="timeline-body"><p>This is done in what appears to be the same way as Ruff: we get the CWD,
+strip the prefix from the path if possible, and use that. If stripping
+the prefix fails, then we print the full path as-is.</p>
+<p>Fixes #17233</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BurntSushi on 2025-04-28 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-04-28 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @BurntSushi on 2025-04-28 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-04-28 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @BurntSushi on 2025-04-28 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ruff_db: render file paths in diagnostics as relative paths if possible" to "[red-knot] ruff_db: render file paths in diagnostics as relative paths if possible" by @BurntSushi on 2025-04-28 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @BurntSushi on 2025-04-28 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @BurntSushi on 2025-04-28 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @BurntSushi on 2025-04-28 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @BurntSushi on 2025-04-28 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @BurntSushi on 2025-04-28 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:701 on 2025-04-28 17:09</div>
+            <div class="timeline-body"><p>We should use <code>system.current_directory</code> here (which is also cheap). That should also remove the need to do any wasm feature gating.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-04-28 17:10</div>
+            <div class="timeline-body"><p>Nice!</p>
+<p>We aren't allowed to use any system specific APIs in red knot outside of the CLI crate (because we know that it's always OS) without going through the <code>System</code> crate or we break our platform abstraction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-28 17:15</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-28 17:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:701 on 2025-04-28 17:23</div>
+            <div class="timeline-body"><p>Oooo nice! I did look around for something like this briefly, but missed it.</p>
+<p>The change to this did cause a huge number of snapshot changes. But it seems to just be limited to removing the leading <code>/</code> from file paths. Which seems like a positive change. (I guess <code>get_cwd()</code> was returning the path without a trailing <code>/</code>, but <code>system.current_directory()</code> includes a trailing <code>/</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-28 17:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:701 on 2025-04-28 17:36</div>
+            <div class="timeline-body"><p>I think the reason is a different one. Mdtests run with cwd set to the Ruff workspace root (I think) which isn't a prefix of <code>/src</code>. However, <code>System</code> is initialized to <code>/</code> (we could think about changing it to <code>/src</code> actually) which is a prefix of <code>/src</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-28 17:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:701 on 2025-04-28 17:41</div>
+            <div class="timeline-body"><p>That makes me wonder. Should we add a CLI test that shows how diagnostics are rendered if a file is in a parent directory?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-28 17:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:701 on 2025-04-28 17:49</div>
+            <div class="timeline-body"><p>Aye, done. It behaves as I would expect given the implementation: it behaves like it used to and prints the full absolute path.</p>
+<p>Probably this case can be improved too, but it strikes me as lower priority.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-04-28 17:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-28 18:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:611 on 2025-04-28 18:00</div>
+            <div class="timeline-body"><p>Sorry for my piece by piece review.</p>
+<p>I assume that doing this here ensures that this change applies to both the full and concise rendering?</p>
+<p>I'm asking because that would explain why mypy primer hangs (too large diffs :D)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-28 18:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:611 on 2025-04-28 18:32</div>
+            <div class="timeline-body"><p>Yes. There are snapshot tests that do cover this.</p>
+<p>Good to know about mypy primer hanging. Makes sense, since I think just about ~every diagnostic is impacted by this change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-28 18:32</div>
+            <div class="timeline-body"><p>Merging despite mypy primer hang. See: https://github.com/astral-sh/ruff/pull/17686#discussion_r2064265801</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-04-28 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-04-28 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-28 18:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:03:27 UTC
+    </footer>
+</body>
+</html>

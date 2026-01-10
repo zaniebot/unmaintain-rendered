@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ruff`] IO operations performed on closed IO objects (`RUF050`) - astral-sh/ruff #15865</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>ruff</code>] IO operations performed on closed IO objects (<code>RUF050</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15865">#15865</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-02-01 01:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-01 01:18</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #10517.</p>
+<p><code>RUF050</code> checks for references of IO objects whose binding is created by a <code>with</code> statement and reports if those references might trigger <code>ValueError: I/O operation on closed file</code> at runtime.</p>
+<p>It recognizes the following patterns:</p>
+<ul>
+<li>Method references: <code>f.read()</code>/<code>_ = f.write</code></li>
+<li>Contain checks: <code>_ in f</code></li>
+<li><code>for</code> loops: <code>for _ in f: ...</code></li>
+</ul>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code> and <code>cargo insta test</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-01 01:24</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+2 -0 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/astropy/astropy">astropy/astropy</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/astropy/astropy/blob/d81c3f9b4cbc4d71ff3bf00a079b574c21aa8b22/astropy/io/ascii/ui.py#L1103'>astropy/io/ascii/ui.py:1103:9:</a> RUF050 IO operation performed on closed IO object
++ <a href='https://github.com/astropy/astropy/blob/d81c3f9b4cbc4d71ff3bf00a079b574c21aa8b22/astropy/io/ascii/ui.py#L1104'>astropy/io/ascii/ui.py:1104:9:</a> RUF050 IO operation performed on closed IO object
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF050 | 2 | 2 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-01 01:55</div>
+            <div class="timeline-body"><p>There are a lot of false positives of this kind:</p>
+<pre><code class="language-py">with open() as f:
+	f.read()  # A reference to the next `f`
+
+with open() as f:  # Same name
+	...
+
+with open() as f:  # Same name
+	f.write()  # A reference to either of the previous `f`s
+</code></pre>
+<p>This seems to be a bug in the semantic model rather than a problem with this rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-02-03 08:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2025-02-03 08:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/codes.rs</code>:1011 on 2025-02-03 08:51</div>
+            <div class="timeline-body"><p>Can we use any of the exsiting &quot;holes&quot; in our numbering (assuming they aren't remapped) like 042, 044, 045, 050, 053, 054, 059 instead of introducing new &quot;holes&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/mod.rs</code>:432 on 2025-02-03 08:51</div>
+            <div class="timeline-body"><p>We can move the test to the regular <code>rules</code> test because the rule contains no <code>settings.preview_mode</code> checks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/operation_on_closed_io.rs</code>:84 on 2025-02-03 08:53</div>
+            <div class="timeline-body"><p>This seems more of an example than proper documentation</p>
+<pre><code class="language-suggestion">// `f.write(...)`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/operation_on_closed_io.rs</code>:85 on 2025-02-03 08:54</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">fn file_method_name_range(expression_id: NodeId, semantic: &amp;SemanticModel) -&gt; Option&lt;TextRange&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/operation_on_closed_io.rs</code>:121 on 2025-02-03 08:54</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">// `_ in f`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/operation_on_closed_io.rs</code>:122 on 2025-02-03 08:55</div>
+            <div class="timeline-body"><p>Is it necessary to check how <code>file</code> is used or what's the motivation to not flag all usages of <code>f</code> after the with statement?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/operation_on_closed_io.rs</code>:55 on 2025-02-03 08:56</div>
+            <div class="timeline-body"><p>I think we should validate that <code>f</code> is a file and not just any other context variable (assert that it was created using <code>open</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2025-02-03 08:59</div>
+            <div class="timeline-body"><p>Thanks for working on this.</p>
+<p>As mentioned in the original PR, we have to restrict the rule to objects that are files. This should also help to remove the following false positive</p>
+<p>https://github.com/apache/airflow/blob/8c9e0b2a8ec0e6f2842883898370741e71c0e802/airflow/models/dagbag.py#L317C12-L317C29</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-02-03 14:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/src/rules/ruff/rules/operation_on_closed_io.rs</code>:122 on 2025-02-03 14:48</div>
+            <div class="timeline-body"><p><code>f.name</code> accesses are still valid, for example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`ruff`] IO operations performed on closed IO objects (`RUF061`)" to "[`ruff`] IO operations performed on closed IO objects (`RUF050`)" by @InSyncWithFoo on 2025-02-03 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/operation_on_closed_io.rs</code>:155 on 2025-02-03 15:42</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">
+            Some(TextRange::new(start, comparator.end()))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/operation_on_closed_io.rs</code>:178 on 2025-02-03 15:42</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    Some(TextRange::new(for_loop.target.start(), iter.end()))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/operation_on_closed_io.rs</code>:90 on 2025-02-03 15:43</div>
+            <div class="timeline-body"><p>I think I now have a better understanding of the method names. How about <code>io_func_range</code>, <code>in_file_range</code>, and <code>io_in_for_loop_range</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-03 15:44</div>
+            <div class="timeline-body"><p>I'm concerned about the examples you mentioned as well as if <code>f</code> gets deleted.</p>
+<p>It seems that the semantic model copies over all references when shadowing an existing binding. https://github.com/astral-sh/ruff/blob/fe516e24f54bfc33b7b480e8438b9393630f05b1/crates/ruff_linter/src/checkers/ast/mod.rs#L2048-L2062</p>
+<p>I think we have to make the rule shadowed-binding aware and skip over references that come from a shadowed binding.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-03 15:59</div>
+            <div class="timeline-body"><blockquote>
+<p>I think we have to make the rule shadowed-binding aware and skip over references that come from a shadowed binding.</p>
+</blockquote>
+<p>I'm not sure how to do this, especially if all references are simply copied over.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-03 18:22</div>
+            <div class="timeline-body"><p>Yeah, me neither. We'd have to look at other rules to see how to handle it. I don't think I've the time right now to do that. Maybe @charliermarsh knows?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-28 07:13</div>
+            <div class="timeline-body"><p>I'll close this because we may want to wait for red knot to get better type inference to correctly identify these cases. Thanks @InSyncWithFoo for exploring this rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-04-28 07:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:03:26 UTC
+    </footer>
+</body>
+</html>

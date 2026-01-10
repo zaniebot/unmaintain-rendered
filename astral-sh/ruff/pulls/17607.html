@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Use iterative approach to collect overloads - astral-sh/ruff #17607</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Use iterative approach to collect overloads</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17607">#17607</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-04-24 13:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-24 13:34</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates the <code>to_overloaded</code> method to use an iterative approach instead of a recursive one.</p>
+<p>Refer to https://github.com/astral-sh/ruff/pull/17585#discussion_r2056804587 for context.</p>
+<p>The main benefit here is that it avoids calling the <code>to_overloaded</code> function in a recursive manner which is a salsa query. So, this is a bit hand wavy but we should also see less memory used because the cache will only contain a single entry which should be the entire overload chain. Previously, the recursive approach would mean that each of the function involved in an overload chain would have a cache entry. This reduce in memory shouldn't be too much and I haven't looked at the actual data for it.</p>
+<h2>Test Plan</h2>
+<p>Existing test cases should pass.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2025-04-24 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2025-04-24 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-24 13:38</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-04-24 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-04-24 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-04-24 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-04-24 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-04-24 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-04-24 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-24 15:16</div>
+            <div class="timeline-body"><p>As an aside, can/should <code>FunctionSignature</code> use <code>CallableSignature</code> for its list of overloads, instead of <code>Vec&lt;Signature&gt;</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-24 15:18</div>
+            <div class="timeline-body"><p>And if we add <code>CallableSignature::is_overloaded</code>, you could use <code>CallableSignature</code> for the non-overloaded case, too, and then collapse the two variants of <code>FunctionSignature</code> down into a struct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-24 15:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:6198 on 2025-04-24 15:49</div>
+            <div class="timeline-body"><p>You could call <code>reverse</code> on vec instead of <code>into_iter().rev().collect()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-04-24 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-24 16:04</div>
+            <div class="timeline-body"><blockquote>
+<p>can/should <code>FunctionSignature</code> use <code>CallableSignature</code> for its list of overloads</p>
+</blockquote>
+<p>I thought about this when reviewing a previous PR that introduced <code>FunctionSignature</code>, but decided not to comment on it at the time because <code>CallableSignature</code> has a number of extra fields that are not useful to <code>FunctionSignature</code>, and there didn't seem to be a strong downside to having <code>FunctionSignature</code> not use <code>CallableSignature</code>. I am interested in @dhruvmanila 's thoughts here, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-24 16:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-24 16:14</div>
+            <div class="timeline-body"><blockquote>
+<p>As an aside, can/should <code>FunctionSignature</code> use <code>CallableSignature</code> for its list of overloads, instead of <code>Vec&lt;Signature&gt;</code>?</p>
+</blockquote>
+<p>Yeah, I think that could be used. Initially, I avoided that because of the additional fields that it had. There are couple of methods, specifically the <code>into_callable_type</code> on <code>FunctionType</code> and <code>BoundMethodType</code> which just requires the <code>Signature</code>s to convert the function / method into a callable type. So, the intermediary <code>CallableSignature</code> is not useful  in that case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-24 16:17</div>
+            <div class="timeline-body"><blockquote>
+<p>And if we add <code>CallableSignature::is_overloaded</code>, you could use <code>CallableSignature</code> for the non-overloaded case, too, and then collapse the two variants of <code>FunctionSignature</code> down into a struct.</p>
+</blockquote>
+<p>Yeah, that's a good idea. I can try in a follow-up later to remove the <code>FunctionSignature</code> if possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-04-24 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @dhruvmanila on 2025-04-24 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-04-24 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-04-24 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-24 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-28 23:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah, that's a good idea. I can try in a follow-up later to remove the <code>FunctionSignature</code> if possible.</p>
+</blockquote>
+<p>Actually, I realized today why I didn't opt for that - it's because <code>CallableSignature</code> requires the <code>signature_type</code> as an input when creating the struct and in <code>FunctionType::signature</code> that would always be <code>FunctionType</code> which isn't correct. For a bound method it should be <code>Type::BoundMethod</code>, for a callable type it should be <code>Type::Callable</code>, and so on.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:03:26 UTC
+    </footer>
+</body>
+</html>
