@@ -1,0 +1,123 @@
+```yaml
+number: 15595
+title: Update dependency ruff to v0.9.2
+type: pull_request
+state: merged
+author: renovate
+labels:
+  - internal
+assignees: []
+merged: true
+base: main
+head: renovate/ruff-0.x
+created_at: 2025-01-20T01:34:03Z
+updated_at: 2025-01-20T03:31:28Z
+url: https://github.com/astral-sh/ruff/pull/15595
+synced_at: 2026-01-10T20:05:43Z
+```
+
+# Update dependency ruff to v0.9.2
+
+---
+
+_Pull request opened by @renovate on 2025-01-20 01:34_
+
+This PR contains the following updates:
+
+| Package | Change | Age | Adoption | Passing | Confidence |
+|---|---|---|---|---|---|
+| [ruff](https://docs.astral.sh/ruff) ([source](https://redirect.github.com/astral-sh/ruff), [changelog](https://redirect.github.com/astral-sh/ruff/blob/main/CHANGELOG.md)) | `==0.9.1` -> `==0.9.2` | [![age](https://developer.mend.io/api/mc/badges/age/pypi/ruff/0.9.2?slim=true)](https://docs.renovatebot.com/merge-confidence/) | [![adoption](https://developer.mend.io/api/mc/badges/adoption/pypi/ruff/0.9.2?slim=true)](https://docs.renovatebot.com/merge-confidence/) | [![passing](https://developer.mend.io/api/mc/badges/compatibility/pypi/ruff/0.9.1/0.9.2?slim=true)](https://docs.renovatebot.com/merge-confidence/) | [![confidence](https://developer.mend.io/api/mc/badges/confidence/pypi/ruff/0.9.1/0.9.2?slim=true)](https://docs.renovatebot.com/merge-confidence/) |
+
+---
+
+> [!WARNING]
+> Some dependencies could not be looked up. Check the Dependency Dashboard for more information.
+
+---
+
+### Release Notes
+
+<details>
+<summary>astral-sh/ruff (ruff)</summary>
+
+### [`v0.9.2`](https://redirect.github.com/astral-sh/ruff/blob/HEAD/CHANGELOG.md#092)
+
+[Compare Source](https://redirect.github.com/astral-sh/ruff/compare/0.9.1...0.9.2)
+
+##### Preview features
+
+-   \[`airflow`] Fix typo "security_managr" to "security_manager" (`AIR303`) ([#&#8203;15463](https://redirect.github.com/astral-sh/ruff/pull/15463))
+-   \[`airflow`] extend and fix AIR302 rules ([#&#8203;15525](https://redirect.github.com/astral-sh/ruff/pull/15525))
+-   \[`fastapi`] Handle parameters with `Depends` correctly (`FAST003`) ([#&#8203;15364](https://redirect.github.com/astral-sh/ruff/pull/15364))
+-   \[`flake8-pytest-style`] Implement pytest.warns diagnostics (`PT029`, `PT030`, `PT031`) ([#&#8203;15444](https://redirect.github.com/astral-sh/ruff/pull/15444))
+-   \[`flake8-pytest-style`] Test function parameters with default arguments (`PT028`) ([#&#8203;15449](https://redirect.github.com/astral-sh/ruff/pull/15449))
+-   \[`flake8-type-checking`] Avoid false positives for `|` in `TC008` ([#&#8203;15201](https://redirect.github.com/astral-sh/ruff/pull/15201))
+
+##### Rule changes
+
+-   \[`flake8-todos`] Allow VSCode GitHub PR extension style links in `missing-todo-link` (`TD003`) ([#&#8203;15519](https://redirect.github.com/astral-sh/ruff/pull/15519))
+-   \[`pyflakes`] Show syntax error message for `F722` ([#&#8203;15523](https://redirect.github.com/astral-sh/ruff/pull/15523))
+
+##### Formatter
+
+-   Fix curly bracket spacing around f-string expressions containing curly braces ([#&#8203;15471](https://redirect.github.com/astral-sh/ruff/pull/15471))
+-   Fix joining of f-strings with different quotes when using quote style `Preserve` ([#&#8203;15524](https://redirect.github.com/astral-sh/ruff/pull/15524))
+
+##### Server
+
+-   Avoid indexing the same workspace multiple times ([#&#8203;15495](https://redirect.github.com/astral-sh/ruff/pull/15495))
+-   Display context for `ruff.configuration` errors ([#&#8203;15452](https://redirect.github.com/astral-sh/ruff/pull/15452))
+
+##### Configuration
+
+-   Remove `flatten` to improve deserialization error messages ([#&#8203;15414](https://redirect.github.com/astral-sh/ruff/pull/15414))
+
+##### Bug fixes
+
+-   Parse triple-quoted string annotations as if parenthesized ([#&#8203;15387](https://redirect.github.com/astral-sh/ruff/pull/15387))
+-   \[`fastapi`] Update `Annotated` fixes (`FAST002`) ([#&#8203;15462](https://redirect.github.com/astral-sh/ruff/pull/15462))
+-   \[`flake8-bandit`] Check for `builtins` instead of `builtin` (`S102`, `PTH123`) ([#&#8203;15443](https://redirect.github.com/astral-sh/ruff/pull/15443))
+-   \[`flake8-pathlib`] Fix `--select` for `os-path-dirname` (`PTH120`) ([#&#8203;15446](https://redirect.github.com/astral-sh/ruff/pull/15446))
+-   \[`ruff`] Fix false positive on global keyword (`RUF052`) ([#&#8203;15235](https://redirect.github.com/astral-sh/ruff/pull/15235))
+
+</details>
+
+---
+
+### Configuration
+
+📅 **Schedule**: Branch creation - "before 4am on Monday" (UTC), Automerge - At any time (no schedule defined).
+
+🚦 **Automerge**: Disabled by config. Please merge this manually once you are satisfied.
+
+♻ **Rebasing**: Whenever PR becomes conflicted, or you tick the rebase/retry checkbox.
+
+🔕 **Ignore**: Close this PR and you won't be reminded about this update again.
+
+---
+
+ - [ ] <!-- rebase-check -->If you want to rebase/retry this PR, check this box
+
+---
+
+This PR was generated by [Mend Renovate](https://mend.io/renovate/). View the [repository job log](https://developer.mend.io/github/astral-sh/ruff).
+<!--renovate-debug:eyJjcmVhdGVkSW5WZXIiOiIzOS4xMDcuMCIsInVwZGF0ZWRJblZlciI6IjM5LjEwNy4wIiwidGFyZ2V0QnJhbmNoIjoibWFpbiIsImxhYmVscyI6WyJpbnRlcm5hbCJdfQ==-->
+
+
+---
+
+_Label `internal` added by @renovate[bot] on 2025-01-20 01:34_
+
+---
+
+_Merged by @charliermarsh on 2025-01-20 03:31_
+
+---
+
+_Closed by @charliermarsh on 2025-01-20 03:31_
+
+---
+
+_Branch deleted on 2025-01-20 03:31_
+
+---
