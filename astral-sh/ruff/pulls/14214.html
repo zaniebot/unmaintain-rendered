@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-pyi`] Implement autofix and handle nested unions with single element (`PYI041 `, `PYI055`) - astral-sh/ruff #14214</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-pyi</code>] Implement autofix and handle nested unions with single element (<code>PYI041 </code>, <code>PYI055</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14214">#14214</a>
+        opened by <a href="https://github.com/sbrugman">@sbrugman</a>
+        on 2024-11-08 23:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-11-08 23:01</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>PR to implement autofix for <code>redundant-numeric-union</code> (<code>PYI041</code>) and <code>duplication-union-member</code> (<code>PYI016</code>)
+https://github.com/astral-sh/ruff/issues/14185</p>
+<p>There appears to be an issue with the nested union detection when the union is unary:</p>
+<pre><code class="language-python-console">&gt;&gt;&gt; from typing import Union
+&gt;&gt;&gt; Union[int | int | float]
+typing.Union[int, float]
+
+&gt;&gt;&gt; Union[Union[float, complex]]
+typing.Union[float, complex]
+</code></pre>
+<p>This issue also affects at least <code>PYI055</code>.</p>
+<p>Edit: the PR grew a bit bigger after finding issues with fix safety. I'll break up the PR into multiple for easier review.</p>
+<h2>Test Plan</h2>
+<p>Extension of the test cases and <code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2024-11-08 23:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_numeric_union.rs</code>:68 on 2024-11-08 23:05</div>
+            <div class="timeline-body"><p>Emitting multiple messages for the same union, such as &quot;Use <code>complex</code> instead of <code>int | complex</code>&quot; and  &quot;Use <code>complex</code> instead of <code>float | complex</code>&quot; gets confusing when there is a fix presented:</p>
+<pre><code class="language-diff">-    def bad4(self, arg: Union[float | complex, int]) -&gt; None: ...  # PYI041
++    def bad4(self, arg: complex) -&gt; None: ...  # PYI041
+</code></pre>
+<p>With <code>IntFloatComplex</code> we can assign an unique violation for each combination.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2024-11-08 23:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_numeric_union.rs</code>:90 on 2024-11-08 23:07</div>
+            <div class="timeline-body"><p>Instead of <code>has_*</code>, I've used <code>bitflags</code> (which are used in some other parts of the code already).
+(They correspond naturally to the order of Complex &gt; Float &gt; Int)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2024-11-08 23:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_numeric_union.rs</code>:106 on 2024-11-08 23:14</div>
+            <div class="timeline-body"><p>I've chosen to do a second loop only when there is a violation, instead of collecting all expressions for any Union and filtering them later to avoid overhead in those cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-08 23:15</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -1 violations, +74 -0 fixes in 5 projects; 49 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -0 violations, +58 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/decorators/__init__.pyi#L117'>airflow/decorators/__init__.pyi:117:25:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/decorators/__init__.pyi#L117'>airflow/decorators/__init__.pyi:117:25:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/decorators/__init__.pyi#L256'>airflow/decorators/__init__.pyi:256:25:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/decorators/__init__.pyi#L256'>airflow/decorators/__init__.pyi:256:25:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/jobs/job.py#L308'>airflow/jobs/job.py:308:39:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/jobs/job.py#L308'>airflow/jobs/job.py:308:39:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/metrics/base_stats_logger.py#L39'>airflow/metrics/base_stats_logger.py:39:15:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/metrics/base_stats_logger.py#L39'>airflow/metrics/base_stats_logger.py:39:15:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/metrics/base_stats_logger.py#L50'>airflow/metrics/base_stats_logger.py:50:15:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/metrics/base_stats_logger.py#L50'>airflow/metrics/base_stats_logger.py:50:15:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/metrics/base_stats_logger.py#L61'>airflow/metrics/base_stats_logger.py:61:15:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/metrics/base_stats_logger.py#L61'>airflow/metrics/base_stats_logger.py:61:15:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/metrics/datadog_logger.py#L113'>airflow/metrics/datadog_logger.py:113:16:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/metrics/datadog_logger.py#L113'>airflow/metrics/datadog_logger.py:113:16:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/metrics/otel_logger.py#L246'>airflow/metrics/otel_logger.py:246:16:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/metrics/otel_logger.py#L246'>airflow/metrics/otel_logger.py:246:16:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/metrics/statsd_logger.py#L117'>airflow/metrics/statsd_logger.py:117:16:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/metrics/statsd_logger.py#L117'>airflow/metrics/statsd_logger.py:117:16:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/utils/timezone.py#L240'>airflow/utils/timezone.py:240:26:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/utils/timezone.py#L240'>airflow/utils/timezone.py:240:26:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/utils/timezone.py#L305'>airflow/utils/timezone.py:305:16:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/utils/timezone.py#L305'>airflow/utils/timezone.py:305:16:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/performance/src/performance_dags/performance_dag/performance_dag_utils.py#L175'>performance/src/performance_dags/performance_dag/performance_dag_utils.py:175:27:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/performance/src/performance_dags/performance_dag/performance_dag_utils.py#L175'>performance/src/performance_dags/performance_dag/performance_dag_utils.py:175:27:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/performance/src/performance_dags/performance_dag/performance_dag_utils.py#L337'>performance/src/performance_dags/performance_dag/performance_dag_utils.py:337:31:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/performance/src/performance_dags/performance_dag/performance_dag_utils.py#L337'>performance/src/performance_dags/performance_dag/performance_dag_utils.py:337:31:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L273'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py:273:16:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L273'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py:273:16:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L302'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py:302:56:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L302'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py:302:56:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L325'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py:325:57:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L325'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py:325:57:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L516'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py:516:27:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L516'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py:516:27:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L516'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py:516:47:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L516'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py:516:47:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L516'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py:516:72:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L516'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py:516:72:</a> PYI041 [*] Use `float` instead of `int | float`
+... 20 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+0 -0 violations, +10 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/superset/blob/24b8a94c2ce4d21c65caa076bdc54ba61635be85/superset/daos/query.py#L68'>superset/daos/query.py:68:52:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/superset/blob/24b8a94c2ce4d21c65caa076bdc54ba61635be85/superset/daos/query.py#L68'>superset/daos/query.py:68:52:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/superset/blob/24b8a94c2ce4d21c65caa076bdc54ba61635be85/superset/models/helpers.py#L900'>superset/models/helpers.py:900:39:</a> PYI016 Duplicate union member `str`
++ <a href='https://github.com/apache/superset/blob/24b8a94c2ce4d21c65caa076bdc54ba61635be85/superset/models/helpers.py#L900'>superset/models/helpers.py:900:39:</a> PYI016 [*] Duplicate union member `str`
+- <a href='https://github.com/apache/superset/blob/24b8a94c2ce4d21c65caa076bdc54ba61635be85/superset/utils/cache.py#L150'>superset/utils/cache.py:150:14:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/superset/blob/24b8a94c2ce4d21c65caa076bdc54ba61635be85/superset/utils/cache.py#L150'>superset/utils/cache.py:150:14:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/superset/blob/24b8a94c2ce4d21c65caa076bdc54ba61635be85/superset/utils/core.py#L349'>superset/utils/core.py:349:24:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/superset/blob/24b8a94c2ce4d21c65caa076bdc54ba61635be85/superset/utils/core.py#L349'>superset/utils/core.py:349:24:</a> PYI041 [*] Use `float` instead of `int | float`
+... 3 additional changes omitted for rule PYI041
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+0 -0 violations, +6 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/factors.py#L51'>src/bokeh/core/property/factors.py:51:56:</a> PYI016 Duplicate union member `tuple[str, str]`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/factors.py#L51'>src/bokeh/core/property/factors.py:51:56:</a> PYI016 [*] Duplicate union member `tuple[str, str]`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/factors.py#L52'>src/bokeh/core/property/factors.py:52:85:</a> PYI016 Duplicate union member `tp.Sequence[tuple[str, str]]`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/factors.py#L52'>src/bokeh/core/property/factors.py:52:85:</a> PYI016 [*] Duplicate union member `tp.Sequence[tuple[str, str]]`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/contour.py#L43'>src/bokeh/plotting/contour.py:43:88:</a> PYI016 Duplicate union member `ContourColor`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/contour.py#L43'>src/bokeh/plotting/contour.py:43:88:</a> PYI016 [*] Duplicate union member `ContourColor`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+0 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/python/typeshed">python/typeshed</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select E,F,FA,I,PYI,RUF,UP,W</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/python/typeshed/blob/ea368c72696afba1eb4c12653123edd764c800bf/stdlib/statistics.pyi#L160'>stdlib/statistics.pyi:160:15:</a> PYI041 Use `float` instead of `int | float`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PYI041 | 67 | 0 | 1 | 66 | 0 |
+| PYI016 | 8 | 0 | 0 | 8 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -5 violations, +74 -0 fixes in 4 projects; 50 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -0 violations, +58 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/decorators/__init__.pyi#L117'>airflow/decorators/__init__.pyi:117:25:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/decorators/__init__.pyi#L117'>airflow/decorators/__init__.pyi:117:25:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/decorators/__init__.pyi#L256'>airflow/decorators/__init__.pyi:256:25:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/decorators/__init__.pyi#L256'>airflow/decorators/__init__.pyi:256:25:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/jobs/job.py#L308'>airflow/jobs/job.py:308:39:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/jobs/job.py#L308'>airflow/jobs/job.py:308:39:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/metrics/base_stats_logger.py#L39'>airflow/metrics/base_stats_logger.py:39:15:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/metrics/base_stats_logger.py#L39'>airflow/metrics/base_stats_logger.py:39:15:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/metrics/base_stats_logger.py#L50'>airflow/metrics/base_stats_logger.py:50:15:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/metrics/base_stats_logger.py#L50'>airflow/metrics/base_stats_logger.py:50:15:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/metrics/base_stats_logger.py#L61'>airflow/metrics/base_stats_logger.py:61:15:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/metrics/base_stats_logger.py#L61'>airflow/metrics/base_stats_logger.py:61:15:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/metrics/datadog_logger.py#L113'>airflow/metrics/datadog_logger.py:113:16:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/metrics/datadog_logger.py#L113'>airflow/metrics/datadog_logger.py:113:16:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/metrics/otel_logger.py#L246'>airflow/metrics/otel_logger.py:246:16:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/metrics/otel_logger.py#L246'>airflow/metrics/otel_logger.py:246:16:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/metrics/statsd_logger.py#L117'>airflow/metrics/statsd_logger.py:117:16:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/metrics/statsd_logger.py#L117'>airflow/metrics/statsd_logger.py:117:16:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/utils/timezone.py#L240'>airflow/utils/timezone.py:240:26:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/utils/timezone.py#L240'>airflow/utils/timezone.py:240:26:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/utils/timezone.py#L305'>airflow/utils/timezone.py:305:16:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/airflow/utils/timezone.py#L305'>airflow/utils/timezone.py:305:16:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/performance/src/performance_dags/performance_dag/performance_dag_utils.py#L175'>performance/src/performance_dags/performance_dag/performance_dag_utils.py:175:27:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/performance/src/performance_dags/performance_dag/performance_dag_utils.py#L175'>performance/src/performance_dags/performance_dag/performance_dag_utils.py:175:27:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/performance/src/performance_dags/performance_dag/performance_dag_utils.py#L337'>performance/src/performance_dags/performance_dag/performance_dag_utils.py:337:31:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/performance/src/performance_dags/performance_dag/performance_dag_utils.py#L337'>performance/src/performance_dags/performance_dag/performance_dag_utils.py:337:31:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L273'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py:273:16:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L273'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py:273:16:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L302'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py:302:56:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L302'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py:302:56:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L325'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py:325:57:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L325'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py:325:57:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L516'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py:516:27:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L516'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py:516:27:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L516'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py:516:47:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/02217ccf5c6a8a38446ad6145bcaccd615712c8f/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L516'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py:516:47:</a> PYI041 [*] Use `float` instead of `int | float`
+... 22 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+0 -0 violations, +10 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/superset/blob/24b8a94c2ce4d21c65caa076bdc54ba61635be85/superset/daos/query.py#L68'>superset/daos/query.py:68:52:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/superset/blob/24b8a94c2ce4d21c65caa076bdc54ba61635be85/superset/daos/query.py#L68'>superset/daos/query.py:68:52:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/superset/blob/24b8a94c2ce4d21c65caa076bdc54ba61635be85/superset/models/helpers.py#L900'>superset/models/helpers.py:900:39:</a> PYI016 Duplicate union member `str`
++ <a href='https://github.com/apache/superset/blob/24b8a94c2ce4d21c65caa076bdc54ba61635be85/superset/models/helpers.py#L900'>superset/models/helpers.py:900:39:</a> PYI016 [*] Duplicate union member `str`
+- <a href='https://github.com/apache/superset/blob/24b8a94c2ce4d21c65caa076bdc54ba61635be85/superset/utils/cache.py#L150'>superset/utils/cache.py:150:14:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/superset/blob/24b8a94c2ce4d21c65caa076bdc54ba61635be85/superset/utils/cache.py#L150'>superset/utils/cache.py:150:14:</a> PYI041 [*] Use `float` instead of `int | float`
+- <a href='https://github.com/apache/superset/blob/24b8a94c2ce4d21c65caa076bdc54ba61635be85/superset/utils/core.py#L349'>superset/utils/core.py:349:24:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/superset/blob/24b8a94c2ce4d21c65caa076bdc54ba61635be85/superset/utils/core.py#L349'>superset/utils/core.py:349:24:</a> PYI041 [*] Use `float` instead of `int | float`
+... 3 additional changes omitted for rule PYI041
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+0 -0 violations, +6 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/factors.py#L51'>src/bokeh/core/property/factors.py:51:56:</a> PYI016 Duplicate union member `tuple[str, str]`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/factors.py#L51'>src/bokeh/core/property/factors.py:51:56:</a> PYI016 [*] Duplicate union member `tuple[str, str]`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/factors.py#L52'>src/bokeh/core/property/factors.py:52:85:</a> PYI016 Duplicate union member `tp.Sequence[tuple[str, str]]`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/factors.py#L52'>src/bokeh/core/property/factors.py:52:85:</a> PYI016 [*] Duplicate union member `tp.Sequence[tuple[str, str]]`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/contour.py#L43'>src/bokeh/plotting/contour.py:43:88:</a> PYI016 Duplicate union member `ContourColor`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/contour.py#L43'>src/bokeh/plotting/contour.py:43:88:</a> PYI016 [*] Duplicate union member `ContourColor`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/python/typeshed">python/typeshed</a> (+0 -5 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select E,F,FA,I,PYI,RUF,UP,W</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/python/typeshed/blob/ea368c72696afba1eb4c12653123edd764c800bf/stdlib/random.pyi#L45'>stdlib/random.pyi:45:31:</a> PYI041 Use `float` instead of `int | float`
+- <a href='https://github.com/python/typeshed/blob/ea368c72696afba1eb4c12653123edd764c800bf/stdlib/random.pyi#L52'>stdlib/random.pyi:52:27:</a> PYI041 Use `float` instead of `int | float`
+- <a href='https://github.com/python/typeshed/blob/ea368c72696afba1eb4c12653123edd764c800bf/stdlib/statistics.pyi#L160'>stdlib/statistics.pyi:160:15:</a> PYI041 Use `float` instead of `int | float`
+- <a href='https://github.com/python/typeshed/blob/ea368c72696afba1eb4c12653123edd764c800bf/stdlib/turtle.pyi#L443'>stdlib/turtle.pyi:443:16:</a> PYI041 Use `float` instead of `int | float`
+- <a href='https://github.com/python/typeshed/blob/ea368c72696afba1eb4c12653123edd764c800bf/stdlib/turtle.pyi#L444'>stdlib/turtle.pyi:444:17:</a> PYI041 Use `float` instead of `int | float`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PYI041 | 71 | 0 | 5 | 66 | 0 |
+| PYI016 | 8 | 0 | 0 | 8 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2024-11-08 23:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_numeric_union.rs</code>:158 on 2024-11-08 23:15</div>
+            <div class="timeline-body"><p>There must be a more elegant way of doing this, but I haven't found it yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2024-11-08 23:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_numeric_union.rs</code>:230 on 2024-11-08 23:17</div>
+            <div class="timeline-body"><p>The code above handles <code>nodes.len() &lt; 2</code> separately and thus this function should never encounter these cases. Is <code>debug_assert!</code> ok to denote this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2024-11-08 23:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/unnecessary_type_union.rs</code>:78 on 2024-11-08 23:19</div>
+            <div class="timeline-body"><p>Rather than using the same Union syntax as the top-level union, I check if <em>any</em> PEP604-style union is encountered. If so, then we use that. (<code>a | b</code> or <code>typing.Union[a, b]</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-11-11 14:00</div>
+            <div class="timeline-body"><p>Raises as separate PRs to reduce the review load in #14280, #14275, #14273, #14272, #14270 and #14268.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sbrugman on 2024-11-11 14:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:27 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Precise inference for identity checks - astral-sh/ruff #14109</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Precise inference for identity checks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14109">#14109</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2024-11-05 13:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-05 13:45</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Adds more precise type inference for <code>… is …</code> and <code>… is not …</code> identity checks in some limited cases where we statically know the answer to be either <code>Literal[True]</code> or <code>Literal[False]</code>.</p>
+<p>I found this helpful while working on type inference for comparisons involving intersection types, but I'm not sure if this is at all useful for real world code (where the answer is most probably <em>not</em> statically known). Note that we already have <em>type narrowing</em> for identity tests. So while we are already able to generate constraints for things like <code>if x is None</code>, we can now — in some limited cases — make an even stronger conclusion and infer that the test expression itself is <code>Literal[False]</code> (branch never taken) or <code>Literal[True]</code> (branch always taken).</p>
+<h2>Test Plan</h2>
+<p>New Markdown tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-11-05 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2024-11-05 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2024-11-05 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2024-11-05 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-05 13:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3374 on 2024-11-05 13:46</div>
+            <div class="timeline-body"><p>The <code>reveal_type(a1 is o) # revealed: bool</code> test (and similar) make sure that we don't forget about this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-05 13:59</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3378 on 2024-11-05 15:13</div>
+            <div class="timeline-body"><p>Shouldn't this be</p>
+<pre><code class="language-suggestion">                            if left.is_singleton(self.db)
+</code></pre>
+<p>? And same for the <code>CmpOp::IsNot</code> branch below. It's hard to think of a test that would fail because of this issue, because at this point we know that both <code>left</code> and <code>right</code> are <code>InstanceType</code>s -- I can't think of any <code>InstanceType</code>s that would be single-valued types without being singleton types. But I think using <code>is_singleton</code> would be more <em>correct</em> and less confusing here, per the definitions we're adding in https://github.com/astral-sh/ruff/pull/13878. (I need to merge that PR!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-05 15:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-05 15:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3378 on 2024-11-05 15:24</div>
+            <div class="timeline-body"><p>Yes, of course :see_no_evil:.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3395 on 2024-11-05 15:38</div>
+            <div class="timeline-body"><p>You can simplify this further by utilising the fact that we know at this point that both <code>left</code> and <code>right</code> are <code>InstanceType</code>s:</p>
+<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/types/infer.rs b/crates/red_knot_python_semantic/src/types/infer.rs
+index c93e44f5f..e3e6053b5 100644
+--- a/crates/red_knot_python_semantic/src/types/infer.rs
++++ b/crates/red_knot_python_semantic/src/types/infer.rs
+@@ -3374,27 +3374,19 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+                         // positive answers for narrowing the type.
+                         if left.is_disjoint_from(self.db, right) {
+                             Ok(Type::BooleanLiteral(false))
++                        } else if left.is_singleton(self.db) &amp;&amp; left_class == right_class {
++                            Ok(Type::BooleanLiteral(true))
+                         } else {
+-                            if left.is_single_valued(self.db)
+-                                &amp;&amp; left.is_equivalent_to(self.db, right)
+-                            {
+-                                Ok(Type::BooleanLiteral(true))
+-                            } else {
+-                                Ok(KnownClass::Bool.to_instance(self.db))
+-                            }
++                            Ok(KnownClass::Bool.to_instance(self.db))
+                         }
+                     }
+                     ast::CmpOp::IsNot =&gt; {
+                         if left.is_disjoint_from(self.db, right) {
+                             Ok(Type::BooleanLiteral(true))
++                        } else if left.is_singleton(self.db) &amp;&amp; left_class == right_class {
++                            Ok(Type::BooleanLiteral(false))
+                         } else {
+-                            if left.is_single_valued(self.db)
+-                                &amp;&amp; left.is_equivalent_to(self.db, right)
+-                            {
+-                                Ok(Type::BooleanLiteral(false))
+-                            } else {
+-                                Ok(KnownClass::Bool.to_instance(self.db))
+-                            }
++                            Ok(KnownClass::Bool.to_instance(self.db))
+                         }
+                     }
+                 }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/identity_tests.md</code>:1 on 2024-11-05 15:44</div>
+            <div class="timeline-body"><p>Could you also add a test for an <code>InstanceType</code> that inherits from an <code>Unknown</code> class?</p>
+<p>E.g. something like this:</p>
+<pre><code class="language-py">from does_not_exist import this_will_be_inferred_as_Unknown
+
+class Gradual(this_will_be_inferred_as_Unknown): ...
+class FullyStatic: ...
+
+x = Gradual()
+y = FullyStatic()
+
+reveal_type(x is y)  # revealed: bool
+</code></pre>
+<p>I think it's important that this reveals <code>bool</code> rather than <code>Literal[True]</code> or <code>Literal[False]</code>, because we don't know the &quot;true MRO&quot; of <code>Gradual</code>, since it inherits from <code>Unknown</code>. All of this should already work as expected with your PR branch, I think; I'd just like this test to make sure that it doesn't regress in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-11-05 15:44</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3374 on 2024-11-05 16:34</div>
+            <div class="timeline-body"><p>I'm not sure the premise of this comment is quite correct? Even if <code>is_equivalent_to</code> were perfect (never returned a false negative), we could not replace <code>if left.is_disjoint_from(self.db, right)</code> with <code>if !left.is_equivalent_to(self.db, right)</code> in the code below.</p>
+<p>If the types of <code>left</code> and <code>right</code> are disjoint, no object can be in both types, so the <code>is</code> check must be false. But if <code>left</code> and <code>right</code> are simply not-equivalent, it's still possible that they overlap, and thus we don't have any additional information about the result of the <code>is</code> check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3395 on 2024-11-05 16:40</div>
+            <div class="timeline-body"><p>I'm not sure we should reduce <code>is_equivalent_to</code> to <code>left_class == right_class</code>, even if we know both sides are instances. That would mean we wouldn't consider an instance of <code>types.NoneType</code> equivalent to <code>_typeshed.NoneType</code>. Maybe that's OK in practice once we have version-info checks, but I still think it's safer to keep our &quot;are these two types equivalent&quot; logic in a single place.</p>
+<p>This comment does make me wonder how many of the above special cases for non-instance types could be boiled down to this same generic logic using disjointness, singleton-ness, and equivalence. But probably not worth pursuing that since the existing special-cases work, and exploiting this would require restructuring the entire function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-11-05 16:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-05 16:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/identity_tests.md</code>:1 on 2024-11-05 16:43</div>
+            <div class="timeline-body"><p>Hm.. but we use neither subclass, subtype nor assign-ability semantics for this. We use non-disjointness (or ideally, exact equivalence of types) to make statements about these identity checks.</p>
+<p>Whether or not <code>A</code> is a subclass of <code>B</code> doesn't help us with making any statements about <code>a is b</code> tests. If it is a subclass, we certainly can't decide if <code>a is b</code> is true or false. And if <code>A</code> is not a subclass, it could be a superclass. Which is the exact same situation, just with <code>A</code> and <code>B</code> reversed.</p>
+<p>What I'm saying is: Sure, I can add this test. But I don't really see a realistic scenario where it would fail? Like, how would you make this particular test fail while maintaining successes in all other test cases? Even for arbitrary &quot;fully static&quot;/not-<code>Unknown</code> classes, we would infer <code>bool</code> here, since they are not disjoint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-05 16:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/identity_tests.md</code>:1 on 2024-11-05 16:44</div>
+            <div class="timeline-body"><p>I'm not sure how important it is to add this test for the particular case of <code>is</code> comparisons, since the inheritance-from-Unknown is irrelevant here -- even if <code>x</code> and <code>y</code> are both instances of fully-static types, we could only conclude <code>bool</code> for <code>x is y</code>, and that is already tested here.</p>
+<p>If one of them were a final type, that would change.</p>
+<p>Ultimately I think this kind of subtlety is more a test of our <code>is_disjoint_from</code> logic, and it's probably better to push the tests down to that level, rather than trying to test these kinds of cases separately for every type inference feature that uses disjointness?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-05 16:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/identity_tests.md</code>:1 on 2024-11-05 16:47</div>
+            <div class="timeline-body"><p>We can leave the test. I was mainly just trying to think of edge cases, and inheritance from <code>Unknown</code> always makes me pause for thought 😄 I agree that the main thing that this would be testing would be our <code>is_disjoint_from</code> implementation -- though I'd still prefer to have mdtests where possible as well as unit tests, since there's always a risk that we might remove that method in the future in some refactor, and I'd want confidence that our inference would stay the same in that eventuality.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-05 16:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3395 on 2024-11-05 16:49</div>
+            <div class="timeline-body"><blockquote>
+<p>That would mean we wouldn't consider an instance of <code>types.NoneType</code> equivalent to <code>_typeshed.NoneType</code>. Maybe that's OK in practice once we have version-info checks, but I still think it's safer to keep our &quot;are these two types equivalent&quot; logic in a single place.</p>
+</blockquote>
+<p>I find that example pretty unconvincing. Whether we have multi-version checking or single-version checking, it's essential that we're able to infer that an object can either be of type <code>types.NoneType</code> or <code>_typeshed.NoneType</code>, but that the two types can never exist simultaneously on any version of Python.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-05 17:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3395 on 2024-11-05 17:03</div>
+            <div class="timeline-body"><p>I think you're right that the two types should never co-exist, as long as (in a multi-version-checking future) we ensure that the union we would get from <code>_typeshed.NoneType</code> simplifies to <code>types.NoneType</code>, so that if someone explicitly imports and uses <code>types.NoneType</code>, it still matches our inference for <code>None</code>.</p>
+<p>But I don't think the specific example is so important. I think in general it is safer that our type algebra logic remain consolidated on <code>Type</code> methods, rather than spreading implicit assumptions about invariants throughout the code. I don't think there is enough value to be gained from &quot;inlining&quot; the definition of <code>Type::is_equivalent_to</code> for instance types here, to be worth the constraint that we must now ensure that the definition of <code>is_equivalent_to</code> for instance types always remains equality on the wrapped instances. (And that isn't even true today!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-05 17:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3395 on 2024-11-05 17:36</div>
+            <div class="timeline-body"><p>It doesn't seem that implicit to me! But I don't feel strongly 😆 happy to leave it as-is if you prefer it that way :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-05 18:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3374 on 2024-11-05 18:18</div>
+            <div class="timeline-body"><p>You are right. My flawed thinking was: if two objects are <em>identical</em>, their types would also be the same. But that's not true of course. We can refer to the same exact object using more or less precise types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-05 18:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/identity_tests.md</code>:1 on 2024-11-05 18:27</div>
+            <div class="timeline-body"><p>I still don't understand how it relates to this particular changeset, but I will write down a task to look into <code>is_disjoint_from</code> (unit) tests for <code>Type::Unknown</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-05 18:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/identity_tests.md</code>:1 on 2024-11-05 18:39</div>
+            <div class="timeline-body"><p>I don't think it does relate to this changeset, and I don't think you need to note down a task particularly for it, either. Even for <code>is_disjoint_from</code> between instances, the case of inheriting Unknown will only become relevant or testable once we add support for final classes, and I think we can just include tests for it at that point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-11-05 18:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-05 18:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/identity_tests.md</code>:1 on 2024-11-05 18:44</div>
+            <div class="timeline-body"><p>Yeah, I wouldn't worry about it. I was just trying to think of edge cases. It's definitely not something we need to prioritise :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2024-11-05 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2024-11-05 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-05 18:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:27 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add narrowing for `issubclass` checks - astral-sh/ruff #14128</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add narrowing for <code>issubclass</code> checks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14128">#14128</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2024-11-06 10:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-06 10:35</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<ul>
+<li>Adds basic support for <code>type[C]</code> as a red knot <code>Type</code>. Some things might not be supported yet, like <code>type[Any]</code>.</li>
+<li>Adds type narrowing for <code>issubclass</code> checks.</li>
+</ul>
+<p>closes astral-sh/ruff#14117</p>
+<h2>Test Plan</h2>
+<p>New Markdown-based tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-11-06 10:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-06 10:50</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-06 11:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:451 on 2024-11-06 11:28</div>
+            <div class="timeline-body"><p>Nit: How about <code>constraint.negate_if(self.db, is_positive)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2024-11-06 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2024-11-06 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2024-11-06 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-06 15:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1312 on 2024-11-06 15:03</div>
+            <div class="timeline-body"><p>There's also a TODO comment below, aksing if <code>Type::StringLiteral(_) | Type::LiteralString</code> should result in <code>type[LiteralString]</code>. I'm not sure if that's a valid type, given that <code>LiteralString</code> is not a class?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-06 15:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1324 on 2024-11-06 15:04</div>
+            <div class="timeline-body"><p>This is too meta for me. Should this be <code>Type::Type('type')</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-06 15:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1091 on 2024-11-06 15:11</div>
+            <div class="timeline-body"><p>I just copied what we have for <code>Type::Instance</code>. Not sure if that's correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:329 on 2024-11-06 15:12</div>
+            <div class="timeline-body"><p>Can we create a <code>TypeType</code> struct, that wraps a <code>Class</code>, rather than reusing the <code>ClassLiteralType</code> struct for this variant? Conceptually <code>TypeType</code> and <code>ClassLiteralType</code> are quite distinct things (though related, of course).</p>
+<p>I guess the reason not to do this would be having to unpack it as <code>Type::Type(TypeType { class})</code> 😆 yet another reason to call it something else ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-06 15:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1291 on 2024-11-06 15:15</div>
+            <div class="timeline-body"><p>I didn't include it in the block above, as the comment would not be correct for <code>Type::Type</code>. But I also don't know how one would turn <code>type[C]</code> into an instance of some kind.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:329 on 2024-11-06 15:17</div>
+            <div class="timeline-body"><p>Other sensible, maybe less confusing names might be</p>
+<ul>
+<li><code>Type::TypeOf</code> because <code>type[…]</code> resembles &quot;type of …&quot;</li>
+<li><code>Type::MetaType</code></li>
+<li>…</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-06 15:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1091 on 2024-11-06 15:18</div>
+            <div class="timeline-body"><p>This is fine for now, but you could possibly add a TODO comment similar to the one in the <code>Type::ClassLiteral()</code> branch</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1324 on 2024-11-06 15:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Should this be <code>Type::Type('type')</code>?</p>
+</blockquote>
+<p>yes, I think so</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1312 on 2024-11-06 15:27</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not sure if that's a valid type, given that <code>LiteralString</code> is not a class?</p>
+</blockquote>
+<p>...I don't know. There are many things which are not classes which are actually allowed inside <code>type[]</code> annotations. There are also significant gaps in the spec here. See https://discuss.python.org/t/clarifications-to-the-typing-spec-regarding-type/54596 -- which I need to get back to at some point!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2573 on 2024-11-06 15:28</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // BuiltinClassLiteral(&quot;str&quot;) corresponds to the builtin `str` class object itself
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1291 on 2024-11-06 15:31</div>
+            <div class="timeline-body"><p>You can call a runtime object with type <code>type[C]</code> at runtime to create a runtime object of type <code>C</code>: https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=8961e1a985e66a0022bd68baf514db9d</p>
+<p>I think this should be the same as the <code>ClassLiteral</code> branch here, i.e.</p>
+<pre><code class="language-suggestion">            Type::Type(ClassLiteralType { class }) =&gt; Type::anonymous_instance(*class),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2670 on 2024-11-06 15:33</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // However, type[A] is not disjoint from type[B], as there could be
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2672 on 2024-11-06 15:34</div>
+            <div class="timeline-body"><p>These are excellent comments, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:363 on 2024-11-06 15:46</div>
+            <div class="timeline-body"><p>I think you could avoid the Clippy supppression and the <code>unreachable!()</code> here if you did something like this:</p>
+<details>
+<summary>Suggested revision</summary>
+
+<pre><code class="language-rs">        // TODO: add support for PEP 604 union types on the right hand side of `isinstance`
+        // and `issubclass`, for example `isinstance(x, str | (int | float))`.
+        let constraint_function = inference
+            .expression_ty(expr_call.func.scoped_ast_id(self.db, scope))
+            .into_function_literal()
+            .and_then(|f| f.known(self.db))
+            .and_then(KnownConstraintFunction::try_from_known_function)?;
+
+        if expr_call.arguments.keywords.is_empty() {
+            if let [ast::Expr::Name(ast::ExprName { id, .. }), class_info] =
+                &amp;*expr_call.arguments.args
+            {
+                let symbol = self.symbols().symbol_id_by_name(id).unwrap();
+
+                let class_info_ty =
+                    inference.expression_ty(class_info.scoped_ast_id(self.db, scope));
+
+                let to_constraint = match constraint_function {
+                    KnownConstraintFunction::IsInstance =&gt; {
+                        |class_literal: ClassLiteralType&lt;'db&gt;| {
+                            Type::anonymous_instance(class_literal.class)
+                        }
+                    }
+                    KnownConstraintFunction::IsSubclass =&gt; Type::Type,
+                };
+
+                generate_classinfo_constraint(self.db, &amp;class_info_ty, to_constraint).map(
+                    |constraint| {
+                        let mut constraints = NarrowingConstraints::default();
+                        constraints.insert(symbol, constraint.negate_if(self.db, !is_positive));
+                        constraints
+                    },
+                )
+            } else {
+                None
+            }
+        } else {
+            None
+        }
+</code></pre>
+</details>
+
+<p>Where <code>KnownConstraintFunction</code> is an enum defined like this:</p>
+<details>
+
+<pre><code class="language-rs">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum KnownConstraintFunction {
+    IsInstance,
+    IsSubclass,
+}
+
+impl KnownConstraintFunction {
+    const fn try_from_known_function(function: KnownFunction) -&gt; Option&lt;Self&gt; {
+        match function {
+            KnownFunction::IsSubclass =&gt; Some(Self::IsSubclass),
+            KnownFunction::IsInstance =&gt; Some(Self::IsInstance),
+            KnownFunction::RevealType =&gt; None,
+        }
+    }
+}
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-06 15:48</div>
+            <div class="timeline-body"><p>Very cool!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-06 16:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/issubclass.md</code>:95 on 2024-11-06 16:00</div>
+            <div class="timeline-body"><p>Interestingly, this is an area where mypy and pyright differ. Pyright does the narrowing that you do here, but mypy actually refuses to do any type narrowing here as a point of principle. This is because (unlike for <code>isinstance()</code>) arbitrary objects are not acceptable as the first argument to <code>issubclass()</code>, only instances of <code>builtins.type</code>. Since <code>t</code> has type <code>object</code> here (which is not a subtype of <code>builtins.type</code>), mypy doesn't know whether or not the call will even succeed, so it doesn't:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; issubclass(3, str)
+Traceback (most recent call last):
+  File &quot;&lt;python-input-0&gt;&quot;, line 1, in &lt;module&gt;
+    issubclass(3, str)
+    ~~~~~~~~~~^^^^^^^^
+TypeError: issubclass() arg 1 must be a class
+</code></pre>
+<p>To be clear, both type checkers issue a diagnostic on the <code>if issubclass(t, A)</code> call warning that it's not okay to pass an arbitrary object as the first argument to <code>issubclass()</code>. But pyright then proceeds to narrow the type anyway, even though it knows the call could fail, whereas mypy refuses to.</p>
+<p>I think I like mypy's behaviour better here? But not sure.</p>
+<ul>
+<li>https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=1db65d922577e1c2fe52bd043070d9df</li>
+<li>https://pyright-play.net/?strict=true&amp;code=MYGwhgzhAECCBc0B0KBQpIwEKJU1qAJgKYBm0p4A5gBQCU0AtAHzQBGA9hyLmieVWIAXAPoYo9Jqw5sAVsWBDe%2BVEOgBeaINHiI9AgEtyBqAFc2umkIA0cOvFTQn0AE7EAbsTAgRQgJ4ADsRWDNAAxK4eXiDEhIj%2BQQDasAC6js5G0CYQ5pY20Fj26c7Obp7evoHBQqERZdGx8VXJKdAAZNAJxIlYacQgEMQOJfUVXSFOdVHejdAy8ort0AB%2BXS1AA</li>
+</ul>
+<p>Mypy's behaviour means that it <em>additionally</em> complains about the second <code>issubclass()</code> call, whereas pyright does not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-06 19:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1312 on 2024-11-06 19:31</div>
+            <div class="timeline-body"><p>I think <code>type[LiteralString]</code> is not valid. The invariant about <code>type[...]</code> is that it always represents a class object (or union of class objects) and all its/their subclasses. If you consider all the &quot;other&quot; things mentioned in your post that are valid subscripts for <code>type[]</code>, some of them (stringified forward reference, <code>Annotated[cls, ...]</code>, are just different syntactic forms that simplify out to a normal <code>type[cls]</code>. <code>type[Optional[cls]]</code> and <code>type[cls1 | cls2]</code> are just syntactic sugar for <code>type[None] | type[cls]</code> and <code>type[cls1] | type[cls2]</code>. <code>Self</code> works like a bounded typevar, so <code>type[Self]</code> and <code>type[T]</code> are the same; ultimately the typevar must be substituted by a class type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1312 on 2024-11-06 19:33</div>
+            <div class="timeline-body"><p>That's a great way of explaining it, thanks! In this case, we should clearly get rid of the TODO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-06 19:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-06 19:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/issubclass.md</code>:95 on 2024-11-06 19:46</div>
+            <div class="timeline-body"><p>I prefer pyright's behavior here. I think in cases where an expression may fail, but <em>if</em> it does not fail, we can be confident of a type, it is better to emit the diagnostic and infer the &quot;if it didn't fail&quot; type, rather than inferring <code>Unknown</code>. This is the parallel case, but for narrowing. If the <code>isinstance</code> call fails, the code inside the <code>if</code> won't run anyway -- so why not infer the type we know must be the case if that code runs?</p>
+<p>But perhaps more important here -- if we are going to write a test that should emit a diagnostic for invalid argument to <code>issubclass</code>, I want a TODO comment for that diagnostic. (Though here I would like it even better if we used <code>type[object]</code> instead of <code>object</code> to avoid that diagnostic, and wrote a separate test with TODO specifically for the invalid-argument case. But using <code>type[object]</code> would require enhancing <code>infer_type_expression</code> to understand the <code>type[T]</code> syntactic form.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/issubclass.md</code>:95 on 2024-11-06 19:55</div>
+            <div class="timeline-body"><blockquote>
+<p>I think in cases where an expression may fail, but <em>if</em> it does not fail, we can be confident of a type, it is better to emit the diagnostic and infer the &quot;if it didn't fail&quot; type, rather than inferring <code>Unknown</code>.</p>
+</blockquote>
+<p>Okay, that makes sense for <code>builtins.object</code>, since obviously an instance of <code>object</code> <em>could</em> be an instance of <code>type</code>, and therefore a valid first argument to <code>issubclass()</code> -- just don't <em>know</em> that it is.</p>
+<p>What about types that are entirely disjoint with <code>Instance(builtins.type)</code>, however -- where we <em>know</em> that the runtime value cannot simultaneously inhabit that type and also be a valid first argument to <code>issubclass()</code>? Should we still narrow there? E.g. pyright has some &quot;interesting&quot; inference here...</p>
+<pre><code class="language-py">class A: ...
+class B: ...
+
+def flag() -&gt; bool: ...
+t = 3
+
+if issubclass(t, A):  # Argument of type &quot;Literal[3]&quot; cannot be assigned to parameter &quot;cls&quot; of type &quot;type&quot; in function &quot;issubclass&quot;
+    reveal_type(t)  # Type of &quot;t&quot; is &quot;type[&lt;subclass of Literal[3] and A&gt;]&quot;
+    if issubclass(t, B):
+        reveal_type(t)  # Type of &quot;t&quot; is &quot;type[&lt;subclass of &lt;subclass of Literal[3] and A&gt; and B&gt;]&quot;
+else:
+    reveal_type(t)  # Type of &quot;t&quot; is &quot;type[Literal[3]]&quot;
+</code></pre>
+<p>https://pyright-play.net/?strict=true&amp;code=MYGwhgzhAECCBc0B0KBQpIwEKJU1qAJgKYBm0p4A5gBQCU0AtAHzQBGA9hyLmgC7QAvNADMBAJblxUAK5sMUGnwA0cOvFTQt0AE7EAbsTAgA%2BnwCeAB2JKG0AMS6DRkMUKIL1gNqwAupu1JaGkIOQUIJVUsdQDtbT1DYzMrGz47RwSXNw8Un19oADJoT2IvLH9iEAhiDTjMpJLbLQznY2zoDjYAK2JgASKAPxK8oA</p>
+<p>&quot;Narrowing&quot; to types that we know cannot <em>ever</em> exist makes little sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-06 19:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-06 19:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:329 on 2024-11-06 19:57</div>
+            <div class="timeline-body"><p>If we don't feel that we need to stay tied to a name that's close to the syntactic form used in annotations, I think a good name for what this type actually means would be <code>Type::SubclassOf</code>. I think I would be happy with prioritizing semantic clarity, and relying on the doc comment to clarify that this represents <code>type[]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:329 on 2024-11-06 19:59</div>
+            <div class="timeline-body"><p><code>SubclassOf</code> is a decent name, I'm happy to go with that. I also like <code>MetaType</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-06 19:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-06 20:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/issubclass.md</code>:95 on 2024-11-06 20:00</div>
+            <div class="timeline-body"><p>Maybe we already do better than pyright on that point, though? Since intersections are a first-class concept for us when they're not for pyright?</p>
+<p>Some tests for types that are entirely disjoint from <code>Instance(builtins.type)</code> might be great to clarify this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:329 on 2024-11-06 20:01</div>
+            <div class="timeline-body"><p>I agree that we probably shouldn't use <code>ClassLiteralType</code> here. We could have it wrap <code>Class</code> directly, but if we want to stay consistent with using wrapper structs, even when they have only one element (so that we can have type safety around the different meaning, even where we've unwrapped from the <code>Type</code> enum), then I agree we should create a new one, and it should be named <code>XType</code>, where <code>X</code> is the name we choose for the <code>Type::</code> variant itself. (So for example, <code>Type::SubclassOf(SubclassOfType)</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-06 20:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-06 20:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/issubclass.md</code>:95 on 2024-11-06 20:04</div>
+            <div class="timeline-body"><p>Yes, I think in those cases we would just infer <code>Never</code>, which is perfectly sensible, because our intersection handling is better.</p>
+<p>There's a case to be made that <code>Never</code> (rather than <code>Unknown</code>) is in general a better &quot;forgiving&quot; type to infer from failure cases. I wrote this up in more detail over at https://github.com/astral-sh/ruff/issues/13932 It's certainly not a bad inference to make when we are confident the code is not reachable (in this case because <code>issubclass</code> will always throw.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:539 on 2024-11-06 20:21</div>
+            <div class="timeline-body"><p>I think we can add a TODO comment here (or rebase on top of https://github.com/astral-sh/ruff/pull/14120 and do it in this PR): we can improve this to ask instead whether the metaclass of the <code>Type::Type</code> class is a subclass of the <code>Type::Instance</code> class.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:707 on 2024-11-06 20:22</div>
+            <div class="timeline-body"><p>Maybe a TODO here about final classes, which we will be able to establish disjointness of.</p>
+<p>Although it may be that instead of adding special handling for final <code>Type::Type</code> in various places, we'll want instead to ensure at type construction that <code>Type::Type(SomeFinalClass)</code> is always turned into <code>Type::ClassLiteral(SomeFinalClass)</code>, since they are equivalent. (I guess this would require adding a <code>TypeTypeBuilder</code>, or generalizing the concept of a &quot;type builder&quot; to cover all types.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:709 on 2024-11-06 20:23</div>
+            <div class="timeline-body"><p>I think we are missing a case to establish that <code>Type::Type(_)</code> is disjoint from all literal types that are not <code>ClassLiteral</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:896 on 2024-11-06 20:25</div>
+            <div class="timeline-body"><p>And in this case <code>type[C]</code> is equivalent to <code>Literal[C]</code> -- not sure if that's worth a TODO comment in <code>is_equivalent_to</code>, or a mention in this comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1091 on 2024-11-06 20:31</div>
+            <div class="timeline-body"><p>I had a momentary thought that that TODO isn't valid here, because a subclass could have a subclass of the metaclass. But our LSP checks (once we have them) should ensure that if <code>__bool__</code> or <code>__len__</code> are defined on the metaclass with a known-truthiness return type, a subclass can't override it with a wider return type. So I think the TODO does apply! And we are close to being able to resolve it, too, once Charlie's metaclass PR lands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1291 on 2024-11-06 20:47</div>
+            <div class="timeline-body"><p>This is a point of some controversy (at least in my head!), because LSP is not enforced for <code>__init__</code> or <code>__new__</code> methods, so having <code>type[C]</code> be callable is not sound -- you have no idea if the subclasses will share the same signature.</p>
+<p>Personally I would rather have <code>type[C]</code> not be callable, and intersect it with a callable type with a given signature in order to make a callable version of it (which would not include subclasses with a different <code>__init__</code> signature.</p>
+<p>But that would be a spec change, and there is certainly code in the wild relying on callable <code>type[]</code>, so for now probably the best thing to do is what Alex says. Later when we add call signature checking we'll add a comment here noting that our call signature checking here can't be reliable or sound.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1324 on 2024-11-06 20:50</div>
+            <div class="timeline-body"><p>For now, sure. But with a TODO comment. Because with Charlie's metaclass PR, it should become something like:</p>
+<pre><code class="language-suggestion">            Type::Type(class) =&gt; Type::Type(class.class.metaclass(db).expect_literal_class())
+</code></pre>
+<p>but with more proper handling of odd cases and less expect</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-06 20:50</div>
+            <div class="timeline-body"><p>(Haven't finished review yet but need to run to lunch and an errand, will complete review when I get back.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2740 on 2024-11-07 00:08</div>
+            <div class="timeline-body"><p>Another test I think might be worth having (since it's easy to get confused over) is that <code>BuiltinClassLiteral(&quot;int&quot;)</code> is not a subtype of <code>BuiltinClassLiteral(&quot;object&quot;)</code>. Though admittedly it's orthogonal to this PR, I just thought of it since you are adding subtype tests around class literal types :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:873 on 2024-11-07 00:12</div>
+            <div class="timeline-body"><p>At some point now that we've reached three items, I think it would make sense to move this logic into <code>KnownFunction</code>, more like we do for <code>KnownClass</code> and <code>KnownInstance</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-11-07 00:16</div>
+            <div class="timeline-body"><p>This is very nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:329 on 2024-11-07 10:11</div>
+            <div class="timeline-body"><p>And it's nice that <code>issubclass(cls, classinfo)</code> imposes a <code>Type::SubclassOf(classinfo)</code> constraint on <code>cls</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-07 10:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-07 10:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1312 on 2024-11-07 10:27</div>
+            <div class="timeline-body"><p>Thanks. Removed the TODO comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-07 10:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:329 on 2024-11-07 10:27</div>
+            <div class="timeline-body"><p>Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-07 11:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1324 on 2024-11-07 11:05</div>
+            <div class="timeline-body"><p>I tried something, but I'm not sure what kind of &quot;odd cases&quot; would need to be handled.  Let me know if something should be changed here (post-merge).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:707 on 2024-11-07 11:06</div>
+            <div class="timeline-body"><p>Added a detailed TODO comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-07 11:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-07 11:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:896 on 2024-11-07 11:07</div>
+            <div class="timeline-body"><blockquote>
+<p>a TODO comment in <code>is_equivalent_to</code></p>
+</blockquote>
+<p>:+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-07 11:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1091 on 2024-11-07 11:08</div>
+            <div class="timeline-body"><p>Ok, I didn't resolve the TODO for now. I'll note it down as a potential follow-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-07 11:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1091 on 2024-11-07 11:13</div>
+            <div class="timeline-body"><p>Resolving the truthiness of instance types, class-literal types and <code>SubclassOf</code> types is <em>slightly</em> more complicated than it seems, because we need to account for the fact that <code>bool(x)</code> (where <code>x</code> is a member of one of those kinds of types) could fail. We need to emit a diagnostic for things like this:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class Bad:
+...     __bool__ = None
+...     
+&gt;&gt;&gt; bool(Bad())
+Traceback (most recent call last):
+  File &quot;&lt;python-input-1&gt;&quot;, line 1, in &lt;module&gt;
+    bool(Bad())
+    ~~~~^^^^^^^
+TypeError: 'NoneType' object is not callable
+&gt;&gt;&gt; class BadMetaclass(type):
+...     __bool__ = None
+...     
+&gt;&gt;&gt; class Foo(metaclass=BadMetaclass): pass
+... 
+&gt;&gt;&gt; bool(Foo)
+Traceback (most recent call last):
+  File &quot;&lt;python-input-4&gt;&quot;, line 1, in &lt;module&gt;
+    bool(Foo)
+    ~~~~^^^^^
+TypeError: 'NoneType' object is not callable
+</code></pre>
+<p>That's why we haven't resolved the TODO for the <code>Type::Instance()</code> branch here yet either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:363 on 2024-11-07 11:52</div>
+            <div class="timeline-body"><p>I modelled it slightly different using:</p>
+<pre><code class="language-rs">pub enum KnownFunction {
+    ConstraintFunction(KnownConstraintFunction),
+    RevealType,
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-07 11:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-11-07 12:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-07 12:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/issubclass.md</code>:95 on 2024-11-07 12:34</div>
+            <div class="timeline-body"><blockquote>
+<p>But perhaps more important here -- if we are going to write a test that should emit a diagnostic for invalid argument to <code>issubclass</code>, I want a TODO comment for that diagnostic.</p>
+</blockquote>
+<p>Done.</p>
+<blockquote>
+<p>Though here I would like it even better if we used <code>type[object]</code> instead of <code>object</code> to avoid that diagnostic</p>
+</blockquote>
+<p>Ha! I had <code>type</code> here initially, but was annoyed by how it looked in the revealed types (<code>type &amp; ~type[A]</code>), so I changed it to object without thinking about the fact that it is too wide of a type for the first argument of <code>issubclasss</code>. Changed to <code>type[object]</code> now.</p>
+<blockquote>
+<p>and wrote a separate test with TODO specifically for the invalid-argument case</p>
+</blockquote>
+<p>Done, added two new tests.</p>
+<blockquote>
+<p>But using <code>type[object]</code> would require enhancing <code>infer_type_expression</code> to understand the <code>type[T]</code> syntactic form.</p>
+</blockquote>
+<p>Implemented an initial version of this.</p>
+<blockquote>
+<p>What about types that are entirely disjoint with <code>Instance(builtins.type)</code>, however</p>
+</blockquote>
+<p>Added a test for this specific case as well.</p>
+<blockquote>
+<p>I think in those cases we would just infer <code>Never</code>, which is perfectly sensible, because our intersection handling is better.</p>
+</blockquote>
+<p>Correct:</p>
+<pre><code class="language-py">t = 1
+
+# TODO: we should emit a diagnostic here
+if issubclass(t, int):
+    reveal_type(t)  # revealed: Never
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-07 12:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3889 on 2024-11-07 12:35</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                match value_ty
+                    .into_class_literal()
+                    .and_then(|class_ty| class_ty.class.known(self.db))
+                {
+                    Some(KnownClass::Tuple) =&gt; self.infer_tuple_type_expression(slice),
+                    Some(KnownClass::Type) =&gt; self.infer_subclass_of_type_expression(slice),
+                    _ =&gt; self.infer_subscript_type_expression(subscript, value_ty),
+                }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3889 on 2024-11-07 12:38</div>
+            <div class="timeline-body"><p>I thought about it. But eventually, we're also going to have to understand annotations like <code>MyGenericClass[T]</code> here, so there will be cases where <code>value_ty</code> is not a known class, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-07 12:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/issubclass.md</code>:157 on 2024-11-07 12:39</div>
+            <div class="timeline-body"><p>A short description here might be helpful to a reader of the test:</p>
+<pre><code class="language-suggestion">#### Wrong
+
+`Literal[1]` and `type` are entirely disjoint, so the inferred type of `Literal[1] &amp; type[int]` is eagerly simplified to `Never` as a result of the type narrowing in the `if issubclass(t, int)` branch:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4073 on 2024-11-07 12:40</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            // TODO: attributes, unions, subscripts, etc.
+            _ =&gt; {
+                self.infer_type_expression(slice);
+                Type::Todo
+            }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-11-07 12:40</div>
+            <div class="timeline-body"><p>Great work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-07 12:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3889 on 2024-11-07 12:46</div>
+            <div class="timeline-body"><p>That makes sense. What about a nested <code>match</code>, in that case? It feels slightly cleaner (and possibly more efficient?) than all these <code>if class.is_known()</code> checks in each branch:</p>
+<pre><code class="language-suggestion">                match value_ty {
+                    Type::ClassLiteral(class_literal_ty) =&gt; {
+                        match class_literal_ty.class.known(self.db) {
+                            Some(KnownClass::Tuple) =&gt; self.infer_tuple_type_expression(slice),
+                            Some(KnownClass::Type) =&gt; self.infer_subclass_of_type_expression(slice),
+                            _ =&gt; self.infer_subscript_type_expression(subscript, value_ty),
+                        }
+                    }
+                    _ =&gt; self.infer_subscript_type_expression(subscript, value_ty),
+                }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-07 12:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4073 on 2024-11-07 12:46</div>
+            <div class="timeline-body"><p>I always see a <code>Type::Todo</code> as something that we can't miss eventually. But we can add a TODO comment just to be sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-07 12:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4073 on 2024-11-07 12:48</div>
+            <div class="timeline-body"><p>I agree -- I just thought it would be useful to indicate to the reader what exactly is still to be done here 😄</p>
+<p>I've wondered about making the <code>Todo</code> variant <code>Type::Todo(&amp;'static str)</code>, to enforce that we <em>have</em> to explicitly say what is still to be done when using the type... but it might just make things more complicated for little benefit :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-07 12:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3889 on 2024-11-07 12:50</div>
+            <div class="timeline-body"><p>Ok. I don't like that it duplicates the fallback branch, but it looks cleaner, I agree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2024-11-07 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2024-11-07 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-07 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-07 13:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:553 on 2024-11-07 13:53</div>
+            <div class="timeline-body"><p>Looks good! My comment was vague because I hadn't thought through yet the handling of a non-class-literal metaclass here. But I think the only options here are class literal or dynamic type (Any/Unknown/Todo), and since this is <code>is_subtype_of</code>, ignoring dynamic type is correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1375 on 2024-11-07 13:56</div>
+            <div class="timeline-body"><p>This looks great, too! Falling back to <code>Type::SubclassOf(builtins.type)</code> in the case of any non-specific metaclass is the right answer here, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-07 13:56</div>
+            <div class="timeline-body"></div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:27 UTC
+    </footer>
+</body>
+</html>

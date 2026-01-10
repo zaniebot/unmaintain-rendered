@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add support for string annotations - astral-sh/ruff #14151</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add support for string annotations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14151">#14151</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-11-07 12:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-07 12:06</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support for parsing and inferring types within string annotations.</p>
+<h3>Implementation (attempt 1)</h3>
+<p>This is preserved in https://github.com/astral-sh/ruff/pull/14151/commits/6217f48924f8f3f8a3d28c4929fe5aaad4ad0a59.</p>
+<p>The implementation here would separate the inference of string annotations in the deferred query. This requires the following:</p>
+<ul>
+<li>Two ways of evaluating the deferred definitions - lazily and eagerly.<ul>
+<li>An eager evaluation occurs right outside the definition query which in this case would be in <code>binding_ty</code> and <code>declaration_ty</code>.</li>
+<li>A lazy evaluation occurs on demand like using the <code>definition_expression_ty</code> to determine the function return type and class bases.</li>
+</ul>
+</li>
+<li>The above point means that when trying to get the binding type for a variable in an annotated assignment, the definition query won't include the type. So, it'll require going through the deferred query to get the type.</li>
+</ul>
+<p>This has the following limitations:</p>
+<ul>
+<li>Nested string annotations, although not necessarily a useful feature, is difficult to implement unless we convert the implementation in an infinite loop</li>
+<li>Partial string annotations require complex layout because inferring the types for stringified and non-stringified parts of the annotation are done in separate queries. This means we need to maintain additional information</li>
+</ul>
+<h3>Implementation (attempt 2)</h3>
+<p>This is the final diff in this PR.</p>
+<p>The implementation here does the complete inference of string annotation in the same definition query by maintaining certain state while trying to infer different parts of an expression and take decisions accordingly. These are:</p>
+<ul>
+<li>Allow names that are part of a string annotation to not exists in the symbol table. For example, in <code>x: &quot;Foo&quot;</code>, if the &quot;Foo&quot; symbol is not defined then it won't exists in the symbol table even though it's being used. This is an invariant which is being allowed only for symbols in a string annotation.</li>
+<li>Similarly, lookup name is updated to do the same and if the symbol doesn't exists, then it's not bounded.</li>
+<li>Store the final type of a string annotation on the string expression itself and not for any of the sub-expressions that are created after parsing. This is because those sub-expressions won't exists in the semantic index.</li>
+</ul>
+<p>Design document: https://www.notion.so/astral-sh/String-Annotations-12148797e1ca801197a9f146641e5b71?pvs=4</p>
+<p>Closes: #13796</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Add various test cases in our markdown framework</li>
+<li>Run <code>red_knot</code> on LibCST (contains a lot of string annotations, specifically https://github.com/Instagram/LibCST/blob/main/libcst/matchers/_matcher_base.py), FastAPI (good amount of annotated code including <code>typing.Literal</code>) and compare against the <code>main</code> branch output</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2024-11-07 12:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-13 07:30</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "WIP: Add support for string annotations" to "[red-knot] Add support for string annotations" by @dhruvmanila on 2024-11-13 12:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:343 on 2024-11-13 18:08</div>
+            <div class="timeline-body"><p>TODO: add some documentation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:678 on 2024-11-13 18:08</div>
+            <div class="timeline-body"><p>TODO: add a comment on why annotated assignment are not deferred</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4632 on 2024-11-13 18:09</div>
+            <div class="timeline-body"><p>TODO: add documentation for the enum and it's variants</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-13 18:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-13 18:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1106 on 2024-11-13 18:10</div>
+            <div class="timeline-body"><p>The diff is to remove the <code>self.are_all_types_deferred()</code> check because we're already in a deferred query here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-11-13 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2024-11-13 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-11-13 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2024-11-13 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2024-11-13 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-13 18:11</div>
+            <div class="timeline-body"><p>Although there are a couple of TODOs that I want to address mostly around documentation, I'd appreciate some initial feedback for any obvious issues that I've missed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-13 18:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:459 on 2024-11-13 18:38</div>
+            <div class="timeline-body"><p>Is it possible that inferring the deferred types add new entries to <code>self.types.deferred</code>?</p>
+<p>I would probably write this as</p>
+<pre><code class="language-suggestion">				let deferred = std::mem::take(&amp;mut self.deferred);
+				for definition in deferred {
+					self.extend(infer_derferred_types(self.db, *definition));
+				}
+        
+        assert!(self.deferred.is_empty(), &quot;Inferring deferred types shouldn't add new types to infer&quot;); 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-13 18:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4076 on 2024-11-13 18:41</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        let previous_deferred_state = std::mem::replace(&amp;mut self.deferred_state, deferred_state);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:403 on 2024-11-13 23:46</div>
+            <div class="timeline-body"><p>Not sure if I'm missing an issue here, but maybe inferring an <code>InferenceRegion::Deferred</code> should set <code>self.deferred_state</code> and then this check can be simplified?</p>
+<p>You have a note above to add docs for <code>deferred_state</code>; I think how these two things relate (and why <code>InferenceRegion::Deferred</code> overrides <code>self.deferred_state</code>) is a good candidate for some clear docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/string.md</code>:3 on 2024-11-13 23:46</div>
+            <div class="timeline-body"><p>These tests are fabulous! Thorough, clear, and correct, the testing trifecta :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:459 on 2024-11-13 23:49</div>
+            <div class="timeline-body"><p>I agree it's important we either enforce and check that inferring deferred doesn't add more deferred, or else have explicit handling in case it does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-13 23:53</div>
+            <div class="timeline-body"><p>Didn't complete review yet, but I have to run, so submitting the few comments I have so far in case I don't get back to it tonight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:678 on 2024-11-14 05:17</div>
+            <div class="timeline-body"><p>I'm curious to read this comment!</p>
+<p>Could we add some tests that annotations on annotated assignments in stub files and when <code>from __future__ import annotations</code> is active, are in fact deferred? (That is, can contain forward references.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1638 on 2024-11-14 05:20</div>
+            <div class="timeline-body"><p>Why the change to use <code>assignment.target</code> here instead of the <code>target</code> we unpacked above? Shouldn't they be the same?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1651 on 2024-11-14 05:20</div>
+            <div class="timeline-body"><p>Why the change to use <code>assignment.value</code> here and no longer unpack <code>value</code> above?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/string_annotation.rs</code>:60 on 2024-11-14 05:37</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            // case for annotations that contain escape sequences.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:403 on 2024-11-14 05:40</div>
+            <div class="timeline-body"><p>Ok after reading the whole diff more carefully, I think I understand this now, but yeah it would be great to document it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-11-14 05:42</div>
+            <div class="timeline-body"><p>This is excellent, great work! It turned out way less complicated than I thought it would be. I love that with a few small changes we can sidestep the whole issue of AST IDs and just store the resulting type on the string node. I think the result of this is that we won't be able to have hover types for individual parts of a string annotation, just the whole annotation, but personally I think that's fine; it is in fact just one expression, after all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-14 06:44</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the result of this is that we won't be able to have hover types for individual parts of a string annotation, just the whole annotation, but personally I think that's fine; it is in fact just one expression, after all.</p>
+</blockquote>
+<p>Do we know how we would extend this design to support resolving types of inner expressions? Do we know if pyright supports hovering for stringified type annotations? Not supporting expression-level-types might be problematic long term because it doesn't just affect hovering:</p>
+<ul>
+<li>No hover support</li>
+<li>No go-to-definition support, e.g. I can't jump to <code>MyType</code> in <code>a: &quot;str | MyType&quot;</code> which is somewhat annoying</li>
+<li>Possibly: types in stringified type annotations won't show up in find-all-references</li>
+<li>Ruff's lint rule can't run on stringified type annotations. That would be a large regression feature-wise. For example, I believe it would make it more complicated to implement https://docs.astral.sh/ruff/rules/never-union/ because we can only ask for the outer type but then are stuck, because we don't know if the <code>Never</code> type comes from the annotation itself (because it uses a <code>Union</code>) or is the result of a type alias, type var, or something else.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-14 11:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Do we know if pyright supports hovering for stringified type annotations?</p>
+</blockquote>
+<p>Yes, Pyright does support hover, goto definitions, references, etc. in string annotations.</p>
+<p>Looking a bit deeper into Pyright, I think the reason they're able to do this is because they parse string annotations during the parsing stage and store it on the AST. But, the thing that I missed, and is not in the design document, is that the Pyright parser also takes into account <code>typing.Literal</code> and <code>typing.Annotated</code> with a limitation that it won't resolve the import and only consider it if it's exactly being imported from <code>typing</code> or <code>typing_extensions</code> (https://github.com/microsoft/pyright/blob/294b7afd2eaf23b0586bcc8563571bdff0c0d0a6/packages/pyright-internal/src/parser/parser.ts#L3610-L3621).</p>
+<blockquote>
+<p>Do we know how we would extend this design to support resolving types of inner expressions?</p>
+</blockquote>
+<p>I and Micha talked about this in our 1:1 today and I think it's fine to move forward with this implementation today and visit it at a later stage. We might have to spend some additional time in figuring out the LSP part though. It might also be useful to understand the user impact of this feature if and when this needs to be implemented to validate the time investment. Some of the ideas for the implementation would be (a) updating the parser / AST to accommodate the change (b) semantic index that's specific to string annotation and an additional layer that connects the semantic index from the file with these specific ones.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:459 on 2024-11-14 11:53</div>
+            <div class="timeline-body"><p>Yeah, makes sense, thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-14 11:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-14 12:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1638 on 2024-11-14 12:00</div>
+            <div class="timeline-body"><p>Sorry, this is just a leftover from my initial attempt, will revert</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-14 12:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1651 on 2024-11-14 12:00</div>
+            <div class="timeline-body"><p>Same as above</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-14 12:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:678 on 2024-11-14 12:56</div>
+            <div class="timeline-body"><p>Added the test cases in <code>assignment/annotations.md</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-11-14 15:19</div>
+            <div class="timeline-body"><p>Yes, I think (b) describes how I'd envisioned we could tackle this, if/when we need to. I think it might also be possible to do something even simpler that doesn't do a full semantic index of the AST from the stringified annotation, but just adds a new mechanism for attaching a type directly to a text range instead of a node?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-11-15 04:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-11-15 04:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-15 04:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:27 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`eradicate`] Better detection of IntelliJ language injection comments (`ERA001`) - astral-sh/ruff #14094</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>eradicate</code>] Better detection of IntelliJ language injection comments (<code>ERA001</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14094">#14094</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2024-11-04 17:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-11-04 17:11</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Enhances #14069.</p>
+<h2>Test Plan</h2>
+<p>A few tests are added to cover edge cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @AlexWaygood on 2024-11-04 17:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-11-04 17:23</div>
+            <div class="timeline-body"><p>By the way, do we want that giant regex to be case-insensitive? <a href="https://mypy-play.net/?mypy=latest&amp;python=3.13&amp;flags=strict&amp;gist=793b6d57f6c02fc34c9eef1d62b70d5b"><code>type: ignore</code></a>, <a href="https://pyright-play.net/?pyrightVersion=1.1.387&amp;pythonVersion=3.14&amp;strict=true&amp;code=IYLgBAlgdgLmC8YDkSxgMRgAoE8BOEA5gBYzhFQD2eApgLABQQA"><code>pyright</code></a> and <a href="https://spdx.dev/learn/handling-license-info/"><code>SPDX-License-Identifier</code></a> are a few non-examples.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-04 17:25</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-04 21:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/eradicate/detection.rs</code>:21 on 2024-11-04 21:06</div>
+            <div class="timeline-body"><p>Did you change the regex in anyway or is it just added tests? Kind of hard to spot.</p>
+<p>Regarding case-sensitive. The regex should be case-sensitive because <code>FMT: OFF</code> is not a valid suppression comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2024-11-04 22:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/src/rules/eradicate/detection.rs</code>:21 on 2024-11-04 22:57</div>
+            <div class="timeline-body"><p>Consider it a rewrite.</p>
+<p>The original rule from <code>eradicate</code> <a href="https://github.com/PyCQA/eradicate/blob/5e9eb212c99afd8734b6f33d9d5b5107d10ed9cd/eradicate.py#L75">ignores casing for all of these</a>. I sorted them into three sections for now. Should I proceed to check the &quot;unknown&quot; ones, or should that be part of a new PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2024-11-05 06:51</div>
+            <div class="timeline-body"><p>Could you help me review this more efficiently by listing yoour changes so that I don't have to diff the Regex?</p>
+<p>For case-sensitivity: I think we should use case-sensitive for the suppression comments that are case-sensitive and allow case-insensitivity for the ones that are not.</p>
+<p>I also think we should gate this change behind preview mode unless all changes relax the rule's strictness.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-11-05 15:43</div>
+            <div class="timeline-body"><p>Here's a comparison table:</p>
+<p>|                            | Before (all case insensitive) | After                                    |
+|----------------------------|-------------------------------|------------------------------------------|
+| <code>pylint</code>                   |                               | No change                                |
+| <code>pyright</code>                  |                               | Case sensitive                           |
+| <code>noqa</code>                     |                               | No change                                |
+| <code>nosec</code>                    |                               | No change                                |
+| <code>region</code>/<code>endregion</code>       |                               | Case sensitive                           |
+| <code>type: ignore</code>             |                               | Case sensitive                           |
+| <code>fmt</code>                      | <code>fmt:\s*(on\|off)</code>            | <code>fmt:\s*(on\|off\|skip)</code>, case sensitive |
+| <code>isort</code>                    |                               | No change                                |
+| <code>mypy</code>                     |                               | Case sensitive                           |
+| <code>SPDX-License-Identifier:</code> |                               | Case sensitive                           |
+| <code>encoding</code>                 |                               | No change                                |</p>
+<p>As for <code>language=</code>:</p>
+<ul>
+<li>Before: <code>(?i)</code> <code>language=[a-zA-Z](?: ?[-_.a-zA-Z0-9]+)+(?:\s+prefix=\S+)?(?:\s+suffix=\S+)?</code></li>
+<li>After: <code>language=[-_.a-zA-Z0-9]+</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @InSyncWithFoo on 2024-11-05 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-11-05 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-06 11:43</div>
+            <div class="timeline-body"><p>Thanks for the table. That made reviewing so much easier.</p>
+<p>This looks good to me. The main open question is if the change should be gated behind preview. I'm leaning towards no, considering that there are no  changes in the ecosystem check. @AlexWaygood are you okay with this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-11-06 18:23</div>
+            <div class="timeline-body"><p>I'm fine with this. It feels like a bugfix to me and, as you say, the ecosystem report indicates that it shouldn't be that disruptive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Better detection of IntelliJ language injection comments" to "[`eradicate`] Better detection of IntelliJ language injection comments (`ERA001`)" by @AlexWaygood on 2024-11-06 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-11-06 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-11-06 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-07 20:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:27 UTC
+    </footer>
+</body>
+</html>

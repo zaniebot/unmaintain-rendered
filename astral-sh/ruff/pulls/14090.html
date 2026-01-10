@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replace `format!` without parameters with `.to_string()` - astral-sh/ruff #14090</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Replace <code>format!</code> without parameters with <code>.to_string()</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14090">#14090</a>
+        opened by <a href="https://github.com/sbrugman">@sbrugman</a>
+        on 2024-11-04 12:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-11-04 12:22</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>From https://github.com/astral-sh/ruff/pull/14008/commits/56047ffa53ffd0fb96737b977fcd0612c5103721 I realised that <code>to_string</code> is preferred over <code>format!</code> when no arguments are provided. This PR consistently does so for existing violations.</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sbrugman on 2024-11-04 12:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pie/rules/unnecessary_placeholder.rs</code>:77 on 2024-11-04 12:28</div>
+            <div class="timeline-body"><p>here you might be able to do something like</p>
+<pre><code class="language-rs">    fn fix_title(&amp;self) -&gt; String {
+        let title = match &amp;self.kind {
+            Placeholder::Pass =&gt; &quot;Remove unnecessary `pass`&quot;,
+            Placeholder::Ellipsis =&gt; &quot;Remove unnecessary `...`&quot;,
+        };
+        title.to_string()
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/ast_ifexp.rs</code>:57 on 2024-11-04 12:30</div>
+            <div class="timeline-body"><p>similarly here, we could probably do something like</p>
+<pre><code class="language-rs">    fn fix_title(&amp;self) -&gt; Option&lt;String&gt; {
+        let title = if self.is_compare {
+            &quot;Remove unnecessary `True if ... else False`&quot;
+        } else {
+            &quot;Replace with `bool(...)&quot;
+        };
+        Some(title.to_string())
+    }
+</code></pre>
+<p>which I would find marginally more readable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-11-04 12:31</div>
+            <div class="timeline-body"><p>Nice cleanup! A couple of optional nits :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-04 12:40</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-11-04 12:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2024-11-04 13:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>crates/ruff_linter/src/rules/flake8_pie/rules/unnecessary_placeholder.rs</code>:77 on 2024-11-04 13:25</div>
+            <div class="timeline-body"><p>Thanks, changed this according to your suggestions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-11-04 14:04</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-11-04 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-11-04 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-04 14:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:27 UTC
+    </footer>
+</body>
+</html>

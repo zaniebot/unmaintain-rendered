@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-type-checking`] Fixes `quote_type_expression` - astral-sh/ruff #14614</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-type-checking</code>] Fixes <code>quote_type_expression</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14614">#14614</a>
+        opened by <a href="https://github.com/Daverball">@Daverball</a>
+        on 2024-11-26 16:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-26 16:19</div>
+            <div class="timeline-body"><p>Fixes: #14538
+Fixes: #14554</p>
+<h2>Summary</h2>
+<p>This achieves a more feature complete version of wrapping annotations in quotes while removing nested forward references and handling nested quotes correctly.</p>
+<p>This is currently just a proof of concept and the implementation could do with some refactoring and cleaning up. This should also additional test cases for regression tests, but there is already one existing test case showcasing that we now can correctly handle nested quotes.</p>
+<p>It's also not currently making use of the parsed annotations cache. Instead of passing the semantic model, locator and stylizer separately, we probably should just pass the checker to these helper functions, then we can use the cached annotation parsing lookup.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-26 16:21</div>
+            <div class="timeline-body"><p>@MichaReiser Could you take a quick look at this to see if this is heading in a viable direction?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-26 16:26</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-26 17:42</div>
+            <div class="timeline-body"><p>I don't fully understand the problem yet, so sorry if I'm way off here.</p>
+<p>I understand that we want to mutate the type annotation expression, and the last step is to write it into a quoted string. However, the problem is that the <code>Generator::quote</code>  is only the preferred quote and the generator might decide to pick the opposite quote if it avoids escaping.</p>
+<p>I wonder if we, instead, should change the <code>Generator::quote</code> to an enum with two variants: <code>Prefer(Quote)</code> and <code>Fixed(Quote)</code> where the second option is new and forces the generator to use the given quote style, even if it leads to more escapes.</p>
+<p>We could then use <code>VisitorMut</code> to rewrite the annotation and then unparse the expression with <code>Fixed(stylist.quote().opposite()</code>.</p>
+<p>This seems to me like an overall less-invasive change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-26 21:23</div>
+            <div class="timeline-body"><blockquote>
+<p>I wonder if we, instead, should change the Generator::quote to an enum with two variants: Prefer(Quote) and Fixed(Quote) where the second option is new and forces the generator to use the given quote style, even if it leads to more escapes.</p>
+</blockquote>
+<p>That sounds like a good idea, but is somewhat orthogonal to this change. So it's something we should change either way, regardless of how we remove the forward references.</p>
+<p>Rewriting the AST was my first instinct for a proof of concept, since it seemed really easy. But I don't think it's safe unless I create a copy of all the nodes in the expression first, since otherwise other rules will encounter the transformed AST before the file has actually been fixed. And doing that copy seems really slow and inefficient, traversing the expression twice is bad enough. I haven't found any uses of <code>Transformer</code> for other fixes (if that's what you meant by <code>VisitorMut</code>? I couldn't find any other mutating AST visitors).</p>
+<p>I think there's additional potential future benefits to extracting some of the core functionality of <code>Generator</code> into a trait. There may be other fixes that could be made more robust/general by using this as a standard way to perform cheap AST transformations while you're unparsing that very same AST.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-27 07:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Rewriting the AST was my first instinct for a proof of concept, since it seemed really easy. But I don't think it's safe unless I create a copy of all the nodes in the expression first, since otherwise other rules will encounter the transformed AST before the file has actually been fixed. And doing that copy seems really slow and inefficient, traversing the expression twice is bad enough. I haven't found any uses of Transformer for other fixes (if that's what you meant by VisitorMut? I couldn't find any other mutating AST visitors).</p>
+</blockquote>
+<p>I'm not that concerned about performance:</p>
+<ul>
+<li>Generating the fix is already the slow path. Most projects have no violations and, therefore, no fixes need generating</li>
+<li>It's not necessary to clone the entire AST, we can just clone the nodes that need to be rewritten, in this case the annotation. Most annotations are only a few nodes, cloning them should be reasonably fast.</li>
+</ul>
+<blockquote>
+<p>I think there's additional potential future benefits to extracting some of the core functionality of Generator into a trait.</p>
+</blockquote>
+<p>Possibly, but I'd prefer a more local fix if possible and we can revisit a more flexible <code>Generator</code> implementation when we have more usages for this pattern that inform our design.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-27 08:37</div>
+            <div class="timeline-body"><p>@MichaReiser Fair enough, I will go the <code>Transformer</code> route and see how that ends up looking. I'm not familiar enough with the <code>Clone</code> trait to know what <code>ast::Expr.clone()</code> would do. How deep is the copy? Will it copy the entire branch of the AST or will it only copy that specific node. Will I have to manually clone all the children and then patch the original copy to now point to the clones?</p>
+<p>Are there already some utilities for copying parts of the AST?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-27 08:49</div>
+            <div class="timeline-body"><blockquote>
+<p>Fair enough, I will go the Transformer route and see how that ends up looking. I'm not familiar enough with the Clone trait to know what ast::Expr.clone() would do. How deep is the copy? Will it copy the entire branch of the AST or will it only copy that specific node. Will I have to manually clone all the children and then patch the original copy to now point to the clones?</p>
+</blockquote>
+<p>It performs a deep clone of that expression. Many <code>Generator</code> based rules already use <code>clone</code> today, e.g.</p>
+<p><code>Clone</code> should be all that you need. https://github.com/astral-sh/ruff/blob/fb94b71e63925dd3ad75066468384e9eccb102e3/crates/ruff_linter/src/rules/flake8_bugbear/rules/setattr_with_constant.rs#L49-L61</p>
+<blockquote>
+<p>Are there already some utilities for copying parts of the AST?</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-27 09:22</div>
+            <div class="timeline-body"><p>@MichaReiser One other flaw of <code>Generator</code> I have noticed is that <code>precedence</code> is completely private, I feel like there should at least be a public version of <code>unparse_expr</code> in addition to <code>expr</code> where you can pass in the current <code>precedence</code> so the unparsed subexpression doesn't end up with either too few or too many parentheses.</p>
+<p>I'm not sure which way defaulting to <code>0</code> goes,  but it looks like it is the lowest precedence, which would potentially produce redundant parentheses around the given expression if I'm not mistaken, rather than missing required ones.</p>
+<p>Missing required parentheses would be a bug magnet, that could change the semantics of generated expressions, but generating redundant parentheses seems kind of bad too.</p>
+<p>It doesn't seem possible to provide a higher level entry point, where we automatically calculate the precedence based on the parent node, since you would need to know which of the attributes on the parent node the expression is attached to, since typically not all of them share the same precedence. So letting people optionally specify the precedence seems like the next best thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-27 09:32</div>
+            <div class="timeline-body"><p>I don't mind adding <code>unparse_expr_with_precedence</code>, although I would prefer to make <code>Precedence</code> an <code>enum</code> first :laughing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Daverball on 2024-11-27 13:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:29 UTC
+    </footer>
+</body>
+</html>

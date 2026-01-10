@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Refactoring the inference logic of lexicographic comparisons - astral-sh/ruff #14422</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Refactoring the inference logic of lexicographic comparisons</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14422">#14422</a>
+        opened by <a href="https://github.com/cake-monotone">@cake-monotone</a>
+        on 2024-11-18 03:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2024-11-18 03:25</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>closes #14279</p>
+<h3>Limitations of the Current Implementation</h3>
+<h4>Incorrect Error Propagation</h4>
+<p>In the current implementation of lexicographic comparisons, if the result of an Eq operation is Ambiguous, the comparison stops immediately, returning a bool instance. While this may yield correct inferences, it fails to capture unsupported-operation errors that might occur in subsequent comparisons.</p>
+<pre><code class="language-py">class A: ...
+
+(int_instance(), A()) &lt; (int_instance(), A())  # should error
+</code></pre>
+<h4>Weak Inference in Specific Cases</h4>
+<blockquote>
+<p>Example: <code>(int_instance(), &quot;foo&quot;) == (int_instance(), &quot;bar&quot;)</code>
+Current result: <code>bool</code>
+Expected result: <code>Literal[False]</code></p>
+</blockquote>
+<p><code>Eq</code> and <code>NotEq</code> have unique behavior in lexicographic comparisons compared to other operators. Specifically:</p>
+<ul>
+<li>For <code>Eq</code>, if any non-equal pair exists within the tuples being compared, we can immediately conclude that the tuples are not equal.</li>
+<li>For <code>NotEq</code>, if any equal pair exists, we can conclude that the tuples are unequal.</li>
+</ul>
+<pre><code class="language-py">a = (str_instance(), int_instance(), &quot;foo&quot;)
+
+reveal_type(a == a)  # revealed: bool
+reveal_type(a != a)  # revealed: bool
+
+b = (str_instance(), int_instance(), &quot;bar&quot;)
+
+reveal_type(a == b)  # revealed: bool  # should be Literal[False]
+reveal_type(a != b)  # revealed: bool  # should be Literal[True]
+</code></pre>
+<h4>Incorrect Support for Non-Boolean Rich Comparisons</h4>
+<p>In CPython, aside from <code>==</code> and <code>!=</code>, tuple comparisons return a non-boolean result as-is. Tuples do not convert the value into <code>bool</code>.</p>
+<p>Note: If all pairwise <code>==</code> comparisons between elements in the tuples return Truthy, the comparison then considers the tuples' lengths. Regardless of the return type of the dunder methods, the final result can still be a boolean.</p>
+<pre><code class="language-py">from __future__ import annotations
+
+class A:
+    def __eq__(self, o: object) -&gt; str:
+        return &quot;hello&quot;
+
+    def __ne__(self, o: object) -&gt; bytes:
+        return b&quot;world&quot;
+
+    def __lt__(self, o: A) -&gt; float:
+        return 3.14
+
+a = (A(), A())
+
+reveal_type(a == a)  # revealed: bool
+reveal_type(a != a)  # revealed: bool
+reveal_type(a &lt; a)  # revealed: bool # should be: `float | Literal[False]`
+
+</code></pre>
+<h3>Key Changes</h3>
+<p>One of the major changes is that comparisons no longer end with a <code>bool</code> result when a pairwise <code>Eq</code> result is <code>Ambiguous</code>. Instead, the function attempts to infer all possible cases and unions the results. This improvement allows for more robust type inference and better error detection.</p>
+<p>Additionally, as the function is now optimized for tuple comparisons, the name has been changed from the more general <code>infer_lexicographic_comparison</code> to <code>infer_tuple_rich_comparison</code>.</p>
+<h2>Test Plan</h2>
+<p>mdtest included</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @cake-monotone on 2024-11-18 03:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @cake-monotone on 2024-11-18 03:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @cake-monotone on 2024-11-18 03:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @cake-monotone on 2024-11-18 03:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-18 03:40</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2024-11-18 04:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @AlexWaygood on 2024-11-18 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/tuples.md</code>:204 on 2024-11-18 18:24</div>
+            <div class="timeline-body"><p>Is this supposed to say &quot;if any non-equal pair exists&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/tuples.md</code>:213 on 2024-11-18 18:25</div>
+            <div class="timeline-body"><p>I don't think these paragraphs add value to the tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-11-18 18:30</div>
+            <div class="timeline-body"><p>Excellent! Very clear write-up and fix, thank you!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2024-11-19 03:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/tuples.md</code>:204 on 2024-11-19 03:10</div>
+            <div class="timeline-body"><p>You're right, my mistake! 😅 Thanks for catching that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-11-20 01:32</div>
+            <div class="timeline-body"><p>Thank you!! So great.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-11-20 01:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-11-20 01:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:28 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-pyi`] Improve autofix safety for `redundant-none-literal` (PYI061) - astral-sh/ruff #14583</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-pyi</code>] Improve autofix safety for <code>redundant-none-literal</code> (PYI061)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14583">#14583</a>
+        opened by <a href="https://github.com/sbrugman">@sbrugman</a>
+        on 2024-11-25 14:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-11-25 14:00</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Partially resolves #14567</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p>Added regression tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sbrugman on 2024-11-25 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs</code>:95 on 2024-11-25 14:05</div>
+            <div class="timeline-body"><p><code>None | None</code> is invalid <em>Python</em>, but it's valid <em>syntax</em> (the code compiles, it just raises an exception!)</p>
+<pre><code class="language-suggestion">        // as `Union[None, None]` is valid Python.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> had review dismissed on 2024-11-25 14:06</div>
+            <div class="timeline-body"><p>Great, thanks for the quick fix!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-25 14:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs</code>:93 on 2024-11-25 14:07</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // Avoid producing code that would raise an exception
+        // when `Literal[None] | None` would be fixed to
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs</code>:96 on 2024-11-25 14:07</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // Avoid producing code that would raise an exception when 
+        // `Literal[None] | None` would be fixed to `None | None`.
+        // Instead fix to `None`. No action needed for `typing.Union`,
+        // as `Union[None, None]` is valid Python.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-25 14:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-25 14:17</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-11-25 14:23</div>
+            <div class="timeline-body"><p>Note that this fixes the binary cases <code>Literal[None] | None</code> and <code>None | Literal[None]</code>. Cases where the literal is &quot;sandwiched&quot; between <code>None</code>s still produces invalid Python, e.g. <code>None | Literal[None] | None</code> and <code>None | Never | None</code>.</p>
+<p>The case we just fixed occurs, but rarely: https://github.com/pyapp-kit/in-n-out/blob/main/src/in_n_out/_global.py#L246. The sandwiching I could not find a single example of.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-11-25 14:33</div>
+            <div class="timeline-body"><p>I'll fix the sandwiching case for RUF020 and PYI061 in a follow-up PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2024-11-25 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-25 14:48</div>
+            <div class="timeline-body"><p>I just took a look at it, and the sandwiching case seems like it might be harder to fix, at least without copying over some of the logic from PYI016 into this rule (or moving some of the PYI016 logic to a common module that both rules import). I'd be okay if we said we should simply not offer a fix in that situation. We could also put a note in the docs for this rule that we recommend also enabling PYI016 if you enable this rule.</p>
+<p>What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-25 15:14</div>
+            <div class="timeline-body"><p>It might also be worth adding this as a test snippet with a big comment next to it:</p>
+<pre><code class="language-py">a: int | Literal[None] | None
+</code></pre>
+<p>This snippet still gets autofixed to</p>
+<pre><code class="language-py">a: int | None | None
+</code></pre>
+<p>But that's actually okay! That union desugars to <code>(int | None) | None</code>, and the left-hand-side operand there is a <code>types.UnionType</code> instance, which has a <code>__or__</code> implementation that accepts <code>None</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-11-25 15:15</div>
+            <div class="timeline-body"><p>The catch is that not offering a fix in cases where we detect a PEP604-style <code>None</code> union sandwich is almost equally difficult as fixing it.</p>
+<p>Guaranteeing the fix is safe requires checking the entire top-level union. Simply checking the parent or grandparent expression is not enough (although these will never occur in reality):</p>
+<pre><code class="language-python">d: None | ((None | Literal[None]) | None) | None
+</code></pre>
+<p>I'd opt to acknowledge this as a &quot;known limitation&quot; in the docs and to add these test cases for posterity (red-knot).</p>
+<p>Is there any precedent of marking a rule as Unsafe when another rule is disabled?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-25 15:18</div>
+            <div class="timeline-body"><blockquote>
+<p>although these will never occur in reality</p>
+</blockquote>
+<p>I'd be a bit more cautious there. I feel like this kind of thing isn't <em>that</em> strange, and could easily appear in generated stubs from a tool like https://github.com/nipunn1313/mypy-protobuf, for example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-25 15:33</div>
+            <div class="timeline-body"><p>I think it wouldn't be <em>too</em> complex to detect if there are any bare <code>None</code>s in the union, and then avoid adding an autofix if so. Something like this?</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs b/crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs
+index 1f8bfb480..b060d3cd4 100644
+--- a/crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs
++++ b/crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_none_literal.rs
+@@ -1,7 +1,10 @@
+ use ruff_diagnostics::{Applicability, Diagnostic, Edit, Fix, FixAvailability, Violation};
+ use ruff_macros::{derive_message_formats, violation};
+ use ruff_python_ast::{Expr, ExprBinOp, ExprNoneLiteral, Operator};
+-use ruff_python_semantic::analyze::typing::traverse_literal;
++use ruff_python_semantic::{
++    analyze::typing::{traverse_literal, traverse_union},
++    SemanticModel,
++};
+ use ruff_text_size::Ranged;
+ 
+ use smallvec::SmallVec;
+@@ -90,35 +93,14 @@ pub(crate) fn redundant_none_literal&lt;'a&gt;(checker: &amp;mut Checker, literal_expr: &amp;'
+     let fix = if other_literal_elements_seen {
+         None
+     } else {
+-        // Avoid producing code that would raise an exception when
+-        // `Literal[None] | None` would be fixed to `None | None`.
+-        // Instead fix to `None`. No action needed for `typing.Union`,
+-        // as `Union[None, None]` is valid Python.
+-        // See https://github.com/astral-sh/ruff/issues/14567.
+-        let replacement_range = if let Some(Expr::BinOp(ExprBinOp {
+-            left,
+-            op: Operator::BitOr,
+-            right,
+-            range: parent_range,
+-        })) = checker.semantic().current_expression_parent()
+-        {
+-            if matches!(**left, Expr::NoneLiteral(_)) || matches!(**right, Expr::NoneLiteral(_)) {
+-                *parent_range
+-            } else {
+-                literal_expr.range()
+-            }
+-        } else {
+-            literal_expr.range()
+-        };
+-
+-        Some(Fix::applicable_edit(
+-            Edit::range_replacement(&quot;None&quot;.to_string(), replacement_range),
+-            if checker.comment_ranges().intersects(literal_expr.range()) {
++        create_fix_edit(checker.semantic(), literal_expr).map(|edit| {
++            let applicability = if checker.comment_ranges().intersects(literal_expr.range()) {
+                 Applicability::Unsafe
+             } else {
+                 Applicability::Safe
+-            },
+-        ))
++            };
++            Fix::applicable_edit(edit, applicability)
++        })
+     };
+ 
+     for none_expr in none_exprs {
+@@ -134,3 +116,44 @@ pub(crate) fn redundant_none_literal&lt;'a&gt;(checker: &amp;mut Checker, literal_expr: &amp;'
+         checker.diagnostics.push(diagnostic);
+     }
+ }
++
++fn create_fix_edit(semantic: &amp;SemanticModel, literal_expr: &amp;Expr) -&gt; Option&lt;Edit&gt; {
++    // Avoid producing code that would raise an exception when
++    // `Literal[None] | None` would be fixed to `None | None`.
++    // Instead fix to `None`. No action needed for `typing.Union`,
++    // as `Union[None, None]` is valid Python.
++    // See https://github.com/astral-sh/ruff/issues/14567.
++    let mut enclosing_union = None;
++    let mut expression_ancestors = semantic.current_expressions().skip(1);
++    let mut parent_expr = expression_ancestors.next();
++    while let Some(Expr::BinOp(ExprBinOp {
++        op: Operator::BitOr,
++        ..
++    })) = parent_expr
++    {
++        enclosing_union = parent_expr;
++        parent_expr = expression_ancestors.next();
++    }
++
++    let mut is_union_with_bare_none = false;
++    if let Some(enclosing_union) = enclosing_union {
++        traverse_union(
++            &amp;mut |expr, _| {
++                if matches!(expr, Expr::NoneLiteral(_)) {
++                    is_union_with_bare_none = true;
++                }
++            },
++            semantic,
++            enclosing_union,
++        );
++    }
++
++    if is_union_with_bare_none {
++        None
++    } else {
++        Some(Edit::range_replacement(
++            &quot;None&quot;.to_string(),
++            literal_expr.range(),
++        ))
++    }
++}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-25 15:44</div>
+            <div class="timeline-body"><p>(Sorry, the patch I posted above had a bug in it initially. I have now tested it, and fixed the bug...)</p>
+<p>Also, it still doesn't handle cases like <code>Literal[None] | Literal[None]</code>. Though I think that could be fixed by fiddling with the closure I pass into <code>traverse_union()</code> in that patch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-11-25 15:47</div>
+            <div class="timeline-body"><p>That solution works, I'll have a look. I was considering doing it similarly, but inside the union visitor (which checks if there is a nested union), but it's pretty similar functionally.</p>
+<p>In the end it's not worth spending too much on this as I assume that when red-knot is in place this all will be a single rule that detects annotations that can be simplified.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-11-25 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-11-25 17:36</div>
+            <div class="timeline-body"><p>Thanks!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-11-25 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-11-25 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-25 17:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:29 UTC
+    </footer>
+</body>
+</html>

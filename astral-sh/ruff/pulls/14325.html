@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Handle invalid assignment targets - astral-sh/ruff #14325</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Handle invalid assignment targets</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14325">#14325</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2024-11-13 18:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-13 18:50</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This fixes several panics related to invalid assignment targets. All of these led to some a crash, previously:</p>
+<pre><code class="language-py">(x.y := 1)  # only name-expressions are valid targets of named expressions
+([x, y] := [1, 2])  # same
+(x, y): tuple[int, int] = (2, 3)  # tuples are not valid targets for annotated assignments
+(x, y) += 2  # tuples are not valid targets for augmented assignments
+</code></pre>
+<p>closes #14321
+closes #14322</p>
+<h2>Test Plan</h2>
+<p>I symlinked four files from <code>crates/ruff_python_parser/resources/{invalid,inline/err}</code> into the red knot corpus, as they seemed like ideal test files for this exact scenario. I can also copy them, if we prefer that (these relative symlinks are probably annoying if we move folders around). I think eventually, it might be a good idea to simply include <em>all</em> invalid-syntax examples from the parser tests into red knots corpus (I believe we're actually not too far from that goal). Or expand the scope of the corpus test to this directory. Then we can get rid of these symlinks again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-11-13 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2024-11-13 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2024-11-13 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2024-11-13 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-13 18:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:709 on 2024-11-13 18:53</div>
+            <div class="timeline-body"><p>I tried to search for something like <code>Expr::is_valid_{aug_,ann_,}assign_target</code> methods but couldn't find anything. And all existing code that deals with assignments could not make use of these, as it typically needs to do something specific for each branch. So it's just an inline match for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-13 18:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/resources/test/corpus/04_assign_invalid_targets.py</code>:1 on 2024-11-13 18:57</div>
+            <div class="timeline-body"><p>is this the test file you wanted to add?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:708 on 2024-11-13 19:04</div>
+            <div class="timeline-body"><p>I don't think <code>Starred</code> expressions are legal in <code>AugAssign</code>s:</p>
+<p>Python's parser permits them in <code>Assign</code>s:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; import ast
+&gt;&gt;&gt; print(ast.dump(ast.parse('*y = z'), indent=2))
+Module(
+  body=[
+    Assign(
+      targets=[
+        Starred(
+          value=Name(id='y', ctx=Store()),
+          ctx=Store())],
+      value=Name(id='z', ctx=Load()))])
+</code></pre>
+<p>But not <code>AugAssign</code>s:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; import ast
+&gt;&gt;&gt; print(ast.dump(ast.parse('*y += z'), indent=2))
+Traceback (most recent call last):
+  File &quot;&lt;python-input-4&gt;&quot;, line 1, in &lt;module&gt;
+    print(ast.dump(ast.parse('*y += z'), indent=2))
+                   ~~~~~~~~~^^^^^^^^^^^
+  File &quot;/Users/alexw/.pyenv/versions/3.13.0/lib/python3.13/ast.py&quot;, line 54, in parse
+    return compile(source, filename, mode, flags,
+                   _feature_version=feature_version, optimize=optimize)
+  File &quot;&lt;unknown&gt;&quot;, line 1
+    *y += z
+    ^^
+SyntaxError: 'starred' is an illegal expression for augmented assignment
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-13 19:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-13 19:04</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-13 19:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_workspace/resources/test/corpus/04_assign_invalid_targets.py</code>:1 on 2024-11-13 19:08</div>
+            <div class="timeline-body"><p>Yes. I wanted to make sure that invalid <em>normal</em> assignments (non-annotated, non-augmented) were also handled correctly. Or what is wrong?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-13 19:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:708 on 2024-11-13 19:11</div>
+            <div class="timeline-body"><p>Ah, thanks. This means the Python docs are a bit misleading here. For <code>AugAssign</code>, they state that the <em>&quot;target attribute cannot be of class <a href="https://docs.python.org/3/library/ast.html#ast.Tuple">Tuple</a> or <a href="https://docs.python.org/3/library/ast.html#ast.List">List</a>, unlike the targets of <a href="https://docs.python.org/3/library/ast.html#ast.Assign">Assign</a>.&quot;</em> — which I interpreted as: everything allowed for a normal assignment, but not <code>Tuple</code> or <code>List</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-13 19:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/resources/test/corpus/04_assign_invalid_targets.py</code>:1 on 2024-11-13 19:12</div>
+            <div class="timeline-body"><p>It looks from the GitHub diff as though this file contains the literal text</p>
+<pre><code>../../../../ruff_python_parser/resources/invalid/statements/invalid_assignment_targets.py
+</code></pre>
+<p>Am I missing something -- is it a symlink or something? 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-13 19:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_workspace/resources/test/corpus/04_assign_invalid_targets.py</code>:1 on 2024-11-13 19:14</div>
+            <div class="timeline-body"><p>Yes. See PR description :smile:.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-13 19:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_workspace/resources/test/corpus/04_assign_invalid_targets.py</code>:1 on 2024-11-13 19:14</div>
+            <div class="timeline-body"><p>I'm waiting for the CI failure on Windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-13 19:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_workspace/resources/test/corpus/04_assign_invalid_targets.py</code>:1 on 2024-11-13 19:15</div>
+            <div class="timeline-body"><p>But my links are a bit off. Give me a minute.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-13 19:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:708 on 2024-11-13 19:16</div>
+            <div class="timeline-body"><p>I agree the docs are bad here.</p>
+<p>I think arguably the docs for the stdlib <code>ast</code> module say too <em>much</em> here, though. They should instead say less, and link to the canonical docs for which expressions are allowed as augmented-assignment targets, which are at https://docs.python.org/3/reference/simple_stmts.html#augmented-assignment-statements (and which are much more precise)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-13 19:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/resources/test/corpus/04_assign_invalid_targets.py</code>:1 on 2024-11-13 19:17</div>
+            <div class="timeline-body"><blockquote>
+<p>Yes. See PR description 😄.</p>
+</blockquote>
+<p>Ahh sorry!!</p>
+<blockquote>
+<p>But my links are a bit off. Give me a minute.</p>
+</blockquote>
+<p>Yeah, I think GitHub displays correct symlinks differently 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-13 19:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_workspace/resources/test/corpus/04_assign_invalid_targets.py</code>:1 on 2024-11-13 19:19</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah, I think GitHub displays correct symlinks differently 😄</p>
+</blockquote>
+<p>No I believe the links are correct on a.. filesystem level. But there is a small semantic/naming mistake. This is how GitHub shows symlinks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-13 19:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_workspace/resources/test/corpus/04_assign_invalid_targets.py</code>:1 on 2024-11-13 19:26</div>
+            <div class="timeline-body"><p>Okay. Now it should be fine. The names are different from the source files, but hopefully match the naming pattern of red knot's corpus.</p>
+<p>Windows also works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-11-13 19:31</div>
+            <div class="timeline-body"><p>I would support just modifying the corpus test to run on all parser examples, whenever we are at a point where that doesn't panic. If we aren't at that point yet, symlinking certain files seems like a fine temporary solution (if it works cross-platform)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-11-13 19:47</div>
+            <div class="timeline-body"><p>Looks great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2024-11-13 19:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2024-11-13 19:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-13 19:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:28 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simplify quote annotator logic for list expression - astral-sh/ruff #14425</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Simplify quote annotator logic for list expression</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14425">#14425</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-11-18 06:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-18 06:50</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Follow-up to #14371, this PR simplifies the visitor logic for list expressions to remove the state management. We just need to make sure that we visit the nested expressions using the <code>QuoteAnnotator</code> and not the <code>Generator</code>. This is similar to what's being done for binary expressions.</p>
+<p>As per the <a href="https://typing.readthedocs.io/en/latest/spec/annotations.html#grammar-token-expression-grammar-annotation_expression">grammar</a>, list expressions can be present which can contain other type expressions (<code>Callable</code>):</p>
+<pre><code>       | &lt;Callable&gt; '[' &lt;Concatenate&gt; '[' (type_expression ',')+
+                    (name | '...') ']' ',' type_expression ']'
+             (where name must be a valid in-scope ParamSpec)
+       | &lt;Callable&gt; '[' '[' maybe_unpacked (',' maybe_unpacked)*
+                    ']' ',' type_expression ']'
+</code></pre>
+<h2>Test Plan</h2>
+<p><code>cargo insta test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2024-11-18 06:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-18 06:59</div>
+            <div class="timeline-body"><p>I think even <a href="https://typing.readthedocs.io/en/latest/spec/annotations.html#grammar-token-expression-grammar-unpacked">starred expressions</a> should be considered here:</p>
+<pre><code>unpacked              ::=  '*' unpackable
+                           | &lt;Unpack&gt; '[' unpackable ']'
+unpackable            ::=  tuple_type_expression`
+                           | name
+                                 (where name must refer to an in-scope TypeVarTuple)
+tuple_type_expression ::=  &lt;tuple&gt; '[' '(' ')' ']'
+                                (representing an empty tuple)
+                           | &lt;tuple&gt; '[' type_expression ',' '...' ']'
+                                 (representing an arbitrary-length tuple)
+                           | &lt;tuple&gt; '[' maybe_unpacked (',' maybe_unpacked)* ']'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-18 07:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-11-18 07:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-11-18 07:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-18 07:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-18 07:04</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:28 UTC
+    </footer>
+</body>
+</html>

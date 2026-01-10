@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ruff`] Detect redirected-noqa in file-level comments (`RUF101`) - astral-sh/ruff #14635</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>ruff</code>] Detect redirected-noqa in file-level comments (<code>RUF101</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14635">#14635</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2024-11-27 14:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2024-11-27 14:35</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Fixes #14531, where ruff was not reporting diagnostics on  file-level <code># ruff: noqa</code> comments with redirected rule codes.</p>
+<p>The main change here is making <code>ParsedFileExemption</code> closer in structure to <code>Directive</code>, with a sequence of <code>Codes</code> with <code>TextRange</code>s instead of just <code>&amp;str</code> for diagnostic reporting.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>The changes were tested against the example code from #14531 to make sure the diagnostic is now emitted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-27 14:41</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/redirected_noqa.rs</code>:97 on 2024-11-27 14:50</div>
+            <div class="timeline-body"><p>Hmm, it's annoying that <code>FileNoqaDirectives</code> and <code>NoqaDirectives</code> have such a different structure. But maybe there's an opportunity to reuse some of the code in this loop?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-27 14:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF101_1.py</code>:5 on 2024-11-27 14:51</div>
+            <div class="timeline-body"><p>Would you mind adding an example where it's a non-direct-match redirect. E.g. <code>TCH</code> or <code>TCH0</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-27 14:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/noqa.rs</code>:438 on 2024-11-27 14:54</div>
+            <div class="timeline-body"><p>Nit: The current signature is ambigious in the sense that it's unclear whether <code>offset</code> is an offset relative to <code>line</code> (that's what I would assume) or if it's an absolute index into the source text.</p>
+<p>I suggest changingt the signature to <code>try_extract(comment_range: TextRange, source: &amp;'a str)</code> to make this clear (we commonly use <code>source</code> to refer to the entire source text).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/noqa.rs</code>:444 on 2024-11-27 14:55</div>
+            <div class="timeline-body"><p>Nit: I suggest using <code>TextLen</code> methods here to avoid the conversion further down</p>
+<pre><code class="language-suggestion">        let init_line_len = line.text_len();
+        let line = Self::lex_whitespace(line);
+        let Some(line) = Self::lex_char(line, '#') else {
+            return Ok(None);
+        };
+        let comment_start = init_line_len - line.text_len() - '#'.text_len();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/noqa.rs</code>:480 on 2024-11-27 14:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                let codes_end = init_line_len - line.text_len();
+                codes.push(Code {
+                    code,
+                    range: TextRange::at(codes_end, code.text_len()).add(offset),
+                });
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-27 14:57</div>
+            <div class="timeline-body"><p>Neat!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-11-27 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2024-11-27 15:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/redirected_noqa.rs</code>:97 on 2024-11-27 15:21</div>
+            <div class="timeline-body"><p>Oh yes, great idea! I factored this out into a <code>build_diagnostics</code> function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2024-11-27 15:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF101_1.py</code>:5 on 2024-11-27 15:43</div>
+            <div class="timeline-body"><p>I tried <code># ruff: noqa: TCH</code>, and it looks like it's not even being detected as a valid code (<code>ParsedFileExemption::try_extract</code> returns <code>Err(MissingCodes)</code>). Is that what you expected, or am I misunderstanding/broke something? I rolled back to before my changes, and I'm still seeing the <code>Err(MissingCodes)</code>, so I'm probably misunderstanding.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2024-11-27 15:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/noqa.rs</code>:438 on 2024-11-27 15:46</div>
+            <div class="timeline-body"><p>Ah that makes sense. I was just trying to copy the signature of <a href="https://github.com/astral-sh/ruff/blob/c40b37aa36135283db0b4f16d4582d6879e43cf5/crates/ruff_linter/src/noqa.rs#L56">Directive::try_extract</a>, but this makes more sense here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-27 16:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF101_1.py</code>:5 on 2024-11-27 16:05</div>
+            <div class="timeline-body"><p>It's probably me. It's very likely that Ruff doesn't support file-level suppressions for selectors? If that's the case, then we're all good here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-27 16:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/noqa.rs</code>:438 on 2024-11-27 16:09</div>
+            <div class="timeline-body"><p>Sorry that I haven't been clear about what signature I'd expect. I think this signature still has the same &quot;flaw&quot; in that it's unclear if <code>comment_range</code> is an offset relative to <code>source</code> or the entire source text of the file.</p>
+<p>To avoid this, I suggest changing the signature to <code>try_extract(comment_range: TextRange, source; &amp;'a str)</code> and then call it like this: <code>ParsedFileExemption::try_extract(range, locator.contents())</code>; It's then the <code>try_extract</code>'s responsible to slice the comment text out of the source text.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/noqa.rs</code>:438 on 2024-11-27 16:15</div>
+            <div class="timeline-body"><p>Oh sorry about that. I missed that you suggested <code>TextRange</code> instead of <code>TextSize</code> :facepalm: This makes much more sense to me now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2024-11-27 16:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-27 16:40</div>
+            <div class="timeline-body"><p>Perfect. Let me know when it's ready to merge and I hit the button</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-27 16:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF101_1.py</code>:5 on 2024-11-27 16:44</div>
+            <div class="timeline-body"><p>Yeah I think it has to be an exact code or a catch-all (so <code>TCH</code> wouldn't be allowed).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2024-11-27 16:50</div>
+            <div class="timeline-body"><p>Awesome, thanks for the reviews! I just noticed that the snapshot metadata is not correct anymore after the signature change (the <code>expression</code> lines should look like <code>expression: &quot;ParsedFileExemption::try_extract(TextRange::up_to(source.text_len()), source,)&quot;</code> now). I ran <code>cargo insta test --force-update-snapshots</code>, but it changed the metadata in a ton of other snapshots too. Should I just update the ones I actually changed here, or ignore this for now?</p>
+<p>Otherwise ready to merge!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-27 16:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Should I just update the ones I actually changed here, or ignore this for now?</p>
+</blockquote>
+<p>Ideally yes. You can also try to update <code>cargo-insta</code> to a newer version</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2024-11-27 17:08</div>
+            <div class="timeline-body"><p>I think the newest version of insta might be the problem (mitsuhiko/insta#676; adding <code>snapshot_kind: text</code> to the metadata now), but I just added the real changes I caused.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-27 17:25</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the newest version of insta might be the problem (<a href="https://github.com/mitsuhiko/insta/issues/676">mitsuhiko/insta#676</a>; adding <code>snapshot_kind: text</code> to the metadata now), but I just added the real changes I caused.</p>
+</blockquote>
+<p>Oh interesting: I thought I updated all snapshots to use the new format but quiet possible that I missed some.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-11-27 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-11-27 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-27 17:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh interesting: I thought I updated all snapshots to use the new format but quiet possible that I missed some.</p>
+</blockquote>
+<p>I think some of them have been changed back (and some new ones with the old format have been added) because not all contributors have the latest version of <code>cargo-insta</code> installed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-27 17:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:29 UTC
+    </footer>
+</body>
+</html>

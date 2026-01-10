@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add MRO resolution for classes (take 2) - astral-sh/ruff #14027</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add MRO resolution for classes (take 2)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14027">#14027</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-10-31 22:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-31 22:18</div>
+            <div class="timeline-body"><p>A second attempt at implementing MRO resolution (see #13722 for the first attempt). Unlike the first attempt, this version does <em>not</em> attempt to handle union types in a class's bases list (which would potentially mean that you would have to consider multiple possible MROs for any given class).</p>
+<h2>Summary</h2>
+<p>A Python class's <a href="https://docs.python.org/3/glossary.html#term-method-resolution-order">&quot;Method Resolution Order&quot;</a> (&quot;MRO&quot;) is the order in which superclasses of that class are traversed by the Python runtime when searching for an attribute (which includes methods) on that class. Accurately inferring a class's MRO is essential for a type checker if it is going to be able to accurately lookup the types of attributes and methods accessed on that class (or instances of that class).</p>
+<p>For simple classes, the MRO (which is accessible at runtime via the <code>__mro__</code> attribute on a class) is simple:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; object.__mro__
+(&lt;class 'object'&gt;,)
+&gt;&gt;&gt; class Foo: pass
+... 
+&gt;&gt;&gt; Foo.__mro__  # classes without explicit bases implicitly inherit from `object`
+(&lt;class '__main__.Foo'&gt;, &lt;class 'object'&gt;)
+&gt;&gt;&gt; class Bar(Foo): pass
+... 
+&gt;&gt;&gt; Bar.__mro__
+(&lt;class '__main__.Bar'&gt;, &lt;class '__main__.Foo'&gt;, &lt;class 'object'&gt;)
+</code></pre>
+<p>For more complex classes that use multiple inheritance, things can get a bit more complicated, however:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class Foo: pass
+... 
+&gt;&gt;&gt; class Bar(Foo): pass
+... 
+&gt;&gt;&gt; class Baz(Foo): pass
+... 
+&gt;&gt;&gt; class Spam(Bar, Baz): pass
+... 
+&gt;&gt;&gt; Spam.__mro__  # no class ever appears more than once in an `__mro__`
+(&lt;class '__main__.Spam'&gt;, &lt;class '__main__.Bar'&gt;, &lt;class '__main__.Baz'&gt;, &lt;class '__main__.Foo'&gt;, &lt;class 'object'&gt;)
+</code></pre>
+<p>And for some classes, Python realises that it cannot determine which order the superclasses should be positioned in order to create the MRO at class creation time:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class Foo(object, int): pass
+... 
+Traceback (most recent call last):
+  File &quot;&lt;python-input-12&gt;&quot;, line 1, in &lt;module&gt;
+    class Foo(object, int): pass
+TypeError: Cannot create a consistent method resolution order (MRO) for bases object, int
+&gt;&gt;&gt; class A: pass
+... 
+&gt;&gt;&gt; class B: pass
+... 
+&gt;&gt;&gt; class C(A, B): pass
+... 
+&gt;&gt;&gt; class D(B, A): pass
+... 
+&gt;&gt;&gt; class E(C, D): pass
+... 
+Traceback (most recent call last):
+  File &quot;&lt;python-input-17&gt;&quot;, line 1, in &lt;module&gt;
+    class E(C, D): pass
+TypeError: Cannot create a consistent method resolution order (MRO) for bases A, B
+</code></pre>
+<p>The algorithm Python uses at runtime to determine what a class's MRO should be is known as the C3 linearisation algorithm. An in-depth description of the motivations and details of the algorithm can be found in <a href="https://docs.python.org/3/howto/mro.html#python-2-3-mro">this article</a> in the Python docs. The article is quite old, however, and the algorithm given at the bottom of the page is written in Python 2. As part of working on this PR, I translated the algorithm first into Python 3 (see <a href="https://gist.github.com/AlexWaygood/674db1fce6856a90f251f63e73853639">this gist</a>), and then into Rust (the <code>c3_merge</code> function in <code>mro.rs</code> in this PR). In order for us to correctly infer a class's MRO, we need our own implementation of the C3 linearisation algorithm.</p>
+<p>As well as implementing the C3 linearisation algorithm in Rust, I also had to make some changes to account for the fact that a class might have a dynamic type in its bases: in our current model, we have three dynamic types, which are <code>Unknown</code>, <code>Any</code> and <code>Todo</code>. This PR takes the simple approach of deciding that the MRO of <code>Any</code> is <code>[Any, object]</code>, the MRO of <code>Unknown</code> is <code>[Unknown, object]</code>, and the MRO of <code>Todo</code> is <code>[Todo, object]</code>; other than that, they are not treated particularly specially by the C3 linearisation algorithm. Other than simplicity, this has a few advantages:</p>
+<ul>
+<li>It matches the runtime:<pre><code class="language-pycon">&gt;&gt;&gt; from typing import Any
+&gt;&gt;&gt; Any.__mro__
+(typing.Any, &lt;class 'object'&gt;)
+</code></pre>
+</li>
+<li>It means that they behave just like any other class base in Python: an invariant upheld by all other class bases in Python is that they all inherit from <code>object</code>.</li>
+</ul>
+<p>Dynamic types will have to be treated specially when it comes to attribute and method access from these types; however, that is for a separate PR.</p>
+<h2>Implementation strategy</h2>
+<p>The implementation is encapsulated in a new <code>red_knot_python_semantic</code> submodule, <code>types/mro.rs</code>. <code>ClassType::try_mro</code> attempts to resolve a class's MRO, and returns an error if it cannot; <code>ClassType::mro</code> is a wrapper around <code>ClassType::try_mro</code> that resolves the MRO to <code>[&lt;class in question&gt;, Unknown, builtins.object]</code> if no MRO for the class could be resolved.</p>
+<p>It's necessary for us to emit a diagnostic if we can determine that a particular list of bases will (or could) cause a <code>TypeError</code> to be raised at runtime due to an unresolvable MRO. However, we can't do this while creating the <code>ClassType</code> and storing it in <code>self.types.declarations</code> in <code>infer.rs</code>, as we need to know the bases of the class in order to determine its MRO, and some of the bases may be deferred. This PR therefore iterates over all classes in a certain scope after all types (including deferred types) have been inferred, as part of <code>TypeInferenceBuilder::infer_region_scope</code>. For types that will (or could) raise an exception due to an invalid MRO, we infer the MRO as being <code>[&lt;class in question&gt;, Unknown, object]</code> as well as emitting the diagnostic.</p>
+<p>We also emit diagnostics for classes that inherit from bases which would be too complicated for us to resolve an MRO for: anything except a class-literal, <code>Any</code>, <code>Unknown</code> or <code>Todo</code> is rejected.</p>
+<p>I deleted the <code>ClassType::bases()</code> method, because:</p>
+<ul>
+<li>It's easier to calculate the MRO if you work directly from the AST rather than having an intermediate method that converts the slice of AST nodes into an iterator of types</li>
+<li>There are no direct uses of <code>ClassType::bases()</code> in <code>types.rs</code> or <code>infer.rs</code> anymore now (they all should have been iterating over the MRO all along!).</li>
+<li>The <code>bases()</code> method was something of a footgun: it only gave you the slice of the class's <em>explicit</em> bases, and ignored the fact that a class will <em>implicitly</em> have <code>object</code> in its bases list at runtime if it has no <em>explicit</em> bases.</li>
+</ul>
+<h2>Test Plan</h2>
+<p>Lots of mdtests added. Several tests taken from https://docs.python.org/3/howto/mro.html#python-2-3-mro.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-10-31 22:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-01 12:53</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2024-11-01 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-11-01 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-11-01 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2024-11-01 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1883 on 2024-11-01 14:16</div>
+            <div class="timeline-body"><p>Nit: A <code>bases</code> method on <code>mro</code> would be nice that hides the fact that it skips the current class.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/mro.md</code>:346 on 2024-11-01 14:21</div>
+            <div class="timeline-body"><p>Could we add a case where we have an indirect cycle (which is probably more common)</p>
+<pre><code class="language-py">class Foo(Bar): ...
+
+class Bar(Baz): ...
+
+class Baz(Foo): ...
+</code></pre>
+<p>and with a union</p>
+<pre><code>class Foo(Bar): ...
+
+class Bar(Baz): ...
+
+class Bar2: ...
+
+class Baz(Foo, Bar2) ...
+</code></pre>
+<p>and a sub-graph</p>
+<pre><code>class FooCycle(BarCycle): ...
+
+class Foo: ...
+
+class BarCycle(FooCycle) ...
+
+class Bar(Foo): ...
+
+class Baz(Bar, BarCycle): ...
+
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:215 on 2024-11-01 14:23</div>
+            <div class="timeline-body"><p>Could we document the meaning of the <code>usize</code> or use a named field?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:205 on 2024-11-01 14:24</div>
+            <div class="timeline-body"><p>Could you add a comment explaining what the indices are indexing. Maybe consider using named fields or a type alias.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:16 on 2024-11-01 14:26</div>
+            <div class="timeline-body"><p>Do we need hash?</p>
+<pre><code class="language-suggestion">#[derive(PartialEq, Eq, Default, Clone, Debug)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:69 on 2024-11-01 14:27</div>
+            <div class="timeline-body"><p>Considering that this is very common. I wonder if it's worth having a special <code>Mro::Default(class)</code> variant that lazily resolves <code>object</code> or to use a small vec</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:109 on 2024-11-01 14:30</div>
+            <div class="timeline-body"><p>I'm not sure if that works with indirect cycles (see tests pointed out above).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:479 on 2024-11-01 14:38</div>
+            <div class="timeline-body"><p>Is it possible that multiple sequences have the same first-mro? Or is this really about removing the found <code>mro_entry</code>?</p>
+<pre><code class="language-suggestion">        let mro_sequence_index = sequences.iter().position(|outer_sequence| {
+            let candidate = outer_sequence[0];
+
+            let not_head = sequences
+                .iter()
+                .all(|sequence| sequence.iter().skip(1).all(|base| base != &amp;candidate));
+
+            not_head
+        })?;
+
+        let mro_sequence = &amp;mut sequences[mro_sequence_index];
+        mro.push(mro_sequence[0]);
+
+        // Make sure we don't try to add the candidate to the MRO twice:
+        mro_sequence.pop_front();
+
+        if mro_sequence.is_empty() {
+            sequences.remove(mro_sequence_index);
+        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:433 on 2024-11-01 14:42</div>
+            <div class="timeline-body"><p>Do we still need this trick, now that <code>diagnostics</code> is its own field?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-01 14:44</div>
+            <div class="timeline-body"><p>This is great and I like the simplification. I would be interested in a few more cycle tests to make sure that indirect cycles are correctly handled too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-01 14:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:433 on 2024-11-01 14:49</div>
+            <div class="timeline-body"><p>We don't, good catch!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1883 on 2024-11-01 14:52</div>
+            <div class="timeline-body"><p>Hmm, I'm not sure what we'd call such a method:</p>
+<ul>
+<li><code>bases()</code> would be inaccurate, because it would iterate through all proper superclasses of the class, not just the class's direct bases</li>
+<li><code>superclasses()</code> would also be inaccurate, because every class is a superclass of itself, but we would want to exclude <code>self</code> from the elements yielded by this method.</li>
+<li><code>proper_superclasses()</code> would be accurate, but feels quite jargony, and isn't really any less verbose than <code>.elements().skip(1)</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-01 14:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-01 15:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1883 on 2024-11-01 15:36</div>
+            <div class="timeline-body"><p>how about <code>direct_bases</code>? I think I read this snippet twice and was both times wondering why there's a skip 1</p>
+<p>Edit: Oh sorry, you said it's not <code>direct_bases</code> not that it is lol. How about <code>inherited_classes</code>? I also think that <code>superclasses()</code> is kind of fine. The fact that every class is a <code>superclasses</code> feels a bit nitpicky</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-01 15:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1883 on 2024-11-01 15:39</div>
+            <div class="timeline-body"><p>Again... <code>direct_bases</code> would be the <em>opposite</em> of what this proposed method would do. It would iterate through <em>all</em> proper superclasses of the class, <em>not just</em> the direct bases :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-01 15:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1883 on 2024-11-01 15:52</div>
+            <div class="timeline-body"><p>I fixed this by deleting the method -- inlining it means we don't even need the <code>.skip(1)</code> call at all anymore ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-01 15:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/mro.md</code>:346 on 2024-11-01 15:54</div>
+            <div class="timeline-body"><p>Nice. Yeah, even just your first one triggers a panic on this branch.</p>
+<blockquote>
+<p>and with a union</p>
+</blockquote>
+<p>Just checking, did you mean &quot;multiple inheritance&quot; here? There are no union types there, as far as I can tell :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/mro.md</code>:332 on 2024-11-01 15:58</div>
+            <div class="timeline-body"><p>Hmm, I'm not sure about this. Is inheriting from two unknowns really any different (in terms of the degree to which we have no idea what is going on) than inheriting from a single unknown (which doesn't trigger a &quot;cannot create a consistent MRO&quot; error)?</p>
+<p>This violates the gradual guarantee, so I think we should err on the side of not doing it. (I don't think it's super important, though, so if <em>not</em> erroring here is hard to implement, we can just alter the comment here to be a &quot;TODO don't emit this error&quot; for now.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-11-01 15:58</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex/simple-mro">CodSpeed Performance Report</a></h2>
+<h3>Merging #14027 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>alex/simple-mro</code> (a9d379b) with <code>main</code> (88d9bb1)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 32</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>:65 on 2024-11-01 15:59</div>
+            <div class="timeline-body"><p>Why did <code>__module__</code> disappear here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/stubs/class.md</code>:8 on 2024-11-01 16:00</div>
+            <div class="timeline-body"><p>Did you verify that this test fails if you make this a <code>.py</code> instead of a <code>.pyi</code>? (Just want to make sure it's still testing something meaningful.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1815 on 2024-11-01 16:03</div>
+            <div class="timeline-body"><p>should this be an <code>unreachable!</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-01 16:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/mro.md</code>:346 on 2024-11-01 16:05</div>
+            <div class="timeline-body"><p>Lol yeah, union makes no sense here. I'm mainly interested to see how the MRO recovers if there are multiple base classes and there's a cycle in one &quot;base-class-branch&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1843 on 2024-11-01 16:07</div>
+            <div class="timeline-body"><p>This means that if we have a class with an error MRO, we reconstruct a brand-new owned error MRO for that class every time its MRO is accessed. Maybe that's the best tradeoff here? We can see if it shows up in profiles in practice. I guess the alternative would require making both of these methods salsa tracked, which increases the query count.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1852 on 2024-11-01 16:08</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                // MRO.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1883 on 2024-11-01 16:12</div>
+            <div class="timeline-body"><p>I would be OK with <code>proper_superclasses()</code>. I don't care if it's long. The goal of adding a method here  is semantic clarity, not concision. Micha's issue here was not &quot;<code>elements().skip(1)</code> is too long&quot;, it was &quot;it's not self-evident why we are skipping 1&quot; -- and I agree with that.</p>
+<p>We could also go less jargony and just call it <code>without_self()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1883 on 2024-11-01 16:13</div>
+            <div class="timeline-body"><p>But, inlining it leads to a large perf regression because we now need to resolve the MRO for many more attribute lookups 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-01 16:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1904 on 2024-11-01 16:14</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    # TODO we may instead want to record the fact that we encountered dynamic, and intersect it with
+                    # the type found on the next real class.
+                    return Type::from(superclass).member(db, name)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-01 16:19</div>
+            <div class="timeline-body"><p>Not finished reviewing yet, but submitting some comments now rather than waiting because you're actively working on the branch :)</p>
+<p>Overall, this is awesome!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-01 16:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1904 on 2024-11-01 16:23</div>
+            <div class="timeline-body"><p>Ha, not me writing Python comments in Rust 😆 But you get the idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/mro.md</code>:212 on 2024-11-01 16:28</div>
+            <div class="timeline-body"><p>You went to some trouble in the implementation to ensure that these diagnostics span the correct node in the bases list. (Which is great!) Maybe use the mdtest feature to assert on the start column of the error, to test this? (And similar for other errors in these tests where it is relevant.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4406 on 2024-11-01 16:31</div>
+            <div class="timeline-body"><p>TBH I feel you could just delete this test. It doesn't test anything that isn't covered much better by your added MRO tests in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:79 on 2024-11-01 16:37</div>
+            <div class="timeline-body"><p>This approach won't work for handling indirect cycles. I think you'll need to test if we appear anywhere in <code>Mro::of_base().elements()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>:65 on 2024-11-01 16:48</div>
+            <div class="timeline-body"><p>Instances of <code>ModuleType</code> don't actually have <code>__module__</code> attributes in &quot;real life&quot; 😆 So it seemed like a bad thing to assert in a test, in retrospect.</p>
+<p>We infer that they <em>do</em> have <code>__module__</code> attributes because of that slightly-irritating inaccuracy in typeshed that we discussed the other day.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-01 16:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-01 16:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/mro.md</code>:332 on 2024-11-01 16:49</div>
+            <div class="timeline-body"><p>Hmm, yeah, not sure either. I can see arguments both ways. The main thing I wanted to avoid in this initial implementation was a complaint about &quot;duplicate base classes&quot;, which would obviously be flat-out wrong.</p>
+<p>I'll add a TODO for now; if we <em>did</em> want to avoid emitting any error here, it would add some more complexity, and I think it's okay to postpone the details on this point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:479 on 2024-11-01 16:50</div>
+            <div class="timeline-body"><p>It is possible that multiple sequences have the same first entry, and this is a key part of the algorithm. (It's why the <code>let not_head = ...</code> thing checks only for presence in not-first position, because if it's in first position in multiple sequences we can handle it now and pop it from all of them.) So this change won't work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-01 16:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1843 on 2024-11-01 16:50</div>
+            <div class="timeline-body"><p>I think I can actually store the fallback MRO on the <code>MroError</code>. It also has the advantage that it makes some signatures a bit simpler (less need for <code>Cow</code>s everywhere).</p>
+<p>I'll try that now and see what Codspeed thinks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-11-01 16:50</div>
+            <div class="timeline-body"><p>Looks good to me! Some comments, but nothing blocking besides the cycle handling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-01 16:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1843 on 2024-11-01 16:57</div>
+            <div class="timeline-body"><p>Hooray, Codspeed likes that version even more than what I had before!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-01 17:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/stubs/class.md</code>:8 on 2024-11-01 17:19</div>
+            <div class="timeline-body"><p>Yes, it still fails if it's a <code>.py</code> file!</p>
+<pre><code>    /stubs/class.md:15 unmatched assertion: revealed: Literal[Bar]
+    /stubs/class.md:15 unexpected error: 1 [revealed-type] &quot;Revealed type is `Unknown`&quot;
+    /stubs/class.md:16 unmatched assertion: revealed: tuple[Literal[Bar], Unknown, Literal[object]]
+    /stubs/class.md:16 unexpected error: 1 [revealed-type] &quot;Revealed type is `Unknown`&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-01 17:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:79 on 2024-11-01 17:41</div>
+            <div class="timeline-body"><blockquote>
+<p>This approach won't work for handling indirect cycles. I think you'll need to test if we appear anywhere in <code>Mro::of_base().elements()</code>?</p>
+</blockquote>
+<p>Hmm, I tried that and it doesn't fix the tests that @MichaReiser suggested in https://github.com/astral-sh/ruff/pull/14027#discussion_r1825877438; we still panic on those. I think I need to do something a bit fancier (I have an idea).</p>
+<p>The diff I tried was this:</p>
+<details>
+
+<pre><code class="language-diff">--- a/crates/red_knot_python_semantic/src/types/mro.rs
++++ b/crates/red_knot_python_semantic/src/types/mro.rs
+@@ -79,10 +79,19 @@ impl&lt;'db&gt; Mro&lt;'db&gt; {
+                             };
+                             Err(MroError::new(db, class, error_kind))
+                         } else {
+-                            let mro = std::iter::once(ClassBase::Class(class))
+-                                .chain(Mro::of_base(db, base).elements())
+-                                .collect();
+-                            Ok(mro)
++                            let class_as_base = ClassBase::Class(class);
++                            let base_mro = Mro::of_base(db, base);
++                            if base_mro.contains(&amp;class_as_base) {
++                                let error_kind = MroErrorKind::CyclicClassDefinition {
++                                    invalid_base_index: 0,
++                                };
++                                Err(MroError::new(db, class, error_kind))
++                            } else {
++                                let mro = std::iter::once(class_as_base)
++                                    .chain(base_mro.elements())
++                                    .collect();
++                                Ok(mro)
++                            }
+                         }
+                     }
+                     Err(invalid_base_ty) =&gt; {
+@@ -107,11 +116,21 @@ impl&lt;'db&gt; Mro&lt;'db&gt; {
+                     match ClassBase::try_from_node(db, base_node, class_stmt_node, definition) {
+                         Ok(valid_base) =&gt; {
+                             if valid_base.into_class_literal_type() == Some(class) {
++                                let error_kind = MroErrorKind::CyclicClassDefinition {
++                                    invalid_base_index: 0,
++                                };
++                                return Err(MroError::new(db, class, error_kind));
++                            }
++
++                            let class_as_base = ClassBase::Class(class);
++                            let base_mro = Mro::of_base(db, valid_base);
++                            if base_mro.contains(&amp;class_as_base) {
+                                 let error_kind = MroErrorKind::CyclicClassDefinition {
+                                     invalid_base_index: i,
+                                 };
+                                 return Err(MroError::new(db, class, error_kind));
+                             }
++
+                             valid_bases.push(valid_base);
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-01 17:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:69 on 2024-11-01 17:53</div>
+            <div class="timeline-body"><p>It's an interesting idea. However, Codspeed is currently neutral on this branch, so I think I'd prefer to leave this for now to keep things simple. If MRO resolution starts showing up as a bottleneck in profiling in the future, I'd be happy to try this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-01 17:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:79 on 2024-11-01 17:55</div>
+            <div class="timeline-body"><p>Oh, yeah, because trying to calculate the MRO of the base gets us right back to here, and we get into the infinite cycle before ever checking for our presence in the base MRO.</p>
+<p>Looking forward to the fancier version! I suspect you'll have to keep a set of seen classes and pass it down, or similar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-01 17:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:79 on 2024-11-01 17:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Looking forward to the fancier version! I suspect you'll have to keep a set of seen classes and pass it down, or similar.</p>
+</blockquote>
+<p>yeah...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1938 on 2024-11-01 20:21</div>
+            <div class="timeline-body"><p>How frequently is this function called. Is the caching worth it considering that the mro is cached?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1951 on 2024-11-01 20:27</div>
+            <div class="timeline-body"><p>What's the reason for cloning <code>classes_to_watch</code> here? Doesn't that mean that we miss cycles if they're very nested?</p>
+<p>I would expect that we pass a <code>&amp;mut Class</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:438 on 2024-11-01 20:30</div>
+            <div class="timeline-body"><p>Considering that we're always calling <code>try_mro</code> here, could we instead move the <code>is_cyclically_defined</code> into <code>try_mro</code> so that it is only called once and that all MRO error handling is centralized?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-01 20:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-01 20:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1951 on 2024-11-01 20:47</div>
+            <div class="timeline-body"><p>Without the clone, we start complaining that classes that use diamond inheritance are cyclically defined, because the same class appears in the MROs of two different bases. But that doesn't necessarily mean that the class is cyclic; Python can resolve the MRO for a class that uses diamond inheritance.</p>
+<blockquote>
+<p>Doesn't that mean that we miss cycles if they're very nested?</p>
+</blockquote>
+<p>I don't <em>think</em> so. Do you have an example of something that you think this logic might miss?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-01 20:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1951 on 2024-11-01 20:57</div>
+            <div class="timeline-body"><p>Oh interesting. I forgot about diamond inheritance chains.</p>
+<p>I think what we could do here instead of cloning is to use an index map and instead always truncate the set when we're done visiting a subgraph to the length it had before visiting that subgraph (which is the same as dropping the entire subgraph)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-01 21:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1951 on 2024-11-01 21:03</div>
+            <div class="timeline-body"><p>Oh very cool idea! Would never have thought of that. I'll try that out, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-01 21:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/stubs/class.md</code>:12 on 2024-11-01 21:44</div>
+            <div class="timeline-body"><p>I was intrigued/confused by this TODO, because I didn't think we did silently infer <code>Unknown</code> for subscripts. And we don't! What's happening here is a different bug (authored by me!), where we silently ignore all diagnostics arising from deferred type inference (which includes class bases in a stub file.) I tracked it down and here is the fix, as a diff on this PR:</p>
+<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/resources/mdtest/stubs/class.md b/crates/red_knot_pyt&gt;
+index cc1297499..28a6b1f5e 100644
+--- a/crates/red_knot_python_semantic/resources/mdtest/stubs/class.md
++++ b/crates/red_knot_python_semantic/resources/mdtest/stubs/class.md
+@@ -8,9 +8,8 @@ In type stubs, classes can reference themselves in their base class definitions.
+ ```py path=a.pyi
+ class Foo[T]: ...
+
+-# TODO we resolve `Foo[Bar]` to `Unknown` here without emitting a diagnostic.
+-# (Ideally we'd understand generics, but failing that, we shouldn't *silently* infer `Unknown`)
+-class Bar(Foo[Bar]): ...
++# TODO subscripting generic types
++class Bar(Foo[Bar]): ...  # error: [non-subscriptable]
+
+ reveal_type(Bar)  # revealed: Literal[Bar]
+ reveal_type(Bar.__mro__)  # revealed: tuple[Literal[Bar], Unknown, Literal[object]]
+diff --git a/crates/red_knot_python_semantic/src/types/infer.rs b/crates/red_knot_python_semantic/&gt;
+index 0c55db556..8e30049ee 100644
+--- a/crates/red_knot_python_semantic/src/types/infer.rs
++++ b/crates/red_knot_python_semantic/src/types/infer.rs
+@@ -410,15 +410,18 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+         if self.types.has_deferred {
+             let mut deferred_expression_types: FxHashMap&lt;ScopedExpressionId, Type&lt;'db&gt;&gt; =
+                 FxHashMap::default();
++            let mut deferred_diagnostics = TypeCheckDiagnostics::new();
+             // invariant: only annotations and base classes are deferred, and both of these only
+             // occur within a declaration (annotated assignment, function or class definition)
+             for definition in self.types.declarations.keys() {
+                 if infer_definition_types(self.db, *definition).has_deferred {
+                     let deferred = infer_deferred_types(self.db, *definition);
+                     deferred_expression_types.extend(&amp;deferred.expressions);
++                    deferred_diagnostics.extend(&amp;deferred.diagnostics);
+                 }
+             }
+             self.types.expressions.extend(deferred_expression_types);
++            self.diagnostics.extend(&amp;deferred_diagnostics);
+         }
+
+         self.check_class_definitions();
+</code></pre>
+<p>But if you'd rather not include the fix in this PR, that's totally reasonable; I can do it as a follow-up PR with a dedicated test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1951 on 2024-11-01 21:54</div>
+            <div class="timeline-body"><p>Equivalent to that would be for <code>is_cyclically_defined_recursive</code> to remove <code>class</code> from <code>classes_to_watch</code> before returning. But Micha's idea to use an <code>IndexSet</code> will be more efficient.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-01 21:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-01 22:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/stubs/class.md</code>:12 on 2024-11-01 22:11</div>
+            <div class="timeline-body"><p>Nit: do we need the intermediate deferred types and diagnostics struct? I'm probably blind and there's an obvious borrow problem</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-01 22:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/stubs/class.md</code>:12 on 2024-11-01 22:13</div>
+            <div class="timeline-body"><p>Heh, I was just looking at this and wondering the same thing! AFAICS there is no need for it; no idea why I did it that way. Updated diff:</p>
+<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/resources/mdtest/stubs/class.md b/crates/red_knot_pyt&gt;
+index cc1297499..28a6b1f5e 100644
+--- a/crates/red_knot_python_semantic/resources/mdtest/stubs/class.md
++++ b/crates/red_knot_python_semantic/resources/mdtest/stubs/class.md
+@@ -8,9 +8,8 @@ In type stubs, classes can reference themselves in their base class definitions.
+ ```py path=a.pyi
+ class Foo[T]: ...
+
+-# TODO we resolve `Foo[Bar]` to `Unknown` here without emitting a diagnostic.
+-# (Ideally we'd understand generics, but failing that, we shouldn't *silently* infer `Unknown`)
+-class Bar(Foo[Bar]): ...
++# TODO subscripting generic types
++class Bar(Foo[Bar]): ...  # error: [non-subscriptable]
+
+ reveal_type(Bar)  # revealed: Literal[Bar]
+ reveal_type(Bar.__mro__)  # revealed: tuple[Literal[Bar], Unknown, Literal[object]]
+diff --git a/crates/red_knot_python_semantic/src/types/infer.rs b/crates/red_knot_python_semantic/&gt;
+index 0c55db556..4ca286be0 100644
+--- a/crates/red_knot_python_semantic/src/types/infer.rs
++++ b/crates/red_knot_python_semantic/src/types/infer.rs
+@@ -408,17 +408,15 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+         }
+
+         if self.types.has_deferred {
+-            let mut deferred_expression_types: FxHashMap&lt;ScopedExpressionId, Type&lt;'db&gt;&gt; =
+-                FxHashMap::default();
+             // invariant: only annotations and base classes are deferred, and both of these only
+             // occur within a declaration (annotated assignment, function or class definition)
+             for definition in self.types.declarations.keys() {
+                 if infer_definition_types(self.db, *definition).has_deferred {
+                     let deferred = infer_deferred_types(self.db, *definition);
+-                    deferred_expression_types.extend(&amp;deferred.expressions);
++                    self.types.expressions.extend(&amp;deferred.expressions);
++                    self.diagnostics.extend(&amp;deferred.diagnostics);
+                 }
+             }
+-            self.types.expressions.extend(deferred_expression_types);
+         }
+
+         self.check_class_definitions();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-11-03 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-03 18:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/mro.md</code>:403 on 2024-11-03 18:43</div>
+            <div class="timeline-body"><p>I'm pretty unhappy about the cascading errors here. I might work on a followup PR to see if I can avoid them.</p>
+<p>Unfortunately a solution doesn't seem trivial (at least from what I can see). Also, this situation should really be very rare (I don't see any plausible reason why anybody would try to make a class inherit from itself, even indirectly, in real code). So I think this is <em>okay</em>, if necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-04 07:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/mro.md</code>:403 on 2024-11-04 07:10</div>
+            <div class="timeline-body"><p>I don't think there's a reason why they would <strong>want</strong> to do that but I remember that I at least accidentally did just that more than once in my early career because I was unaware that it leads to a cycle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1876 on 2024-11-04 07:32</div>
+            <div class="timeline-body"><p>Nit: It wasn't clear to me why the <code>[()]</code> was necessary and naively removed it to see if it still compiles.... and it does. But what I understand is that doing so removes the performance optimization.</p>
+<p>I suggest moving this code into a custom <code>Iterator</code> implementation to make the lazy lookup more explicit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1855 on 2024-11-04 07:33</div>
+            <div class="timeline-body"><p>Nit: Maybe <code>mro_iter</code> to make it more explicit that this method iterates over the <code>MRO</code> and is not a non-failable alternative to <code>mro</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1881 on 2024-11-04 07:34</div>
+            <div class="timeline-body"><p>Can we use <code>contains(ClassBase::Class(other))</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1862 on 2024-11-04 07:38</div>
+            <div class="timeline-body"><p>While it's true that we don't emit diagnostics for those, we still call <code>check_class_definitions</code> for every <code>ClassDefinition</code> which results in eagerly pulling the class's MRO.</p>
+<p>That's why I don't think the optimization is really about avoiding computing the MRO. It's only about avoiding making the salsa query call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:132 on 2024-11-04 07:40</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                seqs.push(valid_bases.into_iter().collect());
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:418 on 2024-11-04 07:41</div>
+            <div class="timeline-body"><p>Nice use of <code>Either</code> :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-04 07:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-04 07:41</div>
+            <div class="timeline-body"><p>This is great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-04 11:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:132 on 2024-11-04 11:32</div>
+            <div class="timeline-body"><p>That doesn't work because we need access to <code>valid_bases</code> in the closure passed to <code>.ok_or_else()</code> immediately below</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-04 13:27</div>
+            <div class="timeline-body"><p>Thanks both for the excellent review comments!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-11-04 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-11-04 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-04 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-11-04 20:11</div>
+            <div class="timeline-body"><p>🎉</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:27 UTC
+    </footer>
+</body>
+</html>

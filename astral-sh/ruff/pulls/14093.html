@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Derive message formats macro support to string - astral-sh/ruff #14093</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Derive message formats macro support to string</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14093">#14093</a>
+        opened by <a href="https://github.com/sbrugman">@sbrugman</a>
+        on 2024-11-04 15:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-11-04 15:11</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Follow-up of https://github.com/astral-sh/ruff/pull/14090: the <code>derive_message_formats</code> macro previously did not support <code>String::to_string</code>. This PR changes the macro to require <code>String::to_string</code> instead of <code>format!</code> when no formatting parameters are provided.</p>
+<p>There is room for further expansion of this macro, as this pattern used in #14090 is not yet supported for the message method:</p>
+<pre><code class="language-rust">let message = &quot;message&quot;;
+message.to_string();
+</code></pre>
+<h2>Test Plan</h2>
+<p><code>cargo test</code> and <code>cargo expand</code>, e.g. <code>cargo expand rules::flake8_bandit::rules::jinja2_autoescape_false -p ruff_linter</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sbrugman on 2024-11-04 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/needless_bool.rs</code>:62 on 2024-11-04 15:23</div>
+            <div class="timeline-body"><p>Here I would probably keep the <code>let NeedlessBool { condition, negate } = self;</code> line, since it results in fewer lines of code overall, and it allows us to unpack multiple variables at once</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/zip_dict_keys_and_values.rs</code>:55 on 2024-11-04 15:25</div>
+            <div class="timeline-body"><p>Same here, the unpacking of <code>self</code> was fine and resulted in fewer lines of code overall. I'd keep the unpacking as it was in these places.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-04 15:26</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pygrep_hooks/rules/blanket_noqa.rs</code>:69 on 2024-11-04 15:28</div>
+            <div class="timeline-body"><p>I'd prefer to keep the <code>let BlanketNoQA { .. } = self;</code> line for situations where we're unpacking lots of variables at once, like this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-04 15:32</div>
+            <div class="timeline-body"><p>Very nice! Just three places where I think you went <em>slightly</em> too far ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-11-04 15:45</div>
+            <div class="timeline-body"><p>Fair point, reverted those three cases</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-11-04 15:49</div>
+            <div class="timeline-body"><p>LGTM. It might be worth @MichaReiser -- or somebody else who knows their Rust macros a little better -- also taking a look at the changes in <code>ruff_macros</code>, though 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-11-04 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-11-04 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-04 17:06</div>
+            <div class="timeline-body"><p>Hmm, I don't mind the change and it certainly helps that people don't learn the &quot;bad&quot; pattern of using <code>format! over </code>to_string` if there are no arguments.</p>
+<p>At the other hand, <code>to_string</code> calls <code>Display</code>. So <code>format!</code> and <code>to_string</code> are equivalent. So this is a pure &quot;esthetic&quot; change. I'm okay with it because it doesn't add too much complexity to the macros and my main concern is with the macro itself (but that's a whole other story).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-11-04 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-11-04 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-04 17:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:27 UTC
+    </footer>
+</body>
+</html>

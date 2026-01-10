@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Expand test corpus - astral-sh/ruff #14360</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Expand test corpus</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14360">#14360</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2024-11-15 12:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-15 12:29</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<ul>
+<li>Add 383 files from <code>crates/ruff_python_parser/resources</code> to the test corpus</li>
+<li>Add 1296 files from <code>crates/ruff_linter/resources</code> to the test corpus</li>
+<li>Use in-memory file system for tests</li>
+<li>Improve test isolation by cleaning the test environment between checks</li>
+<li>Add a mechanism for &quot;known failures&quot;. Mark ~80 files as known failures.</li>
+<li>The corpus test is now <em>significantly</em> slower (~~30 seconds~~ 6 seconds, thanks @MichaReiser).</li>
+</ul>
+<blockquote>
+<p>[!NOTE]<br />
+While <code>red_knot</code> as a command line tool can run over all of these files without panicking, we still have a lot of test failures caused by explicitly &quot;pulling&quot; all types.</p>
+</blockquote>
+<h2>Test Plan</h2>
+<p>Run <code>cargo test -p red_knot_workspace</code> while making sure that</p>
+<ul>
+<li>Introducing code that is known to lead to a panic fails the test</li>
+<li>Removing code that is known to lead to a panic from <code>KNOWN_FAILURES</code>-files also fails the test</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-11-15 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2024-11-15 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2024-11-15 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2024-11-15 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_workspace/tests/check.rs</code>:22 on 2024-11-15 12:40</div>
+            <div class="timeline-body"><p>Nit: Use a <code>SystemPathBuf</code> here to &quot;retain&quot; the information that this is a valid UTF8 path</p>
+<pre><code class="language-suggestion">    Ok(SystemPathBuf::from(String::from_utf8(
+        std::process::Command::new(&quot;cargo&quot;)
+            .args([&quot;locate-project&quot;, &quot;--workspace&quot;, &quot;--message-format&quot;, &quot;plain&quot;])
+            .output()?
+            .stdout,
+    )?)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-15 12:43</div>
+            <div class="timeline-body"><p>Nice, with the allow list!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-15 13:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_workspace/tests/check.rs</code>:95 on 2024-11-15 13:17</div>
+            <div class="timeline-body"><p>We now risk to have a stale file around when <code>file</code> gets deleted.</p>
+<pre><code class="language-suggestion">            memory_fs.write_file(path, &amp;code).unwrap();
+            File::sync_path(&amp;mut db, path);
+
+            // this test is only asserting that we can pull every expression type without a panic
+            // (and some non-expressions that clearly define a single type)
+            let file = system_path_to_file(&amp;db, path).unwrap();
+
+            let result = std::panic::catch_unwind(|| pull_types(&amp;db, file));
+
+            let expected_to_fail = if path.extension().map(|e| e == &quot;pyi&quot;).unwrap_or(false) {
+                pyi_expected_to_fail
+            } else {
+                py_expected_to_fail
+            };
+            if let Err(err) = result {
+                if !expected_to_fail {
+                    std::panic::resume_unwind(err);
+                }
+            } else {
+                assert!(!expected_to_fail, &quot;Expected to panic, but did not. Consider removing this path from KNOWN_FAILURES&quot;);
+            }
+            
+            memory_fs.remove_file(path);
+            file.sync(db);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-15 13:50</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-11-15 14:19</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/david/expand-red-knot-corpus">CodSpeed Performance Report</a></h2>
+<h3>Merging #14360 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>david/expand-red-knot-corpus</code> (477caac) with <code>main</code> (62d6502)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 32</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2024-11-15 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2024-11-15 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-15 16:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:28 UTC
+    </footer>
+</body>
+</html>

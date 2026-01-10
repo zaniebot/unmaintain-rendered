@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-pyi`] Add &quot;replace with `Self`&quot; fix (`PYI019`) - astral-sh/ruff #14238</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-pyi</code>] Add &quot;replace with <code>Self</code>&quot; fix (<code>PYI019</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14238">#14238</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2024-11-10 03:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-11-10 03:03</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #14183.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code> and <code>cargo insta test</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @InSyncWithFoo on 2024-11-10 03:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2024-11-10 03:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs</code>:361 on 2024-11-10 03:06</div>
+            <div class="timeline-body"><p>Is there an <code>Expr</code> visitor I can use? I really don't feel like writing one myself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-10 03:28</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2024-11-11 10:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs</code>:324 on 2024-11-11 10:23</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">    let (edit, ..) = importer.get_or_import_symbol(&amp;request, position, semantic).ok()?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs</code>:361 on 2024-11-11 10:27</div>
+            <div class="timeline-body"><p>I'm not sure if we can fix complex annotations because the annotation, or at least, not all of them. For example, we can't fix:</p>
+<pre><code>a: B | &quot;TypeVar[A]&quot;
+</code></pre>
+<p>because it would require parsing the string literal. Or at least, I don't think it's worth it.</p>
+<p>You could consider implementing your own <code>Visitor</code> but I'm not sure if it's worth the complexity. Maybe just handle the few common cases that you care about?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs</code>:390 on 2024-11-11 10:27</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    let is_declaration_in_question = |type_param: &amp;TypeParam| -&gt; bool {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-11 10:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2024-11-11 13:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs</code>:361 on 2024-11-11 13:02</div>
+            <div class="timeline-body"><p>We are only suggesting the fix for <code>.pyi</code> files, so it's probably safe to assume there are no string annotations (<code>PYI020</code> will deal with those). I agree that it might be unnecessarily complex, so let's just mark the fix as unsafe when an annotation cannot be handled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2024-11-11 13:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs</code>:390 on 2024-11-11 13:09</div>
+            <div class="timeline-body"><p>This seems to lead to a compiler error:</p>
+<pre><code class="language-text">error[E0631]: type mismatch in closure arguments
+    --&gt; crates\ruff_linter\src\rules\flake8_pyi\rules\custom_type_var_return_type.rs:404:24
+     |
+386  |     let is_declaration_in_question = |type_param: &amp;TypeParam| -&gt; bool {
+     |                                      -------------------------------- found signature defined here
+...
+404  |         .find_position(is_declaration_in_question)?;
+     |          ------------- ^^^^^^^^^^^^^^^^^^^^^^^^^^ expected due to this
+     |          |
+     |          required by a bound introduced by this call
+     |
+     = note: expected closure signature `for&lt;'a&gt; fn(&amp;'a &amp;ruff_python_ast::TypeParam) -&gt; _`
+                found closure signature `fn(&amp;ruff_python_ast::TypeParam) -&gt; _`
+note: required by a bound in `find_position`
+    --&gt; ...\itertools-0.13.0\src\lib.rs:1974:34
+     |
+1972 |     fn find_position&lt;P&gt;(&amp;mut self, mut pred: P) -&gt; Option&lt;(usize, Self::Item)&gt;
+     |        ------------- required by a bound in this associated function
+1973 |     where
+1974 |         P: FnMut(&amp;Self::Item) -&gt; bool,
+     |                                  ^^^^ required by this bound in `Itertools::find_position`
+help: consider wrapping the function in a closure
+     |
+404  |         .find_position(|arg0: &amp;&amp;ruff_python_ast::TypeParam| is_declaration_in_question(*arg0))?;
+     |                        ++++++++++++++++++++++++++++++++++++                           +++++++
+help: consider adjusting the signature so it borrows its argument
+     |
+386  |     let is_declaration_in_question = |type_param: &amp;&amp;TypeParam| -&gt; bool {
+     |                                                   +
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-11 13:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs</code>:390 on 2024-11-11 13:20</div>
+            <div class="timeline-body"><p>Fair enough, but we can use the result of <code>find_position</code> rather than accessing the element by <code>index </code>again</p>
+<pre><code>let (index, declaration) = parameters
+        .into_iter()
+        .find_position(is_declaration_in_question)?;
+
+    let typevar_range = declaration.as_type_var().unwrap().range();
+    let last_index = parameters.len() - 1;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-11 13:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs</code>:311 on 2024-11-11 13:22</div>
+            <div class="timeline-body"><p>To avoid relocating the entire vec (although small)</p>
+<pre><code class="language-suggestion">    let (first, rest) = (all_edits.swap_remove(0), all_edits);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs</code>:346 on 2024-11-11 13:23</div>
+            <div class="timeline-body"><p>The entire fix generation contains a fair amount of <code>unwrap</code> calls. Can we add comments explaining why they're &quot;safe&quot; or restructure the code in ways so that they aren't needed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs</code>:308 on 2024-11-11 13:25</div>
+            <div class="timeline-body"><p>I think we should just not provide a fix in this case or be <code>DisplayOnly</code></p>
+<pre><code>    /// The fix is unsafe and should only be displayed for manual application by the user.
+    /// The fix is likely to be incorrect or the resulting code may have invalid syntax.
+    DisplayOnly,
+
+    /// The fix is unsafe and should only be applied with user opt-in.
+    /// The fix may be what the user intended, but it is uncertain; the resulting code will have valid syntax.
+    Unsafe,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs</code>:367 on 2024-11-11 13:26</div>
+            <div class="timeline-body"><p>Shouldn't we bail in this case too?</p>
+<p>Can we add some tests demonstrating that this code path works as expected?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs</code>:409 on 2024-11-11 13:27</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    let range = if index &lt; last_index {
+</code></pre>
+<p>or should this include the last index?</p>
+<pre><code>let range = if index &lt;= last_index {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs</code>:404 on 2024-11-11 13:30</div>
+            <div class="timeline-body"><p>What are cases where the function has only one parameter but <code>first</code> isn't the parameter in question? Can we remove that check? If not, then add a test case for it and ensure the code below doesn't panic with only one parameter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs</code>:406 on 2024-11-11 13:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    let typevar_range = parameters[index].range();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs</code>:297 on 2024-11-11 13:37</div>
+            <div class="timeline-body"><p>We should bail if adding the import failed or we risk generating invalid code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs</code>:300 on 2024-11-11 13:40</div>
+            <div class="timeline-body"><p>Are there cases where the parameter isn't guaranteed to be the first parameter?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-11 13:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs</code>:404 on 2024-11-11 14:21</div>
+            <div class="timeline-body"><p>Added a testcase:</p>
+<pre><code class="language-python">_S = TypeVar('_S', bound = 'C')
+
+class C:
+	def f[T](self: _S, a: T, b: T) -&gt; _S: ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs</code>:346 on 2024-11-11 14:22</div>
+            <div class="timeline-body"><p>One removed, two explained.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs</code>:300 on 2024-11-11 14:22</div>
+            <div class="timeline-body"><p>Yes, see below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2024-11-11 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs</code>:409 on 2024-11-11 14:23</div>
+            <div class="timeline-body"><p>Added two ASCII art comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2024-11-11 14:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs</code>:325 on 2024-11-12 10:27</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    Fix::applicable_edits(first, rest, fix_applicability)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-12 10:28</div>
+            <div class="timeline-body"><p>Nice thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-11-12 10:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-11-12 11:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-11-12 11:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-12 12:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:27 UTC
+    </footer>
+</body>
+</html>

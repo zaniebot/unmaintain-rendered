@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] PEP 695 type aliases - astral-sh/ruff #14357</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] PEP 695 type aliases</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14357">#14357</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2024-11-15 10:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-15 10:55</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Add support for (non-generic) type aliases. The main motivation behind this was to get rid of panics involving expressions in (generic) type aliases. But it turned out the best way to fix it was to implement (partial) support for type aliases.</p>
+<pre><code class="language-py">type IntOrStr = int | str
+
+reveal_type(IntOrStr)  # revealed: typing.TypeAliasType
+reveal_type(IntOrStr.__name__)  # revealed: Literal[&quot;IntOrStr&quot;]
+
+x: IntOrStr = 1
+
+reveal_type(x)  # revealed: Literal[1]
+
+def f() -&gt; None:
+    reveal_type(x)  # revealed: int | str
+</code></pre>
+<h2>Test Plan</h2>
+<ul>
+<li>Updated corpus test allow list to reflect that we don't panic anymore.</li>
+<li>Added Markdown-based test for type aliases (<code>type_alias.md</code>)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-11-15 10:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:609 on 2024-11-16 00:56</div>
+            <div class="timeline-body"><p>In the CPython bytecode compiler, a type alias is more similar to a function or class than what you've implemented here. The RHS of the type alias is <em>always</em> in its own nested scope (this is to support its deferred evaluation), and if it has type parameters, there are two nested scopes: one which just defines the type parameters, and then nested within that, another one in which the RHS is evaluated.</p>
+<p>We can see/verify this using the <code>symtable</code> module:</p>
+<details>
+
+<pre><code class="language-pyrepl">&gt;&gt;&gt; s = symtable.symtable(&quot;type T = int&quot;, &quot;test.py&quot;, &quot;exec&quot;)
+&gt;&gt;&gt; s
+&lt;SymbolTable for module test.py&gt;
+&gt;&gt;&gt; s.get_identifiers()
+dict_keys(['T'])
+&gt;&gt;&gt; s.get_children()
+[&lt;SymbolTable for T in test.py&gt;]
+&gt;&gt;&gt; s.get_children()[0]
+&lt;SymbolTable for T in test.py&gt;
+&gt;&gt;&gt; s.get_children()[0].get_children()
+[]
+&gt;&gt;&gt; s.get_children()[0].get_identifiers()
+dict_keys(['int'])
+
+&gt;&gt;&gt; t = symtable.symtable(&quot;type T[U] = list[U]&quot;, &quot;test.py&quot;, &quot;exec&quot;)
+&gt;&gt;&gt; t.get_identifiers()
+dict_keys(['T'])
+&gt;&gt;&gt; t.get_children()
+[&lt;SymbolTable for T in test.py&gt;]
+&gt;&gt;&gt; t.get_children()[0]
+&lt;SymbolTable for T in test.py&gt;
+&gt;&gt;&gt; t.get_children()[0].get_children()
+[&lt;SymbolTable for T in test.py&gt;]
+&gt;&gt;&gt; t.get_children()[0].get_identifiers()
+dict_keys(['U'])
+&gt;&gt;&gt; t.get_children()[0].get_children()
+[&lt;SymbolTable for T in test.py&gt;]
+&gt;&gt;&gt; t.get_children()[0].get_children()[0]
+&lt;SymbolTable for T in test.py&gt;
+&gt;&gt;&gt; t.get_children()[0].get_children()[0].get_identifiers()
+dict_keys(['list', 'U'])
+</code></pre>
+</details>
+
+<p>Since in the type alias case, there is no user code evaluated directly in the type parameters scope (unlike in the function case, where function annotations are evaluated in the type params scope, or the class case, where class bases are) it is <em>possible</em> that we could flatten this such that there is always exactly one nested scope.</p>
+<p>But I don't think we should; I think it will be easier to get right if we keep it in line with the bytecode compiler and in line with functions and classes. Which means we do need to be pushing and popping an inner scope in this closure, just like for functions and classes. And it means we need both <code>TypeAliasTypeParameters</code> and <code>TypeAlias</code> scope kinds, as well as <code>NodeWithScopeRef</code> etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/symbol.rs</code>:207 on 2024-11-16 02:30</div>
+            <div class="timeline-body"><p>A <code>TypeAlias</code> scope should also be included in <code>ScopeId::is_function_like()</code> above (see https://github.com/python/cpython/blob/main/Python/symtable.c#L568 ).</p>
+<p>Note though that a <code>TypeAliasTypeParameters</code> scope should just be <code>ScopeKind::Annotation</code> like the other type-param scopes; the inner scope for the RHS of the alias should be <code>ScopeKind::TypeAlias</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1143 on 2024-11-16 02:44</div>
+            <div class="timeline-body"><p>We should never cross scopes in a single type inference builder. This is why you are currently hitting a wrong-scope debug assertion in this PR. Since both the type params and the RHS are in their own scope, we shouldn't be trying to infer them here.</p>
+<p>If/when we want to actually infer a type for the type alias, this will involve a new <code>Type</code> variant and a new interned <code>TypeAliasType</code> struct to represent the alias. But the actual type value of the alias RHS should not be inferred eagerly here, it should be inferred lazily via a method on the <code>TypeAliasType</code> struct, which finds the inner scope (probably this should be preserved as an attribute on <code>TypeAliasType</code>, much like <code>body_scope</code> is for classes and functions) and then performs type inference on that scope and pull out the inferred type for the top-level expression in that scope.</p>
+<p>We don't ever need to explicitly infer the type-params scope, if there is one. This will happen naturally when we infer the RHS scope, if there are any references there to type vars -- <code>lookup_name</code> will walk up the scopes, find the definition of that name in the enclosing type-params scope, and infer the typevar definition in the type-params scope; this will all happen without us needing to do anything about it explicitly here.</p>
+<p>So mostly I think you can fix this PR by simply doing less here :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1160 on 2024-11-16 02:46</div>
+            <div class="timeline-body"><p>Yeah it should be <code>_with_binding</code> (as you currently have it), because the type statement defines a value for the type alias name at runtime.</p>
+<p>The more questionable part is whether it should be a declaration, or just a binding. But I think it should be a declaration; we should complain if you reassign a type alias name to a different value.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-16 02:47</div>
+            <div class="timeline-body"><p>Happy to do a VC call next week if anything remains unclear about how this is all supposed to work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-20 15:12</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2024-11-20 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2024-11-20 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2024-11-20 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:598 on 2024-11-21 00:55</div>
+            <div class="timeline-body"><p>I tried a bunch of different things in the ruff playground, and anytime I made it not a name, the parser no longer spit out a <code>TypeAlias</code> node at all. So I think given the current parser implementation, this is safe.</p>
+<p>I'm not sure I would call that a <em>guarantee</em>, though. We want to be robust (not panic) against invalid syntax, and I think it's preferable if we can avoid depending on details of how the parser chooses to represent invalid syntax. Here, it seems like it would be pretty simple to instead just fallback on some synthetic name like <code>&quot;&lt;unknown&gt;&quot;</code>? (If I'm wrong, and it's actually hard/problematic to do that, then I think we can just go with the <code>.expect()</code> as you have it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/symbol.rs</code>:123 on 2024-11-21 01:11</div>
+            <div class="timeline-body"><p>On closer look here I realize that <code>NodeWithScopeKind::TypeAliasTypeParameters</code> also belongs here, just like <code>ClassTypeParameters</code> and <code>FunctionTypeParameters</code>.</p>
+<p>Though it seems like we could also simplify this to match on <code>self.node(db).kind()</code> instead, and then including <code>ScopeKind::Annotation</code> would cover all three of the type-param scopes.</p>
+<p>Either option seems fine to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/symbol.rs</code>:407 on 2024-11-21 01:26</div>
+            <div class="timeline-body"><p>This should be <code>NodeWithScopeKey::TypeAlias</code>, not <code>NodeWithScopeKey::TypeAliasTypeParameters</code>. (Will also require adding the <code>NodeWithScopeKey::TypeAlias</code> variant below.) Otherwise, both the type alias' type params scope and its inner scope will try to use the same key in the scopes-by-node mapping.</p>
+<p>It apparently works anyway because we never actually try to look up the type parameters scope, and we insert the inner scope into the map second, so it replaces the type-params scope, and we always end up getting the inner scope back from a lookup.</p>
+<p>We should add a debug assertion in <code>SemanticIndexBuilder::push_scope_with_parent</code> that our <code>self.scopes_by_node.insert(...)</code> call always returns <code>None</code> (that is, it never stomps on an existing scope recorded for the same node key.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:358 on 2024-11-21 01:27</div>
+            <div class="timeline-body"><p>Should clarify what kind, since there are also legacy type aliases.</p>
+<pre><code class="language-suggestion">    /// A PEP 695 type alias, with a name and corresponding type
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:359 on 2024-11-21 01:29</div>
+            <div class="timeline-body"><p>I'm realizing now (contrary to my comment in the last review) that we don't actually need or want an entirely new <code>Type</code> variant for this. The type of <code>x</code> after <code>type x = int</code> is a singleton type representing a single known instance of <code>typing.TypeAliasType</code>. So I think we can (and should) just use <code>Type::KnownInstance</code> for this, and a new variant of <code>KnownInstanceType</code> that holds the <code>TypeAliasType</code> (much like I did for type variables). And that will give us a bunch of singleton-known-instance behaviors for free. (This will probably also require a <code>KnownClass</code> for <code>typing.TypeAliasType</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:729 on 2024-11-21 01:38</div>
+            <div class="timeline-body"><p>This is confusing the type represented by the type alias when we see it used in an annotation expression (that is, the type spelled by the type expression on the RHS of the alias), with the type of the alias object itself (which is just a singleton known instance of <code>typing.TypeAliasType</code>). So the &quot;de-reference&quot; to the alias' value that you are implementing here should happen only when we encounter a type alias in <code>infer_type_expression</code> (that is, in <code>in_type_expression</code> below), we don't want to implement it throughout the type system.</p>
+<p>Since a type alias object is a singleton instance, it's always disjoint -- but if we use <code>KnownInstance</code>, we'll get that for free.</p>
+<p>(I won't comment on all the other places below where you're matching on <code>TypeAlias</code> and implementing this de-reference to its value type, but the same comment applies to all of them.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2819 on 2024-11-21 01:40</div>
+            <div class="timeline-body"><p>This is exactly right!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:870 on 2024-11-21 01:44</div>
+            <div class="timeline-body"><p>It should be <code>Deferred</code>, because the RHS of a type statement is lazily evaluated at runtime, meaning we should use end-of-scope name resolution rather than flow-sensitive name resolution for names in the expression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:355 on 2024-11-21 01:47</div>
+            <div class="timeline-body"><p>The spec doesn't really clarify, but mypy and pyright both agree that a type alias isn't valid as a base class, and it won't work at runtime, either. So we don't need to support it in this way, it can go below in the long list of things that return <code>None</code>. (Though it will probably go inside the <code>KnownInstance</code> match instead.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_workspace/tests/check.rs</code>:272 on 2024-11-21 01:51</div>
+            <div class="timeline-body"><p>This is interesting. I suspect it might go away if we stop trying to infer the type of <code>.value()</code> on a type alias anytime we encounter it. If not I'll want to take a closer look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-21 01:56</div>
+            <div class="timeline-body"><p>The updated type inference structure looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_alias.md</code>:8 on 2024-11-21 01:57</div>
+            <div class="timeline-body"><p>I think we'll get this for free too with using <code>KnownInstance</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1491 on 2024-11-21 02:06</div>
+            <div class="timeline-body"><p>Note: this is the one method where we will want to map the type alias to its value.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:729 on 2024-11-21 02:09</div>
+            <div class="timeline-body"><p>It might be good to add a few tests that would have failed based on this -- e.g. showing that we understand that two different type alias singleton types are disjoint and distinct types, even if they are an alias to the same type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-21 02:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2737 on 2024-11-21 06:01</div>
+            <div class="timeline-body"><p>nit: <code>value_ty</code> ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-21 06:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2737 on 2024-11-21 07:10</div>
+            <div class="timeline-body"><p>This should be a <code>salsa::tracked</code> because it uses <code>scope.node</code> or we should document that this function should never be called from a query that's from another file than the current query.</p>
+<pre><code class="language-suggestion">#[salsa::tracked]
+impl TypeAliasType&lt;'_&gt; {
+    #[salsa::tracked]
+    pub fn value(self, db: &amp;dyn Db) -&gt; Type {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-21 07:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-21 09:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:598 on 2024-11-21 09:04</div>
+            <div class="timeline-body"><p>Sorry, that TODO comment was really meant for myself (to either check if it's okay or to change the code)</p>
+<blockquote>
+<p>I tried a bunch of different things in the ruff playground, and anytime I made it not a name, the parser no longer spit out a <code>TypeAlias</code> node at all. So I think given the current parser implementation, this is safe.</p>
+</blockquote>
+<p>That's what I did as well :smile:.</p>
+<blockquote>
+<p>I think it's preferable if we can avoid depending on details of how the parser chooses to represent invalid syntax</p>
+</blockquote>
+<p>Agreed.</p>
+<blockquote>
+<p>Here, it seems like it would be pretty simple to instead just fallback on some synthetic name like <code>&quot;&lt;unknown&gt;&quot;</code>? (If I'm wrong, and it's actually hard/problematic to do that, then I think we can just go with the <code>.expect()</code> as you have it.)</p>
+</blockquote>
+<p>I'll look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-21 09:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/symbol.rs</code>:123 on 2024-11-21 09:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Though it seems like we could also simplify this to match on <code>self.node(db).kind()</code> instead, and then including <code>ScopeKind::Annotation</code> would cover all three of the type-param scopes.</p>
+</blockquote>
+<p>If I understand correctly, you would want to change it to:</p>
+<pre><code class="language-rs">matches!(
+    self.node(db).scope_kind(),
+    ScopeKind::Annotation | ScopeKind::Function | ScopeKind::TypeAlias | ScopeKind::Comprehension
+)
+</code></pre>
+<p>This would match everything that was matched previously, but it would additionally iunclude <code>NodeWithScopeKind::Lambda(_)</code>. I wasn't sure if that's correct, so I just added <code>NodeWithScopeKind::TypeAliasTypeParameters</code> for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-21 09:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/symbol.rs</code>:407 on 2024-11-21 09:34</div>
+            <div class="timeline-body"><p>Oops. Added the assertion so this won't happen again (made sure it triggers on my previous version).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-21 12:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_workspace/tests/check.rs</code>:272 on 2024-11-21 12:03</div>
+            <div class="timeline-body"><p>It happens for self-referential type aliases like <code>type NestedInt = int | list[NestedInt]</code>. We form a genuine cycle when inferring the annotation type on the RHS and look up the name <code>NestedInt</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Preliminary support for type aliases" to "[red-knot] PEP 695 type aliases" by @sharkdp on 2024-11-21 12:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_alias.md</code>:10 on 2024-11-21 22:15</div>
+            <div class="timeline-body"><p>Heh, I thought yesterday about recommending a test of the <code>__value__</code> attribute, and then I didn't because it's actually pretty tricky. But I should have gone ahead and mentioned why it's tricky, to save you some time.</p>
+<p>Internally the <code>value</code> type we care about for a type alias is the type of the RHS expression <em>as a type expression</em>. And that type here is the type <code>int | str</code>. But the type of the actual <code>__value__</code> attribute at runtime is the type of the RHS <em>as a runtime value expression</em>. Which in this case would be an instance of <code>types.UnionType</code>, the result at runtime of evaluating the expression <code>int | str</code>. That's a very different type from the type <code>int | str</code>.</p>
+<p>If we want to do this precisely, it's <em>possible</em>, but I think it would require inferring the type of the RHS twice, once as a value expression and once as a type expression. And that gets into some difficulties with our expectation that a given expression has only one inferred type.</p>
+<p>So the question is, how valuable is it to have precise typing of the <code>__value__</code> attribute of a type alias? Tbh I'm not sure; it's possible that with the increasing use of runtime-typing libraries, like Pydantic, we may get user requests for this precision. But existing type checkers don't bother; they just go with the typeshed definition of <code>TypeAliasType</code>, which says the type of <code>__value__</code> is <code>Any</code>: https://github.com/python/typeshed/blob/main/stdlib/typing.pyi#L1045</p>
+<p>For TypeVars, I did try to do precise typing of <code>__bounds__</code> and <code>__constraints__</code>, mostly so I could write tests like this one, because unlike with a type alias, I didn't even have any way to write a test like the one you wrote down on line 17 here, which correctly asserts for the type <code>int | str</code>. But the way I did it (using <code>to_meta_type</code> to try to convert &quot;type as type expression&quot; to &quot;type as value expression&quot;) is hacky and wrong, as I've realized more clearly since. It works only in simple cases (if <code>A</code> is a class, the meta type of <code>A</code> is <code>Literal[A]</code>, and the latter is also the runtime type of the expression <code>A</code>), but it doesn't even work for a union case like this. The meta type of <code>A | B</code> is <code>Literal[A] | Literal[B]</code>, but that's not the type of the runtime value expression <code>A | B</code>; the latter is an instance of <code>types.UnionType</code>.</p>
+<p>All that is to say: I think for this PR we should not implement any special handling for the <code>__value__</code> attribute of a type alias type, and just let it fallback to typeshed. (And, separately, we should probably remove the special handling I added for <code>__bounds__</code> and <code>__constraints__</code> on a TypeVar. I'll push a PR for this.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_alias.md</code>:35 on 2024-11-21 22:36</div>
+            <div class="timeline-body"><p>We should use the more verbose &quot;annotate a name as <code>IntOrStrOrBytes</code> and check its revealed type from a different scope&quot; approach here, for the reasons discussed above; the actual type of <code>IntOrStrOrBytes.__value__</code> here would be <code>types.UnionType</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_alias.md</code>:45 on 2024-11-21 22:37</div>
+            <div class="timeline-body"><p>And similarly this assertion is not right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/symbol.rs</code>:123 on 2024-11-21 22:57</div>
+            <div class="timeline-body"><p>Yes, a lambda scope is a function scope, so that would actually be a bugfix.</p>
+<p>(For reference, https://github.com/python/cpython/blob/main/Python/symtable.c#L563 is the upstream equivalent of our <code>is_function_like</code>, and it operates on a CPython enum which is precisely parallel to our <code>ScopeKind</code> enum. And we can see at https://github.com/python/cpython/blob/main/Python/symtable.c#L2379 that Lambda nodes do get a <code>FunctionBlock</code> scope.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/symbol.rs</code>:453 on 2024-11-21 22:59</div>
+            <div class="timeline-body"><p>very minor code organization nit: maybe let's not split the two Function scopes (function and lambda) apart here? We could even group them into a single <code>|</code> pattern, like with the annotation and comprehension scopes below</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1972 on 2024-11-21 23:03</div>
+            <div class="timeline-body"><p>As discussed above, I think we should remove this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1975 on 2024-11-21 23:04</div>
+            <div class="timeline-body"><p>I'm also not sure we need a match arm and a Todo here, when it would be correct (and match the behavior of other type checkers) to just allow it to fall back to the typeshed definition of the attribute. We can potentially add more precise per-instance typing for it in the future if there are compelling use cases, but we don't need to consider it a todo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-11-21 23:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_alias.md</code>:10 on 2024-11-22 07:20</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-22 07:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2024-11-22 07:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2024-11-22 07:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-22 07:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:28 UTC
+    </footer>
+</body>
+</html>

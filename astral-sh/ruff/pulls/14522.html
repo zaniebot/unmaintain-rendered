@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Semantic index: handle invalid `break`s - astral-sh/ruff #14522</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Semantic index: handle invalid <code>break</code>s</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14522">#14522</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2024-11-22 09:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-22 09:58</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This fix intends to address panics related to invalid syntax like the following where a <code>break</code> statement is used in a nested definition inside a loop:</p>
+<pre><code class="language-py">while True:
+
+    def b():
+        x: int
+
+        break
+</code></pre>
+<blockquote>
+<p>[!NOTE]<br />
+I don't like the fact that we add even more mutable state to <code>SemanticIndexBuilder</code>. There might very well be a better solution here. And maybe we need something more general to handle other cases of invalid syntax. I still thought it would be valuable to propose this change with relevant regression tests, so we can start thinking about what would be required to properly fix this.</p>
+</blockquote>
+<p>closes #14342</p>
+<h2>Test Plan</h2>
+<ul>
+<li>New corpus regression tests.</li>
+<li>New unit test to make sure we handle nested while loops correctly. This test is passing on <code>main</code>, but can easily fail if the <code>is_inside_loop</code> state isn't properly saved/restored.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-11-22 09:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2024-11-22 09:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2024-11-22 09:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2024-11-22 09:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-22 10:05</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-22 10:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:536 on 2024-11-22 10:06</div>
+            <div class="timeline-body"><p>We also need to unset the flag when entering a lambda expressoin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-22 10:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:536 on 2024-11-22 10:06</div>
+            <div class="timeline-body"><p>would it make more sense to reset this in <code>push_scope()</code> and <code>pop_scope()</code>, rather than having very similar code in the branches for <code>Stmt::FunctionDef</code> and <code>Stmt::ClassDef</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-22 10:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-22 10:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:874 on 2024-11-22 10:06</div>
+            <div class="timeline-body"><p>We need to set the flag to <code>true</code> for while statements</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:536 on 2024-11-22 10:06</div>
+            <div class="timeline-body"><p>Doing this would fix @MichaReiser's comment in https://github.com/astral-sh/ruff/pull/14522#discussion_r1853665736</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:874 on 2024-11-22 10:14</div>
+            <div class="timeline-body"><p>I don't understand? We already do?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-22 10:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-22 10:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:536 on 2024-11-22 10:22</div>
+            <div class="timeline-body"><p>Not saying your suggestion is wrong, just trying to understand: isn't the body of a lambda an expression? or can it contain a (<code>break</code>) statement somehow? Or is there another reason why we need to handle it? As in: what test do I need to write to make sure I handle things correctly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-22 10:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:536 on 2024-11-22 10:50</div>
+            <div class="timeline-body"><p>You're right. Technically it's not possible that the lambda can contain a break. My motivation for adding it to lambda is mainly a precaution in case we use <code>inside_loop</code> to detect anything else where this restriction doesn't apply.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:536 on 2024-11-22 10:54</div>
+            <div class="timeline-body"><p>I think this would involve handling a whole stack of <code>inside_loop</code> flags? While doing it here naturally uses the call stack for the same outcome.  But happy to try that if we think that's a better solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-22 10:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-22 11:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:536 on 2024-11-22 11:07</div>
+            <div class="timeline-body"><p>Hmm, I see your point.</p>
+<p>I think the design of the builder here would be nicer to deal with if the pushing and popping of the scope happened in the same method -- something more similar to the <code>with_type_params</code> method and the <code>with_generators_scope</code> methods that we already have. We'd have to keep track of fewer stacks on the builder that deal with issues of nested scopes, and it would make it easier to maintain the invariant that a <code>push_scope</code> call should always be balanced with a <code>pop_scope</code> call.</p>
+<p>For now I think I'm okay with what you have. The implicit invariant we're relying on here is that class definitions and functions defined via <code>def</code> are the only kinds of nested scopes that can contain statements (and therefore <code>break</code> statements). This will break if Python adds another kind of scope in a future version that allows statements in its body, but this does seem unlikely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-22 11:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:536 on 2024-11-22 11:08</div>
+            <div class="timeline-body"><p>I'm fine with either solution. Using a stack seems complicated for just the one flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-22 11:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-22 11:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:536 on 2024-11-22 11:51</div>
+            <div class="timeline-body"><p>I went with the stack solution after all :smile:. I thought about amending the existing stack for scopes, but for now it's a separate stack that mirrors <code>scope_stack</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:55 on 2024-11-22 11:53</div>
+            <div class="timeline-body"><p>non-blocking comment: it might be slightly fewer allocations (and better reflect the invariant that the two stacks always have the same length) if we had something like this, rather than two parallel stacks:</p>
+<pre><code class="language-rs">enum LoopState {
+    InLoop,
+    NotInLoop,
+}
+
+pub(super) struct SemanticIndexBuilder&lt;'db&gt; {
+    scope_stack: Vec&lt;(FileScopeId, LoopState)&gt;
+}
+</code></pre>
+<p>But I'm also fine with what you have now!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-11-22 11:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-22 11:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:55 on 2024-11-22 11:56</div>
+            <div class="timeline-body"><p>oops, I typed out this comment before I saw https://github.com/astral-sh/ruff/pull/14522#discussion_r1853798868 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-22 11:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:55 on 2024-11-22 11:56</div>
+            <div class="timeline-body"><p>~~This is what I meant above by &quot;I thought about amending the existing stack for scopes&quot; :smile:.~~</p>
+<p>Edit: same problem here</p>
+<p>I'll check now what implications this has.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-22 12:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:55 on 2024-11-22 12:05</div>
+            <div class="timeline-body"><p>It's better. Thanks for pushing me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2024-11-22 12:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2024-11-22 12:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-22 12:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:29 UTC
+    </footer>
+</body>
+</html>

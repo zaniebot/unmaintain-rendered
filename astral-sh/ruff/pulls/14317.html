@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Use memory address as AST node key - astral-sh/ruff #14317</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Use memory address as AST node key</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14317">#14317</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2024-11-13 12:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-13 12:28</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Use the memory address to uniquely identify AST nodes, instead of relying on source range and kind. The latter fails for ASTs resulting from invalid syntax examples. See #14313 for details.</p>
+<p>Also results in a 1-2% speedup (https://codspeed.io/astral-sh/ruff/runs/67349cf55f36b36baa211360)</p>
+<p>closes #14313</p>
+<h2>Review</h2>
+<p>Here are the places where we use <code>NodeKey</code> directly or indirectly (via <code>ExpressionNodeKey</code> or <code>DefinitionNodeKey</code>):</p>
+<pre><code class="language-rs">// semantic_index.rs
+pub(crate) struct SemanticIndex&lt;'db&gt; { 
+    // [...]
+    /// Map expressions to their corresponding scope.
+    scopes_by_expression: FxHashMap&lt;ExpressionNodeKey, FileScopeId&gt;,
+
+    /// Map from a node creating a definition to its definition.
+    definitions_by_node: FxHashMap&lt;DefinitionNodeKey, Definition&lt;'db&gt;&gt;,
+
+    /// Map from a standalone expression to its [`Expression`] ingredient.
+    expressions_by_node: FxHashMap&lt;ExpressionNodeKey, Expression&lt;'db&gt;&gt;,
+    // [...]
+}
+
+// semantic_index/builder.rs
+pub(super) struct SemanticIndexBuilder&lt;'db&gt; {
+    // [...]
+    scopes_by_expression: FxHashMap&lt;ExpressionNodeKey, FileScopeId&gt;,
+    definitions_by_node: FxHashMap&lt;ExpressionNodeKey, Definition&lt;'db&gt;&gt;,
+    expressions_by_node: FxHashMap&lt;ExpressionNodeKey, Expression&lt;'db&gt;&gt;,
+}
+
+// semantic_index/ast_ids.rs
+pub(crate) struct AstIds {
+    /// Maps expressions to their expression id.
+    expressions_map: FxHashMap&lt;ExpressionNodeKey, ScopedExpressionId&gt;,
+    /// Maps expressions which &quot;use&quot; a symbol (that is, [`ast::ExprName`]) to a use id.
+    uses_map: FxHashMap&lt;ExpressionNodeKey, ScopedUseId&gt;,
+}
+
+pub(super) struct AstIdsBuilder {
+    expressions_map: FxHashMap&lt;ExpressionNodeKey, ScopedExpressionId&gt;,
+    uses_map: FxHashMap&lt;ExpressionNodeKey, ScopedUseId&gt;,
+}
+</code></pre>
+<h2>Test Plan</h2>
+<p>Added two failing examples to the corpus.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-11-13 12:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2024-11-13 12:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2024-11-13 12:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2024-11-13 12:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-13 12:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/node_key.rs</code>:11 on 2024-11-13 12:30</div>
+            <div class="timeline-body"><p>Thought about renaming it to <code>NodeAddress</code>, but that lead to too many downstream renamings and a large diff. Let me know if someone is unhappy with keeping <code>NodeKey</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-13 12:42</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/node_key.rs</code>:6 on 2024-11-13 13:05</div>
+            <div class="timeline-body"><p>It would be great to add an example here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-13 13:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2024-11-13 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2024-11-13 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-13 13:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:28 UTC
+    </footer>
+</body>
+</html>

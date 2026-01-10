@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Meta data for `Type::Todo` - astral-sh/ruff #14500</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Meta data for <code>Type::Todo</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14500">#14500</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2024-11-20 20:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-20 20:44</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Adds meta information to <code>Type::Todo</code>, allowing developers to easily trace back the origin of a particular <code>@Todo</code> type they encounter.</p>
+<p>Instead of <code>Type::Todo</code>, we now write either <code>type_todo!()</code> which creates a <code>@Todo[path/to/source.rs:123]</code> type with file and line information, or using <code>type_todo!(&quot;PEP 604 unions not supported&quot;)</code>, which creates a variant with a custom message.</p>
+<p><code>Type::Todo</code> now contains a <code>TodoType</code> field. In release mode, this is just a zero-sized struct, in order not to create any overhead. In debug mode, this is an <code>enum</code> that contains the meta information.</p>
+<p><code>Type</code> implements <code>Copy</code>, which means that <code>TodoType</code> also needs to be copyable. This limits the design space. We could intern <code>TodoType</code>, but I discarded this option, as it would require us to have access to the salsa DB everywhere we want to use <code>Type::Todo</code>. And it would have made the macro invocations less ergonomic (requiring us to pass <code>db</code>).</p>
+<p>So for now, the meta information is simply a <code>&amp;'static str</code> / <code>u32</code> for the file/line variant, or a <code>&amp;'static str</code> for the custom message. Anything involving a chain/backtrace of several <code>@Todo</code>s or similar is therefore currently not implemented. Also because we currently don't see any direct use cases for this, and because all of this will eventually go away.</p>
+<p>Note that the size of <code>Type</code> increases from 16 to 24 bytes, but only in debug mode.</p>
+<h2>Test Plan</h2>
+<ul>
+<li><p>Observed the changes in Markdown tests.</p>
+</li>
+<li><p>Added custom messages for all <code>Type::Todo</code>s that were revealed in the tests</p>
+</li>
+<li><p>Ran red knot in release and debug mode on the following Python file:</p>
+<pre><code class="language-py">def f(x: int) -&gt; int:
+    reveal_type(x)
+</code></pre>
+<p>Prints <code>@Todo</code> in release mode and <code>@Todo(function parameter type)</code> in debug mode.</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @sharkdp on 2024-11-20 20:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-11-20 20:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2024-11-20 20:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2024-11-20 20:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2024-11-20 20:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-20 20:49</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:399 on 2024-11-20 20:59</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// This variant should be created with the [`todo_type!`] macro.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-20 21:02</div>
+            <div class="timeline-body"><p>Clever!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-20 21:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:399 on 2024-11-20 21:46</div>
+            <div class="timeline-body"><p>I reverted this, as <code>cargo doc</code> failed. <code>todo_type!</code> is only <code>pub(crate)</code>, but <code>Type</code> is <code>pub</code>. I don't know if it would be fine to make <code>Type</code> <code>pub(crate)</code>, and it's not straightforward anyway. And I don't really want to make the macro <code>pub</code>, as that would require using <code>#[macro_export]</code> and <code>$crate</code> in both variants of the macro... all of which seems like a bit too much for this small QOL improvement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:327 on 2024-11-20 21:51</div>
+            <div class="timeline-body"><p>Just to clarify that this is for red-knot implementation limitations, not for limitations in the Python type specification.</p>
+<pre><code class="language-suggestion">/// Meta data for `Type::Todo`, which represents a known limitation in red-knot.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1239 on 2024-11-20 21:56</div>
+            <div class="timeline-body"><p>I guess there are some judgment calls about when to propagate a Todo vs create a new one. This could propagate, like we do below in <code>to_instance</code> and <code>to_meta_type</code>, but maybe an attribute of a todo feels more like a new todo than an extension of the previous one? Not sure what will be more useful in practice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3655 on 2024-11-20 22:02</div>
+            <div class="timeline-body"><p>I think these are all not actually correct (as discussed in Discord today), but that's orthogonal to this PR; these assertions are consistent with our current handling. So I think it makes sense to leave them as-is for this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3669 on 2024-11-20 22:03</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // And similar for intersection types:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-11-20 22:05</div>
+            <div class="timeline-body"><p>This is great! Will make debugging so much nicer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-20 22:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3655 on 2024-11-20 22:10</div>
+            <div class="timeline-body"><p>Oh, I was about to read that discussion again tomorrow. I thought it was unrelated to my change :smile:. I can look into it (not here).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-21 00:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3655 on 2024-11-21 00:43</div>
+            <div class="timeline-body"><p>It is unrelated to your change, except that you added some explicit tests that <code>Todo</code> (which is supposed to be a dynamic type just like <code>Any</code> or <code>Unknown</code>) is equivalent to and a subtype of itself, which I don't think we had explicitly tested before, and is not really right. So that makes it related :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-21 08:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1239 on 2024-11-21 08:50</div>
+            <div class="timeline-body"><p>I'm going to assume for now that the original todo is more interesting, so I changed the logic here to propagate the incoming todo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3655 on 2024-11-21 08:53</div>
+            <div class="timeline-body"><p>Okay yes, this is what I understood after your first comment. I'll address this in a follow-up and fix these tests accordingly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-21 08:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2024-11-21 08:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2024-11-21 08:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-21 08:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:28 UTC
+    </footer>
+</body>
+</html>

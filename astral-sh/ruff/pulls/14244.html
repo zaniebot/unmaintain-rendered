@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Infer `Literal` types from comparisons with `sys.version_info` - astral-sh/ruff #14244</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Infer <code>Literal</code> types from comparisons with <code>sys.version_info</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14244">#14244</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-11-10 15:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-10 15:37</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p><code>sys.version_info</code> is <a href="https://github.com/python/typeshed/blob/ea368c72696afba1eb4c12653123edd764c800bf/stdlib/sys/__init__.pyi#L225-L240">annotated in typeshed as being an instance of <code>sys._version_info</code></a>. This is correct as far as it goes (or at least as correct as it <em>can</em> be, given typeshed's constraints), but means that we have to work in some special casing for the <code>sys._version_info</code> class definition, so that in some situations we treat it the same as we would a heterogenous tuple. We also need to add special casing for <code>sys.version_info</code> anyway, so that we infer literal integers for the first two elements; this then enables us to infer that some <code>sys.version_info</code> branches are always truthy, and others are always falsey.</p>
+<p>This PR adds the necessary special casing.</p>
+<p>Helps with #14171 (but doesn't touch any of the control-flow parts of that task, which I think @sharkdp is planning to work on).</p>
+<h2>Test Plan</h2>
+<p>mdtests added.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-11-10 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Infer `Literal` types from comparisons with `sys.version_info`" to "[red-kmot] Infer `Literal` types from comparisons with `sys.version_info`" by @AlexWaygood on 2024-11-10 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-kmot] Infer `Literal` types from comparisons with `sys.version_info`" to "[red-knot] Infer `Literal` types from comparisons with `sys.version_info`" by @AlexWaygood on 2024-11-10 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2024-11-11 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-11-11 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-11-11 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2024-11-11 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-11 12:54</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1435 on 2024-11-11 12:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// but it's a useful fallback for us in order to infer `Literal` types from `sys.version_info` comparisons.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-11 12:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-11 13:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/sys_version_info.md</code>:6 on 2024-11-11 13:19</div>
+            <div class="timeline-body"><p>… but would you eventually expect a different output in the <code>reveal_type</code> below? As in: is this a TODO comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/sys_version_info.md</code>:6 on 2024-11-11 13:25</div>
+            <div class="timeline-body"><blockquote>
+<p>… but would you eventually expect a different output in the <code>reveal_type</code> below?</p>
+</blockquote>
+<p>No. But it <em>is</em> the reason why there are several other <code>Type::Todo</code>s and TODO comments in the file!</p>
+<p>It's also the reason why I haven't implemented <em>more</em> special-casing, if that makes sense. What I mean is that we <em>could</em> add special-casing for this class in several other places (<code>Type::iterate()</code>, the attribute access for attributes other than <code>major</code> and <code>minor</code>, etc.). But doing that would be a bit silly IMO, because we'll naturally add support for these without any special-casing for the <code>sys._version_info</code> class when we add support for more typing features in the future.</p>
+<p>Anyway, I'll clarify this sentence, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-11 13:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1446 on 2024-11-11 13:28</div>
+            <div class="timeline-body"><p>This can be</p>
+<pre><code class="language-suggestion">            let elements = [&quot;alpha&quot;, &quot;beta&quot;, &quot;candidate&quot;, &quot;final&quot;]
+                .iter()
+                .map(|level| Type::string_literal(db, level));
+            UnionType::from_elements(db, elements)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-11 13:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-11 13:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1446 on 2024-11-11 13:32</div>
+            <div class="timeline-body"><p>I think that would mean we'd do more work than we need to here. <code>UnionType::from_elements</code> goes via <code>UnionBuilder</code> to ensure that elements are properly deduplicated before the <code>UnionType</code> is constructed. But here we know just by looking at it that there are no duplicates in this union, so we can skip a layer of indirection.</p>
+<p>https://github.com/astral-sh/ruff/blob/b3b5c191051a4ea2b81b11ed3088a09ec6d051fc/crates/red_knot_python_semantic/src/types.rs#L2714-L2726</p>
+<p>https://github.com/astral-sh/ruff/blob/b3b5c191051a4ea2b81b11ed3088a09ec6d051fc/crates/red_knot_python_semantic/src/types/builder.rs#L107-L113</p>
+<p>I'll add a comment to explain why I'm not using <code>UnionType::from_elements</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2024-11-11 13:36</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-11 13:50</div>
+            <div class="timeline-body"><p>A small bug I discovered while working on this PR in our <code>tuple</code>-comparison logic: #14279</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-11-11 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-11-11 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-11 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-11 17:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/sys_version_info.md</code>:56 on 2024-11-11 17:20</div>
+            <div class="timeline-body"><p>I don't think it's invalid. It's not a runtime error to compare tuples of different lengths, so I don't think it should be a type diagnostic, either. Such a comparison can be either true or false.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-11-11 17:28</div>
+            <div class="timeline-body"><p>Very nice, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-11 17:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/sys_version_info.md</code>:56 on 2024-11-11 17:39</div>
+            <div class="timeline-body"><p>&quot;Invalid&quot; is probably too strong a word, but it seems pretty clear that the user has made a mistake here, right? It probably shouldn't be a type-check diagnostic, but a &quot;type aware lint diagnostic&quot; might be helpful for the user.</p>
+<p>Does that make sense? Shall I reword the TODO comment along those lines?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-11 18:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/sys_version_info.md</code>:56 on 2024-11-11 18:04</div>
+            <div class="timeline-body"><p>Yeah, I can see a case for a special-cased warning diagnostic here, but it seems a bit subtle. The existence of additional elements can actually change the result of the comparison! So while it seems like probably a mistake, it's neither a no-op, nor does it render the comparison always-true or always-false. So it's a bit tricky to figure out how to word a &quot;this is wrong&quot; message.</p>
+<p>I don't think it's critical to update the comment, although I do think &quot;invalid&quot; is too strong. I don't think a diagnostic for this is a priority, but I don't mind a comment suggesting that we could consider it at some point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-11 18:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/sys_version_info.md</code>:56 on 2024-11-11 18:10</div>
+            <div class="timeline-body"><blockquote>
+<p>The existence of additional elements can actually change the result of the comparison!</p>
+</blockquote>
+<p>I'm not even suggesting that we implement a generalised rule for tuples, to be clear! (Though we could, of course.) <code>sys.version_info</code> is an instance of a singleton tuple subclass, so we can implement a rule specifically for &quot;comparing a tuple of &gt;5 elements against instances of <code>sys._version_info</code>&quot; if we want to. Comparisons against <code>sys.version_info</code> are common enough that this could be valuable. (Ruff already has one or two rules that aim to catch common errors in <code>sys.version_info</code> comparisons.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:27 UTC
+    </footer>
+</body>
+</html>

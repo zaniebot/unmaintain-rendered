@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>red-knot: adapt fuzz-parser to work with red-knot - astral-sh/ruff #14566</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>red-knot: adapt fuzz-parser to work with red-knot</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14566">#14566</a>
+        opened by <a href="https://github.com/connorskees">@connorskees</a>
+        on 2024-11-24 21:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/connorskees">@connorskees</a> on 2024-11-24 21:45</div>
+            <div class="timeline-body"><p>Adds a <code>--bin</code> argument to the <code>fuzz-parser</code> script, which makes it possible to fuzz either <code>ruff</code> or <code>red_knot</code>.</p>
+<p>This fuzzing finds a few panics already in some seeds:</p>
+<pre><code class="language-sh">&gt;&gt;&gt; python scripts/fuzz-parser/fuzz.py --bin red_knot 0-9
+Running `cargo build --release` since no test executable was specified...
+Concurrently running the fuzzer on 10 randomly generated source-code files...
+Ran fuzzer successfully on seed 1                            [1/10]
+Ran fuzzer successfully on seed 8                            [2/10]
+Ran fuzzer successfully on seed 5                            [3/10]
+Ran fuzzer successfully on seed 0                            [4/10]
+Ran fuzzer successfully on seed 2                            [5/10]
+Ran fuzzer successfully on seed 6                            [6/10]
+Ran fuzzer successfully on seed 3                            [7/10]
+Ran fuzzer on seed 7                                         [8/10]
+The following code triggers a bug:
+
+async def name_0[*name_1](name_2: name_0(), /):
+    pass
+
+Ran fuzzer on seed 9                                         [9/10]
+The following code triggers a bug:
+
+class name_5[**name_1](name_5[name_3]):
+    pass
+
+Ran fuzzer on seed 4                                        [10/10]
+The following code triggers a bug:
+
+class name_2[name_0](*name_2):
+    pass
+
+Bugs found in the following seeds:
+4 7 9
+</code></pre>
+<p>This was tested manually by running the above command for <code>--bin ruff</code> and <code>--bin red_knot</code>.</p>
+<p>Resolves https://github.com/astral-sh/ruff/issues/14157, though does not add the fuzzing to CI due to the existing failures.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @connorskees on 2024-11-24 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @connorskees on 2024-11-24 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @connorskees on 2024-11-24 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @connorskees on 2024-11-24 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-24 21:50</div>
+            <div class="timeline-body"><blockquote>
+<p>This fuzzing finds a few panics already in some seeds:</p>
+</blockquote>
+<blockquote>
+<p><code>class name_2[name_0](*name_2):</code></p>
+</blockquote>
+<p>Probably similar to the panics here related to self-referential class bases: https://github.com/astral-sh/ruff/blob/ac23c9974435cfa4524ff864ec1e5e73c6b910ed/crates/red_knot_workspace/tests/check.rs#L269-L272
+And/or here: https://github.com/astral-sh/ruff/issues/14333</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-24 22:04</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @AlexWaygood on 2024-11-24 22:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-11-24 22:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-24 22:29</div>
+            <div class="timeline-body"><p>Nice, thank you. Do you think it would be hard to instead test if the exit code isn't 1 or zero (panic should use something else) instead of adding the new flag to red knot?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/connorskees">@connorskees</a> on 2024-11-24 22:36</div>
+            <div class="timeline-body"><p>Oh I've always assumed <code>panic!</code> exited with 1, but that seems not to be the case. Great suggestion, thank you, that is a lot better</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-25 03:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>scripts/fuzz-parser/fuzz.py</code>:288 on 2024-11-25 03:59</div>
+            <div class="timeline-body"><p>Can we limit this to just &quot;ruff&quot; or &quot;red_knot&quot; using the <code>choices</code> field? (https://docs.python.org/3/library/argparse.html#choices)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-25 04:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>scripts/fuzz-parser/fuzz.py</code>:286 on 2024-11-25 04:15</div>
+            <div class="timeline-body"><p>I think we can skip this as the values from the <code>choices</code> field will be visible in <code>--help</code></p>
+<pre><code class="language-suggestion">        help=&quot;Name of executable to test.&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-11-25 13:10</div>
+            <div class="timeline-body"><p>Thanks @connorskees, this is great! I pushed a few nitpicks, but nothing major.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-11-25 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-11-25 13:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:29 UTC
+    </footer>
+</body>
+</html>

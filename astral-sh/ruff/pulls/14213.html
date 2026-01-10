@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Improve mdtest output - astral-sh/ruff #14213</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Improve mdtest output</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14213">#14213</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-11-08 22:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-08 22:31</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Helps with #13875. Changes made:</p>
+<ul>
+<li>Paths given for the Markdown files are relative to the workspace root rather than the crate root. This enables you to copy-and-paste them straight from the terminal, and makes them clickable in more editors.</li>
+<li>Use shorter titles for the bold/underlined section titles: just the filename for the first part of the title, rather than the path of the Markdown file relative to <code>crates/red_knot_python_semantic/resources/mdtest</code>. I didn't get rid of these entirely, because I believe it's possible to have a Markdown test file that doesn't have any <code>#</code> headings in it, which I believe would result in an empty title if we got rid of the path from the title entirely.</li>
+<li>Reduce the indentation of the line-by-line error reports from 4 spaces to 2. I'm not wild about getting rid of these entirely for the reasons I gave in https://github.com/astral-sh/ruff/issues/13875#issuecomment-2433225174, but I think it makes sense to reduce them a bit.</li>
+</ul>
+<p>Previous output:</p>
+<details>
+<summary>Screenshot</summary>
+
+<p><img src="https://github.com/user-attachments/assets/ed5fab80-1800-4ad5-a0eb-89d13becaed0" alt="image" /></p>
+</details>
+
+<p>New output:</p>
+<details>
+<summary>Screenshot</summary>
+
+<p><img src="https://github.com/user-attachments/assets/39f46474-7dc1-418a-8f96-d28db1e33d7b" alt="image" /></p>
+</details>
+
+<p>Diff to achieve these demo test failures:</p>
+<details>
+
+<pre><code class="language-diff">--- a/crates/red_knot_python_semantic/resources/mdtest/comparison/identity_tests.md
++++ b/crates/red_knot_python_semantic/resources/mdtest/comparison/identity_tests.md
+@@ -1,5 +1,7 @@
+ # Identity tests
+ 
++## Foo
++
+ ```py
+ class A: ...
+ 
+@@ -14,7 +16,7 @@ n2 = None
+ 
+ o = get_object()
+ 
+-reveal_type(a1 is a1)  # revealed: bool
++reveal_type(a1 is a1)  # revealed: str
+ reveal_type(a1 is a2)  # revealed: bool
+ 
+ reveal_type(n1 is n1)  # revealed: Literal[True]
+@@ -38,3 +40,9 @@ reveal_type(n1 is not a1)  # revealed: Literal[True]
+ reveal_type(a1 is not o)  # revealed: bool
+ reveal_type(n1 is not o)  # revealed: bool
+ ```
++
++## Bar
++
++```py
++x
++```
+</code></pre>
+</details>
+
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-11-08 22:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-11-08 22:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2024-11-08 22:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-11-08 22:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-08 22:47</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @AlexWaygood on 2024-11-08 22:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2024-11-08 23:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-11-09 18:18</div>
+            <div class="timeline-body"><p>I don't love how long the file path prefix for every error message is now, but if this is what's required to make them clickable in more editors, I guess it's worth it? I don't use the clickability myself. Don't really see a better solution, other than moving the mdtest files to some shorter path relative to workspace root.</p>
+<p>It's probably possible to only include the file name in the test name if there is no header? Though it also doesn't bother me to always include it.</p>
+<p>On the whole I don't have super strong preferences here so you could wait for a review from Micha, who probably has more opinions. But this looks fine to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-09 19:15</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't love how long the file path prefix for every error message is now, but if this is what's required to make them clickable in more editors, I guess it's worth it? I don't use the clickability myself.</p>
+</blockquote>
+<p>I don't use the clickability inside my IDE much either, but what I <em>do</em> do is run tests from a terminal window outside of my IDE. I'm finding it consistently annoying right now that I can't copy and paste the path directly from the mdtest output so that I can instantly open the Markdown file in question in a new text-editor window. So while I agree that some output lines are now very long with this PR, this would be quite a big quality-of-life improvement for me.</p>
+<blockquote>
+<p>It's probably possible to only include the file name in the test name if there is no header?</p>
+</blockquote>
+<p>I'm sure it is possible. I looked into it quickly, and it seemed more fiddly than I expected, though, and it didn't seem to me to be important enough for me to spend a lot of time on it. This was easy to do, and seemed like an improvement on the status quo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-11 08:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't love how long the file path prefix for every error message is now, but if this is what's required to make them clickable in more editors, I guess it's worth it? I don't use the clickability myself. Don't really see a better solution, other than moving the mdtest files to some shorter path relative to workspace root.</p>
+</blockquote>
+<p>We could use <a href="https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda">OSC 8 hyperlinks</a> to potentially have the best of both worlds? We can keep the file path in the output short and provide the full path (including the line number) as a hyperlink.</p>
+<p>The problem is that there is no standardized format for <em>&quot;open file F at line L in [your editor of choice]&quot;</em>. Some applications solve this by making the hyperlink format customizable. If this doesn't sound too over-engineered, we could maybe provide 2-3 common formats (and a fallback to simple <code>file://hostname/path/to/file</code> links if nothing else was specified) and let every developer configure it (env. variable?!).</p>
+<p>Example for VS Code (adapt the <code>/path/to/ruff/</code> and paste into a terminal to try. <code>vscode://file/</code> is the prefix that needs to be kept intact):</p>
+<pre><code>printf '\033]8;;vscode://file/path/to/ruff/crates/red_knot_python_semantic/resources/mdtest/comparison/identity_tests.md:19\033\\comparison/identity_tests.md:19\033]8;;\033\\\n'
+</code></pre>
+<p>Example with basic <code>file://</code> link; no support for line numbers; hostname is mandatory.</p>
+<pre><code>printf '\033]8;;file://localhost/path/to/ruff/crates/red_knot_python_semantic/resources/mdtest/comparison/identity_tests.md\033\\comparison/identity_tests.md:19\033]8;;\033\\\n'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-11 09:45</div>
+            <div class="timeline-body"><blockquote>
+<p>On the whole I don't have super strong preferences here so you could wait for a review from Micha, who probably has more opinions. But this looks fine to me.</p>
+</blockquote>
+<p>I've been pretty annoyed by the links not being clickable for the few tests I wrote. That's why I find this a huge improvement.</p>
+<p>IMO, the ultimate solution is to use a multiline representation to render the diagnostics, so that the file names no longer stand out that much</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-11 09:48</div>
+            <div class="timeline-body"><blockquote>
+<p>I didn't get rid of these entirely, because I believe it's possible to have a Markdown test file that doesn't have any # headings in it, which I believe would result in an empty title if we got rid of the path from the title entirely.</p>
+</blockquote>
+<p>Could we only show the filename if the title is empty or change the test framework so that it defaults to the filename if the test has no explicit title?</p>
+<blockquote>
+<p>Reduce the indentation of the line-by-line error reports from 4 spaces to 2. I'm not wild about getting rid of these entirely for the reasons I gave in</p>
+</blockquote>
+<p>This might be a problem for accessibility reasons. I'm still leaning towards removing them entirely but I can also do this when we rework our diagnostics ;)</p>
+<p>Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-11 11:03</div>
+            <div class="timeline-body"><blockquote>
+<p>Could we only show the filename if the title is empty or change the test framework so that it defaults to the filename if the test has no explicit title?</p>
+</blockquote>
+<p>I already answered this in https://github.com/astral-sh/ruff/pull/14213#issuecomment-2466416419 ;-) I'm sure it's possible, but didn't want to spend too much time on it</p>
+<blockquote>
+<p>We could use <a href="https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda">OSC 8 hyperlinks</a> to potentially have the best of both worlds? We can keep the file path in the output short and provide the full path (including the line number) as a hyperlink.</p>
+</blockquote>
+<p>This could be great!! I'll merge this as-is for now, though, as I think we're aligned that, even though the output still isn't ideal, this is probably a strict improvement on the status quo :-) This feels like it could be pursued as a followup</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-11-11 11:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-11-11 11:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-11 11:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:27 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Narrowing for `type(x) is C` checks - astral-sh/ruff #14432</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Narrowing for <code>type(x) is C</code> checks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14432">#14432</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2024-11-18 12:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-18 12:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Add type narrowing for <code>type(x) is C</code> conditions (and <code>else</code> clauses of <code>type(x) is not C</code> conditionals):</p>
+<pre><code class="language-py">if type(x) is A:
+    reveal_type(x)  # revealed: A
+else:
+    reveal_type(x)  # revealed: A | B
+</code></pre>
+<p>closes: #14431, part of: #13694</p>
+<h2>Test Plan</h2>
+<p>New Markdown-based tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-11-18 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2024-11-18 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2024-11-18 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2024-11-18 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/type.md</code>:51 on 2024-11-18 12:31</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">from typing import Literal
+
+class IsEqualToEverything(type):
+    def __eq__(cls, other) -&gt; Literal[True]:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/type.md</code>:9 on 2024-11-18 12:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">def get_a_or_b() -&gt; A | B:
+    return A()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/type.md</code>:28 on 2024-11-18 12:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">def get_a_or_b() -&gt; A | B:
+    return A()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/type.md</code>:52 on 2024-11-18 12:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">def get_a_or_b() -&gt; A | B:
+    return A()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-18 12:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/type.md</code>:63 on 2024-11-18 12:34</div>
+            <div class="timeline-body"><p>Both pyright and mypy are less strict here and infer <code>A</code> instead of <code>A | B</code>. This is unsound, as can be demonstrated by returning <code>B()</code> from <code>get_a_or_b()</code>, and observing that this branch is taken.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-11-18 12:36</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/david/type-x-is-c-narrowing">CodSpeed Performance Report</a></h2>
+<h3>Merging #14432 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>david/type-x-is-c-narrowing</code> (2e7cd69) with <code>main</code> (3642381)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 32</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/type.md</code>:42 on 2024-11-18 12:39</div>
+            <div class="timeline-body"><p>I think we <em>would</em> be able to narrow in something like this, though, because here we can statically determine that the object returned by <code>get_a_or_b()</code> must be an instance of a class with <code>type</code> as its metaclass (since both <code>A</code> and <code>B</code> are <code>@final</code>):</p>
+<pre><code class="language-py">from typing import final
+
+@final
+class A: ...
+
+@final
+class B: ...
+
+def get_a_or_b() -&gt; A | B:
+    return A()
+
+x = get_a_or_b()
+
+if type(x) != A:
+    reveal_type(x)
+</code></pre>
+<p>Worth a TODO comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:288 on 2024-11-18 12:42</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    let symbol = self
+                        .symbols()
+                        .symbol_id_by_name(id)
+                        .expect(&quot;Should always have a symbol for every Name node&quot;);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:330 on 2024-11-18 12:43</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                        .is_some_and(|c| c.class.is_known(self.db, KnownClass::Type))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:334 on 2024-11-18 12:45</div>
+            <div class="timeline-body"><p>Although it gets tedious to write this out every time -- maybe we should have a helper method on the symbol table that calls <code>.expect()</code> for us with this error message.</p>
+<pre><code class="language-suggestion">                            let symbol = self
+                                .symbols()
+                                .symbol_id_by_name(id)
+                                .expect(&quot;Should always have a symbol for every Name node&quot;);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-11-18 12:47</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-18 12:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/type.md</code>:42 on 2024-11-18 12:50</div>
+            <div class="timeline-body"><p>In fact, I think narrowing would also be safe if both classes had <code>@final</code> metaclasses, since the metaclass of a subclass of <code>A</code> must either be exactly equal to the metaclass of <code>A</code> or must be a proper subclass of the metaclass of <code>A</code>. E.g. narrowing would also be safe, I think, for something like this:</p>
+<pre><code class="language-py">from typing import final
+
+@final
+class Meta(type): ...
+
+class A(metaclass=Meta): ...
+class B(metaclass=Meta): ...
+
+def get_a_or_b() -&gt; A | B:
+    return A()
+
+x = get_a_or_b()
+
+if type(x) != A:
+    reveal_type(x)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-18 12:53</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-18 12:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:331 on 2024-11-18 12:56</div>
+            <div class="timeline-body"><p>This might help optimise things slightly? The more we can do just by looking at the AST, the cheaper things will be:</p>
+<pre><code class="language-suggestion">                    if arguments.len() != 1 {
+                        continue;
+                    }
+
+                    let callable_ty =
+                        inference.expression_ty(callable.scoped_expression_id(self.db, scope));
+
+                    if callable_ty
+                        .into_class_literal()
+                        .is_some_and(|c| c.class.is_known(self.db, KnownClass::Type))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-18 12:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/type.md</code>:9 on 2024-11-18 12:59</div>
+            <div class="timeline-body"><p>What is the idea behind this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-18 13:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/type.md</code>:9 on 2024-11-18 13:01</div>
+            <div class="timeline-body"><p>Eventually we'll emit errors on functions like this, warning the user that the function is annotated as returning <code>A | B</code> but actually returns <code>None</code>. When we add that check, we'll have to update a lot of mdtests. The more functions like this we add to our mdtests that have empty bodies, the more work it'll be :P</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:333 on 2024-11-18 13:02</div>
+            <div class="timeline-body"><p>This panics with an index out of bounds if I make this modification to your tests:</p>
+<pre><code class="language-diff">--- a/crates/red_knot_python_semantic/resources/mdtest/narrow/type.md
++++ b/crates/red_knot_python_semantic/resources/mdtest/narrow/type.md
+@@ -10,7 +10,7 @@ def get_a_or_b() -&gt; A | B: ...
+ 
+ x = get_a_or_b()
+ 
+-if type(x) is A:
++if type(object=x) is A:
+     reveal_type(x)  # revealed: A
+ else:
+     # It would be wrong to infer `B` here. The type
+</code></pre>
+<p>Which is an invalid call, but we shouldn't panic on it</p>
+<pre><code>---- mdtest__narrow_type stdout ----
+thread 'mdtest__narrow_type' panicked at crates/red_knot_python_semantic/src/types/narrow.rs:333:43:
+index out of bounds: the len is 0 but the index is 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    mdtest__narrow_type
+
+test result: FAILED. 96 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.67s
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> requested changes on 2024-11-18 13:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-18 13:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:333 on 2024-11-18 13:04</div>
+            <div class="timeline-body"><p>This is because you check <code>arguments.len() == 1</code> above, but that will be true if there's exactly one <em>keyword</em> argument and 0 positional arguments: https://github.com/astral-sh/ruff/blob/1f07880d5c410bcd5192a1bd20e8f7d59bc4aab4/crates/ruff_python_ast/src/nodes.rs#L3777-L3781</p>
+<p>Here you're indexing into the <em>positional</em> arguments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-18 13:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/type.md</code>:51 on 2024-11-18 13:07</div>
+            <div class="timeline-body"><p>Hm, if this returns <code>Literal[True]</code>, an ideal type checker could even detect the <code>type(x) == A</code> condition to be statically <code>True</code>; and the <code>type(x) != A</code> condition to be statically <code>False</code>. That wouldn't change anything, but this is not what I wanted to demonstrate in this test. Everything below is correct, even if this returns <code>bool</code>, right?</p>
+<p>The fact that this method does return literal <code>True</code> is just one way to demonstrate what I wanted to show.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-18 13:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/type.md</code>:51 on 2024-11-18 13:08</div>
+            <div class="timeline-body"><p>Ahh, fair point. Consider this suggestion withdrawn!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-18 13:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/type.md</code>:9 on 2024-11-18 13:22</div>
+            <div class="timeline-body"><p>Hm, okay. I don't really like it though. It adds superfluous and potentially confusing code to the tests (<em>&quot;why does it say <code>A | B</code> but then always return <code>A</code>?&quot;</em>). And I could imagine a (hypothetical) type checker that would issue a diagnostic for code like this (<em>&quot;Consider using a narrower return type…&quot;</em>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-18 13:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/type.md</code>:9 on 2024-11-18 13:23</div>
+            <div class="timeline-body"><p>yeah. Well -- soon enough we'll have inference for function parameter types, and then we can just have a function parameter annotated as <code>A | B</code> in most situations like this in our tests :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-18 13:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/type.md</code>:42 on 2024-11-18 13:26</div>
+            <div class="timeline-body"><p>Thanks. Added a TODO comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-18 13:31</div>
+            <div class="timeline-body"><p>Ah, the performance regression is probably from removing this (now insufficient) check:</p>
+<pre><code class="language-rs">        if !left.is_name_expr() &amp;&amp; comparators.iter().all(|c| !c.is_name_expr()) {
+            // If none of the comparators are name expressions,
+            // we have no symbol to narrow down the type of.
+            return None;
+        }
+</code></pre>
+<p>I'll look into it.</p>
+<p>Edit: fixed now by introducing a similar check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:359 on 2024-11-18 13:53</div>
+            <div class="timeline-body"><p>What about something like this. It's a bit more verbose, but it moves some cheaper checks higher up (micro-optimising things), improves type safety a little (by using <code>let ... else</code> rather than indexing), and reduces the nesting a bit:</p>
+<pre><code class="language-rs">               ast::Expr::Call(ast::ExprCall {
+                    range: _,
+                    func: callable,
+                    arguments:
+                        ast::Arguments {
+                            args,
+                            keywords,
+                            range: _,
+                        },
+                }) =&gt; {
+                    if !rhs_ty.is_class_literal() {
+                        continue;
+                    }
+
+                    if !keywords.is_empty() {
+                        continue;
+                    }
+
+                    let [ast::Expr::Name(ast::ExprName { id, .. })] = &amp;**args else {
+                        continue;
+                    };
+
+                    let is_valid_constraint = if is_positive {
+                        op == &amp;ast::CmpOp::Is
+                    } else {
+                        op == &amp;ast::CmpOp::IsNot
+                    };
+
+                    if !is_valid_constraint {
+                        continue;
+                    }
+
+                    let callable_ty =
+                        inference.expression_ty(callable.scoped_expression_id(self.db, scope));
+
+                    if callable_ty
+                        .into_class_literal()
+                        .is_some_and(|c| c.class.is_known(self.db, KnownClass::Type))
+                    {
+                        let symbol = self
+                            .symbols()
+                            .symbol_id_by_name(id)
+                            .expect(&quot;Should always have a symbol for every Name node&quot;);
+                        constraints.insert(symbol, rhs_ty.to_instance(self.db));
+                    }
+                }
+</code></pre>
+<p>Also, could you maybe add a test for the &quot;only a single argument passed to <code>type()</code>, but it's a keyword argument&quot; edge case (that an earlier version of this PR panicked on)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-11-18 13:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-18 14:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:359 on 2024-11-18 14:37</div>
+            <div class="timeline-body"><blockquote>
+<p>Also, could you maybe add a test for the &quot;only a single argument passed to <code>type()</code>, but it's a keyword argument&quot; edge case (that an earlier version of this PR panicked on)?</p>
+</blockquote>
+<p>Yes, done.</p>
+<blockquote>
+<p>What about something like this. It's a bit more verbose, but it moves some cheaper checks higher up (micro-optimising things), improves type safety a little (by using <code>let ... else</code> rather than indexing), and reduces the nesting a bit:</p>
+</blockquote>
+<p>I'm not sure. I think I prefer the version with fewer early returns and a more &quot;natural&quot; order of checks. Do you have any evidence that this is faster? Which checks do you consider to be more expensive than others? Even the type-based checks are just lookups of types that have previously been inferred, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-18 14:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:359 on 2024-11-18 14:43</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you have any evidence that this is faster? Which checks do you consider to be more expensive than others? Even the type-based checks are just lookups of types that have previously been inferred, right?</p>
+</blockquote>
+<p>no firm evidence, no. My experience working on the Ruff linter, however, has been that checking the structure of the AST is usually much cheaper than looking up cached information in a <code>HashMap</code>, which I believe is what both the symbol-table lookup and the <code>class.is_known()</code> calls are doing under the hood here.</p>
+<p>Still, it might be that for our purposes the difference in performance there is just a rounding error, since red-knot is likely to be significantly slower across the board than a linter that can only do single-file analysis (which is what Ruff currently is). I'm certainly happy to leave it like it is for now and revisit this later if it shows up in profiles.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-18 15:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:359 on 2024-11-18 15:00</div>
+            <div class="timeline-body"><p>I used your approach and moved a two checks into the match statement</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2024-11-18 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2024-11-18 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-18 15:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:28 UTC
+    </footer>
+</body>
+</html>

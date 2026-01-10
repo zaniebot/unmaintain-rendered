@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix bug where methods defined using lambdas were flagged by FURB118 - astral-sh/ruff #14639</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix bug where methods defined using lambdas were flagged by FURB118</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14639">#14639</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-11-27 17:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-27 17:52</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #13829.</p>
+<p>Replacing an instance method definition with an <code>operator</code>-module function doesn't work, because instance methods need to be callable objects with <code>__get__</code> methods (&quot;descriptors&quot;), and while user-defined functions are descriptors, this is not true for the <code>operator</code>-module functions. We already avoid flagging user-defined methods that are defined using <code>def</code> statements, but we currently incorrectly flag user-defined functions that are defined by assigning <code>lambda</code>s to variables in class bodies. I.e., this is a perfectly valid definition of an instance method, and FURB118's suggestion to replace the lambda with <code>operator.eq</code> function would break it:</p>
+<pre><code class="language-py">class Spam:
+    foo = lambda self, other: self == other
+</code></pre>
+<p>As a demonstration in the REPL:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class Spam:
+...     foo = lambda self, other: self == other
+...     
+&gt;&gt;&gt; Spam().foo(Spam())
+False
+&gt;&gt;&gt; from operator import eq
+&gt;&gt;&gt; class Spam:
+...     foo = eq
+...     
+&gt;&gt;&gt; Spam().foo(Spam())
+Traceback (most recent call last):
+  File &quot;&lt;python-input-4&gt;&quot;, line 1, in &lt;module&gt;
+    Spam().foo(Spam())
+    ~~~~~~~~~~^^^^^^^^
+TypeError: eq expected 2 arguments, got 1
+</code></pre>
+<p>This PR fixes things so that <code>lambda</code> assignments in class bodies are considered off-limits for the rule in the same way as <code>def</code> statements in class bodies. It also makes the fix-safety docs more expansive, so that they're clearer that there's a wider range of reasons why the rule might be unsafe than just the keyword-argument issue.</p>
+<h2>Test Plan</h2>
+<p>I added a new fixture that confirms that all function definitions in class bodies are ignored by the rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-11-27 17:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @AlexWaygood on 2024-11-27 17:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-27 17:58</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -1 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/zulip/zulip/blob/1bf3bc0f18c7863727641666033ecbfd7fe648d6/zerver/models/custom_profile_fields.py#L131'>zerver/models/custom_profile_fields.py:131:81:</a> FURB118 Use `operator.itemgetter(1)` instead of defining a lambda
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| FURB118 | 1 | 0 | 1 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-27 18:03</div>
+            <div class="timeline-body"><p>Hmm, the <code>airflow</code> hits in the ecosystem check are false negatives. I think I can avoid them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-27 18:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1657 on 2024-11-27 18:23</div>
+            <div class="timeline-body"><p>This needed to be moved from <code>deferred_lambdas.rs</code> to <code>expressions.rs</code> because otherwise the semantic model doesn't understand that the lambda it's analysing is ever inside a class scope. As far as I can tell, there's no particular advantage associated with deferring the analysis of this rule to after the semantic model has been fully built (what we currently do). The rule never analyses any bindings or uses of bindings</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-27 18:32</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/14639/commits/7e13565d1feb8af7a2b8c6fe0e1b8066195c0cc9 got rid of the new false negatives this PR initially introduced on <code>airflow</code>. The remaining ecosystem hit on <code>zerver</code> is also a false negative introduced by this PR, but I think it's acceptable personally. Flagging lambdas inside assignments in class scopes is too risky.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/refurb/FURB118.py</code>:109 on 2024-11-28 06:52</div>
+            <div class="timeline-body"><p>Could we add an example for the zerver case documenting that we're currently not detecting this pattern but probably should?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1657 on 2024-11-28 06:54</div>
+            <div class="timeline-body"><p>Thanks for writing this comment. It saved me quiet some time guessing why it was moved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/reimplemented_operator.rs</code>:106 on 2024-11-28 06:58</div>
+            <div class="timeline-body"><p>A comment explaining why we're testing for an assignment might be helpful.</p>
+<p>I wonder if we could avoid the false positive by testing if there's a parent expression. If that's the case, then the operator can't be the assignment's value?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-28 06:58</div>
+            <div class="timeline-body"><p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-28 11:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/reimplemented_operator.rs</code>:106 on 2024-11-28 11:07</div>
+            <div class="timeline-body"><blockquote>
+<p>I wonder if we could avoid the false positive by testing if there's a parent expression. If that's the case, then the operator can't be the assignment's value?</p>
+</blockquote>
+<p>I don't think that's the case -- a lot of functions take an input function, do something with the function (monkey-patch an attribute onto the function, or store the function in a global registry somewhere, etc.), then return the same function. That's a very common pattern for decorators, for example:</p>
+<ul>
+<li>https://github.com/python/cpython/blob/3a77980002845c22e5b294ca47a12d62bf5baf53/Lib/typing.py#L2706-L2739</li>
+<li>https://github.com/python/cpython/blob/3a77980002845c22e5b294ca47a12d62bf5baf53/Lib/typing.py#L3738-L3770</li>
+<li>https://github.com/python/cpython/blob/3a77980002845c22e5b294ca47a12d62bf5baf53/Lib/typing.py#L2582-L2615</li>
+</ul>
+<p>So all of these are still valid method definitions, and it would be a false positive if we flagged them with FURB118:</p>
+<pre><code class="language-py">from typing import final, override, no_type_check
+
+class Foo:
+    a = final(lambda self, other: self == other)
+    b = override(lambda self, other: self == other)
+    c = no_type_check(lambda self, other: self == other)
+    d = final(override(no_type_check(lambda self, other: self == other)))
+</code></pre>
+<p>I'll add more tests involving constructs like these</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/reimplemented_operator.rs</code>:106 on 2024-11-28 11:10</div>
+            <div class="timeline-body"><p>One heuristic that might work would be if we still emitted diagnostics for lambdas in <code>key=</code> arguments, since lambdas are very often used as <code>key</code> functions and it's very likely that the lambda will be thrown away if it's passed as a <code>key</code> function. That would avoid the false negative on the <code>zerver</code> codebase.</p>
+<p>Complex heuristics like that make the rule harder to understand for users, though, so there's a tradeoff there. I think I'd prefer to avoid it for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-28 11:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-28 12:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/reimplemented_operator.rs</code>:106 on 2024-11-28 12:05</div>
+            <div class="timeline-body"><p>Oh, okay, that's indeed complicated. I'm fine keeping it as is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-28 12:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1657 on 2024-11-28 12:44</div>
+            <div class="timeline-body"><p>it took <em>me</em> a little while to figure out why the semantic model didn't think lambdas inside class scopes were inside class scopes 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-28 12:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/refurb/FURB118.py</code>:109 on 2024-11-28 12:47</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-11-28 12:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-11-28 12:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-28 12:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:29 UTC
+    </footer>
+</body>
+</html>

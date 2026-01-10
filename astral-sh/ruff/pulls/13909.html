@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix: Recover boolean test flag after visiting subexpressions - astral-sh/ruff #13909</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix: Recover boolean test flag after visiting subexpressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13909">#13909</a>
+        opened by <a href="https://github.com/Lokejoke">@Lokejoke</a>
+        on 2024-10-24 12:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Lokejoke">@Lokejoke</a> on 2024-10-24 12:40</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To assist with the review, please ensure:
+- The pull request includes a summary of the change (below).
+- The title is descriptive of the change.
+- Relevant issues are referenced where applicable.
+-->
+
+<h2>Summary</h2>
+<!-- What is the purpose of the change? What does it do, and why? -->
+
+<p>This PR corrects the logic for handling the boolean test flag during expression analysis.</p>
+<p>Since the flag can be modified during subexpression traversal, it must be restored before analyzing the full expression.</p>
+<p>Additionally, this change allows the <code>in_bool_test()</code> method in <code>crates/ruff_python_semantic/src/model.rs</code> to be used outside of boolean operations, such as in conditional tests within <code>Stmt::If</code>, <code>Stmt::While</code>, <code>Stmt::Assert</code>, and others.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-24 12:54</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-24 12:57</div>
+            <div class="timeline-body"><p>Thanks. Would you mind adding a test demonstrating that restoring the flag is necessary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lokejoke">@Lokejoke</a> on 2024-10-25 12:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks. Would you mind adding a test demonstrating that restoring the flag is necessary?</p>
+</blockquote>
+<p>@MichaReiser Could you direct me to where this test would fit?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-25 12:10</div>
+            <div class="timeline-body"><p>We unfortunately don't have any semantic model tests. So the best you can do is to extend the tests of a rule that uses the flag. One such rule is <code>RUF019</code> and the tests are defined here https://github.com/astral-sh/ruff/blob/e37bde458e9928f1997cba249471459d31136aee/crates/ruff_linter/src/rules/ruff/mod.rs#L46 (in <code>RUF019.py</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2024-10-29 17:17</div>
+            <div class="timeline-body"><p>Could you explain me why restoring the flags here is necessary.</p>
+<p>To me, it doesn't seem necessary because restoring the <code>semantic.flags</code> here means that the <code>BOOLEAN_TEST</code> flag won't be set for the <code>analyze::expression</code> phase.</p>
+<p>We do reset the `semantic.flags on line 1480 so that it is correctly restored for its ancestor and sibling expressions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lokejoke">@Lokejoke</a> on 2024-11-01 18:21</div>
+            <div class="timeline-body"><p>Take for example this simple code:</p>
+<pre><code class="language-python">if not f(a):
+    pass
+</code></pre>
+<p>Currently, when visiting the expression f(a), it loses its BOOLEAN_TEST flag. This happens because it doesn’t match the conditions for <code>BoolOp</code> or <code>Not</code>, following the logic noted in the comment (lines 1032-1033):</p>
+<blockquote>
+<p>// If we're in a boolean test (e.g., the <code>test</code> of a <code>Stmt::If</code>), but now within a
+// subexpression (e.g., <code>a</code> in <code>f(a)</code>), then we're no longer in a boolean test.</p>
+</blockquote>
+<p>But the <code>f(a)</code> it self should be in bool test so the flag should be recovered before analysis.</p>
+<hr />
+<h1>Example with Current vs. Proposed Behavior</h1>
+<p>To see the difference, here’s a comparison using various test cases:</p>
+<pre><code class="language-python">if not a(b):
+    pass
+
+assert c(d)
+
+x = e(f) or g(h)
+
+while i == j:
+    pass
+</code></pre>
+<ol>
+<li>Current BOOLEAN_TEST Flag Behavior (restoring the flag after analysis):
+Expressions with BOOLEAN_TEST flag:</li>
+</ol>
+<ul>
+<li><code>not a(b)</code></li>
+</ul>
+<ol start="2">
+<li>Proposed BOOLEAN_TEST Flag Behavior (restoring the flag before analysis):
+Expressions with BOOLEAN_TEST flag:</li>
+</ol>
+<ul>
+<li><code>not a(b)</code></li>
+<li><code>a(b)</code></li>
+<li><code>c(d)</code></li>
+<li><code>i == j</code></li>
+</ul>
+<hr />
+<h1>Testing the Change</h1>
+<p>Testing this change with current rules is difficult, as they cover only Expr::BoolOp. However, implementing rule <code>use-implicit-booleaness-not-len</code> / <code>C1802</code> would reveal the issue, as it checks for cases where <code>BOOLEAN_TEST</code> is essential to detect rule violations (in process).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-04 03:45</div>
+            <div class="timeline-body"><blockquote>
+<p>However, implementing rule <code>use-implicit-booleaness-not-len</code> / <code>C1802</code> would reveal the issue, as it checks for cases where <code>BOOLEAN_TEST</code> is essential to detect rule violations (in process).</p>
+</blockquote>
+<p>Can you expand on why do you think it's an issue for this specific rule? I think that rule would need to be implemented at the <code>ExprCall</code> level for which the <code>BOOLEAN_TEST</code> flag should be test. It's only when the checker is visiting a sub-expression like an argument to the function call when the flag is being reset.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lokejoke">@Lokejoke</a> on 2024-11-04 11:11</div>
+            <div class="timeline-body"><p>I intended to illustrate with the rule example that the <code>BOOLEAN_TEST</code> flag is not limited to <code>BoolOp</code> and <code>Not</code> expressions, even though it isn’t used elsewhere in the project.</p>
+<p>I agree with your interpretation of how the <code>BOOLEAN_TEST</code> flag should function, but the current implementation doesn’t reflect this expected behavior.</p>
+<ol>
+<li>Store the initial flags.</li>
+<li>Remove the <code>BOOLEAN_TEST</code> flag for any expressions that are not <code>BoolOp</code> or <code>Not</code>.</li>
+<li>Visit subexpressions.</li>
+<li>Analyze the expression.</li>
+<li>Restore the original flags.</li>
+</ol>
+<p><code>BOOLEAN_TEST</code> flag should be restored between steps 3 and 4.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1471 on 2024-11-04 11:21</div>
+            <div class="timeline-body"><p>Thanks for the explanation. The change now makes sense to me. However, I do think that this problem isn't specific to <code>BOOLEAN_TEST</code> but applies to all flags.
+The flags should be restored when visiting the expression itself. They're only relevant when visiting the sub-expressions.</p>
+<p>That's why I suggest that we change the code to:</p>
+<pre><code class="language-rust">        // Step 4: Analysis
+        match expr {
+            Expr::StringLiteral(string_literal) =&gt; {
+                analyze::string_like(string_literal.into(), self);
+            }
+            Expr::BytesLiteral(bytes_literal) =&gt; analyze::string_like(bytes_literal.into(), self),
+            Expr::FString(f_string) =&gt; analyze::string_like(f_string.into(), self),
+            _ =&gt; {}
+        }
+        
+        self.semantic.flags = flags_snapshot;
+        analyze::expression(expr, self);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-04 11:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-11-04 11:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lokejoke">@Lokejoke</a> reviewed on 2024-11-04 11:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lokejoke">@Lokejoke</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1471 on 2024-11-04 11:43</div>
+            <div class="timeline-body"><p>I'm not sure about this. Could there be cases where a subexpression changes the semantics of its parent expression?
+If so, this approach might not be correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-04 11:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1471 on 2024-11-04 11:48</div>
+            <div class="timeline-body"><p>I skimmed through the <code>SemanticFlags</code> and I didn't spot any expression level flag that would change the flags for the parent or a sibling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-05 19:55</div>
+            <div class="timeline-body"><p>Thanks and nice find!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-11-05 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-11-05 19:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:27 UTC
+    </footer>
+</body>
+</html>

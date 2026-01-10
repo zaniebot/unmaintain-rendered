@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ruff`] Implement `unnecessary-nested-literal` (`RUF041`) - astral-sh/ruff #14323</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>ruff</code>] Implement <code>unnecessary-nested-literal</code> (<code>RUF041</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14323">#14323</a>
+        opened by <a href="https://github.com/sbrugman">@sbrugman</a>
+        on 2024-11-13 16:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-11-13 16:20</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Implementing <code>unnecessary-nested-literal</code>.</p>
+<p>This rule could help simplify other rules' fixes by handling the flattening of <code>Literal</code>s here.</p>
+<p>See also https://github.com/astral-sh/ruff/pull/14270/files#r1837810594 (unions in a follow-up PR)</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+<p>The ecosystem results are correct.</p>
+<p>Some of the nesting emits multiple violations.
+I've got a fix for this, but that depends on https://github.com/astral-sh/ruff/pull/14280.
+We can go on with merging this PR after review regardless (the violations are not wrong).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-13 16:52</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+3 -0 violations, +0 -0 fixes in 2 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/DisnakeDev/disnake/blob/f2594eea57de985a391b9a97e5879b3f283ead1d/tests/test_utils.py#L730'>tests/test_utils.py:730:18:</a> RUF041 [*] Unnecessary nested `Literal`
++ <a href='https://github.com/DisnakeDev/disnake/blob/f2594eea57de985a391b9a97e5879b3f283ead1d/tests/test_utils.py#L758'>tests/test_utils.py:758:10:</a> RUF041 [*] Unnecessary nested `Literal`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/python/typeshed">python/typeshed</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select E,F,FA,I,PYI,RUF,UP,W</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/python/typeshed/blob/4ce28d2539ab710f84d485430061345b4545a5f2/stdlib/xml/dom/pulldom.pyi#L23'>stdlib/xml/dom/pulldom.pyi:23:131:</a> E501 Line too long (153 > 130)
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF041 | 2 | 2 | 0 | 0 | 0 |
+| E501 | 1 | 1 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-11-14 07:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-11-14 07:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_nested_literal.rs</code>:81 on 2024-11-14 07:46</div>
+            <div class="timeline-body"><p>You could consider using <code>AnyNodeRef::ptr_eq</code> here because all you want to test is if the expressions are the same (<code>Expr::eq</code> does a deep comparison by default)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_nested_literal.rs</code>:95 on 2024-11-14 07:48</div>
+            <div class="timeline-body"><p>Can you expand on why we have to check inside the rule whether it is a nested literal, considering that the rule is only called when <code>semantic.in_nested_literal</code> is <code>true</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_nested_literal.rs</code>:98 on 2024-11-14 07:48</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">    let mut diagnostic = Diagnostic::new(UnnecessaryNestedLiteral, literal_expr.range());
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-14 07:49</div>
+            <div class="timeline-body"><p>@AlexWaygood would you mind doing a quick glance at the rule definition? I already reviewed the code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2024-11-14 07:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_nested_literal.rs</code>:95 on 2024-11-14 07:58</div>
+            <div class="timeline-body"><p>We only consider the top-level union, so when <code>semantic.in_nested_literal</code> is <code>false</code>. I've considered to run this run only when <code>semantic.in_nested_literal</code> is <code>true</code>, but then the top-level union is unavailable for the autofix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-14 08:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_nested_literal.rs</code>:95 on 2024-11-14 08:00</div>
+            <div class="timeline-body"><p>Oh, we actually only run the rule when not in a nested literal...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-14 08:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_nested_literal.rs</code>:76 on 2024-11-14 08:02</div>
+            <div class="timeline-body"><p>It might also be worth to use a <code>SmallVec</code> here with a size of 1 to avoid allocating if this is a not-nested literal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_nested_literal.rs</code>:12 on 2024-11-14 13:39</div>
+            <div class="timeline-body"><p>The direct answer to the question of &quot;Why is this bad?&quot; is &quot;it's less readable than the alternative&quot;. I think something to that effect should be the first sentence of this section, as it makes it clear that this rule is about readability and style rather than correctness.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_nested_literal.rs</code>:52 on 2024-11-14 13:40</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// The fix for this rule is marked as unsafe when the `Literal` slice is split
+/// across multiple lines and some of the lines have trailing comments.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-14 13:42</div>
+            <div class="timeline-body"><p>Similar to https://github.com/astral-sh/ruff/pull/14319#pullrequestreview-2436098516, I feel like I'm not sure how much this antipattern really comes up in practice. But, I can see the value if this is a pattern that could be introduced by the fix for other rules we implement!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2024-11-14 15:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_nested_literal.rs</code>:76 on 2024-11-14 15:34</div>
+            <div class="timeline-body"><p><code>nodes</code> will be populated with all entries in <code>Literal</code>, so even for not-nested literals it can exceed 1. Shall I do a first pass to check if the <code>Literal</code> is nested, followed by another to collect the nodes? This will reduce the allocation on the common path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-25 09:44</div>
+            <div class="timeline-body"><p>Is there any open feedback that needs addressing? I'm otherwise happy to merge this rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-25 11:17</div>
+            <div class="timeline-body"><p>My feedback has been addressed, but it looks like there's quite a few merge conflicts here. The conversations in https://github.com/astral-sh/ruff/pull/14323#discussion_r1841713308 and https://github.com/astral-sh/ruff/pull/14323#discussion_r1841729372 are also not marked as &quot;resolved&quot;, and I think you're better placed to judge whether they should be or not ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-25 12:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_nested_literal.rs</code>:76 on 2024-11-25 12:04</div>
+            <div class="timeline-body"><p>I think checking first and then collecting could be good for performance</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`ruff`] Implement `unnecessary-nested-literal` (`RUF039`)" to "[`ruff`] Implement `unnecessary-nested-literal` (`RUF041`)" by @MichaReiser on 2024-11-27 09:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-11-27 10:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-11-27 10:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:28 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix f-string formatting in assignment statement - astral-sh/ruff #14454</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix f-string formatting in assignment statement</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14454">#14454</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-11-19 13:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-19 13:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>fixes: #13813</p>
+<p>This PR fixes a bug in the formatting assignment statement when the value is an f-string.</p>
+<p>This is resolved by using custom best fit layouts if the f-string is (a) not already a flat f-string (thus, cannot be multiline) and (b) is not a multiline string (thus, cannot be flattened). So, it is used in cases like the following:</p>
+<pre><code class="language-py">aaaaaaaaaaaaaaaaaa = f&quot;testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee{
+    expression}moreeeeeeeeeeeeeeeee&quot;
+</code></pre>
+<p>Which is (a) <code>FStringLayout::Multiline</code> and (b) not a multiline.</p>
+<p>There are various other examples in the PR diff along with additional explanation and context as code comments.</p>
+<h2>Test Plan</h2>
+<p>Add multiple test cases for various scenarios.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @dhruvmanila on 2024-11-19 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-11-19 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @dhruvmanila on 2024-11-19 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @MichaReiser removed by @dhruvmanila on 2024-11-19 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-20 11:36</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+4 -2 lines in 1 file in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/milvus-io/pymilvus">milvus-io/pymilvus</a> (+4 -2 lines across 1 file)</summary>
+<p>
+
+<p><a href='https://github.com/milvus-io/pymilvus/blob/15374f63556ae0b5a40a3b09d17fdeb5076eb19a/examples/concurrency/multithreading_hello_milvus.py#L71'>examples/concurrency/multithreading_hello_milvus.py~L71</a></p>
+<pre><code class="language-diff">         print(
+             f&quot;Inserted {len(self.batchs)} batches of {num_entities} entities in {duration} seconds&quot;
+         )
+-        print(f&quot;Expected num_entities: {len(self.batchs)*num_entities}. \
+-                Acutal num_entites: {self.get_thread_local_collection().num_entities}&quot;)
++        print(
++            f&quot;Expected num_entities: {len(self.batchs)*num_entities}. \
++                Acutal num_entites: {self.get_thread_local_collection().num_entities}&quot;
++        )
+ 
+ 
+ if __name__ == &quot;__main__&quot;:
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+4 -2 lines in 1 file in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/milvus-io/pymilvus">milvus-io/pymilvus</a> (+4 -2 lines across 1 file)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/milvus-io/pymilvus/blob/15374f63556ae0b5a40a3b09d17fdeb5076eb19a/examples/concurrency/multithreading_hello_milvus.py#L71'>examples/concurrency/multithreading_hello_milvus.py~L71</a></p>
+<pre><code class="language-diff">         print(
+             f&quot;Inserted {len(self.batchs)} batches of {num_entities} entities in {duration} seconds&quot;
+         )
+-        print(f&quot;Expected num_entities: {len(self.batchs) * num_entities}. \
+-                Acutal num_entites: {self.get_thread_local_collection().num_entities}&quot;)
++        print(
++            f&quot;Expected num_entities: {len(self.batchs) * num_entities}. \
++                Acutal num_entites: {self.get_thread_local_collection().num_entities}&quot;
++        )
+ 
+ 
+ if __name__ == &quot;__main__&quot;:
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-20 11:55</div>
+            <div class="timeline-body"><p>This is looking good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-20 12:56</div>
+            <div class="timeline-body"><p>I think the ecosystem changes here is an existing f-string bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "WIP: Fix f-string formatting in assignment statement" to "Fix f-string formatting in assignment statement" by @dhruvmanila on 2024-11-21 11:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-11-21 11:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-11-21 11:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/string/mod.rs</code>:190 on 2024-11-21 11:38</div>
+            <div class="timeline-body"><p>It's unclear to me why this needs a visitor, considering that we only visit f-string elements. It may need to be recursive but I think that would be easier to understood than a full visitor (where it's difficult to understand where and how it recurses)</p>
+<p>I see that your implementation differs from https://github.com/astral-sh/ruff/blob/3a681ebb40db459705dedd4beea741a5cbdb96b1/crates/ruff_python_formatter/src/string/implicit.rs#L190-L207 in that it also covers format spec. Do we need to update the implicit concation formatting too? Can we share the logic</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_f_string.rs</code>:50 on 2024-11-21 11:42</div>
+            <div class="timeline-body"><p>I think using <code>BestFit</code> for all f-strings that contain multiline expressions isn't correct. For example. It results in</p>
+<pre><code class="language-python">if f&quot;aaaaaaaaaaa { ttttteeeeeeeeest} more {
+    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+}&quot;: pass
+</code></pre>
+<p>being formatted as</p>
+<pre><code class="language-python">if f&quot;aaaaaaaaaaa {ttttteeeeeeeeest} more {aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}&quot;:
+    pass
+</code></pre>
+<p>Which seems worse than before.</p>
+<p>I think we should keep using <code>Multiline</code> if the f-string has any multiline expression to avoid collapsing them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_bin_op.rs</code>:29 on 2024-11-21 11:43</div>
+            <div class="timeline-body"><p>Can we add an example covering this path with an expression that starts as a mulitline f-string but then gets formatted as a flat f-string?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/arguments.rs</code>:228 on 2024-11-21 11:51</div>
+            <div class="timeline-body"><p>Your change is an improvement to what we had before.</p>
+<p>For example, this was correctly formatted code before</p>
+<pre><code class="language-python">call(f&quot;{
+    testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+}&quot;)
+</code></pre>
+<p>But I don't think it's correct to use the &quot;hug&quot; layout if an inner expression is multiline</p>
+<pre><code class="language-python">call(f&quot;{
+    aaaaaa
+    + '''test
+    more'''
+}&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/stmt_assign.rs</code>:1112 on 2024-11-21 11:59</div>
+            <div class="timeline-body"><p>Could we instead return a <code>FormatFString</code> instead of having a new <code>FormatFStringAssignment</code>, considering that we just forward the call?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/stmt_assign.rs</code>:930 on 2024-11-21 12:03</div>
+            <div class="timeline-body"><p>Is it possible to use <code>format_f_string</code> here?</p>
+<pre><code class="language-suggestion">                                    value,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/stmt_assign.rs</code>:952 on 2024-11-21 12:06</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    // ```
+                    //
+                    // Keep the target flat, and use the regular f-string formatting.
+                    //
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/string/implicit.rs</code>:157 on 2024-11-21 12:10</div>
+            <div class="timeline-body"><p>Do we still need the check on line 190-204 considering that it's now covered by <code>string.is_multiline</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/stmt_assign.rs</code>:1133 on 2024-11-21 12:12</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // it's useless to try the flattened layout.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/string/mod.rs</code>:178 on 2024-11-21 12:14</div>
+            <div class="timeline-body"><p>Do we need to consider the debug text as well?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/fstring.py</code>:386 on 2024-11-21 12:16</div>
+            <div class="timeline-body"><p>Could you add some examples with inner comments or debug expressions (and format specs)? See https://github.com/astral-sh/ruff/blob/73ee72b665f333c47c9f597d06317854dd59bdd3/crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/join_implicit_concatenated_string_assignment.py#L236-L293</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-21 12:19</div>
+            <div class="timeline-body"><p>This overall looks good, but I think we're now using the <code>BestFit</code> layout in too many places, which leads to bad formatting in clause headers (see my inline comment).</p>
+<p>I think we should only use the <code>BestFit</code> layout if the <code>FString</code> uses the flat layout. In all other cases, we should use the <code>Multiline</code> layout.</p>
+<p>We should add some more tests that cover <code>BestFit</code> layout usages in non assignment positions to verify that we got the <code>needs_parentheses</code> changes correct.</p>
+<p>See  https://github.com/astral-sh/ruff/blob/73ee72b665f333c47c9f597d06317854dd59bdd3/crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/join_implicit_concatenated_string.py#L296-L321</p>
+<p>and https://github.com/astral-sh/ruff/blob/73ee72b665f333c47c9f597d06317854dd59bdd3/crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/join_implicit_concatenated_string.py#L128-L224</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-21 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/expression/expr_f_string.rs</code>:50 on 2024-11-21 14:56</div>
+            <div class="timeline-body"><p>I think the reason it was formatted like that previously is because the <code>needs_parentheses</code> would return <code>OptionalParentheses::Never</code>. If we would return <code>Multiline</code> then I think parentheses will be added making it:</p>
+<pre><code class="language-py">if (
+    f&quot;aaaaaaaaaaa {ttttteeeeeeeeest} more {
+        aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    }&quot;
+):
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-21 15:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_f_string.rs</code>:50 on 2024-11-21 15:02</div>
+            <div class="timeline-body"><p>We can also decide to return <code>Never</code>. It's not entirely clear to me what the better and more consistent layout is. I would have to play with a few layouts but I don't think it should be what it is now.</p>
+<p>Using Never has the advantage that it avoids unnecessary parentheses and is closer to what we had today (and no one complained?). Adding parentheses is similar to having <code>&quot;aaaaa&quot; + tttttt + &quot;more(aaaaaaaaaaaaaaaaaaaaaaaaaa)</code>. It might be good to play with the formatting in other positions where we use <code>BestFit</code> to decide what the best layout is</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/other/arguments.rs</code>:228 on 2024-11-21 15:19</div>
+            <div class="timeline-body"><p>I'm not sure I follow here. Are you saying that both the code snippet should result in the formatting where the f-string is on the same line as the call expression (<code>call(f&quot;{</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-21 15:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-21 15:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/string/mod.rs</code>:190 on 2024-11-21 15:21</div>
+            <div class="timeline-body"><p>Yeah, I can use recursion instead, I think that might be simpler.</p>
+<blockquote>
+<p>in that it also covers format spec. Do we need to update the implicit concation formatting too? Can we share the logic</p>
+</blockquote>
+<p>I think so although I'll have to check. I can make it a shared function</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-21 15:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/expression/expr_f_string.rs</code>:50 on 2024-11-21 15:23</div>
+            <div class="timeline-body"><p>Yeah, that's a good idea, I can do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-21 15:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/string/implicit.rs</code>:157 on 2024-11-21 15:25</div>
+            <div class="timeline-body"><p>I think not, I can remove it. Good catch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-21 16:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/arguments.rs</code>:228 on 2024-11-21 16:11</div>
+            <div class="timeline-body"><p>This is not directly related to your PR, but I noticed it when reviewing it because you changed <code>is_multiline</code>. We have to make a decision on the idiomatic formatting for &quot;hugging multiline strings&quot; for f-strings.</p>
+<p>I'm leaning towards that we should only &quot;hug&quot; if the f-string itself contains any multiline string literal, but not if any inner-expression is multiline. Similar to prettier:</p>
+<pre><code class="language-js">call(
+  `${
+    aaaaaaaaaaaaaaaaaaaaaaaaaaaa +
+    `test more
+    aaa` +
+    morrrrrrrrrrrrrrrrrrrrrr
+  }`,
+);
+</code></pre>
+<p>So what I'm saying is that we should probably not hug for the both cases above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-25 07:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/statement/stmt_assign.rs</code>:930 on 2024-11-25 07:03</div>
+            <div class="timeline-body"><p>I'm not sure I follow the suggestion here. Do you mean to suggest (if possible) to use <code>format_f_string</code> instead of <code>maybe_parenthesize_expression</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1283 on 2024-11-25 16:40</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">
+    /// Returns the single [`FString`] if the string isn't implicitly concatenated, [`None`] otherwise.
+    pub fn as_single(&amp;self) -&gt; Option&lt;&amp;FString&gt; {
+        match &amp;self.inner {
+            FStringValueInner::Single(FStringPart::FString(fstring)) =&gt; Some(fstring),
+            _ =&gt; None,
+        }
+    }
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/string/mod.rs</code>:136 on 2024-11-25 17:07</div>
+            <div class="timeline-body"><p>Do we need to consider debug expressions too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/arguments.rs</code>:228 on 2024-11-25 17:09</div>
+            <div class="timeline-body"><p>I suggest that we add an explicit <code>is_triple_quoted</code> check here. I don't think we ever want this to apply to any non-triple quoted strings. And let's add some test cases that cover f-strings too (cases where we don't want the layout to apply as well as cases where it should apply)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-25 17:19</div>
+            <div class="timeline-body"><p>This looks good. I still think we should add more tests for f-strings in <a href="https://github.com/astral-sh/ruff/pull/14454#pullrequestreview-2451115483">clause headers and assert statements</a>. For example:</p>
+<pre><code class="language-py">if (f&quot;teaaaaaaaaaaaaaaaaaaaaaaaa{
+    expressioneeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee # comment
+    }aast&quot;.contains('a') 
+):
+    pass
+</code></pre>
+<p>We now remove parentheses from:</p>
+<pre><code class="language-py">aaaaaaaaaaaaaaaaaa = (
+    f&quot;testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee{[a, b,
+    # comment
+    ]}moee&quot; # comment
+) 
+</code></pre>
+<p>but keep them for</p>
+<pre><code class="language-py">aaaaaaaaaaaaaaaaaa = (
+    f&quot;testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee{[a, b,
+    ]}moee&quot;
+    # comment
+) 
+</code></pre>
+<p>The second case is consistent with how we handle parentheses for all other non-fstring assignments.</p>
+<p>But I think what you have now is consistent with how e.g. lists are formatted where the parentheses are removed as well</p>
+<pre><code class="language-py">aaaaaaaaaaaaaaaaaa = (
+    [testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee,
+        # comment
+    ]
+) 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-25 17:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_f_string.rs</code>:50 on 2024-11-25 17:20</div>
+            <div class="timeline-body"><p>We should add a test for this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-26 05:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/string/mod.rs</code>:136 on 2024-11-26 05:39</div>
+            <div class="timeline-body"><p>I don't think so. If debug expressions are present, then there are no breakpoints in that f-string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-26 06:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/string/mod.rs</code>:136 on 2024-11-26 06:35</div>
+            <div class="timeline-body"><p>But they could be multiline, no? The logic here isn't specific to the assignment formatting but is generally used to determine if a string is known to be multiline and it's unclear to me how a newline in a f-string literal is different from a newline in the debug expression</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-26 06:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/string/mod.rs</code>:136 on 2024-11-26 06:38</div>
+            <div class="timeline-body"><p>Hmm, so something like the following which cannot be flattened:</p>
+<pre><code class="language-py">aaaaaaaa = f&quot;aaaaaaaaaa {
+        aaaaaaa + bbbbbbb + cccccccc = } dddddddddd&quot;
+</code></pre>
+<p>So, I think we should check if there's a debug expression and if so then check for line breaks in the expression itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/string/mod.rs</code>:136 on 2024-11-26 06:44</div>
+            <div class="timeline-body"><p>Yes, but I think we also have to test in the debug expression because the above has no line break in the expression, only in the debug expression but the whole f-string should be considered multiline (whether it can be flattened is irrelevant here because this is a general purpose method to determine if a string contains a hard line break)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-26 06:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-26 07:20</div>
+            <div class="timeline-body"><p>I've added a bunch of test cases for f-strings in various positions.</p>
+<p>The formatting is different between the one in assignment vs e.g., a <code>for</code> statement for type of f-string that's mentioned in the linked issue. This is because the special casing is only done for f-string in the assignment value position.</p>
+<p>So, the following:</p>
+<pre><code class="language-py">aaaaaa = f&quot;testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee{
+        expression}moreeeeeeeeeeeeeeeeeeeeeeeeeeeeee&quot;
+
+aaaaaa = (
+    f&quot;testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee{expression}moreeeeeeeeeeeeeeeeeeeeeeeeeeeee&quot;
+)
+
+for a in f&quot;testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee{
+        expression}moreeeeeeeeeeeeeeeeeeeeeeeeeeeeee&quot;:
+    pass
+
+for a in (
+    f&quot;testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee{expression}moreeeeeeeeeeeeeeeeeeeeeeeeeeeee&quot;
+):
+    pass
+</code></pre>
+<p>will get formatted to:</p>
+<pre><code class="language-py">aaaaaa = (
+    f&quot;testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee{expression}moreeeeeeeeeeeeeeeeeeeeeeeeeeeeee&quot;
+)
+
+aaaaaa = (
+    f&quot;testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee{expression}moreeeeeeeeeeeeeeeeeeeeeeeeeeeee&quot;
+)
+
+for a in f&quot;testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee{
+    expression
+}moreeeeeeeeeeeeeeeeeeeeeeeeeeeeee&quot;:
+    pass
+
+for a in (
+    f&quot;testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee{expression}moreeeeeeeeeeeeeeeeeeeeeeeeeeeee&quot;
+):
+    pass
+</code></pre>
+<p>I wonder if this would need to be done instead at the f-string expression level.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-26 07:31</div>
+            <div class="timeline-body"><p>The for case seems fine to me. It's mostly consistent with the formatting in if-statements:</p>
+<pre><code class="language-py">
+for a in f&quot;testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee{
+        expression}moreeeeeeeeeeeeeeeeeeeeeeeeeeeeee&quot;:
+    pass
+
+for a in f&quot;testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee{expression}moreeeeeeeeeeeeeeeeeeeeeeeeeeeee&quot;:
+    pass
+
+if f&quot;testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee{
+        expression}moreeeeeeeeeeeeeeeeeeeeeeeeeeeeee&quot;:
+    pass
+
+if (
+    f&quot;testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee{expression}moreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee&quot;
+):
+    pass
+</code></pre>
+<pre><code class="language-py">for a in f&quot;testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee{
+    expression
+}moreeeeeeeeeeeeeeeeeeeeeeeeeeeeee&quot;:
+    pass
+
+for a in (
+    f&quot;testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee{expression}moreeeeeeeeeeeeeeeeeeeeeeeeeeeee&quot;
+):
+    pass
+
+if f&quot;testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee{
+    expression
+}moreeeeeeeeeeeeeeeeeeeeeeeeeeeeee&quot;:
+    pass
+
+if f&quot;testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee{expression}moreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee&quot;:
+    pass
+</code></pre>
+<p>This seems fine to me and we can iterate on the exact formatting in future style guides based on actual user feedback</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-26 09:36</div>
+            <div class="timeline-body"><p>The ecosystem change looks correct to me and is similar to what we do for regular strings:</p>
+<pre><code class="language-diff">--- /Users/dhruv/playground/ruff/formatter/preview.py
++++ /Users/dhruv/playground/ruff/formatter/preview.py
+@@ -1,6 +1,10 @@
+ if 1:
+     if 1:
+-        print(&quot;Expected num_entities: {len(self.batchs)*num_entities}. \
+-                Acutal num_entites: {self.get_thread_local_collection().num_entities}&quot;)
+-        print(f&quot;Expected num_entities: {len(self.batchs)*num_entities}. \
+-                Acutal num_entites: {self.get_thread_local_collection().num_entities}&quot;)
++        print(
++            &quot;Expected num_entities: {len(self.batchs)*num_entities}. \
++                Acutal num_entites: {self.get_thread_local_collection().num_entities}&quot;
++        )
++        print(
++            f&quot;Expected num_entities: {len(self.batchs) * num_entities}. \
++                Acutal num_entites: {self.get_thread_local_collection().num_entities}&quot;
++        )
+</code></pre>
+<p>Going to merge this now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-11-26 09:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-11-26 09:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-26 09:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:28 UTC
+    </footer>
+</body>
+</html>

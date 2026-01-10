@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N811 &amp; N814: eliminate false positives for single-letter names - astral-sh/ruff #14584</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>N811 &amp; N814: eliminate false positives for single-letter names</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14584">#14584</a>
+        opened by <a href="https://github.com/snowdrop4">@snowdrop4</a>
+        on 2024-11-25 15:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/snowdrop4">@snowdrop4</a> on 2024-11-25 15:01</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Under PEP8, identifiers consisting of a single upper-case character could either be a class or a constant.</p>
+<p>N811 (constant imported as non-constant) and N814 (camelcase imported as constant) are, however, incorrectly assuming these identifiers to always be constants, which leads to false-positives.</p>
+<p>Although identifiers consisting of a single upper-case character are not advised under PEP8, it would be best if these cases were handled by more specific rule(s) that point out ambiguous identifiers and/or violations of PEP8, rather than rules that attempt to narrowly point out changes in identifier casing.</p>
+<p>Addresses #11862.</p>
+<h2>Test Plan</h2>
+<p>Additional fixture cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-25 15:09</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pep8_naming/rules/constant_imported_as_non_constant.rs</code>:56 on 2024-11-25 17:44</div>
+            <div class="timeline-body"><p>To not rely on compiler optimizations</p>
+<pre><code class="language-suggestion">    if name.chars().skip(1).next().is_none() {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2024-11-25 17:44</div>
+            <div class="timeline-body"><p>Thanks.</p>
+<p>I'm trying to understand the change in regards of PEP8 but I wasn't able to find the exception for single-letter non-constants. Could you extend the rule's documentation and mention the exception and reference PEP8. It will help to prevent future issues that ask for Ruff detecting single-letter uppercase imports to be flagged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-11-25 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowdrop4">@snowdrop4</a> reviewed on 2024-11-25 23:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowdrop4">@snowdrop4</a> on <code>crates/ruff_linter/src/rules/pep8_naming/rules/constant_imported_as_non_constant.rs</code>:56 on 2024-11-25 23:36</div>
+            <div class="timeline-body"><p>Thanks. Fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowdrop4">@snowdrop4</a> on 2024-11-25 23:37</div>
+            <div class="timeline-body"><p>PEP8 doesn't <em>explicitly</em> mention the case. It leaves it undefined by failing to mention the obvious problem. It only says:</p>
+<blockquote>
+<p>Class names should normally use the CapWords convention.</p>
+</blockquote>
+<blockquote>
+<p>Constants are [...] written in all capital letters with underscores separating words</p>
+</blockquote>
+<p>If there is only one character then CapWords and ALL_CAPS_SNAKE_CASE appear the same since the first character is always capitalised.</p>
+<p>But if there are at least two characters, then 99.99% of the time, it isn't ambigious any more, since it would either be <code>Ab</code> (CapWords) or <code>AB</code> (ALL_CAPS_SNAKE_CASE).</p>
+<p>But yeah, good point about the docs. I've added a <code>## Note</code> section to the docs for both rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-26 08:05</div>
+            <div class="timeline-body"><p>Thanks. This makes sense to me. @AlexWaygood it would be great if you could do a quick sanity check if the rule-change makes sense to you too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @MichaReiser on 2024-11-27 08:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pep8_naming/rules/camelcase_imported_as_constant.rs</code>:35 on 2024-11-27 13:43</div>
+            <div class="timeline-body"><p>The [] means that we'll add a link to it -- and the standard spelling is &quot;PEP 8&quot; :-)</p>
+<pre><code class="language-suggestion">/// the rules of [PEP 8], which specifies CamelCase for classes and
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pep8_naming/rules/camelcase_imported_as_constant.rs</code>:38 on 2024-11-27 13:43</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// of a CamelCase string for a class or an ALL_CAPS_SNAKE_CASE string for
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pep8_naming/rules/constant_imported_as_non_constant.rs</code>:34 on 2024-11-27 13:45</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// the rules of [PEP 8], which specifies CamelCase for classes and
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pep8_naming/rules/constant_imported_as_non_constant.rs</code>:37 on 2024-11-27 13:46</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// of a CamelCase string for a class or an ALL_CAPS_SNAKE_CASE string for
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pep8_naming/rules/constant_imported_as_non_constant.rs</code>:69 on 2024-11-27 13:51</div>
+            <div class="timeline-body"><p>But we still want to forbid things like <code>from foo import C as c</code> from <em>one</em> of these rules, right? Won't these changes mean that we will no longer see that error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/pep8_naming/N811.py</code>:2 on 2024-11-27 13:53</div>
+            <div class="timeline-body"><p>nit: it would be much easier to review your changes if you only made changes to the bottom of the fixure file. Adding lines at the top means that all lines in the snapshot change, which makes assessing the impact of your change here quite hard. Could you move this import down below the <code>from mod import ANOTHER_CONSTANT as another_constant</code> line?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/pep8_naming/N814.py</code>:1 on 2024-11-27 13:54</div>
+            <div class="timeline-body"><p>similarly here -- I understand why you added this comment, but it makes the diff in the snapshots quite hard to review</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-27 13:54</div>
+            <div class="timeline-body"><p>Some docs nits. We refer to it elsewhere in our docs as CamelCase rather than PascalCase.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowdrop4">@snowdrop4</a> reviewed on 2024-11-27 14:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowdrop4">@snowdrop4</a> on <code>crates/ruff_linter/src/rules/pep8_naming/rules/constant_imported_as_non_constant.rs</code>:69 on 2024-11-27 14:00</div>
+            <div class="timeline-body"><p>It's not possible to tell if <code>C</code> is a class or a constant. So even though <code>from foo import C as c</code> might not be advisable, it's not applicable to throw an error about this under a rule made for constants.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-27 14:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pep8_naming/rules/constant_imported_as_non_constant.rs</code>:69 on 2024-11-27 14:03</div>
+            <div class="timeline-body"><p>But regardless of whether you classify its original name as CamelCase or SCREAMING_SNAKE_CASE, the name it's being aliased to is neither CamelCase nor SCREAMING_SNAKE_CASE. I don't mind much <em>which</em> of these two rules flags that, but I think I would want <em>a</em> rule in this category to complain that the alias uses a different naming convention to the naming convention used for the object's original name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowdrop4">@snowdrop4</a> reviewed on 2024-11-27 14:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowdrop4">@snowdrop4</a> on <code>crates/ruff_linter/src/rules/pep8_naming/rules/constant_imported_as_non_constant.rs</code>:69 on 2024-11-27 14:09</div>
+            <div class="timeline-body"><p>I could add a new rule, <code>non_lowercase_imported_as_lowercase</code>? (to compliment the already-existing <code>lowercase_imported_as_non_lowercase</code>).</p>
+<p>Though I guess we'd need to prevent overlaps and check that the other rules aren't already firing?</p>
+<p>Or maybe just name it <code>single_uppercase_character_imported_as_lowercase</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-27 14:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pep8_naming/rules/constant_imported_as_non_constant.rs</code>:69 on 2024-11-27 14:17</div>
+            <div class="timeline-body"><p>Would it be possible to preserve the existing behavior for lower-case letters which is that both rules falg it?</p>
+<p>Nice catch @AlexWaygood !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowdrop4">@snowdrop4</a> on <code>crates/ruff_linter/src/rules/pep8_naming/rules/constant_imported_as_non_constant.rs</code>:69 on 2024-11-27 14:19</div>
+            <div class="timeline-body"><blockquote>
+<p>Would it be possible to preserve the existing behavior for lower-case letters which is that both rules falg it?</p>
+</blockquote>
+<p>Yeah, that could be an option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowdrop4">@snowdrop4</a> reviewed on 2024-11-27 14:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-27 14:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pep8_naming/rules/constant_imported_as_non_constant.rs</code>:69 on 2024-11-27 14:21</div>
+            <div class="timeline-body"><p>I've just pushed a change that makes N811 flags it. I think that rule makes more sense here, and I think it's not a great outcome if one lint error is flagged by two rules. I don't think the situation is common enough to justify its own rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-11-27 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-27 14:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pep8_naming/rules/constant_imported_as_non_constant.rs</code>:69 on 2024-11-27 14:36</div>
+            <div class="timeline-body"><blockquote>
+<p>a great outcome if one lint error is flagged by two rules</p>
+</blockquote>
+<p>I don't disagree with this. I'm just slightly worried about bug reports if someone only enables one rule... But I'm fine with either</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-27 14:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-11-27 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-11-27 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-27 14:39</div>
+            <div class="timeline-body"><p>Thanks @snowdrop4!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowdrop4">@snowdrop4</a> on 2024-11-27 20:36</div>
+            <div class="timeline-body"><p>No problem. Thanks for the reviews!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:29 UTC
+    </footer>
+</body>
+</html>

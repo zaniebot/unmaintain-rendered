@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use `Result` for failed text document retrieval in LSP requests - astral-sh/ruff #14579</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use <code>Result</code> for failed text document retrieval in LSP requests</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14579">#14579</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-11-25 03:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-25 03:54</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Ref: https://github.com/astral-sh/ruff-vscode/issues/644#issuecomment-2496588452</p>
+<h2>Test Plan</h2>
+<p>Not sure how to test this as this is mainly to get more context on the panic that the server is raising.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2024-11-25 03:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-25 04:00</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server/api/requests/format.rs</code>:68 on 2024-11-25 07:34</div>
+            <div class="timeline-body"><p>I never fully understood this in the LSP but could we propagate the error instead of unwrapping here?</p>
+<pre><code class="language-suggestion">        .context(&quot;Failed to get text document for the format request&quot;))
+        .unwrap();
+</code></pre>
+<p>I think that should be sufficient. <code>anyhow</code> preserves the entire error-chain</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-25 07:35</div>
+            <div class="timeline-body"><p>This is great.</p>
+<p>We should consider propagating the error instead of unwrapping, to prevent the LSP from crashing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2024-11-25 07:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-25 07:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/api/requests/format.rs</code>:68 on 2024-11-25 07:57</div>
+            <div class="timeline-body"><p>Yeah, I thought about doing this but then we would still have the problem that the message will only be logged if the user has turned on server messages via <code>ruff.trace.server: &quot;messages&quot;</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/4ce0c42dac09039e86311fdb2da5558947e18188/crates/ruff_server/src/server/api.rs#L197-L214</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-25 07:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/api/requests/format.rs</code>:68 on 2024-11-25 07:58</div>
+            <div class="timeline-body"><p>I think I'll want to club the change that you're suggesting along with the logging infrastructure change that I'm planning for later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-25 08:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server/api/requests/format.rs</code>:68 on 2024-11-25 08:02</div>
+            <div class="timeline-body"><p>That makes sense. I would still prefer propagating because there's a workaround to get logs, but there's no workaround for a crashing ruff server.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-25 08:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/api/requests/format.rs</code>:68 on 2024-11-25 08:05</div>
+            <div class="timeline-body"><p>My main concern here is that the user will only see the notification but no log messages. Then, the user would need to turn on server messages which would restart the server and will loose the state in which the panic occurs. So, the user would need to wait until the next time the error occurs to provide us the logs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-25 08:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/api/requests/format.rs</code>:68 on 2024-11-25 08:40</div>
+            <div class="timeline-body"><p>Using anyhow's <code>Context</code> requires cloning the <code>Url</code> because I can't use the reference because of lifetime issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-25 08:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server/api/requests/format.rs</code>:68 on 2024-11-25 08:42</div>
+            <div class="timeline-body"><p>Can you use <code>with_context</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-25 08:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/api/requests/format.rs</code>:68 on 2024-11-25 08:45</div>
+            <div class="timeline-body"><p>Same issue:</p>
+<pre><code>error[E0521]: borrowed data escapes outside of function
+  --&gt; crates/ruff_server/src/server/api/requests/format.rs:65:25
+   |
+64 |   pub(super) fn format_document(snapshot: &amp;DocumentSnapshot) -&gt; Result&lt;super::FormatResponse&gt; {
+   |                                 --------  - let's call the lifetime of this reference `'1`
+   |                                 |
+   |                                 `snapshot` is a reference that is only valid in the function body
+65 |       let text_document = snapshot
+   |  _________________________^
+66 | |         .query()
+   | |                ^
+   | |                |
+   | |________________`snapshot` escapes the function body here
+   |                  argument requires that `'1` must outlive `'static`
+
+error[E0521]: borrowed data escapes outside of function
+  --&gt; crates/ruff_server/src/server/api/requests/format_range.rs:33:25
+   |
+30 |       snapshot: &amp;DocumentSnapshot,
+   |       --------  - let's call the lifetime of this reference `'1`
+   |       |
+   |       `snapshot` is a reference that is only valid in the function body
+...
+33 |       let text_document = snapshot
+   |  _________________________^
+34 | |         .query()
+   | |                ^
+   | |                |
+   | |________________`snapshot` escapes the function body here
+   |                  argument requires that `'1` must outlive `'static`
+
+error[E0521]: borrowed data escapes outside of function
+  --&gt; crates/ruff_server/src/server/api/requests/hover.rs:34:20
+   |
+30 |       snapshot: &amp;DocumentSnapshot,
+   |       --------  - let's call the lifetime of this reference `'1`
+   |       |
+   |       `snapshot` is a reference that is only valid in the function body
+...
+34 |       let document = snapshot
+   |  ____________________^
+35 | |         .query()
+   | |                ^
+   | |                |
+   | |________________`snapshot` escapes the function body here
+   |                  argument requires that `'1` must outlive `'static`
+
+For more information about this error, try `rustc --explain E0521`.
+error: could not compile `ruff_server` (lib) due to 3 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `ruff_server` (lib test) due to 3 previous errors
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-25 08:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server/api/requests/format.rs</code>:68 on 2024-11-25 08:58</div>
+            <div class="timeline-body"><p>Oh I see now. I think cloning is fine. It only happens in the error case and it's uncommon that errors have lifetime bounds (e.g. it prevents users from propagating errors, as you've seen here)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-11-25 09:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-11-25 09:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-25 09:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:29 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Types for subexpressions of annotations - astral-sh/ruff #14426</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Types for subexpressions of annotations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14426">#14426</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2024-11-18 08:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-18 08:36</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This patches up various missing paths where sub-expressions of type annotations previously had no type attached. Examples include:</p>
+<pre><code class="language-py">tuple[int, str]
+#     ~~~~~~~~
+
+type[MyClass]
+#    ~~~~~~~
+
+Literal[&quot;foo&quot;]
+#       ~~~~~
+
+Literal[&quot;foo&quot;, Literal[1, 2]]
+#              ~~~~~~~~~~~~~
+
+Literal[1, &quot;a&quot;, random.illegal(sub[expr + ession])]
+#               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+</code></pre>
+<h2>Test Plan</h2>
+<pre><code>cargo nextest run -p red_knot_workspace -- --ignored linter_af linter_gz
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-11-18 08:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2024-11-18 08:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2024-11-18 08:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2024-11-18 08:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/literal/literal.md</code>:59 on 2024-11-18 08:52</div>
+            <div class="timeline-body"><p>I think the point of this test was meant to be to show that arbitrary name expressions weren't accepted as parameters to <code>Literal</code>... I think it would be better to assign <code>hello = &quot;hello&quot;</code> above the <code>Literal</code> slice rather than asserting the error here. Then it would be clearer what is being tested, I think</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-18 08:57</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4459 on 2024-11-18 11:15</div>
+            <div class="timeline-body"><p>nit: I'd prefer to do something like this, so that we only have to call <code>self.store_expression_type()</code> once:</p>
+<pre><code class="language-rs">                let ty = if return_todo {
+                    Type::Todo
+                } else {
+                    Type::tuple(self.db, &amp;element_types)
+                };
+
+                // Here, we store the type for the inner `int, str` tuple-expression,
+                // while the type for the outer `tuple[int, str]` slice-expression is
+                // stored in the outer `infer_type_expression` call:
+                self.store_expression_type(tuple_slice, ty);
+
+                ty
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-11-18 11:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-11-18 11:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2024-11-18 12:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2024-11-18 12:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-18 12:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:28 UTC
+    </footer>
+</body>
+</html>

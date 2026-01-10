@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Do not consider f-strings with escaped newlines as multiline - astral-sh/ruff #14624</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Do not consider f-strings with escaped newlines as multiline</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14624">#14624</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-11-27 05:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-27 05:05</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes a bug in the f-string formatting to not consider the escaped newlines for <code>is_multiline</code>. This is done by checking if the f-string is triple-quoted or not similar to normal string literals.</p>
+<p>This is not required to be gated behind preview because the logic change for <code>is_multiline</code> was added in https://github.com/astral-sh/ruff/pull/14454.</p>
+<h2>Test Plan</h2>
+<p>Add a test case which formats differently on <code>main</code>: https://play.ruff.rs/ea3c55c2-f0fe-474e-b6b8-e3365e0ede5e</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-11-27 05:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @dhruvmanila on 2024-11-27 05:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-11-27 05:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-27 05:12</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-11-27 07:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-27 07:34</div>
+            <div class="timeline-body"><blockquote>
+<p>This is not required to be gated behind preview because the logic change for is_multiline was added in https://github.com/astral-sh/ruff/pull/14454.</p>
+</blockquote>
+<p>I'm not sure I understand this part. Isn't the reason why no preview gating is required because this new logic is only used in preview mode?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-27 07:38</div>
+            <div class="timeline-body"><blockquote>
+<p>Isn't the reason why no preview gating is required because this new logic is only used in preview mode?</p>
+</blockquote>
+<p>The <code>is_multiline</code> is also used in binary expression formatting which isn't gated behind preview. You can see that in the playground by turning off the <code>preview</code> flag: https://play.ruff.rs/8ef99e9b-ea54-44b4-a483-f7339424865d. The logic for f-strings was changed from just checking for newlines in the entire f-string to checking individual elements in the linked PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/binary.py</code>:430 on 2024-11-27 07:39</div>
+            <div class="timeline-body"><p>Could we add some tests in assignment positions and with implicit concatenated strings (especially with inline comments) just to make sure strings with line continuations are handled correctly in those positions too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-27 07:41</div>
+            <div class="timeline-body"><p>Looking at https://github.com/astral-sh/ruff/pull/14454 <code>is_multiline</code> again, I think the change we made there has a high potential for unwanted stable style changes. We should change the <code>is_multiline</code> to keep using the &quot;old&quot; <code>memchr2(b'\n', b'\r', source[fstring.range].as_bytes()).is_some()</code> if f-string formatting is disabled and only use the new logic if f-string formatting is enabled. We otherwise risk that bugs like the one you found here impact stable style users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-27 07:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the change we made there has a high potential for unwanted stable style changes. We should change the <code>is_multiline</code> to keep using the &quot;old&quot; <code>memchr2(b'\n', b'\r', source[fstring.range].as_bytes()).is_some()</code> if f-string formatting is disabled and only use the new logic if f-string formatting is enabled. We otherwise risk that bugs like the one you here impact users of our stable style.</p>
+</blockquote>
+<p>I see, I think that makes sense. I'll do that as a follow-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-27 08:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/binary.py</code>:430 on 2024-11-27 08:48</div>
+            <div class="timeline-body"><p>Adding these test case reveals one more change in implicitly concatenated strings. Given:</p>
+<pre><code class="language-py">f&quot;hellooooooooooooooooooooooo \
+        worldddddddddddddddddd&quot; &quot;another string&quot;
+</code></pre>
+<p>On <code>main</code>, we don't concatenate it because the f-string is considered as multiline but here we would. I'm going to make the <code>is_multiline</code> change gated behind preview first, rebase this PR and add the test cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-27 08:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/binary.py</code>:430 on 2024-11-27 08:49</div>
+            <div class="timeline-body"><p>I think concatenating the string makes sense as long as it fits into the line length</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-11-27 10:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-11-27 10:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-27 10:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:29 UTC
+    </footer>
+</body>
+</html>

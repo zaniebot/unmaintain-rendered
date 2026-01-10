@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[pyflakes] Avoid false positives in `@no_type_check` contexts (F821, F722) - astral-sh/ruff #14615</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[pyflakes] Avoid false positives in <code>@no_type_check</code> contexts (F821, F722)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14615">#14615</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2024-11-26 17:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2024-11-26 17:45</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>These changes avoid the false positives reported in #13824, where both F821 (undefined name) and F722 (syntax error in forward annotation) were triggered in function signatures decorated with <a href="https://docs.python.org/3/library/typing.html#typing.no_type_check">typing.no_type_check</a>. In line with the discussion on the issue, the code now skips visiting type definitions when in a context where this decorator was found. While the initial report only covered the function decorator, the docs indicate that classes can also be decorated, so this context is also checked when visiting class definitions, and the new tests reflect that.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>These changes were tested by including the code snippets triggering the issue as new snapshot tests. As mentioned above, these snapshots are also augmented with <code>class</code> variants. I also added invalid annotations to the function and method bodies to make sure the <code>no_type_check</code> context applied to the bodies too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-26 17:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1067 on 2024-11-26 17:49</div>
+            <div class="timeline-body"><p>I think this should use <code>match_typing_expr</code> so that it works for <code>@typing.no_type_check</code> too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-26 17:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1067 on 2024-11-26 17:50</div>
+            <div class="timeline-body"><p>So, will this apply to type annotations in the <em>body</em> of the function? And should it, per the spec? (I don't know off-hand.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-26 17:52</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-26 17:57</div>
+            <div class="timeline-body"><p>I looked into the <code>@no_type_check</code> for red knot and I think we should ignore it for classes, the same as pyright. See https://discuss.python.org/t/no-type-check-decorator/43119.</p>
+<p>Edit: The relevant typing spec change https://github.com/python/typing/pull/1615/files</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2024-11-26 18:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1067 on 2024-11-26 18:03</div>
+            <div class="timeline-body"><p>Ah thanks, I missed <code>match_typing_expr</code>.</p>
+<p>Yes, this should apply to annotations in the body too, based on my reading of the <code>no_type_check</code> <a href="https://docs.python.org/3/library/typing.html#typing.no_type_check">docs</a>:</p>
+<blockquote>
+<p>This works as a class or function <a href="https://docs.python.org/3/glossary.html#term-decorator">decorator</a>. With a class, it applies recursively to all methods and classes defined in that class (but not to methods defined in its superclasses or subclasses). <strong>Type checkers will ignore all annotations in a function or class with this decorator.</strong></p>
+</blockquote>
+<p>Similarly in the <a href="https://typing.readthedocs.io/en/latest/spec/directives.html#no-type-check">typing docs</a> linked in what Micha linked:</p>
+<blockquote>
+<p>If a type checker supports the no_type_check decorator for functions, it should suppress all type errors for the def statement and its body including any nested functions or classes. It should also ignore all parameter and return type annotations and treat the function as if it were unannotated.</p>
+</blockquote>
+<p>I added annotated variables to the test fixtures in my last commit to check this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-11-26 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2024-11-26 18:05</div>
+            <div class="timeline-body"><p>Ah okay, happy to revert the class part. That's what I had initially anyway since that's all that was reported in #13824.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-26 18:48</div>
+            <div class="timeline-body"><p>Nice. This looks good to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-11-26 19:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-26 19:13</div>
+            <div class="timeline-body"><p>Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-11-26 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-11-26 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-26 19:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:29 UTC
+    </footer>
+</body>
+</html>

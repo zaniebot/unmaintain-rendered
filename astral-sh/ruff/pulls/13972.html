@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retain colored output in `mdtest` failures - astral-sh/ruff #13972</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Retain colored output in <code>mdtest</code> failures</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13972">#13972</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-10-29 01:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-29 01:12</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Rather than using the <code>&quot;no-color&quot;</code> feature, we can use <code>anstream</code> to strip the color codes, as we do in uv.</p>
+<p>Closes https://github.com/astral-sh/ty/issues/235.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2024-10-29 01:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @charliermarsh on 2024-10-29 01:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @charliermarsh on 2024-10-29 01:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @charliermarsh on 2024-10-29 01:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-29 01:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pylint/snapshots/ruff_linter__rules__pylint__tests__PLE2510_invalid_characters.py.snap</code>:49 on 2024-10-29 01:21</div>
+            <div class="timeline-body"><p>Are these bugs in anstream? Or is there something strange going on with the invalid characters here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-29 01:56</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/snapshots/ruff_linter__rules__pylint__tests__PLE2510_invalid_characters.py.snap</code>:49 on 2024-10-29 06:41</div>
+            <div class="timeline-body"><p>Not sure. Could you take a look at the file in a hex viewer? Maybe the file ending changed or it's something else but I'm surprised that there are changed snapshots.</p>
+<p>Anoter possibility is that your <code>cargo insta</code> version is too old/new</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2024-10-29 06:44</div>
+            <div class="timeline-body"><p>Thanks. This is much better than my hacky solution.</p>
+<p>We should have a closer look at what's changing in the snapshot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-29 08:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ruff_linter/src/rules/pylint/snapshots/ruff_linter__rules__pylint__tests__PLE2510_invalid_characters.py.snap</code>:49 on 2024-10-29 08:20</div>
+            <div class="timeline-body"><p>On <code>main</code>, this line contains a <a href="https://en.wikipedia.org/wiki/Substitute_character">substitute control character</a> (<code>␚</code>, <code>^Z</code>; hex <code>\x1a</code>), which is not present on this branch:</p>
+<p><img src="https://github.com/user-attachments/assets/272dba32-427b-43e4-901c-006fb9d265a3" alt="image" /></p>
+<p>This character gets stripped by <code>anstream</code>, as demonstrated by this snippet:</p>
+<pre><code class="language-rs">let styled_text = &quot;foo\x1abar&quot;;
+let plain_str = anstream::adapter::strip_str(&amp;styled_text).to_string();
+assert_eq!(plain_str, &quot;foobar&quot;);
+</code></pre>
+<p>Possibly because they use <code>0x1a</code> to switch to another mode here: https://github.com/rust-cli/anstyle/blob/5628f47a37e059d468c9ea2eab5ce69950e794e9/crates/anstyle-parse/src/state/codegen.rs#L59 — I haven't investigated further.</p>
+<p>I don't know if this is a bug in anstream or expected behavior, but I think this reveals a problem with this strip-ansi-escape-sequences approach. Some of these snapshot files could contain actual (non-escaped) <code>1b 5b</code> escape sequences that should not be stripped.</p>
+<p><code>colored</code> offers a way to <a href="https://docs.rs/colored/latest/colored/control/struct.SHOULD_COLORIZE.html#method.set_override">disable colors at runtime</a>. Would that be an alternative approach?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-29 08:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/snapshots/ruff_linter__rules__pylint__tests__PLE2510_invalid_characters.py.snap</code>:49 on 2024-10-29 08:30</div>
+            <div class="timeline-body"><blockquote>
+<p>colored offers a way to <a href="https://docs.rs/colored/latest/colored/control/struct.SHOULD_COLORIZE.html#method.set_override">disable colors at runtime</a>. Would that be an alternative approach?</p>
+</blockquote>
+<p>One issue with this approach is that the colorize &quot;leaks&quot; into other tests and it would disable colorized output in mdtests depending on the test-execution order.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-29 08:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/snapshots/ruff_linter__rules__pylint__tests__PLE2510_invalid_characters.py.snap</code>:49 on 2024-10-29 08:32</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't know if this is a bug in anstream or expected behavior, but I think this reveals a problem with this strip-ansi-escape-sequences approach.</p>
+</blockquote>
+<p>I do expect that this is intended because the strip stream strips any non-printable characters. I don't think this is necessarily desired in our case because we want to test and catch unprintable characters in our test outputs (we don't handle them today but we definitely should)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-29 08:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pylint/snapshots/ruff_linter__rules__pylint__tests__PLE2510_invalid_characters.py.snap</code>:49 on 2024-10-29 08:36</div>
+            <div class="timeline-body"><blockquote>
+<p><code>colored</code> offers a way to <a href="https://docs.rs/colored/latest/colored/control/struct.SHOULD_COLORIZE.html#method.set_override">disable colors at runtime</a>. Would that be an alternative approach?</p>
+</blockquote>
+<p>This is how we currently disable colours in the tests for mdtest itself, FWIW:</p>
+<p>https://github.com/astral-sh/ruff/blob/2fe203292aa17a34dc878684ad2f1003504ea7f5/crates/red_knot_test/src/matcher.rs#L367</p>
+<p>Maybe we need to fix that as well in this PR if it leaks into other tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-29 12:44</div>
+            <div class="timeline-body"><p>I think this is the right approach but I don't have a suggestion for fixing the non-printable characters, so unless folks want to merge I'd likely just close this for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-29 13:42</div>
+            <div class="timeline-body"><p>An alterantive to what's proposed here is to avoid emitting ansi escape sequences in the first place by changing <code>TextEmitter</code> by a <code>colored</code> option.</p>
+<p>The emitter can internally use a style sheet that defines what color to use for different elements. The default style uses the colors that we use in the CLI but we can have a no-color style that defaults to black (and no bold).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-30 02:57</div>
+            <div class="timeline-body"><p>If we do that, we'll still need a separate solution for red-knot diagnostics which are more disparate (or we'd have to use anstream over there).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-30 07:45</div>
+            <div class="timeline-body"><blockquote>
+<p>If we do that, we'll still need a separate solution for red-knot diagnostics which are more disparate (or we'd have to use anstream over there).</p>
+</blockquote>
+<p>That's correct. Ideally we would have less code that implements some sort of a diagnostic system and instead have a single one where we do all the color handling. Either way. I think both systems could use the same approach. We define a stylesheet somewhere and pass that through.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-12 11:20</div>
+            <div class="timeline-body"><p>I suggest that we revisit this issue after we have the new diagnostic system in place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-12 21:39</div>
+            <div class="timeline-body"><p>Sounds good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-12 21:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:27 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] function signature representation - astral-sh/ruff #14304</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] function signature representation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14304">#14304</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-11-13 03:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-11-13 03:07</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Add a typed representation of function signatures (parameters and return type) and infer it correctly from a function.</p>
+<p>Convert existing usage of function return types to use the signature representation.</p>
+<p>This does not yet add inferred types for parameters within function body scopes based on the annotations, but it should be easy to add as a next step.</p>
+<p>Part of #14161 and #13693.</p>
+<h2>Test Plan</h2>
+<p>Added tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-11-13 03:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-11-13 03:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-11-13 03:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2024-11-13 03:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-13 03:21</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] full function signature representation" to "[red-knot] function signature representation" by @carljm on 2024-11-13 03:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2330 on 2024-11-13 08:36</div>
+            <div class="timeline-body"><p>Should this be the default we use in most places? If so, I would consider calling it <code>signature</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:75 on 2024-11-13 08:39</div>
+            <div class="timeline-body"><p>Have you considered an alternative representation where we store all <code>Parameters</code> in a single slice and instead use an enum for the parameter types. This has the downside that it allows to e.g. contain two <code>keywords</code> but makes iterating easier and reduces the overall allocations by a fair amount.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:168 on 2024-11-13 08:44</div>
+            <div class="timeline-body"><p>I slightly prefer explicitly representing synthesized names, e.g., using an <code>enum</code> here to make it more resilient. The assumption here is that a real parameter can never be named <code>1</code> but the parser could decide to recover from <code>def a(1=&quot;test&quot;)</code> and parse out <code>1</code> as an identifier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-13 08:46</div>
+            <div class="timeline-body"><p>Looks good. My main feedback is whether its worth having separate fields for the different parameter kinds or if we instead want to store all parameters in a single slice and only distinguish them by a kind (which I think is what pyright does and we at least considered for the AST because concatenating parameters and always remembering the right order is awkward)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2342 on 2024-11-13 11:34</div>
+            <div class="timeline-body"><p>they're not yet implemented, but I assume it will also ignore overloads:</p>
+<pre><code class="language-suggestion">    /// This represents the annotations on the function itself, unmodified by decorators
+    /// and overloads.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2344 on 2024-11-13 11:34</div>
+            <div class="timeline-body"><p>nit</p>
+<pre><code class="language-suggestion">    /// These are the parameter and return types that should be used for type checking the body of
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:75 on 2024-11-13 11:40</div>
+            <div class="timeline-body"><p>I see the attraction of reducing allocations but I'm not wild about making invalid states representable like that. The vast majority of functions have a small number of parameters; I think a better strategy for trying to reduce allocations would be to use <code>SmallVec</code> or roll our own <code>SmallVec</code>-like datastructure that keeps items on the stack where possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:89 on 2024-11-13 11:42</div>
+            <div class="timeline-body"><p>If you derived <code>Default</code> for <code>Parameters</code>, then this could be</p>
+<pre><code class="language-suggestion">            variadic: Some(Parameter {
+                name: Name::new_static(&quot;args&quot;),
+                annotated_ty: Type::Todo,
+            }),
+            keywords: Some(Parameter {
+                name: Name::new_static(&quot;kwargs&quot;),
+                annotated_ty: Type::Todo,
+            }),
+            ..Self::default()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2377 on 2024-11-13 11:46</div>
+            <div class="timeline-body"><p>In which case: maybe we shouldn't expose it as a method on <code>FunctionType</code> at all? Putting it in <code>types.rs</code> means it's visible to all <code>red_knot_python_semantic::types</code> submodules.</p>
+<p>I'm okay with keeping it here for now, though; I can see it simplifies things</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:124 on 2024-11-13 11:55</div>
+            <div class="timeline-body"><p>nit: I'd unpack all of the <code>Parameters</code> fields up-front. The advantage is that you get an unused-variable compiler warning if you fail to use one of the fields in the course of the rest of the function; here that's pretty desirable, since <code>types::Parameters</code> should be a 1:1 mirror of <code>ast::Parameters</code> in terms of its internal structure:</p>
+<pre><code class="language-suggestion">        let ast::Parameters {
+            posonlyargs,
+            args,
+            vararg,
+            kwarg,
+            kwonlyargs,
+            range: _,
+        } = parameters;
+        let positional_only = posonlyargs
+            .iter()
+            .map(|arg| ParameterWithDefault::from_node(db, definition, arg))
+            .collect();
+        let positional_or_keyword = args
+            .iter()
+            .map(|arg| ParameterWithDefault::from_node(db, definition, arg))
+            .collect();
+        let variadic = vararg
+            .as_ref()
+            .map(|arg| Parameter::from_node(db, definition, arg));
+        let keyword_only = kwonlyargs
+            .iter()
+            .map(|arg| ParameterWithDefault::from_node(db, definition, arg))
+            .collect();
+        let keywords = kwarg
+            .as_ref()
+            .map(|arg| Parameter::from_node(db, definition, arg));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/exception/basic.md</code>:47 on 2024-11-13 12:01</div>
+            <div class="timeline-body"><p>I'm actually not sure the TODO comment is correct here. Our default <code>--target-version</code> is currently Python 3.8. This function will indeed fail on Python 3.8, since that's before PEP-585, and there's no <code>from __future__ import annotations</code> in this snippet.</p>
+<p>Can you explain why these errors are going away here? Is it because we now only infer subscripts in annotations according to their type-expression semantics, whereas previously we inferred them according to their type-expression semantics <em>and</em> their runtime semantics?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-11-13 12:01</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-13 12:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:75 on 2024-11-13 12:17</div>
+            <div class="timeline-body"><p>It's not just about reducing allocations. I also just find using the parameter struct in rust awkward because I always have to remember the iteration order, chain over multiple slices (good bye <code>len</code>) for little good. I'm not very worried that we create too many invalid representations because we should construct this struct in exactly one location but we'll read it in many places. That's why I favor whatever design is more ergonomic when <em>using</em> it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-13 12:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:75 on 2024-11-13 12:23</div>
+            <div class="timeline-body"><p>The reason why we are considering changing this in the parser is to allow invalid parameter ordering to be represented for improved error recovery. For example, there's currently a  parser bug that it drops multiple kwargs argument because we can't represent it in the AST https://github.com/astral-sh/ruff/issues/14315</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-13 12:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:75 on 2024-11-13 12:27</div>
+            <div class="timeline-body"><blockquote>
+<p>(good bye <code>len</code>)</p>
+</blockquote>
+<p>I understand your point, but FWIW: we expose a <code>len()</code> method for <code>ast::Parameters</code>! It wouldn't be that hard to do similarly here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-13 13:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:75 on 2024-11-13 13:08</div>
+            <div class="timeline-body"><p>Considering that we're likely to change the parser AST node, I feel more strongly to use a flat representation unless we have good reasons not to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-13 13:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:75 on 2024-11-13 13:22</div>
+            <div class="timeline-body"><p>Interesting... for me, the potential change to the AST makes me feel more strongly that we should use a structured representation here :-)</p>
+<p>In due course, we'll need to use this representation to answer questions such as &quot;Is the parameter specification <code>X</code> a subtype of the parameter specification <code>Y</code>?&quot;. I don't know how to answer questions like that if parameter specification <code>X</code> has two <code>**kwargs</code> parameters; the question just doesn't really make sense anymore. For functions that have invalid syntax in their parameters, I think we'll probably need to use a fallback parameter-specification such as the one @carljm currently uses for <code>Parameters::todo()</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-13 13:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/exception/basic.md</code>:47 on 2024-11-13 13:53</div>
+            <div class="timeline-body"><p>Yes, it's because after this PR we only infer annotations using <code>infer_type_expression</code>, which currently only handles subscripting for a limited set of forms.</p>
+<p>It's correct to only use <code>infer_type_expression</code> for annotations, but we need to improve and expand <code>infer_type_expression</code>. But I don't think a TODO here for these errors is really needed, since we already have todos to actually understand these annotations, and dealing with the possibly-unboundness will be necessary when we do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-13 13:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2377 on 2024-11-13 13:56</div>
+            <div class="timeline-body"><p>Hmm, this is an interesting thought; I'll consider what that could look like.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-13 13:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/exception/basic.md</code>:47 on 2024-11-13 13:57</div>
+            <div class="timeline-body"><blockquote>
+<p>But I don't think a TODO here for these errors is really needed, since we already have todos to actually understand these annotations, and dealing with the possibly-unboundness will be necessary when we do that.</p>
+</blockquote>
+<p>By &quot;these annotations&quot;, you mean &quot;annotations for function parameters&quot;? We already understand <code>tuple[type[OSError], type[RuntimeError]]</code> in a type expression, if you run red-knot on this snippet:</p>
+<pre><code class="language-py">from typing_extensions import reveal_type
+
+def foo() -&gt; tuple[type[OSError], type[RuntimeError]]: ...
+reveal_type(foo())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:168 on 2024-11-13 14:00</div>
+            <div class="timeline-body"><p>I don't have strong feelings here; it could be as simple as making this an <code>Option</code> and handling a synthesized name at output/display time. What I don't like is the ergonomic impact that then <em>every</em> parameter has to deal with its name being an <code>Option</code>, even though only a few parameters (always positional-only ones) can have an empty name.</p>
+<p>In general I don't think this representation can/should represent invalid signatures (will discuss that more in the other thread), though invalid-identifier parameter names is a more manageable case where we probably could go ahead and represent it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-13 14:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-13 14:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:75 on 2024-11-13 14:09</div>
+            <div class="timeline-body"><p>I agree with Alex that this representation serves a very different use case from the parser representation. While the parser representation serves <em>syntactic</em> use cases and should/must represent invalid signatures, for error recovery, <code>Signature</code> needs to serve <em>semantic</em> use cases, like call checking and subtyping -- there is no sensible or meaningful interpretation of those semantic operations over an invalid signature. So when we encounter an invalid signature, we need to emit a diagnostic and use a fallback signature (or a signature that preserves the valid parts and omits the invalid parts), we cannot allow this struct to represent invalid signatures.</p>
+<p>So I don't think that either error recovery or the parser's likely future change is an argument for changing to a flat representation here.</p>
+<p>That leaves it as a question of efficiency, ergonomics, and robustness.</p>
+<p>Efficiency argues in favor of a flat representation, for less allocation, though it's also true that we could reduce the allocations a lot with a smallvec-like approach.</p>
+<p>Robustness argues in favor of a structured representation, so that we can't represent invalid signatures. Though I also agree that we can minimize the impact here because these should be immutable and only constructed in one place. I also agree with Alex here that if the parser changes to a flat, error-recovering representation, that will make it harder to enforce signature validity in <code>Signature</code> construction, without the help of a structured representation that forces validity. But it's certainly doable.</p>
+<p>Ergonomics is tricky. For some use cases a flat representation has better ergonomics, but I'm not clear yet if that will be true for the more complex semantic use cases we will need here -- there is an ergonomic cost to requiring client code to implicitly &quot;consider&quot; the possibility of invalid signatures that we should never represent. Though I think ultimately the ergonomic issues in either direction can be handled with API -- we can provide API for flattened iteration of parameters, and length, over a structured internal representation, and we can expose structured API that internally asserts validity, over a flat internal representation.</p>
+<p>So all in all, the tradeoffs here are not clear to me :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-13 14:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:75 on 2024-11-13 14:14</div>
+            <div class="timeline-body"><p>I also think the ergonomics issue can be handled with API. We already have a <a href="https://github.com/astral-sh/ruff/blob/5fcf0afff4a0242a72759a3c3cfaa314b53fe8f3/crates/ruff_python_ast/src/nodes.rs#L3507-L3568">rich API</a> for <code>ast::Parameters</code> that allows you to directly iterate over the parameters, query the number of parameters, and more. We can easily do the same for this struct.</p>
+<p>And as Carl says, for many use cases in a type checker such as questions of subtyping, the structured representation should really be more ergonomic than the proposed flat representation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-13 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/exception/basic.md</code>:47 on 2024-11-13 14:22</div>
+            <div class="timeline-body"><p>Ah ok -- then I think the problem is just that the way we interpret this currently in a type expression doesn't actually go through a call to <code>tuple.__class_getitem__</code>, it's handled as a special form.</p>
+<p>So maybe we do want a TODO for erroring on this, if in a non-deferred annotation, on an old Python version. I think this would kind of have to be implemented as a special-case diagnostic here. And I'm not sure how high a priority it is, since it's a disappearing legacy corner case: annotations are going to all-deferred, and only the oldest Python versions don't have <code>tuple.__getitem__</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-13 14:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/exception/basic.md</code>:47 on 2024-11-13 14:29</div>
+            <div class="timeline-body"><p>Hmm, yeah, maybe we don't actually need a TODO, since once we understand generic types, we'll think everything that inherits from <code>Generic</code> has a <code>__class_getitem__</code> method, and <code>tuple</code> inherits from <code>Generic</code>[^1].</p>
+<p>But on the other hand, we may want to implement some special casing for stdlib types that typeshed has as inheriting from <code>Generic</code> but are not <em>explicitly</em> annotated as having <code>__class_getitem__</code> methods. For example: <code>memoryview</code> <a href="https://github.com/python/typeshed/blob/af4df4eb24f1cda42033f74440ba1117ce4c8f7e/stdlib/builtins.pyi#L840-L907">is a generic type in typeshed</a> in all <code>sys.version_info</code> branches, but the <code>__class_getitem__</code> method has only been added in 3.14 (the new <code>__class_getitem__</code> method hasn't even been reflected in typeshed yet!), so attempting to subscript it will fail on Python &lt;=3.13. Ideally we'd catch that error, and similar errors for other stdlib classes that have only had <code>__class_getitem__</code> methods added in newer Python versions, but are generic on all versions according to typeshed.</p>
+<p>[^1]: Not in real life but at least according to typeshed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/exception/basic.md</code>:47 on 2024-11-13 14:33</div>
+            <div class="timeline-body"><blockquote>
+<p>we may want to implement some special casing for stdlib types</p>
+</blockquote>
+<p>Maybe, but IMO it is pretty far down on the priority list. Mypy does it, but pyright does not, and the direction of the future is that all annotations are deferred by default, which I think means not erroring on such cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-13 14:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-13 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:75 on 2024-11-13 14:54</div>
+            <div class="timeline-body"><p>I don't mind deferring the decision if representing erroneous parameters is intentionally not allowed.</p>
+<blockquote>
+<p>I also think the ergonomics issue can be handled with API. We already have a <a href="https://github.com/astral-sh/ruff/blob/5fcf0afff4a0242a72759a3c3cfaa314b53fe8f3/crates/ruff_python_ast/src/nodes.rs#L3507-L3568">rich API</a> for ast::Parameters that allows you to directly iterate over the parameters, query the number of parameters, and more.</p>
+</blockquote>
+<p>Yeah, we can do that but it leads to a lot of code and less cache locality. I'm a fan of representing invalid state but it always comes at a cost and it's unclear to me if it's justified here, considering it isn't something we construct often. Anyway, let's defer this to later when we have more usages that can inform our decision making.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-14 17:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:75 on 2024-11-14 17:17</div>
+            <div class="timeline-body"><p>Thanks for the good discussion here. Will leave it as is for now, but keep this in mind as a possible point to revisit in future.</p>
+<p>(One thing that may be relevant at least to the performance considerations is that I suspect in practice <em>most</em> functions have only positional-or-keyword arguments, which means even with the structured representation there would be only one allocation and one contiguous array of parameters.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-14 23:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2377 on 2024-11-14 23:24</div>
+            <div class="timeline-body"><p>It's hard to say where else it can/should go until we have the users for it (e.g. inferring types of function parameters, verifying returned types.) So I'm going to leave it here for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-14 23:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:168 on 2024-11-14 23:29</div>
+            <div class="timeline-body"><p>I switched to using an Option here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-11-14 23:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-11-14 23:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-14 23:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:28 UTC
+    </footer>
+</body>
+</html>

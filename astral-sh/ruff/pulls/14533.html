@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enable logging for directory-renamed test - astral-sh/ruff #14533</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Enable logging for directory-renamed test</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14533">#14533</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-11-22 16:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-22 16:36</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The test started to flake but I'm unable to reproduce the flake locally. Enable logging to understand if:</p>
+<ul>
+<li>The test doesn't wait long enough for all events to come in, because it only uses a timeout for the first event</li>
+<li>The test observes another event than in the cases where it succeeds</li>
+</ul>
+<p>We can remove the logging when the flake is fixed.</p>
+<p>It's a bit annoying that <code>setup_logging</code> only works for the current thread. That means we won't see the logs of the actual file watcher thread. We can explore more involved debugging if what's in this PR isn't sufficient.</p>
+<p>Part of https://github.com/astral-sh/ruff/issues/14473</p>
+<h2>Test Plan</h2>
+<p>Running the test prints the logs to stdout</p>
+<pre><code>2   0.000170s DEBUG red_knot_workspace::workspace::metadata Searching for a workspace in '/tmp/.tmp36yrfj/workspace'
+2   0.000230s DEBUG red_knot_workspace::workspace::metadata The ancestor directories contain no `pyproject.toml`. Falling back to a virtual project.
+2   0.000378s INFO red_knot_python_semantic::program Target version: Python 3.12
+2   0.000391s DEBUG red_knot_python_semantic::module_resolver::resolver Adding first-party search path '/tmp/.tmp36yrfj/workspace'
+2   0.000400s DEBUG red_knot_python_semantic::module_resolver::resolver Using vendored stdlib
+2   0.003085s TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(2), kind: WillExecute { database_key: dynamic_resolution_paths(Id(c00)) } }
+2   0.003104s DEBUG red_knot_python_semantic::module_resolver::resolver Resolving dynamic module resolution paths
+2   0.003146s DEBUG red_knot_workspace::watch::watcher Watching path: `/tmp/.tmp36yrfj/workspace`
+2   0.003280s INFO red_knot_workspace::watch::workspace_watcher Set up file watchers for [&quot;/tmp/.tmp36yrfj/workspace&quot;]
+2   0.113568s TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(2), kind: WillExecute { database_key: resolve_module_query(Id(1400)) } }
+2┐red_knot_python_semantic::module_resolver::resolver::resolve_module{name=sub.a}
+2├─   0.113755s   0ms TRACE red_knot_python_semantic::module_resolver::resolver Resolved module `sub.a` to `/tmp/.tmp36yrfj/workspace/sub/a.py`
+2┘
+2   0.113825s TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(2), kind: WillExecute { database_key: resolve_module_query(Id(1401)) } }
+2┐red_knot_python_semantic::module_resolver::resolver::resolve_module{name=foo.baz}
+2├─   0.113950s   0ms DEBUG red_knot_python_semantic::module_resolver::resolver Module `foo.baz` not found in search paths
+2┘
+2┐red_knot_workspace::workspace::index_package_files{package=workspace}
+2├─   0.119111s   5ms INFO red_knot_workspace::workspace Found 3 files in package `workspace`
+2┘
+2   0.119189s DEBUG file_watching Try stopping watch with timeout 10s
+2   0.129405s DEBUG file_watching Flushed file watcher
+2   0.129420s DEBUG red_knot_workspace::watch::watcher Stop file watcher
+2   0.142222s DEBUG file_watching Stopping file watcher
+2   0.142238s DEBUG file_watching Event: Created { path: &quot;/tmp/.tmp36yrfj/workspace/foo&quot;, kind: Directory }
+2   0.142246s DEBUG file_watching Event: Deleted { path: &quot;/tmp/.tmp36yrfj/workspace/sub&quot;, kind: Any }
+2┐red_knot_workspace::db::changes::apply_changes{}
+2├─   0.142312s   0ms TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(2), kind: DidSetCancellationFlag }
+2├─   0.142392s   0ms TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(2), kind: DidSetCancellationFlag }
+2├─   0.142414s   0ms TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(2), kind: DidSetCancellationFlag }
+2├─   0.142429s   0ms TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(2), kind: DidSetCancellationFlag }
+2├─   0.142459s   0ms TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(2), kind: DidSetCancellationFlag }
+2├─   0.142474s   0ms TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(2), kind: DidSetCancellationFlag }
+2├─   0.142486s   0ms TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(2), kind: DidSetCancellationFlag }
+2├─   0.142526s   0ms DEBUG red_knot_workspace::workspace Reloading files for package `workspace`
+2├─   0.142543s   0ms TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(2), kind: DidSetCancellationFlag }
+2┘
+2   0.142600s TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(2), kind: WillExecute { database_key: resolve_module_query(Id(1400)) } }
+2┐red_knot_python_semantic::module_resolver::resolver::resolve_module{name=sub.a}
+2├─   0.142694s   0ms TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(2), kind: DidValidateMemoizedValue { database_key: dynamic_resolution_paths(Id(c00)) } }
+2├─   0.142717s   0ms DEBUG red_knot_python_semantic::module_resolver::resolver Module `sub.a` not found in search paths
+2┘
+2   0.142765s TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(2), kind: WillExecute { database_key: resolve_module_query(Id(1401)) } }
+2┐red_knot_python_semantic::module_resolver::resolver::resolve_module{name=foo.baz}
+2├─   0.142872s   0ms TRACE red_knot_python_semantic::module_resolver::resolver Resolved module `foo.baz` to `/tmp/.tmp36yrfj/workspace/foo/baz/__init__.py`
+2┘
+2┐red_knot_workspace::workspace::index_package_files{package=workspace}
+2├─   0.145997s   3ms INFO red_knot_workspace::workspace Found 3 files in package `workspace`
+2┘
+
+Process finished with exit code 0
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-11-22 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-11-22 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-11-22 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-11-22 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2024-11-22 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-11-22 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-11-22 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-22 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-22 16:44</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:29 UTC
+    </footer>
+</body>
+</html>

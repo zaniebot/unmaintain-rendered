@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prefer breaking return-type over parameters - astral-sh/ruff #14148</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Prefer breaking return-type over parameters</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14148">#14148</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-11-07 07:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-07 07:42</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Related to https://github.com/astral-sh/ruff/pull/13381 and fixes https://github.com/astral-sh/ruff/issues/14143</p>
+<p>This needs some work because it introduces new black incompatibilites.</p>
+<p>Ruff</p>
+<pre><code class="language-py">def parameters_subscript_return_type(a) -&gt; list[str]:
+    pass
+
+
+# Unlike with no-parameters, the return type gets never parenthesized.
+def parameters_overlong_subscript_return_type_with_single_element(
+    a
+) -&gt; list[xxxxxxxxxxxxxxxxxxxxx]:
+    pass
+
+
+def parameters_subscript_return_type_multiple_elements(a) -&gt; list[
+    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,
+    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+]:
+    pass
+
+
+def parameters_subscript_return_type_multiple_overlong_elements(a) -&gt; list[
+    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,
+    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+]:
+    pass
+
+
+def parameters_subscriptreturn_type_with_overlong_value_(
+    a
+) -&gt; liiiiiiiiiiiiiiiiiiiiist[
+    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,
+    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+]:
+    pass
+</code></pre>
+<p>Black</p>
+<pre><code class="language-py">def parameters_subscript_return_type(a) -&gt; list[str]:
+    pass
+
+
+# Unlike with no-parameters, the return type gets never parenthesized.
+def parameters_overlong_subscript_return_type_with_single_element(
+    a,
+) -&gt; list[xxxxxxxxxxxxxxxxxxxxx]:
+    pass
+
+
+def parameters_subscript_return_type_multiple_elements(
+    a,
+) -&gt; list[
+    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx, xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+]:
+    pass
+
+
+def parameters_subscript_return_type_multiple_overlong_elements(
+    a,
+) -&gt; list[
+    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,
+    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,
+]:
+    pass
+
+
+def parameters_subscriptreturn_type_with_overlong_value_(
+    a,
+) -&gt; liiiiiiiiiiiiiiiiiiiiist[
+    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx, xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+]:
+    pass
+
+</code></pre>
+<p>I overall like Ruff's formatting better but it is a rather significant deviation. But I suspect that any non-deviating fix is probably more invovled.</p>
+<h2>Test Plan</h2>
+<p>TODO</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-07 07:53</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+3388 -3492 lines in 540 files in 38 projects; 16 projects unchanged)</p>
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+234 -234 lines across 25 files)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/audit_logs.py#L84'>disnake/audit_logs.py~L84</a></p>
+<pre><code class="language-diff">     return int(data)
+ 
+ 
+-def _transform_channel(
+-    entry: AuditLogEntry, data: Optional[Snowflake]
+-) -&gt; Optional[Union[abc.GuildChannel, Object]]:
++def _transform_channel(entry: AuditLogEntry, data: Optional[Snowflake]) -&gt; Optional[
++    Union[abc.GuildChannel, Object]
++]:
+     if data is None:
+         return None
+     channel = entry.guild.get_channel(int(data))
+     return channel or Object(id=data)
+ 
+ 
+-def _transform_role(
+-    entry: AuditLogEntry, data: Optional[Snowflake]
+-) -&gt; Optional[Union[Role, Object]]:
++def _transform_role(entry: AuditLogEntry, data: Optional[Snowflake]) -&gt; Optional[
++    Union[Role, Object]
++]:
+     if data is None:
+         return None
+     role = entry.guild.get_role(int(data))
+     return role or Object(id=data)
+ 
+ 
+-def _transform_member_id(
+-    entry: AuditLogEntry, data: Optional[Snowflake]
+-) -&gt; Union[Member, User, Object, None]:
++def _transform_member_id(entry: AuditLogEntry, data: Optional[Snowflake]) -&gt; Union[
++    Member, User, Object, None
++]:
+     if data is None:
+         return None
+     return entry._get_member(int(data))
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/audit_logs.py#L116'>disnake/audit_logs.py~L116</a></p>
+<pre><code class="language-diff">     return entry._state._get_guild(int(data))
+ 
+ 
+-def _transform_overwrites(
+-    entry: AuditLogEntry, data: List[PermissionOverwritePayload]
+-) -&gt; List[Tuple[Object, PermissionOverwrite]]:
++def _transform_overwrites(entry: AuditLogEntry, data: List[PermissionOverwritePayload]) -&gt; List[
++    Tuple[Object, PermissionOverwrite]
++]:
+     overwrites = []
+     for elem in data:
+         allow = Permissions(int(elem[&quot;allow&quot;]))
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/audit_logs.py#L170'>disnake/audit_logs.py~L170</a></p>
+<pre><code class="language-diff">     return ForumTag._from_data(data=data, state=entry._state)
+ 
+ 
+-def _transform_tag_id(
+-    entry: AuditLogEntry, data: Optional[str]
+-) -&gt; Optional[Union[ForumTag, Object]]:
++def _transform_tag_id(entry: AuditLogEntry, data: Optional[str]) -&gt; Optional[
++    Union[ForumTag, Object]
++]:
+     if data is None:
+         return None
+ 
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/audit_logs.py#L215'>disnake/audit_logs.py~L215</a></p>
+<pre><code class="language-diff">     return _transform
+ 
+ 
+-def _list_transformer(
+-    func: Callable[[AuditLogEntry, Any], T],
+-) -&gt; Callable[[AuditLogEntry, Any], List[T]]:
++def _list_transformer(func: Callable[[AuditLogEntry, Any], T]) -&gt; Callable[
++    [AuditLogEntry, Any], List[T]
++]:
+     def _transform(entry: AuditLogEntry, data: Any) -&gt; List[T]:
+         if not data:
+             return []
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/audit_logs.py#L226'>disnake/audit_logs.py~L226</a></p>
+<pre><code class="language-diff">     return _transform
+ 
+ 
+-def _transform_type(
+-    entry: AuditLogEntry, data: Any
+-) -&gt; Union[enums.ChannelType, enums.StickerType, enums.WebhookType, str, int]:
++def _transform_type(entry: AuditLogEntry, data: Any) -&gt; Union[
++    enums.ChannelType, enums.StickerType, enums.WebhookType, str, int
++]:
+     action_name = entry.action.name
+     if action_name.startswith(&quot;sticker_&quot;):
+         return enums.try_enum(enums.StickerType, data)
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/audit_logs.py#L245'>disnake/audit_logs.py~L245</a></p>
+<pre><code class="language-diff">     return utils.parse_time(data)
+ 
+ 
+-def _transform_privacy_level(
+-    entry: AuditLogEntry, data: Optional[int]
+-) -&gt; Optional[Union[enums.StagePrivacyLevel, enums.GuildScheduledEventPrivacyLevel]]:
++def _transform_privacy_level(entry: AuditLogEntry, data: Optional[int]) -&gt; Optional[
++    Union[enums.StagePrivacyLevel, enums.GuildScheduledEventPrivacyLevel]
++]:
+     if data is None:
+         return None
+     if entry.action.target_type == &quot;guild_scheduled_event&quot;:
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/audit_logs.py#L255'>disnake/audit_logs.py~L255</a></p>
+<pre><code class="language-diff">     return enums.try_enum(enums.StagePrivacyLevel, data)
+ 
+ 
+-def _transform_guild_scheduled_event_image(
+-    entry: AuditLogEntry, data: Optional[str]
+-) -&gt; Optional[Asset]:
++def _transform_guild_scheduled_event_image(entry: AuditLogEntry, data: Optional[str]) -&gt; Optional[
++    Asset
++]:
+     if data is None:
+         return None
+     return Asset._from_guild_scheduled_event_image(entry._state, entry._target_id, data)  # type: ignore
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/audit_logs.py#L701'>disnake/audit_logs.py~L701</a></p>
+<pre><code class="language-diff">             return None
+         return self.guild.get_member(user_id) or self._users.get(user_id) or Object(id=user_id)
+ 
+-    def _get_channel_or_thread(
+-        self, channel_id: Optional[int]
+-    ) -&gt; Union[abc.GuildChannel, Thread, Object, None]:
++    def _get_channel_or_thread(self, channel_id: Optional[int]) -&gt; Union[
++        abc.GuildChannel, Thread, Object, None
++    ]:
+         if not channel_id:
+             return None
+         return self.guild.get_channel_or_thread(channel_id) or Object(channel_id)
+ 
+-    def _get_integration_by_application_id(
+-        self, application_id: int
+-    ) -&gt; Optional[PartialIntegration]:
++    def _get_integration_by_application_id(self, application_id: int) -&gt; Optional[
++        PartialIntegration
++    ]:
+         if not application_id:
+             return None
+ 
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/audit_logs.py#L840'>disnake/audit_logs.py~L840</a></p>
+<pre><code class="language-diff">             self.guild.get_thread(target_id) or self._threads.get(target_id) or Object(id=target_id)
+         )
+ 
+-    def _convert_target_guild_scheduled_event(
+-        self, target_id: int
+-    ) -&gt; Union[GuildScheduledEvent, Object]:
++    def _convert_target_guild_scheduled_event(self, target_id: int) -&gt; Union[
++        GuildScheduledEvent, Object
++    ]:
+         return (
+             self.guild.get_scheduled_event(target_id)
+             or self._guild_scheduled_events.get(target_id)
+             or Object(id=target_id)
+         )
+ 
+-    def _convert_target_application_command_or_integration(
+-        self, target_id: int
+-    ) -&gt; Union[APIApplicationCommand, PartialIntegration, Object]:
++    def _convert_target_application_command_or_integration(self, target_id: int) -&gt; Union[
++        APIApplicationCommand, PartialIntegration, Object
++    ]:
+         # try application command
+         if target := (
+             self._state._get_guild_application_command(self.guild.id, target_id)
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/channel.py#L5013'>disnake/channel.py~L5013</a></p>
+<pre><code class="language-diff">     return cls, value
+ 
+ 
+-def _channel_type_factory(
+-    cls: Union[Type[disnake.abc.GuildChannel], Type[Thread]],
+-) -&gt; List[ChannelType]:
++def _channel_type_factory(cls: Union[Type[disnake.abc.GuildChannel], Type[Thread]]) -&gt; List[
++    ChannelType
++]:
+     return {
+         disnake.abc.GuildChannel: list(ChannelType.__members__.values()),
+         VocalGuildChannel: [ChannelType.voice, ChannelType.stage_voice],
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/client.py#L664'>disnake/client.py~L664</a></p>
+<pre><code class="language-diff">         return utils.get(self.cached_messages, id=id)
+ 
+     @overload
+-    async def get_or_fetch_user(
+-        self, user_id: int, *, strict: Literal[False] = ...
+-    ) -&gt; Optional[User]: ...
++    async def get_or_fetch_user(self, user_id: int, *, strict: Literal[False] = ...) -&gt; Optional[
++        User
++    ]: ...
+ 
+     @overload
+     async def get_or_fetch_user(self, user_id: int, *, strict: Literal[True]) -&gt; User: ...
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/client.py#L2988'>disnake/client.py~L2988</a></p>
+<pre><code class="language-diff"> 
+     # Application command permissions
+ 
+-    async def bulk_fetch_command_permissions(
+-        self, guild_id: int
+-    ) -&gt; List[GuildApplicationCommandPermissions]:
++    async def bulk_fetch_command_permissions(self, guild_id: int) -&gt; List[
++        GuildApplicationCommandPermissions
++    ]:
+         &quot;&quot;&quot;|coro|
+ 
+         Retrieves a list of :class:`.GuildApplicationCommandPermissions` configured for the guild with the given ID.
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/ext/commands/cooldowns.py#L237'>disnake/ext/commands/cooldowns.py~L237</a></p>
+<pre><code class="language-diff"> 
+         return bucket
+ 
+-    def update_rate_limit(
+-        self, message: Message, current: Optional[float] = None
+-    ) -&gt; Optional[float]:
++    def update_rate_limit(self, message: Message, current: Optional[float] = None) -&gt; Optional[
++        float
++    ]:
+         bucket = self.get_bucket(message, current)
+         return bucket.update_rate_limit(current)
+ 
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/ext/commands/core.py#L1477'>disnake/ext/commands/core.py~L1477</a></p>
+<pre><code class="language-diff"> 
+     class CommandDecorator(Protocol):
+         @overload
+-        def __call__(
+-            self, func: Callable[Concatenate[ContextT, P], Coro[T]]
+-        ) -&gt; Command[None, P, T]: ...
++        def __call__(self, func: Callable[Concatenate[ContextT, P], Coro[T]]) -&gt; Command[
++            None, P, T
++        ]: ...
+ 
+         @overload
+-        def __call__(
+-            self, func: Callable[Concatenate[CogT, ContextT, P], Coro[T]]
+-        ) -&gt; Command[CogT, P, T]: ...
++        def __call__(self, func: Callable[Concatenate[CogT, ContextT, P], Coro[T]]) -&gt; Command[
++            CogT, P, T
++        ]: ...
+ 
+     class GroupDecorator(Protocol):
+         @overload
+-        def __call__(
+-            self, func: Callable[Concatenate[ContextT, P], Coro[T]]
+-        ) -&gt; Group[None, P, T]: ...
++        def __call__(self, func: Callable[Concatenate[ContextT, P], Coro[T]]) -&gt; Group[
++            None, P, T
++        ]: ...
+ 
+         @overload
+-        def __call__(
+-            self, func: Callable[Concatenate[CogT, ContextT, P], Coro[T]]
+-        ) -&gt; Group[CogT, P, T]: ...
++        def __call__(self, func: Callable[Concatenate[CogT, ContextT, P], Coro[T]]) -&gt; Group[
++            CogT, P, T
++        ]: ...
+ 
+ 
+ # Small explanation regarding these overloads:
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/ext/commands/flag_converter.py#L137'>disnake/ext/commands/flag_converter.py~L137</a></p>
+<pre><code class="language-diff">             raise ValueError(f&quot;flag name {name!r} cannot have any of {forbidden!r} within them&quot;)
+ 
+ 
+-def get_flags(
+-    namespace: Dict[str, Any], globals: Dict[str, Any], locals: Dict[str, Any]
+-) -&gt; Dict[str, Flag]:
++def get_flags(namespace: Dict[str, Any], globals: Dict[str, Any], locals: Dict[str, Any]) -&gt; Dict[
++    str, Flag
++]:
+     annotations = namespace.get(&quot;__annotations__&quot;, {})
+     case_insensitive = namespace[&quot;__commands_flag_case_insensitive__&quot;]
+     flags: Dict[str, Flag] = {}
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/ext/commands/flag_converter.py#L340'>disnake/ext/commands/flag_converter.py~L340</a></p>
+<pre><code class="language-diff">         return type.__new__(cls, name, bases, attrs)
+ 
+ 
+-async def tuple_convert_all(
+-    ctx: Context, argument: str, flag: Flag, converter: Any
+-) -&gt; Tuple[Any, ...]:
++async def tuple_convert_all(ctx: Context, argument: str, flag: Flag, converter: Any) -&gt; Tuple[
++    Any, ...
++]:
+     view = StringView(argument)
+     results = []
+     param: inspect.Parameter = ctx.current_parameter  # type: ignore
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/ext/commands/flag_converter.py#L367'>disnake/ext/commands/flag_converter.py~L367</a></p>
+<pre><code class="language-diff">     return tuple(results)
+ 
+ 
+-async def tuple_convert_flag(
+-    ctx: Context, argument: str, flag: Flag, converters: Any
+-) -&gt; Tuple[Any, ...]:
++async def tuple_convert_flag(ctx: Context, argument: str, flag: Flag, converters: Any) -&gt; Tuple[
++    Any, ...
++]:
+     view = StringView(argument)
+     results = []
+     param: inspect.Parameter = ctx.current_parameter  # type: ignore
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/ext/commands/interaction_bot_base.py#L407'>disnake/ext/commands/interaction_bot_base.py~L407</a></p>
+<pre><code class="language-diff">             return None
+         return command
+ 
+-    def get_slash_command(
+-        self, name: str
+-    ) -&gt; Optional[Union[InvokableSlashCommand, SubCommandGroup, SubCommand]]:
++    def get_slash_command(self, name: str) -&gt; Optional[
++        Union[InvokableSlashCommand, SubCommandGroup, SubCommand]
++    ]:
+         &quot;&quot;&quot;Works like ``Bot.get_command``, but for slash commands.
+ 
+         If the name contains spaces, then it will assume that you are looking for a :class:`SubCommand` or
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/ext/commands/interaction_bot_base.py#L731'>disnake/ext/commands/interaction_bot_base.py~L731</a></p>
+<pre><code class="language-diff"> 
+     # command synchronisation
+ 
+-    def _ordered_unsynced_commands(
+-        self, test_guilds: Optional[Sequence[int]] = None
+-    ) -&gt; Tuple[List[ApplicationCommand], Dict[int, List[ApplicationCommand]]]:
++    def _ordered_unsynced_commands(self, test_guilds: Optional[Sequence[int]] = None) -&gt; Tuple[
++        List[ApplicationCommand], Dict[int, List[ApplicationCommand]]
++    ]:
+         global_cmds = []
+         guilds = {}
+ 
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/ext/commands/interaction_bot_base.py#L1174'>disnake/ext/commands/interaction_bot_base.py~L1174</a></p>
+<pre><code class="language-diff">             user_commands = True
+             message_commands = True
+ 
+-        def decorator(
+-            func: Callable[[ApplicationCommandInteraction], Any],
+-        ) -&gt; Callable[[ApplicationCommandInteraction], Any]:
++        def decorator(func: Callable[[ApplicationCommandInteraction], Any]) -&gt; Callable[
++            [ApplicationCommandInteraction], Any
++        ]:
+             # T was used instead of Check to ensure the type matches on return
+             self.add_app_command_check(
+                 func,
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/ext/commands/params.py#L1318'>disnake/ext/commands/params.py~L1318</a></p>
+<pre><code class="language-diff">     return decorator
+ 
+ 
+-def option_enum(
+-    choices: Union[Dict[str, TChoice], List[TChoice]], **kwargs: TChoice
+-) -&gt; Type[TChoice]:
++def option_enum(choices: Union[Dict[str, TChoice], List[TChoice]], **kwargs: TChoice) -&gt; Type[
++    TChoice
++]:
+     &quot;&quot;&quot;A utility function to create an enum type.
+     Returns a new :class:`~enum.Enum` based on the provided parameters.
+ 
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/ext/tasks/__init__.py#L724'>disnake/ext/tasks/<strong>init</strong>.py~L724</a></p>
+<pre><code class="language-diff"> 
+ 
+ @overload
+-def loop(
+-    cls: Type[Object[L_co, Concatenate[LF, P]]], *_: P.args, **kwargs: P.kwargs
+-) -&gt; Callable[[LF], L_co]: ...
++def loop(cls: Type[Object[L_co, Concatenate[LF, P]]], *_: P.args, **kwargs: P.kwargs) -&gt; Callable[
++    [LF], L_co
++]: ...
+ 
+ 
+ def loop(
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/guild.py#L436'>disnake/guild.py~L436</a></p>
+<pre><code class="language-diff">         inner = &quot; &quot;.join(f&quot;{k!s}={v!r}&quot; for k, v in attrs)
+         return f&quot;&lt;Guild {inner}&gt;&quot;
+ 
+-    def _update_voice_state(
+-        self, data: GuildVoiceState, channel_id: Optional[int]
+-    ) -&gt; Tuple[Optional[Member], VoiceState, VoiceState]:
++    def _update_voice_state(self, data: GuildVoiceState, channel_id: Optional[int]) -&gt; Tuple[
++        Optional[Member], VoiceState, VoiceState
++    ]:
+         user_id = int(data[&quot;user_id&quot;])
+         channel: Optional[VocalGuildChannel] = self.get_channel(channel_id)  # type: ignore
+         try:
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/guild.py#L2402'>disnake/guild.py~L2402</a></p>
+<pre><code class="language-diff"> 
+         return threads
+ 
+-    async def fetch_scheduled_events(
+-        self, *, with_user_count: bool = False
+-    ) -&gt; List[GuildScheduledEvent]:
++    async def fetch_scheduled_events(self, *, with_user_count: bool = False) -&gt; List[
++        GuildScheduledEvent
++    ]:
+         &quot;&quot;&quot;|coro|
+ 
+         Retrieves a list of all :class:`GuildScheduledEvent` instances that the guild has.
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/guild.py#L3612'>disnake/guild.py~L3612</a></p>
+<pre><code class="language-diff">     @overload
+     async def get_or_fetch_member(self, member_id: int, *, strict: Literal[True]) -&gt; Member: ...
+ 
+-    async def get_or_fetch_member(
+-        self, member_id: int, *, strict: bool = False
+-    ) -&gt; Optional[Member]:
++    async def get_or_fetch_member(self, member_id: int, *, strict: bool = False) -&gt; Optional[
++        Member
++    ]:
+         &quot;&quot;&quot;|coro|
+ 
+         Tries to get the member from the cache. If it fails,
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/http.py#L151'>disnake/http.py~L151</a></p>
+<pre><code class="language-diff">     return multipart
+ 
+ 
+-def to_multipart_with_attachments(
+-    payload: Dict[str, Any], files: Sequence[File]
+-) -&gt; List[Dict[str, Any]]:
++def to_multipart_with_attachments(payload: Dict[str, Any], files: Sequence[File]) -&gt; List[
++    Dict[str, Any]
++]:
+     &quot;&quot;&quot;Updates the payload's attachments and converts it to a multipart payload
+ 
+     Shorthand for ``set_attachments`` + ``to_multipart``
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/http.py#L489'>disnake/http.py~L489</a></p>
+<pre><code class="language-diff"> 
+     # Group functionality
+ 
+-    def start_group(
+-        self, user_id: Snowflake, recipients: List[int]
+-    ) -&gt; Response[channel.GroupDMChannel]:
++    def start_group(self, user_id: Snowflake, recipients: List[int]) -&gt; Response[
++        channel.GroupDMChannel
++    ]:
+         payload = {
+             &quot;recipients&quot;: recipients,
+         }
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/http.py#L593'>disnake/http.py~L593</a></p>
+<pre><code class="language-diff">             params=params,
+         )
+ 
+-    def expire_poll(
+-        self, channel_id: Snowflake, message_id: Snowflake
+-    ) -&gt; Response[message.Message]:
++    def expire_poll(self, channel_id: Snowflake, message_id: Snowflake) -&gt; Response[
++        message.Message
++    ]:
+         return self.request(
+             Route(
+                 &quot;POST&quot;,
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/http.py#L725'>disnake/http.py~L725</a></p>
+<pre><code class="language-diff">             return self.request(r, form=multipart, files=files)
+         return self.request(r, json=fields)
+ 
+-    def add_reaction(
+-        self, channel_id: Snowflake, message_id: Snowflake, emoji: str
+-    ) -&gt; Response[None]:
++    def add_reaction(self, channel_id: Snowflake, message_id: Snowflake, emoji: str) -&gt; Response[
++        None
++    ]:
+         r = Route(
+             &quot;PUT&quot;,
+             &quot;/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/@me&quot;,
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/http.py#L807'>disnake/http.py~L807</a></p>
+<pre><code class="language-diff">         )
+         return self.request(r)
+ 
+-    def get_message(
+-        self, channel_id: Snowflake, message_id: Snowflake
+-    ) -&gt; Response[message.Message]:
++    def get_message(self, channel_id: Snowflake, message_id: Snowflake) -&gt; Response[
++        message.Message
++    ]:
+         r = Route(
+             &quot;GET&quot;,
+             &quot;/channels/{channel_id}/messages/{message_id}&quot;,
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/http.py#L845'>disnake/http.py~L845</a></p>
+<pre><code class="language-diff">             Route(&quot;GET&quot;, &quot;/channels/{channel_id}/messages&quot;, channel_id=channel_id), params=params
+         )
+ 
+-    def publish_message(
+-        self, channel_id: Snowflake, message_id: Snowflake
+-    ) -&gt; Response[message.Message]:
++    def publish_message(self, channel_id: Snowflake, message_id: Snowflake) -&gt; Response[
++        message.Message
++    ]:
+         return self.request(
+             Route(
+                 &quot;POST&quot;,
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/http.py#L884'>disnake/http.py~L884</a></p>
+<pre><code class="language-diff"> 
+     # Member management
+ 
+-    def search_guild_members(
+-        self, guild_id: Snowflake, query: str, limit: int = 1
+-    ) -&gt; Response[List[member.MemberWithUser]]:
++    def search_guild_members(self, guild_id: Snowflake, query: str, limit: int = 1) -&gt; Response[
++        List[member.MemberWithUser]
++    ]:
+         r = Route(&quot;GET&quot;, &quot;/guilds/{guild_id}/members/search&quot;, guild_id=guild_id)
+ 
+         return self.request(r, params={&quot;query&quot;: query, &quot;limit&quot;: limit})
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/http.py#L1240'>disnake/http.py~L1240</a></p>
+<pre><code class="language-diff">         route = Route(&quot;GET&quot;, &quot;/guilds/{guild_id}/threads/active&quot;, guild_id=guild_id)
+         return self.request(route)
+ 
+-    def get_thread_member(
+-        self, channel_id: Snowflake, user_id: Snowflake
+-    ) -&gt; Response[threads.ThreadMember]:
++    def get_thread_member(self, channel_id: Snowflake, user_id: Snowflake) -&gt; Response[
++        threads.ThreadMember
++    ]:
+         route = Route(
+             &quot;GET&quot;,
+             &quot;/channels/{channel_id}/thread-members/{user_id}&quot;,
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/http.py#L1448'>disnake/http.py~L1448</a></p>
+<pre><code class="language-diff">     def guild_templates(self, guild_id: Snowflake) -&gt; Response[List[template.Template]]:
+         return self.request(Route(&quot;GET&quot;, &quot;/guilds/{guild_id}/templates&quot;, guild_id=guild_id))
+ 
+-    def create_template(
+-        self, guild_id: Snowflake, payload: template.CreateTemplate
+-    ) -&gt; Response[template.Template]:
++    def create_template(self, guild_id: Snowflake, payload: template.CreateTemplate) -&gt; Response[
++        template.Template
++    ]:
+         return self.request(
+             Route(&quot;POST&quot;, &quot;/guilds/{guild_id}/templates&quot;, guild_id=guild_id), json=payload
+         )
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/http.py#L1460'>disnake/http.py~L1460</a></p>
+<pre><code class="language-diff">             Route(&quot;PUT&quot;, &quot;/guilds/{guild_id}/templates/{code}&quot;, guild_id=guild_id, code=code)
+         )
+ 
+-    def edit_template(
+-        self, guild_id: Snowflake, code: str, payload: Dict[str, Any]
+-    ) -&gt; Response[template.Template]:
++    def edit_template(self, guild_id: Snowflake, code: str, payload: Dict[str, Any]) -&gt; Response[
++        template.Template
++    ]:
+         valid_keys = (
+             &quot;name&quot;,
+             &quot;description&quot;,
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/http.py#L1478'>disnake/http.py~L1478</a></p>
+<pre><code class="language-diff">             Route(&quot;DELETE&quot;, &quot;/guilds/{guild_id}/templates/{code}&quot;, guild_id=guild_id, code=code)
+         )
+ 
+-    def create_from_template(
+-        self, code: str, name: str, icon: Optional[str]
+-    ) -&gt; Response[guild.Guild]:
++    def create_from_template(self, code: str, name: str, icon: Optional[str]) -&gt; Response[
++        guild.Guild
++    ]:
+         payload = {
+             &quot;name&quot;: name,
+         }
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/http.py#L1542'>disnake/http.py~L1542</a></p>
+<pre><code class="language-diff">     def get_all_guild_channels(self, guild_id: Snowflake) -&gt; Response[List[guild.GuildChannel]]:
+         return self.request(Route(&quot;GET&quot;, &quot;/guilds/{guild_id}/channels&quot;, guild_id=guild_id))
+ 
+-    def get_members(
+-        self, guild_id: Snowflake, limit: int, after: Optional[Snowflake]
+-    ) -&gt; Response[List[member.MemberWithUser]]:
++    def get_members(self, guild_id: Snowflake, limit: int, after: Optional[Snowflake]) -&gt; Response[
++        List[member.MemberWithUser]
++    ]:
+         params: Dict[str, Any] = {
+             &quot;limit&quot;: limit,
+         }
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/http.py#L1554'>disnake/http.py~L1554</a></p>
+<pre><code class="language-diff">         r = Route(&quot;GET&quot;, &quot;/guilds/{guild_id}/members&quot;, guild_id=guild_id)
+         return self.request(r, params=params)
+ 
+-    def get_member(
+-        self, guild_id: Snowflake, member_id: Snowflake
+-    ) -&gt; Response[member.MemberWithUser]:
++    def get_member(self, guild_id: Snowflake, member_id: Snowflake) -&gt; Response[
++        member.MemberWithUser
++    ]:
+         return self.request(
+             Route(
+                 &quot;GET&quot;,
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/http.py#L1616'>disnake/http.py~L1616</a></p>
+<pre><code class="language-diff">     def get_all_guild_stickers(self, guild_id: Snowflake) -&gt; Response[List[sticker.GuildSticker]]:
+         return self.request(Route(&quot;GET&quot;, &quot;/guilds/{guild_id}/stickers&quot;, guild_id=guild_id))
+ 
+-    def get_guild_sticker(
+-        self, guild_id: Snowflake, sticker_id: Snowflake
+-    ) -&gt; Response[sticker.GuildSticker]:
++    def get_guild_sticker(self, guild_id: Snowflake, sticker_id: Snowflake) -&gt; Response[
++        sticker.GuildSticker
++    ]:
+         return self.request(
+             Route(
+                 &quot;GET&quot;,
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/http.py#L2058'>disnake/http.py~L2058</a></p>
+<pre><code class="language-diff">     def get_stage_instance(self, channel_id: Snowflake) -&gt; Response[channel.StageInstance]:
+         return self.request(Route(&quot;GET&quot;, &quot;/stage-instances/{channel_id}&quot;, channel_id=channel_id))
+ 
+-    def create_stage_instance(
+-        self, *, reason: Optional[str] = None, **payload: Any
+-    ) -&gt; Response[channel.StageInstance]:
++    def create_stage_instance(self, *, reason: Optional[str] = None, **payload: Any) -&gt; Response[
++        channel.StageInstance
++    ]:
+         valid_keys = (
+             &quot;channel_id&quot;,
+             &quot;topic&quot;,
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/http.py#L2172'>disnake/http.py~L2172</a></p>
+<pre><code class="language-diff"> 
+         return self.request(route, json=fields, reason=reason)
+ 
+-    def delete_guild_scheduled_event(
+-        self, guild_id: Snowflake, event_id: Snowflake
+-    ) -&gt; Response[None]:
++    def delete_guild_scheduled_event(self, guild_id: Snowflake, event_id: Snowflake) -&gt; Response[
++        None
++    ]:
+         route = Route(
+             method=&quot;DELETE&quot;,
+             path=&quot;/guilds/{guild_id}/scheduled-events/{event_id}&quot;,
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/http.py#L2216'>disnake/http.py~L2216</a></p>
+<pre><code class="language-diff"> 
+     # Welcome screens
+ 
+-    def get_guild_welcome_screen(
+-        self, guild_id: Snowflake
+-    ) -&gt; Response[welcome_screen.WelcomeScreen]:
++    def get_guild_welcome_screen(self, guild_id: Snowflake) -&gt; Response[
++        welcome_screen.WelcomeScreen
++    ]:
+         r = Route(&quot;GET&quot;, &quot;/guilds/{guild_id}/welcome-screen&quot;, guild_id=guild_id)
+         return self.request(r)
+ 
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/http.py#L2246'>disnake/http.py~L2246</a></p>
+<pre><code class="language-diff">             Route(&quot;GET&quot;, &quot;/guilds/{guild_id}/auto-moderation/rules&quot;, guild_id=guild_id)
+         )
+ 
+-    def get_auto_moderation_rule(
+-        self, guild_id: Snowflake, rule_id: Snowflake
+-    ) -&gt; Response[automod.AutoModRule]:
++    def get_auto_moderation_rule(self, guild_id: Snowflake, rule_id: Snowflake) -&gt; Response[
++        automod.AutoModRule
++    ]:
+         return self.request(
+             Route(
+                 &quot;GET&quot;,
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/http.py#L2441'>disnake/http.py~L2441</a></p>
+<pre><code class="language-diff">             params=params,
+         )
+ 
+-    def get_global_command(
+-        self, application_id: Snowflake, command_id: Snowflake
+-    ) -&gt; Response[interactions.ApplicationCommand]:
++    def get_global_command(self, application_id: Snowflake, command_id: Snowflake) -&gt; Response[
++        interactions.ApplicationCommand
++    ]:
+         r = Route(
+             &quot;GET&quot;,
+             &quot;/applications/{application_id}/commands/{command_id}&quot;,
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/http.py#L2472'>disnake/http.py~L2472</a></p>
+<pre><code class="language-diff">         )
+         return self.request(r, json=payload)
+ 
+-    def delete_global_command(
+-        self, application_id: Snowflake, command_id: Snowflake
+-    ) -&gt; Response[None]:
++    def delete_global_command(self, application_id: Snowflake, command_id: Snowflake) -&gt; Response[
++        None
++    ]:
+         r = Route(
+             &quot;DELETE&quot;,
+             &quot;/applications/{application_id}/commands/{command_id}&quot;,
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/http.py#L2821'>disnake/http.py~L2821</a></p>
+<pre><code class="language-diff"> 
+         return self._format_gateway_url(data[&quot;url&quot;], encoding=encoding, zlib=zlib)
+ 
+-    async def get_bot_gateway(
+-        self, *, encoding: str = &quot;json&quot;, zlib: bool = True
+-    ) -&gt; Tuple[int, str, gateway.SessionStartLimit]:
++    async def get_bot_gateway(self, *, encoding: str = &quot;json&quot;, zlib: bool = True) -&gt; Tuple[
++        int, str, gateway.SessionStartLimit
++    ]:
+         try:
+             data: gateway.GatewayBot = await self.request(Route(&quot;GET&quot;, &quot;/gateway/bot&quot;))
+         except HTTPException as exc:
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/i18n.py#L127'>disnake/i18n.py~L127</a></p>
+<pre><code class="language-diff"> 
+     @overload
+     @classmethod
+-    def _cast(
+-        cls, string: LocalizedOptional, required: Literal[False]
+-    ) -&gt; Localized[Optional[str]]: ...
++    def _cast(cls, string: LocalizedOptional, required: Literal[False]) -&gt; Localized[
++        Optional[str]
++    ]: ...
+ 
+     @overload
+     @classmethod
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/interactions/base.py#L1965'>disnake/interactions/base.py~L1965</a></p>
+<pre><code class="language-diff">         )
+ 
+     @overload
+-    def get_with_type(
+-        self, key: Snowflake, data_type: Union[OptionType, ComponentType]
+-    ) -&gt; Union[Member, User, Role, AnyChannel, Message, Attachment, None]: ...
++    def get_with_type(self, key: Snowflake, data_type: Union[OptionType, ComponentType]) -&gt; Union[
++        Member, User, Role, AnyChannel, Message, Attachment, None
++    ]: ...
+ 
+     @overload
+     def get_with_type(
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/interactions/base.py#L2002'>disnake/interactions/base.py~L2002</a></p>
+<pre><code class="language-diff"> 
+         return default
+ 
+-    def get_by_id(
+-        self, key: Optional[int]
+-    ) -&gt; Optional[Union[Member, User, Role, AnyChannel, Message, Attachment]]:
++    def get_by_id(self, key: Optional[int]) -&gt; Optional[
++        Union[Member, User, Role, AnyChannel, Message, Attachment]
++    ]:
+         if key is None:
+             return None
+ 
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/member.py#L440'>disnake/member.py~L440</a></p>
+<pre><code class="language-diff">         self._flags = data.get(&quot;flags&quot;, 0)
+         self._avatar_decoration_data = data.get(&quot;avatar_decoration_data&quot;)
+ 
+-    def _presence_update(
+-        self, data: PresenceData, user: UserPayload
+-    ) -&gt; Optional[Tuple[User, User]]:
++    def _presence_update(self, data: PresenceData, user: UserPayload) -&gt; Optional[
++        Tuple[User, User]
++    ]:
+         self.activities = tuple(create_activity(a, state=self._state) for a in data[&quot;activities&quot;])
+         self._client_status = {
+             sys.intern(key): sys.intern(value)
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/partial_emoji.py#L253'>disnake/partial_emoji.py~L253</a></p>
+<pre><code class="language-diff">     # utility method for unusual emoji model in forums
+     # (e.g. default reaction, tag emoji)
+     @staticmethod
+-    def _emoji_to_name_id(
+-        emoji: Optional[Union[str, Emoji, PartialEmoji]],
+-    ) -&gt; Tuple[Optional[str], Optional[int]]:
++    def _emoji_to_name_id(emoji: Optional[Union[str, Emoji, PartialEmoji]]) -&gt; Tuple[
++        Optional[str], Optional[int]
++    ]:
+         if emoji is None:
+             return None, None
+ 
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/player.py#L577'>disnake/player.py~L577</a></p>
+<pre><code class="language-diff">             return codec, bitrate  # noqa: B012
+ 
+     @staticmethod
+-    def _probe_codec_native(
+-        source, executable: str = &quot;ffmpeg&quot;
+-    ) -&gt; Tuple[Optional[str], Optional[int]]:
++    def _probe_codec_native(source, executable: str = &quot;ffmpeg&quot;) -&gt; Tuple[
++        Optional[str], Optional[int]
++    ]:
+         exe = executable[:2] + &quot;probe&quot; if executable in (&quot;ffmpeg&quot;, &quot;avconv&quot;) else executable
+         args = [
+             exe,
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/player.py#L606'>disnake/player.py~L606</a></p>
+<pre><code class="language-diff">         return codec, bitrate
+ 
+     @staticmethod
+-    def _probe_codec_fallback(
+-        source, executable: str = &quot;ffmpeg&quot;
+-    ) -&gt; Tuple[Optional[str], Optional[int]]:
++    def _probe_codec_fallback(source, executable: str = &quot;ffmpeg&quot;) -&gt; Tuple[
++        Optional[str], Optional[int]
++    ]:
+         args = [executable, &quot;-hide_banner&quot;, &quot;-i&quot;, source]
+         proc = subprocess.Popen(
+             args, creationflags=CREATE_NO_WINDOW, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/state.py#L443'>disnake/state.py~L443</a></p>
+<pre><code class="language-diff"> 
+         del guild
+ 
+-    def _get_global_application_command(
+-        self, application_command_id: int
+-    ) -&gt; Optional[APIApplicationCommand]:
++    def _get_global_application_command(self, application_command_id: int) -&gt; Optional[
++        APIApplicationCommand
++    ]:
+         return self._global_application_commands.get(application_command_id)
+ 
+     def _add_global_application_command(
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/state.py#L1950'>disnake/state.py~L1950</a></p>
+<pre><code class="language-diff">         entitlement = Entitlement(data=data, state=self)
+         self.dispatch(&quot;entitlement_delete&quot;, entitlement)
+ 
+-    def _get_reaction_user(
+-        self, channel: MessageableChannel, user_id: int
+-    ) -&gt; Optional[Union[User, Member]]:
++    def _get_reaction_user(self, channel: MessageableChannel, user_id: int) -&gt; Optional[
++        Union[User, Member]
++    ]:
+         if isinstance(channel, (TextChannel, VoiceChannel, Thread, StageChannel)):
+             return channel.guild.get_member(user_id)
+         return self.get_user(user_id)
+ 
+     # methods to handle all sorts of different emoji formats
+ 
+-    def _get_emoji_from_data(
+-        self, data: PartialEmojiPayload
+-    ) -&gt; Optional[Union[str, Emoji, PartialEmoji]]:
++    def _get_emoji_from_data(self, data: PartialEmojiPayload) -&gt; Optional[
++        Union[str, Emoji, PartialEmoji]
++    ]:
+         &quot;&quot;&quot;Convert partial emoji data to proper emoji.
+         Returns unicode emojis as strings.
+ 
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/state.py#L2227'>disnake/state.py~L2227</a></p>
+<pre><code class="language-diff"> 
+     # Application command permissions
+ 
+-    async def bulk_fetch_command_permissions(
+-        self, guild_id: int
+-    ) -&gt; List[GuildApplicationCommandPermissions]:
++    async def bulk_fetch_command_permissions(self, guild_id: int) -&gt; List[
++        GuildApplicationCommandPermissions
++    ]:
+         array = await self.http.get_guild_application_command_permissions(
+             self.application_id,
+             guild_id,  # type: ignore
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/sticker.py#L507'>disnake/sticker.py~L507</a></p>
+<pre><code class="language-diff">         await self._state.http.delete_guild_sticker(self.guild_id, self.id, reason=reason)
+ 
+ 
+-def _sticker_factory(
+-    sticker_type: Literal[1, 2],
+-) -&gt; Tuple[Type[Union[StandardSticker, GuildSticker, Sticker]], StickerType]:
++def _sticker_factory(sticker_type: Literal[1, 2]) -&gt; Tuple[
++    Type[Union[StandardSticker, GuildSticker, Sticker]], StickerType
++]:
+     value = try_enum(StickerType, sticker_type)
+     if value == StickerType.standard:
+         return StandardSticker, value
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/ui/button.py#L265'>disnake/ui/button.py~L265</a></p>
+<pre><code class="language-diff"> 
+ 
+ @overload
+-def button(
+-    cls: Type[Object[B_co, P]], *_: P.args, **kwargs: P.kwargs
+-) -&gt; Callable[[ItemCallbackType[B_co]], DecoratedItem[B_co]]: ...
++def button(cls: Type[Object[B_co, P]], *_: P.args, **kwargs: P.kwargs) -&gt; Callable[
++    [ItemCallbackType[B_co]], DecoratedItem[B_co]
++]: ...
+ 
+ 
+-def button(
+-    cls: Type[Object[B_co, ...]] = Button[Any], **kwargs: Any
+-) -&gt; Callable[[ItemCallbackType[B_co]], DecoratedItem[B_co]]:
++def button(cls: Type[Object[B_co, ...]] = Button[Any], **kwargs: Any) -&gt; Callable[
++    [ItemCallbackType[B_co]], DecoratedItem[B_co]
++]:
+     &quot;&quot;&quot;A decorator that attaches a button to a component.
+ 
+     The function being decorated should have three parameters, ``self`` representing
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/ui/select/channel.py#L158'>disnake/ui/select/channel.py~L158</a></p>
+<pre><code class="language-diff"> 
+ 
+ @overload
+-def channel_select(
+-    cls: Type[Object[S_co, P]], *_: P.args, **kwargs: P.kwargs
+-) -&gt; Callable[[ItemCallbackType[S_co]], DecoratedItem[S_co]]: ...
++def channel_select(cls: Type[Object[S_co, P]], *_: P.args, **kwargs: P.kwargs) -&gt; Callable[
++    [ItemCallbackType[S_co]], DecoratedItem[S_co]
++]: ...
+ 
+ 
+-def channel_select(
+-    cls: Type[Object[S_co, ...]] = ChannelSelect[Any], **kwargs: Any
+-) -&gt; Callable[[ItemCallbackType[S_co]], DecoratedItem[S_co]]:
++def channel_select(cls: Type[Object[S_co, ...]] = ChannelSelect[Any], **kwargs: Any) -&gt; Callable[
++    [ItemCallbackType[S_co]], DecoratedItem[S_co]
++]:
+     &quot;&quot;&quot;A decorator that attaches a channel select menu to a component.
+ 
+     The function being decorated should have three parameters, ``self`` representing
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/ui/select/mentionable.py#L136'>disnake/ui/select/mentionable.py~L136</a></p>
+<pre><code class="language-diff"> 
+ 
+ @overload
+-def mentionable_select(
+-    cls: Type[Object[S_co, P]], *_: P.args, **kwargs: P.kwargs
+-) -&gt; Callable[[ItemCallbackType[S_co]], DecoratedItem[S_co]]: ...
++def mentionable_select(cls: Type[Object[S_co, P]], *_: P.args, **kwargs: P.kwargs) -&gt; Callable[
++    [ItemCallbackType[S_co]], DecoratedItem[S_co]
++]: ...
+ 
+ 
+ def mentionable_select(
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/ui/select/role.py#L132'>disnake/ui/select/role.py~L132</a></p>
+<pre><code class="language-diff"> 
+ 
+ @overload
+-def role_select(
+-    cls: Type[Object[S_co, P]], *_: P.args, **kwargs: P.kwargs
+-) -&gt; Callable[[ItemCallbackType[S_co]], DecoratedItem[S_co]]: ...
++def role_select(cls: Type[Object[S_co, P]], *_: P.args, **kwargs: P.kwargs) -&gt; Callable[
++    [ItemCallbackType[S_co]], DecoratedItem[S_co]
++]: ...
+ 
+ 
+-def role_select(
+-    cls: Type[Object[S_co, ...]] = RoleSelect[Any], **kwargs: Any
+-) -&gt; Callable[[ItemCallbackType[S_co]], DecoratedItem[S_co]]:
++def role_select(cls: Type[Object[S_co, ...]] = RoleSelect[Any], **kwargs: Any) -&gt; Callable[
++    [ItemCallbackType[S_co]], DecoratedItem[S_co]
++]:
+     &quot;&quot;&quot;A decorator that attaches a role select menu to a component.
+ 
+     The function being decorated should have three parameters, ``self`` representing
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/ui/select/string.py#L258'>disnake/ui/select/string.py~L258</a></p>
+<pre><code class="language-diff"> 
+ 
+ @overload
+-def string_select(
+-    cls: Type[Object[S_co, P]], *_: P.args, **kwargs: P.kwargs
+-) -&gt; Callable[[ItemCallbackType[S_co]], DecoratedItem[S_co]]: ...
++def string_select(cls: Type[Object[S_co, P]], *_: P.args, **kwargs: P.kwargs) -&gt; Callable[
++    [ItemCallbackType[S_co]], DecoratedItem[S_co]
++]: ...
+ 
+ 
+-def string_select(
+-    cls: Type[Object[S_co, ...]] = StringSelect[Any], **kwargs: Any
+-) -&gt; Callable[[ItemCallbackType[S_co]], DecoratedItem[S_co]]:
++def string_select(cls: Type[Object[S_co, ...]] = StringSelect[Any], **kwargs: Any) -&gt; Callable[
++    [ItemCallbackType[S_co]], DecoratedItem[S_co]
++]:
+     &quot;&quot;&quot;A decorator that attaches a string select menu to a component.
+ 
+     The function being decorated should have three parameters, ``self`` representing
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/ui/select/user.py#L133'>disnake/ui/select/user.py~L133</a></p>
+<pre><code class="language-diff"> 
+ 
+ @overload
+-def user_select(
+-    cls: Type[Object[S_co, P]], *_: P.args, **kwargs: P.kwargs
+-) -&gt; Callable[[ItemCallbackType[S_co]], DecoratedItem[S_co]]: ...
++def user_select(cls: Type[Object[S_co, P]], *_: P.args, **kwargs: P.kwargs) -&gt; Callable[
++    [ItemCallbackType[S_co]], DecoratedItem[S_co]
++]: ...
+ 
+ 
+-def user_select(
+-    cls: Type[Object[S_co, ...]] = UserSelect[Any], **kwargs: Any
+-) -&gt; Callable[[ItemCallbackType[S_co]], DecoratedItem[S_co]]:
++def user_select(cls: Type[Object[S_co, ...]] = UserSelect[Any], **kwargs: Any) -&gt; Callable[
++    [ItemCallbackType[S_co]], DecoratedItem[S_co]
++]:
+     &quot;&quot;&quot;A decorator that attaches a user select menu to a component.
+ 
+     The function being decorated should have three parameters, ``self`` representing
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/utils.py#L694'>disnake/utils.py~L694</a></p>
+<pre><code class="language-diff"> 
+ 
+ @overload
+-def resolve_invite(
+-    invite: Union[Invite, str], *, with_params: Literal[True]
+-) -&gt; Tuple[str, Dict[str, str]]: ...
++def resolve_invite(invite: Union[Invite, str], *, with_params: Literal[True]) -&gt; Tuple[
++    str, Dict[str, str]
++]: ...
+ 
+ 
+-def resolve_invite(
+-    invite: Union[Invite, str], *, with_params: bool = False
+-) -&gt; Union[str, Tuple[str, Dict[str, str]]]:
++def resolve_invite(invite: Union[Invite, str], *, with_params: bool = False) -&gt; Union[
++    str, Tuple[str, Dict[str, str]]
++]:
+     &quot;&quot;&quot;Resolves an invite from a :class:`~disnake.Invite`, URL or code.
+ 
+     Parameters
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+348 -354 lines across 57 files)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/examples/reminderbot/actions/actions.py#L68'>examples/reminderbot/actions/actions.py~L68</a></p>
+<pre><code class="language-diff">     def name(self) -&gt; Text:
+         return &quot;action_tell_id&quot;
+ 
+-    async def run(
+-        self, dispatcher, tracker: Tracker, domain: Dict[Text, Any]
+-    ) -&gt; List[Dict[Text, Any]]:
++    async def run(self, dispatcher, tracker: Tracker, domain: Dict[Text, Any]) -&gt; List[
++        Dict[Text, Any]
++    ]:
+         conversation_id = tracker.sender_id
+ 
+         dispatcher.utter_message(f&quot;The ID of this conversation is '{conversation_id}'.&quot;)
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/examples/reminderbot/actions/actions.py#L110'>examples/reminderbot/actions/actions.py~L110</a></p>
+<pre><code class="language-diff">     def name(self) -&gt; Text:
+         return &quot;action_forget_reminders&quot;
+ 
+-    async def run(
+-        self, dispatcher, tracker: Tracker, domain: Dict[Text, Any]
+-    ) -&gt; List[Dict[Text, Any]]:
++    async def run(self, dispatcher, tracker: Tracker, domain: Dict[Text, Any]) -&gt; List[
++        Dict[Text, Any]
++    ]:
+         dispatcher.utter_message(&quot;Okay, I'll cancel all your reminders.&quot;)
+ 
+         # Cancel all reminders
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/cli/utils.py#L90'>rasa/cli/utils.py~L90</a></p>
+<pre><code class="language-diff">     return current
+ 
+ 
+-def missing_config_keys(
+-    path: Union[&quot;Path&quot;, Text], mandatory_keys: List[Text]
+-) -&gt; List[Text]:
++def missing_config_keys(path: Union[&quot;Path&quot;, Text], mandatory_keys: List[Text]) -&gt; List[
++    Text
++]:
+     &quot;&quot;&quot;Checks whether the config file at `path` contains the `mandatory_keys`.
+ 
+     Args:
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/actions/action.py#L399'>rasa/core/actions/action.py~L399</a></p>
+<pre><code class="language-diff">         &quot;&quot;&quot;Resolve the name of the intent from the action name.&quot;&quot;&quot;
+         return action_name.split(UTTER_PREFIX)[1]
+ 
+-    def get_full_retrieval_name(
+-        self, tracker: &quot;DialogueStateTracker&quot;
+-    ) -&gt; Optional[Text]:
++    def get_full_retrieval_name(self, tracker: &quot;DialogueStateTracker&quot;) -&gt; Optional[
++        Text
++    ]:
+         &quot;&quot;&quot;Returns full retrieval name for the action.
+ 
+         Extracts retrieval intent from response selector and
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/actions/forms.py#L100'>rasa/core/actions/forms.py~L100</a></p>
+<pre><code class="language-diff">             &quot;group&quot;: group,
+         }
+ 
+-    def get_mappings_for_slot(
+-        self, slot_to_fill: Text, domain: Domain
+-    ) -&gt; List[Dict[Text, Any]]:
++    def get_mappings_for_slot(self, slot_to_fill: Text, domain: Domain) -&gt; List[
++        Dict[Text, Any]
++    ]:
+         &quot;&quot;&quot;Get mappings for requested slot.
+ 
+         If None, map requested slot to an entity with the same name
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/agent.py#L401'>rasa/core/agent.py~L401</a></p>
+<pre><code class="language-diff"> 
+         return await self.processor.parse_message(message)  # type: ignore[union-attr]
+ 
+-    async def handle_message(
+-        self, message: UserMessage
+-    ) -&gt; Optional[List[Dict[Text, Any]]]:
++    async def handle_message(self, message: UserMessage) -&gt; Optional[
++        List[Dict[Text, Any]]
++    ]:
+         &quot;&quot;&quot;Handle a single message.&quot;&quot;&quot;
+         if not self.is_ready():
+             logger.info(&quot;Ignoring message as there is no agent to handle it.&quot;)
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/agent.py#L415'>rasa/core/agent.py~L415</a></p>
+<pre><code class="language-diff">             )
+ 
+     @agent_must_be_ready
+-    async def predict_next_for_sender_id(
+-        self, sender_id: Text
+-    ) -&gt; Optional[Dict[Text, Any]]:
++    async def predict_next_for_sender_id(self, sender_id: Text) -&gt; Optional[
++        Dict[Text, Any]
++    ]:
+         &quot;&quot;&quot;Predict the next action for a sender id.&quot;&quot;&quot;
+         return await self.processor.predict_next_for_sender_id(  # type: ignore[union-attr] # noqa:E501
+             sender_id
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/channels/console.py#L110'>rasa/core/channels/console.py~L110</a></p>
+<pre><code class="language-diff"> async def _get_user_input(previous_response: Dict[str, Any]) -&gt; Optional[Text]: ...
+ 
+ 
+-async def _get_user_input(
+-    previous_response: Optional[Dict[str, Any]],
+-) -&gt; Optional[Text]:
++async def _get_user_input(previous_response: Optional[Dict[str, Any]]) -&gt; Optional[
++    Text
++]:
+     button_response = None
+     if previous_response is not None:
+         button_response = _print_bot_output(previous_response, is_latest_message=True)
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/evaluation/marker_stats.py#L11'>rasa/core/evaluation/marker_stats.py~L11</a></p>
+<pre><code class="language-diff"> from rasa.core.evaluation.marker_base import EventMetaData
+ 
+ 
+-def compute_statistics(
+-    values: List[Union[float, int]],
+-) -&gt; Dict[Text, Union[int, float, np.floating]]:
++def compute_statistics(values: List[Union[float, int]]) -&gt; Dict[
++    Text, Union[int, float, np.floating]
++]:
+     &quot;&quot;&quot;Computes some statistics over the given numbers.&quot;&quot;&quot;
+     return {
+         &quot;count&quot;: len(values) if values else 0,
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/featurizers/single_state_featurizer.py#L43'>rasa/core/featurizers/single_state_featurizer.py~L43</a></p>
+<pre><code class="language-diff">         self.action_texts: List[Text] = []
+         self.entity_tag_specs: List[EntityTagSpec] = []
+ 
+-    def _create_entity_tag_specs(
+-        self, bilou_tagging: bool = False
+-    ) -&gt; List[EntityTagSpec]:
++    def _create_entity_tag_specs(self, bilou_tagging: bool = False) -&gt; List[
++        EntityTagSpec
++    ]:
+         &quot;&quot;&quot;Returns the tag to index mapping for entities.
+ 
+         Returns:
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/featurizers/tracker_featurizers.py#L671'>rasa/core/featurizers/tracker_featurizers.py~L671</a></p>
+<pre><code class="language-diff">         self.remove_duplicates = remove_duplicates
+ 
+     @staticmethod
+-    def slice_state_history(
+-        states: List[State], slice_length: Optional[int]
+-    ) -&gt; List[State]:
++    def slice_state_history(states: List[State], slice_length: Optional[int]) -&gt; List[
++        State
++    ]:
+         &quot;&quot;&quot;Slices states from the trackers history.
+ 
+         Args:
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/migrate.py#L80'>rasa/core/migrate.py~L80</a></p>
+<pre><code class="language-diff">     return updated_mappings
+ 
+ 
+-def _migrate_form_slots(
+-    domain: Dict[Text, Any],
+-) -&gt; Tuple[Dict[Any, Dict[str, Any]], Optional[Any]]:
++def _migrate_form_slots(domain: Dict[Text, Any]) -&gt; Tuple[
++    Dict[Any, Dict[str, Any]], Optional[Any]
++]:
+     updated_slots = domain.get(KEY_SLOTS, {})
+     forms = domain.get(KEY_FORMS, {})
+ 
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/migrate.py#L134'>rasa/core/migrate.py~L134</a></p>
+<pre><code class="language-diff">     return properties
+ 
+ 
+-def _migrate_custom_slots(
+-    slot_name: Text, properties: Dict[Text, Any]
+-) -&gt; Dict[Text, Any]:
++def _migrate_custom_slots(slot_name: Text, properties: Dict[Text, Any]) -&gt; Dict[
++    Text, Any
++]:
+     if not properties.get(&quot;mappings&quot;):
+         properties.update({&quot;mappings&quot;: [{&quot;type&quot;: &quot;custom&quot;}]})
+ 
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/policies/policy.py#L613'>rasa/core/policies/policy.py~L613</a></p>
+<pre><code class="language-diff">         return max(self.probabilities, default=0.0)
+ 
+ 
+-def confidence_scores_for(
+-    action_name: Text, value: float, domain: Domain
+-) -&gt; List[float]:
++def confidence_scores_for(action_name: Text, value: float, domain: Domain) -&gt; List[
++    float
++]:
+     &quot;&quot;&quot;Returns confidence scores if a single action is predicted.
+ 
+     Args:
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/policies/rule_policy.py#L908'>rasa/core/policies/rule_policy.py~L908</a></p>
+<pre><code class="language-diff">             reversed_rule_states[turn_index], conversation_state
+         )
+ 
+-    def _get_possible_keys(
+-        self, lookup: Dict[Text, Text], states: List[State]
+-    ) -&gt; Set[Text]:
++    def _get_possible_keys(self, lookup: Dict[Text, Text], states: List[State]) -&gt; Set[
++        Text
++    ]:
+         possible_keys = set(lookup.keys())
+         for i, state in enumerate(reversed(states)):
+             # find rule keys that correspond to current state
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/policies/rule_policy.py#L1110'>rasa/core/policies/rule_policy.py~L1110</a></p>
+<pre><code class="language-diff">         prediction, _ = self._predict(tracker, domain)
+         return prediction
+ 
+-    def _predict(
+-        self, tracker: DialogueStateTracker, domain: Domain
+-    ) -&gt; Tuple[PolicyPrediction, Optional[Text]]:
++    def _predict(self, tracker: DialogueStateTracker, domain: Domain) -&gt; Tuple[
++        PolicyPrediction, Optional[Text]
++    ]:
+         (
+             rules_action_name_from_text,
+             prediction_source_from_text,
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/policies/unexpected_intent_policy.py#L987'>rasa/core/policies/unexpected_intent_policy.py~L987</a></p>
+<pre><code class="language-diff"> 
+         return labels_embed
+ 
+-    def run_bulk_inference(
+-        self, model_data: RasaModelData
+-    ) -&gt; Dict[Text, Union[np.ndarray, Dict[Text, Any]]]:
++    def run_bulk_inference(self, model_data: RasaModelData) -&gt; Dict[
++        Text, Union[np.ndarray, Dict[Text, Any]]
++    ]:
+         &quot;&quot;&quot;Computes model's predictions for input data.
+ 
+         Args:
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/processor.py#L122'>rasa/core/processor.py~L122</a></p>
+<pre><code class="language-diff">         self.http_interpreter = http_interpreter
+ 
+     @staticmethod
+-    def _load_model(
+-        model_path: Union[Text, Path],
+-    ) -&gt; Tuple[Text, ModelMetadata, GraphRunner]:
++    def _load_model(model_path: Union[Text, Path]) -&gt; Tuple[
++        Text, ModelMetadata, GraphRunner
++    ]:
+         &quot;&quot;&quot;Unpacks a model from a given path using the graph model loader.&quot;&quot;&quot;
+         try:
+             if os.path.isfile(model_path):
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/processor.py#L150'>rasa/core/processor.py~L150</a></p>
+<pre><code class="language-diff">             except tarfile.ReadError:
+                 raise ModelNotFound(f&quot;Model {model_path} can not be loaded.&quot;)
+ 
+-    async def handle_message(
+-        self, message: UserMessage
+-    ) -&gt; Optional[List[Dict[Text, Any]]]:
++    async def handle_message(self, message: UserMessage) -&gt; Optional[
++        List[Dict[Text, Any]]
++    ]:
+         &quot;&quot;&quot;Handle a single message with this processor.&quot;&quot;&quot;
+         # preprocess message if necessary
+         tracker = await self.log_message(message, should_save_tracker=False)
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/processor.py#L230'>rasa/core/processor.py~L230</a></p>
+<pre><code class="language-diff">             body.update(event.as_dict())
+             anonymization_pipeline.run(body)
+ 
+-    async def predict_next_for_sender_id(
+-        self, sender_id: Text
+-    ) -&gt; Optional[Dict[Text, Any]]:
++    async def predict_next_for_sender_id(self, sender_id: Text) -&gt; Optional[
++        Dict[Text, Any]
++    ]:
+         &quot;&quot;&quot;Predict the next action for the given sender_id.
+ 
+         Args:
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/processor.py#L693'>rasa/core/processor.py~L693</a></p>
+<pre><code class="language-diff">                     docs=DOCS_URL_DOMAINS,
+                 )
+ 
+-    def _get_action(
+-        self, action_name: Text
+-    ) -&gt; Optional[rasa.core.actions.action.Action]:
++    def _get_action(self, action_name: Text) -&gt; Optional[
++        rasa.core.actions.action.Action
++    ]:
+         return rasa.core.actions.action.action_for_name_or_text(
+             action_name, self.domain, self.action_endpoint
+         )
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/test.py#L452'>rasa/core/test.py~L452</a></p>
+<pre><code class="language-diff">     )
+ 
+ 
+-def _clean_entity_results(
+-    text: Text, entity_results: List[Dict[Text, Any]]
+-) -&gt; List[&quot;EntityPrediction&quot;]:
++def _clean_entity_results(text: Text, entity_results: List[Dict[Text, Any]]) -&gt; List[
++    &quot;EntityPrediction&quot;
++]:
+     &quot;&quot;&quot;Extract only the token variables from an entity dict.&quot;&quot;&quot;
+     cleaned_entities = []
+ 
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/tracker_store.py#L274'>rasa/core/tracker_store.py~L274</a></p>
+<pre><code class="language-diff">         &quot;&quot;&quot;
+         raise NotImplementedError()
+ 
+-    async def retrieve_full_tracker(
+-        self, conversation_id: Text
+-    ) -&gt; Optional[DialogueStateTracker]:
++    async def retrieve_full_tracker(self, conversation_id: Text) -&gt; Optional[
++        DialogueStateTracker
++    ]:
+         &quot;&quot;&quot;Retrieve method for fetching all tracker events across conversation sessions\
+         that may be overridden by specific tracker.
+ 
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/tracker_store.py#L396'>rasa/core/tracker_store.py~L396</a></p>
+<pre><code class="language-diff">         &quot;&quot;&quot;Returns sender_ids of the Tracker Store in memory.&quot;&quot;&quot;
+         return self.store.keys()
+ 
+-    async def retrieve_full_tracker(
+-        self, sender_id: Text
+-    ) -&gt; Optional[DialogueStateTracker]:
++    async def retrieve_full_tracker(self, sender_id: Text) -&gt; Optional[
++        DialogueStateTracker
++    ]:
+         &quot;&quot;&quot;Returns tracker matching sender_id.
+ 
+         Args:
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/tracker_store.py#L406'>rasa/core/tracker_store.py~L406</a></p>
+<pre><code class="language-diff">         &quot;&quot;&quot;
+         return await self._retrieve(sender_id, fetch_all_sessions=True)
+ 
+-    async def _retrieve(
+-        self, sender_id: Text, fetch_all_sessions: bool
+-    ) -&gt; Optional[DialogueStateTracker]:
++    async def _retrieve(self, sender_id: Text, fetch_all_sessions: bool) -&gt; Optional[
++        DialogueStateTracker
++    ]:
+         &quot;&quot;&quot;Returns tracker matching sender_id.
+ 
+         Args:
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/tracker_store.py#L531'>rasa/core/tracker_store.py~L531</a></p>
+<pre><code class="language-diff">         &quot;&quot;&quot;
+         return await self._retrieve(sender_id, fetch_all_sessions=False)
+ 
+-    async def retrieve_full_tracker(
+-        self, sender_id: Text
+-    ) -&gt; Optional[DialogueStateTracker]:
++    async def retrieve_full_tracker(self, sender_id: Text) -&gt; Optional[
++        DialogueStateTracker
++    ]:
+         &quot;&quot;&quot;Retrieves tracker for all conversation sessions.
+ 
+         The Redis key is formed by appending a prefix to sender_id.
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/tracker_store.py#L546'>rasa/core/tracker_store.py~L546</a></p>
+<pre><code class="language-diff">         &quot;&quot;&quot;
+         return await self._retrieve(sender_id, fetch_all_sessions=True)
+ 
+-    async def _retrieve(
+-        self, sender_id: Text, fetch_all_sessions: bool
+-    ) -&gt; Optional[DialogueStateTracker]:
++    async def _retrieve(self, sender_id: Text, fetch_all_sessions: bool) -&gt; Optional[
++        DialogueStateTracker
++    ]:
+         &quot;&quot;&quot;Returns tracker matching sender_id.
+ 
+         Args:
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/tracker_store.py#L697'>rasa/core/tracker_store.py~L697</a></p>
+<pre><code class="language-diff">         &quot;&quot;&quot;
+         return await self._retrieve(sender_id, fetch_all_sessions=False)
+ 
+-    async def retrieve_full_tracker(
+-        self, sender_id: Text
+-    ) -&gt; Optional[DialogueStateTracker]:
++    async def retrieve_full_tracker(self, sender_id: Text) -&gt; Optional[
++        DialogueStateTracker
++    ]:
+         &quot;&quot;&quot;Retrieves tracker for all conversation sessions.
+ 
+         Args:
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/tracker_store.py#L707'>rasa/core/tracker_store.py~L707</a></p>
+<pre><code class="language-diff">         &quot;&quot;&quot;
+         return await self._retrieve(sender_id, fetch_all_sessions=True)
+ 
+-    async def _retrieve(
+-        self, sender_id: Text, fetch_all_sessions: bool
+-    ) -&gt; Optional[DialogueStateTracker]:
++    async def _retrieve(self, sender_id: Text, fetch_all_sessions: bool) -&gt; Optional[
++        DialogueStateTracker
++    ]:
+         &quot;&quot;&quot;Returns tracker matching sender_id.
+ 
+         Args:
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/tracker_store.py#L909'>rasa/core/tracker_store.py~L909</a></p>
+<pre><code class="language-diff"> 
+         return DialogueStateTracker.from_dict(sender_id, events, self.domain.slots)
+ 
+-    async def retrieve_full_tracker(
+-        self, conversation_id: Text
+-    ) -&gt; Optional[DialogueStateTracker]:
++    async def retrieve_full_tracker(self, conversation_id: Text) -&gt; Optional[
++        DialogueStateTracker
++    ]:
+         &quot;&quot;&quot;Fetching all tracker events across conversation sessions.&quot;&quot;&quot;
+         events = await self._retrieve(
+             conversation_id, fetch_events_from_all_sessions=True
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/tracker_store.py#L1248'>rasa/core/tracker_store.py~L1248</a></p>
+<pre><code class="language-diff">         &quot;&quot;&quot;Retrieves tracker for the latest conversation session.&quot;&quot;&quot;
+         return await self._retrieve(sender_id, fetch_events_from_all_sessions=False)
+ 
+-    async def retrieve_full_tracker(
+-        self, conversation_id: Text
+-    ) -&gt; Optional[DialogueStateTracker]:
++    async def retrieve_full_tracker(self, conversation_id: Text) -&gt; Optional[
++        DialogueStateTracker
++    ]:
+         &quot;&quot;&quot;Fetching all tracker events across conversation sessions.&quot;&quot;&quot;
+         return await self._retrieve(
+             conversation_id, fetch_events_from_all_sessions=True
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/tracker_store.py#L1449'>rasa/core/tracker_store.py~L1449</a></p>
+<pre><code class="language-diff">             self.on_tracker_store_error(e)
+             await self.fallback_tracker_store.save(tracker)
+ 
+-    async def retrieve_full_tracker(
+-        self, sender_id: Text
+-    ) -&gt; Optional[DialogueStateTracker]:
++    async def retrieve_full_tracker(self, sender_id: Text) -&gt; Optional[
++        DialogueStateTracker
++    ]:
+         &quot;&quot;&quot;Calls `retrieve_full_tracker` method of primary tracker store.
+ 
+         Args:
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/tracker_store.py#L1642'>rasa/core/tracker_store.py~L1642</a></p>
+<pre><code class="language-diff">         result = self._tracker_store.save(tracker)
+         return await result if isawaitable(result) else result
+ 
+-    async def retrieve_full_tracker(
+-        self, conversation_id: Text
+-    ) -&gt; Optional[DialogueStateTracker]:
++    async def retrieve_full_tracker(self, conversation_id: Text) -&gt; Optional[
++        DialogueStateTracker
++    ]:
+         &quot;&quot;&quot;Wrapper to call `retrieve_full_tracker` method of primary tracker store.&quot;&quot;&quot;
+         result = self._tracker_store.retrieve_full_tracker(conversation_id)
+         return (
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/training/interactive.py#L758'>rasa/core/training/interactive.py~L758</a></p>
+<pre><code class="language-diff">     return answers[&quot;export_stories&quot;], answers[&quot;export_nlu&quot;], answers[&quot;export_domain&quot;]
+ 
+ 
+-def _split_conversation_at_restarts(
+-    events: List[Dict[Text, Any]],
+-) -&gt; List[List[Dict[Text, Any]]]:
++def _split_conversation_at_restarts(events: List[Dict[Text, Any]]) -&gt; List[
++    List[Dict[Text, Any]]
++]:
+     &quot;&quot;&quot;Split a conversation at restart events.
+ 
+     Returns an array of event lists, without the restart events.
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/utils.py#L131'>rasa/core/utils.py~L131</a></p>
+<pre><code class="language-diff">     return output
+ 
+ 
+-def extract_args(
+-    kwargs: Dict[Text, Any], keys_to_extract: Set[Text]
+-) -&gt; Tuple[Dict[Text, Any], Dict[Text, Any]]:
++def extract_args(kwargs: Dict[Text, Any], keys_to_extract: Set[Text]) -&gt; Tuple[
++    Dict[Text, Any], Dict[Text, Any]
++]:
+     &quot;&quot;&quot;Go through the kwargs and filter out the specified keys.
+ 
+     Return both, the filtered kwargs as well as the remaining kwargs.
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/engine/caching.py#L421'>rasa/engine/caching.py~L421</a></p>
+<pre><code class="language-diff">             output_fingerprint_key,
+         )
+ 
+-    def _get_cached_result(
+-        self, output_fingerprint_key: Text
+-    ) -&gt; Tuple[Optional[Path], Optional[Text]]:
++    def _get_cached_result(self, output_fingerprint_key: Text) -&gt; Tuple[
++        Optional[Path], Optional[Text]
++    ]:
+         with self._sessionmaker.begin() as session:
+             query = sa.select(
+                 self.CacheEntry.result_location, self.CacheEntry.result_type
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/engine/recipes/default_recipe.py#L988'>rasa/engine/recipes/default_recipe.py~L988</a></p>
+<pre><code class="language-diff">         return {k for k in all_keys if k not in config.keys()}
+ 
+     @staticmethod
+-    def complete_config(
+-        config: D...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @AlexWaygood on 2024-11-08 10:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-11-18 06:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:27 UTC
+    </footer>
+</body>
+</html>

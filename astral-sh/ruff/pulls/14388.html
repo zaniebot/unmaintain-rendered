@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Do not pull types for subexpressions of annotations - astral-sh/ruff #14388</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Do not pull types for subexpressions of annotations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14388">#14388</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2024-11-16 20:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-16 20:48</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>As you can see from the drastically reduced <code>KNOWN_FAILURES</code> list, a lot of the remaining panics in the corpus test are caused by pulling types for every subexpression of a type annotation. Consider for example the type annotation <code>tuple[int, ...]</code>. If we insist on being able to infer types for each and every subexpression of annotations, then we also need to infer a type for the ellipsis.</p>
+<p>In the current changeset, I simply stop the <code>PullTypesVisitor</code> from descending further into annotation expressions. This disables the check even for annotations like <code>int | str</code> where we can — and do — assign correct types to subexpressions.</p>
+<p>I am aware that this might not be the right fix. I'm opening the PR to discuss how to proceed here. Two alternative approaches that I can think of:</p>
+<ol>
+<li>Adapt type inference to infer types for each and every subexpressions of annotations. For the ellipsis in the example above, we would perhaps infer <code>Type::Unknown</code> (or maybe <code>tuple[int, …]</code>, somewhat recursively?).</li>
+<li>Adapt type inference to infer types for <em>most</em> subexpressions of annotations, with certain exceptions. We adapt the <code>PullTypes</code> visitor to ignore those exceptional expressions.</li>
+</ol>
+<h2>Test Plan</h2>
+<p>Ran corpus test with reduced known-failures list.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-11-16 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2024-11-16 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2024-11-16 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2024-11-16 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-11-16 20:54</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/david/annotation-subexpressions">CodSpeed Performance Report</a></h2>
+<h3>Merging #14388 will <strong>improve performances by 5.31%</strong></h3>
+<p><sub>Comparing <code>david/annotation-subexpressions</code> (211ac75) with <code>main</code> (4dcb7dd)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>✅ 31</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>david/annotation-subexpressions</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>parser[numpy/ctypeslib.py]</code> | 936.3 µs | 889.1 µs | +5.31% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-16 21:02</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-16 21:13</div>
+            <div class="timeline-body"><p>What's the reason that we don't infer types for annotations? Is it just because we don't do it yet or is it because it's unclear what type to infer for expressions in annotations?</p>
+<p>If it's technically possible and inferring types for annotations is just something we aren't doing yet, then I'd rather acknowledge the shortcoming by using <code>KNOWN_FAILURES</code>. Mainly because the long-term goal is that the linter uses the same API as the test, and it should be possible to query the type of every expression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-16 21:27</div>
+            <div class="timeline-body"><blockquote>
+<p>What's the reason that we don't infer types for annotations? Is it just because we don't do it yet or is it because it's unclear what type to infer for expressions in annotations?</p>
+</blockquote>
+<p>I don't know. This is what I tried to discuss in the PR description.</p>
+<blockquote>
+<p>If it's technically possible and inferring types for annotations is just something we aren't doing yet, then I'd rather acknowledge the shortcoming by using <code>KNOWN_FAILURES</code>.</p>
+</blockquote>
+<p>I would assume it's technically possible. It's just not clear to me what something like the ellipsis in a <code>tuple[int, ...]</code> annotation would have a as a type?</p>
+<p>I'm definitely not trying to get rid of entries in <code>KNOWN_FAILURES</code> if there is an actual known limitation. I am trying to solve it.</p>
+<p>It looks to me like pyright/pylance go with alternative approach no. 2, as you get &quot;mouse over&quot; types for the <code>tuple</code> and <code>int</code> sub-expressions, but nothing for the ellipsis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-16 21:32</div>
+            <div class="timeline-body"><p>For the case 2. In that case it would probably be best to change the <code>HasTy</code> interface to return <code>Option&lt;Type&gt;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-11-17 08:16</div>
+            <div class="timeline-body"><p>Theoretically, I would say the first approach is the correct one (though the type should be <code>*tuple[int, ...]</code>, to be exact). However, the average user is likely to be confused by it, so here's another approach to consider: Infer the type internally but don't show it to the user, or only show conditionally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-17 18:35</div>
+            <div class="timeline-body"><p>I think (1) is probably indeed the best approach. Closing this for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2024-11-17 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-18 08:46</div>
+            <div class="timeline-body"><p>See follow up: https://github.com/astral-sh/ruff/pull/14426</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:28 UTC
+    </footer>
+</body>
+</html>

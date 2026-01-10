@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-type-checking`] Adds implementation for TC007 and TC008 - astral-sh/ruff #12927</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-type-checking</code>] Adds implementation for TC007 and TC008</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12927">#12927</a>
+        opened by <a href="https://github.com/Daverball">@Daverball</a>
+        on 2024-08-16 11:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Daverball">@Daverball</a> on 2024-08-16 11:43</div>
+            <div class="timeline-body"><p>This is part of a series of pull requests fulfilling my promise in #9573 to port some of the enhancements and new rules from flake8-type-checking to ruff.</p>
+<h2>Summary</h2>
+<p>This adds the missing flake8-type-checking rules TC007 and TC008 including auto fixes.</p>
+<p>There is some overlap between TC007 and TC004, currently the existing rule takes precedence, although ideally we would still emit both violations and share a fix for overlaps based on the selected strategy (if it is possible for violations of two different rules to share the same fix). We could probably move the analysis for TC007 into the same function as TC004 in order to accomplish that. But we could defer that to a future pull request.</p>
+<p>There is also some potential overlap between TC008 and TC010. Currently TC010 is prioritized, but since it currently has no fix it might make more sense to either prioritize TC008 or add a fix for TC010, although that could be covered by a future pull request.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-16 11:57</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+6 -0 violations, +0 -0 fixes in 2 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/latchbio/latch/blob/91eb9e17e4c745e4702a676b365a96f73eb09f5a/src/latch_cli/snakemake/config/utils.py#L13'>src/latch_cli/snakemake/config/utils.py:13:33:</a> TC008 [*] Remove quotes from type alias
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+5 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/aa0dd442345234b1559d61ca264c15c020adaf67/analytics/views/stats.py#L342'>analytics/views/stats.py:342:14:</a> TC008 [*] Remove quotes from type alias
++ <a href='https://github.com/zulip/zulip/blob/aa0dd442345234b1559d61ca264c15c020adaf67/analytics/views/stats.py#L344'>analytics/views/stats.py:344:16:</a> TC008 [*] Remove quotes from type alias
++ <a href='https://github.com/zulip/zulip/blob/aa0dd442345234b1559d61ca264c15c020adaf67/confirmation/models.py#L76'>confirmation/models.py:76:5:</a> TC008 [*] Remove quotes from type alias
++ <a href='https://github.com/zulip/zulip/blob/aa0dd442345234b1559d61ca264c15c020adaf67/confirmation/models.py#L77'>confirmation/models.py:77:5:</a> TC008 [*] Remove quotes from type alias
++ <a href='https://github.com/zulip/zulip/blob/aa0dd442345234b1559d61ca264c15c020adaf67/zerver/lib/push_notifications.py#L75'>zerver/lib/push_notifications.py:75:49:</a> TC008 [*] Remove quotes from type alias
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| TC008 | 6 | 6 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-08-16 12:25</div>
+            <div class="timeline-body"><p>Looks like forward references to symbols that occur later in the code are not handled correctly yet. Is there already a standard way to perform a binding lookup in a runtime only context? Or will i have to manually compare the <code>TextRange</code> of the binding against the <code>TextRange</code> of the type alias' value expression?</p>
+<p>Edit: I ended up doing the <code>TextRange</code> comparison for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-08-16 13:25</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/Daverball:feat/tch007-tch008">CodSpeed Performance Report</a></h2>
+<h3>Merging #12927 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>Daverball:feat/tch007-tch008</code> (8cf8f27) with <code>main</code> (e0f3eaf)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 32</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-08-16 15:48</div>
+            <div class="timeline-body"><p>I'm struggling to implement an accurate runtime binding lookup since in addition to retrieving an accurate text range for the definition I need to special case class scopes:</p>
+<pre><code class="language-python">class A:
+    x: TypeAlias = 'A'  # fine
+    class B:
+        x: TypeAlias = 'A' # fine
+        y: TypeAlias = 'B' # fine
+</code></pre>
+<p>None of these should trigger TCH008 and the unwrapped case should trigger TCH007. I could port the logic from flake8-type-checking but that means recursively traversing the scopes upwards and checking each binding in every scope until we find one that is available at runtime, i.e. skipping any symbols that occur lexicographically after the reference and also skipping the class binding of the class scope(s) we started in. In addition for <code>AnnAssign</code> we need to consider the <code>TextRange</code> of the statement, rather than the name to get correct lexicographical lookup behavior. Similar to <code>parent_range</code> for import bindings.</p>
+<p>It might be sufficient to add a hash table of scope ids to a vector of binding ids for bindings that violate the lexicographical order for name lookups within that scope.</p>
+<p>So the scope of <code>A</code> would contain a reference to the binding of <code>A</code> and the scope of <code>B</code> would contain references to the bindings of <code>A</code> and <code>B</code>. So if our linked binding happens to be in that list, then we can assume the lookup will result in a <code>NameError</code> at runtime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-08-16 20:12</div>
+            <div class="timeline-body"><p>Looks like what I want is <code>lookup_symbol</code> but I will need to modify the state before the call so the function no longer thinks we're inside a forward reference. That will make things a lot more simple again.</p>
+<p>Edit: Nevermind, it doesn't look like it takes lexicographical order into account and instead relies on being called at the right time during analysis, which puts me into a difficult spot, since if I do it at the right time, I will be forced to parse the type expression a second time before all the symbols can be resolved and if I do it at the wrong time I will have to jump through additional hoops to make the lookup behave correctly. Not sure what's better at this point. Instead of doing a full AST parse I could however do what I do in flake8-type-checking and use a simple Regex parser that just extracts all the names from the expression. That way the cost of parsing the expression twice should be lower.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-08-17 05:44</div>
+            <div class="timeline-body"><p>Doing the check earlier doesn't work either, because I still need to know about bindings that occur lexicographically later, so it can be distinguished from actually undefined names. In flake8-type-checking I perform two lookups, once in a runtime context and once in a typing context, and only if the typing lookup succeeds while the runtime lookup fails I emit a TCH008.</p>
+<p>The current way the AST/semantic checker is structured those two lookups would have to happen at two completely different times. But that makes the logic to determine which references should prevent a TCH008 pretty complicated.</p>
+<p>Maybe it makes more sense to do what I did in flake8-type-checking and add a new version of <code>lookup_symbol</code> that expects a <code>ast::NameExpr</code> and performs scope  + lexicographical analysis to determine whether or not a symbol actually could be available at runtime when this lookup happens. It will however, as previously mentioned, require some additional bookkeeping for the class bindings that should be unavailable if we start the lookup inside a class scope.</p>
+<p>The lookup for <code>AnnAssign</code> bindings will be more expensive too, since we will need to expand the range from the <code>Name</code> to the whole <code>Stmt</code> so it would overlap the range of references inside the value expression for recursive type aliases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-08-18 09:00</div>
+            <div class="timeline-body"><p>@charliermarsh It might be worth to move the TCH010 logic to where the TCH008 logic currently sits, so we can actually autofix TCH010 in the same cases where we would otherwise emit a TCH008 by removing the quotes when we know that the quoted expression should be entirely available at runtime.</p>
+<p>Concretely we would pass it at the stage where we parse deferred string annotations and check if the current parent expression is a <code>|</code> <code>BinOp</code>. Rather than walk the AST of type definitions to collect the string literals (which doesn't appear to currently properly handle deeply nested cases like eg. <code>list[&quot;Foo&quot; | None]</code>).</p>
+<p>The drawback would be that it may be more difficult to create an autofix in the opposite case that expands the quotes to the entire type expression, since we would need to walk the parent nodes in order to determine the root node of the type expression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @Daverball on 2024-08-20 16:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2024-09-02 06:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-09-02 06:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-03 00:49</div>
+            <div class="timeline-body"><p>Thanks @Daverball, sorry that I haven't had a chance to review this yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-10-09 08:32</div>
+            <div class="timeline-body"><p>@charliermarsh Just a friendly reminder in case this PR slipped through the cracks somehow</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-05 14:00</div>
+            <div class="timeline-body"><p>@charliermarsh Another reminder. Please let me know if these reminders are a bother. The contribution guidelines don't really seem to contain any information about whether it's acceptable/appreciated/frowned upon to bump review requests, it tends to vary from project to project and maintainer to maintainer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-05 14:26</div>
+            <div class="timeline-body"><p>No that's fine @Daverball -- sorry, it's just blocked on me finding time and clearly I haven't done a good job of doing so yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2024-11-09 13:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/type_alias_quotes.rs</code>:40 on 2024-11-09 13:38</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">/// - [PEP 613 – Explicit Type Aliases](https://peps.python.org/pep-0613/)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/type_alias_quotes.rs</code>:98 on 2024-11-09 13:40</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">/// - [PEP 613 – Explicit Type Aliases](https://peps.python.org/pep-0613/)
+/// - [PEP 695: Generic Type Alias](https://peps.python.org/pep-0695/#generic-type-alias)
+/// - [PEP 604 – Allow writing union types as `X | Y`](https://peps.python.org/pep-0604/)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2024-11-09 13:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2024-11-09 13:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/type_alias_quotes.rs</code>:136 on 2024-11-09 13:41</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-rs">if names.is_empty(){
+    return None;
+}
+
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/type_alias_quotes.rs</code>:38 on 2024-11-09 13:44</div>
+            <div class="timeline-body"><p>Why is the fix marked as unsafe? We can document this in a <code>## Fix safety</code> section,</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2024-11-09 13:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2024-11-09 13:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_type_checking/TCH007.py</code>:21 on 2024-11-09 13:50</div>
+            <div class="timeline-body"><p>What does the fix look like when comments are present?</p>
+<p>example:</p>
+<pre><code class="language-python-console">&gt;&gt;&gt; i: TypeAlias = (int |  # TCH007 x2 
+float)
+&gt;&gt;&gt; i
+int | float
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_type_checking/TCH008.py</code>:35 on 2024-11-09 13:50</div>
+            <div class="timeline-body"><p>Is the fix still safe when comments are present?</p>
+<p>example:</p>
+<pre><code class="language-python">type M = ( 'M' # hello
+| None)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2024-11-09 13:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-11-09 14:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/type_alias_quotes.rs</code>:38 on 2024-11-09 14:23</div>
+            <div class="timeline-body"><p>Good question, I went by the precedent set by <code>runtime_import_in_type_checking_block</code> which uses the same function to quote annotations in its fix and also doesn't explain its reasoning. So I don't know what the original reasoning was. It might just be the fact that the forward reference would not be able to be resolved at runtime. Which is a problem with flake8-type-checking in general.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-11-09 14:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_type_checking/TCH008.py</code>:35 on 2024-11-09 14:58</div>
+            <div class="timeline-body"><p>This one should be fine as long as you don't use implicit concatenation in the annotation.</p>
+<p>So</p>
+<pre><code>type M = ( 'M' # hello
+'| None')
+</code></pre>
+<p>may cause issues, but should not be commonly used, since it's technically out of spec, type checkers only have to support multi-line string annotations. mypy does support this style though.</p>
+<p>So both in this case and the TCH007 case you mentioned above this would get rid of the comment. But I suppose this explains why the fix was marked unsafe and this means TCH007 should be unsafe as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-11-09 15:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/type_alias_quotes.rs</code>:38 on 2024-11-09 15:02</div>
+            <div class="timeline-body"><p>Looks like it is at least in part because it can remove comments on multi-line expressions. Maybe this documentation gap should first be addressed in a separate PR though, since it also affects other existing rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2024-11-09 15:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_type_checking/TCH008.py</code>:35 on 2024-11-09 15:04</div>
+            <div class="timeline-body"><p>It's possible to check if the annotation contains comments and use that to mark the fix as safe or unsafe:</p>
+<pre><code class="language-rs">if !checker
+            .comment_ranges()
+            .has_comments(annotation, checker.source())
+        {
+...
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_type_checking/TCH007.py</code>:21 on 2024-11-09 15:44</div>
+            <div class="timeline-body"><p>Until I know why this fix was marked unsafe in the other rules I will continue always to mark this fix as unsafe. If the only reason was the fix potentially eating comments I can apply the same comment detection logic to TCH007.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-11-09 15:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dhruvmanila on 2024-11-18 06:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/mod.rs</code>:39 on 2024-11-19 08:51</div>
+            <div class="timeline-body"><p>What I understand is that TCH007 and TCH008 are kind of the opposite of each other. It could be nice to write a test that applies the  TCH007 fixes and then asserts that there are no TCH008 violations (and the other way round)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/type_alias_quotes.rs</code>:38 on 2024-11-19 08:53</div>
+            <div class="timeline-body"><p>It would be great if we can fill the gap for new rules. But I agree, filling the gap for existing rules can be done in a separate PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/type_alias_quotes.rs</code>:19 on 2024-11-19 08:54</div>
+            <div class="timeline-body"><p>How about: Referencing type-checking only imports results in a <code>NameError</code> at runtime.</p>
+<p>To avoid using <code>we</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/deferred_scopes.rs</code>:381 on 2024-11-19 08:59</div>
+            <div class="timeline-body"><p>What's the reason we can't fix this today?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1862 on 2024-11-19 11:16</div>
+            <div class="timeline-body"><p>I'm sorry if this is a dumb question, but I'm not very familiar with this part of the code base.</p>
+<p>I suspect that mutating <code>self.semantic.flags</code> is necessary so that the flags are part of the snapshot created by <code>self.semantic.snapshot</code>? This wasn't immediately clear to me. It might be worth adding a comment explaining this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:280 on 2024-11-19 11:21</div>
+            <div class="timeline-body"><p>Is this what <code>quote_annotation</code> does? If so, it might be worth to link directly to the function</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/binding.rs</code>:138 on 2024-11-19 11:22</div>
+            <div class="timeline-body"><p>I liked how you linked to the relevant pep in <code>checker/ast/mod.rs</code>. Could we do the same here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/binding.rs</code>:268 on 2024-11-19 11:23</div>
+            <div class="timeline-body"><p>What does <code>defn</code> stand for<code>. Is it </code>definition`? If so, I suggest we use the long form (it's not that much longer) because we generally try to avoid abbrevation, because it can be unclear what they mean.</p>
+<p>What about <code>FunctionDef</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:666 on 2024-11-19 11:27</div>
+            <div class="timeline-body"><p>Can you expand on why you think this should happen above?</p>
+<p>My assumption is that it's here because it updates the state for the next iteration. The only possible issue I see is that it fails updating the <code>seen_function</code> if the <code>self.bindings[binding_id].kind</code> is an <code>Annotation</code>. I, unfortunately, don't have a good enough understanding of this code to assess whether this is a) possible and b) a problem</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:697 on 2024-11-19 11:40</div>
+            <div class="timeline-body"><p>I don't think I'm the right person reviewing this. @AlexWaygood or @carljm could either of you take a look to see if that makes sense (overall)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/runtime_import_in_type_checking_block.rs</code>:160 on 2024-11-19 11:42</div>
+            <div class="timeline-body"><p>I suspect this change behavior for existing rules. If so, then I think it would make sense to extract this change into its own PR so that it gets highlighted in the changelog.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/type_alias_quotes.rs</code>:184 on 2024-11-19 11:48</div>
+            <div class="timeline-body"><p>I think we have to make sure here that this is indeed the <code>typing.Literal</code> and not just any other literal</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-19 11:51</div>
+            <div class="timeline-body"><p>Nice. This overall looks good to me, but I know very little about typing or that part of the code base. That's why it would be great to get a second opinion from either @carljm or @AlexWaygood</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-11-19 12:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/deferred_scopes.rs</code>:381 on 2024-11-19 12:41</div>
+            <div class="timeline-body"><p>We can, I just didn't want to introduce unrelated changes to this PR, so I opted for a comment as reminder to myself to clean this up in a follow-up pull request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-11-19 12:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1862 on 2024-11-19 12:45</div>
+            <div class="timeline-body"><p>Your suspicions are correct, we need to be able to distinguish type definitions that were created through a generic alias later on. I'm fine with adding a comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-11-19 12:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/runtime_import_in_type_checking_block.rs</code>:160 on 2024-11-19 12:52</div>
+            <div class="timeline-body"><p>Fair point. Although you'd get infinite fix/violation cycles without this extra check between TCH004 and TCH008. So maybe I should only perform this extra check if TCH008 are enabled. That way the behavior stays the same unless you enable the preview rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-11-19 12:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/type_alias_quotes.rs</code>:184 on 2024-11-19 12:57</div>
+            <div class="timeline-body"><p>Good catch, this should indeed use <code>match_typing_expr</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-11-19 12:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/type_alias_quotes.rs</code>:184 on 2024-11-19 12:58</div>
+            <div class="timeline-body"><p>It also doesn't handle <code>typing.Annotated</code> yet. So I will need to fix that as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-11-19 13:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_python_semantic/src/binding.rs</code>:268 on 2024-11-19 13:10</div>
+            <div class="timeline-body"><p>This is a very specialized function to ensure that the following lexicographical lookups are correct:</p>
+<pre><code class="language-python">x: TypeAlias = x | None   # x is not available at runtime
+
+class X:
+    foo: TypeAlias = X   # X is not available at runtime
+</code></pre>
+<p>For that the entire statement needs to be used for looking up whether the binding occurred lexicographically before our lookup. Otherwise we get the wrong result. The same is not true for functions, since they can refer to themselves.</p>
+<p>I couldn't really think of a good name for this function, maybe it would be better to inline this logic into <code>simulate_runtime_load</code>, since it's only used once.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-19 13:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/binding.rs</code>:268 on 2024-11-19 13:17</div>
+            <div class="timeline-body"><p>moving it closer to <code>simulate_runtime_load</code> seems preferable to me (could be a standalone, but module private function where I care less about names)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-11-19 13:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:666 on 2024-11-19 13:20</div>
+            <div class="timeline-body"><p>I'm fairly confident it's incorrect to skip updating <code>seen_function</code> if you see a <code>BindingKind::Annotation</code>.</p>
+<p>That being said, situations where this would actually lead to the wrong result should be incredibly rare, since the corresponding Python code itself would be highly suspect and probably incorrect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/mod.rs</code>:39 on 2024-11-19 15:11</div>
+            <div class="timeline-body"><p>If I'm not mistaken, in order to accomplish this all I would have to do is to generate linter settings that enable both rules, since the test utility functions already make sure that fixes converge after a few iterations, correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-11-19 15:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/mod.rs</code>:39 on 2024-11-19 15:13</div>
+            <div class="timeline-body"><p>Yes, I think you're right!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-19 15:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-11-19 15:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/runtime_import_in_type_checking_block.rs</code>:160 on 2024-11-19 15:30</div>
+            <div class="timeline-body"><p>Actually this doesn't seem to cause unstable fixes after all, I think I changed this so the behavior is more consistent with the flake8 plugin.</p>
+<p>I'll remove this change for now and leave a comment. I think eventually we want a setting to independently configure the preferred action for runtime annotations and explicit type aliases, since depending on the use-case you want the type alias to be available at runtime, but you may not care about runtime annotations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_type_checking/TCH008.py</code>:39 on 2024-11-20 00:04</div>
+            <div class="timeline-body"><p>Not sure if/when we will forward-port https://github.com/astral-sh/ruff/pull/14438 (seems like we'd want to do it ASAP to avoid conflicts?), but until then I think this means to say <code>TCH010</code>?</p>
+<pre><code class="language-suggestion">type L = 'int' | None  # TCH008 (because TCH010 is not enabled)
+</code></pre>
+<p>Similarly, there are several references to <code>TC004</code> in comments below that should perhaps be <code>TCH004</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1861 on 2024-11-20 00:31</div>
+            <div class="timeline-body"><p>Naming nit: I would append <code>_value</code> to the names of both these methods to clarify that they handle the RHS or &quot;value&quot;, not the entire type alias.</p>
+<p>More substantive naming issue: I think that using &quot;generic type alias&quot; as an all-encompassing description of PEP 695 type aliases is inaccurate and confusing. (It is strange that the PEP text uses this as a header over that entire section of the PEP, but it's clear in code examples in that section that only a <code>type</code> statement with type parameters is actually generic; one without type parameters is clearly described there as &quot;non-generic&quot;.)</p>
+<p>Using &quot;explicit type alias&quot; to describe PEP 613 type aliases is not unreasonable, given that's the title of PEP 613, but I still think it's ambiguous (the <code>type</code> statement is equally explicit!) and based on an indirect reference that requires looking up the PEP to understand.</p>
+<p>If we don't mind referencing PEPs, then I think we should just go all-in on that, and opt for concise and totally unambiguous, with names like <code>visit_pep613_type_alias_value</code>, <code>visit_pep695_type_alias_value</code>, <code>PEP613_TYPE_ALIAS</code>, <code>PEP695_TYPE_ALIAS</code>.</p>
+<p>If we want to avoid using PEP numbers like this (which is totally unambiguous, but does require knowing or looking up the PEP numbers), then I think we have to be more verbose to be unambiguous: <code>visit_typealias_annotated_type_alias_value</code>, <code>visit_type_statement_type_alias_value</code>, <code>TYPEALIAS_ANNOTATED_TYPE_ALIAS</code>, <code>TYPE_STATEMENT_TYPE_ALIAS</code>.</p>
+<p>One other note: either way, a code example in the docstring of each method could go a long way towards making it immediately obvious to the reader what form each one is handling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:673 on 2024-11-20 01:00</div>
+            <div class="timeline-body"><p>It was very much unclear to me, until I spent quite a while reading through the code, what it meant to &quot;simulate a runtime load&quot; and why or how this is different from what <code>lookup_symbol</code> and <code>resolve_load</code> do.</p>
+<p>It seems the differences are a) this method ignores typing-only bindings (this explains the name choice), and b) this method is supposed to run after all bindings have been collected, but still do a flow-sensitive lookup (i.e. find the applicable binding for a name at a particular point in control flow, which is not necessarily the end of the scope.) Or semi-flow-sensitive, anyway; flow-sensitive as approximated by &quot;source order within the scope, with no understanding of branches.&quot;</p>
+<p>Difference (a) makes sense, though taken alone it seems like it could be a flag rather than an entirely separate method.</p>
+<p>I have a few questions/thoughts about difference (b), some of which may be due to lack of familiarity with Ruff and its semantic model.</p>
+<p>It seems like this can be an improvement over Ruff's current model in some cases. But why is this PR the one introducing this capability? What is it about <code>TCH007</code> and <code>TCH008</code> that require this capability, when Ruff's many other rules involving looking up name bindings have so far gotten away without this?</p>
+<p>My understanding is that largely Ruff handles this by doing name lookups <em>while constructing</em> the semantic model, so inapplicable bindings just don't exist yet. Is that approach not workable in this case? Why do we need a method that must instead be run after all bindings are collected, but then ignores the &quot;late&quot; ones, in inner scopes?</p>
+<p>If this capability isn't critical to the functioning of the new rules specifically, but is really a more general improvement to Ruff's semantic model, perhaps it should be looked at more holistically in view of all Ruff rules, and not introduced as part of this PR?</p>
+<p>If we do definitely need this new method for these new rules to work at all, then I think this also should be more clearly described in a longer doc comment on the method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:697 on 2024-11-20 01:01</div>
+            <div class="timeline-body"><p>I took a look and left some comments, though I think familiarity with Ruff's semantic model would make @AlexWaygood a better reviewer here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:680 on 2024-11-20 01:13</div>
+            <div class="timeline-body"><p>As I understand it, the idea here is that when we are doing a &quot;lexicographical lookup&quot;, we only accept bindings that occur in source order prior to the name node whose load we are resolving, otherwise we take the last available binding in the scope, like <code>lookup_symbol</code> above always does.</p>
+<p>I think I can see, with the benefit of having now figured out the actual meaning from reading the code, why the name &quot;lexicographical lookup&quot; may have been chosen here, since it is related to &quot;lexical&quot; (i.e. source) ordering of bindings. But this is not a use of the term &quot;lexicographical&quot; that I've ever previously encountered, or can find prior art for in searching (might just be my ignorance; feel free to point me to a reference), and the name did not illuminate the intent (for me, anyway.) I think a name like <code>source_order_sensitive_lookup</code> would be clearer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:709 on 2024-11-20 01:16</div>
+            <div class="timeline-body"><p>I <em>think</em> that &quot;valid&quot; and &quot;invalid&quot; here mean &quot;precedes the name node in source order&quot; and &quot;does not precede the name node in source order&quot;, but again I only figured that out with hindsight; this comment would have been more helpful if more explicit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:725 on 2024-11-20 01:22</div>
+            <div class="timeline-body"><p>It would have helped me understand this comment more quickly if it were clarified what &quot;trimmed&quot; means (I'm assuming this is accurate, I haven't looked):</p>
+<pre><code class="language-suggestion">                        // This ensures we perform the correct source-order lookup,
+                        // since the ranges for these two types of bindings are trimmed to just the target,
+                        // but the name is not available until the end of the entire statement
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-20 01:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-11-20 06:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_type_checking/TCH008.py</code>:39 on 2024-11-20 06:55</div>
+            <div class="timeline-body"><p>Indeed, I wasn't quite sure how the ordering of events would play out, so I decided against targeting the 0.8 branch with this change for now. I can clean this up either once the 0.8 branch has been merged or before that if we want to try to get these rules into 0.8.0, rather than 0.8.1+.</p>
+<p>I don't think it's worth cleaning up before that decision has been made.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-11-20 07:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:673 on 2024-11-20 07:17</div>
+            <div class="timeline-body"><blockquote>
+<p>My understanding is that largely Ruff handles this by doing name lookups while constructing the semantic model, so inapplicable bindings just don't exist yet. Is that approach not workable in this case? Why do we need a method that must instead be run after all bindings are collected, but then ignores the &quot;late&quot; ones, in inner scopes?</p>
+</blockquote>
+<p>The main reason is that TCH007/TCH008 perform speculative lookups, rather than the ones that would actually happen at runtime, to ensure that we don't produce violations for the parts of the type alias value that need to available at runtime and vice-versa. (in fact they actually perform both the speculative and regular lookup to avoid violations/fixes going in circles)</p>
+<p>The normal flow of the semantic model does not cover the speculative nature of questions like &quot;what if this annotation wasn't a forward reference&quot; or &quot;what if this annotation was turned into a forward reference?&quot;.</p>
+<p>There are certainly other ways to implement this check (i.e. performing the speculative lookup at the right time during semantic analysis), but this seemed like the least disruptive one (especially since at the time I wrote this there wasn't yet a cache for parsing string annotations) and matches my implementation in the flake8-plugin I wrote, so I can be more confident that it works and produces zero false positives in several large code-bases of mine.</p>
+<p>I was also worried that speculatively walking the type definition earlier/later than it was supposed to could lead to other rules triggering or unwanted state leaking into the semantic model. It would be difficult to ensure that this excursion would have no unwanted side-effects.</p>
+<blockquote>
+<p>Difference (a) makes sense, though taken alone it seems like it could be a flag rather than an entirely separate method.</p>
+</blockquote>
+<p>And in fact in my own implementation in the flake8 plugin they are the same method with a flag. However the potentially incorrect placement of the <code>seen_function</code> update prompted me to keep this method separate for now, in order to avoid potentially subtle regressions in <code>lookup_symbol</code>.</p>
+<p>We could either take the risk and merge these methods now or put it off until later, when we're more confident that the method is stable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-11-20 07:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1861 on 2024-11-20 07:44</div>
+            <div class="timeline-body"><p>I'll have a little think about what I prefer. Initially I did use the PEP numbers in their names, but it seemed too easy to accidentally read one as the other when you're just skimming the code, so I decided to switch to the names used in the PEP title/section header respectively, even if they're far from ideal.</p>
+<p>The descriptive names are a little too tongue-twistery for my liking, but they may be the correct choice after all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @Daverball on 2024-11-20 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @Daverball on 2024-11-20 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-11-20 16:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/red_knot_workspace/tests/check.rs</code>:278 on 2024-11-20 16:03</div>
+            <div class="timeline-body"><p>Not quite sure why that particular rename was missing from the main branch, I'm pretty sure I got them all originally, since grep didn't return anything. Maybe this was accidentally reverted?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[flake8-type-checking] Adds implementation for TCH007 and TCH008" to "[flake8-type-checking] Adds implementation for TC007 and TC008" by @Daverball on 2024-11-20 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[flake8-type-checking] Adds implementation for TC007 and TC008" to "[`flake8-type-checking`] Adds implementation for TC007 and TC008" by @Daverball on 2024-11-20 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1861 on 2024-11-21 09:55</div>
+            <div class="timeline-body"><p>I ended up sticking with the original names but added the <code>_value</code> portion where appropriate and improved the documentation with examples. If you and/or some of the other maintainers still feel strongly about the ambiguity of the names I'm happy to change them, but the current version reads the best to my eye.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-11-21 09:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-21 22:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1861 on 2024-11-21 22:48</div>
+            <div class="timeline-body"><p>I think calling a PEP 613 type alias an &quot;explicit type alias&quot; is ambiguous and unclear, and I would rather use clearer naming, but I could live with it, if there's sufficient additional documentation to explain our use of the term.</p>
+<p>I feel quite strongly that we cannot refer to PEP 695 type aliases, as a whole, as &quot;generic type aliases.&quot; It's simply wrong, and very confusing.</p>
+<p><code>type Foo[T] = list[T]</code> is a generic type alias. <code>type Foo = int</code> is a non-generic type alias. This distinction is made very clear right in the text of PEP 695, which has this code example:</p>
+<pre><code class="language-py"># A non-generic type alias
+type IntOrStr = int | str
+
+# A generic type alias
+type ListOrSet[T] = list[T] | set[T]
+</code></pre>
+<p>Both of these are PEP 695 type aliases, and are currently (wrongly) lumped together in this PR as &quot;generic type aliases.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-11-22 07:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1861 on 2024-11-22 07:07</div>
+            <div class="timeline-body"><p>Fair enough. For the record: I wasn't a fan of the names either. But I can put up with a bit of cognitive dissonance for the sake of readability.</p>
+<p>That being said, I've had another think about it and came up with a pair of names that while not self-explanatory, unless you know enough, they should both be disambiguous and readable.</p>
+<p><code>annotated_type_alias</code>(<code>_value</code>) and <code>deferred_type_alias</code>(<code>_value</code>). Do you agree that those would be good enough? If not I'd probably go with the pep numbers and just hope people don't get tripped up by the two almost identical looking names.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-22 07:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1861 on 2024-11-22 07:25</div>
+            <div class="timeline-body"><p>I would be happy with those names! They both accurately describe a distinctive characteristic of that style of type alias.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-11-23 10:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:673 on 2024-11-23 10:48</div>
+            <div class="timeline-body"><p>Actually I am wrong, I will almost always need to wait until all the bindings have been visited, since the outer scope lookups can be non source-order sensitive (e.g. looking up symbols in global scope from within a function). So there isn't really a way to perform the lookup I want to perform at the correct time, I will always need to wait until all the bindings have been visited. F405 also works this way, but can rely on the references caching which binding they point to, so it's easy to find the references that don't point anywhere.</p>
+<p>We could do something similar here and keep a second state for every reference within a type definition (instead of just the one we use for <code>SemanticModel::resolve_name()</code>), one for the binding that will only be available at runtime, and one for the binding that will only be available at typing time. However, that seemed like overkill to me, especially since that information will not be useful for most rules. (It will however also be needed for the remaining TC1/TC2 rules that can remove quotes from annotations)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-26 00:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:673 on 2024-11-26 00:57</div>
+            <div class="timeline-body"><p>These comments make sense to me! I'm satisfied that it's reasonable to add this method. I think it would be ideal if more of this context around what the method does and how it differs from the other two methods available for looking up names, were captured in its doc comment.</p>
+<p>Otherwise, this PR looks good to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:673 on 2024-11-26 08:23</div>
+            <div class="timeline-body"><p>I updated the docstring, does this explanation make sense?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-11-26 08:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-26 15:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:673 on 2024-11-26 15:56</div>
+            <div class="timeline-body"><p>Yes, it looks good to me, thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-26 17:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/runtime_import_in_type_checking_block.rs</code>:165 on 2024-11-26 17:44</div>
+            <div class="timeline-body"><p>Can we move this TODO to the top of the closure? (I'm also wondering if this should just be comment on the review?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-26 17:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:665 on 2024-11-26 17:46</div>
+            <div class="timeline-body"><p>Why? Do you plan to follow-up on this? It seems unrelated to the PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-26 17:47</div>
+            <div class="timeline-body"><p>The changes to the semantic model seem fine to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-26 17:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:719 on 2024-11-26 17:52</div>
+            <div class="timeline-body"><p>Do you think you could include some examples in the comments here (like, Python cod examples) to explain what this source-sensitive lookup is doing, and why?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-11-26 19:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:665 on 2024-11-26 19:00</div>
+            <div class="timeline-body"><p>Because for <code>BindingKind::Annotation</code> this assignment is skipped. Maybe there's something subtle at play here, like <code>BindingKind::Annotation</code> never occurring inside a function scope, but otherwise this seems like a bug, albeit one very unlikely to affect anyone in any real way.</p>
+<p>I noted it because <code>simulate_runtime_load</code> has a similar structure but moved the update of this variable above to where <code>class_variable_visible</code> is updated.</p>
+<p>If you don't think there's a bug here I'm happy to remove the comment, otherwise I'll either leave it in and follow up or fix it as part of this PR, whichever you'd prefer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-11-27 07:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:719 on 2024-11-27 07:23</div>
+            <div class="timeline-body"><p>Actually, this prompted me to improve the function, since it currently takes some shortcuts under the assumption, that it will only be called for type definitions, but if that ever becomes untrue, or type definitions can start showing up in some of the other problematic places, then there are other kinds of bindings than <code>AnnAssign</code> and <code>ClassDef</code> where the target can occur before a child expression that doesn't yet have access to the binding. The semantic model handles this by walking the nodes in the correct order if I'm not mistaken.</p>
+<p>I.e. things like regular assignments and named assignments. Comprehensions have the opposite problem, where the bindings can occur after use, especially with named expressions inside one of the conditions. In the flake8 plugin I'm handling all of these corner-cases by carefully choosing the position of when the binding starts being available.</p>
+<p>There is one case I can't handle with pure source position and accept being wrong on, and that would be a named expression referring to itself within a condition of a comprehension. But everything else works. Backtracking the AST to look for bindings seems more robust, but also a lot more expensive.</p>
+<p>I think for now I will handle the few additional easy cases and add documentation about when this method will fail to produce the correct result.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:665 on 2024-11-27 08:06</div>
+            <div class="timeline-body"><p>Let's address this in a follow up PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-27 08:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-27 08:12</div>
+            <div class="timeline-body"><p>@MichaReiser The tests should still be in their own test function, since both rules are enabled in that test function. That's how we made sure there were no circularity issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-27 08:17</div>
+            <div class="timeline-body"><p>@MichaReiser Also the fix safety comment is only correct for one of the rules, the other rule is always marked as unsafe but I still don't know why, I'm just relying on the fix safety of the other rule that uses the same fix.</p>
+<p>Either way I'm going to force push my local branch and include some of your changes, I already made some of the same changes locally, but I also elaborated on the documentation of <code>simulate_runtime_load</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-27 08:20</div>
+            <div class="timeline-body"><p>Oh sorry. I think it would be good to add a comment to that test explaining why it is a separate tests or it's likely that we'll merge the tests again when we promote the rule to preview.</p>
+<p>Could you also extend/correct the fix safety comments because that's the only remaining thing that needs resolving before merging this PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-27 08:41</div>
+            <div class="timeline-body"><p>@MichaReiser I think this should cover everything, but feel free to give it another cursory glance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-11-27 08:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-11-27 08:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-27 08:52</div>
+            <div class="timeline-body"><p>Congrats @Daverball on implementing this rather complex rules!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-28 15:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:26 UTC
+    </footer>
+</body>
+</html>

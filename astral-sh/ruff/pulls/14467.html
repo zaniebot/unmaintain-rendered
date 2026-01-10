@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ruff-0.8] [`FAST`] Further improve docs for `fast-api-non-annotated-depencency` (`FAST002`) - astral-sh/ruff #14467</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ruff-0.8] [<code>FAST</code>] Further improve docs for <code>fast-api-non-annotated-depencency</code> (<code>FAST002</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14467">#14467</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-11-19 18:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-19 18:24</div>
+            <div class="timeline-body"><p>This PR is stacked on top of #14466.</p>
+<h2>Summary</h2>
+<p>This PR updates the docs for <code>FAST002</code> to note that <code>typing.Annotated</code> was added in Python 3.9, but that <code>typing_extensions.Annotated</code> can be used on older versions of Python.</p>
+<p>Alternatively, we could consider reverting the stabilisation of this rule, since not everybody will necessarily be happy to add <code>typing_extensions</code> as a dependency, but the autofix assumes that it is available to be imported on Python 3.8 and lower. However, nobody has raised this issue, and Python 3.8 is now end-of-life, so while this isn't ideal I think it <em>probably</em> shouldn't block the rule being stabilised. If you <em>are</em> on an older version of Python and don't want <code>typing_extensions</code> as a dependency, you can always just disable the rule.</p>
+<p>I don't have a strong opinion here, though; this does feel sort-of borderline to me. Maybe we should revert the stabilisation?</p>
+<h2>Test Plan</h2>
+<p><code>cargo test -p ruff_linter</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @AlexWaygood on 2024-11-19 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-11-19 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.8" by @AlexWaygood on 2024-11-19 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-19 18:47</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-20 07:59</div>
+            <div class="timeline-body"><p>Thinking about this some more, I think we should at least mark the autofix as unsafe if the target version is set to Python 3.8 or lower, since the autofix adds imports of typing_extensions on these older Python versions, which the user might not have or want as a dependency. So the fix could easily break working Python code on older Python versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-20 08:00</div>
+            <div class="timeline-body"><p>Let's say we hold back on stabilizing this rule now because of Python 3.8. How would you change the rule or what are the next steps to stabilize this rule in an upcoming release?</p>
+<p>To me it's unclear what that change would be:</p>
+<ul>
+<li>We could only flag the rule for Python 3.9 or newer, but this makes the rule useless for users targeting Python 3.8 that want the rule</li>
+<li>We could introduce an option, but an option is equivalent to toggling the rule</li>
+<li>We could test if a typing module is already imported. I don't think this will be very useful unless it's done globally and not on a per file level, which Ruff doesn't support.</li>
+</ul>
+<p>That's why think we should stabilize the rule. Users that don't want typing rules can disable the rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-20 08:00</div>
+            <div class="timeline-body"><p>And nice find!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-20 08:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/fastapi/mod.rs</code>:29 on 2024-11-20 08:04</div>
+            <div class="timeline-body"><p>Memo to self: Should say &quot;use&quot;, not &quot;using&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-20 10:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Thinking about this some more, I think we should at least mark the autofix as unsafe if the target version is set to Python 3.8 or lower, since the autofix adds imports of typing_extensions on these older Python versions, which the user might not have or want as a dependency. So the fix could easily break working Python code on older Python versions.</p>
+</blockquote>
+<p>Okay, this isn't an issue, because the fix is already marked as unsafe on all Python versions. However, there's no <code>## Fix safety</code> section in the documentation explaining why this is so. I also can't see any explicit discussion of whether the fix should be safe or unsafe in https://github.com/astral-sh/ruff/pull/11579 :/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-20 10:48</div>
+            <div class="timeline-body"><p>Landing for now; this is an improvement on the status quo, and we can always add more docs on the safety of the fix as a followup</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-11-20 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-11-20 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-20 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-20 11:09</div>
+            <div class="timeline-body"><p>I opened https://github.com/astral-sh/ruff/issues/14484</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:51:28 UTC
+    </footer>
+</body>
+</html>
