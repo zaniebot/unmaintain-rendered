@@ -1,4 +1,4 @@
----
+```yaml
 number: 269
 title: "`pre-commit` hook for `ty`"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-05-08T12:10:17Z
 updated_at: 2025-12-21T14:39:03Z
 url: https://github.com/astral-sh/ty/issues/269
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # `pre-commit` hook for `ty`
 

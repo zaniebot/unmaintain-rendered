@@ -1,4 +1,4 @@
----
+```yaml
 number: 2114
 title: "`contextmanager` decorator has inconsistencies when combined with `staticmethod`"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-19T16:26:43Z
 updated_at: 2025-12-24T03:35:11Z
 url: https://github.com/astral-sh/ty/issues/2114
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # `contextmanager` decorator has inconsistencies when combined with `staticmethod`
 

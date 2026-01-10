@@ -1,4 +1,4 @@
----
+```yaml
 number: 2356
 title: "Type narrowing failures involving `Never`"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2026-01-06T08:39:41Z
 updated_at: 2026-01-06T15:29:57Z
 url: https://github.com/astral-sh/ty/issues/2356
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Type narrowing failures involving `Never`
 

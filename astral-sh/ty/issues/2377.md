@@ -1,4 +1,4 @@
----
+```yaml
 number: 2377
 title: Cython support
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2026-01-07T15:44:08Z
 updated_at: 2026-01-08T15:24:11Z
 url: https://github.com/astral-sh/ty/issues/2377
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Cython support
 

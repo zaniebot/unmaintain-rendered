@@ -1,4 +1,4 @@
----
+```yaml
 number: 1566
 title: Consider unsafely narrowing non-literal type to literal based on equality check
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-11-14T21:24:41Z
 updated_at: 2025-12-23T02:59:34Z
 url: https://github.com/astral-sh/ty/issues/1566
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Consider unsafely narrowing non-literal type to literal based on equality check
 

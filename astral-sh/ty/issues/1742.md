@@ -1,4 +1,4 @@
----
+```yaml
 number: 1742
 title: Support for attrs private fields
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-03T12:38:14Z
 updated_at: 2025-12-26T11:56:00Z
 url: https://github.com/astral-sh/ty/issues/1742
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Support for attrs private fields
 

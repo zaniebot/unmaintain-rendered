@@ -1,4 +1,4 @@
----
+```yaml
 number: 1471
 title: Reconsider how we display class definitions in the LSP
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-11-03T14:23:43Z
 updated_at: 2026-01-03T17:46:45Z
 url: https://github.com/astral-sh/ty/issues/1471
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Reconsider how we display class definitions in the LSP
 

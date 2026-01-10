@@ -1,4 +1,4 @@
----
+```yaml
 number: 2062
 title: Unresolved imports in projects on network drives
 type: issue
@@ -13,8 +13,8 @@ assignees: []
 created_at: 2025-12-18T11:41:26Z
 updated_at: 2025-12-24T15:36:19Z
 url: https://github.com/astral-sh/ty/issues/2062
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Unresolved imports in projects on network drives
 

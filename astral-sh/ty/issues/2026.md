@@ -1,4 +1,4 @@
----
+```yaml
 number: 2026
 title: Nested Pydantic schema causes slow performance
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-17T18:07:56Z
 updated_at: 2025-12-20T04:18:09Z
 url: https://github.com/astral-sh/ty/issues/2026
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Nested Pydantic schema causes slow performance
 

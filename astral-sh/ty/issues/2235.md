@@ -1,4 +1,4 @@
----
+```yaml
 number: 2235
 title: Explicitly included files without extension are not checked
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-27T07:14:21Z
 updated_at: 2026-01-07T10:38:03Z
 url: https://github.com/astral-sh/ty/issues/2235
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Explicitly included files without extension are not checked
 

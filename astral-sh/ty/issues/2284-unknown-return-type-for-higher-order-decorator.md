@@ -1,4 +1,4 @@
----
+```yaml
 number: 2284
 title: "`Unknown` return type for higher order decorator wrapped functions"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-31T02:52:55Z
 updated_at: 2025-12-31T11:11:54Z
 url: https://github.com/astral-sh/ty/issues/2284
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # `Unknown` return type for higher order decorator wrapped functions
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 1185
 title: Change the VS code python environment fallback behavior
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-09-15T06:04:38Z
 updated_at: 2025-12-31T15:24:54Z
 url: https://github.com/astral-sh/ty/issues/1185
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Change the VS code python environment fallback behavior
 

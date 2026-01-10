@@ -1,4 +1,4 @@
----
+```yaml
 number: 2171
 title: emit a diagnostic on unsafe dunder method overrides on tuple subclasses
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-22T19:50:43Z
 updated_at: 2025-12-22T23:40:18Z
 url: https://github.com/astral-sh/ty/issues/2171
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # emit a diagnostic on unsafe dunder method overrides on tuple subclasses
 

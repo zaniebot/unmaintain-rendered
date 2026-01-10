@@ -1,4 +1,4 @@
----
+```yaml
 number: 2111
 title: Add table to documentation mapping mypy/pyright rules to ty rules
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-19T11:48:03Z
 updated_at: 2026-01-05T10:21:47Z
 url: https://github.com/astral-sh/ty/issues/2111
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Add table to documentation mapping mypy/pyright rules to ty rules
 

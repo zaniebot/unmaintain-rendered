@@ -1,4 +1,4 @@
----
+```yaml
 number: 2341
 title: "(property tests) ABCMeta and `type[type]` can fail `all_fully_static_type_pairs_are_subtype_of_their_union` invariant"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2026-01-05T12:12:50Z
 updated_at: 2026-01-06T00:58:57Z
 url: https://github.com/astral-sh/ty/issues/2341
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # (property tests) ABCMeta and `type[type]` can fail `all_fully_static_type_pairs_are_subtype_of_their_union` invariant
 

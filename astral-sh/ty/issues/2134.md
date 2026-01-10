@@ -1,4 +1,4 @@
----
+```yaml
 number: 2134
 title: Support deeper-nested attribute type narrowing
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-20T19:55:10Z
 updated_at: 2025-12-27T00:41:06Z
 url: https://github.com/astral-sh/ty/issues/2134
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Support deeper-nested attribute type narrowing
 

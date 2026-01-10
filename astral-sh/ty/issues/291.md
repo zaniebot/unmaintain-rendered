@@ -1,4 +1,4 @@
----
+```yaml
 number: 291
 title: Reimplement popular Mypy Plugins
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-05-09T11:43:47Z
 updated_at: 2026-01-08T18:25:51Z
 url: https://github.com/astral-sh/ty/issues/291
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Reimplement popular Mypy Plugins
 

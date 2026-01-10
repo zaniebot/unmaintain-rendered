@@ -1,4 +1,4 @@
----
+```yaml
 number: 2272
 title: Hover on function calls reveals Never in unreachable code
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-30T08:55:01Z
 updated_at: 2025-12-31T15:46:41Z
 url: https://github.com/astral-sh/ty/issues/2272
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Hover on function calls reveals Never in unreachable code
 

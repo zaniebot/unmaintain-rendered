@@ -1,4 +1,4 @@
----
+```yaml
 number: 2096
 title: special-case try/except ImportError if all imports resolve
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-19T01:07:45Z
 updated_at: 2025-12-31T15:20:15Z
 url: https://github.com/astral-sh/ty/issues/2096
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # special-case try/except ImportError if all imports resolve
 

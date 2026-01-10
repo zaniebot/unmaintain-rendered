@@ -1,4 +1,4 @@
----
+```yaml
 number: 2144
 title: "`sys.version_info` not being picked up from virtual environment"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-21T12:05:19Z
 updated_at: 2025-12-22T12:06:47Z
 url: https://github.com/astral-sh/ty/issues/2144
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # `sys.version_info` not being picked up from virtual environment
 

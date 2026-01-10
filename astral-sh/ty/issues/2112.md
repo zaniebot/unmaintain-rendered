@@ -1,4 +1,4 @@
----
+```yaml
 number: 2112
 title: "State in documentation for `division-by-zero` that it's disabled by default because it has false positives"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-19T12:03:19Z
 updated_at: 2025-12-19T18:45:20Z
 url: https://github.com/astral-sh/ty/issues/2112
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # State in documentation for `division-by-zero` that it's disabled by default because it has false positives
 

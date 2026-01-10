@@ -1,4 +1,4 @@
----
+```yaml
 number: 1959
 title: "Autocomplete for PEP692 Unpack[TypedDict]"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-16T20:36:15Z
 updated_at: 2026-01-06T13:12:15Z
 url: https://github.com/astral-sh/ty/issues/1959
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Autocomplete for PEP692 Unpack[TypedDict]
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2206
 title: Error for arg but type is correct
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-24T15:16:00Z
 updated_at: 2025-12-24T21:45:39Z
 url: https://github.com/astral-sh/ty/issues/2206
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Error for arg but type is correct
 

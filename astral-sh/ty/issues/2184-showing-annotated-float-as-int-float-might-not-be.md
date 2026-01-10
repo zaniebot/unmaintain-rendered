@@ -1,4 +1,4 @@
----
+```yaml
 number: 2184
 title: "Showing annotated `float` as `int | float` might not be right"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-23T12:26:43Z
 updated_at: 2025-12-29T22:07:21Z
 url: https://github.com/astral-sh/ty/issues/2184
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Showing annotated `float` as `int | float` might not be right
 

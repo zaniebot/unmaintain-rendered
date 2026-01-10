@@ -1,4 +1,4 @@
----
+```yaml
 number: 2246
 title: Ty Seems Like Cannot Reveal Type From Pydantic Validation
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-28T09:55:12Z
 updated_at: 2025-12-30T07:06:44Z
 url: https://github.com/astral-sh/ty/issues/2246
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Ty Seems Like Cannot Reveal Type From Pydantic Validation
 

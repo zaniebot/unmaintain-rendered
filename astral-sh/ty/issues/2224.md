@@ -1,4 +1,4 @@
----
+```yaml
 number: 2224
 title: "Inference failure: PEP 695 recursive type aliases resolve to 'Unknown'"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-26T02:51:19Z
 updated_at: 2025-12-26T18:36:46Z
 url: https://github.com/astral-sh/ty/issues/2224
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Inference failure: PEP 695 recursive type aliases resolve to 'Unknown'
 

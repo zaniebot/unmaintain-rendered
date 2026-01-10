@@ -1,4 +1,4 @@
----
+```yaml
 number: 2242
 title: ty gets confused when reassigning to bound method
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-27T22:50:28Z
 updated_at: 2025-12-29T11:21:45Z
 url: https://github.com/astral-sh/ty/issues/2242
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # ty gets confused when reassigning to bound method
 

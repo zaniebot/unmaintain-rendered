@@ -1,4 +1,4 @@
----
+```yaml
 number: 2138
 title: Type is not narrowed for a property with a setter
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-21T00:09:19Z
 updated_at: 2025-12-22T20:08:21Z
 url: https://github.com/astral-sh/ty/issues/2138
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Type is not narrowed for a property with a setter
 

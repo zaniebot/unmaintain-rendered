@@ -1,4 +1,4 @@
----
+```yaml
 number: 1576
 title: "`Iterable[list[int]]` as type context is not handled well"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-11-17T11:41:49Z
 updated_at: 2026-01-05T21:30:52Z
 url: https://github.com/astral-sh/ty/issues/1576
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # `Iterable[list[int]]` as type context is not handled well
 

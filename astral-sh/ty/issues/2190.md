@@ -1,4 +1,4 @@
----
+```yaml
 number: 2190
 title: support generic TypedDict
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-23T18:26:39Z
 updated_at: 2025-12-23T21:23:24Z
 url: https://github.com/astral-sh/ty/issues/2190
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # support generic TypedDict
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2267
 title: validate TypeIs and TypeGuard definitions
 type: issue
@@ -12,8 +12,8 @@ assignees: []
 created_at: 2025-12-29T23:14:51Z
 updated_at: 2026-01-06T17:02:28Z
 url: https://github.com/astral-sh/ty/issues/2267
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # validate TypeIs and TypeGuard definitions
 

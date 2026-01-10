@@ -1,4 +1,4 @@
----
+```yaml
 number: 2154
 title: "Improve `invalid-method-override` diagnostics for overloaded methods"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-22T12:37:19Z
 updated_at: 2025-12-22T17:04:18Z
 url: https://github.com/astral-sh/ty/issues/2154
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Improve `invalid-method-override` diagnostics for overloaded methods
 

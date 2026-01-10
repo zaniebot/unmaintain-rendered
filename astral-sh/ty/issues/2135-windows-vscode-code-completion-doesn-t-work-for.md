@@ -1,4 +1,4 @@
----
+```yaml
 number: 2135
 title: "Windows | VSCode | Code completion doesn't work for local variables"
 type: issue
@@ -12,8 +12,8 @@ assignees: []
 created_at: 2025-12-20T20:16:23Z
 updated_at: 2025-12-24T06:54:32Z
 url: https://github.com/astral-sh/ty/issues/2135
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Windows | VSCode | Code completion doesn't work for local variables
 

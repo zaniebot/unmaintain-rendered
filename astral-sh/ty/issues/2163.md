@@ -1,4 +1,4 @@
----
+```yaml
 number: 2163
 title: "TypedDict: inconsistent inferred types for `values()`, and `items()`"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-22T15:56:45Z
 updated_at: 2025-12-22T16:38:32Z
 url: https://github.com/astral-sh/ty/issues/2163
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # TypedDict: inconsistent inferred types for `values()`, and `items()`
 

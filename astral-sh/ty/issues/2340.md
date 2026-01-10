@@ -1,4 +1,4 @@
----
+```yaml
 number: 2340
 title: "Many keystrokes are required before a `Literal` auto-import completion suggestion is offered"
 type: issue
@@ -12,8 +12,8 @@ assignees: []
 created_at: 2026-01-05T11:48:11Z
 updated_at: 2026-01-07T17:25:28Z
 url: https://github.com/astral-sh/ty/issues/2340
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Many keystrokes are required before a `Literal` auto-import completion suggestion is offered
 

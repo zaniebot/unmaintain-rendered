@@ -1,4 +1,4 @@
----
+```yaml
 number: 2279
 title: "Cannot narrow tagged unions of `TypedDict`s with match statements"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-30T15:46:46Z
 updated_at: 2025-12-30T16:29:10Z
 url: https://github.com/astral-sh/ty/issues/2279
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Cannot narrow tagged unions of `TypedDict`s with match statements
 

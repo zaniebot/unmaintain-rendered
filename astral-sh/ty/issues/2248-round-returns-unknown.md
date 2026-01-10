@@ -1,4 +1,4 @@
----
+```yaml
 number: 2248
 title: "`round()` returns Unknown"
 type: issue
@@ -12,8 +12,8 @@ assignees: []
 created_at: 2025-12-28T14:34:06Z
 updated_at: 2025-12-29T10:58:11Z
 url: https://github.com/astral-sh/ty/issues/2248
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # `round()` returns Unknown
 

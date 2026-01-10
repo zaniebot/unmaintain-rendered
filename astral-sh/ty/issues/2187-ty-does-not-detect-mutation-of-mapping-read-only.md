@@ -1,4 +1,4 @@
----
+```yaml
 number: 2187
 title: ty does not detect mutation of Mapping (read-only) types
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-23T16:02:06Z
 updated_at: 2025-12-23T19:28:45Z
 url: https://github.com/astral-sh/ty/issues/2187
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # ty does not detect mutation of Mapping (read-only) types
 

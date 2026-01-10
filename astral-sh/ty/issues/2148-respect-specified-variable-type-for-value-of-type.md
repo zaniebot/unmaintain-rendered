@@ -1,4 +1,4 @@
----
+```yaml
 number: 2148
 title: Respect specified variable type for value of type Any or Unknown
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-21T18:20:01Z
 updated_at: 2025-12-21T18:20:58Z
 url: https://github.com/astral-sh/ty/issues/2148
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Respect specified variable type for value of type Any or Unknown
 

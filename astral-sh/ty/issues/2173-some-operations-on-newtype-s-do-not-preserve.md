@@ -1,4 +1,4 @@
----
+```yaml
 number: 2173
 title: "Some operations on `NewType`s do not preserve their `NewType`-ness"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-22T22:19:16Z
 updated_at: 2025-12-22T22:37:57Z
 url: https://github.com/astral-sh/ty/issues/2173
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Some operations on `NewType`s do not preserve their `NewType`-ness
 

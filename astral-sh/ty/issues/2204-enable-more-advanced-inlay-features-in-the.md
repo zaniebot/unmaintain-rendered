@@ -1,4 +1,4 @@
----
+```yaml
 number: 2204
 title: Enable more advanced inlay features in the playground
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-24T12:48:52Z
 updated_at: 2025-12-26T08:41:31Z
 url: https://github.com/astral-sh/ty/issues/2204
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Enable more advanced inlay features in the playground
 

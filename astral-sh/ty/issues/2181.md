@@ -1,4 +1,4 @@
----
+```yaml
 number: 2181
 title: "unittest style asserts don't have same type narrowing behaviour as normal asserts"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-23T09:19:31Z
 updated_at: 2025-12-23T13:40:09Z
 url: https://github.com/astral-sh/ty/issues/2181
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # unittest style asserts don't have same type narrowing behaviour as normal asserts
 

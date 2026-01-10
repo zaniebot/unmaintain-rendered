@@ -1,4 +1,4 @@
----
+```yaml
 number: 2321
 title: "improve diagnostic for `typing.cast` to TypeVar in parameter default"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2026-01-04T20:09:01Z
 updated_at: 2026-01-04T22:34:56Z
 url: https://github.com/astral-sh/ty/issues/2321
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # improve diagnostic for `typing.cast` to TypeVar in parameter default
 

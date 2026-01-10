@@ -1,4 +1,4 @@
----
+```yaml
 number: 1871
 title: Fix iteration over intersection types
 type: issue
@@ -12,8 +12,8 @@ assignees: []
 created_at: 2025-12-12T23:13:38Z
 updated_at: 2026-01-08T18:57:15Z
 url: https://github.com/astral-sh/ty/issues/1871
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Fix iteration over intersection types
 

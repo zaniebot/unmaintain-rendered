@@ -1,4 +1,4 @@
----
+```yaml
 number: 2133
 title: "pydantic BaseModel with aliases triggers \"No argument provided for required parameter\""
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-20T19:20:22Z
 updated_at: 2025-12-20T22:59:25Z
 url: https://github.com/astral-sh/ty/issues/2133
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # pydantic BaseModel with aliases triggers "No argument provided for required parameter"
 

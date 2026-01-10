@@ -1,4 +1,4 @@
----
+```yaml
 number: 2362
 title: Find all references in VS Code extension does not find call sites
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2026-01-06T10:46:07Z
 updated_at: 2026-01-08T13:10:42Z
 url: https://github.com/astral-sh/ty/issues/2362
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Find all references in VS Code extension does not find call sites
 

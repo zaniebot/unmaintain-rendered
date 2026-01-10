@@ -1,4 +1,4 @@
----
+```yaml
 number: 2196
 title: "explicit annotation for `defaultdict(float)` is not accepted"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-23T23:36:22Z
 updated_at: 2025-12-24T00:12:02Z
 url: https://github.com/astral-sh/ty/issues/2196
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # explicit annotation for `defaultdict(float)` is not accepted
 

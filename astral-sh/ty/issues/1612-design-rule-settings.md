@@ -1,4 +1,4 @@
----
+```yaml
 number: 1612
 title: "Design: Rule settings"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-11-23T14:21:43Z
 updated_at: 2025-12-31T15:35:52Z
 url: https://github.com/astral-sh/ty/issues/1612
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Design: Rule settings
 

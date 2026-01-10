@@ -1,4 +1,4 @@
----
+```yaml
 number: 2198
 title: "Invalid diagnostic location for a sub-call to a specialized `ParamSpec`"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-24T07:17:27Z
 updated_at: 2025-12-24T07:19:14Z
 url: https://github.com/astral-sh/ty/issues/2198
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Invalid diagnostic location for a sub-call to a specialized `ParamSpec`
 

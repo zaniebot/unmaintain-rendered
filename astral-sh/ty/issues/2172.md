@@ -1,4 +1,4 @@
----
+```yaml
 number: 2172
 title: Support for Odoo ORM
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-22T21:30:52Z
 updated_at: 2025-12-23T00:43:57Z
 url: https://github.com/astral-sh/ty/issues/2172
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Support for Odoo ORM
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2323
 title: Generic protocol methods cannot soundly be implemented by a non-generic method
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2026-01-04T21:36:58Z
 updated_at: 2026-01-04T22:11:54Z
 url: https://github.com/astral-sh/ty/issues/2323
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Generic protocol methods cannot soundly be implemented by a non-generic method
 

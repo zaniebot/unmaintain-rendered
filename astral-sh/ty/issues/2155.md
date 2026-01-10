@@ -1,4 +1,4 @@
----
+```yaml
 number: 2155
 title: Expose extra-paths as editor setting?
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-22T12:45:54Z
 updated_at: 2025-12-24T05:11:03Z
 url: https://github.com/astral-sh/ty/issues/2155
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Expose extra-paths as editor setting?
 

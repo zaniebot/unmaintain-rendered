@@ -1,4 +1,4 @@
----
+```yaml
 number: 2352
 title: Markdown code blocks rendering space as HTML code on Docstrings
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2026-01-05T18:13:03Z
 updated_at: 2026-01-06T15:44:33Z
 url: https://github.com/astral-sh/ty/issues/2352
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Markdown code blocks rendering space as HTML code on Docstrings
 

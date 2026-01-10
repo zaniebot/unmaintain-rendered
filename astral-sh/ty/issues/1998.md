@@ -1,4 +1,4 @@
----
+```yaml
 number: 1998
 title: ty hangs on combination of self-ref Union, dataclass and Protocol
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-17T10:40:24Z
 updated_at: 2025-12-26T12:25:35Z
 url: https://github.com/astral-sh/ty/issues/1998
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # ty hangs on combination of self-ref Union, dataclass and Protocol
 

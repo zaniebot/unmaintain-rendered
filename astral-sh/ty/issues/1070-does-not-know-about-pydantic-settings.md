@@ -1,4 +1,4 @@
----
+```yaml
 number: 1070
 title: Does not know about pydantic_settings.BaseSettings from env vars
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-08-20T22:24:29Z
 updated_at: 2025-12-23T09:20:26Z
 url: https://github.com/astral-sh/ty/issues/1070
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Does not know about pydantic_settings.BaseSettings from env vars
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2128
 title: "`Literal[\"abba\"]` should be a subtype of `Sequence[Literal[\"a\", \"b\"]]`"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-20T02:07:10Z
 updated_at: 2025-12-20T16:34:29Z
 url: https://github.com/astral-sh/ty/issues/2128
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # `Literal["abba"]` should be a subtype of `Sequence[Literal["a", "b"]]`
 

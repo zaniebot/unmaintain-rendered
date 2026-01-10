@@ -1,4 +1,4 @@
----
+```yaml
 number: 2254
 title: Autocomplete is extremely slow in Remote SSH
 type: issue
@@ -12,8 +12,8 @@ assignees: []
 created_at: 2025-12-29T07:48:06Z
 updated_at: 2026-01-06T15:20:19Z
 url: https://github.com/astral-sh/ty/issues/2254
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Autocomplete is extremely slow in Remote SSH
 

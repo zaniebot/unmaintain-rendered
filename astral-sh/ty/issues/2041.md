@@ -1,4 +1,4 @@
----
+```yaml
 number: 2041
 title: Type Narrowing on match with multiple case
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-17T21:27:50Z
 updated_at: 2026-01-08T19:06:47Z
 url: https://github.com/astral-sh/ty/issues/2041
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Type Narrowing on match with multiple case
 

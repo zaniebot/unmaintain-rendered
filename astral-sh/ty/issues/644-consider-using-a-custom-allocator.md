@@ -1,4 +1,4 @@
----
+```yaml
 number: 644
 title: Consider using a custom allocator
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-06-13T06:39:48Z
 updated_at: 2025-12-31T15:27:30Z
 url: https://github.com/astral-sh/ty/issues/644
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Consider using a custom allocator
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2124
 title: "re-unify `Type::try_call_constructor` and `Type::bindings`"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-19T23:31:21Z
 updated_at: 2025-12-19T23:31:21Z
 url: https://github.com/astral-sh/ty/issues/2124
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # re-unify `Type::try_call_constructor` and `Type::bindings`
 

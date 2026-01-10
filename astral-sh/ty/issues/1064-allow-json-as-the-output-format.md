@@ -1,4 +1,4 @@
----
+```yaml
 number: 1064
 title: Allow JSON as the output format
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-08-20T14:39:43Z
 updated_at: 2025-12-19T20:14:47Z
 url: https://github.com/astral-sh/ty/issues/1064
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Allow JSON as the output format
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2269
 title: Is it intentional that type hints are ignored when using setattr?
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-30T05:10:15Z
 updated_at: 2025-12-30T07:58:06Z
 url: https://github.com/astral-sh/ty/issues/2269
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Is it intentional that type hints are ignored when using setattr?
 

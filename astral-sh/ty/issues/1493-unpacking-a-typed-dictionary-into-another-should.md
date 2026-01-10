@@ -1,4 +1,4 @@
----
+```yaml
 number: 1493
 title: Unpacking a typed dictionary into another should transfer defined keys.
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-11-06T07:43:49Z
 updated_at: 2025-12-30T00:48:00Z
 url: https://github.com/astral-sh/ty/issues/1493
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Unpacking a typed dictionary into another should transfer defined keys.
 

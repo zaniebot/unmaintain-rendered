@@ -1,4 +1,4 @@
----
+```yaml
 number: 167
 title: "enforce type of `ClassVar` in subclasses"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-03-20T13:41:47Z
 updated_at: 2025-12-22T13:55:28Z
 url: https://github.com/astral-sh/ty/issues/167
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # enforce type of `ClassVar` in subclasses
 

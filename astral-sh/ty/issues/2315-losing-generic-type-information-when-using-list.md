@@ -1,4 +1,4 @@
----
+```yaml
 number: 2315
 title: Losing generic type information when using list on Iterable
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2026-01-03T12:24:16Z
 updated_at: 2026-01-03T12:32:38Z
 url: https://github.com/astral-sh/ty/issues/2315
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Losing generic type information when using list on Iterable
 

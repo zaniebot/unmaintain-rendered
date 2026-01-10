@@ -1,4 +1,4 @@
----
+```yaml
 number: 1981
 title: "Make the \"implicit shadowing\" note on `invalid-assignment` additional, don't replace the main message"
 type: issue
@@ -12,8 +12,8 @@ assignees: []
 created_at: 2025-12-17T07:47:01Z
 updated_at: 2025-12-29T09:30:50Z
 url: https://github.com/astral-sh/ty/issues/1981
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Make the "implicit shadowing" note on `invalid-assignment` additional, don't replace the main message
 

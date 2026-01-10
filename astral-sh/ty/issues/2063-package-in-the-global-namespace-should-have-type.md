@@ -1,4 +1,4 @@
----
+```yaml
 number: 2063
 title: "`__package__` in the global namespace should have type `str`, not `str | None`"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-18T11:50:53Z
 updated_at: 2026-01-07T23:31:00Z
 url: https://github.com/astral-sh/ty/issues/2063
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # `__package__` in the global namespace should have type `str`, not `str | None`
 

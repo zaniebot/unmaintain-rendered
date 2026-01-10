@@ -1,4 +1,4 @@
----
+```yaml
 number: 1812
 title: Enable code-action unit-tests to get actual diagnostics
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-08T22:37:42Z
 updated_at: 2025-12-31T15:40:52Z
 url: https://github.com/astral-sh/ty/issues/1812
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Enable code-action unit-tests to get actual diagnostics
 

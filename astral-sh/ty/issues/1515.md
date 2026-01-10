@@ -1,4 +1,4 @@
----
+```yaml
 number: 1515
 title: Extra Unknown for attribute in method
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-11-10T14:27:28Z
 updated_at: 2025-12-26T18:32:08Z
 url: https://github.com/astral-sh/ty/issues/1515
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Extra Unknown for attribute in method
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 1754
 title: Auto-import should have some rudimentary support for evaluating conditionals
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-04T14:10:50Z
 updated_at: 2026-01-05T14:46:11Z
 url: https://github.com/astral-sh/ty/issues/1754
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Auto-import should have some rudimentary support for evaluating conditionals
 

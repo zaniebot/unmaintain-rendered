@@ -1,4 +1,4 @@
----
+```yaml
 number: 1469
 title: "Add `--force-exclude` option to CLI"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-11-03T12:54:58Z
 updated_at: 2025-12-20T09:03:42Z
 url: https://github.com/astral-sh/ty/issues/1469
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Add `--force-exclude` option to CLI
 

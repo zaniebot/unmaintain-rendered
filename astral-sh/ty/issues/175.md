@@ -1,4 +1,4 @@
----
+```yaml
 number: 175
 title: Hierarchical configuration
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-03-14T10:06:50Z
 updated_at: 2025-12-31T15:25:59Z
 url: https://github.com/astral-sh/ty/issues/175
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Hierarchical configuration
 

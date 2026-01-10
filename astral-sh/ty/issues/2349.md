@@ -1,4 +1,4 @@
----
+```yaml
 number: 2349
 title: "Object of type `PreTrainedTokenizerFast` is callable"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2026-01-05T16:58:57Z
 updated_at: 2026-01-06T17:28:25Z
 url: https://github.com/astral-sh/ty/issues/2349
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Object of type `PreTrainedTokenizerFast` is callable
 

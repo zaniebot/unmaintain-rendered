@@ -1,4 +1,4 @@
----
+```yaml
 number: 1747
 title: "Consider disallowing forward references to non-global names in `__future__.annotations` (for compatibility)"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-03T19:58:15Z
 updated_at: 2025-12-22T17:59:59Z
 url: https://github.com/astral-sh/ty/issues/1747
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Consider disallowing forward references to non-global names in `__future__.annotations` (for compatibility)
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2137
 title: "Support `extend` configuration field (like `ruff`) for config inheritance"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-20T23:08:08Z
 updated_at: 2026-01-02T15:59:30Z
 url: https://github.com/astral-sh/ty/issues/2137
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Support `extend` configuration field (like `ruff`) for config inheritance
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 724
 title: "Comparison between generic types with the same bound fails with `unsupported-operator`"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-06-28T21:15:48Z
 updated_at: 2026-01-08T18:27:35Z
 url: https://github.com/astral-sh/ty/issues/724
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Comparison between generic types with the same bound fails with `unsupported-operator`
 

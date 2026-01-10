@@ -1,4 +1,4 @@
----
+```yaml
 number: 992
 title: "LSP Panic: access to field whilst the value is being initialized"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-08-14T18:14:13Z
 updated_at: 2025-12-31T16:36:56Z
 url: https://github.com/astral-sh/ty/issues/992
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # LSP Panic: access to field whilst the value is being initialized
 

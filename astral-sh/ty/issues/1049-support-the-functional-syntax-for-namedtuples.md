@@ -1,4 +1,4 @@
----
+```yaml
 number: 1049
 title: Support the functional syntax for NamedTuples
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-08-19T11:34:20Z
 updated_at: 2025-12-31T20:09:34Z
 url: https://github.com/astral-sh/ty/issues/1049
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Support the functional syntax for NamedTuples
 

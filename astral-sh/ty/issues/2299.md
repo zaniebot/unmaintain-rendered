@@ -1,4 +1,4 @@
----
+```yaml
 number: 2299
 title: asyncio.Task parameters are incorrect (because outdated typeshed)
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2026-01-02T00:34:09Z
 updated_at: 2026-01-02T02:27:29Z
 url: https://github.com/astral-sh/ty/issues/2299
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # asyncio.Task parameters are incorrect (because outdated typeshed)
 

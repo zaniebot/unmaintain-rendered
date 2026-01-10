@@ -1,4 +1,4 @@
----
+```yaml
 number: 1167
 title: "Unexpected `invalid-return-type` when using narrowed dict as argument to dataclass"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-09-10T16:44:21Z
 updated_at: 2026-01-08T18:36:06Z
 url: https://github.com/astral-sh/ty/issues/1167
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Unexpected `invalid-return-type` when using narrowed dict as argument to dataclass
 

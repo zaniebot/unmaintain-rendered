@@ -1,4 +1,4 @@
----
+```yaml
 number: 2287
 title: Improve diagnostic message clarity when passing a class type instead of an instance
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-31T06:40:08Z
 updated_at: 2026-01-05T16:51:39Z
 url: https://github.com/astral-sh/ty/issues/2287
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Improve diagnostic message clarity when passing a class type instead of an instance
 

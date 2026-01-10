@@ -1,4 +1,4 @@
----
+```yaml
 number: 2293
 title: Inconsistent callable inference between direct method assignment and wrapper-returned method
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-31T16:09:14Z
 updated_at: 2026-01-05T10:31:12Z
 url: https://github.com/astral-sh/ty/issues/2293
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Inconsistent callable inference between direct method assignment and wrapper-returned method
 

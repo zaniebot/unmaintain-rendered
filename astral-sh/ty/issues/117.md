@@ -1,4 +1,4 @@
----
+```yaml
 number: 117
 title: "Support narrowing using `TypeGuard`"
 type: issue
@@ -12,8 +12,8 @@ assignees: []
 created_at: 2025-04-21T21:53:46Z
 updated_at: 2025-12-30T20:38:15Z
 url: https://github.com/astral-sh/ty/issues/117
-synced_at: 2026-01-10T01:51:13Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Support narrowing using `TypeGuard`
 

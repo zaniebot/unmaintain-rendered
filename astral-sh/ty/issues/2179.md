@@ -1,4 +1,4 @@
----
+```yaml
 number: 2179
 title: Support type narrowing for union of tuples based on element types.
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-23T06:01:27Z
 updated_at: 2025-12-24T01:15:52Z
 url: https://github.com/astral-sh/ty/issues/2179
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Support type narrowing for union of tuples based on element types.
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2395
 title: "Incorrect `index-out-of-bounds` error"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2026-01-08T13:35:32Z
 updated_at: 2026-01-08T16:09:57Z
 url: https://github.com/astral-sh/ty/issues/2395
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Incorrect `index-out-of-bounds` error
 

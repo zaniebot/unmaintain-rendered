@@ -1,4 +1,4 @@
----
+```yaml
 number: 2336
 title: decorator that uses paramspec breaks generics on decorated function
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2026-01-05T07:38:32Z
 updated_at: 2026-01-07T09:58:09Z
 url: https://github.com/astral-sh/ty/issues/2336
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # decorator that uses paramspec breaks generics on decorated function
 

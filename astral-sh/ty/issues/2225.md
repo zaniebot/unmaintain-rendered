@@ -1,4 +1,4 @@
----
+```yaml
 number: 2225
 title: Unexpected (to me) Divergent type manifesting in isinstance()
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-26T09:26:10Z
 updated_at: 2025-12-26T17:00:46Z
 url: https://github.com/astral-sh/ty/issues/2225
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Unexpected (to me) Divergent type manifesting in isinstance()
 

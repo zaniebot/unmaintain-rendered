@@ -1,4 +1,4 @@
----
+```yaml
 number: 2189
 title: Add autocompletions for TypedDict keys
 type: issue
@@ -12,8 +12,8 @@ assignees: []
 created_at: 2025-12-23T18:21:04Z
 updated_at: 2025-12-23T21:23:39Z
 url: https://github.com/astral-sh/ty/issues/2189
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Add autocompletions for TypedDict keys
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 1353
 title: "Generic solver infers `Unknown` only when using new-style generics"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-10-14T15:17:02Z
 updated_at: 2026-01-08T18:41:50Z
 url: https://github.com/astral-sh/ty/issues/1353
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Generic solver infers `Unknown` only when using new-style generics
 

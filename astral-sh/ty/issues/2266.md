@@ -1,4 +1,4 @@
----
+```yaml
 number: 2266
 title: "Built-in operators on `JustFloat`s should return `JustFloat`."
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-29T22:45:48Z
 updated_at: 2025-12-30T07:30:51Z
 url: https://github.com/astral-sh/ty/issues/2266
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Built-in operators on `JustFloat`s should return `JustFloat`.
 

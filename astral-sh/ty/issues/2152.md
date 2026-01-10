@@ -1,4 +1,4 @@
----
+```yaml
 number: 2152
 title: Wrong type inference in some cases with Awaitable
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-22T09:02:29Z
 updated_at: 2025-12-22T09:05:07Z
 url: https://github.com/astral-sh/ty/issues/2152
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Wrong type inference in some cases with Awaitable
 

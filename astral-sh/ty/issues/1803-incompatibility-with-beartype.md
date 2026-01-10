@@ -1,4 +1,4 @@
----
+```yaml
 number: 1803
 title: Incompatibility with beartype
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-08T09:08:30Z
 updated_at: 2026-01-02T07:33:46Z
 url: https://github.com/astral-sh/ty/issues/1803
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Incompatibility with beartype
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 1460
 title: "treat `__setattr__` as fallback only"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-10-31T09:49:23Z
 updated_at: 2025-12-31T00:01:12Z
 url: https://github.com/astral-sh/ty/issues/1460
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # treat `__setattr__` as fallback only
 

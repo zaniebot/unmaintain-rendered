@@ -1,4 +1,4 @@
----
+```yaml
 number: 2271
 title: Prioritize keyword arguments in call completions
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-30T07:16:01Z
 updated_at: 2026-01-06T10:57:12Z
 url: https://github.com/astral-sh/ty/issues/2271
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Prioritize keyword arguments in call completions
 

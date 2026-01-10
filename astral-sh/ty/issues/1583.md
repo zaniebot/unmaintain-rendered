@@ -1,4 +1,4 @@
----
+```yaml
 number: 1583
 title: "`unsupported-operator`: Improve diagnostic if both sides have the same type"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-11-18T13:57:44Z
 updated_at: 2025-12-19T22:12:59Z
 url: https://github.com/astral-sh/ty/issues/1583
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # `unsupported-operator`: Improve diagnostic if both sides have the same type
 

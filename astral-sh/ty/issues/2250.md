@@ -1,4 +1,4 @@
----
+```yaml
 number: 2250
 title: Incomplete function argument inlay hint for unpacked iterable
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-28T23:17:00Z
 updated_at: 2025-12-30T22:52:48Z
 url: https://github.com/astral-sh/ty/issues/2250
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Incomplete function argument inlay hint for unpacked iterable
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2390
 title: "feat: better diagnostics when instance does not satisfy `abc.collections.<Class>`"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2026-01-08T03:53:52Z
 updated_at: 2026-01-08T13:27:03Z
 url: https://github.com/astral-sh/ty/issues/2390
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # feat: better diagnostics when instance does not satisfy `abc.collections.<Class>`
 

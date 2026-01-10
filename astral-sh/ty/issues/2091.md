@@ -1,4 +1,4 @@
----
+```yaml
 number: 2091
 title: "`map(str, cmd)` fails with `Sequence[str] & ~str`, succeeds with `Sequence[str]`"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-18T22:02:17Z
 updated_at: 2026-01-08T18:00:52Z
 url: https://github.com/astral-sh/ty/issues/2091
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # `map(str, cmd)` fails with `Sequence[str] & ~str`, succeeds with `Sequence[str]`
 

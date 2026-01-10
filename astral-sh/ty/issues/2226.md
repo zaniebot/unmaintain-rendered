@@ -1,4 +1,4 @@
----
+```yaml
 number: 2226
 title: "Widen JustFloat to `float | int` as part of widening literal types"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-26T09:39:05Z
 updated_at: 2025-12-27T00:19:24Z
 url: https://github.com/astral-sh/ty/issues/2226
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Widen JustFloat to `float | int` as part of widening literal types
 

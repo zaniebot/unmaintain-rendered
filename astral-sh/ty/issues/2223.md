@@ -1,4 +1,4 @@
----
+```yaml
 number: 2223
 title: "Inconsistent type inference for time.perf_counter(): Inferred as int | float instead of float"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-26T02:36:05Z
 updated_at: 2025-12-26T17:29:47Z
 url: https://github.com/astral-sh/ty/issues/2223
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Inconsistent type inference for time.perf_counter(): Inferred as int | float instead of float
 

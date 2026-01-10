@@ -1,4 +1,4 @@
----
+```yaml
 number: 1836
 title: Reconsider imports as type declarations
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-10T10:34:31Z
 updated_at: 2026-01-04T20:10:58Z
 url: https://github.com/astral-sh/ty/issues/1836
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Reconsider imports as type declarations
 

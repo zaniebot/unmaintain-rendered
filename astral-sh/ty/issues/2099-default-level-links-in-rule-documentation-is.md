@@ -1,4 +1,4 @@
----
+```yaml
 number: 2099
 title: "\"Default level\" links in rule documentation is broken"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-19T05:32:14Z
 updated_at: 2025-12-25T06:23:25Z
 url: https://github.com/astral-sh/ty/issues/2099
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # "Default level" links in rule documentation is broken
 

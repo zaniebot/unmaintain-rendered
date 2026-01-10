@@ -1,4 +1,4 @@
----
+```yaml
 number: 2230
 title: Add / document support for Claude Code LSP integration
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-26T17:05:23Z
 updated_at: 2026-01-08T13:40:35Z
 url: https://github.com/astral-sh/ty/issues/2230
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Add / document support for Claude Code LSP integration
 

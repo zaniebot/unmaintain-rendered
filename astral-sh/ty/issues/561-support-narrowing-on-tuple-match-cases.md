@@ -1,4 +1,4 @@
----
+```yaml
 number: 561
 title: Support narrowing on tuple match cases
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-06-01T12:24:08Z
 updated_at: 2025-12-22T02:22:23Z
 url: https://github.com/astral-sh/ty/issues/561
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Support narrowing on tuple match cases
 

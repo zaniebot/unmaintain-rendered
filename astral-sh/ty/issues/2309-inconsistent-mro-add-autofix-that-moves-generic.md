@@ -1,4 +1,4 @@
----
+```yaml
 number: 2309
 title: "`inconsistent-mro`: add autofix that moves `Generic[]` to the end of the bases list, if doing so would fix the violation"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2026-01-02T20:55:08Z
 updated_at: 2026-01-02T20:55:08Z
 url: https://github.com/astral-sh/ty/issues/2309
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # `inconsistent-mro`: add autofix that moves `Generic[]` to the end of the bases list, if doing so would fix the violation
 

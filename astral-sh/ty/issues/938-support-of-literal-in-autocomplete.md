@@ -1,4 +1,4 @@
----
+```yaml
 number: 938
 title: Support of Literal in autocomplete
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-08-05T13:10:06Z
 updated_at: 2026-01-03T18:34:19Z
 url: https://github.com/astral-sh/ty/issues/938
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Support of Literal in autocomplete
 

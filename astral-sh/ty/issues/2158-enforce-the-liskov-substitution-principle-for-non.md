@@ -1,4 +1,4 @@
----
+```yaml
 number: 2158
 title: Enforce the Liskov Substitution Principle for non-methods
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-22T13:54:58Z
 updated_at: 2025-12-22T14:07:37Z
 url: https://github.com/astral-sh/ty/issues/2158
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Enforce the Liskov Substitution Principle for non-methods
 

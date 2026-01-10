@@ -1,4 +1,4 @@
----
+```yaml
 number: 1164
 title: "Should `top_materialization` use `default_specialization` for type vars?"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-09-10T14:58:55Z
 updated_at: 2026-01-07T00:13:49Z
 url: https://github.com/astral-sh/ty/issues/1164
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Should `top_materialization` use `default_specialization` for type vars?
 

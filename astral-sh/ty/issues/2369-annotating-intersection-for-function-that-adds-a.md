@@ -1,4 +1,4 @@
----
+```yaml
 number: 2369
 title: Annotating Intersection for function that adds a base class does not work
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2026-01-06T18:13:20Z
 updated_at: 2026-01-07T12:23:26Z
 url: https://github.com/astral-sh/ty/issues/2369
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Annotating Intersection for function that adds a base class does not work
 

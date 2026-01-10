@@ -1,4 +1,4 @@
----
+```yaml
 number: 2146
 title: Improve rendering of ReST hyperlinks in docstrings
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-21T16:36:00Z
 updated_at: 2025-12-21T20:18:56Z
 url: https://github.com/astral-sh/ty/issues/2146
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Improve rendering of ReST hyperlinks in docstrings
 

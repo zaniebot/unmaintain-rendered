@@ -1,4 +1,4 @@
----
+```yaml
 number: 2100
 title: "ty not working with Marimo's VSCode extension"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-19T05:56:31Z
 updated_at: 2025-12-23T11:36:10Z
 url: https://github.com/astral-sh/ty/issues/2100
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # ty not working with Marimo's VSCode extension
 

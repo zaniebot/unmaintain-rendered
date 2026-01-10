@@ -1,4 +1,4 @@
----
+```yaml
 number: 2357
 title: "Using the type alias created by `TypeAliasType` which is the base of a type statement, ty doesn't work properly"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2026-01-06T09:10:06Z
 updated_at: 2026-01-06T09:33:49Z
 url: https://github.com/astral-sh/ty/issues/2357
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Using the type alias created by `TypeAliasType` which is the base of a type statement, ty doesn't work properly
 

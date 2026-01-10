@@ -1,4 +1,4 @@
----
+```yaml
 number: 2074
 title: Annotated Self changes variance of class
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-18T14:42:21Z
 updated_at: 2026-01-08T19:20:33Z
 url: https://github.com/astral-sh/ty/issues/2074
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Annotated Self changes variance of class
 

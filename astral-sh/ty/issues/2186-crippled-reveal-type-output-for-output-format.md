@@ -1,4 +1,4 @@
----
+```yaml
 number: 2186
 title: Crippled reveal_type output for --output-format=gitlab/github
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-23T15:11:00Z
 updated_at: 2025-12-24T15:28:25Z
 url: https://github.com/astral-sh/ty/issues/2186
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Crippled reveal_type output for --output-format=gitlab/github
 

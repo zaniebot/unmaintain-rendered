@@ -1,4 +1,4 @@
----
+```yaml
 number: 2359
 title: "No bidirectional inference for inferring the parameter types of `lambda` functions"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2026-01-06T09:32:25Z
 updated_at: 2026-01-06T17:16:49Z
 url: https://github.com/astral-sh/ty/issues/2359
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # No bidirectional inference for inferring the parameter types of `lambda` functions
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 232
 title: cyclic control flow for loops
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2024-11-07T15:27:26Z
 updated_at: 2025-12-23T15:15:12Z
 url: https://github.com/astral-sh/ty/issues/232
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # cyclic control flow for loops
 

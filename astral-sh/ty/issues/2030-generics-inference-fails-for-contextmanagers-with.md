@@ -1,4 +1,4 @@
----
+```yaml
 number: 2030
 title: "Generics inference fails for @contextmanagers with TypeVars."
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-17T19:06:59Z
 updated_at: 2026-01-05T19:36:11Z
 url: https://github.com/astral-sh/ty/issues/2030
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Generics inference fails for @contextmanagers with TypeVars.
 

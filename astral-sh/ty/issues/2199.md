@@ -1,4 +1,4 @@
----
+```yaml
 number: 2199
 title: "Speed-up `ty_python_semantic` compile time"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-24T07:55:54Z
 updated_at: 2025-12-24T08:01:23Z
 url: https://github.com/astral-sh/ty/issues/2199
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Speed-up `ty_python_semantic` compile time
 

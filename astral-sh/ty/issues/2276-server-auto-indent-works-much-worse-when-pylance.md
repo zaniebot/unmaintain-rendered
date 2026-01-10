@@ -1,4 +1,4 @@
----
+```yaml
 number: 2276
 title: "Server: auto-indent works much worse when Pylance is disabled"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-30T13:00:22Z
 updated_at: 2026-01-05T15:19:56Z
 url: https://github.com/astral-sh/ty/issues/2276
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Server: auto-indent works much worse when Pylance is disabled
 

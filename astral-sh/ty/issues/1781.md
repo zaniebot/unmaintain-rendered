@@ -1,4 +1,4 @@
----
+```yaml
 number: 1781
 title: "Server: renaming a property getter should also cause the setter and deleter to be renamed (if they're present)"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-05T18:00:28Z
 updated_at: 2025-12-22T12:53:49Z
 url: https://github.com/astral-sh/ty/issues/1781
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Server: renaming a property getter should also cause the setter and deleter to be renamed (if they're present)
 

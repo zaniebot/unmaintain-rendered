@@ -1,4 +1,4 @@
----
+```yaml
 number: 2307
 title: "Feature: Auto Format F-strings"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2026-01-02T19:42:17Z
 updated_at: 2026-01-06T11:02:20Z
 url: https://github.com/astral-sh/ty/issues/2307
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Feature: Auto Format F-strings
 

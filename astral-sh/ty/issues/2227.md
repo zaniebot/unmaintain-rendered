@@ -1,4 +1,4 @@
----
+```yaml
 number: 2227
 title: "Incorrect type inference for `bisect`"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-26T14:42:17Z
 updated_at: 2025-12-26T17:11:30Z
 url: https://github.com/astral-sh/ty/issues/2227
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Incorrect type inference for `bisect`
 

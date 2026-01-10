@@ -1,4 +1,4 @@
----
+```yaml
 number: 2212
 title: "error message improvement: spell out MRO and other TLAs"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-24T23:07:11Z
 updated_at: 2025-12-25T10:26:46Z
 url: https://github.com/astral-sh/ty/issues/2212
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # error message improvement: spell out MRO and other TLAs
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2103
 title: "`dict` with known literal keys and values being assignable to a variable annotated with `Literal` is unsupported"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-19T08:35:10Z
 updated_at: 2025-12-22T22:46:13Z
 url: https://github.com/astral-sh/ty/issues/2103
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # `dict` with known literal keys and values being assignable to a variable annotated with `Literal` is unsupported
 

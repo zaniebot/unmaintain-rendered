@@ -1,4 +1,4 @@
----
+```yaml
 number: 2085
 title: "panic:  execute: too many cycle iterations"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-18T19:30:14Z
 updated_at: 2025-12-23T00:16:05Z
 url: https://github.com/astral-sh/ty/issues/2085
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # panic:  execute: too many cycle iterations
 

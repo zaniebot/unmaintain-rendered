@@ -1,4 +1,4 @@
----
+```yaml
 number: 2161
 title: "Support dict literals and `dict()` calls as default values for parameters annotated with `TypedDict` types"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-22T15:23:59Z
 updated_at: 2025-12-22T16:37:36Z
 url: https://github.com/astral-sh/ty/issues/2161
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Support dict literals and `dict()` calls as default values for parameters annotated with `TypedDict` types
 

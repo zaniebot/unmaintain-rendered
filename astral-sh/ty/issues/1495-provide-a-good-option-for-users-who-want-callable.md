@@ -1,4 +1,4 @@
----
+```yaml
 number: 1495
 title: "provide a good option for users who want callable types with all `FunctionType` attributes"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-11-06T16:18:22Z
 updated_at: 2025-12-23T00:21:58Z
 url: https://github.com/astral-sh/ty/issues/1495
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # provide a good option for users who want callable types with all `FunctionType` attributes
 

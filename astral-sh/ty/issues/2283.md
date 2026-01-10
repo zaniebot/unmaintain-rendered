@@ -1,4 +1,4 @@
----
+```yaml
 number: 2283
 title: Markdown code blocks are not displaying correctly in hover docs
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-31T00:01:46Z
 updated_at: 2026-01-04T19:11:24Z
 url: https://github.com/astral-sh/ty/issues/2283
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Markdown code blocks are not displaying correctly in hover docs
 

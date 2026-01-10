@@ -1,4 +1,4 @@
----
+```yaml
 number: 1063
 title: Add migration guides
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-08-20T14:31:00Z
 updated_at: 2025-12-23T04:37:26Z
 url: https://github.com/astral-sh/ty/issues/1063
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Add migration guides
 

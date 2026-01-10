@@ -1,4 +1,4 @@
----
+```yaml
 number: 2350
 title: "Auto classes from transformers library \"from_pretrained\" marked as possibly missing"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2026-01-05T17:10:09Z
 updated_at: 2026-01-06T17:10:44Z
 url: https://github.com/astral-sh/ty/issues/2350
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Auto classes from transformers library "from_pretrained" marked as possibly missing
 

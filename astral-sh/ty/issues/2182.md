@@ -1,4 +1,4 @@
----
+```yaml
 number: 2182
 title: Problem inferring nested generic classes with defaults
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-23T09:30:15Z
 updated_at: 2026-01-08T18:04:06Z
 url: https://github.com/astral-sh/ty/issues/2182
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Problem inferring nested generic classes with defaults
 

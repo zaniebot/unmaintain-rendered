@@ -1,4 +1,4 @@
----
+```yaml
 number: 2374
 title: "`isinstance(..., dict)` and top materialization result in false positive on `.get()` call"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2026-01-07T04:21:12Z
 updated_at: 2026-01-07T18:15:14Z
 url: https://github.com/astral-sh/ty/issues/2374
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # `isinstance(..., dict)` and top materialization result in false positive on `.get()` call
 

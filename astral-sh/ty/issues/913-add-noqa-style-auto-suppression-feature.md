@@ -1,4 +1,4 @@
----
+```yaml
 number: 913
 title: "`--add-noqa`‑style auto-suppression feature"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-07-30T00:39:43Z
 updated_at: 2026-01-07T10:17:06Z
 url: https://github.com/astral-sh/ty/issues/913
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # `--add-noqa`‑style auto-suppression feature
 

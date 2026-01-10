@@ -1,4 +1,4 @@
----
+```yaml
 number: 2237
 title: "io.TextIOWrapper: \"Definition is incompatible with `IO.write`\""
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-27T16:13:45Z
 updated_at: 2025-12-27T19:08:59Z
 url: https://github.com/astral-sh/ty/issues/2237
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # io.TextIOWrapper: "Definition is incompatible with `IO.write`"
 

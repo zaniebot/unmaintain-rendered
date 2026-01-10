@@ -1,4 +1,4 @@
----
+```yaml
 number: 2355
 title: Wrong invalid-argument-type for list comprehension
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2026-01-06T08:05:00Z
 updated_at: 2026-01-06T16:12:21Z
 url: https://github.com/astral-sh/ty/issues/2355
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Wrong invalid-argument-type for list comprehension
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2335
 title: "\"Too many positional arguments\" when unpacking a sequence for function parameters."
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2026-01-05T04:12:16Z
 updated_at: 2026-01-05T08:47:53Z
 url: https://github.com/astral-sh/ty/issues/2335
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # "Too many positional arguments" when unpacking a sequence for function parameters.
 

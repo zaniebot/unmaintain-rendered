@@ -1,4 +1,4 @@
----
+```yaml
 number: 2301
 title: "Unexpected inferred type when using `typing.Literal`"
 type: issue
@@ -12,8 +12,8 @@ assignees: []
 created_at: 2026-01-02T10:31:15Z
 updated_at: 2026-01-05T08:29:52Z
 url: https://github.com/astral-sh/ty/issues/2301
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Unexpected inferred type when using `typing.Literal`
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2122
 title: "Semantics of `typing.Self` not understood in child classes"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-19T21:41:31Z
 updated_at: 2026-01-08T00:56:11Z
 url: https://github.com/astral-sh/ty/issues/2122
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Semantics of `typing.Self` not understood in child classes
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2372
 title: "isinstance(obj, dict) on object | None narrows to type where dict.get() fails with Expected Never"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2026-01-06T22:20:24Z
 updated_at: 2026-01-06T23:14:29Z
 url: https://github.com/astral-sh/ty/issues/2372
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # isinstance(obj, dict) on object | None narrows to type where dict.get() fails with Expected Never
 

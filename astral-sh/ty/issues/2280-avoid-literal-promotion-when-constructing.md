@@ -1,4 +1,4 @@
----
+```yaml
 number: 2280
 title: "Avoid literal promotion when constructing `frozenset` from list/set literal"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-30T19:34:28Z
 updated_at: 2026-01-06T02:11:34Z
 url: https://github.com/astral-sh/ty/issues/2280
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Avoid literal promotion when constructing `frozenset` from list/set literal
 

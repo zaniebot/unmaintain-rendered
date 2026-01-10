@@ -1,4 +1,4 @@
----
+```yaml
 number: 2303
 title: Migrating from Pyright
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2026-01-02T14:45:33Z
 updated_at: 2026-01-05T10:21:24Z
 url: https://github.com/astral-sh/ty/issues/2303
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Migrating from Pyright
 

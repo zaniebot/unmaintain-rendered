@@ -1,4 +1,4 @@
----
+```yaml
 number: 1430
 title: Goto-definition for binary operators only works if the relevant dunder has exactly the correct signature
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-10-24T09:32:27Z
 updated_at: 2025-12-31T15:34:32Z
 url: https://github.com/astral-sh/ty/issues/1430
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Goto-definition for binary operators only works if the relevant dunder has exactly the correct signature
 

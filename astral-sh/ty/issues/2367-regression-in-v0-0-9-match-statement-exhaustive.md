@@ -1,4 +1,4 @@
----
+```yaml
 number: 2367
 title: "Regression in v0.0.9: match statement exhaustive check of enum values"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2026-01-06T16:12:11Z
 updated_at: 2026-01-06T21:10:26Z
 url: https://github.com/astral-sh/ty/issues/2367
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Regression in v0.0.9: match statement exhaustive check of enum values
 

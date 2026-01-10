@@ -1,4 +1,4 @@
----
+```yaml
 number: 152
 title: context managers may silence exceptions
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-03-26T18:12:16Z
 updated_at: 2026-01-06T01:47:01Z
 url: https://github.com/astral-sh/ty/issues/152
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # context managers may silence exceptions
 

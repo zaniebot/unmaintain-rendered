@@ -1,4 +1,4 @@
----
+```yaml
 number: 1250
 title: "widen `Literal` types in invariant/covariant positions of generic function calls"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-09-25T03:27:07Z
 updated_at: 2026-01-08T18:39:05Z
 url: https://github.com/astral-sh/ty/issues/1250
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # widen `Literal` types in invariant/covariant positions of generic function calls
 

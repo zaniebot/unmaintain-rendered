@@ -1,4 +1,4 @@
----
+```yaml
 number: 2236
 title: Daily property test run failed on Sat Dec 27 2025
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-27T12:11:35Z
 updated_at: 2025-12-28T08:58:49Z
 url: https://github.com/astral-sh/ty/issues/2236
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Daily property test run failed on Sat Dec 27 2025
 

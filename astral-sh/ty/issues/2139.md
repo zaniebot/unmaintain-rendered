@@ -1,4 +1,4 @@
----
+```yaml
 number: 2139
 title: ty reports unknown-argument for Hugging Face tool choice dataclasses
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-21T04:34:35Z
 updated_at: 2026-01-06T11:29:07Z
 url: https://github.com/astral-sh/ty/issues/2139
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # ty reports unknown-argument for Hugging Face tool choice dataclasses
 

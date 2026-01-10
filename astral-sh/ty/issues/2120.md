@@ -1,4 +1,4 @@
----
+```yaml
 number: 2120
 title: "Split the `ty_python_semantic` into more crates"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-19T20:47:12Z
 updated_at: 2025-12-25T07:29:11Z
 url: https://github.com/astral-sh/ty/issues/2120
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Split the `ty_python_semantic` into more crates
 

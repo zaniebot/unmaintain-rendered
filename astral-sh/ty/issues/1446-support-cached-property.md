@@ -1,4 +1,4 @@
----
+```yaml
 number: 1446
 title: "Support `cached_property`"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-10-27T16:06:02Z
 updated_at: 2025-12-19T23:32:09Z
 url: https://github.com/astral-sh/ty/issues/1446
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Support `cached_property`
 

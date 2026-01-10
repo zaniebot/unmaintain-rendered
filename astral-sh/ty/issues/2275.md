@@ -1,4 +1,4 @@
----
+```yaml
 number: 2275
 title: "allowing `@type_check_only` subclasses of a `@final` class"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-30T12:37:45Z
 updated_at: 2025-12-30T13:33:16Z
 url: https://github.com/astral-sh/ty/issues/2275
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # allowing `@type_check_only` subclasses of a `@final` class
 

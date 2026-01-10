@@ -1,4 +1,4 @@
----
+```yaml
 number: 2281
 title: No unresolved-reference error when definition exists but is not reachable
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-30T21:38:11Z
 updated_at: 2025-12-30T21:38:51Z
 url: https://github.com/astral-sh/ty/issues/2281
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # No unresolved-reference error when definition exists but is not reachable
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2185
 title: TypeIs does not narrow
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-23T14:33:44Z
 updated_at: 2025-12-23T15:51:28Z
 url: https://github.com/astral-sh/ty/issues/2185
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # TypeIs does not narrow
 

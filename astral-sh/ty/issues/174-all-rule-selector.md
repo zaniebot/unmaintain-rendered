@@ -1,4 +1,4 @@
----
+```yaml
 number: 174
 title: "`ALL` rule selector"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-03-14T10:08:31Z
 updated_at: 2025-12-31T16:45:49Z
 url: https://github.com/astral-sh/ty/issues/174
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # `ALL` rule selector
 

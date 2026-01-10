@@ -1,4 +1,4 @@
----
+```yaml
 number: 2319
 title: "[BUG] Incorrect type inference with `dataclass_transform` and generics / decorators"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2026-01-04T07:00:23Z
 updated_at: 2026-01-04T23:14:05Z
 url: https://github.com/astral-sh/ty/issues/2319
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # [BUG] Incorrect type inference with `dataclass_transform` and generics / decorators
 

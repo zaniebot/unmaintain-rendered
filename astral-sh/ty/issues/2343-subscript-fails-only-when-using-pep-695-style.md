@@ -1,4 +1,4 @@
----
+```yaml
 number: 2343
 title: Subscript fails only when using PEP-695 style union type aliases
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2026-01-05T14:12:53Z
 updated_at: 2026-01-05T14:59:25Z
 url: https://github.com/astral-sh/ty/issues/2343
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Subscript fails only when using PEP-695 style union type aliases
 

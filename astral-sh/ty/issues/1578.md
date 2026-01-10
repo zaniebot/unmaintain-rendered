@@ -1,4 +1,4 @@
----
+```yaml
 number: 1578
 title: "Consider unsafely assuming in narrowing that multiple inheritance of user types and builtin containers won't happen"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-11-17T14:44:47Z
 updated_at: 2025-12-26T17:48:47Z
 url: https://github.com/astral-sh/ty/issues/1578
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Consider unsafely assuming in narrowing that multiple inheritance of user types and builtin containers won't happen
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 527
 title: Consider a strict mode for ty
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-05-27T23:53:22Z
 updated_at: 2025-12-31T16:47:20Z
 url: https://github.com/astral-sh/ty/issues/527
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Consider a strict mode for ty
 

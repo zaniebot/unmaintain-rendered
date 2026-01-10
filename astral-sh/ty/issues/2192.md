@@ -1,4 +1,4 @@
----
+```yaml
 number: 2192
 title: "support \"tagged union\" narrowing via enum literal tags"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-23T19:42:07Z
 updated_at: 2026-01-04T18:47:42Z
 url: https://github.com/astral-sh/ty/issues/2192
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # support "tagged union" narrowing via enum literal tags
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2077
 title: NewTypes with base float do not inherit operators correctly
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-18T16:00:45Z
 updated_at: 2026-01-06T17:32:24Z
 url: https://github.com/astral-sh/ty/issues/2077
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # NewTypes with base float do not inherit operators correctly
 

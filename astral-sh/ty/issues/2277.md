@@ -1,4 +1,4 @@
----
+```yaml
 number: 2277
 title: Emit diagnostic for any non-field (e.g. method or classmethod) defined on TypedDict
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-30T15:11:54Z
 updated_at: 2026-01-05T19:28:05Z
 url: https://github.com/astral-sh/ty/issues/2277
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Emit diagnostic for any non-field (e.g. method or classmethod) defined on TypedDict
 

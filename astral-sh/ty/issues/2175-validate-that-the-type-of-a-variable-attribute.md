@@ -1,4 +1,4 @@
----
+```yaml
 number: 2175
 title: Validate that the type of a variable/attribute/subscript remains consistent with its declared type following an augmented assignment operation
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-23T00:47:29Z
 updated_at: 2025-12-23T11:05:18Z
 url: https://github.com/astral-sh/ty/issues/2175
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Validate that the type of a variable/attribute/subscript remains consistent with its declared type following an augmented assignment operation
 

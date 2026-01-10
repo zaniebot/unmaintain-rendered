@@ -1,4 +1,4 @@
----
+```yaml
 number: 1721
 title: "\"Find all references\" Fails to find references to `UserDict` in homeassistant"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-02T14:00:38Z
 updated_at: 2026-01-06T10:46:51Z
 url: https://github.com/astral-sh/ty/issues/1721
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # "Find all references" Fails to find references to `UserDict` in homeassistant
 

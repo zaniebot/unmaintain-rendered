@@ -1,4 +1,4 @@
----
+```yaml
 number: 2342
 title: "Is there an option to infer the type of a variable without including a union with type `Unknown`?"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2026-01-05T14:12:03Z
 updated_at: 2026-01-05T14:15:00Z
 url: https://github.com/astral-sh/ty/issues/2342
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Is there an option to infer the type of a variable without including a union with type `Unknown`?
 

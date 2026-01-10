@@ -1,4 +1,4 @@
----
+```yaml
 number: 2169
 title: Add ability to hide all warnings
 type: issue
@@ -12,8 +12,8 @@ assignees: []
 created_at: 2025-12-22T18:54:10Z
 updated_at: 2025-12-31T15:44:56Z
 url: https://github.com/astral-sh/ty/issues/2169
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Add ability to hide all warnings
 

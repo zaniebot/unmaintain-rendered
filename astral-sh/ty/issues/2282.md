@@ -1,4 +1,4 @@
----
+```yaml
 number: 2282
 title: "Support dynamic type guards with `hasattr` in a loop"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-30T23:32:44Z
 updated_at: 2026-01-06T01:59:58Z
 url: https://github.com/astral-sh/ty/issues/2282
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Support dynamic type guards with `hasattr` in a loop
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2160
 title: "Detect invalid attempts to override `@property`s with mutable attributes"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-22T14:25:45Z
 updated_at: 2025-12-23T11:35:24Z
 url: https://github.com/astral-sh/ty/issues/2160
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Detect invalid attempts to override `@property`s with mutable attributes
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2201
 title: "Rename `non-subscriptable` error code to `not-subscriptable`"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-24T12:32:52Z
 updated_at: 2025-12-27T11:44:36Z
 url: https://github.com/astral-sh/ty/issues/2201
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Rename `non-subscriptable` error code to `not-subscriptable`
 

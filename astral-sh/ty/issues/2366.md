@@ -1,4 +1,4 @@
----
+```yaml
 number: 2366
 title: Add option to limit auto-import completions to direct dependencies
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2026-01-06T14:47:54Z
 updated_at: 2026-01-06T17:15:27Z
 url: https://github.com/astral-sh/ty/issues/2366
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Add option to limit auto-import completions to direct dependencies
 

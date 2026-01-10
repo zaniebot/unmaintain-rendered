@@ -1,4 +1,4 @@
----
+```yaml
 number: 2300
 title: Using the walrus operator together with callable causes TypeIs to be ignored.
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2026-01-02T05:31:13Z
 updated_at: 2026-01-06T01:18:04Z
 url: https://github.com/astral-sh/ty/issues/2300
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Using the walrus operator together with callable causes TypeIs to be ignored.
 

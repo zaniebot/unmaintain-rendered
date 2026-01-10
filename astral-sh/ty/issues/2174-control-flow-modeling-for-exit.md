@@ -1,4 +1,4 @@
----
+```yaml
 number: 2174
 title: "control flow modeling for `exit`"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-22T23:10:22Z
 updated_at: 2025-12-22T23:13:57Z
 url: https://github.com/astral-sh/ty/issues/2174
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # control flow modeling for `exit`
 

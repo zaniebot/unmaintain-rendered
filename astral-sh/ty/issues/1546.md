@@ -1,4 +1,4 @@
----
+```yaml
 number: 1546
 title: Solid variable renaming
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-11-14T09:23:37Z
 updated_at: 2025-12-31T16:38:42Z
 url: https://github.com/astral-sh/ty/issues/1546
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Solid variable renaming
 

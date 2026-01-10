@@ -1,4 +1,4 @@
----
+```yaml
 number: 2241
 title: dict.fromkeys introduces Unknown type
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-27T22:43:53Z
 updated_at: 2025-12-29T19:44:12Z
 url: https://github.com/astral-sh/ty/issues/2241
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # dict.fromkeys introduces Unknown type
 

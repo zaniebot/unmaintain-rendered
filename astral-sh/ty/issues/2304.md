@@ -1,4 +1,4 @@
----
+```yaml
 number: 2304
 title: Report condition checks with no overlap
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2026-01-02T17:30:44Z
 updated_at: 2026-01-06T01:17:07Z
 url: https://github.com/astral-sh/ty/issues/2304
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Report condition checks with no overlap
 

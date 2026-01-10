@@ -1,4 +1,4 @@
----
+```yaml
 number: 2403
 title: add dedicated support for pydantic
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2026-01-08T18:20:39Z
 updated_at: 2026-01-08T18:20:39Z
 url: https://github.com/astral-sh/ty/issues/2403
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # add dedicated support for pydantic
 

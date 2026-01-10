@@ -1,4 +1,4 @@
----
+```yaml
 number: 2363
 title: "Intersection of `~type` and `~Callable[..., Unknown]` fails `all_type_pairs_are_assignable_to_their_union`"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2026-01-06T12:13:22Z
 updated_at: 2026-01-07T17:18:41Z
 url: https://github.com/astral-sh/ty/issues/2363
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Intersection of `~type` and `~Callable[..., Unknown]` fails `all_type_pairs_are_assignable_to_their_union`
 

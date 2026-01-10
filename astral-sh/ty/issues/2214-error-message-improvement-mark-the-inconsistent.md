@@ -1,4 +1,4 @@
----
+```yaml
 number: 2214
 title: "error message improvement: mark the inconsistent part of the overriding signature"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-24T23:37:49Z
 updated_at: 2025-12-25T12:35:27Z
 url: https://github.com/astral-sh/ty/issues/2214
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # error message improvement: mark the inconsistent part of the overriding signature
 

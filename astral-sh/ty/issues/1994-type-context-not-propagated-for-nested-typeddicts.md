@@ -1,4 +1,4 @@
----
+```yaml
 number: 1994
 title: Type context not propagated for nested TypedDicts and lists
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-17T09:58:18Z
 updated_at: 2025-12-29T22:09:59Z
 url: https://github.com/astral-sh/ty/issues/1994
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Type context not propagated for nested TypedDicts and lists
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2060
 title: "Conversion of abc.Collection[str] to set() becomes set[Unknown] instead of set[str]"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-18T10:42:19Z
 updated_at: 2025-12-24T09:24:35Z
 url: https://github.com/astral-sh/ty/issues/2060
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Conversion of abc.Collection[str] to set() becomes set[Unknown] instead of set[str]
 

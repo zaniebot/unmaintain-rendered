@@ -1,4 +1,4 @@
----
+```yaml
 number: 1367
 title: "Within-revision LRU collection for queries returning values with lifetime `&'static`"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-10-16T11:33:15Z
 updated_at: 2025-12-31T15:33:52Z
 url: https://github.com/astral-sh/ty/issues/1367
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Within-revision LRU collection for queries returning values with lifetime `&'static`
 

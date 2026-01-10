@@ -1,4 +1,4 @@
----
+```yaml
 number: 1891
 title: Allow to disable a specific rule for a whole file
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-15T15:55:32Z
 updated_at: 2025-12-30T02:22:18Z
 url: https://github.com/astral-sh/ty/issues/1891
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Allow to disable a specific rule for a whole file
 

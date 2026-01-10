@@ -1,4 +1,4 @@
----
+```yaml
 number: 281
 title: "respect return type of `__new__`"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-05-08T18:04:30Z
 updated_at: 2025-12-31T16:39:02Z
 url: https://github.com/astral-sh/ty/issues/281
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # respect return type of `__new__`
 

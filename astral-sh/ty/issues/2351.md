@@ -1,4 +1,4 @@
----
+```yaml
 number: 2351
 title: How to correctly type generic await_if_awaitable
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2026-01-05T17:30:21Z
 updated_at: 2026-01-06T09:48:25Z
 url: https://github.com/astral-sh/ty/issues/2351
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # How to correctly type generic await_if_awaitable
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2398
 title: Please support imports from zip
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2026-01-08T15:59:52Z
 updated_at: 2026-01-08T16:09:29Z
 url: https://github.com/astral-sh/ty/issues/2398
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Please support imports from zip
 

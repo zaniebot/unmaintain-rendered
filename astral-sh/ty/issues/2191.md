@@ -1,4 +1,4 @@
----
+```yaml
 number: 2191
 title: "narrow tagged `TypedDict` unions with `not in`"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-23T19:34:34Z
 updated_at: 2026-01-03T13:12:59Z
 url: https://github.com/astral-sh/ty/issues/2191
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # narrow tagged `TypedDict` unions with `not in`
 

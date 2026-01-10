@@ -1,4 +1,4 @@
----
+```yaml
 number: 2178
 title: "ty: assert membership doesn't narrow `str` to `Literal` for `TypedDict` key (minimal repro)"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-23T02:16:35Z
 updated_at: 2025-12-23T02:35:25Z
 url: https://github.com/astral-sh/ty/issues/2178
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # ty: assert membership doesn't narrow `str` to `Literal` for `TypedDict` key (minimal repro)
 

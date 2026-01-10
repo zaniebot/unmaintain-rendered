@@ -1,4 +1,4 @@
----
+```yaml
 number: 2149
 title: Inconsistent semantic highlighting for imports in VS Code
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-20T03:46:08Z
 updated_at: 2025-12-24T17:25:31Z
 url: https://github.com/astral-sh/ty/issues/2149
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Inconsistent semantic highlighting for imports in VS Code
 

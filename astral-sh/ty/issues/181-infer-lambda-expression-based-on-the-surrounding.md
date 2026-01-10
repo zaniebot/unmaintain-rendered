@@ -1,4 +1,4 @@
----
+```yaml
 number: 181
 title: "Infer `lambda` expression based on the surrounding context"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-03-13T03:31:46Z
 updated_at: 2025-12-27T19:11:27Z
 url: https://github.com/astral-sh/ty/issues/181
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Infer `lambda` expression based on the surrounding context
 

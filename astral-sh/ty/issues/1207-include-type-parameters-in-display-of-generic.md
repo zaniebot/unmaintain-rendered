@@ -1,4 +1,4 @@
----
+```yaml
 number: 1207
 title: include type parameters in display of generic callables
 type: issue
@@ -12,8 +12,8 @@ assignees: []
 created_at: 2025-09-19T03:48:41Z
 updated_at: 2025-12-30T17:37:59Z
 url: https://github.com/astral-sh/ty/issues/1207
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # include type parameters in display of generic callables
 

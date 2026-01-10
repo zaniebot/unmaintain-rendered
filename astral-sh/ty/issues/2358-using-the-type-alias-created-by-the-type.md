@@ -1,4 +1,4 @@
----
+```yaml
 number: 2358
 title: "Using the type alias created by the type statement with `*Ts`, ty doesn't work properly, giving error"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2026-01-06T09:23:01Z
 updated_at: 2026-01-06T09:32:41Z
 url: https://github.com/astral-sh/ty/issues/2358
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Using the type alias created by the type statement with `*Ts`, ty doesn't work properly, giving error
 

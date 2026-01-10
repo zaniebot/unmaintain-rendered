@@ -1,4 +1,4 @@
----
+```yaml
 number: 2316
 title: python-ldap exceptions are not found
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2026-01-03T13:01:15Z
 updated_at: 2026-01-06T22:15:12Z
 url: https://github.com/astral-sh/ty/issues/2316
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # python-ldap exceptions are not found
 

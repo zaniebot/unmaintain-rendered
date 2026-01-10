@@ -1,4 +1,4 @@
----
+```yaml
 number: 2053
 title: Use Iterable type context when inferring types inside a literal tuple
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-18T07:56:54Z
 updated_at: 2026-01-08T19:12:46Z
 url: https://github.com/astral-sh/ty/issues/2053
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Use Iterable type context when inferring types inside a literal tuple
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 1755
 title: turn off diagnostics/typecheck diagnostics
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-04T15:21:18Z
 updated_at: 2026-01-05T21:44:31Z
 url: https://github.com/astral-sh/ty/issues/1755
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # turn off diagnostics/typecheck diagnostics
 

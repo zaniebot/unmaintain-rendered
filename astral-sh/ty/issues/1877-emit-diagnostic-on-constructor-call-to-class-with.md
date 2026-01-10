@@ -1,4 +1,4 @@
----
+```yaml
 number: 1877
 title: Emit diagnostic on constructor call to class with abstract methods
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-13T13:00:59Z
 updated_at: 2025-12-22T14:08:12Z
 url: https://github.com/astral-sh/ty/issues/1877
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Emit diagnostic on constructor call to class with abstract methods
 

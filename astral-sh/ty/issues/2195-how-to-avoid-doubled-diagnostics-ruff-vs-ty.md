@@ -1,4 +1,4 @@
----
+```yaml
 number: 2195
 title: How to avoid doubled diagnostics ruff vs. ty?
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-23T22:51:50Z
 updated_at: 2025-12-24T05:27:27Z
 url: https://github.com/astral-sh/ty/issues/2195
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # How to avoid doubled diagnostics ruff vs. ty?
 

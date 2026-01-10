@@ -1,4 +1,4 @@
----
+```yaml
 number: 1454
 title: "Incorrect narrowing of enums with custom `__eq__` methods in `match` statements"
 type: issue
@@ -13,8 +13,8 @@ assignees: []
 created_at: 2025-10-29T19:32:49Z
 updated_at: 2026-01-01T13:43:39Z
 url: https://github.com/astral-sh/ty/issues/1454
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Incorrect narrowing of enums with custom `__eq__` methods in `match` statements
 

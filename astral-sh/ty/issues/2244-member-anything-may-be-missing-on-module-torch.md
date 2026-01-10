@@ -1,4 +1,4 @@
----
+```yaml
 number: 2244
 title: "Member <anything> may be missing on module `torch.distributed`"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-28T02:37:45Z
 updated_at: 2025-12-29T17:15:36Z
 url: https://github.com/astral-sh/ty/issues/2244
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Member <anything> may be missing on module `torch.distributed`
 

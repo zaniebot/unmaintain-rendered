@@ -1,4 +1,4 @@
----
+```yaml
 number: 1799
 title: "`del x[k]` should be allowed iff `x` can `__delitem__`"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-07T20:26:45Z
 updated_at: 2025-12-24T03:34:22Z
 url: https://github.com/astral-sh/ty/issues/1799
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # `del x[k]` should be allowed iff `x` can `__delitem__`
 

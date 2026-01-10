@@ -1,4 +1,4 @@
----
+```yaml
 number: 2345
 title: ty is unable to infer the type of sqlalchemy hybrid properties
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2026-01-05T15:12:59Z
 updated_at: 2026-01-05T23:06:01Z
 url: https://github.com/astral-sh/ty/issues/2345
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # ty is unable to infer the type of sqlalchemy hybrid properties
 

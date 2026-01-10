@@ -1,4 +1,4 @@
----
+```yaml
 number: 2183
 title: Checking large Enum takes very long time
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-23T10:26:30Z
 updated_at: 2025-12-23T11:40:39Z
 url: https://github.com/astral-sh/ty/issues/2183
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Checking large Enum takes very long time
 

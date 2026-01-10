@@ -1,4 +1,4 @@
----
+```yaml
 number: 1003
 title: "Decide on \"enabled-by-default\" inlays"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-08-15T13:46:51Z
 updated_at: 2025-12-31T22:14:31Z
 url: https://github.com/astral-sh/ty/issues/1003
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Decide on "enabled-by-default" inlays
 

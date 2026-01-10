@@ -1,4 +1,4 @@
----
+```yaml
 number: 1835
 title: Consolidate handling of dataclass-params and dataclass-transformer-params
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-10T09:10:07Z
 updated_at: 2025-12-23T00:42:17Z
 url: https://github.com/astral-sh/ty/issues/1835
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Consolidate handling of dataclass-params and dataclass-transformer-params
 

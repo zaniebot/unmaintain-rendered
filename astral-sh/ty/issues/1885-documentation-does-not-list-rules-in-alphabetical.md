@@ -1,4 +1,4 @@
----
+```yaml
 number: 1885
 title: Documentation does not list rules in alphabetical order
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-14T16:09:26Z
 updated_at: 2025-12-19T19:11:07Z
 url: https://github.com/astral-sh/ty/issues/1885
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Documentation does not list rules in alphabetical order
 

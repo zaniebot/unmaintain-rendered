@@ -1,4 +1,4 @@
----
+```yaml
 number: 1426
 title: "Incorrect top materialization of `Callable` types"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-10-23T20:03:06Z
 updated_at: 2025-12-24T17:49:11Z
 url: https://github.com/astral-sh/ty/issues/1426
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Incorrect top materialization of `Callable` types
 

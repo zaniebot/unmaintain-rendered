@@ -1,4 +1,4 @@
----
+```yaml
 number: 2313
 title: Type check does not work on a class wrapper when used as a decorator
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2026-01-03T06:48:45Z
 updated_at: 2026-01-04T22:11:02Z
 url: https://github.com/astral-sh/ty/issues/2313
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Type check does not work on a class wrapper when used as a decorator
 

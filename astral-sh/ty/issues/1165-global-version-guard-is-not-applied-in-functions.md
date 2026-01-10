@@ -1,4 +1,4 @@
----
+```yaml
 number: 1165
 title: Global version guard is not applied in functions
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-09-10T16:13:53Z
 updated_at: 2026-01-08T18:34:43Z
 url: https://github.com/astral-sh/ty/issues/1165
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Global version guard is not applied in functions
 

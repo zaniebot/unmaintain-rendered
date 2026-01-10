@@ -1,4 +1,4 @@
----
+```yaml
 number: 2373
 title: "Unannotated properties *but* fully infered in __init__ are Unknown"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2026-01-06T22:28:26Z
 updated_at: 2026-01-07T15:19:17Z
 url: https://github.com/astral-sh/ty/issues/2373
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Unannotated properties *but* fully infered in __init__ are Unknown
 

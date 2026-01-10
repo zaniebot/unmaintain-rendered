@@ -1,4 +1,4 @@
----
+```yaml
 number: 2397
 title: "When a type variable has two upper bounds, ty can't deduce that they both satisfy a constraint"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2026-01-08T15:48:35Z
 updated_at: 2026-01-08T15:54:43Z
 url: https://github.com/astral-sh/ty/issues/2397
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # When a type variable has two upper bounds, ty can't deduce that they both satisfy a constraint
 

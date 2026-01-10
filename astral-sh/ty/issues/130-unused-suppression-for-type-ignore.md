@@ -1,4 +1,4 @@
----
+```yaml
 number: 130
 title: "unused suppression for `type: ignore`"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-04-10T16:39:45Z
 updated_at: 2025-12-31T15:21:54Z
 url: https://github.com/astral-sh/ty/issues/130
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # unused suppression for `type: ignore`
 

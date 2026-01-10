@@ -1,4 +1,4 @@
----
+```yaml
 number: 2209
 title: Inlay Hints Variable Types Not Respected in VS Code
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-24T20:32:41Z
 updated_at: 2025-12-29T16:54:03Z
 url: https://github.com/astral-sh/ty/issues/2209
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Inlay Hints Variable Types Not Respected in VS Code
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 1700
 title: "Infered generic type doesn't respect boundary"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-01T11:03:03Z
 updated_at: 2026-01-08T04:02:54Z
 url: https://github.com/astral-sh/ty/issues/1700
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Infered generic type doesn't respect boundary
 

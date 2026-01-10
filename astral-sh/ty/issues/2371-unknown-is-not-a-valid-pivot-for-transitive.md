@@ -1,4 +1,4 @@
----
+```yaml
 number: 2371
 title: "`Unknown` is not a valid pivot for transitive constraints in a constraint set"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2026-01-06T21:11:13Z
 updated_at: 2026-01-08T14:31:57Z
 url: https://github.com/astral-sh/ty/issues/2371
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # `Unknown` is not a valid pivot for transitive constraints in a constraint set
 

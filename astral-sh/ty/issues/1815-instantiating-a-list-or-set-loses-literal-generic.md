@@ -1,4 +1,4 @@
----
+```yaml
 number: 1815
 title: "Instantiating a `list` or `set` loses literal generic type information"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-09T00:22:17Z
 updated_at: 2025-12-20T01:57:02Z
 url: https://github.com/astral-sh/ty/issues/1815
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Instantiating a `list` or `set` loses literal generic type information
 

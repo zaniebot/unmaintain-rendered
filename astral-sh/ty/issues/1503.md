@@ -1,4 +1,4 @@
----
+```yaml
 number: 1503
 title: Method call on constrained typevar emits invalid-argument-type
 type: issue
@@ -12,8 +12,8 @@ assignees: []
 created_at: 2025-11-08T10:14:55Z
 updated_at: 2025-12-26T09:11:31Z
 url: https://github.com/astral-sh/ty/issues/1503
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Method call on constrained typevar emits invalid-argument-type
 

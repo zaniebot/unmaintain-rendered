@@ -1,4 +1,4 @@
----
+```yaml
 number: 1625
 title: Inlay hint insert follow ups
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-11-24T22:55:45Z
 updated_at: 2025-12-31T15:36:58Z
 url: https://github.com/astral-sh/ty/issues/1625
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Inlay hint insert follow ups
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2318
 title: Literal autocomplete
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2026-01-03T18:29:17Z
 updated_at: 2026-01-03T18:33:36Z
 url: https://github.com/astral-sh/ty/issues/2318
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Literal autocomplete
 

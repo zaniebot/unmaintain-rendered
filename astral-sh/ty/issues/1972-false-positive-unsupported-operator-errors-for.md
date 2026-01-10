@@ -1,4 +1,4 @@
----
+```yaml
 number: 1972
 title: "False-positive `unsupported-operator` errors for value-constrained type variable"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-17T02:21:09Z
 updated_at: 2026-01-08T16:05:44Z
 url: https://github.com/astral-sh/ty/issues/1972
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # False-positive `unsupported-operator` errors for value-constrained type variable
 

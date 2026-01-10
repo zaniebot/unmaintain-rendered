@@ -1,4 +1,4 @@
----
+```yaml
 number: 1652
 title: Publish diagnostics for all open files
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-11-27T08:51:27Z
 updated_at: 2026-01-02T01:49:36Z
 url: https://github.com/astral-sh/ty/issues/1652
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Publish diagnostics for all open files
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 102
 title: Display of overloaded definitions
 type: issue
@@ -12,8 +12,8 @@ assignees: []
 created_at: 2025-05-01T20:36:33Z
 updated_at: 2026-01-08T15:48:47Z
 url: https://github.com/astral-sh/ty/issues/102
-synced_at: 2026-01-10T01:51:13Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Display of overloaded definitions
 

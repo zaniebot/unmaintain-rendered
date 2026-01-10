@@ -1,4 +1,4 @@
----
+```yaml
 number: 2220
 title: "unknown options for workspace `file:///workspace` keeps popping up arbitrarily in VS Code"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-25T13:20:39Z
 updated_at: 2025-12-29T12:49:37Z
 url: https://github.com/astral-sh/ty/issues/2220
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # unknown options for workspace `file:///workspace` keeps popping up arbitrarily in VS Code
 

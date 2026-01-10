@@ -1,4 +1,4 @@
----
+```yaml
 number: 2346
 title: Stale Semantic Tokens After didClose/didOpen
 type: issue
@@ -12,8 +12,8 @@ assignees: []
 created_at: 2026-01-05T15:32:11Z
 updated_at: 2026-01-06T10:52:54Z
 url: https://github.com/astral-sh/ty/issues/2346
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Stale Semantic Tokens After didClose/didOpen
 

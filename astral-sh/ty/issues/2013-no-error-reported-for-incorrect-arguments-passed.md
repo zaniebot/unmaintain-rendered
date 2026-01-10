@@ -1,4 +1,4 @@
----
+```yaml
 number: 2013
 title: "No error reported for incorrect arguments passed to function generic over a `ParamSpec`"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-17T14:16:39Z
 updated_at: 2026-01-08T07:09:49Z
 url: https://github.com/astral-sh/ty/issues/2013
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # No error reported for incorrect arguments passed to function generic over a `ParamSpec`
 

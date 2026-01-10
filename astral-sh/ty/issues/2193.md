@@ -1,4 +1,4 @@
----
+```yaml
 number: 2193
 title: support externally patching methods on instances
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-23T21:04:18Z
 updated_at: 2025-12-24T13:04:42Z
 url: https://github.com/astral-sh/ty/issues/2193
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # support externally patching methods on instances
 

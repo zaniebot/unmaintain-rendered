@@ -1,4 +1,4 @@
----
+```yaml
 number: 2295
 title: Add inlay hint for generic type in generic constructor calls
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-31T22:11:49Z
 updated_at: 2026-01-06T00:26:10Z
 url: https://github.com/astral-sh/ty/issues/2295
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Add inlay hint for generic type in generic constructor calls
 

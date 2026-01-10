@@ -1,4 +1,4 @@
----
+```yaml
 number: 143
 title: Add proper support for class decorators
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-04-02T07:28:48Z
 updated_at: 2026-01-08T08:31:25Z
 url: https://github.com/astral-sh/ty/issues/143
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Add proper support for class decorators
 

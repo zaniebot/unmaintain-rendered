@@ -1,4 +1,4 @@
----
+```yaml
 number: 2274
 title: "os.environ.get() accepts `default` as keyword argument, but ty reports no-matching-overload"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-30T10:54:48Z
 updated_at: 2026-01-02T07:36:24Z
 url: https://github.com/astral-sh/ty/issues/2274
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # os.environ.get() accepts `default` as keyword argument, but ty reports no-matching-overload
 

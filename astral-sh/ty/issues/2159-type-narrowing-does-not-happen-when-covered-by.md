@@ -1,4 +1,4 @@
----
+```yaml
 number: 2159
 title: Type narrowing does not happen when covered by multiple branches
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-22T13:57:38Z
 updated_at: 2025-12-22T16:43:19Z
 url: https://github.com/astral-sh/ty/issues/2159
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Type narrowing does not happen when covered by multiple branches
 

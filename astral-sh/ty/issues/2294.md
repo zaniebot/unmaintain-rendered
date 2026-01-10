@@ -1,4 +1,4 @@
----
+```yaml
 number: 2294
 title: Type expression with string literal treated as the object it represents.
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-31T19:18:16Z
 updated_at: 2026-01-06T01:27:21Z
 url: https://github.com/astral-sh/ty/issues/2294
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Type expression with string literal treated as the object it represents.
 

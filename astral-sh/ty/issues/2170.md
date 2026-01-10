@@ -1,4 +1,4 @@
----
+```yaml
 number: 2170
 title: "Synthesize a precise signature for `NamedTuple` `_replace` methods"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-22T19:31:34Z
 updated_at: 2025-12-23T21:33:56Z
 url: https://github.com/astral-sh/ty/issues/2170
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Synthesize a precise signature for `NamedTuple` `_replace` methods
 

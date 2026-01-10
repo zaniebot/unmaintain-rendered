@@ -1,4 +1,4 @@
----
+```yaml
 number: 2081
 title: wrong invalid-argument-type errors for prefect task submit function
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-18T17:27:35Z
 updated_at: 2026-01-07T08:00:36Z
 url: https://github.com/astral-sh/ty/issues/2081
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # wrong invalid-argument-type errors for prefect task submit function
 

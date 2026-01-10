@@ -1,4 +1,4 @@
----
+```yaml
 number: 2312
 title: unsupported-bool-conversion should detect __bool__ methods that return NoReturn
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2026-01-02T23:52:41Z
 updated_at: 2026-01-04T21:33:42Z
 url: https://github.com/astral-sh/ty/issues/2312
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # unsupported-bool-conversion should detect __bool__ methods that return NoReturn
 

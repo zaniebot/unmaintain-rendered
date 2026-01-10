@@ -1,4 +1,4 @@
----
+```yaml
 number: 2070
 title: can’t create a type variable with a default on Python < 3.13 (false positive for invalid-legacy-type-variable)
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-18T13:20:37Z
 updated_at: 2025-12-23T05:13:06Z
 url: https://github.com/astral-sh/ty/issues/2070
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # can’t create a type variable with a default on Python < 3.13 (false positive for invalid-legacy-type-variable)
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 1422
 title: "Respect only `ty:ignore` and ignore `type:ignore`"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-10-23T16:07:08Z
 updated_at: 2025-12-23T07:36:52Z
 url: https://github.com/astral-sh/ty/issues/1422
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Respect only `ty:ignore` and ignore `type:ignore`
 

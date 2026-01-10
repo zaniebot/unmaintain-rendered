@@ -1,4 +1,4 @@
----
+```yaml
 number: 374
 title: Support custom builtins
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-05-14T02:32:45Z
 updated_at: 2025-12-23T13:48:16Z
 url: https://github.com/astral-sh/ty/issues/374
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Support custom builtins
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 1691
 title: Output file configuration option
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-11-30T23:26:28Z
 updated_at: 2025-12-29T12:57:28Z
 url: https://github.com/astral-sh/ty/issues/1691
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Output file configuration option
 

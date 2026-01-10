@@ -1,4 +1,4 @@
----
+```yaml
 number: 2141
 title: assuming self-reference between function and return identifiers
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-21T05:36:23Z
 updated_at: 2025-12-21T08:53:17Z
 url: https://github.com/astral-sh/ty/issues/2141
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # assuming self-reference between function and return identifiers
 

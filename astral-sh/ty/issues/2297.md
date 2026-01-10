@@ -1,4 +1,4 @@
----
+```yaml
 number: 2297
 title: "\"incorrect\" inlay hint on attribute assignment"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2026-01-01T19:16:36Z
 updated_at: 2026-01-05T08:19:13Z
 url: https://github.com/astral-sh/ty/issues/2297
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # "incorrect" inlay hint on attribute assignment
 

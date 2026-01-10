@@ -1,4 +1,4 @@
----
+```yaml
 number: 2285
 title: "Narrowing across `with` statements is unsound"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-31T03:19:39Z
 updated_at: 2025-12-31T11:03:13Z
 url: https://github.com/astral-sh/ty/issues/2285
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Narrowing across `with` statements is unsound
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2032
 title: "Feature: Support for setting virtual environment path in LSP settings"
 type: issue
@@ -12,8 +12,8 @@ assignees: []
 created_at: 2025-12-17T19:55:39Z
 updated_at: 2025-12-31T15:43:54Z
 url: https://github.com/astral-sh/ty/issues/2032
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Feature: Support for setting virtual environment path in LSP settings
 

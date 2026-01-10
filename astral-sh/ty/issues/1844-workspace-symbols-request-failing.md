@@ -1,4 +1,4 @@
----
+```yaml
 number: 1844
 title: workspace symbols request failing
 type: issue
@@ -12,8 +12,8 @@ assignees: []
 created_at: 2025-12-10T18:30:48Z
 updated_at: 2025-12-31T15:41:25Z
 url: https://github.com/astral-sh/ty/issues/1844
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # workspace symbols request failing
 

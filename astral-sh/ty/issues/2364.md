@@ -1,4 +1,4 @@
----
+```yaml
 number: 2364
 title: Typing for return value of type(name, bases, dict) could be improved
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2026-01-06T12:25:13Z
 updated_at: 2026-01-06T12:38:17Z
 url: https://github.com/astral-sh/ty/issues/2364
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Typing for return value of type(name, bases, dict) could be improved
 

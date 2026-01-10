@@ -1,4 +1,4 @@
----
+```yaml
 number: 2125
 title: Before filing an issue
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-20T00:31:18Z
 updated_at: 2025-12-23T11:22:12Z
 url: https://github.com/astral-sh/ty/issues/2125
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Before filing an issue
 

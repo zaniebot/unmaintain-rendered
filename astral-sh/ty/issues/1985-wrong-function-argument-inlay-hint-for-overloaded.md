@@ -1,4 +1,4 @@
----
+```yaml
 number: 1985
 title: Wrong function argument inlay hint for overloaded function
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-17T08:37:56Z
 updated_at: 2025-12-31T15:47:21Z
 url: https://github.com/astral-sh/ty/issues/1985
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Wrong function argument inlay hint for overloaded function
 

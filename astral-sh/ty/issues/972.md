@@ -1,4 +1,4 @@
----
+```yaml
 number: 972
 title: Support for dataclass_transform converters
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-08-12T09:20:09Z
 updated_at: 2026-01-08T18:31:06Z
 url: https://github.com/astral-sh/ty/issues/972
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Support for dataclass_transform converters
 

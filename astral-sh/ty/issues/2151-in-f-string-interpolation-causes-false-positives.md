@@ -1,4 +1,4 @@
----
+```yaml
 number: 2151
 title: "`=` in f-string interpolation causes false positives and negatives for `invalid-assignment`"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-22T00:25:19Z
 updated_at: 2025-12-23T01:21:29Z
 url: https://github.com/astral-sh/ty/issues/2151
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # `=` in f-string interpolation causes false positives and negatives for `invalid-assignment`
 

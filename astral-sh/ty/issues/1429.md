@@ -1,4 +1,4 @@
----
+```yaml
 number: 1429
 title: "Infers wrong type from numpy's `np.interp`"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-10-24T04:30:41Z
 updated_at: 2025-12-20T09:21:51Z
 url: https://github.com/astral-sh/ty/issues/1429
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Infers wrong type from numpy's `np.interp`
 

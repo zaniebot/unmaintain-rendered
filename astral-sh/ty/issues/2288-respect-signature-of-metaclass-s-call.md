@@ -1,4 +1,4 @@
----
+```yaml
 number: 2288
 title: "Respect signature of metaclass's `__call__`"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-31T06:48:36Z
 updated_at: 2026-01-08T18:12:16Z
 url: https://github.com/astral-sh/ty/issues/2288
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Respect signature of metaclass's `__call__`
 

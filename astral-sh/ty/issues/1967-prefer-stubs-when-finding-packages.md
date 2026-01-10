@@ -1,4 +1,4 @@
----
+```yaml
 number: 1967
 title: "Prefer *-stubs when finding packages"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-16T23:42:39Z
 updated_at: 2025-12-27T19:31:19Z
 url: https://github.com/astral-sh/ty/issues/1967
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Prefer *-stubs when finding packages
 

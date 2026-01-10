@@ -1,4 +1,4 @@
----
+```yaml
 number: 2380
 title: dict erroneously does not match a Protocol with get()
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2026-01-07T20:47:36Z
 updated_at: 2026-01-07T23:02:12Z
 url: https://github.com/astral-sh/ty/issues/2380
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # dict erroneously does not match a Protocol with get()
 

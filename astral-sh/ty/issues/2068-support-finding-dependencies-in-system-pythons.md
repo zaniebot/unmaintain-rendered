@@ -1,4 +1,4 @@
----
+```yaml
 number: 2068
 title: Support finding dependencies in system Pythons that ty is installed into
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-18T13:02:32Z
 updated_at: 2026-01-07T22:35:43Z
 url: https://github.com/astral-sh/ty/issues/2068
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Support finding dependencies in system Pythons that ty is installed into
 

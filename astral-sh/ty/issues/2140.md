@@ -1,4 +1,4 @@
----
+```yaml
 number: 2140
 title: "assume in narrowing that tuple subclasses don't override `__eq__`"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-21T04:34:55Z
 updated_at: 2025-12-22T22:07:58Z
 url: https://github.com/astral-sh/ty/issues/2140
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # assume in narrowing that tuple subclasses don't override `__eq__`
 

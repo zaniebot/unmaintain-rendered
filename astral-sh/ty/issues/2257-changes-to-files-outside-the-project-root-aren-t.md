@@ -1,4 +1,4 @@
----
+```yaml
 number: 2257
 title: "Changes to files outside the project root aren't picked up by the server"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-27T16:04:37Z
 updated_at: 2025-12-31T16:52:47Z
 url: https://github.com/astral-sh/ty/issues/2257
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Changes to files outside the project root aren't picked up by the server
 

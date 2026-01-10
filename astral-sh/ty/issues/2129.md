@@ -1,4 +1,4 @@
----
+```yaml
 number: 2129
 title: Make it easier for users to select rules based on strictness (profiles, rule categories)
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-20T11:31:03Z
 updated_at: 2025-12-31T16:56:59Z
 url: https://github.com/astral-sh/ty/issues/2129
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Make it easier for users to select rules based on strictness (profiles, rule categories)
 

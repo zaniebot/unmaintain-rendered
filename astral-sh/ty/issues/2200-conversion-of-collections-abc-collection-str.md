@@ -1,4 +1,4 @@
----
+```yaml
 number: 2200
 title: "Conversion of `collections.abc.Collection[str] & ~AlwaysFalsy` to `set()` results in `set[Unknown]` instead of `set[str]`"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-24T09:28:59Z
 updated_at: 2025-12-27T00:28:28Z
 url: https://github.com/astral-sh/ty/issues/2200
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Conversion of `collections.abc.Collection[str] & ~AlwaysFalsy` to `set()` results in `set[Unknown]` instead of `set[str]`
 

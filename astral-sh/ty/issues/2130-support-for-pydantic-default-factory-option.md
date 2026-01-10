@@ -1,4 +1,4 @@
----
+```yaml
 number: 2130
 title: "Support for Pydantic `default_factory` option inside `Annotated`"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-20T15:12:36Z
 updated_at: 2025-12-20T19:52:34Z
 url: https://github.com/astral-sh/ty/issues/2130
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Support for Pydantic `default_factory` option inside `Annotated`
 

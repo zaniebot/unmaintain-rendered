@@ -1,4 +1,4 @@
----
+```yaml
 number: 1621
 title: "Zed: No LSP features for unsaved buffers"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-11-24T17:12:20Z
 updated_at: 2025-12-31T15:36:05Z
 url: https://github.com/astral-sh/ty/issues/1621
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Zed: No LSP features for unsaved buffers
 

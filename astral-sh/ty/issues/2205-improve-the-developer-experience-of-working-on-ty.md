@@ -1,4 +1,4 @@
----
+```yaml
 number: 2205
 title: Improve the developer experience of working on ty
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-24T13:46:27Z
 updated_at: 2025-12-24T21:06:56Z
 url: https://github.com/astral-sh/ty/issues/2205
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Improve the developer experience of working on ty
 

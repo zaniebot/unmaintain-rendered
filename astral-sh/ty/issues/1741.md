@@ -1,4 +1,4 @@
----
+```yaml
 number: 1741
 title: Emit diagnostics for unsupported comparisons involving non-fixed-length tuples
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-03T12:20:21Z
 updated_at: 2026-01-06T17:09:42Z
 url: https://github.com/astral-sh/ty/issues/1741
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Emit diagnostics for unsupported comparisons involving non-fixed-length tuples
 

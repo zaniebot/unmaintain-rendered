@@ -1,4 +1,4 @@
----
+```yaml
 number: 2207
 title: "Type narrowing doesn't work with `Never` functions"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-24T16:25:08Z
 updated_at: 2025-12-24T16:31:24Z
 url: https://github.com/astral-sh/ty/issues/2207
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Type narrowing doesn't work with `Never` functions
 

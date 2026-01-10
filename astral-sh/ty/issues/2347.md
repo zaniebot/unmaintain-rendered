@@ -1,4 +1,4 @@
----
+```yaml
 number: 2347
 title: "`ty` missing `unresolved-attribute` on classes that inherit from `sqlalchemy.DeclarativeBase`"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2026-01-05T15:46:18Z
 updated_at: 2026-01-05T21:07:00Z
 url: https://github.com/astral-sh/ty/issues/2347
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # `ty` missing `unresolved-attribute` on classes that inherit from `sqlalchemy.DeclarativeBase`
 

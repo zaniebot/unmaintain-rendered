@@ -1,4 +1,4 @@
----
+```yaml
 number: 2211
 title: "Type narrowing not applied to `str` after equality check with string literal"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-24T21:02:25Z
 updated_at: 2025-12-24T21:12:46Z
 url: https://github.com/astral-sh/ty/issues/2211
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Type narrowing not applied to `str` after equality check with string literal
 

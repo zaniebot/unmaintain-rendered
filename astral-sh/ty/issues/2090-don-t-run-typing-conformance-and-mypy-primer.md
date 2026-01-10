@@ -1,4 +1,4 @@
----
+```yaml
 number: 2090
 title: "Don't run \"typing conformance\" and mypy_primer workflows on PRs that only touch the ty_ide crate"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-18T21:59:46Z
 updated_at: 2025-12-19T19:31:22Z
 url: https://github.com/astral-sh/ty/issues/2090
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Don't run "typing conformance" and mypy_primer workflows on PRs that only touch the ty_ide crate
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2384
 title: Support installation on CI (GitHub Actions)
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2026-01-07T22:21:41Z
 updated_at: 2026-01-07T22:48:54Z
 url: https://github.com/astral-sh/ty/issues/2384
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Support installation on CI (GitHub Actions)
 

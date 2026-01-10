@@ -1,4 +1,4 @@
----
+```yaml
 number: 1622
 title: "Zed: Outdated diagnostics when using `diagnosticMode: \"openFiles\"`"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-11-24T17:35:50Z
 updated_at: 2025-12-31T15:36:24Z
 url: https://github.com/astral-sh/ty/issues/1622
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Zed: Outdated diagnostics when using `diagnosticMode: "openFiles"`
 

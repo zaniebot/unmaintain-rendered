@@ -1,4 +1,4 @@
----
+```yaml
 number: 2153
 title: "Type checking: intersection of `dataclasses.field.{default, default_factory}` values is not detected properly"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-22T10:27:40Z
 updated_at: 2025-12-22T19:18:53Z
 url: https://github.com/astral-sh/ty/issues/2153
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Type checking: intersection of `dataclasses.field.{default, default_factory}` values is not detected properly
 

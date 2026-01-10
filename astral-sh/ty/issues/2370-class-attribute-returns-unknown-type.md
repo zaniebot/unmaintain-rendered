@@ -1,4 +1,4 @@
----
+```yaml
 number: 2370
 title: "Class attribute returns Unknown | type"
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2026-01-06T19:34:03Z
 updated_at: 2026-01-06T20:27:52Z
 url: https://github.com/astral-sh/ty/issues/2370
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Class attribute returns Unknown | type
 

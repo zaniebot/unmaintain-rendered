@@ -1,4 +1,4 @@
----
+```yaml
 number: 1564
 title: "`invalid-argument-type` on union with pre PEP 695 type parameter"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-11-14T19:32:49Z
 updated_at: 2025-12-27T19:28:53Z
 url: https://github.com/astral-sh/ty/issues/1564
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # `invalid-argument-type` on union with pre PEP 695 type parameter
 

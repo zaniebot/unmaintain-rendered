@@ -1,4 +1,4 @@
----
+```yaml
 number: 2339
 title: Losing type information in itertools.chain
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2026-01-05T11:24:06Z
 updated_at: 2026-01-05T11:31:55Z
 url: https://github.com/astral-sh/ty/issues/2339
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Losing type information in itertools.chain
 

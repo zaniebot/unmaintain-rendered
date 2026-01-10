@@ -1,4 +1,4 @@
----
+```yaml
 number: 1775
 title: "Add keyword-argument completions when inheriting from `TypedDict`"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-05T14:47:36Z
 updated_at: 2025-12-30T13:10:59Z
 url: https://github.com/astral-sh/ty/issues/1775
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Add keyword-argument completions when inheriting from `TypedDict`
 

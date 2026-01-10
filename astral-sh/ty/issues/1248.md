@@ -1,4 +1,4 @@
----
+```yaml
 number: 1248
 title: better gradual guarantee for un-annotated dict (and other container?) literals
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-09-24T16:10:32Z
 updated_at: 2026-01-08T18:37:30Z
 url: https://github.com/astral-sh/ty/issues/1248
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # better gradual guarantee for un-annotated dict (and other container?) literals
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2216
 title: False positive when appending a dict to a list of TypedDict unions
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-25T02:22:19Z
 updated_at: 2025-12-29T22:08:30Z
 url: https://github.com/astral-sh/ty/issues/2216
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # False positive when appending a dict to a list of TypedDict unions
 

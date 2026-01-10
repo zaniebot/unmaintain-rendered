@@ -1,4 +1,4 @@
----
+```yaml
 number: 2337
 title: Per module override ?
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2026-01-05T09:37:31Z
 updated_at: 2026-01-05T09:49:32Z
 url: https://github.com/astral-sh/ty/issues/2337
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Per module override ?
 

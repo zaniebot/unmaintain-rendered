@@ -1,4 +1,4 @@
----
+```yaml
 number: 2203
 title: Keyword-argument completions not shown in a decorator call without a class/function below it
 type: issue
@@ -12,8 +12,8 @@ assignees: []
 created_at: 2025-12-24T12:46:11Z
 updated_at: 2025-12-25T15:05:48Z
 url: https://github.com/astral-sh/ty/issues/2203
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Keyword-argument completions not shown in a decorator call without a class/function below it
 

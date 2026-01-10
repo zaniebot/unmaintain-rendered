@@ -1,4 +1,4 @@
----
+```yaml
 number: 691
 title: Support single-file scripts with PEP 723 metadata
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-06-22T21:47:05Z
 updated_at: 2026-01-06T00:52:07Z
 url: https://github.com/astral-sh/ty/issues/691
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Support single-file scripts with PEP 723 metadata
 

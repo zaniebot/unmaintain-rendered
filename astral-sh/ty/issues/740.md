@@ -1,4 +1,4 @@
----
+```yaml
 number: 740
 title: "Support `type()`'s functional syntax"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-07-01T13:31:02Z
 updated_at: 2025-12-27T04:16:00Z
 url: https://github.com/astral-sh/ty/issues/740
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Support `type()`'s functional syntax
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 886
 title: "\"Find references\" doesn't find overloads"
 type: issue
@@ -12,8 +12,8 @@ assignees: []
 created_at: 2025-07-25T01:52:19Z
 updated_at: 2026-01-06T10:47:38Z
 url: https://github.com/astral-sh/ty/issues/886
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # "Find references" doesn't find overloads
 

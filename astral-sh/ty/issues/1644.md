@@ -1,4 +1,4 @@
----
+```yaml
 number: 1644
 title: "Improve Liskov diagnostics to say *why* a method override is incompatible"
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-11-26T09:13:50Z
 updated_at: 2025-12-26T17:22:52Z
 url: https://github.com/astral-sh/ty/issues/1644
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Improve Liskov diagnostics to say *why* a method override is incompatible
 

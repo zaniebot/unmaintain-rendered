@@ -1,4 +1,4 @@
----
+```yaml
 number: 1886
 title: "Add `metaclass=` keyword-argument completion suggestion for all class definitions"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-14T17:03:43Z
 updated_at: 2025-12-30T13:10:58Z
 url: https://github.com/astral-sh/ty/issues/1886
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Add `metaclass=` keyword-argument completion suggestion for all class definitions
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2234
 title: "Using `ParamSpec`, tyshouldn't give error with a tuple but should give error with a list as a default value, following the docstring."
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-27T04:11:42Z
 updated_at: 2025-12-27T07:18:34Z
 url: https://github.com/astral-sh/ty/issues/2234
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Using `ParamSpec`, tyshouldn't give error with a tuple but should give error with a list as a default value, following the docstring.
 

@@ -1,4 +1,4 @@
----
+```yaml
 number: 2245
 title: Failed to load project for workspace
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-28T09:18:49Z
 updated_at: 2025-12-30T06:47:54Z
 url: https://github.com/astral-sh/ty/issues/2245
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Failed to load project for workspace
 

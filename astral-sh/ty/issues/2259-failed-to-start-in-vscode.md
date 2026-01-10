@@ -1,4 +1,4 @@
----
+```yaml
 number: 2259
 title: Failed to start in Vscode
 type: issue
@@ -9,8 +9,8 @@ assignees: []
 created_at: 2025-12-29T15:26:30Z
 updated_at: 2025-12-29T18:17:02Z
 url: https://github.com/astral-sh/ty/issues/2259
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Failed to start in Vscode
 

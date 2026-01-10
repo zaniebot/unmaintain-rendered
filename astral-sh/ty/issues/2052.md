@@ -1,4 +1,4 @@
----
+```yaml
 number: 2052
 title: "False-positive `inconsistent-mro` when subclassing `Generic` and a \"protocol-like ABC\""
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-18T06:21:46Z
 updated_at: 2025-12-23T05:17:35Z
 url: https://github.com/astral-sh/ty/issues/2052
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # False-positive `inconsistent-mro` when subclassing `Generic` and a "protocol-like ABC"
 

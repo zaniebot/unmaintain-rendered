@@ -1,4 +1,4 @@
----
+```yaml
 number: 521
 title: "Support truthiness type narrowing for checks involving `all(…)` / `any(…)`"
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-05-27T09:05:44Z
 updated_at: 2026-01-05T20:17:02Z
 url: https://github.com/astral-sh/ty/issues/521
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Support truthiness type narrowing for checks involving `all(…)` / `any(…)`
 

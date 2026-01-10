@@ -1,4 +1,4 @@
----
+```yaml
 number: 86
 title: Code completion
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-03-14T10:18:02Z
 updated_at: 2025-12-31T15:21:15Z
 url: https://github.com/astral-sh/ty/issues/86
-synced_at: 2026-01-10T01:51:13Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Code completion
 

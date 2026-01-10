@@ -1,4 +1,4 @@
----
+```yaml
 number: 1018
 title: dedicated support for Django
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-08-16T04:16:20Z
 updated_at: 2026-01-08T18:19:26Z
 url: https://github.com/astral-sh/ty/issues/1018
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # dedicated support for Django
 

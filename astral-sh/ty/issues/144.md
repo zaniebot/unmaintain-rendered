@@ -1,4 +1,4 @@
----
+```yaml
 number: 144
 title: Goto-type and hover-type for non-expression nodes (identifiers in statements)
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-04-01T10:55:10Z
 updated_at: 2025-12-31T16:37:53Z
 url: https://github.com/astral-sh/ty/issues/144
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Goto-type and hover-type for non-expression nodes (identifiers in statements)
 

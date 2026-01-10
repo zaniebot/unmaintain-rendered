@@ -1,4 +1,4 @@
----
+```yaml
 number: 2188
 title: Improve predictability of instance attribute type inference
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-23T17:12:55Z
 updated_at: 2025-12-27T06:50:11Z
 url: https://github.com/astral-sh/ty/issues/2188
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Improve predictability of instance attribute type inference
 

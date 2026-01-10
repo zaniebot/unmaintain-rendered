@@ -1,4 +1,4 @@
----
+```yaml
 number: 2208
 title: TypeVar not working with contextmanager
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-12-24T17:53:48Z
 updated_at: 2025-12-24T18:58:32Z
 url: https://github.com/astral-sh/ty/issues/2208
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # TypeVar not working with contextmanager
 

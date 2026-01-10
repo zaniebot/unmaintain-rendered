@@ -1,4 +1,4 @@
----
+```yaml
 number: 2249
 title: Go-to-definition jumps to typeshed stubs for datetime module import 
 type: issue
@@ -11,8 +11,8 @@ assignees: []
 created_at: 2025-12-28T16:17:16Z
 updated_at: 2025-12-31T15:20:26Z
 url: https://github.com/astral-sh/ty/issues/2249
-synced_at: 2026-01-10T01:51:14Z
----
+synced_at: 2026-01-10T01:56:41Z
+```
 
 # Go-to-definition jumps to typeshed stubs for datetime module import 
 

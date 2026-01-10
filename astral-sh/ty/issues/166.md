@@ -1,4 +1,4 @@
----
+```yaml
 number: 166
 title: Tracking issue for override-related checks (including the Liskov Substitution Principle)
 type: issue
@@ -10,8 +10,8 @@ assignees: []
 created_at: 2025-03-20T23:03:06Z
 updated_at: 2025-12-22T13:02:31Z
 url: https://github.com/astral-sh/ty/issues/166
-synced_at: 2026-01-10T01:52:52Z
----
+synced_at: 2026-01-10T01:56:40Z
+```
 
 # Tracking issue for override-related checks (including the Liskov Substitution Principle)
 
