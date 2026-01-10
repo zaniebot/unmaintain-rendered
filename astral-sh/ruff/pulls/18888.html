@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[formatter] Fix missing blank lines before decorated classes in .pyi files - astral-sh/ruff #18888</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[formatter] Fix missing blank lines before decorated classes in .pyi files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18888">#18888</a>
+        opened by <a href="https://github.com/krikera">@krikera</a>
+        on 2025-06-23 10:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/krikera">@krikera</a> on 2025-06-23 10:20</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes missing blank lines before decorated classes that follow functions in <code>.pyi</code> (stub) files.</p>
+<p><strong>Problem</strong>: When a decorated class follows a function definition in a stub file, the formatter was incorrectly omitting the blank line before the class, resulting in formatting like:</p>
+<pre><code class="language-python">def hello(): ...
+@decorator
+class A: ...
+</code></pre>
+<p><strong>Solution</strong>: Removed the <code>class_decorator_instead_of_empty_line</code> condition that was preventing blank lines from being inserted in this scenario. This condition was based on a Black quirk that was actually a bug and shouldn't be replicated.</p>
+<p>The fix is gated behind preview mode to ensure backward compatibility. When preview mode is enabled, decorated classes following functions now correctly get blank lines:</p>
+<pre><code class="language-python">def hello(): ...
+
+@decorator
+class A: ...
+</code></pre>
+<p>This brings Ruff's behavior in line with proper Python style guidelines and fixes the inconsistency where blank lines were added for other statement types but not decorated classes.</p>
+<h2>Test Plan</h2>
+<p><strong>Manual Testing:</strong></p>
+<ul>
+<li>Created test files with functions followed by decorated classes</li>
+<li>Verified fix works with <code>--preview</code> flag: <code>cargo run --bin ruff_python_formatter -- --emit stdout --preview test.pyi</code></li>
+<li>Verified backward compatibility without <code>--preview</code>: old behavior preserved</li>
+<li>Tested with various decorator types (<code>@lambda</code>, <code>@final</code>, multiple decorators)</li>
+</ul>
+<p><strong>Automated Testing:</strong></p>
+<ul>
+<li>Added new test case <code>decorated_class_after_function.pyi</code> with preview options</li>
+<li>Ran <code>cargo test -p ruff_python_formatter</code> - all tests pass</li>
+<li>Snapshot tests show correct formatting changes for both new and existing test cases</li>
+<li>Existing functionality unaffected (no regressions)</li>
+</ul>
+<p><strong>Preview Mode Integration:</strong></p>
+<ul>
+<li>Added <code>is_blank_line_before_decorated_class_in_stub_enabled()</code> preview function</li>
+<li>Verified condition is only applied when preview mode is disabled</li>
+<li>Confirmed proper gating follows established preview patterns</li>
+</ul>
+<p>Closes #18865</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @krikera on 2025-06-23 10:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2025-06-23 10:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2025-06-23 10:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-23 10:59</div>
+            <div class="timeline-body"><p>The code changes look good. Can you run <code>cargo fmt</code> and have a look through the existing tests that changed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[formatter] Fix missing blank lines before decorated classes in .pyi files (#18865)" to "[formatter] Fix missing blank lines before decorated classes in .pyi files" by @MichaReiser on 2025-06-24 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-06-24 14:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-24 14:15</div>
+            <div class="timeline-body"><p>Thank you, this is great</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-24 14:22</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+14 -0 lines in 5 files in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/python/typeshed">python/typeshed</a> (+14 -0 lines across 5 files)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/python/typeshed/blob/14337eba537140fc449509daf4f0d32b8d00fb8a/stdlib/_frozen_importlib_external.pyi#L36'>stdlib/_frozen_importlib_external.pyi~L36</a></p>
+<pre><code class="language-diff">     loader: LoaderProtocol | None = None,
+     submodule_search_locations: list[str] | None = ...,
+ ) -&gt; importlib.machinery.ModuleSpec | None: ...
++
+ @deprecated(
+     &quot;Deprecated as of Python 3.6: Use site configuration instead. &quot;
+     &quot;Future versions of Python may not enable this finder by default.&quot;
+</code></pre>
+<p><a href='https://github.com/python/typeshed/blob/14337eba537140fc449509daf4f0d32b8d00fb8a/stdlib/abc.pyi#L29'>stdlib/abc.pyi~L29</a></p>
+<pre><code class="language-diff">     def register(cls: ABCMeta, subclass: type[_T]) -&gt; type[_T]: ...
+ 
+ def abstractmethod(funcobj: _FuncT) -&gt; _FuncT: ...
++
+ @deprecated(&quot;Use 'classmethod' with 'abstractmethod' instead&quot;)
+ class abstractclassmethod(classmethod[_T, _P, _R_co]):
+     __isabstractmethod__: Literal[True]
+</code></pre>
+<p><a href='https://github.com/python/typeshed/blob/14337eba537140fc449509daf4f0d32b8d00fb8a/stdlib/os/__init__.pyi#L872'>stdlib/os/<strong>init</strong>.pyi~L872</a></p>
+<pre><code class="language-diff"> def listdir(path: BytesPath) -&gt; list[bytes]: ...
+ @overload
+ def listdir(path: int) -&gt; list[str]: ...
++
+ @final
+ class DirEntry(Generic[AnyStr]):
+     # This is what the scandir iterator yields
+</code></pre>
+<p><a href='https://github.com/python/typeshed/blob/14337eba537140fc449509daf4f0d32b8d00fb8a/stdlib/os/__init__.pyi#L945'>stdlib/os/<strong>init</strong>.pyi~L945</a></p>
+<pre><code class="language-diff"> def getppid() -&gt; int: ...
+ def strerror(code: int, /) -&gt; str: ...
+ def umask(mask: int, /) -&gt; int: ...
++
+ @final
+ class uname_result(structseq[str], tuple[str, str, str, str, str]):
+     if sys.version_info &gt;= (3, 10):
+</code></pre>
+<p><a href='https://github.com/python/typeshed/blob/14337eba537140fc449509daf4f0d32b8d00fb8a/stdlib/os/__init__.pyi#L1243'>stdlib/os/<strong>init</strong>.pyi~L1243</a></p>
+<pre><code class="language-diff">     src: StrOrBytesPath, dst: StrOrBytesPath, *, src_dir_fd: int | None = None, dst_dir_fd: int | None = None
+ ) -&gt; None: ...
+ def rmdir(path: StrOrBytesPath, *, dir_fd: int | None = None) -&gt; None: ...
++
+ @final
+ class _ScandirIterator(Generic[AnyStr]):
+     def __del__(self) -&gt; None: ...
+</code></pre>
+<p><a href='https://github.com/python/typeshed/blob/14337eba537140fc449509daf4f0d32b8d00fb8a/stdlib/os/__init__.pyi#L1403'>stdlib/os/<strong>init</strong>.pyi~L1403</a></p>
+<pre><code class="language-diff">     def spawnve(mode: int, path: StrOrBytesPath, argv: _ExecVArgs, env: _ExecEnv, /) -&gt; int: ...
+ 
+ def system(command: StrOrBytesPath) -&gt; int: ...
++
+ @final
+ class times_result(structseq[float], tuple[float, float, float, float, float]):
+     if sys.version_info &gt;= (3, 10):
+</code></pre>
+<p><a href='https://github.com/python/typeshed/blob/14337eba537140fc449509daf4f0d32b8d00fb8a/stdlib/typing.pyi#L150'>stdlib/typing.pyi~L150</a></p>
+<pre><code class="language-diff"> class _Final: ...
+ 
+ def final(f: _T) -&gt; _T: ...
++
+ @final
+ class TypeVar:
+     @property
+</code></pre>
+<p><a href='https://github.com/python/typeshed/blob/14337eba537140fc449509daf4f0d32b8d00fb8a/stdlib/typing.pyi#L458'>stdlib/typing.pyi~L458</a></p>
+<pre><code class="language-diff"> # Abstract base classes.
+ 
+ def runtime_checkable(cls: _TC) -&gt; _TC: ...
++
+ @runtime_checkable
+ class SupportsInt(Protocol, metaclass=ABCMeta):
+     @abstractmethod
+</code></pre>
+<p><a href='https://github.com/python/typeshed/blob/14337eba537140fc449509daf4f0d32b8d00fb8a/stubs/gdb/gdb/__init__.pyi#L142'>stubs/gdb/gdb/<strong>init</strong>.pyi~L142</a></p>
+<pre><code class="language-diff"> # Types
+ 
+ def lookup_type(name: str, block: Block = ...) -&gt; Type: ...
++
+ @final
+ class Type(Mapping[str, Field]):
+     alignof: int
+</code></pre>
+<p><a href='https://github.com/python/typeshed/blob/14337eba537140fc449509daf4f0d32b8d00fb8a/stubs/gdb/gdb/__init__.pyi#L333'>stubs/gdb/gdb/<strong>init</strong>.pyi~L333</a></p>
+<pre><code class="language-diff"> class Thread(threading.Thread): ...
+ 
+ def selected_thread() -&gt; InferiorThread: ...
++
+ @final
+ class InferiorThread:
+     name: str | None
+</code></pre>
+<p><a href='https://github.com/python/typeshed/blob/14337eba537140fc449509daf4f0d32b8d00fb8a/stubs/gdb/gdb/__init__.pyi#L466'>stubs/gdb/gdb/<strong>init</strong>.pyi~L466</a></p>
+<pre><code class="language-diff"> 
+ def current_progspace() -&gt; Progspace | None: ...
+ def progspaces() -&gt; Sequence[Progspace]: ...
++
+ @final
+ class Progspace:
+     executable_filename: str | None
+</code></pre>
+<p><a href='https://github.com/python/typeshed/blob/14337eba537140fc449509daf4f0d32b8d00fb8a/stubs/gdb/gdb/__init__.pyi#L489'>stubs/gdb/gdb/<strong>init</strong>.pyi~L489</a></p>
+<pre><code class="language-diff"> def current_objfile() -&gt; Objfile | None: ...
+ def objfiles() -&gt; list[Objfile]: ...
+ def lookup_objfile(name: str, by_build_id: bool = ...) -&gt; Objfile | None: ...
++
+ @final
+ class Objfile:
+     filename: str | None
+</code></pre>
+<p><a href='https://github.com/python/typeshed/blob/14337eba537140fc449509daf4f0d32b8d00fb8a/stubs/gdb/gdb/__init__.pyi#L554'>stubs/gdb/gdb/<strong>init</strong>.pyi~L554</a></p>
+<pre><code class="language-diff"> # Blocks
+ 
+ def block_for_pc(pc: int) -&gt; Block | None: ...
++
+ @final
+ class Block:
+     start: int
+</code></pre>
+<p><a href='https://github.com/python/typeshed/blob/14337eba537140fc449509daf4f0d32b8d00fb8a/stubs/gdb/gdb/__init__.pyi#L580'>stubs/gdb/gdb/<strong>init</strong>.pyi~L580</a></p>
+<pre><code class="language-diff"> def lookup_global_symbol(name: str, domain: int = ...) -&gt; Symbol | None: ...
+ def lookup_static_symbol(name: str, domain: int = ...) -&gt; Symbol | None: ...
+ def lookup_static_symbols(name: str, domain: int = ...) -&gt; list[Symbol]: ...
++
+ @final
+ class Symbol:
+     type: Type | None
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-06-24 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-24 14:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:36 UTC
+    </footer>
+</body>
+</html>

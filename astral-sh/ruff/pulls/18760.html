@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Rename `src.root` setting to `environment.root` - astral-sh/ruff #18760</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Rename <code>src.root</code> setting to <code>environment.root</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18760">#18760</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-06-18 16:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-18 16:17</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Renames the <code>src.root</code> setting to <code>environment.root</code> because it doesn't configure what files to check, it configures the search paths.</p>
+<p>I'm open to better names. I think <code>environment.root</code> works but I don't love it.</p>
+<p>I also noticed that there's some overlap between <code>environment.root</code> and <code>src.include</code>. E.g. if you set <code>include = [&quot;src&quot;]</code>, then you probably also want to set <code>environment.root = &quot;src&quot;</code>.
+Although I think it's more common that people exclude certain directories rather than only including <code>src</code> or <code>test</code>.</p>
+<p>I kept the old setting around for now and added a deprecation warning. If both <code>src.root</code> and <code>environment.root</code> are set, <code>environment.root</code> wins.</p>
+<h2>Test Plan</h2>
+<p>Added tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @MichaReiser on 2025-06-18 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-06-18 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-06-18 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-06-18 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-06-18 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-06-18 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-18 16:22</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">psycopg (https://github.com/psycopg/psycopg)
++ warning[deprecated-setting] The `src.root` setting is deprecated. Use `environment.root` instead.
+- Found 905 diagnostics
++ Found 906 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-18 16:29</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-19 21:01</div>
+            <div class="timeline-body"><blockquote>
+<h2><code>mypy_primer</code> results</h2>
+<p>Changes were detected when running on open source projects</p>
+<pre><code class="language-diff">psycopg (https://github.com/psycopg/psycopg)
++ warning[deprecated-setting] The `src.root` setting is deprecated. Use `environment.root` instead.
+- Found 905 diagnostics
++ Found 906 diagnostics
+</code></pre>
+</blockquote>
+<p>looks like we'll need to update the mypy_primer config for psycopg (and maybe some others too? Haven't checked): https://github.com/hauntsaninja/mypy_primer/blob/7c847cc51ed164d98c0a201539d61c974d418643/mypy_primer/projects.py#L1215</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-19 21:02</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm open to better names. I think <code>environment.root</code> works but I don't love it.</p>
+</blockquote>
+<p><code>environment.first_party_root</code> maybe? No strong opinion though :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_project/src/metadata/options.rs</code>:284 on 2025-06-19 21:03</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    &quot;The `src.root` setting was ignored in favor of the `environment.root` setting&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-06-19 21:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-24 11:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_project/src/metadata/options.rs</code>:274 on 2025-06-24 11:37</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                .and_then(|path| system_path_to_file(db.upcast(), path).ok())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-06-24 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-06-24 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-24 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-24 12:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:35 UTC
+    </footer>
+</body>
+</html>

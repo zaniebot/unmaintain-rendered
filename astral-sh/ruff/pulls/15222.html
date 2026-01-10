@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-type-checking`] Add a fix for `runtime-string-union` (`TC010`) - astral-sh/ruff #15222</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-type-checking</code>] Add a fix for <code>runtime-string-union</code> (<code>TC010</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15222">#15222</a>
+        opened by <a href="https://github.com/Daverball">@Daverball</a>
+        on 2025-01-02 15:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Daverball">@Daverball</a> on 2025-01-02 15:07</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This adds a fix for <code>TC010</code> which removes quotes whenever they can be removed safely and otherwise extends the quotes to the entire union.</p>
+<p>This also disables <code>TC010</code> explicitly in stubs, rather than rely on the execution context, which can still be runtime in stub files for a small set of type expressions.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-01-02 15:10</div>
+            <div class="timeline-body"><p>As a side note: I'm not quite sure why some of these fixes are marked as unsafe, even though the union expression doesn't overlap a comment. Do we perhaps have a off-by-one error here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-02 15:14</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2025-01-08 13:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/runtime_string_union.rs</code>:280 on 2025-01-08 13:59</div>
+            <div class="timeline-body"><p>While there is some code duplication between this and <code>quotes_are_unremovable</code>, this version is simplified for lookups from a runtime context and needs to use <code>lookup_symbol</code> instead of <code>resolve_name</code> since the forward reference has not been traversed yet by the checker.</p>
+<p>So I'm torn about whether to merge this with <code>quotes_are_unremovable</code> into a common function in <code>helpers.rs</code> and leveraging an enum with two variants to determine whether we can use <code>resolve_name</code> or need to use <code>lookup_symbol</code> instead. Alternatively we could try passing in a closure. But both approaches seem kind of messy to me.</p>
+<p>We could also say we're fine with the additional overhead of <code>lookup_symbol</code> over <code>resolve_name</code> and just always use that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2025-01-14 12:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/runtime_string_union.rs</code>:183 on 2025-01-14 12:59</div>
+            <div class="timeline-body"><p>I'm not stoked about having to do this and not taking advantage of the cache on the checker, but I don't see a good way to avoid this without moving analysis further down the pipeline when traversing the parsed forward reference and checking for a union in the parent expression.</p>
+<p>The only problem with that is that we would potentially generate the same fix for neighboring violations, without them being explicitly grouped together, but maybe we can get around that by setting the fix's parent to the location of the expression we're extending the quotes to.</p>
+<p>The other issue with moving the analysis to a different stage is that we're potentially destabilizing a stable rule in doing so and potentially emitting incorrect violations in nested forward references like <code>A | &quot;B | 'C'&quot;</code>, unless we add additional semantic state so we can detect if we're inside a nested forward reference.</p>
+<p>That being said, it still might be the correct decision, in order to reduce some of the complexity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2025-01-14 13:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/runtime_string_union.rs</code>:183 on 2025-01-14 13:03</div>
+            <div class="timeline-body"><p>If we go with changing where the analysis happens, we at least have a straightforward way to keep the old implementation while the new one is in preview. Each version of the function can just check whether preview is enabled or not.</p>
+<p>We may want to only enable the fix in preview anyways, regardless of how we choose to implement this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @Daverball on 2025-01-14 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-01-14 13:15</div>
+            <div class="timeline-body"><p>@MichaReiser @AlexWaygood I'm taking this out of draft. Depending on your responses to my review comments this may either only need small changes or larger changes where experimenting in a separate PR would make more sense, so we can compare the two approaches.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2025-01-14 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-15 13:39</div>
+            <div class="timeline-body"><p>Thanks @Daverball. This PR is on my to-do list, but it might be some time before I get to it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:34 UTC
+    </footer>
+</body>
+</html>

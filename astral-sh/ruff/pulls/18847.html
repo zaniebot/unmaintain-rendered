@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Improve protocol member type checking and relation handling - astral-sh/ruff #18847</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Improve protocol member type checking and relation handling</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18847">#18847</a>
+        opened by <a href="https://github.com/mtshiba">@mtshiba</a>
+        on 2025-06-21 03:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-06-21 03:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds handling for checking the types of protocol members to <code>Type::satisfies_protocol</code> and <code>Type::is_disjoint_from</code>.
+It only adds checks for simple members, not methods or properties for now.</p>
+<p>The reason for adding this change is that <code>Protocol</code> member checks are required to implement advanced attribute narrowing (see https://github.com/astral-sh/ty/issues/643). I understand that there are some issues with the current <code>Protocol</code> support that need to be resolved, and if adding this PR would get in the way of solving those issues, I would like to wait until those issues are resolved.</p>
+<h2>Test Plan</h2>
+<p><code>Protocol</code> tests are added.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-21 04:00</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">jinja (https://github.com/pallets/jinja)
+- TOTAL MEMORY USAGE: ~106MB
++ TOTAL MEMORY USAGE: ~97MB
+
+werkzeug (https://github.com/pallets/werkzeug)
+- error[non-subscriptable] src/werkzeug/utils.py:91:13: Cannot subscript object of type `object` with no `__getitem__` method
++ error[non-subscriptable] src/werkzeug/utils.py:91:13: Cannot subscript object of type `property` with no `__getitem__` method
+- error[non-subscriptable] src/werkzeug/utils.py:118:17: Cannot subscript object of type `object` with no `__getitem__` method
++ error[non-subscriptable] src/werkzeug/utils.py:118:17: Cannot subscript object of type `property` with no `__getitem__` method
+
+black (https://github.com/psf/black)
++ warning[possibly-unbound-attribute] src/blackd/__init__.py:104:12: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] src/blackd/__init__.py:110:12: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ error[invalid-argument-type] src/blackd/__init__.py:113:31: Argument to function `parse_mode` is incorrect: Expected `MultiMapping[str]`, found `Unknown | under_cached_property[Unknown]`
++ warning[possibly-unbound-attribute] src/blackd/__init__.py:116:27: Attribute `read` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] src/blackd/__init__.py:145:26: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ error[unsupported-operator] src/blackd/middlewares.py:15:39: Operator `in` is not supported for types `str` and `under_cached_property[Unknown]`, in comparing `Literal[&quot;Access-Control-Request-Method&quot;]` with `Unknown | under_cached_property[Unknown]`
++ warning[possibly-unbound-attribute] src/blackd/middlewares.py:21:18: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
+- Found 66 diagnostics
++ Found 73 diagnostics
+
+trio (https://github.com/python-trio/trio)
++ error[invalid-assignment] src/trio/_util.py:221:17: Invalid assignment to data descriptor attribute `__name__` on type `&lt;Protocol with members '__name__'&gt;` with custom `__set__` method
++ error[invalid-assignment] src/trio/_util.py:223:21: Object of type `str` is not assignable to attribute `__qualname__` on type `&lt;Protocol with members '__name__'&gt; &amp; &lt;Protocol with members '__qualname__'&gt;`
+- Found 888 diagnostics
++ Found 890 diagnostics
+
+rich (https://github.com/Textualize/rich)
++ error[invalid-argument-type] rich/layout.py:113:46: Argument to function `ratio_resolve` is incorrect: Expected `Sequence[Edge]`, found `Sequence[Layout]`
++ error[invalid-argument-type] rich/layout.py:133:48: Argument to function `ratio_resolve` is incorrect: Expected `Sequence[Edge]`, found `Sequence[Layout]`
+- Found 327 diagnostics
++ Found 329 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- error[invalid-return-type] src/hydra_zen/wrapper/_implementations.py:932:24: Return type does not match returned value: expected `DataClass_`, found `(((...) -&gt; Any) &amp; type &amp; ~type[HydraConf]) | (DataClass_ &amp; type &amp; ~type[HydraConf])`
++ error[invalid-return-type] src/hydra_zen/wrapper/_implementations.py:932:24: Return type does not match returned value: expected `DataClass_ | ListConfig | DictConfig`, found `(((...) -&gt; Any) &amp; type &amp; ~type[HydraConf]) | (DataClass_ &amp; type &amp; ~type[HydraConf]) | (ListConfig &amp; type &amp; ~type[HydraConf]) | (DictConfig &amp; type &amp; ~type[HydraConf])`
+- error[invalid-return-type] src/hydra_zen/wrapper/_implementations.py:941:16: Return type does not match returned value: expected `DataClass_`, found `(((...) -&gt; Any) &amp; ~type) | (DataClass_ &amp; ~type) | list[Any] | dict[Any, Any]`
++ error[invalid-return-type] src/hydra_zen/wrapper/_implementations.py:941:16: Return type does not match returned value: expected `DataClass_ | ListConfig | DictConfig`, found `(((...) -&gt; Any) &amp; ~type) | (DataClass_ &amp; ~type) | list[Any] | dict[Any, Any] | (ListConfig &amp; ~type) | (DictConfig &amp; ~type)`
+- error[invalid-parameter-default] src/hydra_zen/wrapper/_implementations.py:1479:9: Default value of type `def default_to_config(target: ((...) -&gt; Any) | DataClass_ | list[Any] | dict[Any, Any], CustomBuildsFn: @Todo(unsupported type[X] special form) = &lt;class 'DefaultBuilds'&gt;, **kw: Any) -&gt; DataClass_` is not assignable to annotated parameter type `(F, /) -&gt; @Todo(Support for `typing.TypeAlias`)`
++ error[invalid-parameter-default] src/hydra_zen/wrapper/_implementations.py:1479:9: Default value of type `def default_to_config(target: ((...) -&gt; Any) | DataClass_ | list[Any] | dict[Any, Any] | ListConfig | DictConfig, CustomBuildsFn: @Todo(unsupported type[X] special form) = &lt;class 'DefaultBuilds'&gt;, **kw: Any) -&gt; DataClass_ | ListConfig | DictConfig` is not assignable to annotated parameter type `(F, /) -&gt; @Todo(Support for `typing.TypeAlias`)`
+- warning[unused-ignore-comment] tests/annotations/declarations.py:462:23: Unused blanket `type: ignore` directive
++ error[invalid-assignment] tests/annotations/declarations.py:461:5: Object of type `partial[Unknown]` is not assignable to `Partial[int]`
+- warning[unused-ignore-comment] tests/annotations/declarations.py:473:42: Unused blanket `type: ignore` directive
++ error[invalid-assignment] tests/annotations/declarations.py:471:5: Object of type `partial[Unknown]` is not assignable to `Partial[int]`
++ error[invalid-assignment] tests/annotations/declarations.py:472:5: Object of type `partial[Unknown]` is not assignable to `Partial[bool]`
+- Found 597 diagnostics
++ Found 598 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
++ error[invalid-argument-type] strawberry/cli/commands/export_schema.py:32:32: Argument to function `print_schema` is incorrect: Expected `BaseSchema`, found `Schema`
++ error[invalid-argument-type] strawberry/cli/debug_server.py:25:33: Argument to bound method `__init__` is incorrect: Expected `BaseSchema`, found `Schema`
++ error[invalid-argument-type] strawberry/schema_codegen/__init__.py:199:34: Argument to function `_get_directives` is incorrect: Expected `HasDirectives`, found `FieldDefinitionNode | InputValueDefinitionNode`
++ error[invalid-argument-type] strawberry/schema_codegen/__init__.py:387:34: Argument to function `_get_directives` is incorrect: Expected `HasDirectives`, found `ObjectTypeDefinitionNode | ObjectTypeExtensionNode | InterfaceTypeDefinitionNode | InputObjectTypeDefinitionNode`
+- Found 362 diagnostics
++ Found 366 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
++ error[invalid-assignment] pymongo/ssl_support.py:100:13: Object of type `bool` is not assignable to attribute `check_ocsp_endpoint` on type `SSLContext | (SSLContext &amp; &lt;Protocol with members 'check_ocsp_endpoint'&gt;)`
+- Found 455 diagnostics
++ Found 456 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
+- TOTAL MEMORY USAGE: ~129MB
++ TOTAL MEMORY USAGE: ~117MB
+-     memo fields = ~106MB
++     memo fields = ~97MB
+
+aiohttp-devtools (https://github.com/aio-libs/aiohttp-devtools)
++ warning[possibly-unbound-attribute] aiohttp_devtools/runserver/log_handlers.py:35:75: Attribute `startswith` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] aiohttp_devtools/runserver/log_handlers.py:35:99: Attribute `endswith` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ error[no-matching-overload] aiohttp_devtools/runserver/log_handlers.py:60:32: No overload of bound method `__init__` matches arguments
++ warning[possibly-unbound-attribute] aiohttp_devtools/runserver/serve.py:76:20: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] aiohttp_devtools/runserver/serve.py:84:24: Attribute `startswith` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ error[non-subscriptable] aiohttp_devtools/runserver/serve.py:365:35: Cannot subscript object of type `under_cached_property[Unknown]` with no `__getitem__` method
++ error[non-subscriptable] aiohttp_devtools/runserver/serve.py:375:17: Cannot subscript object of type `under_cached_property[Unknown]` with no `__getitem__` method
++ error[non-subscriptable] aiohttp_devtools/runserver/serve.py:381:25: Cannot subscript object of type `under_cached_property[Unknown]` with no `__getitem__` method
++ error[non-subscriptable] aiohttp_devtools/runserver/serve.py:442:17: Cannot subscript object of type `under_cached_property[Unknown]` with no `__getitem__` method
+- Found 50 diagnostics
++ Found 59 diagnostics
+
+vision (https://github.com/pytorch/vision)
+-     memo fields = ~304MB
++     memo fields = ~276MB
+
+paasta (https://github.com/yelp/paasta)
+-     memo fields = ~156MB
++     memo fields = ~171MB
+
+colour (https://github.com/colour-science/colour)
++ error[invalid-assignment] colour/utilities/array.py:892:13: Object of type `@Todo(unsupported type[X] special form)` is not assignable to attribute `DTYPE_INT_DEFAULT` on type `ModuleType &amp; &lt;Protocol with members 'DTYPE_INT_DEFAULT'&gt;`
++ error[invalid-assignment] colour/utilities/array.py:942:13: Object of type `@Todo(unsupported type[X] special form)` is not assignable to attribute `DTYPE_FLOAT_DEFAULT` on type `ModuleType &amp; &lt;Protocol with members 'DTYPE_FLOAT_DEFAULT'&gt;`
+- Found 498 diagnostics
++ Found 500 diagnostics
+
+altair (https://github.com/vega/altair)
+- error[invalid-argument-type] altair/utils/data.py:362:35: Argument to function `sanitize_geo_interface` is incorrect: Expected `MutableMapping[Any, Any]`, found `Series[Unknown] | @Todo(map_with_boundness: intersections with negative contributions)`
+- Found 1277 diagnostics
++ Found 1276 diagnostics
+
+freqtrade (https://github.com/freqtrade/freqtrade)
+-     memo fields = ~304MB
++     memo fields = ~276MB
+
+discord.py (https://github.com/Rapptz/discord.py)
++ error[invalid-argument-type] discord/asset.py:174:39: Argument to bound method `__init__` is incorrect: Expected `str | None`, found `str | None | Any | under_cached_property[Unknown]`
++ error[no-matching-overload] discord/asset.py:419:19: No overload of function `splitext` matches arguments
++ error[no-matching-overload] discord/asset.py:504:19: No overload of function `splitext` matches arguments
+- warning[unused-ignore-comment] discord/embeds.py:376:58: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] discord/embeds.py:432:62: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] discord/embeds.py:475:66: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] discord/embeds.py:518:62: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] discord/embeds.py:529:60: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] discord/embeds.py:540:58: Unused blanket `type: ignore` directive
++ error[non-subscriptable] discord/http.py:112:12: Cannot subscript object of type `under_cached_property[Unknown]` with no `__getitem__` method
++ warning[possibly-unbound-attribute] discord/http.py:392:26: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] discord/http.py:395:38: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] discord/http.py:397:34: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] discord/http.py:400:23: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ error[non-subscriptable] discord/http.py:404:59: Cannot subscript object of type `under_cached_property[Unknown]` with no `__getitem__` method
++ error[non-subscriptable] discord/utils.py:893:20: Cannot subscript object of type `under_cached_property[Unknown]` with no `__getitem__` method
++ warning[possibly-unbound-attribute] discord/utils.py:894:24: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
+- Found 549 diagnostics
++ Found 554 diagnostics
+
+aiohttp (https://github.com/aio-libs/aiohttp)
++ warning[possibly-unbound-attribute] aiohttp/client_middleware_digest_auth.py:397:23: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] aiohttp/client_middleware_digest_auth.py:426:18: Attribute `origin` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ error[invalid-argument-type] aiohttp/client_reqrep.py:961:43: Argument to function `__new__` is incorrect: Expected `str`, found `(Unknown &amp; ~AlwaysFalsy) | (under_cached_property[Unknown] &amp; ~AlwaysFalsy) | Literal[&quot;&quot;]`
++ error[invalid-argument-type] aiohttp/client_reqrep.py:961:59: Argument to function `__new__` is incorrect: Expected `str`, found `(Unknown &amp; ~AlwaysFalsy) | (under_cached_property[Unknown] &amp; ~AlwaysFalsy) | Literal[&quot;&quot;]`
++ warning[possibly-unbound-attribute] aiohttp/connector.py:1393:12: Attribute `endswith` on type `(Unknown &amp; ~None) | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] aiohttp/connector.py:1394:20: Attribute `rstrip` on type `(Unknown &amp; ~None) | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] aiohttp/connector.py:1415:17: Attribute `rstrip` on type `(Unknown &amp; ~AlwaysFalsy) | (str &amp; ~AlwaysFalsy) | (Unknown &amp; ~None) | under_cached_property[Unknown] | @Todo(map_with_boundness: intersections with negative contributions)` is possibly unbound
++ error[invalid-argument-type] aiohttp/cookiejar.py:237:47: Argument to function `is_ip_address` is incorrect: Expected `str | None`, found `Unknown | under_cached_property[Unknown]`
++ warning[possibly-unbound-attribute] aiohttp/cookiejar.py:276:24: Attribute `startswith` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ error[non-subscriptable] aiohttp/cookiejar.py:280:34: Cannot subscript object of type `under_cached_property[Unknown]` with no `__getitem__` method
++ warning[possibly-unbound-attribute] aiohttp/cookiejar.py:280:43: Attribute `rfind` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ error[invalid-argument-type] aiohttp/cookiejar.py:350:26: Argument to function `is_ip_address` is incorrect: Expected `str | None`, found `(Unknown &amp; ~AlwaysFalsy) | (under_cached_property[Unknown] &amp; ~AlwaysFalsy) | Literal[&quot;&quot;]`
++ warning[possibly-unbound-attribute] aiohttp/cookiejar.py:361:38: Attribute `split` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ error[invalid-argument-type] aiohttp/cookiejar.py:365:24: Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | under_cached_property[Unknown]`
++ error[invalid-argument-type] aiohttp/helpers.py:199:43: Argument to function `__new__` is incorrect: Expected `str`, found `(Unknown &amp; ~AlwaysFalsy) | (under_cached_property[Unknown] &amp; ~AlwaysFalsy) | Literal[&quot;&quot;]`
++ error[invalid-argument-type] aiohttp/helpers.py:199:59: Argument to function `__new__` is incorrect: Expected `str`, found `(Unknown &amp; ~AlwaysFalsy) | (under_cached_property[Unknown] &amp; ~AlwaysFalsy) | Literal[&quot;&quot;]`
++ error[invalid-argument-type] aiohttp/helpers.py:310:46: Argument to function `proxy_bypass` is incorrect: Expected `str`, found `(Unknown &amp; ~None) | under_cached_property[Unknown]`
++ error[call-non-callable] aiohttp/helpers.py:315:22: Method `__getitem__` of type `bound method dict[str, ProxyInfo].__getitem__(key: str, /) -&gt; ProxyInfo` is not callable on object of type `dict[str, ProxyInfo]`
++ warning[possibly-unbound-attribute] aiohttp/web_app.py:394:12: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] aiohttp/web_fileresponse.py:206:31: Attribute `timestamp` on type `(Unknown &amp; ~None) | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] aiohttp/web_fileresponse.py:219:32: Attribute `timestamp` on type `(Unknown &amp; ~None) | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] aiohttp/web_fileresponse.py:255:27: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] aiohttp/web_fileresponse.py:309:67: Attribute `timestamp` on type `(Unknown &amp; ~None) | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] aiohttp/web_fileresponse.py:319:25: Attribute `start` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] aiohttp/web_fileresponse.py:320:38: Attribute `stop` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] aiohttp/web_log.py:125:16: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ error[invalid-return-type] aiohttp/web_log.py:137:16: Return type does not match returned value: expected `str`, found `(Unknown &amp; ~None) | under_cached_property[Unknown] | Literal[&quot;-&quot;]`
++ warning[possibly-unbound-attribute] aiohttp/web_log.py:155:13: Attribute `major` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] aiohttp/web_log.py:156:13: Attribute `minor` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] aiohttp/web_middlewares.py:84:23: Attribute `route` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ error[unsupported-operator] aiohttp/web_middlewares.py:86:16: Operator `in` is not supported for types `str` and `under_cached_property[Unknown]`, in comparing `Literal[&quot;?&quot;]` with `Unknown | under_cached_property[Unknown]`
++ warning[possibly-unbound-attribute] aiohttp/web_middlewares.py:87:31: Attribute `split` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ error[no-matching-overload] aiohttp/web_middlewares.py:94:39: No overload of function `sub` matches arguments
++ warning[possibly-unbound-attribute] aiohttp/web_middlewares.py:95:37: Attribute `endswith` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ error[unsupported-operator] aiohttp/web_middlewares.py:96:39: Operator `+` is unsupported between objects of type `Unknown | under_cached_property[Unknown]` and `Literal[&quot;/&quot;]`
++ warning[possibly-unbound-attribute] aiohttp/web_middlewares.py:97:33: Attribute `endswith` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ error[non-subscriptable] aiohttp/web_middlewares.py:98:39: Cannot subscript object of type `under_cached_property[Unknown]` with no `__getitem__` method
++ error[unsupported-operator] aiohttp/web_middlewares.py:100:58: Operator `+` is unsupported between objects of type `Unknown | under_cached_property[Unknown]` and `Literal[&quot;/&quot;]`
++ warning[possibly-unbound-attribute] aiohttp/web_middlewares.py:101:51: Attribute `endswith` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ error[no-matching-overload] aiohttp/web_middlewares.py:102:34: No overload of function `sub` matches arguments
++ warning[possibly-unbound-attribute] aiohttp/web_middlewares.py:119:16: Attribute `current_app` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ error[invalid-assignment] aiohttp/web_middlewares.py:120:9: Object of type `Application` is not assignable to attribute `current_app` on type `Unknown | under_cached_property[Unknown]`
++ warning[possibly-unbound-attribute] aiohttp/web_protocol.py:791:31: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] aiohttp/web_response.py:348:27: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ error[invalid-argument-type] aiohttp/web_response.py:689:45: Argument to function `should_remove_content_length` is incorrect: Expected `str`, found `Unknown | under_cached_property[Unknown]`
++ warning[possibly-unbound-attribute] aiohttp/web_urldispatcher.py:321:14: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] aiohttp/web_urldispatcher.py:366:39: Attribute `path_safe` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] aiohttp/web_urldispatcher.py:625:16: Attribute `path_safe` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ error[non-subscriptable] aiohttp/web_urldispatcher.py:644:19: Cannot subscript object of type `under_cached_property[Unknown]` with no `__getitem__` method
++ warning[possibly-unbound-attribute] aiohttp/web_urldispatcher.py:814:55: Attribute `split` on type `(Unknown &amp; ~None) | under_cached_property[Unknown]` is possibly unbound
++ error[invalid-return-type] aiohttp/web_urldispatcher.py:817:20: Return type does not match returned value: expected `str`, found `(Unknown &amp; ~None) | under_cached_property[Unknown]`
++ warning[possibly-unbound-attribute] aiohttp/web_urldispatcher.py:821:16: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] aiohttp/web_urldispatcher.py:1014:20: Attribute `path_safe` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ error[invalid-argument-type] aiohttp/web_urldispatcher.py:1042:56: Argument to bound method `__init__` is incorrect: Expected `str`, found `Unknown | under_cached_property[Unknown]`
++ error[invalid-return-type] aiohttp/web_urldispatcher.py:1260:12: Return type does not match returned value: expected `str`, found `Unknown | under_cached_property[Unknown]`
++ warning[possibly-unbound-attribute] aiohttp/web_ws.py:229:27: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] aiohttp/web_ws.py:234:26: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] aiohttp/web_ws.py:237:29: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] aiohttp/web_ws.py:240:21: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ error[unsupported-operator] aiohttp/web_ws.py:246:12: Operator `in` is not supported for types `istr` and `under_cached_property[Unknown]`, in comparing `istr` with `Unknown | under_cached_property[Unknown]`
++ error[non-subscriptable] aiohttp/web_ws.py:249:30: Cannot subscript object of type `under_cached_property[Unknown]` with no `__getitem__` method
++ warning[possibly-unbound-attribute] aiohttp/web_ws.py:266:19: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] aiohttp/web_ws.py:271:15: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] aiohttp/web_ws.py:292:26: Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
+- Found 133 diagnostics
++ Found 197 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
++ error[invalid-assignment] ddtrace/appsec/_iast/_ast/visitor.py:669:17: Object of type `Load` is not assignable to attribute `ctx` on type `expr &amp; &lt;Protocol with members 'ctx'&gt;`
+- Found 6839 diagnostics
++ Found 6840 diagnostics
+
+sympy (https://github.com/sympy/sympy)
+-     memo fields = ~1399MB
++     memo fields = ~1538MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-06-21 08:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-06-23 13:48</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aprotocol-member-checks?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a></h2>
+<h3>Merging #18847 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>mtshiba:protocol-member-checks</code> (0beafec) with <code>main</code> (9218bf7)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 39</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-06-23 13:49</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aprotocol-member-checks?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
+<h3>Merging #18847 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>mtshiba:protocol-member-checks</code> (0beafec) with <code>main</code> (9218bf7)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 8</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @mtshiba on 2025-06-23 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @mtshiba on 2025-06-23 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @mtshiba on 2025-06-23 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @mtshiba on 2025-06-23 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @mtshiba on 2025-06-23 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1968 on 2025-06-26 14:37</div>
+            <div class="timeline-body"><p>shouldn't these be <code>TypeRelation::Assignability</code> rather than <code>TypeRelation::Subtyping</code>?</p>
+<p>If I have a gradual protocol like this:</p>
+<pre><code class="language-py">class Foo(Protocol):
+    def __bool__(self) -&gt; Any: ...
+</code></pre>
+<p>Then the type <code>Literal[True]</code> won't be a subtype of that protocol, but it will be assignable to that protocol. <code>Literal[True]</code> isn't disjoint from this protocol</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:71 on 2025-06-26 14:46</div>
+            <div class="timeline-body"><p>this isn't really correct for attribute members, because attribute members on protocols are invariant rather than covariant. In order for a protocol member to be covariant, it either needs to be a read-only <code>property</code> member or a method member. We also need to consider the type of the attribute on the meta-type as well, unfortunately, in order to make meta-protocols sound.</p>
+<p>For a protocol like this:</p>
+<pre><code class="language-py">class Foo(Protocol):
+    x: int
+</code></pre>
+<p>What this says is, &quot;To satisfy this interface, a type <code>T</code> must have a mutable attribute <code>x</code> that can have <code>int</code> instances assigned to it and, when read, yields an instance of <code>int</code>. The <code>x</code> attribute only needs to be available on inhabitants of <code>T</code>&quot;.</p>
+<p>For a protocol like this:</p>
+<pre><code class="language-py">class Bar(Protocol):
+    x: str = &quot;foo&quot;
+</code></pre>
+<p>What this says is, &quot;To satisfy this interface, a type <code>U</code> must have a mutable attribute <code>x</code> that can have <code>str</code> instances assigned to it and, when read, yields an instance of <code>str</code>. the <code>x</code> attribute needs to be readable on inhabitants of <code>U</code> <em>and</em> inhabitants of <code>U</code>'s meta-type&quot;.</p>
+<p>For a protocol like this:</p>
+<pre><code class="language-py">class Baz(Protocol):
+    x: ClassVar[bytes]
+</code></pre>
+<p>What this says is, &quot;To satisfy this interface, a type <code>V</code> must have a mutable attribute <code>x</code> that, when read, yields an instance of <code>str</code>. It does not need to be writable on inhabitants of <code>V</code> but it must be readable and writable on <code>T</code>'s meta-type.&quot;</p>
+<hr />
+<p>For now, I think it's okay to leave a lot of the logic about protocol meta-types as a TODO, but it would be great to at least reflect the fact that mutable attributes need to be treated invariantly. I.e., in the following snippet, <code>Bar</code> is not a subtype of <code>Foo</code>, because <code>Foo</code> has a mutable attribute member <code>x</code>, and the type of <code>Bar.x</code> is a subtype of the type of <code>Foo.x</code> rather than being exactly equivalent to the type of <code>Foo.x</code>:</p>
+<pre><code class="language-py">class Foo(Protocol):
+    x: int
+
+class Bar:
+    def __init__(self):
+        self.x = True
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-26 14:48</div>
+            <div class="timeline-body"><p>Thanks! This looks okay overall, but I think it would be nice to implement invariance of mutable attribute members; it isn't really correct to treat them covariantly.</p>
+<p>You could also consider adding a <code>ProtocolMemberKind</code> enum like I did in #18659? I think we'll need some way of distinguishing between method members, property members and everything else anyway, and your PR already starts to add that distinction</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-26 14:49</div>
+            <div class="timeline-body"><p>Sorry for the delayed review!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-26 14:55</div>
+            <div class="timeline-body"><blockquote>
+<p>The reason for adding this change is that <code>Protocol</code> member checks are required to implement advanced attribute narrowing (see <a href="https://github.com/astral-sh/ty/issues/643">astral-sh/ty#643</a>).</p>
+</blockquote>
+<p>I'm curious how you plan to use protocols to implement that feature. For something like this:</p>
+<pre><code class="language-py">class Foo:
+    x: str
+
+def f(foo: Foo):
+    if foo.x == &quot;bar&quot;:
+        ...
+</code></pre>
+<p>It would be incorrect to narrow the type of <code>foo</code> to something like <code>Foo &amp; SynthesizedProtocol[{&quot;x&quot;: Literal[&quot;bar&quot;]}]</code> there. The reason is that an instance of <code>Foo</code> could have an <code>x</code> attribute that's a <code>str</code> subclass which compares equal to <code>&quot;bar&quot;</code>, but for an object to inhabit <code>Literal[&quot;bar&quot;]</code> its class must be <em>exactly</em> <code>str</code> (not a subclass). So you can only narrow the type there if you know that the type prior to narrowing was a subtype of <code>LiteralString</code>, since all inhabitants of <code>LiteralString</code> have to be instances of exactly <code>str</code> (not a subclass of <code>str</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-06-26 16:30</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm curious how you plan to use protocols to implement that feature. For something like this:</p>
+<pre><code class="language-python">class Foo:
+    x: str
+
+def f(foo: Foo):
+    if foo.x == &quot;bar&quot;:
+        ...
+</code></pre>
+<p>It would be incorrect to narrow the type of <code>foo</code> to something like <code>Foo &amp; SynthesizedProtocol[{&quot;x&quot;: Literal[&quot;bar&quot;]}]</code> there. The reason is that an instance of <code>Foo</code> could have an <code>x</code> attribute that's a <code>str</code> subclass which compares equal to <code>&quot;bar&quot;</code>, but for an object to inhabit <code>Literal[&quot;bar&quot;]</code> its class must be <em>exactly</em> <code>str</code> (not a subclass). So you can only narrow the type there if you know that the type prior to narrowing was a subtype of <code>LiteralString</code>, since all inhabitants of <code>LiteralString</code> have to be instances of exactly <code>str</code> (not a subclass of <code>str</code>).</p>
+</blockquote>
+<p>Yeah, you mean, for example, if such a &quot;malicious&quot; subclass is used, narrowing is unsound?</p>
+<pre><code class="language-python">class BadStr(str):
+    def __eq__(self, other):
+        return True
+
+class Foo:
+    tag: str = BadStr(&quot;Foo&quot;)
+    value: int
+
+class Bar:
+    tag: str = BadStr(&quot;Bar&quot;)
+    value: str
+
+def _(x: Foo | Bar):
+    if x.tag == &quot;Foo&quot;:
+        reveal_type(x.tag)  # str, not Literal[&quot;Foo&quot;]
+        reveal_type(x.value)  # str | int, not int
+</code></pre>
+<p>The determination that <code>x.tag == &quot;Foo&quot;</code> does not immediately imply <code>x.tag: Literal[&quot;Foo&quot;]</code> (it does only if the LHS type is single-valued) is already implemented. So we can use it to assume <code>x: Protocol[{&quot;tag&quot;: Literal[&quot;Foo&quot;]}]</code> only if the constraint <code>x.tag: Literal[&quot;Foo&quot;]</code> can be assumed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-26 16:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah, you mean, for example, if such a &quot;malicious&quot; subclass is used, narrowing is unsound?</p>
+</blockquote>
+<p>Exactly, yes! Okay, it sounds like you're already aware of the issue, which is great 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-06-27 08:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-06-27 15:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/ty_python_semantic/src/types/protocol_class.rs</code>:286 on 2025-06-27 15:00</div>
+            <div class="timeline-body"><p>I cherry-picked your commit 63d34efa8f7e2df2d786608ca6065aba467a5b57 and made a slight change to avoid the stack overflow.
+This is a temporary workaround, hopefully we'll see a complete solution in #18659.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-06-27 16:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:70 on 2025-06-27 16:12</div>
+            <div class="timeline-body"><p>If <code>relation</code> is <code>Assignability</code>, I simply assumed that <code>ty</code> satisfies <code>protocol</code> only when it is <code>Dynamic</code>, but this may not be complete. A class with partially-typed methods in the following code doesn't satisfy the protocol. I think this goes against the gradual guarantee.</p>
+<p>https://github.com/mtshiba/ruff/blob/019a1b05008fbb962c354fc31a97ca9b0f89da71/crates/ty_python_semantic/resources/mdtest/protocols.md?plain=1#L563-L571</p>
+<p>To fix this, I think we need a check that <code>ty</code> can be equivalent to the protocol member type at a materialization
+(~~I think this can be implemented by adding a option such as <code>MaterializationOption::{Exist, ForAll}</code> to <code>is_equivalent_to</code>~~ No, this function will be an asymmetric function, unlike <code>is_equivalent_to</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:70 on 2025-06-27 19:52</div>
+            <div class="timeline-body"><p>I think the basic check here should just be to delegate to <code>member.ty().has_relation_to(db, ty, relation)</code>. The exception to this is a simple mutable attribute (e.g. <code>x: int</code>), which needs to be treated as invariant (effectively we need to model in this case that the protocol includes both a getter for <code>x</code> returning <code>int</code> and a setter accepting <code>int</code>). Equivalence is not the right relation to check for this when <code>relation</code> is <code>Assignability</code>, as you observe (it is too strict). I think the correct approach here is simply to check assignability in both directions (<code>member.ty().has_relation_to(db, ty, relation) &amp;&amp; ty.has_relation_to(db, member.ty(), relation)</code>).</p>
+<p>I think it might be clearer if this method <code>satisfies_protocol</code> were simply renamed <code>has_relation_to</code>, as that's what it implements. But that doesn't need to be in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-27 19:53</div>
+            <div class="timeline-body"><p>I made one inline comment here, but I think it's fine if this is merged with TODOs. I'd like @AlexWaygood to make the call on merging this, but let me know if there are any other parts of it you'd like me to review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-27 21:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:70 on 2025-06-27 21:28</div>
+            <div class="timeline-body"><p>I pushed some changes to the PR to fix this up. Because of the invariance we need to check <code>attribute_type.has_relation_to(db, protocol_member_type)</code> <em>and</em> <code>protocol_member_type.has_relation_to(db, attribute_type)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-06-27 21:29</div>
+            <div class="timeline-body"><p>Thanks, this looks great to me! I pushed a few small changes.</p>
+<p>Would you be able to take a quick look through the mypy_primer diff and see if the new diagnostics are all expected? Once that's done I'm happy to land this -- thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-06-28 08:15</div>
+            <div class="timeline-body"><p>I found that the current protocol member check has a problem in the following case.</p>
+<pre><code class="language-python">def f(x: int | LiteralString):
+    if hasattr(x, &quot;capitalize&quot;):
+        reveal_type(x)  # should be: (int &amp; &lt;Protocol with members 'capitalize'&gt;) | LiteralString
+    else:
+        reveal_type(x)  # should be: int &amp; ~&lt;Protocol with members 'capitalize'&gt;
+</code></pre>
+<p>It is inferred like this.</p>
+<pre><code>info[revealed-type]: Revealed type
+ --&gt; protocol_check.py:5:21
+  |
+3 | def f(x: int | LiteralString):
+4 |     if hasattr(x, &quot;capitalize&quot;):
+5 |         reveal_type(x)
+  |                     ^ `int &amp; &lt;Protocol with members 'capitalize'&gt;`
+6 |     else:
+7 |         reveal_type(x)
+  |
+
+info[revealed-type]: Revealed type
+ --&gt; protocol_check.py:7:21
+  |
+5 |         reveal_type(x)
+6 |     else:
+7 |         reveal_type(x)
+  |                     ^ `(int &amp; ~&lt;Protocol with members 'capitalize'&gt;) | LiteralString`
+  |
+</code></pre>
+<p>The protocol synthesized from the predicate <code>hasattr(x, &quot;capitalize&quot;)</code> is <code>Protocol[{&quot;capitalize&quot;: object}]</code>.
+Currently, we check the compatibility of protocol members and attributes with <a href="https://github.com/mtshiba/ruff/blob/dfcf0e097188c953a881beb4e5244b1d2d911285/crates/ty_python_semantic/src/types/protocol_class.rs#L380-L381"><code>member_type.has_relation_to(db, attribute_type, relation) &amp;&amp; attribute_type.has_relation_to(db, *member_type, relation)</code></a>, which leads to the paradoxical situation where <code>LiteralString</code> does not satisfy the protocol.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-28 08:39</div>
+            <div class="timeline-body"><p>Ah, nice catch. The synthesised protocols created from <code>hasattr</code> narrowing should use covariant read-only property members rather than invariant mutable attribute members. I think just making that change should fix things there for now, though we'll obviously need to do a lot more work on property members in the future since they'll require some special-cased subtyping logic of their own</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-06-28 19:36</div>
+            <div class="timeline-body"><p>Now all the new errors/warnings in mypy_primer look ok.
+They are either due to checks working as intended (writing to <code>hasattr</code> attributes, etc.) or due to TODOs (<code>Protocol</code> members with default values, <code>@property</code> members, generic members).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-06-29 10:43</div>
+            <div class="timeline-body"><p>Thanks again -- this is great work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-29 10:44</div>
+            <div class="timeline-body"><p>I think we'll need to invest into improving the diagnostic if somebody tries to write to an attribute on a synthesized protocol that has that attribute available, but only as a read-only property member. But we can defer that for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-06-29 10:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-06-29 10:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-29 15:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:36 UTC
+    </footer>
+</body>
+</html>

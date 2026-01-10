@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Make tuple instantiations sound - astral-sh/ruff #18987</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Make tuple instantiations sound</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18987">#18987</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-06-27 14:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-27 14:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Ensure that we correctly infer calls such as <code>tuple((1, 2))</code>, <code>tuple(range(42))</code>, etc. Ensure that we emit errors on invalid calls such as <code>tuple[int, str]()</code>.</p>
+<h2>Test Plan</h2>
+<p>Mdtests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-06-27 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-27 14:30</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">attrs (https://github.com/python-attrs/attrs)
+- error[invalid-assignment] src/attr/_make.py:1559:5: Object of type `tuple[Unknown, ...]` is not assignable to `list[Unknown]`
++ error[invalid-assignment] src/attr/_make.py:1559:5: Object of type `tuple[@Todo(generator type), ...]` is not assignable to `list[Unknown]`
+
+vision (https://github.com/pytorch/vision)
+- error[invalid-assignment] references/classification/utils.py:420:5: Object of type `tuple[Unknown, ...]` is not assignable to `list[type] | None`
++ error[invalid-assignment] references/classification/utils.py:420:5: Object of type `tuple[@Todo(map_with_boundness: intersections with negative contributions), ...]` is not assignable to `list[type] | None`
+- error[invalid-argument-type] torchvision/ops/poolers.py:283:34: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `tuple[int] | list[int] | int`
++ error[invalid-argument-type] torchvision/ops/poolers.py:283:34: Argument to class `tuple` is incorrect: Expected `Iterable[object]`, found `tuple[int] | list[int] | int`
+- error[invalid-argument-type] torchvision/transforms/_functional_pil.py:179:42: Argument to function `expand` is incorrect: Expected `int | tuple[int, ...]`, found `(int &amp; Number) | (list[int] &amp; Number &amp; ~list[Unknown]) | (tuple[int, ...] &amp; Number) | (tuple[int, ...] &amp; tuple[Unknown, ...]) | (list[int] &amp; list[Unknown] &amp; ~list[Unknown]) | tuple[Unknown, ...] | @Todo(Subscript expressions on intersections)`
++ error[invalid-argument-type] torchvision/transforms/_functional_pil.py:179:42: Argument to function `expand` is incorrect: Expected `int | tuple[int, ...]`, found `(int &amp; Number) | (list[int] &amp; Number &amp; ~list[Unknown]) | (tuple[int, ...] &amp; Number) | (tuple[int, ...] &amp; tuple[Unknown, ...]) | (list[int] &amp; list[Unknown] &amp; ~list[Unknown]) | @Todo(Subscript expressions on intersections)`
+- error[invalid-argument-type] torchvision/transforms/_functional_pil.py:183:37: Argument to function `expand` is incorrect: Expected `int | tuple[int, ...]`, found `(int &amp; Number) | (list[int] &amp; Number &amp; ~list[Unknown]) | (tuple[int, ...] &amp; Number) | (tuple[int, ...] &amp; tuple[Unknown, ...]) | (list[int] &amp; list[Unknown] &amp; ~list[Unknown]) | tuple[Unknown, ...] | @Todo(Subscript expressions on intersections)`
++ error[invalid-argument-type] torchvision/transforms/_functional_pil.py:183:37: Argument to function `expand` is incorrect: Expected `int | tuple[int, ...]`, found `(int &amp; Number) | (list[int] &amp; Number &amp; ~list[Unknown]) | (tuple[int, ...] &amp; Number) | (tuple[int, ...] &amp; tuple[Unknown, ...]) | (list[int] &amp; list[Unknown] &amp; ~list[Unknown]) | @Todo(Subscript expressions on intersections)`
+
+pywin32 (https://github.com/mhammond/pywin32)
+- error[invalid-argument-type] win32/Demos/security/setkernelobjectsecurity.py:77:12: Argument to function `AdjustTokenPrivileges` is incorrect: Expected `PyTOKEN_PRIVILEGES`, found `tuple[Unknown, ...]`
++ error[invalid-argument-type] win32/Demos/security/setkernelobjectsecurity.py:77:12: Argument to function `AdjustTokenPrivileges` is incorrect: Expected `PyTOKEN_PRIVILEGES`, found `tuple[@Todo(generator type), ...]`
+
+static-frame (https://github.com/static-frame/static-frame)
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4597:56: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4600:59: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4609:56: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4612:59: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4624:53: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4627:69: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4640:53: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4643:56: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4646:71: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4659:65: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4662:65: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4665:55: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4678:65: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4681:65: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4684:71: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4700:53: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4703:55: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4711:59: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4714:59: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4717:63: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4729:59: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4732:59: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4735:59: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4747:59: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4750:59: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4753:63: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4764:67: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/test/unit/test_series.py:4767:68: Unused blanket `type: ignore` directive
+- Found 1839 diagnostics
++ Found 1811 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- error[invalid-argument-type] src/_pytest/fixtures.py:1387:70: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `(Sequence[object] &amp; ~((...) -&gt; object)) | (((Any, /) -&gt; object) &amp; ~((...) -&gt; object))`
++ error[invalid-argument-type] src/_pytest/fixtures.py:1387:70: Argument to class `tuple` is incorrect: Expected `Iterable[object]`, found `(Sequence[object] &amp; ~((...) -&gt; object)) | (((Any, /) -&gt; object) &amp; ~((...) -&gt; object))`
+
+sympy (https://github.com/sympy/sympy)
+- error[invalid-argument-type] sympy/combinatorics/fp_groups.py:25:33: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `(bound method FpGroup._generators() -&gt; Unknown) | @Todo(instance attribute on class with dynamic base)`
++ error[invalid-argument-type] sympy/combinatorics/fp_groups.py:25:33: Argument to class `tuple` is incorrect: Expected `Iterable[object]`, found `(bound method FpGroup._generators() -&gt; Unknown) | @Todo(instance attribute on class with dynamic base)`
+- error[invalid-argument-type] sympy/stats/joint_rv_types.py:192:29: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `Unknown | ImmutableDenseMatrix`
++ error[invalid-argument-type] sympy/stats/joint_rv_types.py:192:29: Argument to class `tuple` is incorrect: Expected `Iterable[object]`, found `Unknown | ImmutableDenseMatrix`
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-27 18:19</div>
+            <div class="timeline-body"><p>The new errors on <code>static-frame</code> are because <code>ndarray</code> has a <code>to_list()</code> method but <code>Series</code> does not, and <code>post[0][1]</code> <a href="https://github.com/static-frame/static-frame/blob/a97f207a7efeeddb65fa812106c240a110b43489/static_frame/test/unit/test_series.py#L4597">here</a> is now inferred as <code>ndarray | Series</code> where it was previously inferred as <code>Unknown</code>. Other type checkers have the same inference as us here, which is why all these calls already have <code>type: ignore</code>s on them, and therefore why these errors present as &quot;unused <code>type: ignore</code>&quot; errors going away.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-06-27 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-06-27 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-06-27 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-06-27 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-06-27 18:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2430 on 2025-06-27 18:33</div>
+            <div class="timeline-body"><p>nit: <code>Self::Iterable</code> to be consistent with the other arms</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:978 on 2025-06-27 18:35</div>
+            <div class="timeline-body"><p>I think this would avoid unwrapping the argument type just to then rewrap it:</p>
+<pre><code class="language-suggestion">                                    argument.filter(Type::is_tuple).unwrap_or_else(|| {
+</code></pre>
+<p>(though it depends on an <code>is_tuple</code> method that may not exist yet!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4310 on 2025-06-27 18:36</div>
+            <div class="timeline-body"><p>I think I follow the constructors here, but can you put a comment with the Python syntax of the signature you're trying to construct here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-06-27 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-06-27 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-27 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4314 on 2025-06-27 18:39</div>
+            <div class="timeline-body"><p>With the <code>Tuple::resize</code> method that #18948 introduces, we can make this work for <em>any</em> tuple, not just one with exactly the same size as the type being constructed.  I also have plans to have <code>try_iterator</code> return a tuple spec describing the return values of the iterator, which would then give us what we need for this to work for any iterable type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-06-27 18:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-27 20:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:978 on 2025-06-27 20:44</div>
+            <div class="timeline-body"><p><code>argument</code> is a type rather than an <code>Option</code> here so I think this would have to be</p>
+<pre><code class="language-suggestion">                                    argument.into_tuple().filter(Type::is_tuple).unwrap_or_else(|| {
+</code></pre>
+<p>Adding a <code>Type::is_tuple</code> method just for that feels a bit unnecessary to me? No strong opinion though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-27 20:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4314 on 2025-06-27 20:53</div>
+            <div class="timeline-body"><blockquote>
+<p>With the <code>Tuple::resize</code> method that #18948 introduces, we can make this work for <em>any</em> tuple, not just one with exactly the same size as the type being constructed.</p>
+</blockquote>
+<p>Hmm, not sure I totally follow this. Can you give an example of something that should be covered in this PR but isn't? :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-06-27 21:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4314 on 2025-06-27 21:06</div>
+            <div class="timeline-body"><p>Sorry, wasn't requesting any changes here with this comment, just leaving me/others a breadcrumb for a future improvement</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:36 UTC
+    </footer>
+</body>
+</html>

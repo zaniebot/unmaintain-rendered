@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add lint rule for calling chmod with non-octal integers - astral-sh/ruff #18541</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add lint rule for calling chmod with non-octal integers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18541">#18541</a>
+        opened by <a href="https://github.com/RazerM">@RazerM</a>
+        on 2025-06-07 22:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/RazerM">@RazerM</a> on 2025-06-07 22:26</div>
+            <div class="timeline-body"><p>Resolves #18464</p>
+<!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Adds a new lint rule to find cases where chmod was called with a decimal integer, e.g. <code>os.chmod(400)</code> looks like it would set <code>u=r,go=</code> permissions but actually sets <code>u=rw,g=w,o=</code>. The intent was probably <code>0o400</code>.</p>
+<h2>Test Plan</h2>
+<p>cargo test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @ntBre on 2025-06-08 03:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-06-08 03:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-08 03:42</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+1 -0 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/e614be661b70c7102495f39aa44d9e5f3a0f7fcb/devel-common/src/tests_common/test_utils/gcp_system_helpers.py#L175'>devel-common/src/tests_common/test_utils/gcp_system_helpers.py:175:32:</a> RUF064 Non-octal mode
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF064 | 1 | 1 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-09 17:26</div>
+            <div class="timeline-body"><p>Related clippy rule https://rust-lang.github.io/rust-clippy/master/index.html#non_octal_unix_permissions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/codes.rs</code>:1030 on 2025-06-09 17:28</div>
+            <div class="timeline-body"><p>I do like clippy's naming because it leaves the door open to lint for other cases than just <code>chmod</code> (if there are any)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/chmod_non_octal.rs</code>:107 on 2025-06-09 17:30</div>
+            <div class="timeline-body"><p>I don't think we should offer a fix here. The main promise of the rule is that the code is probably incorrect and just rewriting the code from decimal to octal doesn't fix the root problem -&gt; That the code is probably just incorrect.</p>
+<p>I'd be okay if we allowlisted some common chmods and offered rewriting them but I don't think we should offer rewriting in general.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/chmod_non_octal.rs</code>:55 on 2025-06-09 17:31</div>
+            <div class="timeline-body"><p>See my comment below. I don't think we should offer a suggestion here because the promise of the rule is that we believe that the used decimal permissions are actually wrong and simply rewriting to octal doesn't fix that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-09 17:32</div>
+            <div class="timeline-body"><p>Thank you.</p>
+<p>This mostly looks good. My main feedback is that I don't think we should offer a fix here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-09 18:23</div>
+            <div class="timeline-body"><p>@ntBre reached out to me on Discord and I think I could be persuaded that we should offer a fix (but I would remove the suggestion from the lint message, given that the fix will show the mode).</p>
+<p>I mainly focused on existing (working) code. The fix would be incorrect in those cases and is probably going to break the user code. This seems fine, given that the fix is marked as unsafe.</p>
+<p>What I think is the main promise of the rule is that it catches an incorrect permission <em>when</em> you're writing new code. Providing a fix seems very useful in those cases. And I think that should work well because we do show unsafe fixes in the IDE as code actions that users can apply manually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/RazerM">@RazerM</a> reviewed on 2025-06-09 19:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/RazerM">@RazerM</a> on <code>crates/ruff_linter/src/codes.rs</code>:1030 on 2025-06-09 19:21</div>
+            <div class="timeline-body"><p>I'm definitely open to naming suggestions. My only gripe with the phrase &quot;unix permissions&quot; is that this API is available on Windows in Python (albeit only the <code>0o400</code> and <code>0o200</code> flags do something)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RazerM">@RazerM</a> on 2025-06-09 19:34</div>
+            <div class="timeline-body"><p>I also hemmed and hawed about whether to include a fix, and whether it should be limited to certain common cases (e.g. <code>644</code> -&gt; <code>0o644</code>).</p>
+<p>A <a href="https://sourcegraph.com/search?q=context:global+%5C.chmod%5C%28%5B1-9%5D%5B0-9%5D%2B%5C%29+lang:Python+&amp;patternType=regexp&amp;sm=0">public code search</a> is interesting.</p>
+<p>There definitely are cases where a <em>correct</em> decimal integer is used, and often but not always there is a comment of the equivalent octal. This may stem back to code bases that supported Python 2.5 and Python 3 (octal syntax <code>0o</code> came in 2.6).</p>
+<p>E.g. the pytest test suite contains <a href="https://github.com/pytest-dev/pytest/blob/9e9633de9da7a9fab03b4bba3a326bf85b412050/testing/test_assertrewrite.py#L1029"><code>chmod(256)</code></a> which is equivalent to <code>0o400</code>. Our suggested fix would be wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-09 19:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/codes.rs</code>:1030 on 2025-06-09 19:39</div>
+            <div class="timeline-body"><p>I think <code>NonOctalPermissions</code> would be fine (just dropping the unix part from clippy's name). As Micha said, it looks like many of the <a href="https://docs.python.org/3/library/os.html"><code>os</code></a> methods take a <code>mode</code> argument, so we could reuse a more generally-named rule for those too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/non_octal_permissions.rs</code>:34 on 2025-06-10 10:56</div>
+            <div class="timeline-body"><p>It would be great if we could be more concrete here. I think the airflow example that you mentioned would be a great example</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/non_octal_permissions.rs</code>:108 on 2025-06-10 10:57</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        diagnostic.set_fix(Fix::unsafe_edit(edit));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/non_octal_permissions.rs</code>:55 on 2025-06-10 10:58</div>
+            <div class="timeline-body"><p>I'd remove the <code>suggested</code> as it is also visible in the fix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-10 10:58</div>
+            <div class="timeline-body"><p>Okay, I think we can go with a fix and see whether users find it useful.</p>
+<p>I've a few smaller remarks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/RazerM">@RazerM</a> on <code>crates/ruff_linter/src/rules/ruff/rules/non_octal_permissions.rs</code>:108 on 2025-06-10 22:05</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/RazerM">@RazerM</a> reviewed on 2025-06-10 22:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/RazerM">@RazerM</a> reviewed on 2025-06-10 22:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/RazerM">@RazerM</a> on <code>crates/ruff_linter/src/rules/ruff/rules/non_octal_permissions.rs</code>:55 on 2025-06-10 22:05</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/RazerM">@RazerM</a> reviewed on 2025-06-10 22:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/RazerM">@RazerM</a> on <code>crates/ruff_linter/src/rules/ruff/rules/non_octal_permissions.rs</code>:71 on 2025-06-10 22:14</div>
+            <div class="timeline-body"><p>How would you feel about showing a representation of the mode as written e.g.</p>
+<pre><code>t.py:3:17: RUF064 Non-octal mode (u=rw,g=w,o=)
+  |
+1 | import os
+2 |
+3 | os.chmod(&quot;foo&quot;, 400)
+  |                 ^^^ RUF064
+4 | os.chmod(&quot;foo&quot;, 256)
+  |
+  = help: Replace with octal literal
+
+t.py:4:17: RUF064 Non-octal mode (u=r,go=)
+  |
+3 | os.chmod(&quot;foo&quot;, 400)
+4 | os.chmod(&quot;foo&quot;, 256)
+  |                 ^^^ RUF064
+  |
+  = help: Replace with octal literal
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RazerM">@RazerM</a> on 2025-06-10 22:57</div>
+            <div class="timeline-body"><p>I'm tempted to make the fix logic this:</p>
+<pre><code class="language-rust">fn suggest_fix(mode: u16) -&gt; Option&lt;u16&gt; {
+    // These suggestions are in the form of
+    // &lt;missing `0o` prefix&gt; | &lt;mode as decimal&gt; =&gt; &lt;octal&gt;
+    // If &lt;as decimal&gt; could theoretically be a valid octal literal, the
+    // comment explains why it's deemed unlikely to be intentional.
+    match mode {
+        400 | 256 =&gt; Some(0o400), // -w-r-xrw-, group/other &gt; user unlikely
+        440 | 288 =&gt; Some(0o440),
+        444 | 292 =&gt; Some(0o444),
+        600 | 384 =&gt; Some(0o600),
+        640 | 416 =&gt; Some(0o640), // r----xrw-, other &gt; user unlikely
+        644 | 420 =&gt; Some(0o644), // r---w----, group write but not read unlikely
+        660 | 432 =&gt; Some(0o660), // r---wx-w-, write but not read unlikely
+        664 | 436 =&gt; Some(0o664), // r---wxrw-, other &gt; user unlikely
+        666 | 438 =&gt; Some(0o666),
+        700 | 448 =&gt; Some(0o700),
+        744 | 484 =&gt; Some(0o744),
+        750 | 488 =&gt; Some(0o750),
+        755 | 493 =&gt; Some(0o755),
+        770 | 504 =&gt; Some(0o770), // r-x---r--, other &gt; group unlikely
+        775 | 509 =&gt; Some(0o775),
+        776 | 510 =&gt; Some(0o776), // r-x--x--x, seems unlikely
+        777 | 511 =&gt; Some(0o777), // r-x--x--x, seems unlikely
+        _ =&gt; None
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/non_octal_permissions.rs</code>:71 on 2025-06-11 05:34</div>
+            <div class="timeline-body"><p>I like the idea but I think it's confusing in the fix message because it gives the impression that <code>u=rw, ...</code> was the non octal mode, which it wasn't.</p>
+<p>I think this is a case where sub diagnostics (@ntBre is working on this) would be very useful. You could then add two hints (needs better wording but roughly):</p>
+<pre><code>info: 0oxxx (256) is u=rw, g=w, o=
+info: 0o256 is u=....
+</code></pre>
+<p>But our diagnostics don't support this today :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-11 05:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-11 06:42</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm tempted to make the fix logic this:</p>
+</blockquote>
+<p>I like it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-11 10:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/non_octal_permissions.rs</code>:71 on 2025-06-11 10:18</div>
+            <div class="timeline-body"><p>Added to #17203!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-06-19 09:29</div>
+            <div class="timeline-body"><p>Awesome, thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-06-19 09:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-19 09:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:35 UTC
+    </footer>
+</body>
+</html>

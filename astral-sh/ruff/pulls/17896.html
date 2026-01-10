@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove R from redirects, as it is not a valid rule - astral-sh/ruff #17896</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove R from redirects, as it is not a valid rule</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17896">#17896</a>
+        opened by <a href="https://github.com/VanOvermeire">@VanOvermeire</a>
+        on 2025-05-06 19:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/VanOvermeire">@VanOvermeire</a> on 2025-05-06 19:13</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR should fix the following bug: https://github.com/astral-sh/ruff/issues/17890</p>
+<h2>Test Plan</h2>
+<p>Tested against a local repository. main branch <code>ruff check --select R</code> works, with this redirect removed, <code>ruff check --select R</code> throws <code>error: invalid value 'R' for '--select &lt;RULE_CODE&gt;'</code></p>
+<p>All existing tests still pass.</p>
+<p>Not sure if it is worthwhile/necessary to add a unit test for this fix?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-06 19:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rule_redirects.rs</code>:24 on 2025-05-06 19:31</div>
+            <div class="timeline-body"><p>Thanks for jumping on this!</p>
+<p>Oh wow, I wonder if we need to remove this whole section of <code>R*</code>-<code>RET*</code> pairs. Based on these dates, we could possibly delete quite a large chunk here. @MichaReiser do we need to wait for a minor release for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-07 07:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rule_redirects.rs</code>:24 on 2025-05-07 07:37</div>
+            <div class="timeline-body"><p>I don't think it's enough to just remove the redirect from <code>R</code> to <code>RET</code>. We should also remove the other <code>R</code> redirects to <code>R</code>.</p>
+<p>Yes, I think we have to wait for a minor and we should start raising deprecation warnings first. Are there other remappings that have the same issue?</p>
+<p>Do we already raise a deprecation warning if someone uses <code>R</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rule_redirects.rs</code>:24 on 2025-05-07 20:21</div>
+            <div class="timeline-body"><blockquote>
+<p>Yes, I think we have to wait for a minor and we should start raising deprecation warnings first. Are there other remappings that have the same issue?</p>
+</blockquote>
+<p>Yes, it looks like &quot;U&quot;/&quot;UP&quot; has the same issue (&quot;U&quot; is not present in our JSON schema but selecting &quot;U&quot; enables the UP rules). That's also true for &quot;IC&quot;/&quot;ICN&quot; so I suspect it's true for all of these, but I haven't verified them all. This is how I'm checking:</p>
+<pre><code class="language-shell">$ ruff check --select IC --show-settings | sed -n '/linter.rules.enabled/,/^]/p'
+linter.rules.enabled = [
+        unconventional-import-alias (ICN001),
+        banned-import-alias (ICN002),
+        banned-import-from (ICN003),
+]
+</code></pre>
+<p>and then cross-referencing with SchemaStore <a href="https://github.com/SchemaStore/schemastore/blob/master/src/schemas/json/ruff.json">here</a>.</p>
+<blockquote>
+<p>Do we already raise a deprecation warning if someone uses <code>R</code>?</p>
+</blockquote>
+<p>I don't see any warnings from this:</p>
+<pre><code class="language-shell">$ ruff check --select R
+All checks passed!
+</code></pre>
+<p>So maybe that's the first PR we need to get this started?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-07 20:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-12 08:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rule_redirects.rs</code>:24 on 2025-05-12 08:15</div>
+            <div class="timeline-body"><p>Yes, starting to emit warnings would be the first step if we still want to change this behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-20 06:41</div>
+            <div class="timeline-body"><p>Closing due to inactivity. If someone's interested to pick this up, feel free to submit a new PR and reference this PR in the summary. Thank you @VanOvermeire for your work here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-20 06:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:35 UTC
+    </footer>
+</body>
+</html>

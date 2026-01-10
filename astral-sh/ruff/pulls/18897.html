@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Avoid duplicate diagnostic in unpacking - astral-sh/ruff #18897</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Avoid duplicate diagnostic in unpacking</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18897">#18897</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-06-23 14:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-23 14:58</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes astral-sh/ty#185 by avoiding to infer the value expression for an unpacking.</p>
+<p>This is done simply by only inferring the value expression in a non-unpacking branch for assignment statement, for statement, with statement and comprehensions.</p>
+<p>This is a simpler alternative to https://github.com/astral-sh/ruff/pull/18890 which I only realized in hindsight! Ideally, the solution would to consider the &quot;unpack&quot; as it's own region and do all of the inference of every expressions involved in an unpacking inside the unpack query and then merge the results in the outer query. This would require access to the <code>Unpack</code> ingredient which is stored on the <code>Definition</code>. And, this would require create the said <code>Definition</code>s for all attributes and subscript expressions. It does simplify the target inference logic by streamlining it into a single <code>infer_target</code> method instead of the <code>infer_target</code>/<code>infer_target_impl</code> split.</p>
+<p>Additionally, #18890 also solves a couple of TODOs around raising errors around attribute / subscript assignment.</p>
+<h2>Test Plan</h2>
+<p>Update the existing test, go through a couple of ecosystem diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dhruvmanila on 2025-06-23 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-23 15:01</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">more-itertools (https://github.com/more-itertools/more-itertools)
+- warning[possibly-unresolved-reference] more_itertools/more.py:184:24: Name `dl_split` used when possibly not defined
+- warning[possibly-unresolved-reference] more_itertools/more.py:184:24: Name `dl_split` used when possibly not defined
+- warning[possibly-unresolved-reference] more_itertools/more.py:185:24: Name `dl_split` used when possibly not defined
+- warning[possibly-unresolved-reference] more_itertools/more.py:185:24: Name `dl_split` used when possibly not defined
+- Found 51 diagnostics
++ Found 47 diagnostics
+
+pyinstrument (https://github.com/joerick/pyinstrument)
+- warning[possibly-unbound-attribute] pyinstrument/vendor/appdirs.py:501:17: Attribute `QueryValueEx` on type `&lt;module 'winreg'&gt; | Unknown` is possibly unbound
+- warning[possibly-unbound-attribute] pyinstrument/vendor/appdirs.py:501:17: Attribute `QueryValueEx` on type `&lt;module 'winreg'&gt; | Unknown` is possibly unbound
+- Found 54 diagnostics
++ Found 52 diagnostics
+
+beartype (https://github.com/beartype/beartype)
+- error[missing-argument] beartype/_util/func/arg/utilfuncarglen.py:144:9: No argument provided for required parameter `func` of function `get_func_args_lens`
+- error[missing-argument] beartype/_util/func/arg/utilfuncarglen.py:144:9: No argument provided for required parameter `func` of function `get_func_args_lens`
+- error[missing-argument] beartype/_util/func/arg/utilfuncarglen.py:144:9: No argument provided for required parameter `func` of function `get_func_args_lens`
+- error[missing-argument] beartype/_util/func/arg/utilfuncarglen.py:144:9: No argument provided for required parameter `func` of function `get_func_args_lens`
+- Found 581 diagnostics
++ Found 577 diagnostics
+
+yarl (https://github.com/aio-libs/yarl)
+- warning[possibly-unresolved-reference] yarl/_url.py:1529:33: Name `invalid` used when possibly not defined
+- warning[possibly-unresolved-reference] yarl/_url.py:1529:33: Name `invalid` used when possibly not defined
+- warning[possibly-unresolved-reference] yarl/_url.py:1529:33: Name `invalid` used when possibly not defined
+- warning[possibly-unresolved-reference] yarl/_url.py:1529:50: Name `invalid` used when possibly not defined
+- warning[possibly-unresolved-reference] yarl/_url.py:1529:50: Name `invalid` used when possibly not defined
+- warning[possibly-unresolved-reference] yarl/_url.py:1529:50: Name `invalid` used when possibly not defined
+- Found 158 diagnostics
++ Found 152 diagnostics
+
+jinja (https://github.com/pallets/jinja)
+- error[invalid-argument-type] tests/test_loader.py:399:38: Argument to bound method `get_source` is incorrect: Expected `Environment`, found `None`
+- error[invalid-argument-type] tests/test_loader.py:399:38: Argument to bound method `get_source` is incorrect: Expected `Environment`, found `None`
+- error[invalid-argument-type] tests/test_loader.py:399:38: Argument to bound method `get_source` is incorrect: Expected `Environment`, found `None`
+- Found 208 diagnostics
++ Found 205 diagnostics
+
+kornia (https://github.com/kornia/kornia)
+- warning[possibly-unbound-attribute] kornia/augmentation/container/video.py:277:36: Attribute `size` on type `Unknown | Boxes` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/augmentation/container/video.py:277:36: Attribute `size` on type `Unknown | Boxes` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/augmentation/container/video.py:277:51: Attribute `size` on type `Unknown | Boxes` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/augmentation/container/video.py:277:51: Attribute `size` on type `Unknown | Boxes` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/augmentation/container/video.py:297:36: Attribute `size` on type `Unknown | Boxes` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/augmentation/container/video.py:297:36: Attribute `size` on type `Unknown | Boxes` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/augmentation/container/video.py:297:51: Attribute `size` on type `Unknown | Boxes` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/augmentation/container/video.py:297:51: Attribute `size` on type `Unknown | Boxes` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/augmentation/container/video.py:317:36: Attribute `size` on type `Unknown | Keypoints` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/augmentation/container/video.py:317:36: Attribute `size` on type `Unknown | Keypoints` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/augmentation/container/video.py:317:51: Attribute `size` on type `Unknown | Keypoints` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/augmentation/container/video.py:317:51: Attribute `size` on type `Unknown | Keypoints` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/augmentation/container/video.py:337:36: Attribute `size` on type `Unknown | Keypoints` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/augmentation/container/video.py:337:36: Attribute `size` on type `Unknown | Keypoints` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/augmentation/container/video.py:337:51: Attribute `size` on type `Unknown | Keypoints` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/augmentation/container/video.py:337:51: Attribute `size` on type `Unknown | Keypoints` is possibly unbound
+- error[unresolved-attribute] kornia/core/mixin/image_module.py:66:63: Type `(Any, /) -&gt; Any` has no attribute `__code__`
+- error[unresolved-attribute] kornia/core/mixin/image_module.py:66:63: Type `(Any, /) -&gt; Any` has no attribute `__code__`
+- error[unresolved-attribute] kornia/core/mixin/image_module.py:66:63: Type `(Any, /) -&gt; Any` has no attribute `__code__`
+- error[unresolved-attribute] kornia/core/module.py:72:63: Type `(Any, /) -&gt; Any` has no attribute `__code__`
+- error[unresolved-attribute] kornia/core/module.py:72:63: Type `(Any, /) -&gt; Any` has no attribute `__code__`
+- error[unresolved-attribute] kornia/core/module.py:72:63: Type `(Any, /) -&gt; Any` has no attribute `__code__`
+- warning[possibly-unresolved-reference] kornia/feature/dedode/transformer/layers/attention.py:89:19: Name `unbind` used when possibly not defined
+- warning[possibly-unresolved-reference] kornia/feature/dedode/transformer/layers/attention.py:89:19: Name `unbind` used when possibly not defined
+- warning[possibly-unresolved-reference] kornia/feature/dedode/transformer/layers/attention.py:89:19: Name `unbind` used when possibly not defined
+- warning[possibly-unresolved-reference] kornia/feature/lightglue.py:629:41: Name `i` used when possibly not defined
+- warning[possibly-unresolved-reference] kornia/feature/lightglue.py:629:41: Name `i` used when possibly not defined
+- warning[possibly-unbound-attribute] kornia/utils/draw.py:379:38: Attribute `shape` on type `Unknown | list[Unknown]` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/utils/draw.py:379:38: Attribute `shape` on type `Unknown | list[Unknown]` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/utils/draw.py:379:38: Attribute `shape` on type `Unknown | list[Unknown]` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/utils/draw.py:379:38: Attribute `shape` on type `Unknown | list[Unknown]` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/utils/draw.py:379:38: Attribute `shape` on type `Unknown | list[Unknown]` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/utils/draw.py:379:54: Attribute `device` on type `Unknown | list[Unknown]` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/utils/draw.py:379:54: Attribute `device` on type `Unknown | list[Unknown]` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/utils/draw.py:379:54: Attribute `device` on type `Unknown | list[Unknown]` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/utils/draw.py:379:54: Attribute `device` on type `Unknown | list[Unknown]` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/utils/draw.py:379:54: Attribute `device` on type `Unknown | list[Unknown]` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/utils/draw.py:379:71: Attribute `dtype` on type `Unknown | list[Unknown]` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/utils/draw.py:379:71: Attribute `dtype` on type `Unknown | list[Unknown]` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/utils/draw.py:379:71: Attribute `dtype` on type `Unknown | list[Unknown]` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/utils/draw.py:379:71: Attribute `dtype` on type `Unknown | list[Unknown]` is possibly unbound
+- warning[possibly-unbound-attribute] kornia/utils/draw.py:379:71: Attribute `dtype` on type `Unknown | list[Unknown]` is possibly unbound
+- Found 936 diagnostics
++ Found 894 diagnostics
+
+aiortc (https://github.com/aiortc/aiortc)
+- warning[possibly-unbound-attribute] src/aiortc/sdp.py:405:46: Attribute `split` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] src/aiortc/sdp.py:405:46: Attribute `split` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] src/aiortc/sdp.py:463:43: Attribute `split` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] src/aiortc/sdp.py:463:43: Attribute `split` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] src/aiortc/sdp.py:471:50: Attribute `split` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] src/aiortc/sdp.py:471:50: Attribute `split` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] src/aiortc/sdp.py:490:38: Attribute `split` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] src/aiortc/sdp.py:490:38: Attribute `split` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] src/aiortc/sdp.py:500:50: Attribute `split` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] src/aiortc/sdp.py:500:50: Attribute `split` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] src/aiortc/sdp.py:517:50: Attribute `split` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] src/aiortc/sdp.py:517:50: Attribute `split` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] src/aiortc/sdp.py:524:47: Attribute `split` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] src/aiortc/sdp.py:524:47: Attribute `split` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] src/aiortc/sdp.py:546:50: Attribute `split` on type `str | None` is possibly unbound
+- warning[possibly-unbound-attribute] src/aiortc/sdp.py:546:50: Attribute `split` on type `str | None` is possibly unbound
+- Found 120 diagnostics
++ Found 104 diagnostics
+
+svcs (https://github.com/hynek/svcs)
+- warning[possibly-unbound-attribute] tests/typing/aiohttp.py:48:42: Attribute `aiohttp` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/aiohttp.py:48:42: Attribute `aiohttp` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/aiohttp.py:48:42: Attribute `aiohttp` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/aiohttp.py:48:42: Attribute `aiohttp` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/aiohttp.py:48:42: Attribute `aiohttp` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/aiohttp.py:48:42: Attribute `aiohttp` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/aiohttp.py:48:42: Attribute `aiohttp` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/aiohttp.py:48:42: Attribute `aiohttp` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/aiohttp.py:48:42: Attribute `aiohttp` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/aiohttp.py:48:42: Attribute `aiohttp` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/flask.py:43:32: Attribute `flask` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/flask.py:43:32: Attribute `flask` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/flask.py:43:32: Attribute `flask` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/flask.py:43:32: Attribute `flask` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/flask.py:43:32: Attribute `flask` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/flask.py:43:32: Attribute `flask` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/flask.py:43:32: Attribute `flask` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/flask.py:43:32: Attribute `flask` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/flask.py:43:32: Attribute `flask` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/flask.py:43:32: Attribute `flask` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/pyramid.py:46:32: Attribute `pyramid` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/pyramid.py:46:32: Attribute `pyramid` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/pyramid.py:46:32: Attribute `pyramid` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/pyramid.py:46:32: Attribute `pyramid` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/pyramid.py:46:32: Attribute `pyramid` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/pyramid.py:46:32: Attribute `pyramid` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/pyramid.py:46:32: Attribute `pyramid` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/pyramid.py:46:32: Attribute `pyramid` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/pyramid.py:46:32: Attribute `pyramid` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/pyramid.py:46:32: Attribute `pyramid` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/starlette.py:80:42: Attribute `starlette` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/starlette.py:80:42: Attribute `starlette` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/starlette.py:80:42: Attribute `starlette` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/starlette.py:80:42: Attribute `starlette` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/starlette.py:80:42: Attribute `starlette` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/starlette.py:80:42: Attribute `starlette` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/starlette.py:80:42: Attribute `starlette` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/starlette.py:80:42: Attribute `starlette` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/starlette.py:80:42: Attribute `starlette` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- warning[possibly-unbound-attribute] tests/typing/starlette.py:80:42: Attribute `starlette` on type `&lt;module 'svcs'&gt;` is possibly unbound
+- Found 124 diagnostics
++ Found 84 diagnostics
+
+black (https://github.com/psf/black)
+- warning[possibly-unbound-attribute] src/blib2to3/pgen2/conv.py:77:34: Attribute `groups` on type `Match[str] | None` is possibly unbound
+- warning[possibly-unbound-attribute] src/blib2to3/pgen2/conv.py:77:34: Attribute `groups` on type `Match[str] | None` is possibly unbound
+- Found 71 diagnostics
++ Found 69 diagnostics
+
+comtypes (https://github.com/enthought/comtypes)
+- error[unresolved-attribute] comtypes/server/inprocserver.py:101:20: Type `&lt;module 'winreg'&gt;` has no attribute `QueryValueEx`
+- error[unresolved-attribute] comtypes/server/inprocserver.py:101:20: Type `&lt;module 'winreg'&gt;` has no attribute `QueryValueEx`
+- error[unresolved-attribute] comtypes/server/inprocserver.py:108:23: Type `&lt;module 'winreg'&gt;` has no attribute `QueryValueEx`
+- error[unresolved-attribute] comtypes/server/inprocserver.py:108:23: Type `&lt;module 'winreg'&gt;` has no attribute `QueryValueEx`
+- warning[possibly-unresolved-reference] comtypes/test/test_dispifc_records.py:75:14: Name `ComtypesCppTestSrvLib` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_dispifc_records.py:75:14: Name `ComtypesCppTestSrvLib` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_dispifc_records.py:75:14: Name `ComtypesCppTestSrvLib` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_dispifc_records.py:75:14: Name `ComtypesCppTestSrvLib` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_dispifc_records.py:75:14: Name `ComtypesCppTestSrvLib` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_recordinfo.py:43:29: Name `StructRecordParamTest` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_recordinfo.py:60:29: Name `StructRecordParamTest` used when possibly not defined
+- error[invalid-argument-type] comtypes/test/test_w_getopt.py:9:37: Argument to function `w_getopt` is incorrect: Expected `str`, found `list[LiteralString]`
+- error[invalid-argument-type] comtypes/test/test_w_getopt.py:9:37: Argument to function `w_getopt` is incorrect: Expected `str`, found `list[LiteralString]`
+- error[invalid-argument-type] comtypes/test/test_w_getopt.py:17:37: Argument to function `w_getopt` is incorrect: Expected `str`, found `list[Unknown]`
+- error[invalid-argument-type] comtypes/test/test_w_getopt.py:17:37: Argument to function `w_getopt` is incorrect: Expected `str`, found `list[Unknown]`
+- Found 547 diagnostics
++ Found 532 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
+- warning[possibly-unbound-attribute] dulwich/client.py:799:26: Attribute `split` on type `bytes | None` is possibly unbound
+- warning[possibly-unbound-attribute] dulwich/client.py:799:26: Attribute `split` on type `bytes | None` is possibly unbound
+- error[invalid-argument-type] dulwich/object_store.py:1591:13: Argument to function `_collect_ancestors` is incorrect: Expected `frozenset[Unknown | bytes]`, found `(Unknown &amp; ~None) | set[Unknown]`
+- error[invalid-argument-type] dulwich/object_store.py:1591:13: Argument to function `_collect_ancestors` is incorrect: Expected `frozenset[Unknown | bytes]`, found `(Unknown &amp; ~None) | set[Unknown]`
+- warning[possibly-unbound-attribute] dulwich/tests/utils.py:238:36: Attribute `get_raw` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] dulwich/tests/utils.py:238:36: Attribute `get_raw` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] dulwich/tests/utils.py:257:44: Attribute `get_raw` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] dulwich/tests/utils.py:257:44: Attribute `get_raw` on type `Unknown | None` is possibly unbound
+- Found 171 diagnostics
++ Found 163 diagnostics
+
+alerta (https://github.com/alerta/alerta)
+- error[invalid-argument-type] alerta/management/views.py:179:88: Argument to function `process_action` is incorrect: Expected `int`, found `None`
+- error[invalid-argument-type] alerta/management/views.py:179:88: Argument to function `process_action` is incorrect: Expected `int`, found `None`
+- error[invalid-argument-type] alerta/management/views.py:179:88: Argument to function `process_action` is incorrect: Expected `int`, found `None`
+- error[invalid-argument-type] alerta/management/views.py:179:88: Argument to function `process_action` is incorrect: Expected `int`, found `None`
+- error[invalid-argument-type] alerta/management/views.py:183:90: Argument to function `process_action` is incorrect: Expected `int`, found `int | None`
+- error[invalid-argument-type] alerta/management/views.py:183:90: Argument to function `process_action` is incorrect: Expected `int`, found `int | None`
+- error[invalid-argument-type] alerta/management/views.py:183:90: Argument to function `process_action` is incorrect: Expected `int`, found `int | None`
+- error[invalid-argument-type] alerta/management/views.py:183:90: Argument to function `process_action` is incorrect: Expected `int`, found `int | None`
+- error[invalid-argument-type] alerta/management/views.py:199:88: Argument to function `process_action` is incorrect: Expected `int`, found `None`
+- error[invalid-argument-type] alerta/management/views.py:199:88: Argument to function `process_action` is incorrect: Expected `int`, found `None`
+- error[invalid-argument-type] alerta/management/views.py:199:88: Argument to function `process_action` is incorrect: Expected `int`, found `None`
+- error[invalid-argument-type] alerta/management/views.py:199:88: Argument to function `process_action` is incorrect: Expected `int`, found `None`
+- error[invalid-argument-type] alerta/management/views.py:203:90: Argument to function `process_action` is incorrect: Expected `int`, found `int | None`
+- error[invalid-argument-type] alerta/management/views.py:203:90: Argument to function `process_action` is incorrect: Expected `int`, found `int | None`
+- error[invalid-argument-type] alerta/management/views.py:203:90: Argument to function `process_action` is incorrect: Expected `int`, found `int | None`
+- error[invalid-argument-type] alerta/management/views.py:203:90: Argument to function `process_action` is incorrect: Expected `int`, found `int | None`
+- error[invalid-argument-type] alerta/tasks.py:23:80: Argument to function `process_action` is incorrect: Expected `int`, found `int | None`
+- error[invalid-argument-type] alerta/tasks.py:23:80: Argument to function `process_action` is incorrect: Expected `int`, found `int | None`
+- error[invalid-argument-type] alerta/tasks.py:23:80: Argument to function `process_action` is incorrect: Expected `int`, found `int | None`
+- error[invalid-argument-type] alerta/tasks.py:23:80: Argument to function `process_action` is incorrect: Expected `int`, found `int | None`
+- error[invalid-argument-type] alerta/tasks.py:37:61: Argument to function `process_status` is incorrect: Expected `str`, found `Unknown | (Unknown &amp; ~AlwaysFalsy) | None`
+- error[invalid-argument-type] alerta/tasks.py:37:61: Argument to function `process_status` is incorrect: Expected `str`, found `Unknown | (Unknown &amp; ~AlwaysFalsy) | None`
+- error[invalid-argument-type] alerta/tasks.py:37:61: Argument to function `process_status` is incorrect: Expected `str`, found `Unknown | (Unknown &amp; ~AlwaysFalsy) | None`
+- error[invalid-argument-type] alerta/views/alerts.py:164:76: Argument to function `process_action` is incorrect: Expected `int`, found `int | None`
+- error[invalid-argument-type] alerta/views/alerts.py:164:76: Argument to function `process_action` is incorrect: Expected `int`, found `int | None`
+- error[invalid-argument-type] alerta/views/alerts.py:164:76: Argument to function `process_action` is incorrect: Expected `int`, found `int | None`
+- error[invalid-argument-type] alerta/views/alerts.py:164:76: Argument to function `process_action` is incorrect: Expected `int`, found `int | None`
+- Found 485 diagnostics
++ Found 458 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- error[unresolved-reference] src/graphql/language/visitor.py:341:44: Name `enter_list` used when not defined
+- error[unresolved-reference] src/graphql/language/visitor.py:341:44: Name `enter_list` used when not defined
+- error[unresolved-reference] src/graphql/language/visitor.py:354:44: Name `leave_list` used when not defined
+- error[unresolved-reference] src/graphql/language/visitor.py:354:44: Name `leave_list` used when not defined
+- Found 386 diagnostics
++ Found 382 diagnostics
+
+pyjwt (https://github.com/jpadilla/pyjwt)
+- warning[possibly-unresolved-reference] jwt/algorithms.py:524:28: Name `rsa_recover_prime_factors` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:524:28: Name `rsa_recover_prime_factors` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/utils.py:78:12: Name `decode_dss_signature` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/utils.py:78:12: Name `decode_dss_signature` used when possibly not defined
+- Found 184 diagnostics
++ Found 180 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- error[invalid-argument-type] strawberry/experimental/pydantic/conversion.py:47:38: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `(Unknown &amp; ~None) | Unknown | None`
+- error[invalid-argument-type] strawberry/experimental/pydantic/conversion.py:47:38: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `(Unknown &amp; ~None) | Unknown | None`
+- Found 375 diagnostics
++ Found 373 diagnostics
+
+pybind11 (https://github.com/pybind/pybind11)
+- warning[possibly-unbound-attribute] tests/extra_python_package/test_files.py:257:31: Attribute `groups` on type `Unknown | Match[str] | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/extra_python_package/test_files.py:257:31: Attribute `groups` on type `Unknown | Match[str] | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/extra_python_package/test_files.py:312:31: Attribute `groups` on type `Unknown | Match[str] | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/extra_python_package/test_files.py:312:31: Attribute `groups` on type `Unknown | Match[str] | None` is possibly unbound
+- Found 219 diagnostics
++ Found 215 diagnostics
+
+rich (https://github.com/Textualize/rich)
+- error[missing-argument] rich/color.py:521:24: No arguments provided for required parameters `r`, `g`, `b` of function `rgb_to_hls`
+- error[missing-argument] rich/color.py:521:24: No arguments provided for required parameters `r`, `g`, `b` of function `rgb_to_hls`
+- error[missing-argument] rich/color.py:521:24: No arguments provided for required parameters `r`, `g`, `b` of function `rgb_to_hls`
+- warning[possibly-unresolved-reference] rich/palette.py:92:34: Name `colorsys` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/palette.py:92:34: Name `colorsys` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/palette.py:92:34: Name `colorsys` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/palette.py:93:34: Name `colorsys` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/palette.py:93:34: Name `colorsys` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/palette.py:93:34: Name `colorsys` used when possibly not defined
+- Found 379 diagnostics
++ Found 370 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
+- warning[possibly-unresolved-reference] sockeye/convert_deepspeed.py:60:32: Name `parse_model_state` used when possibly not defined
+- warning[possibly-unresolved-reference] sockeye/convert_deepspeed.py:60:32: Name `parse_model_state` used when possibly not defined
+- warning[possibly-unresolved-reference] sockeye/convert_deepspeed.py:60:32: Name `parse_model_state` used when possibly not defined
+- error[non-subscriptable] sockeye/data_io.py:771:58: Cannot subscript object of type `Iterable[Unknown]` with no `__getitem__` method
+- error[non-subscriptable] sockeye/data_io.py:771:58: Cannot subscript object of type `Iterable[Unknown]` with no `__getitem__` method
+- error[invalid-argument-type] sockeye/data_io.py:1149:62: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `list[tuple[int | float | None, int | float | None]] | None`
+- error[invalid-argument-type] sockeye/data_io.py:1149:62: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `list[tuple[int | float | None, int | float | None]] | None`
+- error[invalid-argument-type] sockeye/data_io.py:1149:62: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `list[tuple[int | float | None, int | float | None]] | None`
+- error[invalid-argument-type] sockeye/data_io.py:1149:62: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `list[tuple[int | float | None, int | float | None]] | None`
+- warning[possibly-unbound-attribute] sockeye/inference.py:651:34: Attribute `target_ids_list` on type `NBestTranslations | None` is possibly unbound
+- warning[possibly-unbound-attribute] sockeye/inference.py:651:34: Attribute `target_ids_list` on type `NBestTranslations | None` is possibly unbound
+- warning[possibly-unbound-attribute] sockeye/inference.py:651:82: Attribute `scores` on type `NBestTranslations | None` is possibly unbound
+- warning[possibly-unbound-attribute] sockeye/inference.py:651:82: Attribute `scores` on type `NBestTranslations | None` is possibly unbound
+- warning[possibly-unresolved-reference] sockeye/train.py:1141:37: Name `apex` used when possibly not defined
+- warning[possibly-unresolved-reference] sockeye/train.py:1141:37: Name `apex` used when possibly not defined
+- warning[possibly-unresolved-reference] sockeye/train.py:1172:53: Name `deepspeed` used when possibly not defined
+- warning[possibly-unresolved-reference] sockeye/train.py:1172:53: Name `deepspeed` used when possibly not defined
+- warning[possibly-unresolved-reference] sockeye/train.py:1172:53: Name `deepspeed` used when possibly not defined
+- warning[possibly-unresolved-reference] sockeye/train.py:1172:53: Name `deepspeed` used when possibly not defined
+- error[invalid-argument-type] test/unit/test_inference.py:177:114: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `list[Any] | None`
+- error[invalid-argument-type] test/unit/test_inference.py:177:114: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `list[Any] | None`
+- Found 363 diagnostics
++ Found 342 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- warning[redundant-cast] pymongo/asynchronous/cursor.py:987:47: Value is already of type `SupportsItems[Unknown, Unknown]`
+- warning[redundant-cast] pymongo/asynchronous/cursor.py:987:47: Value is already of type `SupportsItems[Unknown, Unknown]`
+- warning[redundant-cast] pymongo/asynchronous/cursor.py:987:47: Value is already of type `SupportsItems[Unknown, Unknown]`
+- warning[redundant-cast] pymongo/synchronous/cursor.py:985:47: Value is already of type `SupportsItems[Unknown, Unknown]`
+- warning[redundant-cast] pymongo/synchronous/cursor.py:985:47: Value is already of type `SupportsItems[Unknown, Unknown]`
+- warning[redundant-cast] pymongo/synchronous/cursor.py:985:47: Value is already of type `SupportsItems[Unknown, Unknown]`
+- Found 529 diagnostics
++ Found 523 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
+- warning[possibly-unresolved-reference] mkosi/config.py:997:35: Name `r` used when possibly not defined
+- warning[possibly-unresolved-reference] mkosi/config.py:997:35: Name `r` used when possibly not defined
+- Found 136 diagnostics
++ Found 134 diagnostics
+
+flake8-pyi (https://github.com/PyCQA/flake8-pyi)
+- error[invalid-argument-type] flake8_pyi/visitor.py:1731:21: Argument to function `_analyse_exit_method_arg` is incorrect: Expected `BinOp`, found `expr`
+- error[invalid-argument-type] flake8_pyi/visitor.py:1731:21: Argument to function `_analyse_exit_method_arg` is incorrect: Expected `BinOp`, found `expr`
+- error[invalid-argument-type] flake8_pyi/visitor.py:1749:21: Argument to function `_analyse_exit_method_arg` is incorrect: Expected `BinOp`, found `expr`
+- error[invalid-argument-type] flake8_pyi/visitor.py:1749:21: Argument to function `_analyse_exit_method_arg` is incorrect: Expected `BinOp`, found `expr`
+- error[invalid-argument-type] flake8_pyi/visitor.py:1762:21: Argument to function `_analyse_exit_method_arg` is incorrect: Expected `BinOp`, found `expr`
+- error[invalid-argument-type] flake8_pyi/visitor.py:1762:21: Argument to function `_analyse_exit_method_arg` is incorrect: Expected `BinOp`, found `expr`
+- Found 16 diagnostics
++ Found 10 diagnostics
+
+schemathesis (https://github.com/schemathesis/schemathesis)
+- warning[possibly-unresolved-reference] src/schemathesis/specs/openapi/schemas.py:314:32: Name `paths` used when possibly not defined
+- warning[possibly-unresolved-reference] src/schemathesis/specs/openapi/schemas.py:314:32: Name `paths` used when possibly not defined
+- Found 314 diagnostics
++ Found 312 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
+- warning[possibly-unresolved-reference] cloudinit/analyze/dump.py:113:39: Name `sep` used when possibly not defined
+- warning[possibly-unresolved-reference] cloudinit/analyze/dump.py:113:39: Name `sep` used when possibly not defined
+- warning[possibly-unbound-attribute] cloudinit/net/dhcp.py:353:17: Attribute `build_dhclient_cmd` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] cloudinit/net/dhcp.py:353:17: Attribute `build_dhclient_cmd` on type `Unknown | None` is possibly unbound
+- error[invalid-argument-type] cloudinit/sources/__init__.py:1113:13: Argument to function `find_module` is incorrect: Expected `str`, found `str | None`
+- error[invalid-argument-type] cloudinit/sources/__init__.py:1113:13: Argument to function `find_module` is incorrect: Expected `str`, found `str | None`
+- warning[possibly-unresolved-reference] cloudinit/ssh_util.py:435:38: Name `key_paths` used when possibly not defined
+- warning[possibly-unresolved-reference] cloudinit/ssh_util.py:435:38: Name `key_paths` used when possibly not defined
+- error[missing-argument] tests/unittests/config/test_cc_set_passwords.py:169:23: No argument provided for required parameter `iterable` of function `__new__`
+- error[missing-argument] tests/unittests/config/test_cc_set_passwords.py:169:23: No argument provided for required parameter `iterable` of function `__new__`
+- error[missing-argument] tests/unittests/config/test_cc_set_passwords.py:194:36: No argument provided for required parameter `iterable` of function `__new__`
+- error[missing-argument] tests/unittests/config/test_cc_set_passwords.py:194:36: No argument provided for required parameter `iterable` of function `__new__`
+- error[missing-argument] tests/unittests/config/test_cc_set_passwords.py:194:36: No argument provided for required parameter `iterable` of function `__new__`
+- error[unresolved-attribute] tests/unittests/config/test_modules.py:37:37: Type `ModuleType` has no attribute `meta`
+- error[unresolved-attribute] tests/unittests/config/test_modules.py:37:37: Type `ModuleType` has no attribute `meta`
+- Found 740 diagnostics
++ Found 725 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+- warning[possibly-unresolved-reference] cki_lib/yaml.py:128:32: Name `schema` used when possibly not defined
+- warning[possibly-unresolved-reference] cki_lib/yaml.py:128:32: Name `schema` used when possibly not defined
+- Found 164 diagnostics
++ Found 162 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
+- warning[possibly-unbound-attribute] tests/ignite/metrics/test_roc_curve.py:171:65: Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` is possibly unbound
+- warning[possibly-unbound-attribute] tests/ignite/metrics/test_roc_curve.py:171:65: Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` is possibly unbound
+- warning[possibly-unbound-attribute] tests/ignite/metrics/test_roc_curve.py:171:65: Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` is possibly unbound
+- warning[possibly-unbound-attribute] tests/ignite/metrics/test_roc_curve.py:171:82: Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` is possibly unbound
+- warning[possibly-unbound-attribute] tests/ignite/metrics/test_roc_curve.py:171:82: Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` is possibly unbound
+- warning[possibly-unbound-attribute] tests/ignite/metrics/test_roc_curve.py:171:82: Attribute `cpu` on type `Unknown | int | float | list[int | float] | list[str] | list[Any]` is possibly unbound
+- Found 2209 diagnostics
++ Found 2203 diagnostics
+
+optuna (https://github.com/optuna/optuna)
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_contour.py:82:17: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_contour.py:82:17: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_contour.py:89:20: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_contour.py:89:20: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_contour.py:99:20: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_contour.py:99:20: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_edf.py:63:13: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_edf.py:63:13: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_hypervolume_history.py:65:13: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_hypervolume_history.py:65:13: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_intermediate_values.py:44:13: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_intermediate_values.py:44:13: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_optimization_history.py:75:13: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_optimization_history.py:75:13: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_parallel_coordinate.py:68:15: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_parallel_coordinate.py:68:15: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_param_importances.py:83:15: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_param_importances.py:83:15: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_pareto_front.py:106:13: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_pareto_front.py:106:13: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_rank.py:71:17: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_rank.py:71:17: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_rank.py:75:20: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_rank.py:75:20: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_rank.py:79:20: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_rank.py:79:20: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_slice.py:64:17: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_slice.py:64:17: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_slice.py:74:20: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_slice.py:74:20: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_slice.py:84:20: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_slice.py:84:20: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_terminator_improvement.py:79:13: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_terminator_improvement.py:79:13: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_timeline.py:71:15: Name `plt` used when possibly not defined
+- warning[possibly-unresolved-reference] optuna/visualization/matplotlib/_timeline.py:71:15: Name `plt` used when possibly not defined
+- error[unresolved-attribute] tests/samplers_tests/tpe_tests/test_multi_objective_sampler.py:320:34: Type `&lt;module 'optuna.samplers._tpe'&gt;` has no attribute `sampler`
+- error[unresolved-attribute] tests/samplers_tests/tpe_tests/test_multi_objective_sampler.py:320:34: Type `&lt;module 'optuna.samplers._tpe'&gt;` has no attribute `sampler`
+- error[unresolved-attribute] tests/samplers_tests/tpe_tests/test_sampler.py:795:38: Type `&lt;module 'optuna.samplers._tpe'&gt;` has no attribute `sampler`
+- error[unresolved-attribute] tests/samplers_tests/tpe_tests/test_sampler.py:795:38: Type `&lt;module 'optuna.samplers._tpe'&gt;` has no attribute `sampler`
+- error[unresolved-attribute] tests/samplers_tests/tpe_tests/test_sampler.py:855:38: Type `&lt;module 'optuna.samplers._tpe'&gt;` has no attribute `sampler`
+- error[unresolved-attribute] tests/samplers_tests/tpe_tests/test_sampler.py:855:38: Type `&lt;module 'optuna.samplers._tpe'&gt;` has no attribute `sampler`
+- error[unresolved-attribute] tests/samplers_tests/tpe_tests/test_sampler.py:879:38: Type `&lt;module 'optuna.samplers._tpe'&gt;` has no attribute `sampler`
+- error[unresolved-attribute] tests/samplers_tests/tpe_tests/test_sampler.py:879:38: Type `&lt;module 'optuna.samplers._tpe'&gt;` has no attribute `sampler`
+- error[unresolved-attribute] tests/samplers_tests/tpe_tests/test_sampler.py:917:38: Type `&lt;module 'optuna.samplers._tpe'&gt;` has no attribute `sampler`
+- error[unresolved-attribute] tests/samplers_tests/tpe_tests/test_sampler.py:917:38: Type `&lt;module 'optuna.samplers._tpe'&gt;` has no attribute `sampler`
+- error[unresolved-attribute] tests/samplers_tests/tpe_tests/test_sampler.py:947:38: Type `&lt;module 'optuna.samplers._tpe'&gt;` has no attribute `sampler`
+- error[unresolved-attribute] tests/samplers_tests/tpe_tests/test_sampler.py:947:38: Type `&lt;module 'optuna.samplers._tpe'&gt;` has no attribute `sampler`
+- Found 1013 diagnostics
++ Found 965 diagnostics
+
+apprise (https://github.com/caronc/apprise)
+- error[unresolved-attribute] apprise/cli.py:820:49: Type `AppriseAsset` has no attribute `storage_path`
+- error[unresolved-attribute] apprise/cli.py:820:49: Type `AppriseAsset` has no attribute `storage_path`
+- error[invalid-argument-type] apprise/cli.py:901:45: Argument to bound method `find` is incorrect: Expected `str`, found `None | @Todo(list comprehension type)`
+- error[invalid-argument-type] apprise/cli.py:901:45: Argument to bound method `find` is incorrect: Expected `str`, found `None | @Todo(list comprehension type)`
+- error[unresolved-attribute] apprise/plugins/custom_xml.py:267:41: Type `&lt;class 'NotifyXML'&gt;` has no attribute `escape_html`
+- error[unresolved-attribute] apprise/plugins/custom_xml.py:267:41: Type `&lt;class 'NotifyXML'&gt;` has no attribute `escape_html`
+- error[unresolved-attribute] apprise/plugins/custom_xml.py:269:43: Type `&lt;class 'NotifyXML'&gt;` has no attribute `escape_html`
+- error[unresolved-attribute] apprise/plugins/custom_xml.py:269:43: Type `&lt;class 'NotifyXML'&gt;` has no attribute `escape_html`
+- error[unresolved-attribute] apprise/plugins/custom_xml.py:271:47: Type `&lt;class 'NotifyXML'&gt;` has no attribute `escape_html`
+- error[unresolved-attribute] apprise/plugins/custom_xml.py:271:47: Type `&lt;class 'NotifyXML'&gt;` has no attribute `escape_html`
+- error[unresolved-attribute] apprise/plugins/matrix.py:1209:17: Type `&lt;class 'NotifyMatrix'&gt;` has no attribute `quote`
+- error[unresolved-attribute] apprise/plugins/matrix.py:1209:17: Type `&lt;class 'NotifyMatrix'&gt;` has no attribute `quote`
+- warning[possibly-unresolved-reference] apprise/utils/pgp.py:286:33: Name `pgpy` used when possibly not defined
+- warning[possibly-unresolved-reference] apprise/utils/pgp.py:286:33: Name `pgpy` used when possibly not defined
+- error[unresolved-attribute] test/test_apprise_utils.py:2764:31: Type `&lt;module 'apprise.utils'&gt;` has no attribute `base64`
+- error[unresolved-attribute] test/test_apprise_utils.py:2764:31: Type `&lt;module 'apprise.utils'&gt;` has no attribute `base64`
+- error[unresolved-attribute] test/test_apprise_utils.py:2771:35: Type `&lt;module 'apprise.utils'&gt;` has no attribute `base64`
+- error[unresolved-attribute] test/test_apprise_utils.py:2771:35: Type `&lt;module 'apprise.utils'&gt;` has no attribute `base64`
+- error[unresolved-attribute] test/test_apprise_utils.py:2786:21: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2786:21: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2797:21: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2797:21: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2803:21: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2803:21: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2807:21: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2807:21: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2813:21: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2813:21: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2817:21: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2817:21: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2823:21: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2823:21: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2827:21: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2827:21: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2833:21: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2833:21: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2842:9: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2842:9: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2847:9: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2847:9: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2853:25: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2853:25: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2865:25: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2865:25: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2877:25: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2877:25: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2887:25: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2887:25: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2898:25: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_apprise_utils.py:2898:25: Type `&lt;module 'apprise.utils'&gt;` has no attribute `disk`
+- error[unresolved-attribute] test/test_config_base.py:214:17: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse`
+- error[unresolved-attribute] test/test_config_base.py:214:17: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse`
+- error[unresolved-attribute] test/test_config_base.py:235:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse`
+- error[unresolved-attribute] test/test_config_base.py:235:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse`
+- error[unresolved-attribute] test/test_config_base.py:268:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:268:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:309:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:309:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:330:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:330:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:362:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:362:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:371:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:371:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:390:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:390:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:462:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:462:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:478:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:478:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:500:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:500:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:513:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:513:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:533:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:533:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:552:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:552:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:585:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:585:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:595:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:595:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:610:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:610:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:624:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:624:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:639:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:639:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:655:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:655:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:672:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:672:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:690:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:690:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:708:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:708:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:725:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:725:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:750:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:750:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:798:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:798:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:845:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:845:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:869:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:869:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:906:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:906:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:926:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:926:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:991:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:991:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:1082:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:1082:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:1099:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:1099:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:1122:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:1122:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:1137:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:1137:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:1164:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:1164:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:1171:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:1171:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_text`
+- error[unresolved-attribute] test/test_config_base.py:1194:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:1194:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:1307:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:1307:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:1426:23: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:1426:23: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:1470:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_config_base.py:1470:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_plugin_email.py:1786:17: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse`
+- error[unresolved-attribute] test/test_plugin_email.py:1786:17: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse`
+- error[unresolved-attribute] test/test_plugin_email.py:1809:17: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse`
+- error[unresolved-attribute] test/test_plugin_email.py:1809:17: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse`
+- error[unresolved-attribute] test/test_plugin_signal.py:224:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_plugin_signal.py:224:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_plugin_signal.py:248:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_plugin_signal.py:248:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_plugin_title_maxlen.py:64:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_plugin_title_maxlen.py:64:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_plugin_title_maxlen.py:108:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- error[unresolved-attribute] test/test_plugin_title_maxlen.py:108:22: Type `&lt;class 'ConfigBase'&gt;` has no attribute `config_parse_yaml`
+- Found 4462 diagnostics
++ Found 4318 diagnostics
+
+colour (https://github.com/colour-science/colour)
+- error[invalid-argument-type] colour/characterisation/aces_it.py:1111:43: Argument to function `training_data_sds_to_RGB` is incorrect: Expected `MultiSpectralDistributions`, found `MultiSpectralDistributions | None | Unknown`
+- error[invalid-argument-type] colour/characterisation/aces_it.py:1111:43: Argument to function `training_data_sds_to_RGB` is incorrect: Expected `MultiSpectralDistributions`, found `MultiSpectralDistributions | None | Unknown`
+- error[call-non-callable] colour/colorimetry/spectrum.py:521:13: Object of type `None` is not callable
+- error[call-non-callable] colour/colorimetry/spectrum.py:521:13: Object of type `None` is not callable
+- error[call-non-callable] colour/colorimetry/spectrum.py:521:13: Object of type `None` is not callable
+- error[call-non-callable] colour/colorimetry/spectrum.py:522:13: Object of type `None` is not callable
+- error[call-non-callable] colour/colorimetry/spectrum.py:522:13: Object of type `None` is not callable
+- error[call-non-callable] colour/colorimetry/spectrum.py:522:13: Object of type `None` is not callable
+- error[call-non-callable] colour/colorimetry/spectrum.py:523:13: Object of type `None` is not callable
+- error[call-non-callable] colour/colorimetry/spectrum.py:523:13: Object of type `None` is not callable
+- error[call-non-callable] colour/colorimetry/spectrum.py:523:13: Object of type `None` is not callable
+- error[unresolved-attribute] colour/examples/characterisation/examples_aces_it.py:80:10: Type `&lt;module 'colour'&gt;` has no attribute `characterisation`
+- error[unresolved-attribute] colour/examples/characterisation/examples_aces_it.py:80:10: Type `&lt;module 'colour'&gt;` has no attribute `characterisation`
+- error[unresolved-attribute] colour/examples/characterisation/examples_aces_it.py:82:26: Type `&lt;module 'colour'&gt;` has no attribute `characterisation`
+- error[unresolved-attribute] colour/examples/characterisation/examples_aces_it.py:82:26: Type `&lt;module 'colour'&gt;` has no attribute `characterisation`
+- error[unresolved-attribute] colour/examples/graph/examples_graph.py:74:11: Type `&lt;module 'colour'&gt;` has no attribute `utilities`
+- error[unresolved-attribute] colour/examples/graph/examples_graph.py:74:11: Type `&lt;module 'colour'&gt;` has no attribute `utilities`
+- error[unresolved-attribute] colour/examples/graph/examples_graph.py:74:11: Type `&lt;module 'colour'&gt;` has no attribute `utilities`
+- Found 520 diagnostics
++ Found 502 diagnostics
+
+pwndbg (...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @dhruvmanila on 2025-06-23 16:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-06-23 16:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-06-23 16:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-06-23 16:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-06-23 16:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-06-23 16:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-06-23 16:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-06-23 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-06-23 16:40</div>
+            <div class="timeline-body"><p>Very nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-06-24 02:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-06-24 02:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-24 02:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:36 UTC
+    </footer>
+</body>
+</html>

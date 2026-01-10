@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Add environment variable to dump Salsa memory usage stats - astral-sh/ruff #18928</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Add environment variable to dump Salsa memory usage stats</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18928">#18928</a>
+        opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a>
+        on 2025-06-24 23:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-06-24 23:53</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Setting <code>TY_MEMORY_REPORT=full</code> will generate and print a memory usage report to the CLI after a <code>ty check</code> run:</p>
+<pre><code>=======SALSA STRUCTS=======
+`Definition`                                       metadata=7.24MB   fields=17.38MB  count=181062
+`Expression`                                       metadata=4.45MB   fields=5.94MB   count=92804
+`member_lookup_with_policy_::interned_arguments`   metadata=1.97MB   fields=2.25MB   count=35176
+...
+=======SALSA QUERIES=======
+`File -&gt; ty_python_semantic::semantic_index::SemanticIndex`
+    metadata=11.46MB  fields=88.86MB  count=1638
+`Definition -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=24.52MB  fields=86.68MB  count=146018
+`File -&gt; ruff_db::parsed::ParsedModule`
+    metadata=0.12MB   fields=69.06MB  count=1642
+...
+=======SALSA SUMMARY=======
+TOTAL MEMORY USAGE: 577.61MB
+    struct metadata = 29.00MB
+    struct fields = 35.68MB
+    memo metadata = 103.87MB
+    memo fields = 409.06MB
+</code></pre>
+<p>Eventually, we should integrate these numbers into CI in some form. The one limitation currently is that heap allocations in salsa structs (e.g. interned values) are not tracked, but memoized values should have full coverage. We may also want a peak memory usage counter (that accounts for non-salsa memory), but that is relatively simple to profile manually (e.g. <code>time -v ty check</code>) and would require a compile-time option to avoid runtime overhead.</p>
+<p>Depends on https://github.com/salsa-rs/salsa/pull/925.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @ibraheemdev on 2025-06-24 23:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ibraheemdev on 2025-06-24 23:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ibraheemdev on 2025-06-24 23:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @ibraheemdev on 2025-06-24 23:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @ibraheemdev on 2025-06-24 23:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @ibraheemdev on 2025-06-24 23:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ibraheemdev on 2025-06-24 23:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ibraheemdev on 2025-06-24 23:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-06-24 23:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>Cargo.toml</code>:83 on 2025-06-24 23:54</div>
+            <div class="timeline-body"><p>This is my personal fork of the <code>get-size2</code> crate, which adds some missing features and fixes some inaccuracies. I opened PRs for all of these on the original repository, so we should be able to switch once those are upstreamed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-24 23:59</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-25 00:07</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-25 04:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty/src/lib.rs</code>:162 on 2025-06-25 04:18</div>
+            <div class="timeline-body"><p>I think it would be more useful that this constructs a report in <code>String</code> or any other data structure that implements <code>Display</code> so that it can be used in the ty server as well. The idea would be to provide a custom request or using a command that the client can request to get this information and is displayed in the editor. For example, we could have a custom endpoing <code>ty/salsaMemory</code> that would return this content. It's similar to how rust-analyzer implements various debugging endpoints like https://rust-analyzer.github.io/book/contributing/lsp-extensions.html#analyzer-status.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>Cargo.toml</code>:141 on 2025-06-25 06:02</div>
+            <div class="timeline-body"><p>We should update this version before merging</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/files.rs</code>:312 on 2025-06-25 06:06</div>
+            <div class="timeline-body"><p>Can't we derive the implementation for <code>GetSize</code> instead, considering that it will be derived on the final struct (that only wraps the id)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/source.rs</code>:148 on 2025-06-25 06:06</div>
+            <div class="timeline-body"><p>What's the reason for ignoring the notebook variant here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty/src/lib.rs</code>:162 on 2025-06-25 06:09</div>
+            <div class="timeline-body"><p>Agree, I think returning a custom struct that implements <code>Display</code> would be useful so that we can use it in the LSP too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/expression.rs</code>:66 on 2025-06-25 06:13</div>
+            <div class="timeline-body"><p>Same as for <code>File</code>. Can't we derive <code>GetSize</code> here because it would be applied on the <code>Expression(salsa::Id)</code> type?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/place.rs</code>:449 on 2025-06-25 06:13</div>
+            <div class="timeline-body"><p>Same, can we derive <code>GetSize</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/predicate.rs</code>:95 on 2025-06-25 06:13</div>
+            <div class="timeline-body"><p>...and in all other places</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/use_def.rs</code>:259 on 2025-06-25 06:14</div>
+            <div class="timeline-body"><p>What's the reason that we use an empty implementation for <code>UseDefMap</code> given that most its fields are heap allocated?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types.rs</code>:429 on 2025-06-25 06:15</div>
+            <div class="timeline-body"><p>Can't we put the derive on line 416 (same for other bitflags)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/util/get_size.rs</code>:10 on 2025-06-25 06:18</div>
+            <div class="timeline-body"><p>The documentation doesn't make it entirely clear to me how an <code>Arc</code> is counted. From the code, my guess is that it counts the size of the arced value (it does double count if the arc is shared)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty/src/lib.rs</code>:151 on 2025-06-25 06:22</div>
+            <div class="timeline-body"><p>It would be nice if:</p>
+<ul>
+<li>We would print a condenced memory report when running with <code>-vv</code></li>
+<li>We would print the full memory report when running with <code>-vvv</code></li>
+</ul>
+<p>You can get the verbosity from <code>args.verbosity</code>.</p>
+<p>I would probably skip the environment variable for now. If we don't, make sure to add it here https://github.com/astral-sh/ty/blob/main/docs/reference/env.md</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>Cargo.toml</code>:83 on 2025-06-25 06:23</div>
+            <div class="timeline-body"><p>Would it make sense to create a fork in the astral org instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-06-25 06:25</div>
+            <div class="timeline-body"><p>This is great</p>
+<p>I've a few smaller nits. The only downside of the design is that it's very easy to forget the <code>heap_size</code> attribute on a salsa query which will result in under counting. That makes me wonder if we should change the design in salsa so that the <code>stack</code> and <code>heap_size</code> is reported separately for each query (we can show a total as well) and the <code>heap_size</code> would be <code>Unknown</code> if the <code>heap_size</code> attribute isn't set. This would make it more appearant where <code>heap_size</code> attributes are missing (compared to, ah, this query doesn't allocate much)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-06-25 08:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-06-25 17:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>Cargo.toml</code>:83 on 2025-06-25 17:46</div>
+            <div class="timeline-body"><p>The PRs were merged so we can just use the released version now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-06-25 17:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ruff_db/src/files.rs</code>:312 on 2025-06-25 17:47</div>
+            <div class="timeline-body"><p>Unfortunately <code>salsa::Id</code> does not implement <code>GetSize</code>, and we have no way of putting an <code>ignore</code> attribute on that field.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-06-25 17:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ruff_db/src/source.rs</code>:148 on 2025-06-25 17:50</div>
+            <div class="timeline-body"><p>The <code>RawNotebook</code> has a lot of <code>serde_json::Value</code> types, I wasn't sure it was worth the effort to add a custom implementation for that given that we are not likely to be profiling the memory usage of the notebook schema.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-06-25 17:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ty_python_semantic/src/semantic_index/use_def.rs</code>:259 on 2025-06-25 17:50</div>
+            <div class="timeline-body"><p>This was a mistake, fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ty_python_semantic/src/types.rs</code>:429 on 2025-06-25 17:51</div>
+            <div class="timeline-body"><p>The internal bitflags type does not implement <code>GetSize</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-06-25 17:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-06-25 18:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ty/src/lib.rs</code>:151 on 2025-06-25 18:34</div>
+            <div class="timeline-body"><p>I think having to run <code>-vvv</code> is a little difficult because of the amount of tracing logs you have to wait for :) I kept the environment variable but added <code>short</code> and <code>full</code> options. We might eventually have to add an option for mypy primer that keeps the diff less sensitive to minor changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-25 20:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/source.rs</code>:148 on 2025-06-25 20:21</div>
+            <div class="timeline-body"><p>Fair enough. It could make sense extending the TODO comment to why it's currently excluded.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-26 03:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty/src/lib.rs</code>:467 on 2025-06-26 03:43</div>
+            <div class="timeline-body"><p>Given that we're returning a struct, I don't think this is required now?</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>Cargo.toml</code>:141 on 2025-06-26 06:17</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">salsa = { git = &quot;https://github.com/ibraheemdev/salsa&quot;, rev = &quot;e53c2ab7&quot; }
+</code></pre>
+<pre><code class="language-suggestion">salsa = { git = &quot;https://github.com/salsa-rs/salsa.git&quot;, rev = &quot;0666e2018bc35376b1ac4f98906f2d04d11e5fe4&quot; }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty/src/lib.rs</code>:465 on 2025-06-26 06:20</div>
+            <div class="timeline-body"><p>Nit: It might be helpful if we can call this in tests too (e.g. mdtests). Therefore, I'd suggest making this a method on <code>ProjectDatabase</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-06-26 06:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ibraheemdev on 2025-06-26 21:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2025-06-26 21:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-26 21:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:36 UTC
+    </footer>
+</body>
+</html>

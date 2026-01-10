@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`perflint`] Fix false negative in `PERF401` - astral-sh/ruff #18866</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>perflint</code>] Fix false negative in <code>PERF401</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18866">#18866</a>
+        opened by <a href="https://github.com/LaBatata101">@LaBatata101</a>
+        on 2025-06-22 20:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-06-22 20:57</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This PR also fixes a false negative for the following case:</p>
+<pre><code class="language-python">for o,(x,)in():
+    v[x,]=o
+</code></pre>
+<p>The code didn't consider the case of inner tuples in the <code>for</code> target.</p>
+<p>And finally, the autofix would create a invalid syntax if the subscript expression had a tuple in the slice.</p>
+<p>Fixes #18859</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p>Add regression test</p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-22 21:07</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+2 -0 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pandas-dev/pandas/blob/73db25d585a12e587beffef83449dbdd5d16d0f6/pandas/tests/arrays/sparse/test_accessor.py#L247'>pandas/tests/arrays/sparse/test_accessor.py:247:30:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/pandas-dev/pandas/blob/73db25d585a12e587beffef83449dbdd5d16d0f6/pandas/tests/arrays/sparse/test_accessor.py#L96'>pandas/tests/arrays/sparse/test_accessor.py:96:50:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF043 | 2 | 2 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/perflint/rules/manual_dict_comprehension.rs</code>:177 on 2025-06-23 09:18</div>
+            <div class="timeline-body"><p>I'm not sure this fix is correct. Shouldn't we also skip the rule if any nested name is used after the loop? E.g. when the name is inside a nested tuple or similar.</p>
+<p>That's why I think we either need to apply the check recursively or bail in more cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-23 09:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @LaBatata101 on 2025-06-23 21:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/perflint/rules/manual_dict_comprehension.rs</code>:152 on 2025-06-24 07:55</div>
+            <div class="timeline-body"><p>Nit: I would move this all into <code>has_post_loop_references</code>:</p>
+<pre><code class="language-rust">fn has_post_loop_references(checker: &amp;Checker, expr: &amp;Expr, loop_end: TextSize) -&gt; bool {
+    match expr {
+        Expr::Tuple(ast::ExprTuple { elts, .. }) =&gt; elts
+            .iter()
+            .any(|expr| has_post_loop_references(checker, expr, loop_end)),
+        Expr::Name(name) =&gt; {
+            let target_binding = checker
+                .semantic()
+                .bindings
+                .iter()
+                .find(|binding| name.range() == binding.range)
+                .expect(&quot;for-loop target binding must exist&quot;);
+
+            target_binding
+                .references()
+                .map(|reference| checker.semantic().reference(reference))
+                .any(|other_reference| other_reference.start() &gt; loop_end)
+        }
+        _ =&gt; false,
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/perflint/rules/manual_dict_comprehension.rs</code>:175 on 2025-06-24 07:56</div>
+            <div class="timeline-body"><p>We can now move this check above the match statement because <code>has_post_loop_references</code> takes any <code>Expr</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/perflint/rules/manual_dict_comprehension.rs</code>:461 on 2025-06-24 07:56</div>
+            <div class="timeline-body"><p>I think this method is still incorrect because it doesn't traverse into arbitrary expressions. Instead, we should use <code>any_over_expr</code> and only check <code>ExprName</code> in load contexts.</p>
+<p>For example:</p>
+<pre><code class="language-py">a = []
+b = [10]
+x = 0
+ 
+for (a, b[x]) in [(1, 2)]: pass
+
+x = 10
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/perflint/snapshots/ruff_linter__rules__perflint__tests__preview__PERF403_PERF403.py.snap</code>:360 on 2025-06-24 08:04</div>
+            <div class="timeline-body"><p>This PR does seem to change the rules that get reported because this wasn't a violation before (when building in release build)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/perflint/rules/manual_dict_comprehension.rs</code>:359 on 2025-06-24 08:11</div>
+            <div class="timeline-body"><p>Instead of bailing here, should the rule still be triggered but without providing a fix?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-24 08:11</div>
+            <div class="timeline-body"><p>I've a few more questions and a refactor suggestion</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-06-24 08:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`perflint`] Fix panic in `PERF401`" to "[`perflint`] Fix false negative in `PERF401`" by @MichaReiser on 2025-06-24 08:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LaBatata101">@LaBatata101</a> reviewed on 2025-06-24 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on <code>crates/ruff_linter/src/rules/perflint/rules/manual_dict_comprehension.rs</code>:359 on 2025-06-24 14:22</div>
+            <div class="timeline-body"><p>It only bails if the slice has more than one expression. I think the rule doesn't apply for slices with more than one expression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LaBatata101">@LaBatata101</a> reviewed on 2025-06-24 14:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on <code>crates/ruff_linter/src/rules/perflint/snapshots/ruff_linter__rules__perflint__tests__preview__PERF403_PERF403.py.snap</code>:360 on 2025-06-24 14:38</div>
+            <div class="timeline-body"><p>Are you talking about the ecosystem changes? If so, It doesn't make sense for <code>RUF043</code> to be triggering here, it doesn't make use of code changed in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @LaBatata101 on 2025-06-24 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-24 14:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/perflint/snapshots/ruff_linter__rules__perflint__tests__preview__PERF403_PERF403.py.snap</code>:360 on 2025-06-24 14:57</div>
+            <div class="timeline-body"><p>No, I'm saying that this specific example wasn't a violation on main, see https://play.ruff.rs/7408fd27-bd76-4559-a83c-934959b8e498. That means that this PR does more than just fix a panic, it also extends the scope of the rule to support nested tuples</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LaBatata101">@LaBatata101</a> reviewed on 2025-06-24 15:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on <code>crates/ruff_linter/src/rules/perflint/snapshots/ruff_linter__rules__perflint__tests__preview__PERF403_PERF403.py.snap</code>:360 on 2025-06-24 15:26</div>
+            <div class="timeline-body"><p>Oh right,  now I see what you meant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-06-25 08:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-25 08:44</div>
+            <div class="timeline-body"><p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-06-25 08:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-25 08:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-25 14:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:36 UTC
+    </footer>
+</body>
+</html>

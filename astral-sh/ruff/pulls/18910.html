@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider virtual path for various server actions - astral-sh/ruff #18910</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider virtual path for various server actions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18910">#18910</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-06-24 08:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-24 08:48</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Ref: https://github.com/astral-sh/ruff/issues/14820#issuecomment-2996690681</p>
+<p>This PR fixes a bug where virtual paths or any paths that doesn't exists on the file system weren't being considered for checking inclusion / exclusion. This was because the logic used <code>file_path</code> which returns <code>None</code> for those path. This PR fixes that by using the <code>virtual_file_path</code> method that returns a <code>Path</code> corresponding to the actual file on disk or any kind of virtual path.</p>
+<p>This should ideally just fix the above linked issue by way of excluding the documents representing the interactive window because they aren't in the inclusion set. It failed only on Windows previously because the file path construction would fail and then Ruff would default to including all the files.</p>
+<h2>Test Plan</h2>
+<p>On my machine, the <code>.interactive</code> paths are always excluded so I'm using the inclusion set instead:</p>
+<pre><code class="language-json">{
+  &quot;ruff.nativeServer&quot;: &quot;on&quot;,
+  &quot;ruff.path&quot;: [&quot;/Users/dhruv/work/astral/ruff/target/debug/ruff&quot;],
+  &quot;ruff.configuration&quot;: {
+    &quot;extend-include&quot;: [&quot;*.interactive&quot;]
+  }
+}
+</code></pre>
+<p>The diagnostics are shown for both the file paths and the interactive window:</p>
+<p><img width="1727" alt="Screenshot 2025-06-24 at 14 56 40" src="https://github.com/user-attachments/assets/d36af96a-777e-4367-8acf-4d9c9014d025" /></p>
+<p>And, the logs:</p>
+<pre><code>2025-06-24 14:56:26.478275000 DEBUG notification{method=&quot;notebookDocument/didChange&quot;}: Included path via `extend-include`: /Interactive-1.interactive
+</code></pre>
+<p>And, when using <code>ruff.exclude</code> via:</p>
+<pre><code class="language-json">{
+	&quot;ruff.exclude&quot;: [&quot;*.interactive&quot;]
+}
+</code></pre>
+<p>With logs:</p>
+<pre><code>2025-06-24 14:58:41.117743000 DEBUG notification{method=&quot;notebookDocument/didChange&quot;}: Ignored path via `exclude`: /Interactive-1.interactive
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2025-06-24 08:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-24 08:57</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-24 09:30</div>
+            <div class="timeline-body"><p>The diagnostics remain even after I close the interactive window:</p>
+<pre><code>2025-06-24 14:59:51.053545000 DEBUG notification{method=&quot;textDocument/didClose&quot;}: Unable to close document with key vscode-notebook-cell:/Interactive-1.interactive#W1sdW50aXRsZWQ%3D - the snapshot was unavailable
+</code></pre>
+<p>TODO: Currently debugging</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-06-24 10:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-24 10:49</div>
+            <div class="timeline-body"><blockquote>
+<p>TODO: Currently debugging</p>
+</blockquote>
+<p>Ugh, it seems that VS Code is not sending the request in the order that we would get for other notebook documents.</p>
+<p>When I close the interactive window, I get the following two requests:</p>
+<pre><code>[Trace - 3:56:51 PM] Sending notification 'notebookDocument/didClose'.
+Params: {
+    &quot;notebookDocument&quot;: {
+        &quot;uri&quot;: &quot;untitled:/Interactive-1.interactive&quot;
+    },
+    &quot;cellTextDocuments&quot;: [
+        {
+            &quot;uri&quot;: &quot;vscode-notebook-cell:/Interactive-1.interactive#W1sdW50aXRsZWQ%3D&quot;
+        }
+    ]
+}
+
+
+[Trace - 3:56:51 PM] Sending notification 'textDocument/didClose'.
+Params: {
+    &quot;textDocument&quot;: {
+        &quot;uri&quot;: &quot;vscode-notebook-cell:/Interactive-1.interactive#W1sdW50aXRsZWQ%3D&quot;
+    }
+}
+</code></pre>
+<p>Here, VS Code first sends the request to close the notebook document, so we remove it from the internal index. And, then when it sends us the request to close the cell document, we fail because the notebook document doesn't exists in the index:</p>
+<p>https://github.com/astral-sh/ruff/blob/7f5d7b5dd1f41e63ddb94ec991ad26b03a8a317e/crates/ruff_server/src/session/index.rs#L248-L248</p>
+<p>But, when I close a regular Jupyter Notebook (<code>.ipynb</code> file), it sends the request in reverse order:</p>
+<pre><code>[Trace - 4:13:58 PM] Sending notification 'textDocument/didClose'.
+Params: {
+    &quot;textDocument&quot;: {
+        &quot;uri&quot;: &quot;vscode-notebook-cell:/private/tmp/ruff-interactive-test/play.ipynb#W0sZmlsZQ%3D%3D&quot;
+    }
+}
+
+
+[Trace - 4:13:58 PM] Sending notification 'notebookDocument/didClose'.
+Params: {
+    &quot;notebookDocument&quot;: {
+        &quot;uri&quot;: &quot;file:///private/tmp/ruff-interactive-test/play.ipynb&quot;
+    },
+    &quot;cellTextDocuments&quot;: [
+        {
+            &quot;uri&quot;: &quot;vscode-notebook-cell:/private/tmp/ruff-interactive-test/play.ipynb#W0sZmlsZQ%3D%3D&quot;
+        }
+    ]
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2025-06-24 11:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-24 11:28</div>
+            <div class="timeline-body"><p>Discussing this internally, I think the above mentioned inconsistency can be fixed in a separate PR as it isn't related to the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/fix.rs</code>:49 on 2025-06-24 11:57</div>
+            <div class="timeline-body"><p>Should we use the normal path for <code>package</code> detection because we know that virtual documents can never belong to a package (I would also feel better about <code>parent</code> not throwing for real paths. Not sure if there's a case with a virtual path where that panics)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-06-24 11:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-24 11:58</div>
+            <div class="timeline-body"><p>Thanks for looking into this issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-24 12:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/fix.rs</code>:49 on 2025-06-24 12:16</div>
+            <div class="timeline-body"><p>Yeah, that makes sense, thanks for catching that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-24 12:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/lint.rs</code>:84 on 2025-06-24 12:24</div>
+            <div class="timeline-body"><p>Same here, we can use <code>file_path</code> here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-06-24 12:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-06-24 12:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-24 12:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-24 12:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/lint.rs</code>:84 on 2025-06-24 12:29</div>
+            <div class="timeline-body"><p>Sorry! I missed this, created https://github.com/astral-sh/ruff/pull/18914</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:36 UTC
+    </footer>
+</body>
+</html>

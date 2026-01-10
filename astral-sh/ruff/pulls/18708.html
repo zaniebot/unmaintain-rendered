@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disallow newlines in format specifiers of single quoted f- or t-strings - astral-sh/ruff #18708</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Disallow newlines in format specifiers of single quoted f- or t-strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18708">#18708</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-06-16 13:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-16 13:59</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR disallows newlines in format specifiers of single-quoted f- and t-strings. This aligns ruff's behavior with CPython's upstream behavior.</p>
+<p>I think we should wait with merging this PR until after the next release so that the formatter can fix-up invalid format specifiers.</p>
+<p>Part of https://github.com/astral-sh/ruff/issues/18632</p>
+<p>Fixes https://github.com/astral-sh/ruff/issues/18730</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @MichaReiser on 2025-06-16 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-16 14:12</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-06-16 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2025-06-16 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Disallow newlines in format specifiers of sinlge quoted f- or t-strings" to "Disallow newlines in format specifiers of single quoted f- or t-strings" by @AlexWaygood on 2025-06-16 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-06-16 14:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_parser/src/error.rs</code>:456 on 2025-06-16 14:48</div>
+            <div class="timeline-body"><p>To match CPython, should we make this an error for interpolated strings that just says:</p>
+<pre><code>newlines are not allowed in format specifiers
+</code></pre>
+<p>When we then use <code>LexicalErrorType::FString(...)</code> etc. it will prepend <code>f-string:</code> and <code>t-string:</code> appropriately.</p>
+<p>source: https://github.com/python/cpython/blob/f0799795994bfd9ab0740c4d70ac54270991ba47/Parser/lexer/lexer.c#L1424</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-16 15:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/error.rs</code>:456 on 2025-06-16 15:00</div>
+            <div class="timeline-body"><p>Hmm, I didn't notice the <code>f-string</code> prefix that CPYthon adds. Funnily enough, CPython contains the string type twice (which is the reason why I changed the implementation to use a <code>LexicalErrorType</code></p>
+<pre><code>SyntaxError: f-string: newlines are not allowed in format specifiers for single quoted f-strings`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-06-16 15:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_parser/src/error.rs</code>:456 on 2025-06-16 15:06</div>
+            <div class="timeline-body"><p>I'm submitting a patch to CPython for this actually... I think they forgot to account for t-strings here. The other syntax errors in the lexer do something like this:</p>
+<pre><code class="language-c">                _PyTokenizer_syntaxerror(tok,
+                                    &quot;unterminated triple-quoted %c-string literal&quot;
+                                    &quot; (detected at line %d)&quot;,
+                                    TOK_GET_STRING_PREFIX(tok), start);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-06-16 15:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_parser/src/error.rs</code>:456 on 2025-06-16 15:08</div>
+            <div class="timeline-body"><p>But yeah I'm not sure how we would implement this in our setup since, as you point out, they use the interpolated string type also in the body of the message 😦</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-16 16:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/error.rs</code>:456 on 2025-06-16 16:10</div>
+            <div class="timeline-body"><blockquote>
+<p>string type also in the body of the message</p>
+</blockquote>
+<p>I really don't like this 😅  I'll think about how I can word the message and otherwise leave it as is (because I find repeating worse than not having the <code>f-string:</code> prefix which I find slightly weird anwyay because of the double colon)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> approved on 2025-06-16 17:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">do-not-merge</span> added by @MichaReiser on 2025-06-16 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-06-17 05:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-06-17 05:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-06-17 05:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-06-17 05:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @AlexWaygood on 2025-06-17 06:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @AlexWaygood on 2025-06-17 06:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @AlexWaygood on 2025-06-17 06:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-06-17 06:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_parser/src/error.rs</code>:90 on 2025-06-17 12:27</div>
+            <div class="timeline-body"><p>optional nit:</p>
+<pre><code class="language-suggestion">                    &quot;newlines are not allowed in format specifiers when using single quotes&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> approved on 2025-06-17 12:29</div>
+            <div class="timeline-body"><p>Looks good to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-17 16:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/error.rs</code>:90 on 2025-06-17 16:10</div>
+            <div class="timeline-body"><p>I think this might be a bit misleading since it's not the entire format spec where it isn't allowed, it's mainly the literal part of the format spec where it isn't allowed. So, the following is valid</p>
+<pre><code class="language-py"># Newline is inside an expression element of the format spec
+f&quot;hello {x:.{y
+             }f}&quot;
+</code></pre>
+<p>And, running it on Python 3.13.5:</p>
+<pre><code class="language-console">$ uv run --python 3.13 --no-project python -m ast parser/_.py
+Module(
+   body=[
+      Expr(
+         value=JoinedStr(
+            values=[
+               Constant(value='hello '),
+               FormattedValue(
+                  value=Name(id='x', ctx=Load()),
+                  conversion=-1,
+                  format_spec=JoinedStr(
+                     values=[
+                        Constant(value='.'),
+                        FormattedValue(
+                           value=Name(id='y', ctx=Load()),
+                           conversion=-1),
+                        Constant(value='f')]))]))])
+</code></pre>
+<p>While, the following is invalid:</p>
+<pre><code class="language-py"># Newline is inside the literal element of the format spec
+f&quot;hello {x:.{y}f
+         }&quot;
+</code></pre>
+<p>Running it on Python 3.13.5:</p>
+<pre><code class="language-console">$ uv run --python 3.13 --no-project python -m ast parser/_.py       
+Traceback (most recent call last):
+  File &quot;&lt;frozen runpy&gt;&quot;, line 198, in _run_module_as_main
+  File &quot;&lt;frozen runpy&gt;&quot;, line 88, in _run_code
+  File &quot;/Users/dhruv/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/ast.py&quot;, line 1865, in &lt;module&gt;
+    main()
+    ~~~~^^
+  File &quot;/Users/dhruv/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/ast.py&quot;, line 1861, in main
+    tree = parse(source, name, args.mode, type_comments=args.no_type_comments)
+  File &quot;/Users/dhruv/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/ast.py&quot;, line 50, in parse
+    return compile(source, filename, mode, flags,
+                   _feature_version=feature_version, optimize=optimize)
+  File &quot;parser/_.py&quot;, line 1
+    f&quot;hello {x:.{y}f
+    ^
+SyntaxError: unterminated f-string literal (detected at line 1)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-17 16:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/error.rs</code>:90 on 2025-06-17 16:14</div>
+            <div class="timeline-body"><p>I think this is actually just an unterminated f-string literal error and it's not really that the newline isn't allowed.</p>
+<p>I don't think we would raise a similar (newline specific) error for something like:</p>
+<pre><code class="language-py">f&quot;hello
+world&quot;
+</code></pre>
+<p>which is the same situation except it's the outer literal element.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/tests/fixtures.rs</code>:329 on 2025-06-17 16:19</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                &quot;Formatting `{input_path}` was expected to succeed but it failed: {err}&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-06-17 16:20</div>
+            <div class="timeline-body"><p>Looks good!</p>
+<p>I'd probably keep the new error as <code>UnterminatedString</code>, refer to my inline comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-17 16:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/error.rs</code>:90 on 2025-06-17 16:20</div>
+            <div class="timeline-body"><p>I'm not sure I follow. The error message is the same as CPython uses. We could clarify it to <code>format spec literal</code> but I'm not sure if that's not more confusing for users (I doubt many know that they even can use interpolations in format specs)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/error.rs</code>:90 on 2025-06-17 16:22</div>
+            <div class="timeline-body"><p>Oh, I didn't realize that CPython raised a similar error message.</p>
+<p>Feel free to ignore my message, it seems I shouldn't be doing late night reviews!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-17 16:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-18 12:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/error.rs</code>:90 on 2025-06-18 12:28</div>
+            <div class="timeline-body"><p>But your comment is 100% correct and matches the implementation. I'm just not sure if using the more precise language here helps users or would be more confusing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-06-18 12:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-18 12:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-18 12:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">do-not-merge</span> removed by @MichaReiser on 2025-06-18 12:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:35 UTC
+    </footer>
+</body>
+</html>

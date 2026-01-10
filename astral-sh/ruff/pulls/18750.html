@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Infer nonlocal types as unions of all reachable bindings - astral-sh/ruff #18750</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Infer nonlocal types as unions of all reachable bindings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18750">#18750</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-06-18 13:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-18 13:17</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR includes a behavioral change to how we infer types for nonlocal uses of symbols within a module. Where we would previously use the type that a use at the end of the scope would see, we now consider all reachable bindings and union the results:</p>
+<pre><code class="language-py">x = None
+
+def f():
+    reveal_type(x)  # previously `Unknown | Literal[1]`, now `Unknown | None | Literal[1]`
+
+f()
+
+x = 1
+
+f()
+</code></pre>
+<p>This helps especially in cases where the the end of the scope is not reachable:</p>
+<pre><code class="language-py">def outer(x: int):
+    def inner():
+        reveal_type(x)  # previously `Unknown`, now `int`
+
+    raise ValueError
+</code></pre>
+<p>This PR also proposes to skip the boundness analysis of nonlocal uses. This is consistent with the &quot;all reachable bindings&quot; strategy, because the implicit <code>x = &lt;unbound&gt;</code> binding is also always reachable, and we would have to emit &quot;possibly-unresolved&quot; diagnostics for every nonlocal use otherwise. Changing this behavior allows common use-cases like the following to type check without any errors:</p>
+<pre><code class="language-py">def outer(flag: bool):
+    if flag:
+        x = 1
+
+        def inner():
+            print(x)  # previously: possibly-unresolved-reference, now: no error
+</code></pre>
+<p>closes https://github.com/astral-sh/ty/issues/210
+closes https://github.com/astral-sh/ty/issues/607
+closes https://github.com/astral-sh/ty/issues/699</p>
+<h2>Follow up</h2>
+<p>It is now possible to resolve the following TODO, but I would like to do that as a follow-up, because it requires some changes to how we treat implicit attribute assignments, which could result in ecosystem changes that I'd like to see separately.</p>
+<p>https://github.com/astral-sh/ruff/blob/315fb0f3da4e5f2097a294c344025dec28ebf2a5/crates/ty_python_semantic/src/semantic_index/builder.rs#L1095-L1117</p>
+<h2>Ecosystem analysis</h2>
+<p><a href="https://shark.fish/diff-public-types.html"><strong>Full report</strong></a></p>
+<ul>
+<li><p>This change obviously removes a lot of <code>possibly-unresolved-reference</code> diagnostics (7818) because we do not analyze boundness for nonlocal uses of symbols inside modules anymore.</p>
+</li>
+<li><p>As the primary goal here, this change also removes a lot of false-positive <code>unresolved-reference</code> diagnostics (231) in scenarios like this:</p>
+<pre><code class="language-py">def _(flag: bool):
+    if flag:
+        x = 1
+
+        def inner():
+            x
+
+        raise
+</code></pre>
+</li>
+<li><p>This change also introduces some new false positives for cases like:</p>
+<pre><code class="language-py">def _():
+    x = None
+
+    x = &quot;test&quot;
+
+    def inner():
+        x.upper()  # Attribute `upper` on type `Unknown | None | Literal[&quot;test&quot;]` is possibly unbound
+</code></pre>
+<p>We have test cases for these situations and it's plausible that we can improve this in a follow-up.</p>
+</li>
+</ul>
+<h2>Test Plan</h2>
+<p>New Markdown tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-06-18 13:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "David/public types" to "[ty] Infer public types as unions of all reachable bindings" by @sharkdp on 2025-06-18 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-18 13:22</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
++ warning[unused-ignore-comment] pytest_robotframework/_internal/robot/listeners_and_suite_visitors.py:673:33: Unused `ty: ignore` directive: 'possibly-unresolved-reference'
++ warning[unused-ignore-comment] pytest_robotframework/_internal/robot/listeners_and_suite_visitors.py:690:40: Unused `ty: ignore` directive: 'possibly-unresolved-reference'
+- Found 183 diagnostics
++ Found 185 diagnostics
+
+mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+- error[unresolved-reference] mypy_primer/main.py:175:67: Name `shard_costs` used when not defined
+- Found 10 diagnostics
++ Found 9 diagnostics
+
+git-revise (https://github.com/mystor/git-revise)
+- warning[possibly-unresolved-reference] gitrevise/utils.py:102:34: Name `pat_is_comment_line` used when possibly not defined
+- Found 2 diagnostics
++ Found 1 diagnostic
+
+parso (https://github.com/davidhalter/parso)
+- warning[possibly-unresolved-reference] parso/python/errors.py:323:36: Name `base_name` used when possibly not defined
+- warning[possibly-unresolved-reference] parso/python/errors.py:323:58: Name `base_name` used when possibly not defined
+- warning[possibly-unresolved-reference] parso/python/tokenize.py:385:43: Name `spos` used when possibly not defined
+- warning[possibly-unresolved-reference] parso/python/tree.py:422:31: Name `dct` used when possibly not defined
+- warning[possibly-unresolved-reference] parso/python/tree.py:426:25: Name `recurse` used when possibly not defined
+- Found 77 diagnostics
++ Found 72 diagnostics
+
+pyp (https://github.com/hauntsaninja/pyp)
+- error[unresolved-reference] pyp.py:652:24: Name `line_to_node` used when not defined
+- Found 9 diagnostics
++ Found 8 diagnostics
+
+python-chess (https://github.com/niklasf/python-chess)
+- warning[possibly-unresolved-reference] chess/engine.py:962:25: Name `cmd` used when possibly not defined
+- Found 20 diagnostics
++ Found 19 diagnostics
+
+paroxython (https://github.com/laowantong/paroxython)
+- warning[possibly-unresolved-reference] paroxython/__init__.py:36:33: Name `ParoxythonMagics` used when possibly not defined
+- warning[possibly-unresolved-reference] paroxython/__init__.py:55:26: Name `main` used when possibly not defined
+- warning[possibly-unresolved-reference] paroxython/__init__.py:62:21: Name `display` used when possibly not defined
+- warning[possibly-unresolved-reference] paroxython/__init__.py:62:29: Name `Markdown` used when possibly not defined
+- Found 15 diagnostics
++ Found 11 diagnostics
+
+beartype (https://github.com/beartype/beartype)
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep484604.py:47:33: Name `HintPep604ItemTypes` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep484604.py:112:33: Name `HintPep604Type` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:223:9: Name `_MODULE_NAME_TO_ANNOTATIONS` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:224:9: Name `_MODULE_NAME_TO_HINTABLE_BASENAME_TO_ANNOTATIONS` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:243:33: Name `CallableOrClassTypes` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:247:27: Name `get_object_module_name_or_none` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:256:21: Name `_MODULE_NAME_TO_HINTABLE_BASENAME_TO_ANNOTATIONS` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:257:38: Name `SENTINEL` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:260:56: Name `SENTINEL` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:264:25: Name `_MODULE_NAME_TO_HINTABLE_BASENAME_TO_ANNOTATIONS` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:272:37: Name `get_object_basename_scoped` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:279:40: Name `SENTINEL` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:282:48: Name `SENTINEL` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:288:21: Name `_get_pep649_hintable_annotations_or_none_uncached` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:303:35: Name `ModuleType` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:305:27: Name `get_module_name` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:311:34: Name `_MODULE_NAME_TO_ANNOTATIONS` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:312:30: Name `SENTINEL` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:315:42: Name `SENTINEL` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:321:17: Name `_get_pep649_hintable_annotations_or_none_uncached` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:324:13: Name `_MODULE_NAME_TO_ANNOTATIONS` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:335:16: Name `_get_pep649_hintable_annotations_or_none_uncached` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:375:36: Name `Format` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:487:35: Name `_ANNOTATE_FORMATS_VALUELIKE` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:495:36: Name `Format` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:860:20: Name `get_annotations` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/_util/hint/pep/proposal/pep649.py:860:53: Name `Format` used when possibly not defined
+- warning[possibly-unresolved-reference] beartype/typing/_typingpep544.py:690:16: Name `_generic_class_getitem_old` used when possibly not defined
+- Found 581 diagnostics
++ Found 553 diagnostics
+
+pyinstrument (https://github.com/joerick/pyinstrument)
++ error[unresolved-attribute] pyinstrument/context_manager.py:56:54: Type `((...) -&gt; Unknown) | None` has no attribute `__qualname__`
++ error[unresolved-attribute] pyinstrument/context_manager.py:56:77: Type `((...) -&gt; Unknown) | None` has no attribute `__code__`
++ error[unresolved-attribute] pyinstrument/context_manager.py:56:105: Type `((...) -&gt; Unknown) | None` has no attribute `__code__`
++ error[call-non-callable] pyinstrument/context_manager.py:59:28: Object of type `None` is not callable
+- error[unresolved-reference] pyinstrument/magic/magic.py:258:31: Name `old_custom_tb` used when not defined
+- error[unresolved-reference] pyinstrument/magic/magic.py:259:40: Name `old_custom_exceptions` used when not defined
+- error[unresolved-reference] pyinstrument/vendor/appdirs.py:99:33: Name `_get_win_folder` used when not defined
+- error[unresolved-reference] pyinstrument/vendor/appdirs.py:152:33: Name `_get_win_folder` used when not defined
+- error[unresolved-reference] pyinstrument/vendor/appdirs.py:319:33: Name `_get_win_folder` used when not defined
+- warning[possibly-unresolved-reference] pyinstrument/vendor/decorator.py:57:16: Name `FullArgSpec` used when possibly not defined
+- Found 52 diagnostics
++ Found 50 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
+- warning[possibly-unresolved-reference] src/anyio/abc/_sockets.py:77:67: Name `remote_port` used when possibly not defined
+- warning[possibly-unbound-attribute] src/anyio/from_thread.py:211:27: Attribute `cancel` on type `Unknown | None` is possibly unbound
++ warning[possibly-unbound-attribute] src/anyio/from_thread.py:211:27: Attribute `cancel` on type `Unknown | CancelScope | None` is possibly unbound
+- error[unresolved-reference] src/anyio/pytest_plugin.py:90:12: Name `has_backend_arg` used when not defined
+- error[unresolved-reference] src/anyio/pytest_plugin.py:93:12: Name `has_request_arg` used when not defined
+- warning[possibly-unresolved-reference] src/anyio/pytest_plugin.py:139:25: Name `backend_name` used when possibly not defined
+- warning[possibly-unresolved-reference] src/anyio/pytest_plugin.py:139:39: Name `backend_options` used when possibly not defined
+- error[unresolved-reference] src/anyio/pytest_plugin.py:140:29: Name `original_func` used when not defined
+- Found 100 diagnostics
++ Found 94 diagnostics
+
+Expression (https://github.com/cognitedata/Expression)
+- error[unresolved-reference] expression/core/result.py:121:56: Name `value` used when not defined
+- Found 235 diagnostics
++ Found 234 diagnostics
+
+aioredis (https://github.com/aio-libs/aioredis)
+- warning[possibly-unresolved-reference] aioredis/connection.py:455:32: Name `hiredis` used when possibly not defined
+- warning[possibly-unresolved-reference] aioredis/connection.py:468:24: Name `hiredis` used when possibly not defined
+- Found 22 diagnostics
++ Found 20 diagnostics
+
+attrs (https://github.com/python-attrs/attrs)
+- warning[possibly-unresolved-reference] tests/test_slots.py:94:16: Name `asizeof` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_slots.py:94:41: Name `asizeof` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_slots.py:257:16: Name `asizeof` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_slots.py:257:30: Name `asizeof` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_slots.py:401:16: Name `asizeof` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_slots.py:401:30: Name `asizeof` used when possibly not defined
+- Found 608 diagnostics
++ Found 602 diagnostics
+
+aiortc (https://github.com/aiortc/aiortc)
+- warning[possibly-unresolved-reference] src/aiortc/contrib/signaling.py:126:17: Name `connected` used when possibly not defined
+- warning[possibly-unresolved-reference] src/aiortc/contrib/signaling.py:183:17: Name `connected` used when possibly not defined
+- warning[possibly-unresolved-reference] src/aiortc/rtcpeerconnection.py:105:43: Name `c` used when possibly not defined
+- warning[possibly-unresolved-reference] src/aiortc/rtcsctptransport.py:743:68: Name `prefix` used when possibly not defined
+- Found 102 diagnostics
++ Found 98 diagnostics
+
+speedrun.com_global_scoreboard_webapp (https://github.com/Avasam/speedrun.com_global_scoreboard_webapp)
+- warning[possibly-unresolved-reference] backend/models/core_models.py:242:18: Name `Schedule` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:243:13: Name `Schedule` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:243:35: Name `Schedule` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:254:24: Name `Schedule` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:266:13: Name `TimeSlot` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:289:17: Name `Schedule` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:290:17: Name `Schedule` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:292:25: Name `Schedule` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:293:25: Name `Schedule` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:319:33: Name `TimeSlot` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:341:17: Name `ScheduleGroup` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:343:29: Name `ScheduleGroup` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:344:29: Name `ScheduleGroup` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:347:17: Name `Schedule` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:348:17: Name `Schedule` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:350:25: Name `Schedule` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:351:25: Name `Schedule` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:363:34: Name `Schedule` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:365:25: Name `Schedule` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:366:25: Name `Schedule` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:377:29: Name `ScheduleGroup` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:377:86: Name `Schedule` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:378:25: Name `ScheduleGroup` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:378:73: Name `Schedule` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:380:27: Name `ScheduleGroup` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:380:42: Name `Schedule` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:396:18: Name `ScheduleGroup` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:397:13: Name `ScheduleGroup` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:397:40: Name `ScheduleGroup` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:401:30: Name `ScheduleGroup` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:415:17: Name `ScheduleGroup` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:416:17: Name `ScheduleGroup` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:418:25: Name `ScheduleGroup` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:419:25: Name `ScheduleGroup` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:432:40: Name `ScheduleGroup` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:434:25: Name `ScheduleGroup` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:435:25: Name `ScheduleGroup` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:446:17: Name `Registration` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:447:17: Name `Registration` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:449:25: Name `Registration` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:453:13: Name `Schedule` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:455:25: Name `Schedule` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:456:25: Name `Schedule` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:473:35: Name `Participant` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:489:17: Name `Registration` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:490:17: Name `Registration` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:492:25: Name `Registration` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:496:13: Name `Schedule` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:498:25: Name `Schedule` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/models/core_models.py:499:25: Name `Schedule` used when possibly not defined
+- Found 116 diagnostics
++ Found 66 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- warning[possibly-unresolved-reference] src/graphql/execution/execute.py:1062:38: Name `completed_item` used when possibly not defined
++ warning[unused-ignore-comment] src/graphql/execution/execute.py:1249:47: Unused blanket `type: ignore` directive
+- warning[possibly-unresolved-reference] src/graphql/execution/execute.py:1449:40: Name `incremental_result` used when possibly not defined
++ warning[possibly-unbound-attribute] src/graphql/execution/execute.py:2200:20: Attribute `map_source_to_response` on type `Unknown | list[GraphQLError] | ExecutionContext` is possibly unbound
+- error[unresolved-reference] src/graphql/execution/execute.py:2283:30: Name `awaitable_event_stream` used when not defined
+- error[unresolved-reference] src/graphql/language/visitor.py:341:44: Name `enter_list` used when not defined
+- error[unresolved-reference] src/graphql/language/visitor.py:354:44: Name `leave_list` used when not defined
++ error[unresolved-attribute] src/graphql/utilities/lexicographic_sort_schema.py:124:51: Type `GraphQLNamedType` has no attribute `interfaces`
++ error[unresolved-attribute] src/graphql/utilities/lexicographic_sort_schema.py:125:48: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] src/graphql/utilities/lexicographic_sort_schema.py:132:51: Type `GraphQLNamedType` has no attribute `interfaces`
++ error[unresolved-attribute] src/graphql/utilities/lexicographic_sort_schema.py:133:48: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] src/graphql/utilities/lexicographic_sort_schema.py:138:76: Type `GraphQLNamedType` has no attribute `types`
++ error[unresolved-attribute] src/graphql/utilities/lexicographic_sort_schema.py:159:54: Type `GraphQLNamedType` has no attribute `fields`
+- warning[possibly-unresolved-reference] tests/language/test_visitor.py:111:17: Name `visited` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/language/test_visitor.py:117:17: Name `visited` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/language/test_visitor.py:123:17: Name `visited` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/language/test_visitor.py:129:17: Name `visited` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/language/test_visitor.py:137:17: Name `visited` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/language/test_visitor.py:144:17: Name `visited` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/language/test_visitor.py:151:17: Name `visited` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/language/test_visitor.py:158:17: Name `visited` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/language/test_visitor.py:165:17: Name `visited` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/language/test_visitor.py:171:17: Name `visited` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/language/test_visitor.py:177:17: Name `visited` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/language/test_visitor.py:183:17: Name `visited` used when possibly not defined
+- error[unresolved-reference] tests/utils/assert_equal_awaitables_or_values.py:21:67: Name `awaitable_items` used when not defined
+- Found 381 diagnostics
++ Found 371 diagnostics
+
+starlette (https://github.com/encode/starlette)
+- warning[possibly-unresolved-reference] starlette/_utils.py:80:35: Name `BaseExceptionGroup` used when possibly not defined
+- warning[possibly-unresolved-reference] starlette/responses.py:275:25: Name `task_group` used when possibly not defined
+- warning[possibly-unresolved-reference] starlette/templating.py:119:10: Name `pass_context` used when possibly not defined
+- Found 173 diagnostics
++ Found 170 diagnostics
+
+rich (https://github.com/Textualize/rich)
+- warning[possibly-unresolved-reference] examples/listdir.py:23:45: Name `root_path` used when possibly not defined
+- warning[possibly-unresolved-reference] examples/suppress.py:19:9: Name `click` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/ansi.py:225:16: Name `os` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/ansi.py:226:9: Name `stdout` used when possibly not defined
+- error[invalid-return-type] rich/console.py:575:16: Return type does not match returned value: expected `WindowsConsoleFeatures`, found `WindowsConsoleFeatures | None`
++ error[invalid-return-type] rich/console.py:575:16: Return type does not match returned value: expected `WindowsConsoleFeatures`, found `None | WindowsConsoleFeatures`
+- warning[possibly-unresolved-reference] rich/logging.py:287:9: Name `log` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/logging.py:291:13: Name `log` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/palette.py:92:34: Name `colorsys` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/palette.py:93:34: Name `colorsys` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/palette.py:94:31: Name `Color` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/palette.py:95:29: Name `Color` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/palette.py:96:27: Name `Segment` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/palette.py:96:40: Name `Style` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/palette.py:97:23: Name `Segment` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/pretty.py:62:27: Name `_attr_module` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/pretty.py:67:12: Name `_attr_module` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/pretty.py:735:37: Name `attr_fields` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/syntax.py:516:35: Name `line_tokenize` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/syntax.py:518:35: Name `line_start` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/syntax.py:518:53: Name `line_start` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/syntax.py:534:32: Name `line_end` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/syntax.py:534:56: Name `line_end` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/table.py:845:20: Name `header_row` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/table.py:847:22: Name `footer_row` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/table.py:851:60: Name `row_height` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/table.py:853:63: Name `row_height` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/table.py:854:59: Name `row_height` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/table.py:968:13: Name `console` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/table.py:969:13: Name `console` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/table.py:969:26: Name `highlight` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/table.py:970:13: Name `console` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/traceback.py:894:9: Name `bar` used when possibly not defined
+- warning[possibly-unresolved-reference] rich/traceback.py:897:9: Name `foo` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_windows_renderer.py:20:28: Name `LegacyWindowsTerm` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_windows_renderer.py:26:5: Name `legacy_windows_render` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_windows_renderer.py:33:5: Name `legacy_windows_render` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_windows_renderer.py:46:5: Name `legacy_windows_render` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_windows_renderer.py:54:5: Name `legacy_windows_render` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_windows_renderer.py:57:9: Name `WindowsCoordinates` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_windows_renderer.py:64:5: Name `legacy_windows_render` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_windows_renderer.py:72:5: Name `legacy_windows_render` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_windows_renderer.py:74:61: Name `WindowsCoordinates` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_windows_renderer.py:91:5: Name `legacy_windows_render` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_windows_renderer.py:107:5: Name `legacy_windows_render` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_windows_renderer.py:115:5: Name `legacy_windows_render` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_windows_renderer.py:123:5: Name `legacy_windows_render` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_windows_renderer.py:131:5: Name `legacy_windows_render` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/test_windows_renderer.py:139:5: Name `legacy_windows_render` used when possibly not defined
+- Found 374 diagnostics
++ Found 327 diagnostics
+
+kornia (https://github.com/kornia/kornia)
+- warning[possibly-unresolved-reference] kornia/feature/dedode/transformer/layers/attention.py:89:19: Name `unbind` used when possibly not defined
+- warning[possibly-unresolved-reference] kornia/feature/dedode/transformer/layers/attention.py:91:13: Name `memory_efficient_attention` used when possibly not defined
+- warning[possibly-unresolved-reference] kornia/feature/dedode/transformer/layers/block.py:168:27: Name `scaled_index_add` used when possibly not defined
+- warning[possibly-unresolved-reference] kornia/feature/dedode/transformer/layers/block.py:186:21: Name `fmha` used when possibly not defined
+- warning[possibly-unresolved-reference] kornia/feature/dedode/transformer/layers/block.py:191:23: Name `index_select_cat` used when possibly not defined
+- Found 804 diagnostics
++ Found 799 diagnostics
+
+dedupe (https://github.com/dedupeio/dedupe)
+- warning[possibly-unresolved-reference] dedupe/training.py:306:21: Name `covered_sample_matches` used when possibly not defined
+- warning[possibly-unresolved-reference] dedupe/training.py:306:46: Name `sample_match_cover` used when possibly not defined
+- warning[possibly-unresolved-reference] dedupe/training.py:307:25: Name `covered_comparisons` used when possibly not defined
+- Found 62 diagnostics
++ Found 59 diagnostics
+
+trio (https://github.com/python-trio/trio)
+- error[invalid-type-form] src/trio/_core/_io_kqueue.py:150:30: List literals are not allowed in this context in a type expression
++ error[invalid-argument-type] src/trio/_core/_io_kqueue.py:287:58: Argument is incorrect: Expected `bool`, found `ClosedResourceError`
+- error[invalid-type-form] src/trio/_core/_io_windows.py:931:29: List literals are not allowed in this context in a type expression
+- warning[possibly-unresolved-reference] src/trio/_core/_run.py:140:25: Name `get_pretty_function_description` used when possibly not defined
+- error[unresolved-reference] src/trio/_core/_tests/test_guest_mode.py:70:13: Name `todo` used when not defined
+- error[unresolved-reference] src/trio/_core/_tests/test_guest_mode.py:71:9: Name `todo` used when not defined
+- error[unresolved-reference] src/trio/_core/_tests/test_guest_mode.py:80:13: Name `todo` used when not defined
+- error[unresolved-reference] src/trio/_core/_tests/test_guest_mode.py:81:9: Name `todo` used when not defined
+- error[unresolved-reference] src/trio/_core/_tests/test_guest_mode.py:85:9: Name `todo` used when not defined
+- warning[possibly-unresolved-reference] src/trio/_deprecate.py:93:17: Name `thing` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_highlevel_open_unix_stream.py:61:19: Name `AF_UNIX` used when possibly not defined
+- error[unresolved-reference] src/trio/_subprocess.py:763:26: Name `killer_cscope` used when not defined
++ error[call-non-callable] src/trio/_subprocess.py:764:31: Object of type `None` is not callable
+- warning[possibly-unresolved-reference] src/trio/_subprocess_platform/waitid.py:17:9: Name `waitid` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_subprocess_platform/waitid.py:57:18: Name `waitid_ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_subprocess_platform/waitid.py:58:15: Name `waitid_cffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_subprocess_platform/waitid.py:59:25: Name `waitid_ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_sync.py:99:36: Name `task` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:36:11: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:36:23: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:42:11: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_dtls.py:42:23: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_exports.py:306:28: Name `cache` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_highlevel_serve_listeners.py:120:19: Name `error` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_highlevel_serve_listeners.py:123:25: Name `error` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_socket.py:667:27: Name `local` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_ssl.py:208:15: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_ssl.py:208:27: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_ssl.py:225:28: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_ssl.py:227:22: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_ssl.py:277:24: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_ssl.py:281:24: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_ssl.py:301:28: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_ssl.py:316:36: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_ssl.py:325:40: Name `SSL` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:29:15: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:29:37: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:29:60: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:30:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:31:5: Name `WaitForMultipleObjects_sync` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:32:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:36:15: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:36:37: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:36:60: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:37:15: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:37:37: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:37:60: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:38:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:39:5: Name `WaitForMultipleObjects_sync` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:40:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:41:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:45:15: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:45:37: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:45:60: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:46:15: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:46:37: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:46:60: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:47:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:48:5: Name `WaitForMultipleObjects_sync` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:49:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:50:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:54:15: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:54:37: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:54:60: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:55:15: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:55:37: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:55:60: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:56:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:58:9: Name `WaitForMultipleObjects_sync` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:59:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:63:15: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:63:37: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:63:60: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:64:15: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:64:37: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:64:60: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:65:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:67:9: Name `WaitForMultipleObjects_sync` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:68:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:80:15: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:80:37: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:80:60: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:85:13: Name `WaitForMultipleObjects_sync` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:91:9: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:94:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:98:15: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:98:37: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:98:60: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:99:15: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:99:37: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:99:60: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:104:13: Name `WaitForMultipleObjects_sync` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:109:9: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:112:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:113:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:117:15: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:117:37: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:117:60: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:118:15: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:118:37: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:118:60: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:123:13: Name `WaitForMultipleObjects_sync` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:128:9: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:131:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:132:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:141:14: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:141:36: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:141:59: Name `ffi` used when possibly not defined
++ warning[unused-ignore-comment] src/trio/_tests/test_wait_for_object.py:164:52: Unused blanket `type: ignore` directive
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:142:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:143:11: Name `WaitForSingleObject` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:144:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:148:14: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:148:36: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:148:59: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:149:22: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:150:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:151:11: Name `WaitForSingleObject` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:152:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:156:14: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:156:36: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:156:59: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:157:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:159:15: Name `WaitForSingleObject` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:179:41: Name `Handle` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:181:9: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:185:14: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:185:36: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:185:59: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:189:28: Name `WaitForSingleObject` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:192:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:199:14: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:199:36: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:199:59: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:200:22: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:204:28: Name `WaitForSingleObject` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:207:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:216:14: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:216:36: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:216:59: Name `ffi` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:220:15: Name `WaitForSingleObject` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_tests/test_wait_for_object.py:222:5: Name `kernel32` used when possibly not defined
+- warning[possibly-unresolved-reference] src/trio/_util.py:226:29: Name `objname` used when possibly not defined
+- Found 1008 diagnostics
++ Found 871 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
++ warning[possibly-unbound-attribute] dulwich/client.py:1687:13: Attribute `close` on type `Unknown | None | socket` is possibly unbound
+- warning[possibly-unresolved-reference] dulwich/merge.py:125:20: Name `_merge3_to_bytes` used when possibly not defined
+- warning[possibly-unresolved-reference] dulwich/merge.py:147:24: Name `_merge3_to_bytes` used when possibly not defined
+- warning[possibly-unresolved-reference] dulwich/merge.py:159:24: Name `_merge3_to_bytes` used when possibly not defined
+- warning[possibly-unresolved-reference] dulwich/merge.py:177:22: Name `_merge3_to_bytes` used when possibly not defined
+- warning[possibly-unresolved-reference] dulwich/notes.py:242:43: Name `update_tree` used when possibly not defined
+- warning[possibly-unresolved-reference] dulwich/notes.py:252:39: Name `update_tree` used when possibly not defined
+- warning[possibly-unresolved-reference] dulwich/pack.py:391:28: Name `mmap` used when possibly not defined
+- warning[possibly-unresolved-reference] dulwich/pack.py:391:55: Name `mmap` used when possibly not defined
+- warning[possibly-unresolved-reference] dulwich/porcelain.py:1127:38: Name `entry` used when possibly not defined
+- warning[possibly-unresolved-reference] dulwich/porcelain.py:1162:42: Name `o` used when possibly not defined
++ error[invalid-argument-type] dulwich/porcelain.py:1649:64: Argument to function `parse_reftuples` is incorrect: Expected `bytes | list[bytes]`, found `Unknown | None | list[Unknown]`
++ error[invalid-argument-type] dulwich/porcelain.py:1745:54: Argument to function `parse_reftuples` is incorrect: Expected `bytes | list[bytes]`, found `Unknown | None | list[Unknown]`
++ warning[possibly-unbound-attribute] dulwich/porcelain.py:2094:9: Attribute `write` on type `Unknown | None | TextIO` is possibly unbound
++ warning[possibly-unbound-attribute] dulwich/porcelain.py:2095:9: Attribute `flush` on type `Unknown | None | TextIO` is possibly unbound
++ warning[possibly-unbound-attribute] dulwich/porcelain.py:2120:9: Attribute `write` on type `Unknown | None | TextIO` is possibly unbound
++ warning[possibly-unbound-attribute] dulwich/porcelain.py:2121:9: Attribute `flush` on type `Unknown | None | TextIO` is possibly unbound
+- warning[possibly-unresolved-reference] dulwich/server.py:998:17: Name `writer` used when possibly not defined
+- warning[possibly-unresolved-reference] dulwich/tests/utils.py:109:31: Name `sha` used when possibly not defined
+- Found 153 diagnostics
++ Found 148 diagnostics
+
+mypy-protobuf (https://github.com/dropbox/mypy-protobuf)
++ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:396:25: Attribute `service` on type `&lt;module 'google.protobuf'&gt; | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:405:25: Attribute `service` on type `&lt;module 'google.protobuf'&gt; | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:414:37: Attribute `service` on type `&lt;module 'google.protobuf'&gt; | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:418:25: Attribute `service` on type `&lt;module 'google.protobuf'&gt; | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:426:25: Attribute `service` on type `&lt;module 'google.protobuf'&gt; | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:437:25: Attribute `service` on type `&lt;module 'google.protobuf'&gt; | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:443:37: Attribute `service` on type `&lt;module 'google.protobuf'&gt; | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:447:25: Attribute `service` on type `&lt;module 'google.protobuf'&gt; | Unknown` is possibly unbound
+- Found 46 diagnostics
++ Found 54 diagnostics
+
+comtypes (https://github.com/enthought/comtypes)
+- warning[possibly-unresolved-reference] comtypes/_comobject.py:74:9: Name `_acquire` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/_comobject.py:77:9: Name `_release` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/_comobject.py:81:9: Name `_acquire` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/_comobject.py:84:9: Name `_release` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/_memberspec.py:385:32: Name `putref` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/_memberspec.py:386:28: Name `put` used when possibly not defined
+- error[unresolved-reference] comtypes/_memberspec.py:588:46: Name `interface` used when not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_comserver.py:141:16: Name `Dispatch` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_comserver.py:162:16: Name `Dispatch` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_dispifc_records.py:24:35: Name `ComtypesCppTestSrvLib` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_dispifc_records.py:29:23: Name `ComtypesCppTestSrvLib` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_dispifc_records.py:37:23: Name `ComtypesCppTestSrvLib` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_dispifc_records.py:51:23: Name `ComtypesCppTestSrvLib` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_dispifc_records.py:68:25: Name `ComtypesCppTestSrvLib` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_dispifc_records.py:75:14: Name `ComtypesCppTestSrvLib` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_dispifc_safearrays.py:27:35: Name `ComtypesCppTestSrvLib` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_dispifc_safearrays.py:32:23: Name `ComtypesCppTestSrvLib` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_dispinterface.py:40:13: Name `EnsureDispatch` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_dispinterface.py:67:13: Name `Dispatch` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_excel.py:71:37: Name `xlRangeValueDefault` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_midl_safearray_create.py:46:25: Name `IDispSafearrayParamTest` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_midl_safearray_create.py:50:23: Name `IDispSafearrayParamTest` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_midl_safearray_create.py:52:61: Name `IDispSafearrayParamTest` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_midl_safearray_create.py:59:57: Name `IDispSafearrayParamTest` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_midl_safearray_create.py:64:14: Name `StructRecordParamTest` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_midl_safearray_create.py:66:18: Name `StructRecordParamTest` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_midl_safearray_create.py:70:53: Name `StructRecordParamTest` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_midl_safearray_create.py:77:49: Name `StructRecordParamTest` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_recordinfo.py:19:45: Name `StructRecordParamTest` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_recordinfo.py:25:14: Name `StructRecordParamTest` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_recordinfo.py:35:19: Name `StructRecordParamTest` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_recordinfo.py:43:29: Name `StructRecordParamTest` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_recordinfo.py:49:13: Name `StructRecordParamTest` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_recordinfo.py:55:20: Name `StructRecordParamTest` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_recordinfo.py:60:29: Name `StructRecordParamTest` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_recordinfo.py:72:19: Name `StructRecordParamTest` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_win32com_interop.py:67:5: Name `_pack` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_win32com_interop.py:76:26: Name `unpack` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_win32com_interop.py:82:26: Name `unpack` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_win32com_interop.py:88:26: Name `unpack` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_win32com_interop.py:97:26: Name `unpack` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_win32com_interop.py:115:12: Name `_PyCom_PyObjectFromIUnknown` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_win32com_interop.py:137:16: Name `win32com` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_win32com_interop.py:153:16: Name `win32com` used when possibly not defined
+- warning[possibly-unresolved-reference] comtypes/test/test_word.py:69:31: Name `Word` used when possibly not defined
+- Found 530 diagnostics
++ Found 485 diagnostics
+
+alerta (https://github.com/alerta/alerta)
+- warning[possibly-unresolved-reference] alerta/app.py:107:14: Name `Celery` used when possibly not defined
+- warning[possibly-unresolved-reference] alerta/auth/utils.py:24:16: Name `bcrypt` used when possibly not defined
+- warning[possibly-unresolved-reference] alerta/auth/utils.py:24:40: Name `bcrypt` used when possibly not defined
+- warning[possibly-unresolved-reference] alerta/auth/utils.py:27:16: Name `bcrypt` used when possibly not defined
++ warning[possibly-unbound-attribute] alerta/database/backends/mongodb/base.py:805:28: Attribute `where` on type `Unknown | None | (Unknown &amp; ~AlwaysFalsy)` is possibly unbound
++ warning[possibly-unbound-attribute] alerta/database/backends/mongodb/base.py:843:28: Attribute `where` on type `Unknown | None | (Unknown &amp; ~AlwaysFalsy)` is possibly unbound
+- warning[possibly-unresolved-reference] alerta/utils/mailer.py:38:15: Name `MIMEMultipart` used when possibly not defined
+- warning[possibly-unresolved-reference] alerta/utils/mailer.py:44:20: Name `MIMEText` used when possibly not defined
+- warning[possibly-unresolved-reference] alerta/utils/mailer.py:49:19: Name `ssl` used when possibly not defined
+- warning[possibly-unresolved-reference] alerta/utils/mailer.py:55:22: Name `smtplib` used when possibly not defined
+- warning[possibly-unresolved-reference] alerta/utils/mailer.py:58:22: Name `smtplib` used when possibly not defined
+- warning[possibly-unresolved-reference] alerta/utils/mailer.py:72:16: Name `smtplib` used when possibly not defined
+- warning[possibly-unresolved-reference] alerta/utils/mailer.py:74:26: Name `socket` used when possibly not defined
+- warning[possibly-unresolved-reference] alerta/utils/mailer.py:74:41: Name `socket` used when possibly not defined
+- error[unresolved-reference] alerta/webhooks/custom.py:51:92: Name `alert` used when not defined
++ warning[unused-ignore-comment] alerta/webhooks/custom.py:50:123: Unused blanket `type: ignore` directive
+- Found 458 diagnostics
++ Found 448 diagnostics
+
+pyjwt (https://github.com/jpadilla/pyjwt)
+- warning[possibly-unresolved-reference] jwt/algorithms.py:157:26: Name `RSAAlgorithm` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:157:39: Name `RSAAlgorithm` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:158:26: Name `RSAAlgorithm` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:158:39: Name `RSAAlgorithm` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:159:26: Name `RSAAlgorithm` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:159:39: Name `RSAAlgorithm` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:160:26: Name `ECAlgorithm` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:160:38: Name `ECAlgorithm` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:161:27: Name `ECAlgorithm` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:161:39: Name `ECAlgorithm` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:162:26: Name `ECAlgorithm` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:162:38: Name `ECAlgorithm` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:163:26: Name `ECAlgorithm` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:163:38: Name `ECAlgorithm` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:164:26: Name `ECAlgorithm` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:165:21: Name `ECAlgorithm` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:167:26: Name `RSAPSSAlgorithm` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:167:42: Name `RSAPSSAlgorithm` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:168:26: Name `RSAPSSAlgorithm` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:168:42: Name `RSAPSSAlgorithm` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:169:26: Name `RSAPSSAlgorithm` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:169:42: Name `RSAPSSAlgorithm` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:170:26: Name `OKPAlgorithm` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:183:35: Name `AllowedKeys` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:199:38: Name `hashes` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:201:22: Name `hashes` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:201:54: Name `default_backend` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:207:42: Name `PublicKeyTypes` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:207:59: Name `PrivateKeyTypes` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:386:31: Name `hashes` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:387:31: Name `hashes` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:388:31: Name `hashes` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:392:43: Name `hashes` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:395:36: Name `AllowedRSAKeys` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:395:69: Name `AllowedRSAKeys` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:406:33: Name `PublicKeyTypes` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:406:50: Name `load_ssh_public_key` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:408:33: Name `RSAPublicKey` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:410:34: Name `PrivateKeyTypes` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:410:52: Name `load_pem_private_key` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algorithms.py:414:33: Name `RSAPrivateKey` used when possibly not defined
+- warning[possibly-unresolved-reference] jwt/algori...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-06-20 13:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-06-23 08:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-06-23 08:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-06-23 13:20</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/david%2Fpublic-types?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
+<h3>Merging #18750 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>david/public-types</code> (4226670) with <code>main</code> (2362263)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 8</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-24 12:39</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-06-24 14:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/scopes/builtin.md</code>:35 on 2025-06-24 14:50</div>
+            <div class="timeline-body"><p>I believe this could be a follow-up task. I haven't seen any ecosystem problems related to this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:1 on 2025-06-24 14:52</div>
+            <div class="timeline-body"><p>I think I'll need some help deciding if these changes here are okay or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-06-24 14:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-06-25 11:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:1646 on 2025-06-25 11:09</div>
+            <div class="timeline-body"><p>Can't easily get this to work with <code>TypeArrayDisplay</code>, so just join it manually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-06-25 11:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-06-25 11:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-25 11:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:1646 on 2025-06-25 11:51</div>
+            <div class="timeline-body"><p>I added this function yesterday, which could possibly be generalised: https://github.com/astral-sh/ruff/blob/c1fed55d51b34e1235f72c610fe4b1700ed76451/crates/ty_python_semantic/src/types/diagnostic.rs#L2039-L2064</p>
+<p>its behaviour is that if you have a list of two types <code>A</code> and <code>B</code>, it creates the string <code>&quot;`A` and `B`&quot;</code>, if you have a list of three types <code>A</code>, <code>B</code> and <code>C</code>, it creates the string <code>&quot;`A`, `B` and `C`&quot;</code>, for four types it creates the string <code>&quot;`A`, `B`, `C` and `D`&quot;</code>, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-25 11:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:1646 on 2025-06-25 11:55</div>
+            <div class="timeline-body"><p>I guess a generalised version would be something like this (untested):</p>
+<pre><code class="language-rs">fn describe_types_list&lt;'db, I, IT, D&gt;(db: &amp;'db dyn Db, types: I) -&gt; String
+where
+    I: IntoIterator&lt;IntoIter = IT&gt;,
+    IT: ExactSizeIterator&lt;Item = D&gt; + DoubleEndedIterator,
+    D: std::fmt::Display,
+{
+    let types = types.into_iter();
+    debug_assert!(types.len() &gt;= 2);
+
+    let final_type = types.next_back().unwrap();
+    let penultimate_type = types.next_back().unwrap();
+
+    let mut buffer = String::new();
+
+    for type in types {
+        buffer.push('`');
+        buffer.push_str(type);
+        buffer.push_str(&quot;`, &quot;);
+    }
+
+    buffer.push('`');
+    buffer.push_str(penultimate_type);
+    buffer.push_str(&quot;` and `&quot;);
+    buffer.push_str(final_type);
+    buffer.push('`');
+
+    buffer
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-06-25 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-06-25 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-06-25 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-06-25 12:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:1646 on 2025-06-25 12:41</div>
+            <div class="timeline-body"><blockquote>
+<p>if you have a list of three types <code>A</code>, <code>B</code> and <code>C</code>, it creates the string <code>&quot;`A`, `B` and `C`&quot;</code>, for four types it creates the string <code>&quot;`A`, `B`, `C` and `D`&quot;</code>, etc.</p>
+</blockquote>
+<p>I see we are Oxford comma nemeses... :ox:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @sharkdp on 2025-06-25 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-25 13:35</div>
+            <div class="timeline-body"><p>Converting back to draft because I think I have a solution for the declaration-shadows-bindings problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-06-25 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-06-25 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-06-25 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-06-25 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-06-25 14:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:421 on 2025-06-25 14:10</div>
+            <div class="timeline-body"><p>We currently don't filter out overloads from <em>bindings</em>, only from declarations. This is easy to change, but we would still infer the wrong type here (only <code>Overload[(x: int) -&gt; int, (x: bytes) -&gt; bytes]</code>). It's not clear to me if this is an important case that we need to handle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-06-25 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-06-25 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-06-25 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/declaration/error.md</code>:50 on 2025-06-25 14:18</div>
+            <div class="timeline-body"><p>nit: it would be nice to at least have backticks around each type, e.g.</p>
+<pre><code class="language-suggestion">    x = &quot;a&quot;  # error: [conflicting-declarations] &quot;Conflicting declared types for `x`: `str`, `int`, `bytes`&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>python/py-fuzzer/fuzz.py</code>:175 on 2025-06-25 14:26</div>
+            <div class="timeline-body"><p>I don't think this should be necessary because the fuzzer CI job currently only complains if you introduce <em>new</em> panics relative to the <code>main</code> branch. So once this PR is merged, the new failures will be naturally incorporated into the baseline for future PRs, and the fuzzer CI job won't fail on those future PRs.</p>
+<p>The reason for the existing <code>skip_check</code> set above isn't because we panic on those seeds -- it's because we take an excruciatingly long time attempting to resolve cycles when we analyze those seeds (or at least, that was the case last time we checked), and it sucks if the fuzzer job takes 15 minutes in CI 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:5 on 2025-06-25 14:27</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">The &quot;public type&quot; of a symbol refers to the type that is inferred for a symbol from an external (either enclosing or nested)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:7 on 2025-06-25 14:27</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">currently make the simplifying assumption that an inner scope (such as the `inner` function below)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:9 on 2025-06-25 14:28</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">could be executed at any position in its enclosing scope. The public type of a symbol in the outer scope
+from the perspective of the inner scope should therefore be the union of all possible types that the
+symbol could have.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:91 on 2025-06-25 14:30</div>
+            <div class="timeline-body"><p>To more clearly distinguish this case from the case that we <em>do</em> want to complain about (which you detail in your following example):</p>
+<pre><code class="language-suggestion">If a symbol is only conditionally bound and the inner scope is bound in the same branch,
+we do not raise any errors:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:115 on 2025-06-25 14:31</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">type, which would have resulted in incorrect type inference here:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:147 on 2025-06-25 14:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">Arbitrarily many levels of nesting are supported:
+</code></pre>
+<p>or</p>
+<pre><code class="language-suggestion">An arbitrary level of nesting is supported:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:192 on 2025-06-25 14:33</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">When a declaration only appears in one branch, we also consider the types of the symbol's bindings in other branches:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:210 on 2025-06-25 14:34</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">declaration and a binding, but we still add `None` to the public type union in a situation like this:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:308 on 2025-06-25 14:36</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        # TODO: this should ideally be `Unknown | None | Literal[1]`
+        # (requires https://github.com/astral-sh/ty/issues/220)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:362 on 2025-06-25 14:38</div>
+            <div class="timeline-body"><p>I'm struggling to parse this -- the example seems to show that we include both overloads in the revealed type of <code>f</code>, just like we do if there <em>is</em> an overload implementation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:419 on 2025-06-25 14:39</div>
+            <div class="timeline-body"><p>hmm, this one's a bit concerning. It seems pretty obviously incorrect, and (unlike the one with conditionally overridden builtins) I don't think it'll be easy to explain to users why it happens.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/scopes/builtin.md</code>:35 on 2025-06-25 14:39</div>
+            <div class="timeline-body"><p>yeah I think this is definitely acceptable, at least for now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-25 14:41</div>
+            <div class="timeline-body"><p>Only reviewed the tests so far. Which are overall fantastic! These are mostly nitpicks:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:1 on 2025-06-25 16:16</div>
+            <div class="timeline-body"><p>FWIW I don't love this name, if anyone has a better idea -- originally it was both the type seen by nested scopes and by imports, but those have diverged already, and fully break with this PR. &quot;Public&quot; seems like a better fit for imports than for nested scopes. But I don't have a great alternative in mind for how to name &quot;the type seen by nested scopes in the same file.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:5 on 2025-06-25 16:20</div>
+            <div class="timeline-body"><p>I think the current text is correct here (although it maybe could be clearer, I initially read &quot;from an enclosing scope&quot; as describing &quot;where we are inferring from&quot; rather than describing &quot;a symbol&quot;).</p>
+<p>I don't think we ever look at public types of symbols of symbols in nested scopes (name lookup travels up the scope tree, not down it), so I don't see a reason to mention both, as in the suggested change here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:6 on 2025-06-25 16:22</div>
+            <div class="timeline-body"><p>One idea for how to make this read slightly clearer (to me, anyway)</p>
+<pre><code class="language-suggestion">The &quot;public type&quot; of a symbol refers to the type that is inferred in a nested scope for a symbol
+defined in an outer enclosing scope. Since it is not generally possible to analyze the full control
+flow of a program, we
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:9 on 2025-06-25 16:25</div>
+            <div class="timeline-body"><p>This edit seems to imply that a given symbol may have different public types, from different perspectives. I don't think that's true?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:91 on 2025-06-25 16:31</div>
+            <div class="timeline-body"><p>I think this edit suggests we are already employing a heuristic, or a level of smarts, that we don't actually employ in this PR -- though we may want to in future.</p>
+<p>I do agree that currently this example and the following one are redundant, except for the fact that in the second case we say we want to change the behavior in future, and in the first case we don't say that. So it might be good to be clearer about that. I would probably try to do that without implying that we are already doing more than we do. So something like this text introducing the second test:</p>
+<p>&quot;In the future, we may try to be smarter about which bindings must or must not be a visible to a given nested scope, depending where it is defined. In the above case, this shouldn't change the behavior -- <code>x</code> is defined before <code>inner</code> in the same branch, so should be considered definitely-bound for <code>inner</code>. But in other cases we may want to emit <code>possibly-unresolved-reference</code> in future:&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:26 on 2025-06-25 16:35</div>
+            <div class="timeline-body"><p>This can be a TODO for now and considered as a follow-up, but when the symbol resolves to an outer scope that is a function scope (as opposed to module global scope), and that name is never declared nonlocal in a nested scope that also assigns to it (this is detectable statically in semantic indexing), I think we can skip the union with <code>Unknown</code> here, even if the symbol is not declared. This is because in a function scope we can see all bindings. There is no possibility (within the realm of reasonable code that we should attempt to model) that some external actor could reach in and set the symbol to some other value than the ones we can see.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:231 on 2025-06-25 16:39</div>
+            <div class="timeline-body"><p>I think in this test it would be worth adding a real named file and importing something existing from it, just to clarify the distinction between the imported type vs the <code>Unknown</code> that we sometimes union with undeclared public types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:308 on 2025-06-25 16:41</div>
+            <div class="timeline-body"><p>I am not sure that we should ever do this (actually resolve the types of all nonlocal bindings in nested scopes), but we probably could. I think it could lead to cycles. Does any other type checker do this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:362 on 2025-06-25 16:44</div>
+            <div class="timeline-body"><p>&quot;Consider&quot; here means &quot;union into the final type&quot;. That is, the point of this test is that we infer the type <code>Overload[(x: int) -&gt; int, (x: str) -&gt; str]</code> for <code>f</code> (and yes, that does &quot;consider&quot; all overloads in a different sense), we don't infer the type <code>Overload[(x: int) -&gt; int, (x: str) -&gt; str] | ((x: int) -&gt; int)</code> (where we wrongly &quot;consider&quot; the first overload as a standalone definition to be unioned.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:419 on 2025-06-25 16:51</div>
+            <div class="timeline-body"><p>I'm not sure why the same logic that handles the non-conditional overload cases doesn't handle this one as well (probably will be clearer after reading the code), but I don't think find it super concerning, mostly just because I think this pattern is vanishingly rare, and other type checkers don't handle it well either. (There are conditionally-defined overloads in typeshed, but always with statically known branches.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/scopes/eager.md</code>:392 on 2025-06-25 16:53</div>
+            <div class="timeline-body"><p>The semantics of deferred annotations aren't clear -- in principle evaluation of a deferred annotation could be triggered at any time. So it's not clear to me that this should ideally be <code>Unknown | str</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/terminal_statements.md</code>:587 on 2025-06-25 16:56</div>
+            <div class="timeline-body"><p>I think this is the same thing I mentioned in a comment above, but I don't think it relies on escape analysis, as implied in this comment. If <code>g</code> escapes, that still doesn't allow some external code not visible to us can change its closure variables. (Well, technically they can by directly modifying <code>__closure__</code> on the function, but this is beyond what I think we should model.) I think we can eliminate <code>Unknown</code> simply based on &quot;symbol resolves to a function-like scope, and there are no nested <code>nonlocal</code> declarations of that symbol that might modify it&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:1780 on 2025-06-25 17:01</div>
+            <div class="timeline-body"><p>As mentioned in another test, it's not actually clear to me what's more correct here, so maybe we don't need a TODO for it (unless we see real-world motivating examples for a different behavior)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-25 17:12</div>
+            <div class="timeline-body"><p>Thank you, this is looking great! Submitting a partial review, will come back to the rest later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-25 17:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:5 on 2025-06-25 17:17</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think we ever look at public types of symbols of symbols in nested scopes</p>
+</blockquote>
+<p>Don't we? This reveals <code>int</code>, not <code>Literal[1]</code>:</p>
+<pre><code class="language-py">class Foo:
+    X: int = 1
+
+reveal_type(Foo.X)
+</code></pre>
+<p>Or am I confusing the concept of &quot;public types&quot; with something else?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:91 on 2025-06-25 17:20</div>
+            <div class="timeline-body"><p>sure</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-25 17:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:1 on 2025-06-25 17:21</div>
+            <div class="timeline-body"><p>I wonder if &quot;nonlocal type&quot; would be a better name, if this concept really is limited to nested scopes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:5 on 2025-06-25 17:22</div>
+            <div class="timeline-body"><p>Resolving class variables uses end-of-scope types, even after this PR, and I don't think we are considering changing that (or should). So the concept of &quot;public type&quot; described in this PR is really just about nested scopes.</p>
+<p>I think this is a further point in favor of &quot;public type is not a good name for this concept.&quot;</p>
+<p>You can see that even after this PR, we only consider the last definition of <code>x</code> here, not all definitions of <code>x</code>:</p>
+<pre><code class="language-py">class C:
+    x = 1
+    x = 2
+
+reveal_type(C.x)  # revealed: Unknown | Literal[2]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-25 17:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:5 on 2025-06-25 17:26</div>
+            <div class="timeline-body"><p>I see. I thought the concept &quot;public type&quot; referred to &quot;the type of the symbol when considered by any external scope&quot;, and thus it also covered the fact that we prefer the declared type over the inferred type when a class attribute was accessed from outside the class, or when an attribute on module <code>b</code> was accessed from an external module <code>a</code> that had imported <code>b</code>. Evidently I was mistaken :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-25 17:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-25 17:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:9 on 2025-06-25 17:27</div>
+            <div class="timeline-body"><p>I think this is the same conversation we're having at https://github.com/astral-sh/ruff/pull/18750#discussion_r2166871990</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-25 17:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:26 on 2025-06-25 17:36</div>
+            <div class="timeline-body"><blockquote>
+<p>(as opposed to module global scope)</p>
+</blockquote>
+<p>or a class scope inside the global scope, or a class scope inside a class scope inside the global scope, etc... If all enclosing scopes are either module or class scopes, variables inside any enclosing scopes could be externally mutated (and so we should union with <code>Unknown</code> when inferring their public types), but this is not the case if any enclosing scopes are function-like scopes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-25 17:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:308 on 2025-06-25 17:39</div>
+            <div class="timeline-body"><p>hmm, yeah, I'm not sure either now that I look more closely. No idea what other type checkers do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-25 17:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:362 on 2025-06-25 17:41</div>
+            <div class="timeline-body"><p>maybe this, to clarify that it's just showing that we have similar behaviour for overloaded functions without implementations as overloaded functions with implementations:</p>
+<pre><code class="language-suggestion">Similarly, if there is no implementation, we only consider the last overload definition.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-25 17:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:419 on 2025-06-25 17:42</div>
+            <div class="timeline-body"><p>it still seems like it would be highly confusing if you came across it as a user, but I do agree that it should be rare.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-06-25 17:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:419 on 2025-06-25 17:58</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not sure why the same logic that handles the non-conditional overload cases doesn't handle this one as well</p>
+</blockquote>
+<p>I described this in another comment higher above:</p>
+<blockquote>
+<p>We currently don't filter out overloads from bindings, only from declarations. This is easy to change, but we would still infer the wrong type here (only Overload[(x: int) -&gt; int, (x: bytes) -&gt; bytes]). It's not clear to me if this is an important case that we need to handle.</p>
+</blockquote>
+<p>In summary, it is easy to change this to <code>Overload[(x: int) -&gt; int, (x: bytes) -&gt; bytes</code>, and I should probably just do that. It's harder to change this to the same union that we infer in the local scope.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>python/py-fuzzer/fuzz.py</code>:175 on 2025-06-25 18:03</div>
+            <div class="timeline-body"><p>Ah, I see! I was very confused why I was so unlucky to only be the second person to run into this. So if I understand correctly, I'll just revert this change and ignore the fuzzer failure on this PR (I made sure that all these seeds are related to cyclic / self-referential problems, as indicated in the comment).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-06-25 18:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-25 18:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>python/py-fuzzer/fuzz.py</code>:175 on 2025-06-25 18:03</div>
+            <div class="timeline-body"><p>yup!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-06-25 18:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:308 on 2025-06-25 18:07</div>
+            <div class="timeline-body"><p>Ah, yes — I thought I had mentioned it here as well in the TODO. I added this test because I saw that both mypy and pyright support this. Both infer <code>int | None</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-25 18:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:26 on 2025-06-25 18:18</div>
+            <div class="timeline-body"><p>Yeah, I didn't mention class scopes because names in class scopes are not visible to nested scopes anyway</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-25 18:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:26 on 2025-06-25 18:21</div>
+            <div class="timeline-body"><p>good point</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:5 on 2025-06-25 18:22</div>
+            <div class="timeline-body"><blockquote>
+<p>also covered the fact that we prefer the declared type over the inferred type</p>
+</blockquote>
+<p>This is indeed a characteristic that is shared by all of imported types, attribute types, and &quot;nonlocal types&quot; (what are currently called &quot;public types&quot; in this PR) -- but this PR is only about the latter.</p>
+<p>The confusion here is really my fault -- I conflated all of these under the single name &quot;public type&quot; initially, and we've discovered over time the ways in which they need to be different, and now we need to sort out what to call each of them as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/place.rs</code>:973 on 2025-06-25 18:34</div>
+            <div class="timeline-body"><p>This comment seems incomplete</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:419 on 2025-06-25 18:50</div>
+            <div class="timeline-body"><p>I don't understand the relevance of bindings vs declarations, considering that all <code>def</code> statements are both, so in this example <code>f</code> is always declared, so I don't see why we would ever even look at bindings for <code>f</code> when deciding its public type?</p>
+<p>To me it seems this limitation is more related to the fact that the current handling of overloads in <code>PublicTypeBuilder</code> is simply based on the order in which we see the definitions, with the logic being that any function-literal declaration of a name &quot;erases&quot; an immediately-preceding overloaded function-literal declaration of that same name.</p>
+<p>The handling which I intuitively expected would be a bit different, and perhaps more complex, but would handle this case correctly: it would be that for any <code>OverloadLiteral</code> declaration we find, we look at what function-literal type is its predecessor (not based on the order we are processing the declarations, but based on <code>OverloadLiteral::previous_overload</code> on the type, which respects control flow), and we'd eliminate that type from the union we are building.</p>
+<p>That said, I don't think that this is an important case we need to handle, so I'm fine going with the current handling with TODO. (And it's entirely probably that I'm missing some reason why the handling I expected doesn't actually work.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/place.rs</code>:1035 on 2025-06-25 18:53</div>
+            <div class="timeline-body"><p>Minor nit: we spell this type both here and as part of <code>PlaceFromDeclarationsResult</code> -- perhaps it should also be its own type alias?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/place.rs</code>:1152 on 2025-06-25 18:55</div>
+            <div class="timeline-body"><p>A goal of the previous code was to avoid creating a <code>UnionBuilder</code> if there is only one type to consider (which is probably the common case?). It seems we could still avoid creating a <code>PublicTypeBuilder</code> in that scenario? I'm not sure if this makes a measurable difference to performance, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/place.rs</code>:1125 on 2025-06-25 18:58</div>
+            <div class="timeline-body"><p>Would <code>AssumeBound</code> be a better name than <code>AlwaysBound</code> for this variant? This usage site makes it clear that it's not really &quot;always bound&quot;, it's just that we generally aren't checking for boundness.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/semantic_index/use_def.rs</code>:686 on 2025-06-25 19:04</div>
+            <div class="timeline-body"><p>It's not totally clear to me that reusing <code>Declarations</code> and <code>Bindings</code> structs, adding <code>PreviousDefinitions</code> flag when recording a definition, and leaving their constraint-tracking functionality unused in this case, is the clearest approach here? How much code would actually be duplicated if we used bespoke simpler vectors of bindings/declarations here?</p>
+<p>Really fine with either option here, just curious if it's a tradeoff you considered.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-06-25 19:05</div>
+            <div class="timeline-body"><p>This looks really good, thank you! I think all of my comments fall into the &quot;for your consider and discretion&quot; category, I'm happy with this as-is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-25 19:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:419 on 2025-06-25 19:26</div>
+            <div class="timeline-body"><p>On further reflection I realized why bindings matter -- because in this scenario, given the control-flow-insensitive handling of the overloaded function declarations, we end up considering only the third declaration, and that declaration is only conditionally reachable, so then we fall back to bindings.</p>
+<p>I think doing the same filtering on bindings that we do on declarations might be important, not for the scenario shown here (overloaded functions in which some overloads are conditional based on not-statically-known conditions should be rare), but for this simpler and more plausible scenario:</p>
+<pre><code class="language-py">from typing import overload
+
+def returns_bool() -&gt; bool:
+    return True
+
+if returns_bool():
+    @overload
+    def f(x: int) -&gt; int: ...
+    @overload
+    def f(x: int) -&gt; int: ...
+
+    def _():
+        reveal_type(f)  # reveals a bogus union of both definitions in the current PR
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-26 00:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:419 on 2025-06-26 00:38</div>
+            <div class="timeline-body"><p>It feels like (in general) we should be able to detect when the bindings we get back are the same Definitions as the declarations we already checked, and not uselessly redo the same work in these scenarios with Definitions that are both bindings and declarations. But that's probably out of scope for this PR (and maybe not that valuable anyway.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-06-26 07:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:231 on 2025-06-26 07:47</div>
+            <div class="timeline-body"><p>This can't really be demonstrated without a gradual type like <code>Unknown</code>, I think? If <code>some_library</code> would exist, the import would be a declaration of <code>&lt;module 'some_library'&gt;</code>. We would then error on the <code>some_library = None</code> binding (<code>invalid-assignment</code>). And both the local and nonlocal type would be <code>&lt;module 'some_library'&gt;</code> here.</p>
+<p>This code pattern will lead to type errors in either case (library exists or not), and I'm not sure if it should generally be recommended over alternatives, but it is so pervasive across the ecosystem that I wanted to capture it in a test.</p>
+<p>I changed the name to <code>optional_dependency</code> to make this a bit more clear, but also happy to just remove this test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-06-26 08:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:1 on 2025-06-26 08:34</div>
+            <div class="timeline-body"><p>I'll do the renaming (which involves renaming some files) in a follow-up to this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-06-26 08:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/place.rs</code>:1152 on 2025-06-26 08:40</div>
+            <div class="timeline-body"><p>Will try that separately in a follow-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-06-26 08:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:419 on 2025-06-26 08:48</div>
+            <div class="timeline-body"><blockquote>
+<p>On further reflection I realized why bindings matter -- because in this scenario, given the control-flow-insensitive handling of the overloaded function declarations, we end up considering only the third declaration, and that declaration is only conditionally reachable, so then we fall back to bindings.</p>
+</blockquote>
+<p>Yes, exactly. I should have described this better.</p>
+<blockquote>
+<p>It feels like (in general) we should be able to detect when the bindings we get back are the same Definitions as the declarations we already checked, and not uselessly redo the same work in these scenarios with Definitions that are both bindings and declarations. But that's probably out of scope for this PR</p>
+</blockquote>
+<p>I thought about this as well. And I agree, this seems like a major change. In a scenario like the following, we currently do not keep track of whether or not these two definitions come from the same &quot;possibly reachable&quot; branch or not</p>
+<pre><code class="language-py">if flag:
+    x: int
+else:
+    x = 1
+
+use(x)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-06-26 10:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:419 on 2025-06-26 10:03</div>
+            <div class="timeline-body"><blockquote>
+<p>I think doing the same filtering on bindings that we do on declarations might be important, not for the scenario shown here (overloaded functions in which some overloads are conditional based on not-statically-known conditions should be rare), but for this simpler and more plausible scenario:</p>
+</blockquote>
+<p>Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-06-26 10:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:1646 on 2025-06-26 10:03</div>
+            <div class="timeline-body"><p>Thank you, Alex. I'll keep this for a follow-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-06-26 10:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/declaration/error.md</code>:50 on 2025-06-26 10:04</div>
+            <div class="timeline-body"><p>Same here =&gt; follow-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-06-26 10:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/semantic_index/use_def.rs</code>:686 on 2025-06-26 10:09</div>
+            <div class="timeline-body"><p>I did indeed consider this, the path I chose seemed to be the easiest one, but I agree that the other option might be better. I can make an attempt to change this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-06-26 10:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-06-26 10:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Infer public types as unions of all reachable bindings" to "[ty] Infer nonlocal types as unions of all reachable bindings" by @sharkdp on 2025-06-26 10:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-06-26 10:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-06-26 10:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-26 10:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:35 UTC
+    </footer>
+</body>
+</html>

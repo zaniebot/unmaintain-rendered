@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Fix rendering of long lines in diagnostic messages that are indented with tabs - astral-sh/ruff #18962</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Fix rendering of long lines in diagnostic messages that are indented with tabs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18962">#18962</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-06-26 14:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-06-26 14:55</div>
+            <div class="timeline-body"><p>It turns out that <code>annotate-snippets</code> doesn't do a great job of
+consistently handling tabs. The intent of the implementation is clearly
+to expand tabs into 4 ASCII whitespace characters. But there are a few
+places where the column computation wasn't taking this expansion into
+account. In particular, the <code>unicode-width</code> crate returns <code>None</code> for a
+<code>\t</code> input, and <code>annotate-snippets</code> would in turn treat this as either
+zero columns or one column. Both are wrong.</p>
+<p>In patching this, it caused one of the existing <code>annotate-snippets</code>
+tests to fail. I spent a fair bit of time on it trying to fix it before
+coming to the conclusion that the test itself was wrong. In particular,
+the annotation ranges are 4 bytes off. However, when the range was
+wrong, the buggy code was rendering the example as intended since
+<code>\t</code> characters were treated as taking up zero columns of space. Now
+that they are correctly computed as taking up 4 columns of space, the
+offsets of the test needed to be adjusted.</p>
+<p>Fixes astral-sh/ty#670</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-06-26 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2025-06-26 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @BurntSushi on 2025-06-26 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @BurntSushi on 2025-06-26 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-26 14:58</div>
+            <div class="timeline-body"><blockquote>
+<p>In particular, the unicode-width crate returns None for a <code>\t</code> input</p>
+</blockquote>
+<p>That's a somewhat &quot;recent&quot; change in unicode-width, I think it used to return 1. So maybe that used to work</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-06-26 14:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-26 14:59</div>
+            <div class="timeline-body"><p>Uff, that sounds awful to debug. Thanks for tracking this down</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-26 15:07</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-06-26 15:12</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>In particular, the unicode-width crate returns None for a <code>\t</code> input</p>
+</blockquote>
+<p>That's a somewhat &quot;recent&quot; change in unicode-width, I think it used to return 1. So maybe that used to work</p>
+</blockquote>
+<p>I think this was for <code>\n</code>, not <code>\t</code>: https://github.com/unicode-rs/unicode-width/issues/60</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-06-26 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-06-26 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-26 15:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:36 UTC
+    </footer>
+</body>
+</html>

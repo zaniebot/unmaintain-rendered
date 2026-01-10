@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Use more parallelism when running corpus tests - astral-sh/ruff #18711</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Use more parallelism when running corpus tests</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18711">#18711</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-06-16 14:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-16 14:39</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Now that we've moved the corpus tests to the <code>ty_python_semantic</code> crate, running <code>cargo test -p ty_python_semantic</code> takes an annoying amount of time locally. (This also hasn't been helped by the fact that we run a lot more corpus tests after https://github.com/astral-sh/ruff/pull/18531.) We can speed things up quite a bit by splitting the corpus tests up more, so that they run in parallel.</p>
+<h2>Test Plan</h2>
+<p>On <code>main</code> locally:</p>
+<pre><code>~/dev/ruff (main)⚡ % cargo test -p ty_python_semantic --test corpus              
+   Compiling ty_python_semantic v0.0.0 (/Users/alexw/dev/ruff/crates/ty_python_semantic)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.81s
+     Running tests/corpus.rs (target/debug/deps/corpus-1d987a322669ccb0)
+
+running 6 tests
+test corpus_no_panic ... ok
+test linter_stubs_no_panic ... ok
+test parser_no_panic ... ok
+test linter_af_no_panic ... ok
+test linter_gz_no_panic ... ok
+test typeshed_no_panic ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.63s
+</code></pre>
+<p>On this PR branch locally:</p>
+<pre><code>~/dev/ruff (alex/split-corpus-tests-more)⚡ % cargo test -p ty_python_semantic --test corpus
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s
+     Running tests/corpus.rs (target/debug/deps/corpus-1d987a322669ccb0)
+
+running 12 tests
+test corpus_no_panic ... ok
+test linter_no_panic::_a_e_expects ... ok
+test linter_no_panic::_g_o_expects ... ok
+test linter_stubs_no_panic ... ok
+test parser_no_panic ... ok
+test typeshed_no_panic::_f_k_expects ... ok
+test typeshed_no_panic::_l_p_expects ... ok
+test typeshed_no_panic::_a_e_expects ... ok
+test linter_no_panic::_q_z_expects ... ok
+test typeshed_no_panic::_q_z_expects ... ok
+test linter_no_panic::_p_expects ... ok
+test linter_no_panic::_f_expects ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.77s
+</code></pre>
+<p>I.e., a speedup of around 5s</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-06-16 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-06-16 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-06-16 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @AlexWaygood on 2025-06-16 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-06-16 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-16 14:42</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-16 17:12</div>
+            <div class="timeline-body"><p>This could make the tests on ci (or systems with fewer cores in general) somewhat slower because we now have to infer typeshed more often but I think this change still makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/tests/corpus.rs</code>:48 on 2025-06-16 17:13</div>
+            <div class="timeline-body"><p>Can we make the last range open ended in case some test ends with some unicode or non alphabetic character (not high importance if we can't). The same for the start, we shouldn't exclude files starting with numbers etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-06-16 17:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-16 17:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/tests/corpus.rs</code>:48 on 2025-06-16 17:26</div>
+            <div class="timeline-body"><p>Oh, I just copied our existing strategy for splitting up the linter crate and tried to make it less repetitive and more declarative by using the <code>test_case</code> macro:</p>
+<p>https://github.com/astral-sh/ruff/blob/c3aa9655468864892a23a2c2dfdd58d726b418c9/crates/ty_python_semantic/tests/corpus.rs#L42-L56</p>
+<p>So I'm very confident that we're testing the exact same number of files on this branch that we are on <code>main</code>. But I can look into this quickly anyway</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-16 17:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/tests/corpus.rs</code>:48 on 2025-06-16 17:35</div>
+            <div class="timeline-body"><p>fixed in https://github.com/astral-sh/ruff/pull/18711/commits/c3ccb116970de31fa8c71489dcf7baaa690bfe97</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-06-16 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-06-16 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-16 17:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:35 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-type-checking`] Add a fix for `runtime-string-union` (`TC010`) - astral-sh/ruff #15635</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-type-checking</code>] Add a fix for <code>runtime-string-union</code> (<code>TC010</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15635">#15635</a>
+        opened by <a href="https://github.com/Daverball">@Daverball</a>
+        on 2025-01-21 10:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Daverball">@Daverball</a> on 2025-01-21 10:59</div>
+            <div class="timeline-body"><p>This is an alternative implementation for #15222 so we can compare the two approaches.
+/cc @MichaReiser</p>
+<h2>Summary</h2>
+<p>This adds a fix for <code>TC010</code> which removes quotes whenever they can be removed safely and otherwise extends the quotes to the entire union.</p>
+<p>This also disables <code>TC010</code> explicitly in stubs, rather than rely on the execution context, which can still be runtime in stub files for a small set of type expressions.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-21 11:06</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-01-21 11:07</div>
+            <div class="timeline-body"><p>The only thing this approach does worse, is that for the same union expression it can emit a fix for removing quotes only to also emit a fix for extending the quotes, so we may want to ensure the fix for extending the quotes gets applied first. I think this may already be the case since we set <code>parent</code> to the start of the extended expression, which should sort before the more narrow fix. But I haven't actually checked.</p>
+<p>Technically it doesn't matter which order the fixes get applied, since eventually they will stabilize. Doing the extension first is just more efficient, since the other fix will go away in the next iteration.</p>
+<p>But other than that this approach seems cleaner, since we can reuse existing helper functions and rely on already parsed forward references.</p>
+<p>This will however slightly change the behavior of the rule. We will no longer emit a violation for invalid type expressions, including byte and f-strings. But I think that's actually an improvement. If the type expression is invalid to begin with, we shouldn't really emit any other diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-01-21 12:08</div>
+            <div class="timeline-body"><p>This seems to have the same issue where some of the fixes that should be marked safe are marked as unsafe. I assume that either the comment range or the expression range is incorrect in this case. It's also possible that the ranges are correct, but the end of the expression range exactly matches the start of a comment range. Which would make it a off by one error in the overlap check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-01-21 12:23</div>
+            <div class="timeline-body"><p>Alright, I think I understand the problem now, <code>has_comments</code> will expand the <code>TextRange</code> to the end of the line if it ends right before a comment, i.e. it will treat the comment as belonging to that expression. So it seems like it is actually the wrong function to use in order to determine whether an edit's <code>TextRange</code> will intersect a comment, instead we should just directly use <code>ComentRanges::intersects</code>.</p>
+<p>This problem affects a bunch of existing fixes, should we open an issue for this @MichaReiser?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @dylwil3 on 2025-01-23 23:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2025-01-23 23:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @dhruvmanila on 2025-02-11 09:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-11 09:44</div>
+            <div class="timeline-body"><p>(Marking this as draft to signal that this is an alternate implementation of an existing PR.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:34 UTC
+    </footer>
+</body>
+</html>

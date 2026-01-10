@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete the `ruff_python_resolver` crate - astral-sh/ruff #18933</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Delete the <code>ruff_python_resolver</code> crate</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18933">#18933</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-06-25 06:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-25 06:28</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>We now have a working module resolver in <code>ty_python_semantic</code>. <code>ruff_python_resolver</code> is unused, has very little test coverage, and gives the wrong impression that this could be used in ruff.</p>
+<p>We didn't delete this in the past because we wanted it as a reference for ty's module resolver. I think we're now at a point where this is no longer necessary (ty's module resolver is further along). We can also always take a look at pyright's module resolver, from which this implementation was inspired from.</p>
+<h2>Test Plan</h2>
+<p><code>cargo build</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2025-06-25 06:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-06-25 06:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-25 06:33</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-06-25 06:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-25 06:45</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Delete the `ruff_python_resovler` crate" to "Delete the `ruff_python_resolver` crate" by @AlexWaygood on 2025-06-25 09:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-25 09:30</div>
+            <div class="timeline-body"><p>I still feel like this will be a useful reference for some of the more advanced features pyright's resolver has that ty's doesn't yet have, but which we want to add in the future. For example, pyright's resolver has the ability to resolve a module to a C extension, and therefore records the fact that the module does actually exist at runtime, pyright just has no types for it. That allows pyright to issue different diagnostics for &quot;the module isn't installed&quot; vs &quot;the module is installed but you'll need to install some stubs before I can do type inference properly&quot;.</p>
+<p>I guess this crate will always be in Ruff's git history if you <em>really</em> want to remove it <em>now</em>, though 😛</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-25 10:33</div>
+            <div class="timeline-body"><blockquote>
+<p>For example, pyright's resolver has the ability to resolve a module to a C extension, and therefore records the fact that the module does actually exist at runtime, pyright just has no types for it. That allows pyright to issue different diagnostics for &quot;the module isn't installed&quot; vs &quot;the module is installed but you'll need to install some stubs before I can do type inference properly&quot;</p>
+</blockquote>
+<p>If that's the only use, then I suggest that we look at Pyright's module resolver implementation (which was the inspiration for our implementation). https://github.com/microsoft/pyright/blob/e5ecd9e32f54db97222a982db26fb182c34125d8/packages/pyright-internal/src/analyzer/importResolver.ts#L716</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-25 10:34</div>
+            <div class="timeline-body"><p>Right, but I'm terrible at typescript and prefer reading Charlie's rust port 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-25 10:37</div>
+            <div class="timeline-body"><p>I mean, the port is type script written in Rust (and it's also not much TypeScript, it's mostly c-like code). Anyway, I don't think these are strong enough reasons to keep the code lingering, especially considering that it has confused contributors because they thought they could build on top of it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-25 10:40</div>
+            <div class="timeline-body"><p>It sounds like you feel more strongly than I do — don't let me block you!</p>
+<blockquote>
+<p>it has confused contributors because they thought they could build on top of it.</p>
+</blockquote>
+<p>This is a great motivation, and one I haven't got much insight into, because I haven't been engaging with Ruff contributors to nearly the same extent you have over the past few months</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-25 10:53</div>
+            <div class="timeline-body"><p>Thank you.</p>
+<p>It doesn't come up often but every now and then. There was another instance today (https://github.com/astral-sh/ruff/issues/9103#issuecomment-3002320303) which is why I opened this PR, very well knowing that we decided not to merge similar PRs for the reasons you mentioned before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-06-25 10:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-25 10:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-25 10:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:36 UTC
+    </footer>
+</body>
+</html>

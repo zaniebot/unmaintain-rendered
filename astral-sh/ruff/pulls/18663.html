@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] fix binary expression inference between boolean literals and bool instances - astral-sh/ruff #18663</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] fix binary expression inference between boolean literals and bool instances</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18663">#18663</a>
+        opened by <a href="https://github.com/alpaylan">@alpaylan</a>
+        on 2025-06-13 16:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/alpaylan">@alpaylan</a> on 2025-06-13 16:12</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>This PR fixes a false type inference issue specified in https://github.com/astral-sh/ty/issues/649</p>
+<p>If there is a better solution, I'm open to implementing that too. The current version uses the right-hand-side type when it finds a <code>bool &amp; NominalInstance</code> pair, which is an improvement over the previous version, but I'm guessing there are bugs introduces by this too. I will keep inspecting those as I wait for the reviews.</p>
+<p>Closes https://github.com/astral-sh/ty/issues/649</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>This PR was tested through a regression test, added as an inline test to the module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @alpaylan on 2025-06-13 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @alpaylan on 2025-06-13 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @alpaylan on 2025-06-13 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @alpaylan on 2025-06-13 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "fix 'BitwiseAnd' bug at https://github.com/astral-sh/ty/issues/649 " to "[ty] fix 'BitwiseAnd' bug" by @MichaReiser on 2025-06-13 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-06-13 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:10595 on 2025-06-13 18:13</div>
+            <div class="timeline-body"><p>We write all such tests as mdtests (test snippets embedded as Markdown) rather than as regular Rust tests. See https://github.com/astral-sh/ruff/blob/main/crates/ty/CONTRIBUTING.md#writing-tests for details. This test should be easy to transform to an mdtest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:6721 on 2025-06-13 18:23</div>
+            <div class="timeline-body"><p>I realize that our prior logic here used a fallback to an int literal, but I think a fallback to <code>KnownClass::Bool.to_instance()</code> is more correct. (Falling back to an int literal may give more precise results in some cases, but is just wrong in other cases; fallback to <code>bool</code> should never be wrong.) So I would probably try just replacing the fallback to <code>Type::IntLiteral(...)</code> with a fallback to <code>KnownClass::Bool.to_instance()</code>, and see what (if any) existing test cases fail. It may be that we can simply decide we don't need that level of precision in those tests, and we can just fall back to bool instead. Or if we do want to keep that precision, we could add a special case for fallback to int literal only for specific cases where we know it's correct to do so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:6712 on 2025-06-13 18:24</div>
+            <div class="timeline-body"><p>I don't think we can just assume the output is a bool without even knowing what operation is being performed -- the better approach here would be to recursively call <code>self.infer_binary_expression_type</code> but with the left operand replaced by <code>KnownClass::Bool.to_instance()</code>. Similar to how we currently fall back to <code>Type::IntLiteral(...)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> had review dismissed on 2025-06-13 18:25</div>
+            <div class="timeline-body"><p>Thanks for identifying the bug and proposing a fix! I think we want to adjust a few things in this PR, but it's a great start.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-13 22:48</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">optuna (https://github.com/optuna/optuna)
+- error[invalid-argument-type] optuna/visualization/_pareto_front.py:327:9: Argument is incorrect: Expected `bool`, found `int`
+- Found 1005 diagnostics
++ Found 1004 diagnostics
+
+yarl (https://github.com/aio-libs/yarl)
+- error[invalid-assignment] yarl/_url.py:1019:13: Object of type `int` is not assignable to `bool`
+- Found 159 diagnostics
++ Found 158 diagnostics
+
+mypy (https://github.com/python/mypy)
+- error[invalid-return-type] mypy/inspections.py:427:16: Return type does not match returned value: expected `tuple[dict[FuncBase | SymbolNode, State], bool]`, found `tuple[dict[Unknown, Unknown], int | @Todo(map_with_boundness: intersections with negative contributions)]`
+- Found 2023 diagnostics
++ Found 2022 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- error[invalid-return-type] ddtrace/appsec/_ddwaf/waf.py:143:16: Return type does not match returned value: expected `bool`, found `int`
+- Found 6897 diagnostics
++ Found 6896 diagnostics
+
+scipy (https://github.com/scipy/scipy)
+- error[unresolved-attribute] scipy/stats/_mstats_basic.py:1919:7: Type `int` has no attribute `filled`
++ error[unresolved-attribute] scipy/stats/_mstats_basic.py:1919:7: Type `bool` has no attribute `filled`
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/alpaylan">@alpaylan</a> reviewed on 2025-06-13 22:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/alpaylan">@alpaylan</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:6721 on 2025-06-13 22:54</div>
+            <div class="timeline-body"><p>As far as I can tell from <code>mdtest__binary_booleans</code> doing this kills the precision for the arithmetic ops, because right now there's no separate case for them. I've moved them to a separate case with</p>
+<pre><code class="language-rust">   (
+                Type::BooleanLiteral(b1),
+                right,
+                ast::Operator::Add
+                | ast::Operator::Sub
+                | ast::Operator::Mult
+                | ast::Operator::Mod
+                | ast::Operator::FloorDiv
+                | ast::Operator::Pow
+                | ast::Operator::Div,
+            ) =&gt; self.infer_binary_expression_type(
+                node,
+                emitted_division_by_zero_diagnostic,
+                Type::IntLiteral(i64::from(b1)),
+                right,
+                op)
+</code></pre>
+<p>and with that, we can use the <code>KnownClass::Bool.to_instance</code> fallback without breaking existing test cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/alpaylan">@alpaylan</a> reviewed on 2025-06-13 23:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/alpaylan">@alpaylan</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:10595 on 2025-06-13 23:01</div>
+            <div class="timeline-body"><p>Moved 👍🏻</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/binary/booleans.md</code>:1 on 2025-06-16 17:51</div>
+            <div class="timeline-body"><p>These tests all pass on our <code>main</code> branch (i.e., if I revert all your changes to <code>crates/ty_python_semantic/src/types/infer.rs</code>, these tests all still pass). Can you make sure that all the tests you're adding fail on the <code>main</code> branch?</p>
+<p>The reason why these tests pass is that the bug you're fixing only manifests if you use a <em>literal</em> <code>bool</code> value. I.e. on <code>main</code> we have this behaviour:</p>
+<pre><code class="language-py">from random import random
+
+def f() -&gt; bool:
+    return random() &gt; 0.5
+
+reveal_type(True &amp; f())  # int
+reveal_type(False &amp; f())  # int
+reveal_type(f() &amp; True)  # int
+reveal_type(f() &amp; False)  # int
+
+reveal_type(f() &amp; f())  # bool
+</code></pre>
+<p>On the first four operations, we get the wrong answer on <code>main</code>, because the first four operations all use values that we infer as having literal <code>bool</code> types (<code>True</code> has type <code>Literal[True]</code>). But we get the last answer right. All the tests you've added look like the last <code>reveal_type</code> call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:6737 on 2025-06-16 17:57</div>
+            <div class="timeline-body"><p>Rather than checking what <code>op</code> is, I think it would be simpler to check what the other value is -- something like this (the diff is relative to your branch):</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types/infer.rs b/crates/ty_python_semantic/src/types/infer.rs
+index 64fd0069d2..1fb868c007 100644
+--- a/crates/ty_python_semantic/src/types/infer.rs
++++ b/crates/ty_python_semantic/src/types/infer.rs
+@@ -6701,40 +6701,24 @@ impl&lt;'db, 'ast&gt; TypeInferenceBuilder&lt;'db, 'ast&gt; {
+             (Type::BooleanLiteral(b1), Type::BooleanLiteral(b2), ast::Operator::BitXor) =&gt; {
+                 Some(Type::BooleanLiteral(b1 ^ b2))
+             }
+-            (
+-                Type::BooleanLiteral(b1),
+-                right,
+-                ast::Operator::Add
+-                | ast::Operator::Sub
+-                | ast::Operator::Mult
+-                | ast::Operator::Mod
+-                | ast::Operator::FloorDiv
+-                | ast::Operator::Pow
+-                | ast::Operator::Div,
+-            ) =&gt; self.infer_binary_expression_type(
+-                node,
+-                emitted_division_by_zero_diagnostic,
+-                Type::IntLiteral(i64::from(b1)),
+-                right,
+-                op,
+-            ),
+-            (
+-                left,
+-                Type::BooleanLiteral(b2),
+-                ast::Operator::Add
+-                | ast::Operator::Sub
+-                | ast::Operator::Mult
+-                | ast::Operator::Mod
+-                | ast::Operator::FloorDiv
+-                | ast::Operator::Pow
+-                | ast::Operator::Div,
+-            ) =&gt; self.infer_binary_expression_type(
+-                node,
+-                emitted_division_by_zero_diagnostic,
+-                left,
+-                Type::IntLiteral(i64::from(b2)),
+-                op,
+-            ),
++
++            (Type::BooleanLiteral(b1), Type::IntLiteral(_), op) =&gt; self
++                .infer_binary_expression_type(
++                    node,
++                    emitted_division_by_zero_diagnostic,
++                    Type::IntLiteral(i64::from(b1)),
++                    right_ty,
++                    op,
++                ),
++            (Type::IntLiteral(_), Type::BooleanLiteral(b2), op) =&gt; self
++                .infer_binary_expression_type(
++                    node,
++                    emitted_division_by_zero_diagnostic,
++                    left_ty,
++                    Type::IntLiteral(i64::from(b2)),
++                    op,
++                ),
++
+             (Type::BooleanLiteral(_), right, op) =&gt; self.infer_binary_expression_type(
+                 node,
+                 emitted_division_by_zero_diagnostic,
+</code></pre>
+<p>The logic I'm suggesting here would only treat boolean literals like their value-equivalent integer literals if the boolean literal in question is involved in an operation with an integer literal. We can say with confidence that this will be safe: binary operations between integer literals and boolean literals will always fall back to the relevant operations on <code>int</code>, so it's okay to treat boolean literals as integer literals for these specific operations. And there's no real other use case I can think of for treating boolean literals like their value-equivalent integer literals</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> requested changes on 2025-06-16 17:58</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-16 18:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:6751 on 2025-06-16 18:03</div>
+            <div class="timeline-body"><p>the third and fourth new branches here shouldn't be necessary; they should be handled by the fallback branch at the bottom of this method</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/alpaylan">@alpaylan</a> reviewed on 2025-06-17 14:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/alpaylan">@alpaylan</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:6737 on 2025-06-17 14:19</div>
+            <div class="timeline-body"><p>Wouldn't this fail when the other expression is a nominal instance of int such as <code>f: () -&gt; int</code> instead of an <code>IntLiteral</code> like <code>5</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-17 14:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:6737 on 2025-06-17 14:30</div>
+            <div class="timeline-body"><p>if the other expression is a nominal <code>int</code> then we'll just fall through to the final fallback branch in this <code>match</code>, which will just look up the methods in typeshed and get the correct result, I think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/alpaylan">@alpaylan</a> reviewed on 2025-06-17 14:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/alpaylan">@alpaylan</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:6737 on 2025-06-17 14:45</div>
+            <div class="timeline-body"><p>Updates after tests: the proposed change breaks the old arithmetic narrowing in the basic arithmetic case</p>
+<pre><code>
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:11 unmatched assertion: revealed: Literal[2]
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:11 unexpected error: 13 [revealed-type] &quot;Revealed type: `int`&quot;
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:12 unmatched assertion: revealed: Literal[1]
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:12 unexpected error: 13 [revealed-type] &quot;Revealed type: `int`&quot;
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:13 unmatched assertion: revealed: Literal[1]
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:13 unexpected error: 13 [revealed-type] &quot;Revealed type: `int`&quot;
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:14 unmatched assertion: revealed: Literal[0]
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:14 unexpected error: 13 [revealed-type] &quot;Revealed type: `int`&quot;
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:16 unmatched assertion: revealed: Literal[0]
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:16 unexpected error: 13 [revealed-type] &quot;Revealed type: `int`&quot;
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:17 unmatched assertion: revealed: Literal[1]
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:17 unexpected error: 13 [revealed-type] &quot;Revealed type: `int`&quot;
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:18 unmatched assertion: revealed: Literal[-1]
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:18 unexpected error: 13 [revealed-type] &quot;Revealed type: `int`&quot;
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:19 unmatched assertion: revealed: Literal[0]
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:19 unexpected error: 13 [revealed-type] &quot;Revealed type: `int`&quot;
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:21 unmatched assertion: revealed: Literal[1]
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:21 unexpected error: 13 [revealed-type] &quot;Revealed type: `int`&quot;
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:22 unmatched assertion: revealed: Literal[0]
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:22 unexpected error: 13 [revealed-type] &quot;Revealed type: `int`&quot;
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:23 unmatched assertion: revealed: Literal[0]
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:23 unexpected error: 13 [revealed-type] &quot;Revealed type: `int`&quot;
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:24 unmatched assertion: revealed: Literal[0]
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:24 unexpected error: 13 [revealed-type] &quot;Revealed type: `int`&quot;
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:26 unmatched assertion: revealed: Literal[0]
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:26 unexpected error: 13 [revealed-type] &quot;Revealed type: `int`&quot;
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:27 unmatched assertion: revealed: Literal[0]
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:27 unexpected error: 13 [revealed-type] &quot;Revealed type: `int`&quot;
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:29 unmatched assertion: revealed: Literal[1]
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:29 unexpected error: 13 [revealed-type] &quot;Revealed type: `int`&quot;
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:30 unmatched assertion: revealed: Literal[0]
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:30 unexpected error: 13 [revealed-type] &quot;Revealed type: `int`&quot;
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:32 unmatched assertion: revealed: Literal[1]
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:32 unexpected error: 13 [revealed-type] &quot;Revealed type: `int`&quot;
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:33 unmatched assertion: revealed: Literal[1]
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:33 unexpected error: 13 [revealed-type] &quot;Revealed type: `int`&quot;
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:34 unmatched assertion: revealed: Literal[0]
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:34 unexpected error: 13 [revealed-type] &quot;Revealed type: `int`&quot;
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:35 unmatched assertion: revealed: Literal[1]
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:35 unexpected error: 13 [revealed-type] &quot;Revealed type: `int`&quot;
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:38 unmatched assertion: revealed: float
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:38 unexpected error: 13 [revealed-type] &quot;Revealed type: `int | float`&quot;
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:39 unmatched assertion: revealed: float
+  crates/ty_python_semantic/resources/mdtest/binary/booleans.md:39 unexpected error: 13 [revealed-type] &quot;Revealed type: `int | float`&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-17 14:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:6737 on 2025-06-17 14:55</div>
+            <div class="timeline-body"><p>Ah, sorry -- good point! What about something like this (again, the diff is relative to your PR branch)? It doesn't seem to cause any regressions on our existing tests, and I think it fixes the issue</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types/infer.rs b/crates/ty_python_semantic/src/types/infer.rs
+index 64fd0069d2..49275c11de 100644
+--- a/crates/ty_python_semantic/src/types/infer.rs
++++ b/crates/ty_python_semantic/src/types/infer.rs
+@@ -6701,54 +6701,22 @@ impl&lt;'db, 'ast&gt; TypeInferenceBuilder&lt;'db, 'ast&gt; {
+             (Type::BooleanLiteral(b1), Type::BooleanLiteral(b2), ast::Operator::BitXor) =&gt; {
+                 Some(Type::BooleanLiteral(b1 ^ b2))
+             }
+-            (
+-                Type::BooleanLiteral(b1),
+-                right,
+-                ast::Operator::Add
+-                | ast::Operator::Sub
+-                | ast::Operator::Mult
+-                | ast::Operator::Mod
+-                | ast::Operator::FloorDiv
+-                | ast::Operator::Pow
+-                | ast::Operator::Div,
+-            ) =&gt; self.infer_binary_expression_type(
+-                node,
+-                emitted_division_by_zero_diagnostic,
+-                Type::IntLiteral(i64::from(b1)),
+-                right,
+-                op,
+-            ),
+-            (
+-                left,
+-                Type::BooleanLiteral(b2),
+-                ast::Operator::Add
+-                | ast::Operator::Sub
+-                | ast::Operator::Mult
+-                | ast::Operator::Mod
+-                | ast::Operator::FloorDiv
+-                | ast::Operator::Pow
+-                | ast::Operator::Div,
+-            ) =&gt; self.infer_binary_expression_type(
+-                node,
+-                emitted_division_by_zero_diagnostic,
+-                left,
+-                Type::IntLiteral(i64::from(b2)),
+-                op,
+-            ),
+-            (Type::BooleanLiteral(_), right, op) =&gt; self.infer_binary_expression_type(
+-                node,
+-                emitted_division_by_zero_diagnostic,
+-                KnownClass::Bool.to_instance(self.db()),
+-                right,
+-                op,
+-            ),
+-            (left, Type::BooleanLiteral(_), op) =&gt; self.infer_binary_expression_type(
+-                node,
+-                emitted_division_by_zero_diagnostic,
+-                left,
+-                KnownClass::Bool.to_instance(self.db()),
+-                op,
+-            ),
++            (Type::BooleanLiteral(b1), Type::BooleanLiteral(_) | Type::IntLiteral(_), op) =&gt; self
++                .infer_binary_expression_type(
++                    node,
++                    emitted_division_by_zero_diagnostic,
++                    Type::IntLiteral(i64::from(b1)),
++                    right_ty,
++                    op,
++                ),
++            (Type::IntLiteral(_), Type::BooleanLiteral(b2), op) =&gt; self
++                .infer_binary_expression_type(
++                    node,
++                    emitted_division_by_zero_diagnostic,
++                    left_ty,
++                    Type::IntLiteral(i64::from(b2)),
++                    op,
++                ),
+             (Type::Tuple(lhs), Type::Tuple(rhs), ast::Operator::Add) =&gt; {
+                 // Note: this only works on heterogeneous tuples.
+                 let lhs_elements = lhs.elements(self.db());
+@@ -6767,6 +6735,7 @@ impl&lt;'db, 'ast&gt; TypeInferenceBuilder&lt;'db, 'ast&gt; {
+             // fall back on looking for dunder methods on one of the operand types.
+             (
+                 Type::FunctionLiteral(_)
++                | Type::BooleanLiteral(_)
+                 | Type::Callable(..)
+                 | Type::BoundMethod(_)
+                 | Type::WrapperDescriptor(_)
+@@ -6793,6 +6762,7 @@ impl&lt;'db, 'ast&gt; TypeInferenceBuilder&lt;'db, 'ast&gt; {
+                 | Type::BoundSuper(_)
+                 | Type::TypeVar(_),
+                 Type::FunctionLiteral(_)
++                | Type::BooleanLiteral(_)
+                 | Type::Callable(..)
+                 | Type::BoundMethod(_)
+                 | Type::WrapperDescriptor(_)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/alpaylan">@alpaylan</a> reviewed on 2025-06-17 16:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/alpaylan">@alpaylan</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:6737 on 2025-06-17 16:30</div>
+            <div class="timeline-body"><p>This works! Committing the local updates now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-06-17 16:51</div>
+            <div class="timeline-body"><p>Looks great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-06-17 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-06-17 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] fix 'BitwiseAnd' bug" to "[ty] fix binary expression inference between boolean literals and bool instances" by @AlexWaygood on 2025-06-17 17:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:35 UTC
+    </footer>
+</body>
+</html>

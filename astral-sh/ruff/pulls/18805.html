@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handle parenthesized arguments in `remove_argument` - astral-sh/ruff #18805</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Handle parenthesized arguments in <code>remove_argument</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18805">#18805</a>
+        opened by <a href="https://github.com/LaBatata101">@LaBatata101</a>
+        on 2025-06-19 21:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-06-19 21:51</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Fix <code>remove_argument</code> to handle parenthesized arguments properly. Previously, it would not delete the entire parenthesized argument, leaving the close parenthesis. This caused the autofix of some rules to introduce a syntax error, like in the case of #18798.</p>
+<p>I had to update the function signature to include the <code>CommentRanges</code>, that's why there are some many files changed.</p>
+<p>Fixes #18798</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p>Add regression test</p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @LaBatata101 on 2025-06-19 21:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-19 21:59</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-06-20 07:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2025-06-20 07:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/fix/edits.rs</code>:254 on 2025-06-20 10:30</div>
+            <div class="timeline-body"><p>this looks like the correct fix, but we need to apply the fix more holistically -- the same bug is present in the other branches of this <code>match</code>. Your current PR only fixes <code>remove_argument</code> if the argument being removed is the <em>last</em> argument.</p>
+<p>For example, on your branch:</p>
+<pre><code>(experiment) ~/dev/ruff (fix-RUF056)⚡ % cat foo.py
+range((0), 42)
+(experiment) ~/dev/ruff (fix-RUF056)⚡ % cargo run -- check foo.py --no-cache --preview --select=PIE808 --diff
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.36s
+     Running `target/debug/ruff check foo.py --no-cache --preview --select=PIE808 --diff`
+error: Fix introduced a syntax error in `foo.py` with rule codes PIE808: unexpected EOF while parsing at byte range 11..11
+---
+range((42)
+
+---
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> requested changes on 2025-06-20 10:31</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LaBatata101">@LaBatata101</a> reviewed on 2025-06-20 14:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on <code>crates/ruff_linter/src/fix/edits.rs</code>:254 on 2025-06-20 14:57</div>
+            <div class="timeline-body"><p>Yeah, I knew that. I was expecting one of the reviewers to point out a rule that would trigger the other branch so that I could test it 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @LaBatata101 on 2025-06-20 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-20 15:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/fix/edits.rs</code>:254 on 2025-06-20 15:26</div>
+            <div class="timeline-body"><p>can you add <code>range((0), 42)</code> as a test case to the <code>PIE808</code> fixtures?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on <code>crates/ruff_linter/src/fix/edits.rs</code>:254 on 2025-06-20 19:52</div>
+            <div class="timeline-body"><p>Done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LaBatata101">@LaBatata101</a> reviewed on 2025-06-20 19:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-06-20 21:22</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-06-20 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-06-20 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-22 13:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:35 UTC
+    </footer>
+</body>
+</html>

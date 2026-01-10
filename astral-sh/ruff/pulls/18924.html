@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Internal] Use more `report_diagnostic_if_enabled` - astral-sh/ruff #18924</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Internal] Use more <code>report_diagnostic_if_enabled</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18924">#18924</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-06-24 20:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-24 20:27</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>From @ntBre https://github.com/astral-sh/ruff/pull/18906#discussion_r2162843366 :</p>
+<blockquote>
+<p>This could be a good target for a follow-up PR, but we could fold these <code>if checker.is_rule_enabled { checker.report_diagnostic</code> checks into calls to <code>checker.report_diagnostic_if_enabled</code>. I didn't notice these when adding that method.</p>
+<p>Also, the docs on <code>Checker::report_diagnostic_if_enabled</code> and <code>LintContext::report_diagnostic_if_enabled</code> are outdated now that the <code>Rule</code> conversion is basically free 😅</p>
+<p>No pressure to take on this refactor, just an idea if you're interested!</p>
+</blockquote>
+<p>This PR folds those calls. I also updated the doc comments by copying from <code>report_diagnostic</code>.</p>
+<p>Note: It seems odd to me that the doc comment for <code>Checker</code> says <code>Diagnostic</code> while <code>LintContext</code> says <code>OldDiagnostic</code>, not sure if that needs a bigger docs change to fix the inconsistency.</p>
+<details>
+<summary>Python script to do the changes</summary>
+
+<p>This script assumes it is placed in the top level <code>ruff</code> directory (ie next to <code>.git</code>/<code>crates</code>/<code>README.md</code>)</p>
+<pre><code class="language-py">import re
+from copy import copy
+from pathlib import Path
+
+ruff_crates = Path(__file__).parent / &quot;crates&quot;
+
+for path in ruff_crates.rglob(&quot;**/*.rs&quot;):
+    with path.open(encoding=&quot;utf-8&quot;, newline=&quot;&quot;) as f:
+        original_content = f.read()
+    if &quot;is_rule_enabled&quot; not in original_content or &quot;report_diagnostic&quot; not in original_content:
+        continue
+    original_content_position = 0
+    changed_content = &quot;&quot;
+    for match in re.finditer(r&quot;(?m)(?:^[ \n]*|(?&lt;=(?P&lt;else&gt;else )))if[ \n]+checker[ \n]*\.is_rule_enabled\([ \n]*Rule::\w+[ \n]*\)[ \n]*{[ \n]*checker\.report_diagnostic\(&quot;, original_content):
+        # Content between last match and start of this one is unchanged
+        changed_content += original_content[original_content_position:match.start()]
+        # If this was an else if, a { needs to be added at the start
+        if match.group(&quot;else&quot;):
+            changed_content += &quot;{&quot;
+        # This will result in bad formatting, but the precommit cargo format will handle it
+        changed_content += &quot;checker.report_diagnostic_if_enabled(&quot;
+        # Depth tracking would fail if a string/comment included a { or }, but unlikely given the context
+        depth = 1
+        position = match.end()
+        while depth &gt; 0:
+            if original_content[position] == &quot;{&quot;:
+                depth += 1
+            if original_content[position] == &quot;}&quot;:
+                depth -= 1
+            position += 1
+        # pos - 1 is the closing }
+        changed_content += original_content[match.end():position - 1]
+        # If this was an else if, a } needs to be added at the end
+        if match.group(&quot;else&quot;):
+            changed_content += &quot;}&quot;
+        # Skip the closing }
+        original_content_position = position
+        if original_content[original_content_position] == &quot;\n&quot;:
+            # If the } is followed by a \n, also skip it for better formatting
+            original_content_position += 1
+    # Add remaining content between last match and file end
+    changed_content += original_content[original_content_position:]
+    with path.open(&quot;w&quot;, encoding=&quot;utf-8&quot;, newline=&quot;&quot;) as f:
+        f.write(changed_content)
+</code></pre>
+</details>
+
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>N/A, no tests/functionality affected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MeGaGiGaGon on 2025-06-24 20:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @AlexWaygood on 2025-06-24 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-06-24 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-24 20:37</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-06-24 20:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:404 on 2025-06-24 20:46</div>
+            <div class="timeline-body"><p>You're right, these should all say <code>OldDiagnostic</code>, at least temporarily. We're in the middle of refactoring the diagnostic infrastructure, so before long it will be back to (a different) <code>Diagnostic</code> but there shouldn't be a <code>Diagnostic</code> type in scope right now, so I'm surprised our doctests don't complain about this.</p>
+<pre><code class="language-suggestion">    /// The guard derefs to an [`OldDiagnostic`], so it can be used to further modify the diagnostic
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:3165 on 2025-06-24 20:50</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// before it is added to the collection in the context on `Drop`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-06-24 21:02</div>
+            <div class="timeline-body"><p>This looks great, thank you! I just had a couple of small suggestions on the docs.</p>
+<p>Also, I probably should have mentioned this earlier (sorry!), and it looks like your script did a good job, but this is a nice use case for <a href="https://ast-grep.github.io/">ast-grep</a>. I just started using it recently, and it's really handy. Something like this would probably work too:</p>
+<pre><code class="language-shell">ast-grep \
+-p 'if checker.is_rule_enabled($RULE) { checker.report_diagnostic($KIND, $RANGE); }' \
+-r 'checker.report_diagnostic_if_enabled($KIND, $RANGE);'
+</code></pre>
+<p>It only found two additional cases, and one of them I had to clean up manually since it was in an <code>else-if</code>.</p>
+<details><summary>Diff</summary>
+
+<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/checkers/ast/analyze/expression.rs b/crates/ruff_linter/src/checkers/ast/analyze/expression.rs
+index 21e8aa0d11..8b094b346f 100644
+--- a/crates/ruff_linter/src/checkers/ast/analyze/expression.rs
++++ b/crates/ruff_linter/src/checkers/ast/analyze/expression.rs
+@@ -1311,16 +1311,12 @@ pub(crate) fn expression(expr: &amp;Expr, checker: &amp;Checker) {
+                             typ: CFormatErrorType::UnsupportedFormatChar(c),
+                             ..
+                         }) =&gt; {
+-                            if checker
+-                                .is_rule_enabled(Rule::PercentFormatUnsupportedFormatCharacter)
+-                            {
+-                                checker.report_diagnostic(
+-                                    pyflakes::rules::PercentFormatUnsupportedFormatCharacter {
+-                                        char: c,
+-                                    },
+-                                    location,
+-                                );
+-                            }
++                            checker.report_diagnostic_if_enabled(
++                                pyflakes::rules::PercentFormatUnsupportedFormatCharacter {
++                                    char: c,
++                                },
++                                location,
++                            );
+                         }
+                         Err(e) =&gt; {
+                             checker.report_diagnostic_if_enabled(
+diff --git a/crates/ruff_linter/src/rules/flake8_2020/rules/compare.rs b/crates/ruff_linter/src/rules/flake8_2020/rules/compare.rs
+index 01751361da..12c18a2dd7 100644
+--- a/crates/ruff_linter/src/rules/flake8_2020/rules/compare.rs
++++ b/crates/ruff_linter/src/rules/flake8_2020/rules/compare.rs
+@@ -307,8 +307,8 @@ pub(crate) fn compare(checker: &amp;Checker, left: &amp;Expr, ops: &amp;[CmpOp], comparators
+         {
+             if value.len() == 1 {
+                 checker.report_diagnostic_if_enabled(SysVersionCmpStr10, left.range());
+-            } else if checker.is_rule_enabled(Rule::SysVersionCmpStr3) {
+-                checker.report_diagnostic(SysVersionCmpStr3, left.range());
++            } else {
++                checker.report_diagnostic_if_enabled(SysVersionCmpStr3, left.range());
+             }
+         }
+     }
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> reviewed on 2025-06-24 21:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:3165 on 2025-06-24 21:07</div>
+            <div class="timeline-body"><p>Should it be <code>context</code> or <code>checker</code>? Since the <code>Checker</code> docs say <code>checker</code> there instead of <code>collector</code> or <code>context </code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-24 21:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:3165 on 2025-06-24 21:13</div>
+            <div class="timeline-body"><p>The diagnostics are actually in the <code>LintContext</code>, so in a literal sense they should both say <code>context</code>, but callers of the <code>Checker</code> version don't really need to know that. So I think it makes sense to say <code>checker</code> on line 405 and <code>context</code> here. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> reviewed on 2025-06-24 21:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:3165 on 2025-06-24 21:20</div>
+            <div class="timeline-body"><p>Sounds reasonable, all this code is new to me so if it makes sense to you then it's good enough for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-24 21:40</div>
+            <div class="timeline-body"><p>Docs updated to fix the inconsistencies, and I updated the script to handle those cases. <code>ast-grep</code> looks like a really cool alternative to my normal regex based shenanigans, I'll have to try it out if I do something like this again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-06-25 01:21</div>
+            <div class="timeline-body"><p>Nice, thank you!</p>
+<p>I think I should have merged this before your rule code changes :grimacing: I hope the merge conflicts aren't too much of a pain. I'm happy to resolve them if you want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-25 01:35</div>
+            <div class="timeline-body"><p>I'm surprised there were any merge conflicts, I thought git would have been smarter. There weren't too many and they were all easy to resolve (assuming/hoping I did it right)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-06-25 01:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-06-25 01:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-25 01:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:36 UTC
+    </footer>
+</body>
+</html>

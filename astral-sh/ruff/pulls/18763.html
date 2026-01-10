@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-use-pathlib`] Add autofix for `PTH202` - astral-sh/ruff #18763</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-use-pathlib</code>] Add autofix for <code>PTH202</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18763">#18763</a>
+        opened by <a href="https://github.com/chirizxc">@chirizxc</a>
+        on 2025-06-18 17:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-06-18 17:47</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>/closes #2331</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p>update snapshots</p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @ntBre on 2025-06-18 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-06-18 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-06-18 17:51</div>
+            <div class="timeline-body"><p>this not the final version yet, and i still have some questions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-06-18 17:56</div>
+            <div class="timeline-body"><p>should we remove [ <code>import os</code>, <code>import import os.path</code>, <code>from os.path import getsize</code> ] if it is not needed after the fix?</p>
+<pre><code class="language-python">import os
+
+x = os.path.getsize(filename=&quot;filename&quot;)
+y = os.path.getsize(filename=b&quot;filename&quot;)
+z = os.path.getsize(filename=__file__)
+</code></pre>
+<p>=&gt;</p>
+<pre><code class="language-python">import os # unused
+from pathlib import Path # we also have to import it if it wasn't there before
+
+x = Path(&quot;filename&quot;).stat().st_size
+y = Path(b&quot;filename&quot;).stat().st_size
+z = Path(__file__).stat().st_size
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-18 18:00</div>
+            <div class="timeline-body"><p>I don't think you need to remove the imports, you can defer to <a href="https://docs.astral.sh/ruff/rules/unused-import/#unused-import-f401">unused-import (F401)</a> for that, but you do need to add the <code>Path</code> import if it's required for the fix.</p>
+<p>Let me know if you have more questions or when it's ready for review!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-06-18 18:01</div>
+            <div class="timeline-body"><p>as well as, for example</p>
+<pre><code class="language-python">os.path.getsize(Path(&quot;filename&quot;))
+</code></pre>
+<p>=&gt;</p>
+<pre><code class="language-python">Path(Path(&quot;filename&quot;)).stat().st_size
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-06-18 18:03</div>
+            <div class="timeline-body"><p>The call to Path with parentheses here seems redundant, but I don't think we can consider it unnecessary since it might have additional methods like <code>.parents[3]</code> or <code>.resolve()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-18 18:05</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -0 violations, +20 -0 fixes in 2 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -0 violations, +8 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/d378410cdd9df2b5324df3b5b37f6b3afd16ed81/airflow-core/tests/unit/utils/test_log_handlers.py#L375'>airflow-core/tests/unit/utils/test_log_handlers.py:375:29:</a> PTH202 [*] `os.path.getsize` should be replaced by `Path.stat().st_size`
+- <a href='https://github.com/apache/airflow/blob/d378410cdd9df2b5324df3b5b37f6b3afd16ed81/airflow-core/tests/unit/utils/test_log_handlers.py#L375'>airflow-core/tests/unit/utils/test_log_handlers.py:375:29:</a> PTH202 `os.path.getsize` should be replaced by `Path.stat().st_size`
++ <a href='https://github.com/apache/airflow/blob/d378410cdd9df2b5324df3b5b37f6b3afd16ed81/airflow-core/tests/unit/utils/test_log_handlers.py#L376'>airflow-core/tests/unit/utils/test_log_handlers.py:376:30:</a> PTH202 [*] `os.path.getsize` should be replaced by `Path.stat().st_size`
+- <a href='https://github.com/apache/airflow/blob/d378410cdd9df2b5324df3b5b37f6b3afd16ed81/airflow-core/tests/unit/utils/test_log_handlers.py#L376'>airflow-core/tests/unit/utils/test_log_handlers.py:376:30:</a> PTH202 `os.path.getsize` should be replaced by `Path.stat().st_size`
++ <a href='https://github.com/apache/airflow/blob/d378410cdd9df2b5324df3b5b37f6b3afd16ed81/dev/breeze/src/airflow_breeze/utils/parallel.py#L308'>dev/breeze/src/airflow_breeze/utils/parallel.py:308:24:</a> PTH202 [*] `os.path.getsize` should be replaced by `Path.stat().st_size`
+- <a href='https://github.com/apache/airflow/blob/d378410cdd9df2b5324df3b5b37f6b3afd16ed81/dev/breeze/src/airflow_breeze/utils/parallel.py#L308'>dev/breeze/src/airflow_breeze/utils/parallel.py:308:24:</a> PTH202 `os.path.getsize` should be replaced by `Path.stat().st_size`
++ <a href='https://github.com/apache/airflow/blob/d378410cdd9df2b5324df3b5b37f6b3afd16ed81/providers/amazon/src/airflow/providers/amazon/aws/transfers/dynamodb_to_s3.py#L244'>providers/amazon/src/airflow/providers/amazon/aws/transfers/dynamodb_to_s3.py:244:16:</a> PTH202 [*] `os.path.getsize` should be replaced by `Path.stat().st_size`
+- <a href='https://github.com/apache/airflow/blob/d378410cdd9df2b5324df3b5b37f6b3afd16ed81/providers/amazon/src/airflow/providers/amazon/aws/transfers/dynamodb_to_s3.py#L244'>providers/amazon/src/airflow/providers/amazon/aws/transfers/dynamodb_to_s3.py:244:16:</a> PTH202 `os.path.getsize` should be replaced by `Path.stat().st_size`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -0 violations, +12 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/5170a4ad28847631caaf4bf062260cdf1cad6b13/scripts/setup/generate_secrets.py#L65'>scripts/setup/generate_secrets.py:65:47:</a> PTH202 [*] `os.path.getsize` should be replaced by `Path.stat().st_size`
+- <a href='https://github.com/zulip/zulip/blob/5170a4ad28847631caaf4bf062260cdf1cad6b13/scripts/setup/generate_secrets.py#L65'>scripts/setup/generate_secrets.py:65:47:</a> PTH202 `os.path.getsize` should be replaced by `Path.stat().st_size`
++ <a href='https://github.com/zulip/zulip/blob/5170a4ad28847631caaf4bf062260cdf1cad6b13/tools/lib/test_server.py#L64'>tools/lib/test_server.py:64:45:</a> PTH202 [*] `os.path.getsize` should be replaced by `Path.stat().st_size`
+- <a href='https://github.com/zulip/zulip/blob/5170a4ad28847631caaf4bf062260cdf1cad6b13/tools/lib/test_server.py#L64'>tools/lib/test_server.py:64:45:</a> PTH202 `os.path.getsize` should be replaced by `Path.stat().st_size`
++ <a href='https://github.com/zulip/zulip/blob/5170a4ad28847631caaf4bf062260cdf1cad6b13/zerver/data_import/mattermost.py#L361'>zerver/data_import/mattermost.py:361:21:</a> PTH202 [*] `os.path.getsize` should be replaced by `Path.stat().st_size`
+- <a href='https://github.com/zulip/zulip/blob/5170a4ad28847631caaf4bf062260cdf1cad6b13/zerver/data_import/mattermost.py#L361'>zerver/data_import/mattermost.py:361:21:</a> PTH202 `os.path.getsize` should be replaced by `Path.stat().st_size`
++ <a href='https://github.com/zulip/zulip/blob/5170a4ad28847631caaf4bf062260cdf1cad6b13/zerver/data_import/slack.py#L1550'>zerver/data_import/slack.py:1550:70:</a> PTH202 [*] `os.path.getsize` should be replaced by `Path.stat().st_size`
+- <a href='https://github.com/zulip/zulip/blob/5170a4ad28847631caaf4bf062260cdf1cad6b13/zerver/data_import/slack.py#L1550'>zerver/data_import/slack.py:1550:70:</a> PTH202 `os.path.getsize` should be replaced by `Path.stat().st_size`
++ <a href='https://github.com/zulip/zulip/blob/5170a4ad28847631caaf4bf062260cdf1cad6b13/zerver/lib/export.py#L2955'>zerver/lib/export.py:2955:41:</a> PTH202 [*] `os.path.getsize` should be replaced by `Path.stat().st_size`
+- <a href='https://github.com/zulip/zulip/blob/5170a4ad28847631caaf4bf062260cdf1cad6b13/zerver/lib/export.py#L2955'>zerver/lib/export.py:2955:41:</a> PTH202 `os.path.getsize` should be replaced by `Path.stat().st_size`
++ <a href='https://github.com/zulip/zulip/blob/5170a4ad28847631caaf4bf062260cdf1cad6b13/zerver/lib/upload/local.py#L110'>zerver/lib/upload/local.py:110:45:</a> PTH202 [*] `os.path.getsize` should be replaced by `Path.stat().st_size`
+- <a href='https://github.com/zulip/zulip/blob/5170a4ad28847631caaf4bf062260cdf1cad6b13/zerver/lib/upload/local.py#L110'>zerver/lib/upload/local.py:110:45:</a> PTH202 `os.path.getsize` should be replaced by `Path.stat().st_size`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PTH202 | 20 | 0 | 0 | 20 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-06-18 19:38</div>
+            <div class="timeline-body"><p>as i understand: <a href="https://docs.astral.sh/ruff/rules/os-path-getatime/"><code>PTH203</code></a>, <a href="https://docs.astral.sh/ruff/rules/os-path-getmtime/"><code>PTH204</code></a>, <a href="https://docs.astral.sh/ruff/rules/os-path-getctime/"><code>PTH205</code></a> will be exactly the same in implementation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-06-18 19:43</div>
+            <div class="timeline-body"><p>is it worth splitting pr if the changes are the same as this pr? the question is more to <a href="https://github.com/astral-sh/ruff/issues/18752#issuecomment-2984316166">this one</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-19 14:39</div>
+            <div class="timeline-body"><blockquote>
+<p>is it worth splitting pr if the changes are the same as this pr? the question is more to https://github.com/astral-sh/ruff/issues/18752#issuecomment-2984316166</p>
+</blockquote>
+<p>Let's start with one fix. Then the second PR can generalize it and apply it to the other rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1059 on 2025-06-20 13:49</div>
+            <div class="timeline-body"><p>It doesn't seem to be causing any duplicate diagnostics, but I think you should also remove this line in <code>replaceable_by_pathlib</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/e8b7fdf5a8ede8cf517bb41646fe04b77598cbd0/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/replaceable_by_pathlib.rs#L197-L198</p>
+<p>Alternatively you could try to integrate the fix generation inside of <code>replaceable_by_pathlib</code>, likely by calling out to a function similar to the one you added.</p>
+<p>I think we need to look closely at the ecosystem results because I wouldn't expect more violations to be found when just adding a fix. It looks like the rule implementation itself has changed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_getsize.rs</code>:82 on 2025-06-20 13:54</div>
+            <div class="timeline-body"><p>I think I would prefer something more like:</p>
+<pre><code class="language-suggestion">    if call.arguments.len() != 1 {
+        return;
+    }
+
+    let Some(arg) = call.arguments.find_argument_value(&quot;filename&quot;, 0) else {
+        return;
+    };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_getsize.rs</code>:96 on 2025-06-20 13:56</div>
+            <div class="timeline-body"><p>This doesn't look right. What are you trying to accomplish here?</p>
+<p>I don't think we should be doing a replacement if the import fails, the <code>get_or_import_symbol</code> call should be in <code>try_set_fix</code> so that any error is logged, and the current <code>try_set_fix</code> call isn't doing anything since the contents are always <code>Ok</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_getsize.rs</code>:111 on 2025-06-20 13:57</div>
+            <div class="timeline-body"><p>As above, this <code>try_set_fix</code> is unnecessary since there's no error condition, but I think all of these can be combined eventually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-06-20 13:58</div>
+            <div class="timeline-body"><p>Thanks! I have some questions and suggestions here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chirizxc">@chirizxc</a> reviewed on 2025-06-20 14:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chirizxc">@chirizxc</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1059 on 2025-06-20 14:13</div>
+            <div class="timeline-body"><p>I think it would be better to separate the rules in this file into individual files. As for the ecosystem results, i think it detects them correctly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-20 14:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1059 on 2025-06-20 14:24</div>
+            <div class="timeline-body"><p>I cloned both airflow and zulip, and these diagnostics are also present on <code>main</code>, so this must be a false positive in the ecosystem report.</p>
+<p>And I agree that it makes sense to separate the rules into separate files, like most rules. In that case, you can just remove the line in <code>replaceable_by_pathlib</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/snapshots/ruff_linter__rules__flake8_use_pathlib__tests__PTH202_PTH202.py.snap</code>:58 on 2025-06-24 12:51</div>
+            <div class="timeline-body"><p>Have you looked into how hard it would be to detect this? I think it would just be a <code>match</code> on the argument to see if it's a call to <code>Path</code>. I don't think this is a deal-breaker for this PR, but it is a bit unfortunate, as you pointed out.</p>
+<p>I think if you look just for an <code>Expr::Call</code>, it should avoid your concern about additional attributes like <code>Path(...).resolve()</code> because those would be <code>Expr::Attribute</code>s.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-06-24 12:57</div>
+            <div class="timeline-body"><p>Thanks, this looks good. I often forget this, but based on our <a href="https://docs.astral.sh/ruff/versioning/#version-changes">versioning</a> policy, adding a safe fix actually needs to be done in preview. Could you add a preview method like this and gate the fix behind that?</p>
+<p>https://github.com/astral-sh/ruff/blob/833be2e66a55841aa0c581a28a0a3d66056b3a60/crates/ruff_linter/src/preview.rs#L43-L46</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-06-24 14:49</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks, this looks good. I often forget this, but based on our <a href="https://docs.astral.sh/ruff/versioning/#version-changes">versioning</a> policy, adding a safe fix actually needs to be done in preview. Could you add a preview method like this and gate the fix behind that?</p>
+<p>https://github.com/astral-sh/ruff/blob/833be2e66a55841aa0c581a28a0a3d66056b3a60/crates/ruff_linter/src/preview.rs#L43-L46</p>
+</blockquote>
+<p>should the changes disappear after that in the snapshots?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-06-24 14:51</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Thanks, this looks good. I often forget this, but based on our <a href="https://docs.astral.sh/ruff/versioning/#version-changes">versioning</a> policy, adding a safe fix actually needs to be done in preview. Could you add a preview method like this and gate the fix behind that?
+https://github.com/astral-sh/ruff/blob/833be2e66a55841aa0c581a28a0a3d66056b3a60/crates/ruff_linter/src/preview.rs#L43-L46</p>
+</blockquote>
+<p>should the changes disappear after that in the spanshots?</p>
+</blockquote>
+<p><img src="https://github.com/user-attachments/assets/53687bc4-bba1-494c-9dac-bad2bdead3b6" alt="изображение" />
+i added <code>is_fix_os_path_path_getsize_enabled</code>, but the changes of fix to the snapshots are gone</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-24 15:36</div>
+            <div class="timeline-body"><p>Yes, you'll need to add a version of the PTH202 test that enables preview mode to see the preview snapshot changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-06-24 16:18</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_getsize.rs</code>:128 on 2025-06-24 17:55</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">fn is_path_call(checker: &amp;Checker, expr: &amp;Expr) -&gt; bool {
+    expr.as_call_expr().is_some_and(|expr_call| {
+        checker
+            .semantic()
+            .resolve_qualified_name(&amp;expr_call.func)
+            .is_some_and(|name| matches!(name.segments(), [&quot;pathlib&quot;, &quot;Path&quot;]))
+    })
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-06-24 17:55</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-06-24 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`flake8-use-pathlib`] add autofix for `PTH202`" to "[`flake8-use-pathlib`] Add autofix for `PTH202`" by @ntBre on 2025-06-24 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-06-24 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-06-24 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-24 18:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:35 UTC
+    </footer>
+</body>
+</html>

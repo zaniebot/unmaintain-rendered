@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Fix panic when attempting to provide autocompletions for an instance of a class that assigns attributes to `self[0]` - astral-sh/ruff #18707</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Fix panic when attempting to provide autocompletions for an instance of a class that assigns attributes to <code>self[0]</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18707">#18707</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-06-16 13:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-16 13:36</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Ty currently panics when attempting to provide autocompletions in this scenario:</p>
+<pre><code class="language-py">class Point:
+    def orthogonal_direction(self):
+        self[0].is_zero
+
+
+def test_point(p2: Point):
+    p2.&lt;CURSOR&gt;
+</code></pre>
+<p>The root cause of this issue is that we're incorrectly registering the <code>[0].is_zero</code> place as an &quot;instance attribute&quot; <code>Place</code>. <code>Place</code>s should only be registered as instance attributes if they have the form <code>self.&lt;NAME&gt;</code>; <code>self&lt;SUBSCRIPT&gt;.&lt;NAME&gt;</code> does not constitute an instance attribute.</p>
+<p>This panic was uncovered by https://github.com/astral-sh/ruff/pull/18705.</p>
+<h2>Test Plan</h2>
+<p>I added the above repro as a test to <code>ty_ide/completions.rs</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-06-16 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-06-16 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-06-16 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-06-16 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-06-16 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-06-16 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-16 13:42</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-06-16 18:51</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>I wondered if <code>matches!(place_expr.sub_segments(), &amp;[PlaceExprSubSegment::Member(_)])</code> should be a method on <code>PlaceExpr</code>, but it already has <code>PlaceExpr::is_instance_attribute</code> and <code>PlaceExpr::is_instance_attribute_named</code> with subtly different meanings. But maybe that's an argument for doing it (and clarifying the difference in doc comments)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-16 21:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Thank you!</p>
+<p>I wondered if <code>matches!(place_expr.sub_segments(), &amp;[PlaceExprSubSegment::Member(_)])</code> should be a method on <code>PlaceExpr</code>, but it already has <code>PlaceExpr::is_instance_attribute</code> and <code>PlaceExpr::is_instance_attribute_named</code> with subtly different meanings. But maybe that's an argument for doing it (and clarifying the difference in doc comments)?</p>
+</blockquote>
+<p>Good call. I added some higher-level abstractions to <code>place.rs</code>, and lots of doc-comments to distinguish semantic-index-internal methods from crate-public API 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-06-16 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-06-16 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-16 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-17 06:45</div>
+            <div class="timeline-body"><p>Thank you for the update, this is great!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:35 UTC
+    </footer>
+</body>
+</html>

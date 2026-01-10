@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pylint`] Fix false negative in `modified-iterating-set` lint when target variable is reassigned - astral-sh/ruff #18833</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pylint</code>] Fix false negative in <code>modified-iterating-set</code> lint when target variable is reassigned</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18833">#18833</a>
+        opened by <a href="https://github.com/IDrokin117">@IDrokin117</a>
+        on 2025-06-20 20:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/IDrokin117">@IDrokin117</a> on 2025-06-20 20:10</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves https://github.com/astral-sh/ruff/issues/18818</p>
+<p>The change fixes the false negative described in the issue, but I want to ensure it doesn't break other scenarios.</p>
+<p>I'm not sure why the original implementation only checked shadowed bindings with <code>only_binding()</code>, but I changed it to check any binding with <code>resolve_name()</code>. All existing tests pass, including my new test case, so the change appears to work correctly.</p>
+<p>However, I'd appreciate feedback on:</p>
+<ol>
+<li>Why <code>only_binding()</code> was chosen initially</li>
+<li>What edge cases my change might introduce</li>
+<li>Whether this broader scope could cause false positives</li>
+</ol>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code> and <code>cargo insta test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-06-20 20:33</div>
+            <div class="timeline-body"><p>My guess is that we are checking <code>only_binding</code> to be cautious about Ruff's ability to handle control flow.</p>
+<p>I'll have to think of a less-contrived example, but I think your modification would trigger here, for example:</p>
+<pre><code class="language-python">if True:
+    nums = []
+else:
+    nums = {1, 2, 3}
+for num in nums:
+    nums.add(num + 5)
+</code></pre>
+<p>But it's possible this is overly cautious. Let's see what the ecosystem report looks like.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-20 20:42</div>
+            <div class="timeline-body"><p>I searched this for another PR earlier, and it seems like we have a pretty even split between <code>only_binding</code> and <code>resolve_name</code>, and I couldn't really tell which one should be used in the handful of cases I looked at.</p>
+<p>I guess I kind of lean toward <code>resolve_name</code> in general, but <code>only_binding</code> is more conservative, as you said. Definitely curious to hear your thoughts, though! Maybe we can standardize or document when each one should be used, either way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-20 20:51</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-06-20 20:53</div>
+            <div class="timeline-body"><p>Ok, I think it's okay to use <code>resolve_name</code> here. But let's gate this behind preview since it might add diagnostics.</p>
+<p>@LyricalToxic Can you add a method to <code>ruff_linter::preview</code> and gate your change behind that? Then you'll have to write add a test for it as well. Finally, add a little blurb to the documentation about the preview behavior (it doesn't have to be super technical).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/IDrokin117">@IDrokin117</a> on 2025-06-20 21:08</div>
+            <div class="timeline-body"><blockquote>
+<p>@LyricalToxic Can you add a method to <code>ruff_linter::preview</code> and gate your change behind that? Then you'll have to write add a test for it as well. Finally, add a little blurb to the documentation about the preview behavior (it doesn't have to be super technical).</p>
+</blockquote>
+<p>Sure, will do tomorrow</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-23 11:50</div>
+            <div class="timeline-body"><p>Can we add a test for:</p>
+<pre><code class="language-py">nums = []
+for num in nums:
+	nums = []
+    nums.add(num + 5)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-06-23 13:03</div>
+            <div class="timeline-body"><p>@MichaReiser did you want those to be empty sets instead of lists? (Lists don't have <code>.add</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-23 13:05</div>
+            <div class="timeline-body"><blockquote>
+<p>@MichaReiser did you want those to be empty sets instead of lists? (Lists don't have <code>.add</code>)</p>
+</blockquote>
+<p>Whoops, yes 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/IDrokin117">@IDrokin117</a> on 2025-06-23 19:41</div>
+            <div class="timeline-body"><p>@dylwil3 Sorry for the delay, it's done. I hope the changes align with your expectations. Please review it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-23 20:34</div>
+            <div class="timeline-body"><p>I want to double check this tomorrow because I found at least one new false positive in a similar pr and I don't think this is the right trade off</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-24 06:22</div>
+            <div class="timeline-body"><blockquote>
+<p>My guess is that we are checking <code>only_binding</code> to be cautious about Ruff's ability to handle control flow.</p>
+<p>I'll have to think of a less-contrived example, but I think your modification would trigger here, for example:</p>
+<pre><code class="language-python">if True:
+    nums = []
+else:
+    nums = {1, 2, 3}
+for num in nums:
+    nums.add(num + 5)
+</code></pre>
+<p>But it's possible this is overly cautious. Let's see what the ecosystem report looks like.</p>
+</blockquote>
+<p>Indeed, this triggers now but didn't before.</p>
+<p>I don't think trading false-negatives with false-positives is a good trade here. Instead, we should look into if we can improve our inference by doing any of:</p>
+<ol>
+<li>Resolve all visible bindings and check if they all resolve to a dict</li>
+<li>Change <code>only_binding</code> to return the only binding that's unconditionally visible at this point (this might be hard?).</li>
+</ol>
+<p>Doing so would also fix https://github.com/astral-sh/ruff/pull/18861 and other places where we rely on type information without introducing new false positives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-24 06:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:35 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Generate the top and bottom materialization of a type - astral-sh/ruff #18594</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Generate the top and bottom materialization of a type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18594">#18594</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-06-09 14:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-09 14:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is to support https://github.com/astral-sh/ruff/pull/18607.</p>
+<p>This PR adds support for generating the top materialization (or upper bound materialization) and the bottom materialization (or lower bound materialization) of a type. This is the most general and the most specific form of the type which is fully static, respectively.</p>
+<p>More concretely, <code>T'</code>, the top materialization of <code>T</code>, is the type <code>T</code> with all occurrences
+of dynamic type (<code>Any</code>, <code>Unknown</code>, <code>@Todo</code>) replaced as follows:</p>
+<ul>
+<li>In covariant position, it's replaced with <code>object</code></li>
+<li>In contravariant position, it's replaced with <code>Never</code></li>
+<li>In invariant position, it's replaced with an unresolved type variable</li>
+</ul>
+<p>(For an invariant position, it should actually be replaced with an existential type, but this is not currently representable in our type system, so we use an unresolved type variable for now instead.)</p>
+<p>The bottom materialization is implemented in the same way, except we start out in &quot;contravariant&quot; position.</p>
+<h2>Test Plan</h2>
+<p>Add test cases for various types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dhruvmanila on 2025-06-09 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-09 14:43</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types.rs</code>:641 on 2025-06-10 04:37</div>
+            <div class="timeline-body"><p>I think this is probably correct and I can remove the TODO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types.rs</code>:678 on 2025-06-10 04:52</div>
+            <div class="timeline-body"><p>The <code>BoundSuper</code> type has the following fields:</p>
+<ul>
+<li>pivot class which can be dynamic but neither <code>super(Any, ...)</code> or <code>super(..., Any)</code> is a valid call, but it is representable in our type system as this field can be <code>ClassBase::Dynamic</code></li>
+<li>owner kind which can be dynamic as well via <code>SuperOwnerKind::Dynamic</code></li>
+</ul>
+<p>The thing I'm unsure of is whether to generate the top materialization for this type or let it pass through as is (which is what this PR does).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types.rs</code>:684 on 2025-06-10 04:53</div>
+            <div class="timeline-body"><p>I'm exactly sure how to test this but this is implemented by materializing the type of each member of a synthesized protocol kind. cc @AlexWaygood can you help me with this part?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6102 on 2025-06-10 04:58</div>
+            <div class="timeline-body"><p>For a type variable, it's only the bounds and constraints that participate in determining whether it's fully static type or not which is why this also uses the same approach.</p>
+<p>I've one doubt thought -- should the bounds and constraints inherit the variance from the type var or the surrounding context here? i.e., should we use the <code>variance</code> parameter or <code>self.variance</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-10 04:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-06-10 10:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-06-10 10:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-06-10 10:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-06-10 10:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-06-10 10:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2025-06-10 10:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-10 15:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:684 on 2025-06-10 15:49</div>
+            <div class="timeline-body"><p>This seems okay for now! Something I'm working on this week is implementing proper subtyping logic for protocol instances. That involves taking account of the fact that read-only property members, and method members, on protocols act covariantly; write-only property members act contravariantly; and read/write attribute members on protocols act invariantly.</p>
+<p>Because this is all unimplemented currently, I don't think there's any way you can test it properly. But it might make sense to add a TODO to the code here to make sure we add some tests once the complete assignability/subtyping logic is implemented for protocols.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/top_materialization.md</code>:14 on 2025-06-10 19:31</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">TODO For an invariant position, e.g. `list[Any]`, it should be replaced with an existential type
+representing &quot;all lists, containing any type&quot;. We currently represent this by replacing `Any`
+in invariant position with an unresolved type variable.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/top_materialization.md</code>:36 on 2025-06-10 19:31</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">The top (and only) materialization of any fully static type is just itself.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/top_materialization.md</code>:50 on 2025-06-10 19:38</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">We currently treat function literals as fully static types, so they remain unchanged even
+though the signature might have `Any` in it. (TODO this is probably not right.)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/top_materialization.md</code>:216 on 2025-06-10 19:41</div>
+            <div class="timeline-body"><p>Nit: I might put this section much further up (like above tuples), because many of the other sections rely on using callable arguments to create a contravariant context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:630 on 2025-06-10 19:44</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// TODO For an invariant position, e.g. `list[Any]`, it should be replaced with an existential
+    /// type representing &quot;all lists, containing any type.&quot; We currently represent this by
+    /// replacing `Any` in invariant position with an unresolved type variable.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:634 on 2025-06-10 19:47</div>
+            <div class="timeline-body"><p>We should also replace Todo types here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:678 on 2025-06-10 19:53</div>
+            <div class="timeline-body"><p>I think this is fine for <code>BoundSuper</code>, because it has no subtype relationships that depend on its pivot class or owner.</p>
+<p>(This is not true for <code>FunctionLiteral</code>, which has a subtype relationship with callable types that depend on its argument and return types, which is why I think the <code>FunctionLiteral</code> case needs to be a TODO)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:691 on 2025-06-10 19:54</div>
+            <div class="timeline-body"><p>Can't we use <code>UnionType::map</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:703 on 2025-06-10 19:57</div>
+            <div class="timeline-body"><p>This hardcoding doesn't seem right -- it should flip to the opposite of <code>variance</code>, right? Consider a negation type used as a <code>Callable</code> argument...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6102 on 2025-06-10 20:03</div>
+            <div class="timeline-body"><p>I think what you have here is correct. The variance of the typevar itself is relevant to subtyping of the type which is generic over this typevar; it's not relevant to use of the typevar itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:368 on 2025-06-10 20:07</div>
+            <div class="timeline-body"><p>I don't think it's correct to not pass in the outer variance to <code>Parameter::top_materialization</code>, or to hardcode contravariance below. Rather, the contravariance of parameters needs to &quot;flip the polarity&quot; of the outer variance. If the outer variance is covariant, it's flipped to contravariant, and vice versa. (If the outer variance is invariant, it stays invariant.)</p>
+<p>To test this, I think you could use e.g. the case of a callable type which has a parameter that is itself a callable type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/subclass_of.rs</code>:76 on 2025-06-10 20:09</div>
+            <div class="timeline-body"><p>Doesn't this still need to have a variance parameter? Because the subclass-of type might be itself in a contravariant position, in which case we should be materializing to <code>Never</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-10 20:14</div>
+            <div class="timeline-body"><p>This is looking good! I think the main thing is we need to ensure nesting is right, by always flipping the polarity of the &quot;outer&quot; variance when we hit a contravariant context, not hardcoding variance.</p>
+<p>Another observation here is that the implementation of <code>top_materialization</code> and <code>bottom_materialization</code> should be identical -- the only difference is whether we start with a variance of &quot;Covariant&quot; (top materialization) or start with a variance of &quot;Contravariant&quot; (bottom materialization). It might make sense to rename the method added in the current PR to just <code>materialize</code>, and then have <code>Type::top_materialization</code> and <code>Type::bottom_materialization</code> just be thin wrappers that call <code>materialize</code> with the right initial variance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-11 03:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/top_materialization.md</code>:216 on 2025-06-11 03:03</div>
+            <div class="timeline-body"><p>Yeah, that makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-11 03:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types.rs</code>:691 on 2025-06-11 03:05</div>
+            <div class="timeline-body"><p>We can, just wasn't aware of it, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-11 03:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types.rs</code>:703 on 2025-06-11 03:31</div>
+            <div class="timeline-body"><p>When should this flip happen? Only when the variance position is contravariant? Or, should it also happen for covariant position? I'm asking because flipping would result in the following example not working:</p>
+<p>Without flipping, the top materialization would be:</p>
+<pre><code class="language-py">from ty_extensions import top_materialization, static_assert, is_assignable_to, Not
+from typing import Any, Callable
+
+# revealed: (object, Never, /) -&gt; object
+reveal_type(top_materialization(Callable[[Not[tuple[Any, int]], Any], Any]))
+</code></pre>
+<p><strong>Note:</strong> I'm not using <code>Not[Any]</code> because that's equivalent to <code>Any</code></p>
+<p>Because the <code>tuple</code> is in a contravariant position due to <code>Not</code> and the variance is passed through the tuple which results in <code>tuple[Never, int]</code> which is simplified to <code>Never</code>, and thus <code>Not[Never]</code> would become <code>object</code>.</p>
+<p>And, that top materialization is then assignable to the original gradual type:</p>
+<pre><code class="language-py">static_assert(
+    is_assignable_to(
+        Callable[[object, Never], object], Callable[[Not[tuple[Any, int]], Any], Any]
+    )
+)
+</code></pre>
+<p>But, if we incorporated the flipping logic, the <code>Not</code> would mean the contravariant position of the parameter would be flipped to covariant. Now, if we pass this as is in the <code>tuple</code>, this would result into the top materialized type not being assignable to the gradual type:</p>
+<pre><code class="language-py">static_assert(
+    is_assignable_to(
+        Callable[[Not[tuple[object, int]], Never], object],
+        Callable[[Not[tuple[Any, int]], Any], Any],
+    )
+)
+</code></pre>
+<p>But, if we did flip is back again because <code>tuple</code> is in a covariant position (so the covariant becomes contravariant again), it would result in the correct top materialization that was without the flipping logic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-11 03:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types.rs</code>:684 on 2025-06-11 03:41</div>
+            <div class="timeline-body"><p>Sounds good, thanks! I'll add the TODO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-11 04:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:703 on 2025-06-11 04:32</div>
+            <div class="timeline-body"><p>On my phone right now, but I think the latter is the correct top materialization, and it should be assignable to the original type (you can see just looking at it that all the Any can materialize in a way that makes it equivalent); if we are not considering it assignable that's a bug somewhere in the assignability logic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-11 04:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:703 on 2025-06-11 04:36</div>
+            <div class="timeline-body"><p>Thw top materialization should always be the largest possible type we can materialize to. That means making the parameters of a Callable type as small as possible. Which means making the type inside a Not inside the parameter as large as possible. So that inner type should be <code>tuple[object, int]</code>, wrapped in a Not, wrapped in Callable.</p>
+<p>&quot;Flipping&quot; means that when we enter a covariant context, the variance stays whatever it was, when we enter a contravariant context, its polarity flips from whatever it was to the opposite: covariant becomes contravariant, contravariant becomes covariant again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-11 04:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types.rs</code>:703 on 2025-06-11 04:43</div>
+            <div class="timeline-body"><p>Understood, thanks! I'll look into the assignability issue, but quickly playing around with it, it seems to be related to negating tuples:</p>
+<pre><code class="language-py">from ty_extensions import static_assert, is_assignable_to, Not
+from typing import Any, Never
+
+static_assert(is_assignable_to(tuple[object, int], tuple[Any, int]))
+# This is False but should be True
+static_assert(is_assignable_to(Not[tuple[Any, int]], Not[tuple[object, int]]))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-11 04:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:703 on 2025-06-11 04:43</div>
+            <div class="timeline-body"><p>We should probably add a property test that the top (and bottom) materialization of every type is assignable to that type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-11 04:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types.rs</code>:703 on 2025-06-11 04:44</div>
+            <div class="timeline-body"><p>I have the property test in my todo list :)</p>
+<p>But, I think that won't work completely because of the todo around invariant position?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/subclass_of.rs</code>:76 on 2025-06-11 05:53</div>
+            <div class="timeline-body"><p>Can you give me an example? I'm not sure I follow here.</p>
+<p>Do you mean that the top materialization of <code>(type[Any], /) -&gt; type[Any]</code> should be <code>(type[Never], / -&gt; type[object]</code> and not <code>(type[object], /) -&gt; type[object]</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-11 05:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-11 08:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types.rs</code>:678 on 2025-06-11 08:02</div>
+            <div class="timeline-body"><blockquote>
+<p>(This is not true for <code>FunctionLiteral</code>, which has a subtype relationship with callable types that depend on its argument and return types, which is why I think the <code>FunctionLiteral</code> case needs to be a TODO)</p>
+</blockquote>
+<p>I see, I think it would be the same for <code>BoundMethod</code> as well then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Generate the top materialization of a type" to "[ty] Generate the top and bottom materialization of a type" by @dhruvmanila on 2025-06-11 08:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-11 13:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/subclass_of.rs</code>:76 on 2025-06-11 13:42</div>
+            <div class="timeline-body"><p>Yes, exactly!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:368 on 2025-06-11 13:57</div>
+            <div class="timeline-body"><p>I did this and added tests as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-11 13:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-11 14:00</div>
+            <div class="timeline-body"><h3>Post review changes</h3>
+<ul>
+<li>Add <code>top_materialization</code>, <code>bottom_materialization</code>, and a common <code>materialize</code> methods on <code>Type</code></li>
+<li>Add <code>TypeVarVariance::flip</code> method that flips the polarity of the variance</li>
+<li>Apply the flip in negation type and callable parameter type</li>
+<li>Update <code>SubclassOf</code> to use variance and return <code>Never</code> for when contravariant and <code>type</code> for other variance</li>
+<li>Expanded the test suite to check <code>bottom_materialization</code> as well</li>
+<li>Add property tests, it's failing and I've a couple of questions regarding that I intend to ask in our 1:1</li>
+</ul>
+<p><strong>Edit:</strong></p>
+<ul>
+<li>Change <code>SubclassOf</code> to use <code>T: type</code> when it's used in an invariant position</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-11 14:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:368 on 2025-06-11 14:01</div>
+            <div class="timeline-body"><blockquote>
+<p>&quot;flip the polarity&quot;</p>
+</blockquote>
+<p>you mean <a href="https://www.youtube.com/watch?v=QDaCMhKPGys&amp;ab_channel=DWSupercuts">reverse the polarity</a>, surely? ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-06-11 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/materialization.md</code>:308 on 2025-06-11 16:49</div>
+            <div class="timeline-body"><p>I suppose we could test that it is a subtype of <code>type[object]</code> to validate this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/materialization.md</code>:332 on 2025-06-11 16:49</div>
+            <div class="timeline-body"><p>Here also I think we could use subtype checks to more clearly confirm what the materialized bounds/constraints are?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:177 on 2025-06-11 17:47</div>
+            <div class="timeline-body"><p>I think any time we have a <code>materialize</code> method that doesn't accept <code>variance</code> as a parameter, it means we have a bug where we won't handle nested types correctly. And I think this is no exception. (I'll comment in more detail below.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:234 on 2025-06-11 17:48</div>
+            <div class="timeline-body"><p>And same here, we need to be passing variance through from the outer context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:84 on 2025-06-11 17:48</div>
+            <div class="timeline-body"><p>And same here, need to be passing through the outer variance</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:324 on 2025-06-11 17:49</div>
+            <div class="timeline-body"><p>I think we should have a TODO comment here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:367 on 2025-06-11 17:52</div>
+            <div class="timeline-body"><p>This method need to accept <code>variance</code>, and then possibly flip the outer variance according to <code>typevar.variance(db)</code>, not just hardcode directly to <code>typevar.variance(db)</code>. Otherwise we get a case like this wrong:</p>
+<pre><code class="language-py">from typing import TypeVar, Any, reveal_type, Generic, Callable
+
+U = TypeVar(&quot;U&quot;, covariant=True)
+
+class C(Generic[U]):
+    pass
+
+from ty_extensions import top_materialization
+
+# should reveal `(C[Never], /) -&gt; None`
+# currently reveals `(C[object], /) -&gt; None`
+reveal_type(top_materialization(Callable[[C[Any]], None]))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:1344 on 2025-06-11 17:53</div>
+            <div class="timeline-body"><p>Probably doesn't matter, but we could do this flip just once on line 368 instead of separately for each parameter?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/subclass_of.rs</code>:90 on 2025-06-11 17:55</div>
+            <div class="timeline-body"><p>On second look, I think we should use a name other than <code>T</code> for these synthesized typevars; <code>T</code> is too commonly used in user code and too likely to cause confusion.</p>
+<p>I think we could use the name <code>type[All]</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:649 on 2025-06-11 17:56</div>
+            <div class="timeline-body"><p>Similar to below, I think we should use a more distinctive name than <code>T</code> here. I think <code>All</code> is a reasonable choice, since this typevar really should represent &quot;all possible types&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-11 17:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-12 04:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/materialization.md</code>:308 on 2025-06-12 04:36</div>
+            <div class="timeline-body"><p>Discussed on Discord and decided to avoid doing this. For context:</p>
+<hr />
+<p>Regarding this suggestion for checking the subtyping with regards to <code>list[type[Any]] -&gt; list[T] (where T: type)</code>, the subtyping check is giving false that <code>list[T]</code> is not a subtype of <code>list[type[object]]</code>:</p>
+<pre><code class="language-py">from typing import Any, Generic, TypeVar
+from ty_extensions import is_subtype_of, static_assert
+
+T_all = TypeVar(&quot;T_all&quot;, bound=type)
+
+static_assert(is_subtype_of(list[T_all], list[type[object]]))  # false
+static_assert(is_subtype_of(T_all, type[object]))  # true
+</code></pre>
+<p>I think that's because the subtype relation between two specialization for an invariant position checks whether the <a href="https://github.com/astral-sh/ruff/blob/deee6d9ad7383f5446227c4914d3834c9472084d/crates/ty_python_semantic/src/types/generics.rs#L401-L402">two types are equivalent</a> and here it isn't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-12 04:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:367 on 2025-06-12 04:42</div>
+            <div class="timeline-body"><p>Good catch, I've updated it. Also, added test cases with all the three variance in a generic context as a callable parameter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-12 04:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/subclass_of.rs</code>:90 on 2025-06-12 04:42</div>
+            <div class="timeline-body"><p>I've used <code>T_all</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-12 04:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types.rs</code>:649 on 2025-06-12 04:42</div>
+            <div class="timeline-body"><p>I've used <code>T_all</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-12 04:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/subclass_of.rs</code>:76 on 2025-06-12 04:44</div>
+            <div class="timeline-body"><p>Updated this. The materialization happens like so:</p>
+<ul>
+<li>For covariant, <code>type[Any]</code> -&gt; <code>type[object]</code> (which is <code>type</code>)</li>
+<li>For contravariant, <code>type[Any]</code> -&gt; <code>type[Never]</code> (which is <code>Never</code>)</li>
+<li>For invariant, <code>type[Any]</code> -&gt; <code>type[T] (T: type)</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-12 04:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types.rs</code>:703 on 2025-06-12 04:56</div>
+            <div class="timeline-body"><p>I added the property tests to flaky because they fail most of the time as it reveals bugs around our subtying/assignability implementation. I'll open separate issues for the things that I've found so far running them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-12 04:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/materialization.md</code>:332 on 2025-06-12 04:58</div>
+            <div class="timeline-body"><p>Discussed this on Discord but it isn't that useful to check whether the top materialization is a subtype of <code>object</code> because all static types are a subtype of <code>object</code>. On the other hand, it would be useful to check whether the bottom materialization is a subtype of <code>Never</code> i.e., is the bottom materialization of <code>T: Any</code> a subtype of <code>Never</code> but that's not working due to https://github.com/astral-sh/ty/issues/638.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-12 05:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/materialization.md</code>:332 on 2025-06-12 05:08</div>
+            <div class="timeline-body"><p>I've added the subtyping check for bottom materialization with one being a TODO related to the linked issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-06-12 05:17</div>
+            <div class="timeline-body"><p>Looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-06-12 06:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-06-12 06:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-12 06:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jelle-openai">@jelle-openai</a> reviewed on 2025-06-17 22:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on <code>crates/ty_python_semantic/src/types.rs</code>:695 on 2025-06-17 22:22</div>
+            <div class="timeline-body"><p>Just snooping around here but is this missing a <code>Type::SubclassOf</code> in the return value?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-17 22:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:695 on 2025-06-17 22:27</div>
+            <div class="timeline-body"><p>nah, the function here delegates to <code>SubclassOfType::materialize()</code>, which does work to figure out which <code>Type</code> variant it needs to return (it won't always be a <code>Type::SubclassOf</code> type due to some eager normalizations we do):</p>
+<p>https://github.com/astral-sh/ruff/blob/a2cd6df429a3e76880a48a5eb8816a86c36927ed/crates/ty_python_semantic/src/types/subclass_of.rs#L80-L104</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-17 22:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:695 on 2025-06-17 22:35</div>
+            <div class="timeline-body"><p>No, but this is subtle and probably should have a comment. <code>SubclassOfType::materialize</code> returns a <code>Type</code> for the overall materialization of the subclass-of type, not just for the inner type. The reason for this is that we don't currently have a direct representation for <code>type[T]</code> (that is, subclass-of a typevar), but the materialization of <code>type[Any]</code> in an invariant position should be <code>type[T]</code> where <code>T</code> has no upper bound or constraints, and it turns out that this is equivalent to just <code>T'</code> where <code>T': type</code> -- so that's how we represent this <code>type[T]</code> we need to synthesize.</p>
+<p>~~I think I did just spot another bug in looking at <code>SubclassOfType::materialize</code>, though. That method currently acts as if <code>type[...]</code> itself were bivariant (imposed no variance constraints). But in fact it is covariant. So both the <code>Contravariant</code> and <code>Invariant</code> branches there should be returning the type variable.~~ EDIT: never mind, this is wrong -- I was thinking in terms of collecting constraints in variance inference, but here we are just flipping variance, not collecting constraints. So <code>type[]</code> being covariant just means it doesn't change the outer variance context.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:35 UTC
+    </footer>
+</body>
+</html>

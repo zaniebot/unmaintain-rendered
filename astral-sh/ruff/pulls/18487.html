@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Don't add incorrect subdiagnostic for unresolved reference - astral-sh/ruff #18487</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Don't add incorrect subdiagnostic for unresolved reference</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18487">#18487</a>
+        opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a>
+        on 2025-06-05 21:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-06-05 21:22</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Don't add subdiagnostic in staticmethod, and change message for classmethod</p>
+<p>Resolves https://github.com/astral-sh/ty/issues/584 (partially i think)</p>
+<h2>Test Plan</h2>
+<p>Add test and update snapshot</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MatthewMckee4 on 2025-06-05 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MatthewMckee4 on 2025-06-05 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MatthewMckee4 on 2025-06-05 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MatthewMckee4 on 2025-06-05 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-05 21:25</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @ntBre on 2025-06-05 21:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/attributes.md</code>:1001 on 2025-06-05 23:23</div>
+            <div class="timeline-body"><p>I think the other thing to test in a classmethod is that we don't suggest anything at all if the variable name matches an instance-only attribute. E.g. if we add an <code>__init__</code> method below that has <code>self.y = 1</code> and then reference <code>y</code> in the classmethod, we should not suggest <code>cls.y</code> (or anything at all) for <code>y</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:1823 on 2025-06-05 23:32</div>
+            <div class="timeline-body"><p>I think it would be a bit nicer if this method instead returned a <code>FunctionDecorators</code> bitflag, rather than allocating a vector and requiring callers to sometimes clone it, and do all the type inference etc themselves.</p>
+<p>Extra good would be if we could consolidate with the code that currently lives in <code>TypeInferenceBuilder::infer_function_definition</code> so we just have one occurrence of the match statement to build a <code>FunctionDecorators</code> bitflag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:6154 on 2025-06-05 23:33</div>
+            <div class="timeline-body"><p>Not sure if you were intending to leave this for a later PR (if so a test with TODO comment would still be good), but @AlexWaygood 's point in the linked issue was that we should not hardcode either the name <code>self</code> or the name <code>cls</code> based on what kind of method it is -- rather we should use the actual name of the actual first parameter of the method. It's perfectly valid Python to use a name other than <code>self</code> as first parameter of a regular method, or a name other than <code>cls</code> as first parameter of a classmethod. (We should also have tests for these cases.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> had review dismissed on 2025-06-05 23:34</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-06 10:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:1823 on 2025-06-06 10:47</div>
+            <div class="timeline-body"><p>Another issue here is that this method is also called <code>current_method_decorators()</code>, but I don't see any checks in the method that the function scope is nested inside a class scope. It looks like it will return <code>Some()</code> for any function scope, not just method scopes. So maybe it should be called <code>current_function_decorators()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-06-09 12:40</div>
+            <div class="timeline-body"><p>I've cleaned this up a bit, but i'm getting panics because of the decorator expression inference. Im not sure what order and function i should call to infer the type of the decorator expression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-10 20:53</div>
+            <div class="timeline-body"><p>A core invariant of our type inference is that each AST node gets a type inferred for it once, in the &quot;inference region&quot; responsible for that node (an inference region can be a scope, a definition, or a standalone expression), and then that type gets merged into the surrounding region as needed, but doesn't get re-inferred willy-nilly.</p>
+<p>So I don't think it will work well to have the <code>function_decorators</code> method just take a list of AST nodes; this means we'll end up re-inferring its type ad-hoc from various call-sites, and that won't work well.</p>
+<p>The function decorators should have their type inferred exactly once, in <code>infer_function_definition</code> (via <code>infer_decorator</code>). We shouldn't call <code>self.infer_expression</code> or similar on those same nodes anywhere else.</p>
+<p>The previous code here that checked for abstract methods and overloads used <code>self.file_expression_type</code> on those decorator nodes, which doesn't re-infer them: it looks up what scope they belong to, infers that entire scope, and then pulls the expression types out. This worked, but isn't really ideal because it infers far more than necessary. A function definition is always a definition, and the decorator nodes are part of that definition, so we don't need to infer the entire scope, just the definition.</p>
+<p>So the ideal here would be to find the Definition for the function (scopes know the Definition that creates them, so this shouldn't be hard to get from the body scope) and then use <code>definition_expression_type</code> to infer types for that definition and pull the specific inferred expression types out. (Although it seems like we store on the <code>OverloadLiteral</code> for the function what known decorators it has, so if we get the type for the function definition we can maybe just use that and not need to pull out specific decorator expressions at all?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-12 10:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:6150 on 2025-06-12 10:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        } else if !current_method_decorators.contains(FunctionDecorators::STATICMETHOD) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-06-12 10:58</div>
+            <div class="timeline-body"><p>i've not yet used <code>definition_expression_type</code>, but there's also tests failing and i can't see what regression ive made</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-06-12 11:10</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/MatthewMckee4%3Aincorrect-subdiagnostic-for-unresolved-reference?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a></h2>
+<h3>Merging #18487 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>MatthewMckee4:incorrect-subdiagnostic-for-unresolved-reference</code> (ba648f9) with <code>main</code> (57bd7d0)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 39</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MatthewMckee4 on 2025-06-14 12:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-06-14 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-17 19:28</div>
+            <div class="timeline-body"><p>There's a surprisingly large mypy_primer diff on this PR right now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-17 20:01</div>
+            <div class="timeline-body"><p>Yeah, the mypy primer diff definitely seems to indicate something unexpected is happening here. Don't have time to investigate it further right now, will have to come back to this later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @sharkdp on 2025-06-27 07:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-27 07:52</div>
+            <div class="timeline-body"><p>Moving this to draft for now, feel free to move it back to review whenever you think it's ready for another round of review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-06-27 11:59</div>
+            <div class="timeline-body"><p>Thanks, this is great. It looks like the primer hits have all gone now that https://github.com/astral-sh/ruff/pull/18809 has landed on <code>main</code>, so I think this is good to go now!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-06-27 12:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-06-27 12:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-06-27 12:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-06-27 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-06-27 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-28 23:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:35 UTC
+    </footer>
+</body>
+</html>

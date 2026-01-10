@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`refurb`] Fix `FURB163` autofix creating a syntax error for `yield` expressions - astral-sh/ruff #18756</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>refurb</code>] Fix <code>FURB163</code> autofix creating a syntax error for <code>yield</code> expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18756">#18756</a>
+        opened by <a href="https://github.com/LaBatata101">@LaBatata101</a>
+        on 2025-06-18 14:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-06-18 14:46</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Fixes #18747</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p>Add regression test</p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-06-18 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-06-18 17:47</div>
+            <div class="timeline-body"><p>Looks good, thanks! I tested a couple of other potentially-tricky cases like <code>await</code> and <code>if</code> expressions, but I think <code>yield</code> and <code>yield from</code> are the only problematic forms. We just need to resolve the merge conflicts, and then this is good to go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-06-18 19:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Looks good, thanks! I tested a couple of other potentially-tricky cases like <code>await</code> and <code>if</code> expressions, but I think <code>yield</code> and <code>yield from</code> are the only problematic forms. We just need to resolve the merge conflicts, and then this is good to go.</p>
+</blockquote>
+<p>Done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @LaBatata101 on 2025-06-18 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-18 19:59</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-20 06:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/redundant_log_base.rs</code>:153 on 2025-06-20 06:24</div>
+            <div class="timeline-body"><p>Could we use <code>OperatorPrecedence</code> here instead of hard coding <code>Yield</code> and <code>YieldFrom</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on <code>crates/ruff_linter/src/rules/refurb/rules/redundant_log_base.rs</code>:153 on 2025-06-20 13:58</div>
+            <div class="timeline-body"><p>Is there any benefit of using <code>OperatorPrecedence</code> over the <code>matches!(arg, Expr::Yield(_) | Expr::YieldFrom(_))</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LaBatata101">@LaBatata101</a> reviewed on 2025-06-20 13:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-20 14:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/redundant_log_base.rs</code>:153 on 2025-06-20 14:12</div>
+            <div class="timeline-body"><p>I guess it would be more general in case something changes in the future and also make it easier to find precedence related checks. I haven't actually used <code>OperatorPrecedence</code> myself, but it looks like <code>Yield</code> has the lowest precedence, so something like <code>OperatorPrecedence::from(arg) &lt;= OperatorPrecedence::Yield</code> should be equivalent to the <code>matches!</code> call?</p>
+<p>Is that what you had in mind @MichaReiser?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-21 16:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/redundant_log_base.rs</code>:153 on 2025-06-21 16:23</div>
+            <div class="timeline-body"><p>Looking at the fix. I'm also wondering if we could simply preserve any existing parentheses because that would fix it too.</p>
+<blockquote>
+<p>OperatorPrecedence::from(arg) &lt;= OperatorPrecedence::Yield</p>
+</blockquote>
+<p>Roughly. Ideally there would be a <code>,</code> <code>OperatorPrecedence</code> but that doesn't exist. The main advantage is that this rule would be correct if we ever end up introducing a new <code>OperatorPrecedence</code> that binds lower than <code>Yield</code> (and we can check all <code>Yield</code> usages if it binds one level higher than <code>Yield</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @LaBatata101 on 2025-06-21 21:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-06-23 08:12</div>
+            <div class="timeline-body"><p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-06-23 08:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-23 08:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-23 13:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:35 UTC
+    </footer>
+</body>
+</html>

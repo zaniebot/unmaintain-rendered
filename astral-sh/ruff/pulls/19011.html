@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Rust toolchain to 1.88 and MSRV to 1.86 - astral-sh/ruff #19011</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Update Rust toolchain to 1.88 and MSRV to 1.86</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19011">#19011</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-06-28 15:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-28 15:04</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The most important new feature for us is that Rust now supports dyn upcasting. That allows us to remove the <code>Upcast</code> trait.</p>
+<h2>Test Plan</h2>
+<p>cargo build</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-06-28 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-06-28 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-06-28 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-06-28 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @MichaReiser on 2025-06-28 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2025-06-28 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-28 15:07</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-28 15:17</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-06-28 15:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-28 15:23</div>
+            <div class="timeline-body"><p>hmm, some windows path filtering stopped working?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-28 16:31</div>
+            <div class="timeline-body"><p>Looks like it's because <code>&lt;path&gt;.path().canonicalize()</code> and <code>insta</code>'s path representation now disagree: The paths that are passed as a filter have a starting <code>\\?\</code> both on main and on this PR:
+On main:</p>
+<pre><code>---- requires_python_pyproject_toml_above_with_tool stdout ----
+[crates\ruff\tests\lint.rs:19:5] path.as_ref().to_str() = Some(
+    &quot;\\\\?\\C:\\Users\\GiGaGon\\AppData\\Local\\Temp\\.tmp8VZVtR\\foo\\test.py&quot;,
+)
+[crates\ruff\tests\lint.rs:19:5] path.as_ref().to_str() = Some(
+    &quot;\\\\?\\C:\\Users\\GiGaGon\\AppData\\Local\\Temp\\.tmp8VZVtR&quot;,
+)
+</code></pre>
+<p>On this PR</p>
+<pre><code>---- requires_python_pyproject_toml_above_with_tool stdout ----
+[crates\ruff\tests\lint.rs:19:5] path.as_ref().to_str() = Some(
+    &quot;\\\\?\\C:\\Users\\GiGaGon\\AppData\\Local\\Temp\\.tmpUGvoNc\\foo\\test.py&quot;,
+)
+[crates\ruff\tests\lint.rs:19:5] path.as_ref().to_str() = Some(
+    &quot;\\\\?\\C:\\Users\\GiGaGon\\AppData\\Local\\Temp\\.tmpUGvoNc&quot;,
+)
+</code></pre>
+<p>But <code>insta</code>'s output doesn't have a starting <code>\\?\</code> as of this PR:
+On main with filter removed</p>
+<pre><code class="language-snap">   78       │-  &quot;[TMP]/foo&quot;,
+   79       │-  &quot;[TMP]/foo/src&quot;,
+         78 │+  &quot;\\?\C:\Users\GiGaGon\AppData\Local\Temp\.tmpAuA7Xq\foo&quot;,
+         79 │+  &quot;\\?\C:\Users\GiGaGon\AppData\Local\Temp\.tmpAuA7Xq\foo\src&quot;,
+</code></pre>
+<p>On this PR</p>
+<pre><code class="language-snap">   78       │-  &quot;[TMP]/foo&quot;,
+   79       │-  &quot;[TMP]/foo/src&quot;,
+         78 │+  &quot;C:\Users\GiGaGon\AppData\Local\Temp\.tmpAQDo8w\foo&quot;,
+         79 │+  &quot;C:\Users\GiGaGon\AppData\Local\Temp\.tmpAQDo8w\foo\src&quot;,
+</code></pre>
+<p>And this is supported by the fact that all of the <code>lint</code> tests pass if I add a <code>.trim_start_matches(r&quot;\\?\&quot;)</code> to <code>tempdir_filter</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-28 16:42</div>
+            <div class="timeline-body"><p>Thanks for the analysis. The paths in your analysis look the same to me (ignoring the temp folder name) and I couldn't find any mention of changes to path handling in the Rust 1.88 changelog</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-28 16:47</div>
+            <div class="timeline-body"><p>Sorry if I was unclear on the issue (I need to get better at that)
+On main: path passed to <code>tempdir_filter</code> starts with <code>\\?\</code>, path <code>insta</code> outputs starts with <code>\\?\</code>, regex matches and everything works
+On this pr: path passed to <code>tempdir_filter</code> starts with <code>\\?\</code>, path <code>insta</code> outputs <em><strong>does not</strong></em> start with <code>\\?\</code>, regex fails to match and path is not replaced with <code>[TMP]</code> causing the test failure</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-28 17:11</div>
+            <div class="timeline-body"><p>This might have actually changed in 1.88? https://github.com/rust-lang/rust/pull/139683 I didn't see it in the release notes either, though.</p>
+<p>I found this in the blame for <code>canonicalize</code> but it might not be related.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-28 17:45</div>
+            <div class="timeline-body"><p>I think the culprint is https://github.com/rust-lang/rust/pull/138869</p>
+<p><code>canonicalize</code> returns an UNC path on both branches. What's different is that we only see a UNC path in the spawned Ruff process on main but not with Rust 1.88.</p>
+<p>This is now a bit annoying to fix because downstream users might run the tests with both Rust 1.86 and 1.88. I think the easiest is to use dunce to avoid UNC paths in the first place</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-06-28 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-28 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-28 18:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:36 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convert `OldDiagnostic::noqa_code` to an `Option&lt;String&gt;` - astral-sh/ruff #18946</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Convert <code>OldDiagnostic::noqa_code</code> to an <code>Option&lt;String&gt;</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18946">#18946</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-06-25 21:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-25 21:19</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I think this should be the last step before combining <code>OldDiagnostic</code> and <code>ruff_db::Diagnostic</code>. We can't store a <code>NoqaCode</code> on <code>ruff_db::Diagnostic</code>, so I converted the <code>noqa_code</code> field to an <code>Option&lt;String&gt;</code> and then propagated this change to all of the callers.</p>
+<p>I tried to use <code>&amp;str</code> everywhere it was possible, so I think the remaining <code>to_string</code> calls are necessary. I spent some time trying to convert <em>everything</em> to <code>&amp;str</code> but ran into lifetime issues, especially in the <code>FixTable</code>. Maybe we can take another look at that if it causes a performance regression, but hopefully these paths aren't too hot. We also avoid some <code>to_string</code> calls, so it might even out a bit too.</p>
+<h2>Test Plan</h2>
+<p>Existing tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-06-25 21:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-06-25 21:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-25 21:29</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-25 21:38</div>
+            <div class="timeline-body"><p>The performance is a bit worse (-2% in the worst case) on the all-rules benchmarks, but it seems widely dispersed, so I think it may just be from the up-front <code>NoqaCode::to_string</code> calls for storing them in <code>OldDiagnostic</code>, not the later conversions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-06-25 21:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-06-25 21:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-26 07:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/diagnostics.rs</code>:170 on 2025-06-26 07:10</div>
+            <div class="timeline-body"><p>We could use hashbrown with <code>entry_ref</code> here to avoid allocating a new string only to increment the counter</p>
+<details><summary>Patch<summary>
+<p>
+
+<pre><code class="language-patch">Index: Cargo.lock
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/Cargo.lock b/Cargo.lock
+--- a/Cargo.lock	(revision 44c13a29c5f24064c446277cfdfd9fdba6c163f6)
++++ b/Cargo.lock	(date 1750921570209)
+@@ -2812,6 +2812,7 @@
+  &quot;fern&quot;,
+  &quot;glob&quot;,
+  &quot;globset&quot;,
++ &quot;hashbrown 0.15.4&quot;,
+  &quot;imperative&quot;,
+  &quot;insta&quot;,
+  &quot;is-macro&quot;,
+Index: crates/ruff_linter/src/linter.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ruff_linter/src/linter.rs b/crates/ruff_linter/src/linter.rs
+--- a/crates/ruff_linter/src/linter.rs	(revision 44c13a29c5f24064c446277cfdfd9fdba6c163f6)
++++ b/crates/ruff_linter/src/linter.rs	(date 1750921780496)
+@@ -1,12 +1,11 @@
+ use std::borrow::Cow;
+-use std::collections::hash_map::Entry;
+ use std::path::Path;
+ 
+ use anyhow::{Result, anyhow};
+ use colored::Colorize;
+ use itertools::Itertools;
+ use ruff_python_parser::semantic_errors::SemanticSyntaxError;
+-use rustc_hash::FxHashMap;
++use rustc_hash::FxBuildHasher;
+ 
+ use ruff_notebook::Notebook;
+ use ruff_python_ast::{ModModule, PySourceType, PythonVersion};
+@@ -94,15 +93,15 @@
+ 
+ /// A mapping from a noqa code to the corresponding lint name and a count of applied fixes.
+ #[derive(Debug, Default, PartialEq)]
+-pub struct FixTable(FxHashMap&lt;String, FixCount&gt;);
++pub struct FixTable(hashbrown::HashMap&lt;String, FixCount, rustc_hash::FxBuildHasher&gt;);
+ 
+ impl FixTable {
+     pub fn counts(&amp;self) -&gt; impl Iterator&lt;Item = usize&gt; {
+         self.0.values().map(|fc| fc.count)
+     }
+ 
+-    pub fn entry(&amp;mut self, code: String) -&gt; FixTableEntry {
+-        FixTableEntry(self.0.entry(code))
++    pub fn entry&lt;'a&gt;(&amp;'a mut self, code: &amp;'a str) -&gt; FixTableEntry&lt;'a&gt; {
++        FixTableEntry(self.0.entry_ref(code))
+     }
+ 
+     pub fn iter(&amp;self) -&gt; impl Iterator&lt;Item = (&amp;str, &amp;'static str, usize)&gt; {
+@@ -120,7 +119,9 @@
+     }
+ }
+ 
+-pub struct FixTableEntry&lt;'a&gt;(Entry&lt;'a, String, FixCount&gt;);
++pub struct FixTableEntry&lt;'a&gt;(
++    hashbrown::hash_map::EntryRef&lt;'a, 'a, String, str, FixCount, FxBuildHasher&gt;,
++);
+ 
+ impl&lt;'a&gt; FixTableEntry&lt;'a&gt; {
+     pub fn or_default(self, rule_name: &amp;'static str) -&gt; &amp;'a mut usize {
+@@ -650,7 +651,7 @@
+             if iterations &lt; MAX_ITERATIONS {
+                 // Count the number of fixed errors.
+                 for (rule, name, count) in applied.iter() {
+-                    *fixed.entry(rule.to_string()).or_default(name) += count;
++                    *fixed.entry(rule).or_default(name) += count;
+                 }
+ 
+                 transformed = Cow::Owned(transformed.updated(fixed_contents, &amp;source_map));
+Index: crates/ruff/src/diagnostics.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ruff/src/diagnostics.rs b/crates/ruff/src/diagnostics.rs
+--- a/crates/ruff/src/diagnostics.rs	(revision 44c13a29c5f24064c446277cfdfd9fdba6c163f6)
++++ b/crates/ruff/src/diagnostics.rs	(date 1750921482563)
+@@ -167,7 +167,7 @@
+             let fixed_in_file = self.0.entry(filename).or_default();
+             for (rule, name, count) in fixed.iter() {
+                 if count &gt; 0 {
+-                    *fixed_in_file.entry(rule.to_string()).or_default(name) += count;
++                    *fixed_in_file.entry(rule).or_default(name) += count;
+                 }
+             }
+         }
+Index: crates/ruff_linter/Cargo.toml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ruff_linter/Cargo.toml b/crates/ruff_linter/Cargo.toml
+--- a/crates/ruff_linter/Cargo.toml	(revision 44c13a29c5f24064c446277cfdfd9fdba6c163f6)
++++ b/crates/ruff_linter/Cargo.toml	(date 1750921569921)
+@@ -38,6 +38,7 @@
+ fern = { workspace = true }
+ glob = { workspace = true }
+ globset = { workspace = true }
++hashbrown = { workspace = true }
+ imperative = { workspace = true }
+ is-macro = { workspace = true }
+ is-wsl = { workspace = true }
+Index: crates/ruff_linter/src/fix/mod.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ruff_linter/src/fix/mod.rs b/crates/ruff_linter/src/fix/mod.rs
+--- a/crates/ruff_linter/src/fix/mod.rs	(revision 44c13a29c5f24064c446277cfdfd9fdba6c163f6)
++++ b/crates/ruff_linter/src/fix/mod.rs	(date 1750921753842)
+@@ -110,7 +110,7 @@
+         }
+ 
+         applied.extend(applied_edits.drain(..));
+-        *fixed.entry(code.to_string()).or_default(name) += 1;
++        *fixed.entry(code).or_default(name) += 1;
+     }
+ 
+     // Add the remaining content.
+
+</code></pre>
+</p>
+</details> 
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/printer.rs</code>:309 on 2025-06-26 07:11</div>
+            <div class="timeline-body"><p>I wonder if we should add a <code>SecondaryCode</code> struct which wraps a <code>String</code> I do find the <code>&amp;str</code> makes the code harder to understand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/printer.rs</code>:365 on 2025-06-26 07:12</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                        statistic.code.as_ref().unwrap_or_default().red().bold(),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/noqa.rs</code>:54 on 2025-06-26 07:13</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        if code == Rule::BlanketNOQA.noqa_code() {
+</code></pre>
+<p>We should add another <code>PartialEq</code> override if that's the only reason for changing the order here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/noqa.rs</code>:81 on 2025-06-26 07:14</div>
+            <div class="timeline-body"><p>Could <code>matches</code> now be a <code>Vec&lt;&amp;'a str&gt;</code> instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/message/mod.rs</code>:64 on 2025-06-26 07:42</div>
+            <div class="timeline-body"><p>We should rename this field to match the function name</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/message/text.rs</code>:255 on 2025-06-26 07:43</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        let label = self.message.secondary_code().unwrap_or_default();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/noqa.rs</code>:210 on 2025-06-26 08:06</div>
+            <div class="timeline-body"><p>I'm inclined to keep using <code>Rule</code> here:</p>
+<ul>
+<li>We anyway parse the rule code in the <code>Directive::Codes</code> branch</li>
+<li>I think we want to migrate to a model similar to ty long term where we collect all suppression comments and then check them inside <code>report_diagnostic</code> (where we have access to the <code>Rule</code>!)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-26 08:08</div>
+            <div class="timeline-body"><p>This mostly looks good. I think we want to keep using <code>Rule</code> in <code>noqa.rs</code>. But I'm not sure if that's better done in a separate PR</p>
+<p>I also suggest introducing a <code>SecondaryCode</code> struct. It's hard to tell what all the <code>&amp;str</code>  and <code>String</code> usages are (especially because there are so few comments)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-06-26 08:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/noqa.rs</code>:210 on 2025-06-26 12:49</div>
+            <div class="timeline-body"><p><code>Rule</code> instead of reverting to <code>NoqaCode</code>? I don't think we always parse this back to a <code>Rule</code>, but I can give it a try if you want. This commit should show roughly all the places that could be affected: https://github.com/astral-sh/ruff/pull/18946/commits/97607a524cde36563a83ad1f10dbec35863625d2.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-26 12:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/printer.rs</code>:309 on 2025-06-26 12:51</div>
+            <div class="timeline-body"><p>Hmm, I think if it wrapped a <code>String</code> we'd have to clone in <code>OldDiagnostic::secondary_code</code> right? I'll try it with a <code>&amp;str</code> and see if we can use that everywhere. I definitely agree that it would be more readable, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-26 12:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-26 13:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/diagnostics.rs</code>:170 on 2025-06-26 13:03</div>
+            <div class="timeline-body"><p>Nice, thanks for the patch! It was annoying that I couldn't do this with a regular <code>Entry</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-26 13:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/noqa.rs</code>:210 on 2025-06-26 13:19</div>
+            <div class="timeline-body"><p>Yes, I'm inclined to use <code>Rule</code> here instead of the secondary code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-26 13:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/noqa.rs</code>:210 on 2025-06-26 13:21</div>
+            <div class="timeline-body"><p>Sounds good, I see what you mean now about using this in <code>report_diagnostic</code> eventually, so <code>Rule</code> is a step in that direction. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-26 13:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/noqa.rs</code>:81 on 2025-06-26 13:30</div>
+            <div class="timeline-body"><p>I don't think so, but this is where I ran into lifetime issues. First in <code>check_noqa</code>, where iterating over the context creates a mutable borrow, but we need an immutable one later on.</p>
+<p>https://github.com/astral-sh/ruff/blob/d04e63a6d9dbb5c751c99d113d7eaf98b765b426/crates/ruff_linter/src/checkers/noqa.rs#L47-L49</p>
+<p>We can possibly get around that by doing the iteration after the immutable borrows, but I'm not sure if that breaks other logic. It at least satisfies the compiler so that I can hit the next error.</p>
+<p>And then in <code>FileNoqaDirectives::extract</code> where the compiler says I'm returning a local reference.</p>
+<p>https://github.com/astral-sh/ruff/blob/d04e63a6d9dbb5c751c99d113d7eaf98b765b426/crates/ruff_linter/src/noqa.rs#L263-L266</p>
+<p>Do you see anything obviously wrong I'm doing here?</p>
+<p>I tried somewhat briefly to move this noqa logic into <code>LintContext</code> a couple of days ago, like we did with the per-file ignores, but it turned out to be trickier than expected and I postponed it to work on this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-26 14:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/noqa.rs</code>:210 on 2025-06-26 14:35</div>
+            <div class="timeline-body"><p>Feel free to merge this PR and do this refactor in a separate PR (or maybe the best is if you try the change in a separate PR and revert your changes in this PR if it works out)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-26 14:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/printer.rs</code>:309 on 2025-06-26 14:41</div>
+            <div class="timeline-body"><p>I think I was responding to these too early in the morning :facepalm: I can store the <code>SecondaryCode(String)</code> on the <code>OldDiagnostic</code> and then use <code>&amp;SecondaryCode</code> where I'm currently using <code>&amp;str</code>. I'm working on that, and then I'll try the <code>Rule</code> changes on a separate branch!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-26 14:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/noqa.rs</code>:81 on 2025-06-26 14:53</div>
+            <div class="timeline-body"><p>No, I think the solution here is to use <code>Rule</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-26 16:40</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-26 17:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/noqa.rs</code>:210 on 2025-06-26 17:07</div>
+            <div class="timeline-body"><p>I opened a small PR making this change: https://github.com/astral-sh/ruff/pull/18966. Hopefully that's what you had in mind.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/message/mod.rs</code>:390 on 2025-06-27 06:27</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">#[derive(Clone, Debug, PartialEq, Eq, Default, Hash)]
+</code></pre>
+<p>Or do we use the ordering somewhere?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/message/mod.rs</code>:448 on 2025-06-27 06:27</div>
+            <div class="timeline-body"><p>YOu can derive this with <code>serde(transparent)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-06-27 06:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-27 12:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/message/mod.rs</code>:390 on 2025-06-27 12:42</div>
+            <div class="timeline-body"><p>I think they're used for adding noqa codes, but I'll double check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-27 12:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/message/mod.rs</code>:390 on 2025-06-27 12:48</div>
+            <div class="timeline-body"><p>Yeah, they're used in <code>collect_rule_codes</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/b1f4e536291d75018ee14062050b3ff89eb66d46/crates/ruff_linter/src/linter.rs#L682-L687</p>
+<p>and in <code>NoqaEdit::write</code>. We could map to strings first if that would be preferable over deriving these, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-27 14:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/message/mod.rs</code>:390 on 2025-06-27 14:15</div>
+            <div class="timeline-body"><p>Nah, it's fine then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-06-27 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-06-27 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-27 15:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:36 UTC
+    </footer>
+</body>
+</html>

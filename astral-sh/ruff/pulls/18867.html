@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-errmsg`] Extend `EM101` to support byte strings - astral-sh/ruff #18867</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-errmsg</code>] Extend <code>EM101</code> to support byte strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18867">#18867</a>
+        opened by <a href="https://github.com/njhearp">@njhearp</a>
+        on 2025-06-22 21:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/njhearp">@njhearp</a> on 2025-06-22 21:46</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #18765</p>
+<h2>Test Plan</h2>
+<p>Added test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Extended `EM101` to support byte strings" to "[`flake8-errmsg`] Extended `EM101` to support byte strings" by @njhearp on 2025-06-22 21:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-22 22:33</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/njhearp">@njhearp</a> on 2025-06-23 02:36</div>
+            <div class="timeline-body"><p>Following the recommendation from the error got the CI tests to pass. I'm just a little concerned about the initial failure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-23 06:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Following the recommendation from the error got the CI tests to pass. I'm just a little concerned about the initial failure.</p>
+</blockquote>
+<p>What was the initial failure?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-06-23 06:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_errmsg/rules/string_in_exception.rs</code>:208 on 2025-06-23 06:45</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    if checker.is_rule_enabled(Rule::RawStringInException) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_errmsg/rules/string_in_exception.rs</code>:208 on 2025-06-23 06:48</div>
+            <div class="timeline-body"><p>I think we should gate this change behind preview as it is an extension of a stable rule</p>
+<p>See https://github.com/astral-sh/ruff/blob/daa385c1a991cc87c77642eccdcc2a888d3586a0/crates/ruff_linter/src/preview.rs#L60 for other cases where we gated behavior behind a preview flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-23 06:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/njhearp">@njhearp</a> on 2025-06-23 11:33</div>
+            <div class="timeline-body"><pre><code>error[E0599]: no method named `enabled` found for reference `&amp;Checker&lt;'_&gt;` in the current scope
+   --&gt; crates/ruff_linter/src/rules/flake8_errmsg/rules/string_in_exception.rs:208:32
+    |
+208 |                     if checker.enabled(Rule::RawStringInException) {
+    |                                ^^^^^^^ method not found in `&amp;Checker&lt;'_&gt;`
+    |
+    = help: items from traits can only be used if the trait is implemented and in scope
+    = note: the following traits define an item `enabled`, perhaps you need to implement one of them:
+            candidate #1: `Log`
+            candidate #2: `tracing_core::subscriber::Subscriber`
+            candidate #3: `tracing_subscriber::layer::Filter`
+            candidate #4: `tracing_subscriber::layer::Layer`
+help: one of the expressions' fields has a method of the same name
+    |
+208 |                     if checker.settings.rules.enabled(Rule::RawStringInException) {
+    |                                +++++++++++++++
+</code></pre>
+<p>The CI error suggested this. I believe it is because of Rust's ownership; it only flagged line 208. I just wanted to make sure there was no problem with it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-23 12:05</div>
+            <div class="timeline-body"><p>You may just need to rebase or merge <code>main</code>. We recently renamed <code>Checker::enabled</code> to <code>Checker::is_rule_enabled</code> and also made the <code>settings</code> field a method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-23 12:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_errmsg/rules/string_in_exception.rs</code>:209 on 2025-06-23 12:07</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                        if bytes.len() &gt;= checker.settings().flake8_errmsg.max_string_length {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @njhearp on 2025-06-24 04:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @njhearp on 2025-06-24 04:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @njhearp on 2025-06-24 04:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @njhearp on 2025-06-24 04:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @carljm on 2025-06-24 04:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @carljm on 2025-06-24 04:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @carljm on 2025-06-24 04:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-24 04:38</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/njhearp">@njhearp</a> on 2025-06-24 04:59</div>
+            <div class="timeline-body"><p>I updated it so the change is gated behind the preview flag. Also, I merged with main. Sorry about the mess with the history; I realized it would have been cleaner to rebase.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-24 06:29</div>
+            <div class="timeline-body"><p>@njhearp I think something went wrong with your merge. The diff contains too many unrelated changes (which should already be on main?). I'm not quite sure what went wrong here. Could you try doing an interactive rebase and only pick your commits?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-06-24 07:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @MichaReiser on 2025-06-25 06:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-06-25 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-06-25 14:53</div>
+            <div class="timeline-body"><p>Looks great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`flake8-errmsg`] Extended `EM101` to support byte strings" to "[`flake8-errmsg`] Extend `EM101` to support byte strings" by @ntBre on 2025-06-25 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-06-25 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-06-25 14:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:36 UTC
+    </footer>
+</body>
+</html>

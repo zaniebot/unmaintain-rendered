@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Refactor if narrowing - astral-sh/ruff #18392</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Refactor if narrowing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18392">#18392</a>
+        opened by <a href="https://github.com/ericmarkmartin">@ericmarkmartin</a>
+        on 2025-05-30 19:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ericmarkmartin">@ericmarkmartin</a> on 2025-05-30 19:29</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Refactor the semantic index builder’s If statement analysis. This change also lets us detect more unreachable code paths.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<ul>
+<li>Add new tests to unreachable.md</li>
+<li>Update existing tests</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @ericmarkmartin on 2025-05-30 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ericmarkmartin on 2025-05-30 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @ericmarkmartin on 2025-05-30 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @ericmarkmartin on 2025-05-30 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Refactor if narrowing" to "[ty] Refactor if narrowing" by @MichaReiser on 2025-05-30 20:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-05-30 20:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-30 22:18</div>
+            <div class="timeline-body"><p>Looks like there are still some failing tests here? Let me know if any of these are things you'd like a second pair of eyes on how to address; otherwise I'll mark this as draft, go ahead and put it back up for review when CI is green.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @carljm on 2025-05-30 22:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ericmarkmartin">@ericmarkmartin</a> on 2025-05-31 21:40</div>
+            <div class="timeline-body"><blockquote>
+<p>Looks like there are still some failing tests here? Let me know if any of these are things you'd like a second pair of eyes on how to address; otherwise I'll mark this as draft, go ahead and put it back up for review when CI is green.</p>
+</blockquote>
+<p>Looks like we're green now, but mypy primer seems unhappy (sorry if that means I shouldn't have opened it, but I'm not sure how to proceed with primer failures)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ericmarkmartin on 2025-05-31 21:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-04 08:04</div>
+            <div class="timeline-body"><p>Thank you for working on this!</p>
+<blockquote>
+<p>Looks like we're green now, but mypy primer seems unhappy</p>
+</blockquote>
+<p>The mypy_primer run was failing due to a network error. I re-ran it now and it fails with</p>
+<pre><code>fatal[panic] Panicked at crates/ty_python_semantic/src/symbol.rs:927:21 when checking `/tmp/mypy_primer/projects/trio/src/trio/_core/__init__.py`: `internal error: entered unreachable code: If we have at least one declaration, the scope-start should not be definitely visible`
+</code></pre>
+<p>This might be related to https://github.com/astral-sh/ty/issues/365#issuecomment-2885927976. I am planning to fix that bug as soon as https://github.com/astral-sh/ruff/pull/18041 is merged (which makes significant changes to the semantic index builder, and has a much higher impact). I suggest that we wait with this PR until these two things have been resolved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/narrow/type.md</code>:130 on 2025-06-06 01:30</div>
+            <div class="timeline-body"><p>I think the conclusion that this is unreachable code is actually correct -- <code>type(x)</code> will never return a <code>GenericAlias</code> at runtime, so <code>type(x) is A[str]</code> can never be true, only <code>type(x) is A</code> can be.</p>
+<p>This test probably warrants some expansion, but it doesn't need to happen in this PR. We have an issue open for improving how we handle narrowing against generic types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/overloads.md</code>:178 on 2025-06-06 01:30</div>
+            <div class="timeline-body"><p>We intend to generally silence diagnostics in unreachable code, which should take care of this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:1515 on 2025-06-06 02:05</div>
+            <div class="timeline-body"><p>As we discussed, it definitely looks weird that we have to record the visibility constraint both before and after. I'm going to take a closer look to try to understand why that is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-06 02:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-06 02:11</div>
+            <div class="timeline-body"><p>Not able to reproduce the mypy-primer error running this locally. Will push a rebase and see if it repros in CI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-06-06 02:17</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/ericmarkmartin%3Arefactor-if-narrowing">CodSpeed Performance Report</a></h2>
+<h3>Merging #18392 will <strong>degrade performances by 4.14%</strong></h3>
+<p><sub>Comparing <code>ericmarkmartin:refactor-if-narrowing</code> (4af0119) with <code>main</code> (cb8246b)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1</code> regressions<br />
+<code>✅ 33</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/ericmarkmartin%3Arefactor-if-narrowing">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>ty_micro[many_string_assignments]</code> | 65.7 ms | 68.6 ms | -4.14% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-06 02:24</div>
+            <div class="timeline-body"><p>Hmm, well, it definitely repros here. That's odd. This is what I'm running locally:</p>
+<pre><code>➜ uvx \
+            --from=&quot;git+https://github.com/hauntsaninja/mypy_primer@01a7ca325f674433c58e02416a867178d1571128&quot; \
+            mypy_primer --repo /Users/carlmeyer/projects/ruff \
+            --type-checker ty \
+            --old main \
+            --new refactor-if-narrowing \
+            --project-selector &quot;/(trio)\$&quot; \
+            --output diff \
+            --debug
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-06 02:33</div>
+            <div class="timeline-body"><p>Ah, figured it out.</p>
+<p>The failing file is <code>src/trio/_core/__init__.py</code>, which contains this code:</p>
+<pre><code class="language-py"># Windows imports
+if sys.platform == &quot;win32&quot;:
+    from ._run import (
+        current_iocp,
+        monitor_completion_key,
+        readinto_overlapped,
+        register_with_iocp,
+        wait_overlapped,
+        write_overlapped,
+    )
+# Kqueue imports
+elif sys.platform != &quot;linux&quot; and sys.platform != &quot;win32&quot;:
+    from ._run import current_kqueue, monitor_kevent, wait_kevent
+</code></pre>
+<p>And the failure repros locally if I run with <code>--python-platform=&quot;linux&quot;</code>. Otherwise locally my platform defaults to darwin, and the issue doesn't appear.</p>
+<p>Since the repro is an <code>if</code>, not a loop with <code>break</code>, it seems clear this is an issue introduced by this PR; it's not https://github.com/astral-sh/ty/issues/365#issuecomment-2885927976</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-10 20:33</div>
+            <div class="timeline-body"><p>@sharkdp is now working on a larger refactor of reachability and visibility constraints, we should revisit this after that's done and see what is still needed/relevant here. Thanks for the work on this PR, it helped demonstrate the need for this refactor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-06-16 22:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-17 07:56</div>
+            <div class="timeline-body"><p>I'm going to close this, now that #18621 has been merged. @ericmarkmartin thank you for your work here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-06-17 07:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:35 UTC
+    </footer>
+</body>
+</html>

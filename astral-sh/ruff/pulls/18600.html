@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Homogeneous and mixed tuples - astral-sh/ruff #18600</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Homogeneous and mixed tuples</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18600">#18600</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-06-09 21:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-06-09 21:08</div>
+            <div class="timeline-body"><p>We already had support for homogeneous tuples (<code>tuple[int, ...]</code>). This PR extends this to also support mixed tuples (<code>tuple[str, str, *tuple[int, ...], str str]</code>).</p>
+<p>A mixed tuple consists of a fixed-length (possibly empty) prefix and suffix, and a variable-length portion in the middle. Every element of the variable-length portion must be of the same type. A homogeneous tuple is then just a mixed tuple with an empty prefix and suffix.</p>
+<p>The new data representation uses different Rust types for a fixed-length (aka heterogeneous) tuple. Another option would have been to use the <code>VariableLengthTuple</code> representation for all tuples, and to wrap the &quot;variable + suffix&quot; portion in an <code>Option</code>. I don't think that would simplify the method implementations much, though, since we would still have a 2×2 case analysis for most of them.</p>
+<p>One wrinkle is that the definition of the <code>tuple</code> class in the typeshed has a single typevar, and canonically represents a homogeneous tuple. When getting the class of a tuple instance, that means that we have to summarize our detailed mixed tuple type information into its &quot;homogeneous supertype&quot;. (We were already doing this for heterogeneous types.)</p>
+<p>A similar thing happens when concatenating two mixed tuples: the variable-length portion and suffix of the LHS, and the prefix and variable-length portion of the RHS, all get unioned into the variable-length portion of the result. The LHS prefix and RHS suffix carry through unchanged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-09 21:11</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">parso (https://github.com/davidhalter/parso)
+- error[invalid-argument-type] parso/python/diff.py:884:35: Argument to bound method `__init__` is incorrect: Expected `tuple[int, int]`, found `tuple[Unknown, ...]`
+- Found 80 diagnostics
++ Found 79 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
+- error[call-non-callable] src/anyio/_backends/_asyncio.py:2223:49: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/anyio/_backends/_asyncio.py:2223:49: Object of type `GenericAlias` is not callable
+- Found 103 diagnostics
++ Found 101 diagnostics
+
+beartype (https://github.com/beartype/beartype)
++ error[invalid-type-form] beartype/_data/hint/datahintpep.py:250:20: Variable of type `_SpecialForm` is not allowed in a type expression
+- Found 580 diagnostics
++ Found 581 diagnostics
+
+more-itertools (https://github.com/more-itertools/more-itertools)
+- error[unsupported-operator] more_itertools/more.pyi:164:18: Operator `|` is unsupported between objects of type `&lt;class 'type'&gt;` and `&lt;class 'tuple[@Todo(Generic tuple specializations), ...]'&gt;`
++ error[unsupported-operator] more_itertools/more.pyi:164:18: Operator `|` is unsupported between objects of type `&lt;class 'type'&gt;` and `&lt;class 'tuple[@Todo(Support for `typing.TypeAlias`), ...]'&gt;`
+
+Expression (https://github.com/cognitedata/Expression)
+- error[invalid-argument-type] expression/extra/option/pipeline.py:91:19: Argument to function `reduce` is incorrect: Expected `(def Some(value: _T1) -&gt; Option[_T1], (Any, /) -&gt; Option[Any], /) -&gt; def Some(value: _T1) -&gt; Option[_T1]`, found `def reducer(acc: (Any, /) -&gt; Option[Any], fn: (Any, /) -&gt; Option[Any]) -&gt; (Any, /) -&gt; Option[Any]`
++ error[invalid-argument-type] expression/extra/option/pipeline.py:91:19: Argument to function `reduce` is incorrect: Expected `(def Some(value: _T1) -&gt; Option[_T1], Unknown, /) -&gt; def Some(value: _T1) -&gt; Option[_T1]`, found `def reducer(acc: (Any, /) -&gt; Option[Any], fn: (Any, /) -&gt; Option[Any]) -&gt; (Any, /) -&gt; Option[Any]`
+- error[invalid-argument-type] expression/extra/result/pipeline.py:96:19: Argument to function `reduce` is incorrect: Expected `(def Ok(value: _TSource) -&gt; Result[_TSource, Any], (Any, /) -&gt; Result[Any, Any], /) -&gt; def Ok(value: _TSource) -&gt; Result[_TSource, Any]`, found `def reducer(acc: (Any, /) -&gt; Result[Any, Any], fn: (Any, /) -&gt; Result[Any, Any]) -&gt; (Any, /) -&gt; Result[Any, Any]`
++ error[invalid-argument-type] expression/extra/result/pipeline.py:96:19: Argument to function `reduce` is incorrect: Expected `(def Ok(value: _TSource) -&gt; Result[_TSource, Any], Unknown, /) -&gt; def Ok(value: _TSource) -&gt; Result[_TSource, Any]`, found `def reducer(acc: (Any, /) -&gt; Result[Any, Any], fn: (Any, /) -&gt; Result[Any, Any]) -&gt; (Any, /) -&gt; Result[Any, Any]`
+
+websockets (https://github.com/aaugustin/websockets)
+- warning[redundant-cast] src/websockets/legacy/auth.py:163:37: Value is already of type `Iterable[Unknown | tuple[@Todo(Generic tuple specializations), ...]]`
++ warning[redundant-cast] src/websockets/legacy/auth.py:163:37: Value is already of type `Iterable[Unknown | tuple[str, str]]`
+
+black (https://github.com/psf/black)
++ error[unsupported-operator] src/black/parsing.py:80:37: Operator `-` is unsupported between objects of type `Unknown | str | int` and `Literal[1]`
++ error[invalid-argument-type] src/blib2to3/pgen2/parse.py:34:17: Argument to bound method `__init__` is incorrect: Expected `int`, found `Unknown | int | str | None | tuple[str, tuple[int, int]] | list[@Todo(Inference of subscript on special form)]`
++ error[invalid-argument-type] src/blib2to3/pgen2/parse.py:34:31: Argument to bound method `__init__` is incorrect: Expected `list[@Todo(Inference of subscript on special form)]`, found `(Unknown &amp; ~None) | int | str | tuple[str, tuple[int, int]] | list[@Todo(Inference of subscript on special form)]`
+- Found 68 diagnostics
++ Found 71 diagnostics
+
+starlette (https://github.com/encode/starlette)
++ warning[possibly-unbound-attribute] starlette/middleware/base.py:134:27: Attribute `send` on type `Unknown | MemoryObjectSendStream[Unknown] | MemoryObjectReceiveStream[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] starlette/middleware/base.py:151:33: Attribute `receive` on type `Unknown | MemoryObjectSendStream[Unknown] | MemoryObjectReceiveStream[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] starlette/middleware/base.py:154:37: Attribute `receive` on type `Unknown | MemoryObjectSendStream[Unknown] | MemoryObjectReceiveStream[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] starlette/testclient.py:138:40: Attribute `receive` on type `MemoryObjectSendStream[Unknown] | MemoryObjectReceiveStream[Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] starlette/testclient.py:138:60: Attribute `send` on type `MemoryObjectSendStream[Unknown] | MemoryObjectReceiveStream[Unknown]` is possibly unbound
++ error[invalid-assignment] tests/test_websockets.py:213:5: Object of type `MemoryObjectSendStream[Unknown] | MemoryObjectReceiveStream[Unknown]` is not assignable to `ObjectSendStream[MutableMapping[str, Any]]`
++ error[invalid-assignment] tests/test_websockets.py:213:18: Object of type `MemoryObjectSendStream[Unknown] | MemoryObjectReceiveStream[Unknown]` is not assignable to `ObjectReceiveStream[MutableMapping[str, Any]]`
+- Found 166 diagnostics
++ Found 173 diagnostics
+
+kornia (https://github.com/kornia/kornia)
+- error[invalid-argument-type] kornia/augmentation/_2d/intensity/gaussian_illumination.py:162:63: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int &amp; tuple[Unknown, ...] &amp; ~float) | (tuple[int | float, int | float] &amp; tuple[Unknown, ...] &amp; ~float) | tuple[float, float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
+- error[invalid-argument-type] kornia/augmentation/_2d/intensity/gaussian_illumination.py:162:69: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int &amp; tuple[Unknown, ...] &amp; ~float) | (tuple[int | float, int | float] &amp; tuple[Unknown, ...] &amp; ~float) | tuple[float, float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
+- error[invalid-argument-type] kornia/augmentation/_2d/intensity/gaussian_illumination.py:162:77: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int &amp; tuple[Unknown, ...] &amp; ~float) | (tuple[int | float, int | float] &amp; tuple[Unknown, ...] &amp; ~float) | tuple[float, float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
+- error[invalid-argument-type] kornia/augmentation/_2d/intensity/gaussian_illumination.py:162:84: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int &amp; tuple[Unknown, ...] &amp; ~float) | (tuple[int | float, int | float] &amp; tuple[Unknown, ...] &amp; ~float) | tuple[float, float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
+- error[invalid-argument-type] kornia/augmentation/_2d/intensity/linear_illumination.py:120:61: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int &amp; tuple[Unknown, ...] &amp; ~float) | (tuple[int | float, int | float] &amp; tuple[Unknown, ...] &amp; ~float) | tuple[float, float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
+- error[invalid-argument-type] kornia/augmentation/_2d/intensity/linear_illumination.py:120:67: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int &amp; tuple[Unknown, ...] &amp; ~float) | (tuple[int | float, int | float] &amp; tuple[Unknown, ...] &amp; ~float) | tuple[float, float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
+- error[invalid-argument-type] kornia/augmentation/_2d/intensity/linear_illumination.py:227:67: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int &amp; tuple[Unknown, ...] &amp; ~float) | (tuple[int | float, int | float] &amp; tuple[Unknown, ...] &amp; ~float) | tuple[float, float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
+- error[invalid-argument-type] kornia/augmentation/_2d/intensity/linear_illumination.py:227:73: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int &amp; tuple[Unknown, ...] &amp; ~float) | (tuple[int | float, int | float] &amp; tuple[Unknown, ...] &amp; ~float) | tuple[float, float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
+- error[invalid-argument-type] kornia/augmentation/_2d/intensity/salt_pepper_noise.py:127:56: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int &amp; tuple[Unknown, ...] &amp; ~float) | (tuple[int | float, int | float] &amp; tuple[Unknown, ...] &amp; ~float) | tuple[float, float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
+- error[invalid-argument-type] kornia/augmentation/_2d/intensity/salt_pepper_noise.py:127:64: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int &amp; tuple[Unknown, ...] &amp; ~float) | (tuple[int | float, int | float] &amp; tuple[Unknown, ...] &amp; ~float) | tuple[float, float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
+- error[unsupported-operator] kornia/augmentation/utils/param_validation.py:139:16: Operator `&lt;` is not supported for types `tuple[Any, ...]` and `int`, in comparing `Unknown | int | float | tuple[Any, ...]` with `Literal[0]`
++ error[unsupported-operator] kornia/augmentation/utils/param_validation.py:139:16: Operator `&lt;` is not supported for types `tuple[Any, ...]` and `Literal[0]`, in comparing `Unknown | int | float | tuple[Any, ...]` with `Literal[0]`
+- error[invalid-return-type] kornia/feature/dedode/transformer/dinov2.py:309:20: Return type does not match returned value: expected `tuple[Unknown | tuple[Unknown]]`, found `tuple[Unknown, ...]`
+- error[invalid-return-type] kornia/feature/dedode/transformer/dinov2.py:310:16: Return type does not match returned value: expected `tuple[Unknown | tuple[Unknown]]`, found `tuple[Unknown, ...]`
+- error[call-non-callable] kornia/filters/kernels_geometry.py:172:17: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
++ error[call-non-callable] kornia/filters/kernels_geometry.py:172:17: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; int | float, (key: slice[Any, Any, Any], /) -&gt; tuple[int | float, ...]])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
+- error[call-non-callable] kornia/filters/kernels_geometry.py:203:31: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
++ error[call-non-callable] kornia/filters/kernels_geometry.py:203:31: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; int | float, (key: slice[Any, Any, Any], /) -&gt; tuple[int | float, ...]])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
+- error[call-non-callable] kornia/filters/kernels_geometry.py:203:44: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
++ error[call-non-callable] kornia/filters/kernels_geometry.py:203:44: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; int | float, (key: slice[Any, Any, Any], /) -&gt; tuple[int | float, ...]])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
+- error[call-non-callable] kornia/filters/kernels_geometry.py:203:57: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
++ error[call-non-callable] kornia/filters/kernels_geometry.py:203:57: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; int | float, (key: slice[Any, Any, Any], /) -&gt; tuple[int | float, ...]])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
+- error[call-non-callable] kornia/geometry/boxes.py:349:21: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]])` is not callable on object of type `Unknown | tuple[int, int] | None`
++ error[call-non-callable] kornia/geometry/boxes.py:349:21: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; int, (key: slice[Any, Any, Any], /) -&gt; tuple[int, ...]])` is not callable on object of type `Unknown | tuple[int, int] | None`
+- error[call-non-callable] kornia/geometry/boxes.py:352:21: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]])` is not callable on object of type `Unknown | tuple[int, int] | None`
++ error[call-non-callable] kornia/geometry/boxes.py:352:21: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; int, (key: slice[Any, Any, Any], /) -&gt; tuple[int, ...]])` is not callable on object of type `Unknown | tuple[int, int] | None`
+- error[call-non-callable] kornia/geometry/boxes.py:355:22: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]])` is not callable on object of type `Unknown | tuple[int, int] | None`
++ error[call-non-callable] kornia/geometry/boxes.py:355:22: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; int, (key: slice[Any, Any, Any], /) -&gt; tuple[int, ...]])` is not callable on object of type `Unknown | tuple[int, int] | None`
+- error[call-non-callable] kornia/geometry/boxes.py:358:22: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]])` is not callable on object of type `Unknown | tuple[int, int] | None`
++ error[call-non-callable] kornia/geometry/boxes.py:358:22: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -&gt; int, (key: slice[Any, Any, Any], /) -&gt; tuple[int, ...]])` is not callable on object of type `Unknown | tuple[int, int] | None`
+- Found 948 diagnostics
++ Found 936 diagnostics
+
+dedupe (https://github.com/dedupeio/dedupe)
+- error[invalid-argument-type] dedupe/convenience.py:77:16: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `signedinteger[Unknown]`
+- error[invalid-argument-type] dedupe/convenience.py:77:19: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `signedinteger[Unknown]`
+- Found 64 diagnostics
++ Found 62 diagnostics
+
+comtypes (https://github.com/enthought/comtypes)
++ error[unsupported-operator] comtypes/tools/codegenerator/comments.py:24:71: Operator `not in` is not supported for types `str` and `None`, in comparing `Literal[&quot;out&quot;]` with `@Todo(Type::Intersection.call()) | str | list[str] | None`
++ error[unsupported-operator] comtypes/tools/codegenerator/comments.py:25:72: Operator `in` is not supported for types `str` and `None`, in comparing `Literal[&quot;out&quot;]` with `@Todo(Type::Intersection.call()) | str | list[str] | None`
+- Found 545 diagnostics
++ Found 547 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- error[invalid-assignment] strawberry/exceptions/handler.py:90:9: Object of type `def strawberry_threading_exception_handler(args: tuple[type[BaseException], BaseException | None, TracebackType | None, Thread | None]) -&gt; None` is not assignable to attribute `excepthook` of type `(_ExceptHookArgs, /) -&gt; Any`
++ error[unresolved-attribute] strawberry/tools/merge_types.py:26:11: Type `type` has no attribute `__strawberry_definition__`
+
+sockeye (https://github.com/awslabs/sockeye)
+- warning[division-by-zero] sockeye/data_io.py:531:25: Cannot divide object of type `Literal[0]` by zero
+- warning[division-by-zero] sockeye/data_io.py:532:25: Cannot divide object of type `Literal[0]` by zero
+- Found 365 diagnostics
++ Found 363 diagnostics
+
+trio (https://github.com/python-trio/trio)
++ error[invalid-argument-type] src/trio/_channel.py:546:38: Argument to bound method `__init__` is incorrect: Expected `MemoryReceiveChannel[Unknown]`, found `MemorySendChannel[Unknown] | MemoryReceiveChannel[Unknown]`
+- error[call-non-callable] src/trio/_channel.py:534:32: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_channel.py:534:32: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_channel.py:534:32: Object of type `GenericAlias` is not callable
++ error[invalid-argument-type] src/trio/_core/_tests/test_guest_mode.py:524:66: Argument to function `aio_pingpong` is incorrect: Expected `MemorySendChannel[int]`, found `MemorySendChannel[int] | MemoryReceiveChannel[int]`
+- error[call-non-callable] src/trio/_core/_tests/test_guest_mode.py:521:29: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_core/_tests/test_guest_mode.py:521:29: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_core/_tests/test_guest_mode.py:521:29: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_dtls.py:669:26: Object of type `GenericAlias` is not callable
++ warning[possibly-unbound-attribute] src/trio/_dtls.py:748:9: Attribute `send_nowait` on type `Unknown | MemorySendChannel[DTLSChannel] | MemoryReceiveChannel[DTLSChannel]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_dtls.py:789:29: Attribute `send_nowait` on type `Unknown | MemorySendChannel[bytes] | MemoryReceiveChannel[bytes]` is possibly unbound
+- error[call-non-callable] src/trio/_tests/test_channel.py:26:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:26:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:26:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:64:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:64:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:64:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:78:37: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:78:37: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:78:37: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:102:41: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:102:41: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:102:41: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:124:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:124:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:124:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:143:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:143:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:143:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:160:15: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:160:15: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:160:15: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:182:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:182:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:182:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:201:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:201:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:201:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:218:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:218:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:218:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:232:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:232:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:232:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:261:13: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:261:13: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:261:13: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:282:13: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:282:13: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:282:13: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:301:21: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:301:21: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:301:21: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:313:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:313:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:313:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:365:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:365:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:365:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:391:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:391:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:391:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:405:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:405:12: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_channel.py:405:12: Object of type `GenericAlias` is not callable
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:30:5: Attribute `send_nowait` on type `MemorySendChannel[int | str | None] | MemoryReceiveChannel[int | str | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:32:15: Attribute `send` on type `MemorySendChannel[int | str | None] | MemoryReceiveChannel[int | str | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:34:9: Attribute `send_nowait` on type `MemorySendChannel[int | str | None] | MemoryReceiveChannel[int | str | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:37:22: Attribute `receive` on type `MemorySendChannel[int | str | None] | MemoryReceiveChannel[int | str | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:38:12: Attribute `receive_nowait` on type `MemorySendChannel[int | str | None] | MemoryReceiveChannel[int | str | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:40:9: Attribute `receive_nowait` on type `MemorySendChannel[int | str | None] | MemoryReceiveChannel[int | str | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:42:5: Attribute `send_nowait` on type `MemorySendChannel[int | str | None] | MemoryReceiveChannel[int | str | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:45:15: Attribute `send` on type `MemorySendChannel[int | str | None] | MemoryReceiveChannel[int | str | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:47:9: Attribute `send_nowait` on type `MemorySendChannel[int | str | None] | MemoryReceiveChannel[int | str | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:52:12: Attribute `receive_nowait` on type `MemorySendChannel[int | str | None] | MemoryReceiveChannel[int | str | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:54:15: Attribute `receive` on type `MemorySendChannel[int | str | None] | MemoryReceiveChannel[int | str | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:57:15: Attribute `receive` on type `MemorySendChannel[int | str | None] | MemoryReceiveChannel[int | str | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:59:9: Attribute `receive_nowait` on type `MemorySendChannel[int | str | None] | MemoryReceiveChannel[int | str | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:66:15: Attribute `receive` on type `MemorySendChannel[str] | MemoryReceiveChannel[str]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:68:11: Attribute `send` on type `MemorySendChannel[str] | MemoryReceiveChannel[str]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:108:23: Attribute `send` on type `MemorySendChannel[int] | MemoryReceiveChannel[int]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:132:9: Attribute `send_nowait` on type `MemorySendChannel[None] | MemoryReceiveChannel[None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:134:15: Attribute `send` on type `MemorySendChannel[None] | MemoryReceiveChannel[None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:138:9: Attribute `receive_nowait` on type `MemorySendChannel[None] | MemoryReceiveChannel[None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:140:15: Attribute `receive` on type `MemorySendChannel[None] | MemoryReceiveChannel[None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:151:9: Attribute `send_nowait` on type `MemorySendChannel[None] | MemoryReceiveChannel[None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:153:15: Attribute `send` on type `MemorySendChannel[None] | MemoryReceiveChannel[None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:168:9: Attribute `receive_nowait` on type `MemorySendChannel[int] | MemoryReceiveChannel[int]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:170:15: Attribute `receive` on type `MemorySendChannel[int] | MemoryReceiveChannel[int]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:190:9: Attribute `send_nowait` on type `MemorySendChannel[None] | MemoryReceiveChannel[None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:192:15: Attribute `send` on type `MemorySendChannel[None] | MemoryReceiveChannel[None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:196:9: Attribute `receive_nowait` on type `MemorySendChannel[None] | MemoryReceiveChannel[None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:198:15: Attribute `receive` on type `MemorySendChannel[None] | MemoryReceiveChannel[None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:209:9: Attribute `send_nowait` on type `MemorySendChannel[None] | MemoryReceiveChannel[None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:211:15: Attribute `send` on type `MemorySendChannel[None] | MemoryReceiveChannel[None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:226:9: Attribute `receive_nowait` on type `MemorySendChannel[None] | MemoryReceiveChannel[None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:228:15: Attribute `receive` on type `MemorySendChannel[None] | MemoryReceiveChannel[None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:237:5: Attribute `send_nowait` on type `MemorySendChannel[None] | MemoryReceiveChannel[None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:249:5: Attribute `send_nowait` on type `MemorySendChannel[None] | MemoryReceiveChannel[None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:255:9: Attribute `send_nowait` on type `MemorySendChannel[None] | MemoryReceiveChannel[None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:266:19: Attribute `send` on type `Unknown | MemorySendChannel[str] | MemoryReceiveChannel[str]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:269:15: Attribute `send` on type `Unknown | MemorySendChannel[str] | MemoryReceiveChannel[str]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:276:22: Attribute `receive` on type `MemorySendChannel[str] | MemoryReceiveChannel[str]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:287:19: Attribute `receive` on type `Unknown | MemorySendChannel[str] | MemoryReceiveChannel[str]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:290:22: Attribute `receive` on type `Unknown | MemorySendChannel[str] | MemoryReceiveChannel[str]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:297:15: Attribute `send` on type `MemorySendChannel[str] | MemoryReceiveChannel[str]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:306:13: Attribute `send_nowait` on type `MemorySendChannel[int] | MemoryReceiveChannel[int]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:324:5: Attribute `send_nowait` on type `MemorySendChannel[None] | MemoryReceiveChannel[None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:338:9: Attribute `send_nowait` on type `MemorySendChannel[None] | MemoryReceiveChannel[None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:340:28: Attribute `send` on type `MemorySendChannel[None] | MemoryReceiveChannel[None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:341:28: Attribute `send` on type `MemorySendChannel[None] | MemoryReceiveChannel[None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:350:13: Attribute `receive_nowait` on type `MemorySendChannel[None] | MemoryReceiveChannel[None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:355:28: Attribute `receive` on type `MemorySendChannel[None] | MemoryReceiveChannel[None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:366:5: Attribute `send_nowait` on type `MemorySendChannel[int | None] | MemoryReceiveChannel[int | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:367:12: Attribute `receive_nowait` on type `MemorySendChannel[int | None] | MemoryReceiveChannel[int | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:368:5: Attribute `send_nowait` on type `MemorySendChannel[int | None] | MemoryReceiveChannel[int | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:369:12: Attribute `receive_nowait` on type `MemorySendChannel[int | None] | MemoryReceiveChannel[int | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:383:9: Attribute `send_nowait` on type `MemorySendChannel[int | None] | MemoryReceiveChannel[int | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:385:13: Attribute `receive_nowait` on type `MemorySendChannel[int | None] | MemoryReceiveChannel[int | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:392:5: Attribute `send_nowait` on type `MemorySendChannel[int | None] | MemoryReceiveChannel[int | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:394:9: Attribute `send_nowait` on type `MemorySendChannel[int | None] | MemoryReceiveChannel[int | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:396:28: Attribute `send` on type `MemorySendChannel[int | None] | MemoryReceiveChannel[int | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:398:16: Attribute `receive_nowait` on type `MemorySendChannel[int | None] | MemoryReceiveChannel[int | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:400:13: Attribute `send_nowait` on type `MemorySendChannel[int | None] | MemoryReceiveChannel[int | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:401:23: Attribute `receive` on type `MemorySendChannel[int | None] | MemoryReceiveChannel[int | None]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:407:9: Attribute `receive_nowait` on type `MemorySendChannel[int] | MemoryReceiveChannel[int]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:409:9: Attribute `send_nowait` on type `MemorySendChannel[int] | MemoryReceiveChannel[int]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:418:26: Attribute `receive` on type `MemorySendChannel[int] | MemoryReceiveChannel[int]` is possibly unbound
++ warning[possibly-unbound-attribute] src/trio/_tests/test_channel.py:420:9: Attribute `receive_nowait` on type `MemorySendChannel[int] | MemoryReceiveChannel[int]` is possibly unbound
+- error[call-non-callable] src/trio/_tests/test_highlevel_serve_listeners.py:41:31: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_sync.py:423:26: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_sync.py:439:26: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/test_sync.py:454:26: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/type_tests/open_memory_channel.py:4:8: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/type_tests/open_memory_channel.py:4:8: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/_tests/type_tests/open_memory_channel.py:4:8: Object of type `GenericAlias` is not callable
+- error[call-non-callable] src/trio/testing/_fake_net.py:230:54: Object of type `GenericAlias` is not callable
+- Found 1010 diagnostics
++ Found 1009 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- error[invalid-assignment] pydantic/_internal/_generics.py:97:1: Object of type `ContextVar[None]` is not assignable to `ContextVar[WeakValueDictionary[tuple[@Todo(Generic tuple specializations), ...], type[BaseModel]] | None]`
++ error[invalid-assignment] pydantic/_internal/_generics.py:97:1: Object of type `ContextVar[None]` is not assignable to `ContextVar[WeakValueDictionary[tuple[Any, Any, tuple[Any, ...]], type[BaseModel]] | None]`
+- error[invalid-return-type] pydantic/version.py:84:12: Return type does not match returned value: expected `tuple[int, int, int]`, found `tuple[Unknown, ...]`
+- Found 731 diagnostics
++ Found 730 diagnostics
+
+rich (https://github.com/Textualize/rich)
++ error[invalid-argument-type] tests/test_syntax.py:169:38: Argument to bound method `get_style_for_token` is incorrect: Expected `tuple[str, ...]`, found `Literal[&quot;abc&quot;]`
+- Found 373 diagnostics
++ Found 374 diagnostics
+
+flake8 (https://github.com/pycqa/flake8)
+- error[invalid-return-type] src/flake8/checker.py:605:16: Return type does not match returned value: expected `tuple[int, int]`, found `int &amp; tuple[Unknown, ...]`
++ error[unsupported-operator] src/flake8/checker.py:609:12: Operator `&lt;=` is not supported for types `int` and `tuple[int, int]`, in comparing `int &amp; ~tuple[Unknown, ...]` with `Unknown | int | tuple[int, int]`
++ warning[possibly-unbound-implicit-call] src/flake8/checker.py:615:13: Method `__getitem__` of type `Unknown | int | tuple[int, int]` is possibly unbound
++ error[unsupported-operator] src/flake8/checker.py:615:26: Operator `-` is unsupported between objects of type `Unknown | int` and `Unknown | int | tuple[int, int]`
++ warning[possibly-unbound-implicit-call] src/flake8/checker.py:615:26: Method `__getitem__` of type `Unknown | int | tuple[int, int]` is possibly unbound
++ error[not-iterable] src/flake8/processor.py:166:34: Object of type `int` is not iterable
+- Found 43 diagnostics
++ Found 47 diagnostics
+
+yarl (https://github.com/aio-libs/yarl)
+- error[invalid-argument-type] tests/test_pickle.py:29:20: Argument to bound method `__setstate__` is incorrect: Expected `tuple[Unknown | tuple[@Todo(Generic tuple specializations), ...]] | tuple[None, _InternalURLCache]`, found `tuple[None, dict[Unknown, Unknown]]`
++ error[invalid-argument-type] tests/test_pickle.py:29:20: Argument to bound method `__setstate__` is incorrect: Expected `tuple[Unknown | tuple[str, str, str, str, str]] | tuple[None, _InternalURLCache]`, found `tuple[None, dict[Unknown, Unknown]]`
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- warning[possibly-unbound-attribute] src/hydra_zen/structured_configs/_implementations.py:2146:28: Attribute `get` on type `DataclassOptions | None` is possibly unbound
+- warning[possibly-unbound-attribute] src/hydra_zen/structured_configs/_implementations.py:3153:21: Attribute `get` on type `DataclassOptions | None` is possibly unbound
+- Found 597 diagnostics
++ Found 595 diagnostics
+
+poetry (https://github.com/python-poetry/poetry)
+- error[invalid-return-type] tests/conftest.py:432:12: Return type does not match returned value: expected `tuple[int, int, int]`, found `Unknown | tuple[@Todo(Generic tuple specializations), ...]`
++ error[invalid-return-type] tests/conftest.py:432:12: Return type does not match returned value: expected `tuple[int, int, int]`, found `Unknown | tuple[int | str, ...]`
+
+urllib3 (https://github.com/urllib3/urllib3)
++ warning[possibly-unbound-attribute] src/urllib3/filepost.py:72:9: Attribute `write` on type `Unknown | tuple[bytes, int]` is possibly unbound
++ error[invalid-argument-type] src/urllib3/filepost.py:72:16: Argument to bound method `__call__` is incorrect: Expected `str`, found `BytesIO`
++ warning[possibly-unbound-attribute] src/urllib3/filepost.py:79:13: Attribute `write` on type `Unknown | tuple[bytes, int]` is possibly unbound
++ error[invalid-argument-type] src/urllib3/filepost.py:79:20: Argument to bound method `__call__` is incorrect: Expected `str`, found `BytesIO`
+- Found 506 diagnostics
++ Found 510 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- error[invalid-return-type] references/depth/stereo/transforms.py:108:16: Return type does not match returned value: expected `tuple[@Todo(Inference of subscript on special form), tuple[@Todo(Inference of subscript on special form), @Todo(Inference of subscript on special form)], tuple[@Todo(Inference of subscript on special form), @Todo(Inference of subscript on special form)]]`, found `tuple[@Todo(Inference of subscript on special form), tuple[@Todo(Inference of subscript on special form), @Todo(Inference of subscript on special form)], tuple[Unknown, ...]]`
+- error[invalid-return-type] references/depth/stereo/transforms.py:124:16: Return type does not match returned value: expected `tuple[@Todo(Inference of subscript on special form), tuple[@Todo(Inference of subscript on special form), @Todo(Inference of subscript on special form)], tuple[@Todo(Inference of subscript on special form), @Todo(Inference of subscript on special form)]]`, found `tuple[tuple[Unknown, ...], tuple[Unknown, ...], tuple[Unknown, ...]]`
+- error[invalid-return-type] references/depth/stereo/transforms.py:190:16: Return type does not match returned value: expected `tuple[@Todo(Inference of subscript on special form), tuple[@Todo(Inference of subscript on special form), @Todo(Inference of subscript on special form)], tuple[@Todo(Inference of subscript on special form), @Todo(Inference of subscript on special form)]]`, found `tuple[tuple[Unknown, Unknown], tuple[()] | tuple[Unknown] | tuple[None], tuple[()] | tuple[Unknown] | tuple[None]]`
++ error[invalid-return-type] references/depth/stereo/transforms.py:190:16: Return type does not match returned value: expected `tuple[tuple[Unknown, Unknown], tuple[@Todo(Inference of subscript on special form), @Todo(Inference of subscript on special form)], tuple[@Todo(Inference of subscript on special form), @Todo(Inference of subscript on special form)]]`, found `tuple[tuple[Unknown, Unknown], tuple[()] | tuple[Unknown] | tuple[None], tuple[()] | tuple[Unknown] | tuple[None]]`
+- error[invalid-return-type] references/depth/stereo/transforms.py:485:16: Return type does not match returned value: expected `tuple[@Todo(Inference of subscript on special form), tuple[@Todo(Inference of subscript on special form), @Todo(Inference of subscript on special form)], tuple[@Todo(Inference of subscript on special form), @Todo(Inference of subscript on special form)]]`, found `tuple[tuple[()] | tuple[Unknown], tuple[()] | tuple[Unknown] | tuple[None], tuple[()] | tuple[Unknown] | tuple[None]]`
++ error[invalid-return-type] references/depth/stereo/transforms.py:485:16: Return type does not match returned value: expected `tuple[tuple[Unknown, Unknown], tuple[@Todo(Inference of subscript on special form), @Todo(Inference of subscript on special form)], tuple[@Todo(Inference of subscript on special form), @Todo(Inference of subscript on special form)]]`, found `tuple[tuple[()] | tuple[Unknown], tuple[()] | tuple[Unknown] | tuple[None], tuple[()] | tuple[Unknown] | tuple[None]]`
+- error[invalid-return-type] references/depth/stereo/transforms.py:601:16: Return type does not match returned value: expected `tuple[@Todo(Inference of subscript on special form), tuple[@Todo(Inference of subscript on special form), @Todo(Inference of subscript on special form)], tuple[@Todo(Inference of subscript on special form), @Todo(Inference of subscript on special form)]]`, found `tuple[tuple[Unknown, Unknown], tuple[(@Todo(Inference of subscript on special form) &amp; None) | Unknown, (@Todo(Inference of subscript on special form) &amp; None) | Unknown], tuple[()] | tuple[(@Todo(Inference of subscript on special form) &amp; None) | Unknown]]`
++ error[invalid-return-type] references/depth/stereo/transforms.py:601:16: Return type does not match returned value: expected `tuple[tuple[Unknown, Unknown], tuple[@Todo(Inference of subscript on special form), @Todo(Inference of subscript on special form)], tuple[@Todo(Inference of subscript on special form), @Todo(Inference of subscript on special form)]]`, found `tuple[tuple[Unknown, Unknown], tuple[(@Todo(Inference of subscript on special form) &amp; None) | Unknown, (@Todo(Inference of subscript on special form) &amp; None) | Unknown], tuple[()] | tuple[(@Todo(Inference of subscript on special form) &amp; None) | Unknown]]`
+- error[invalid-assignment] test/datasets_utils.py:1043:9: Object of type `LiteralString` is not assignable to `tuple[str, ...]`
+- Found 1541 diagnostics
++ Found 1538 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- error[unresolved-reference] paasta_tools/paastaapi/model/instance_status_adhoc.py:152:30: Name `_path_to_item` used when not defined
+- error[unresolved-reference] paasta_tools/paastaapi/model/instance_tasks.py:147:30: Name `_path_to_item` used when not defined
+- error[unresolved-reference] paasta_tools/paastaapi/model/resource.py:152:30: Name `_path_to_item` used when not defined
++ error[invalid-return-type] paasta_tools/utils.py:3111:12: Return type does not match returned value: expected `str`, found `str | int`
+- Found 954 diagnostics
++ Found 952 diagnostics
+
+schemathesis (https://github.com/schemathesis/schemathesis)
+- error[invalid-argument-type] src/schemathesis/specs/openapi/patterns.py:325:42: Argument to function `_handle_repeat_quantifier` is incorrect: Expected `tuple[int, int, tuple[Unknown, ...]]`, found `tuple[Unknown, ...]`
+- Found 315 diagnostics
++ Found 314 diagnostics
+
+jinja (https://github.com/pallets/jinja)
+- warning[possibly-unresolved-reference] src/jinja2/filters.py:1740:17: Name `name` used when possibly not defined
+- Found 209 diagnostics
++ Found 208 diagnostics
+
+pwndbg (https://github.com/pwndbg/pwndbg)
++ error[invalid-assignment] pwndbg/commands/hijack_fd.py:222:13: Object of type `str | int | bytes` is not assignable to `str`
+- error[invalid-assignment] pwndbg/emu/emulator.py:514:9: Object of type `tuple[Unknown, ...]` is not assignable to `tuple[str]`
+- error[invalid-return-type] pwndbg/emu/emulator.py:841:20: Return type does not match returned value: expected `tuple[int, int]`, found `InstructionExecutedResult`
+- error[invalid-return-type] pwndbg/emu/emulator.py:869:24: Return type does not match returned value: expected `tuple[int, int]`, found `InstructionExecutedResult`
++ error[unsupported-operator] pwndbg/integration/binja.py:451:17: Operator `-` is unsupported between objects of type `Unknown | int | None` and `int`
++ error[unsupported-operator] pwndbg/integration/binja.py:452:15: Operator `+` is unsupported between objects of type `Unknown | int | None` and `int`
+
+pywin32 (https://github.com/mhammond/pywin32)
++ error[invalid-argument-type] Pythonwin/pywin/framework/editor/configui.py:254:41: Argument to function `RGB` is incorrect: Expected `int`, found `Unknown | Literal[&quot;Black&quot;, &quot;Navy&quot;, &quot;Green&quot;, &quot;Cyan&quot;, &quot;Maroon&quot;, &quot;Purple&quot;, &quot;Olive&quot;, &quot;Gray&quot;, &quot;Silver&quot;, &quot;Blue&quot;, &quot;Lime&quot;, &quot;Aqua&quot;, &quot;Red&quot;, &quot;Fuchsia&quot;, &quot;Yellow&quot;, &quot;White&quot;, 0, 128, 192, 255]`
++ error[invalid-argument-type] Pythonwin/pywin/framework/editor/configui.py:254:47: Argument to function `RGB` is incorrect: Expected `int`, found `Unknown | Literal[&quot;Black&quot;, &quot;Navy&quot;, &quot;Green&quot;, &quot;Cyan&quot;, &quot;Maroon&quot;, &quot;Purple&quot;, &quot;Olive&quot;, &quot;Gray&quot;, &quot;Silver&quot;, &quot;Blue&quot;, &quot;Lime&quot;, &quot;Aqua&quot;, &quot;Red&quot;, &quot;Fuchsia&quot;, &quot;Yellow&quot;, &quot;White&quot;, 0, 128, 192, 255]`
++ error[invalid-argument-type] Pythonwin/pywin/framework/editor/configui.py:254:53: Argument to function `RGB` is incorrect: Expected `int`, found `Unknown | Literal[&quot;Black&quot;, &quot;Navy&quot;, &quot;Green&quot;, &quot;Cyan&quot;, &quot;Maroon&quot;, &quot;Purple&quot;, &quot;Olive&quot;, &quot;Gray&quot;, &quot;Silver&quot;, &quot;Blue&quot;, &quot;Lime&quot;, &quot;Aqua&quot;, &quot;Red&quot;, &quot;Fuchsia&quot;, &quot;Yellow&quot;, &quot;White&quot;, 0, 128, 192, 255]`
++ error[call-non-callable] com/win32com/makegw/makegwparse.py:786:16: Object of type `int` is not callable
+- error[invalid-argument-type] com/win32com/test/testDynamic.py:61:51: Argument to function `Dispatch` is incorrect: Expected `str | PyIDispatch | tuple[@Todo(Generic tuple specializations), ...] | PyIUnknown`, found `Unknown | PyIID`
++ error[invalid-argument-type] com/win32com/test/testDynamic.py:61:51: Argument to function `Dispatch` is incorrect: Expected `str | PyIDispatch | tuple[type[str], &lt;class 'PyIID'&gt;] | PyIUnknown`, found `Unknown | PyIID`
++ error[invalid-argument-type] com/win32comext/adsi/demos/scp.py:393:45: Argument to function `wrap` is incorrect: Expected `str`, found `Unknown | str | None`
+- error[invalid-argument-type] win32/Demos/win32gui_menu.py:434:67: Argument to function `ExtTextOut` is incorrect: Expected `PyRECT`, found `tuple[Any, Any, Any, Any]`
++ error[invalid-argument-type] win32/Demos/win32gui_menu.py:434:67: Argument to function `ExtTextOut` is incorrect: Expected `PyRECT`, found `tuple[@Todo(Unpack variable-length tuple), @Todo(Unpack variable-length tuple), @Todo(Unpack variable-length tuple), @Todo(Unpack variable-length tuple)]`
+- Found 2318 diagnostics
++ Found 2323 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
+- error[invalid-return-type] psycopg/psycopg/_py_transformer.py:329:16: Return type does not match returned value: expected `Row`, found `tuple[@Todo(Generic tuple specializations), ...]`
++ error[invalid-return-type] psycopg/psycopg/_py_transformer.py:329:16: Return type does not match returned value: expected `Row`, found `tuple[Any, ...]`
+
+discord.py (https://github.com/Rapptz/discord.py)
+- error[invalid-argument-type] discord/ext/commands/converter.py:1122:16: Argument to function `len` is incorrect: Expected `Sized`, found `tuple[T] | T`
++ error[invalid-argument-type] discord/ext/commands/converter.py:1122:16: Argument to function `len` is incorrect: Expected `Sized`, found `(tuple[T] &amp; tuple[Unknown, ...]) | (T &amp; tuple[Unknown, ...]) | tuple[T] | T`
++ warning[possibly-unbound-implicit-call] discord/ext/commands/converter.py:1124:21: Method `__getitem__` of type `(tuple[T] &amp; tuple[Unknown, ...]) | (T &amp; tuple[Unknown, ...]) | tuple[T] | T` is possibly unbound
+- warning[possibly-unbound-implicit-call] discord/ext/commands/converter.py:1124:21: Method `__getitem__` of type `tuple[T] | T` is possibly unbound
+- warning[unused-ignore-comment] discord/ext/commands/converter.py:1136:75: Unused blanket `type: ignore` directive
+- Found 576 diagnostics
++ Found 575 diagnostics
+
+cwltool (https://github.com/common-workflow-language/cwltool)
++ warning[possibly-unbound-attribute] cwltool/cwlprov/__init__.py:16:20: Attribute `split` on type `str | int` is possibly unbound
+- Found 188 diagnostics
++ Found 189 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
++ error[invalid-argument-type] pymongo/asynchronous/auth.py:224:45: Argument to function `_canonicalize_hostname` is incorrect: Expected `str`, found `(Unknown &amp; ~AlwaysFalsy) | Unknown | str | int`
+- warning[unused-ignore-comment] pymongo/pool_shared.py:352:84: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] pymongo/pool_shared.py:472:77: Unused blanket `type: ignore` directive
++ error[invalid-argument-type] pymongo/pool_shared.py:521:54: Argument to bound method `wrap_socket` is incorrect: Expected `str | None`, found `Unknown | str | int | None`
++ error[invalid-argument-type] pymongo/synchronous/auth.py:221:39: Argument to function `_canonicalize_hostname` is incorrect: Expected `str`, found `(Unknown &amp; ~AlwaysFalsy) | Unknown | str | int`
+- Found 528 diagnostics
++ Found 529 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- warning[possibly-unbound-implicit-call] examples/contrib/change_upstream_proxy.py:28:34: Method `__getitem__` of type `Unknown | tuple[@Todo(Generic tuple specializations), ...] | None` is possibly unbound
++ warning[possibly-unbound-implicit-call] examples/contrib/change_upstream_proxy.py:28:34: Method `__getitem__` of type `Unknown | tuple[Literal[&quot;http&quot;, &quot;https&quot;, &quot;http3&quot;, &quot;tls&quot;, &quot;dtls&quot;, &quot;tcp&quot;, &quot;udp&quot;, &quot;dns&quot;, &quot;quic&quot;], tuple[str, int]] | None` is possibly unbound
++ error[call-non-callable] mitmproxy/http.py:422:13: Method `__getitem__` of type `(Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -&gt; LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -&gt; str]) | (bound method dict[str, str].__getitem__(key: str, /) -&gt; str) | (bound method dict[Unknown, Unknown].__getitem__(key: Unknown, /) -&gt; Unknown)` is not callable on object of type `str | dict[str, str] | dict[Unknown, Unknown]`
+- warning[unused-ignore-comment] mitmproxy/net/server_spec.py:85:34: Unused blanket `type: ignore` directive
++ error[invalid-assignment] mitmproxy/proxy/layers/http/_upstream_proxy.py:42:13: Object of type `@Todo(map_with_boundness: intersections with negative contributions) | str | int` is not assignable to attribute `sni` of type `str | None`
++ error[invalid-assignment] test/mitmproxy/addons/test_next_layer.py:374:17: Object of type `tuple[Literal[&quot;2001:db8::1&quot;], Literal[443], Literal[0], Literal[0]] | tuple[Literal[&quot;192.0.2.1&quot;], Literal[443]]` is not assignable to attribute `peername` of type `tuple[str, int] | None`
+- Found 1847 diagnostics
++ Found 1849 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- error[no-matching-overload] src/_pytest/raises.py:283:20: No overload of bound method `__init__` matches arguments
+- Found 655 diagnostics
++ Found 654 diagnostics
+
+pycryptodome (https://github.com/Legrandin/pycryptodome)
++ error[no-matching-overload] lib/Crypto/SelfTest/Protocol/test_SecretSharing.py:226:47: No overload of function `__new__` matches arguments
++ error[no-matching-overload] lib/Crypto/SelfTest/Protocol/test_SecretSharing.py:226:47: No overload of function `__new__` matches arguments
++ error[no-matching-overload] lib/Crypto/SelfTest/Protocol/test_SecretSharing.py:226:47: No overload of function `__new__` matches arguments
+- Found 1549 diagnostics
++ Found 1552 diagnostics
+
+aiohttp (https://github.com/aio-libs/aiohttp)
+- warning[possibly-unbound-attribute] aiohttp/resolver.py:102:26: Attribute `get_resolver` on type `_DNSResolverManager | None` is possibly unbound
+- Found 139 diagnostics
++ Found 138 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
++ warning[possibly-unbound-attribute] mesonbuild/backend/vs2010backend.py:430:56: Attribute `parents` on type `Unknown | str | Path | MachineChoice` is possibly unbound
++ warning[possibly-unbound-attribute] mesonbuild/backend/vs2010backend.py:531:24: Attribute `parent` on type `Unknown | str | Path | MachineChoice` is possibly unbound
++ warning[possibly-unbound-attribute] mesonbuild/backend/vs2010backend.py:532:87: Attribute `parent` on type `Unknown | str | Path | MachineChoice` is possibly unbound
+- Found 1216 diagnostics
++ Found 1219 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
+- error[invalid-return-type] cloudinit/cmd/main.py:277:28: Return type does not match returned value: expected `tuple[int, str]`, found `DeprecationLog`
+- error[invalid-return-type] cloudinit/config/cc_growpart.py:214:12: Return type does not match returned value: expected `Resizer`, found `None | (Unknown &amp; ~AlwaysFalsy)`
++ error[invalid-return-type] cloudinit/config/cc_growpart.py:214:12: Return type does not match returned value: expected `Resizer`, found `None | (Unknown &amp; ~AlwaysFalsy) | (ResizeGrowPart &amp; ~AlwaysFalsy) | (ResizeGrowFS &amp; ~AlwaysFalsy) | (ResizeGpart &amp; ~AlwaysFalsy)`
+- error[unsupported-operator] cloudinit/util.py:1331:16: Operator `not in` is not supported for types `Unknown` and `None`, in comparing `Unknown` with `set[Unknown] | Unknown | None`
++ error[unsupported-operator] cloudinit/util.py:1331:16: Operator `not in` is not supported for types `str` and `None`, in comparing `str | int | bytes` with `set[Unknown] | Unknown | None`
+- Found 741 diagnostics
++ Found 740 diagnostics
+
+apprise (https://github.com/caronc/apprise)
++ warning[possibly-unbound-attribute] apprise/plugins/email/base.py:413:21: Attribute `match` on type `Unknown | Literal[&quot;Google Mail&quot;, &quot;Yandex&quot;, &quot;Microsoft Hotmail&quot;, &quot;Microsoft Outlook&quot;, &quot;Microsoft Office 365&quot;, &quot;Yahoo Mail&quot;, &quot;Fast Mail&quot;, &quot;Fast Mail Extended Addresses&quot;, &quot;Zoho Mail&quot;, &quot;SendGrid&quot;, &quot;163.com&quot;, &quot;Foxmail.com&quot;, &quot;Comcast.net&quot;, &quot;Custom&quot;] | Pattern[str] | dict[Unknown, Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] apprise/plugins/email/base.py:420:31: Attribute `get` on type `Unknown | Literal[&quot;Google Mail&quot;, &quot;Yandex&quot;, &quot;Microsoft Hotmail&quot;, &quot;Microsoft Outlook&quot;, &quot;Microsoft Office 365&quot;, &quot;Yahoo Mail&quot;, &quot;Fast Mail&quot;, &quot;Fast Mail Extended Addresses&quot;, &quot;Zoho Mail&quot;, &quot;SendGrid&quot;, &quot;163.com&quot;, &quot;Foxmail.com&quot;, &quot;Comcast.net&quot;, &quot;Custom&quot;] | Pattern[str] | dict[Unknown, Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] apprise/plugins/email/base.py:425:34: Attribute `get` on type `Unknown | Literal[&quot;Google Mail&quot;, &quot;Yandex&quot;, &quot;Microsoft Hotmail&quot;, &quot;Microsoft Outlook&quot;, &quot;Microsoft Office 365&quot;, &quot;Yahoo Mail&quot;, &quot;Fast Mail&quot;, &quot;Fast Mail Extended Addresses&quot;, &quot;Zoho Mail&quot;, &quot;SendGrid&quot;, &quot;163.com&quot;, &quot;Foxmail.com&quot;, &quot;Comcast.net&quot;, &quot;Custom&quot;] | Pattern[str] | dict[Unknown, Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] apprise/plugins/email/base.py:431:33: Attribute `get` on type `Unknown | Literal[&quot;Google Mail&quot;, &quot;Yandex&quot;, &quot;Microsoft Hotmail&quot;, &quot;Microsoft Outlook&quot;, &quot;Microsoft Office 365&quot;, &quot;Yahoo Mail&quot;, &quot;Fast Mail&quot;, &quot;Fast Mail Extended Addresses&quot;, &quot;Zoho Mail&quot;, &quot;SendGrid&quot;, &quot;163.com&quot;, &quot;Foxmail.com&quot;, &quot;Comcast.net&quot;, &quot;Custom&quot;] | Pattern[str] | dict[Unknown, Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] apprise/plugins/email/base.py:434:40: Attribute `get` on type `Unknown | Literal[&quot;Google Mail&quot;, &quot;Yandex&quot;, &quot;Microsoft Hotmail&quot;, &quot;Microsoft Outlook&quot;, &quot;Microsoft Office 365&quot;, &quot;Yahoo Mail&quot;, &quot;Fast Mail&quot;, &quot;Fast Mail Extended Addresses&quot;, &quot;Zoho Mail&quot;, &quot;SendGrid&quot;, &quot;163.com&quot;, &quot;Foxmail.com&quot;, &quot;Comcast.net&quot;, &quot;Custom&quot;] | Pattern[str] | dict[Unknown, Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] apprise/plugins/email/base.py:442:21: Attribute `get` on type `Unknown | Literal[&quot;Google Mail&quot;, &quot;Yandex&quot;, &quot;Microsoft Hotmail&quot;, &quot;Microsoft Outlook&quot;, &quot;Microsoft Office 365&quot;, &quot;Yahoo Mail&quot;, &quot;Fast Mail&quot;, &quot;Fast Mail Extended Addresses&quot;, &quot;Zoho Mail&quot;, &quot;SendGrid&quot;, &quot;163.com&quot;, &quot;Foxmail.com&quot;, &quot;Comcast.net&quot;, &quot;Custom&quot;] | Pattern[str] | dict[Unknown, Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] test/test_plugin_email.py:369:24: Attribute `parse_url` on type `Unknown | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/test_plugin_email.py:370:24: Attribute `parse_url` on type `Unknown | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/test_plugin_email.py:371:24: Attribute `parse_url` on type `Unknown | None` is possibly unbound
+- Found 4453 diagnostics
++ Found 4462 diagnostics
+
+sphinx (https://github.com/sphinx-doc/sphinx)
++ warning[possibly-unbound-attribute] sphinx/ext/doctest.py:564:25: Attribute `code` on type `TestCode | None` is possibly unbound
++ warning[possibly-unbound-attribute] sphinx/ext/doctest.py:564:55: Attribute `filename` on type `TestCode | None` is possibly unbound
++ warning[possibly-unbound-attribute] sphinx/ext/doctest.py:564:73: Attribute `lineno` on type `TestCode | None` is possibly unbound
++ warning[possibly-unbound-attribute] sphinx/ext/doctest.py:569:25: Attribute `code` on type `TestCode | None` is possibly unbound
++ warning[possibly-unbound-attribute] sphinx/ext/doctest.py:570:35: Attribute `filename` on type `TestCode | None` is possibly unbound
++ warning[possibly-unbound-attribute] sphinx/ext/doctest.py:570:53: Attribute `lineno` on type `TestCode | None` is possibly unbound
++ warning[possibly-unbound-attribute] sphinx/ext/doctest.py:577:31: Attribute `options` on type `TestCode | None` is possibly unbound
++ warning[possibly-unbound-attribute] sphinx/ext/doctest.py:594:21: Attribute `code` on type `TestCode | None` is possibly unbound
++ warning[possibly-unbound-attribute] sphinx/ext/doctest.py:597:28: Attribute `lineno` on type `TestCode | None` is possibly unbound
++ warning[possibly-unbound-attribute] sphinx/ext/doctest.py:604:21: Attribute `filename` on type `TestCode | None` is possibly unbound
++ warning[possibly-unbound-attribute] sphinx/ext/doctest.py:605:21: Attribute `lineno` on type `TestCode | None` is possibly unbound
++ warning[possibly-unbound-attribute] sphinx/util/docfields.py:479:13: Attribute `append` on type `Field | list[@Todo(Support for `typing.TypeAlias`)] | Node | (Unknown &amp; ~None)` is possibly unbound
+- Found 631 diagnostics
++ Found 643 diagnostics
+
+bokeh (https://github.com/bokeh/bokeh)
++ error[invalid-assignment] src/bokeh/layouts.py:587:13: Object of type `UIElement | int` is not assignable to `row | col`
++ error[invalid-argument-type] src/bokeh/layouts.py:588:33: Argument to function `_has_auto_sizing` is incorrect: Expected `LayoutDOM`, found `row | col`
++ error[invalid-assignment] src/bokeh/layouts.py:589:17: Object of type `Unknown &amp; ~None` is not assignable to attribute `sizing_mode` on type `row | col`
+- error[invalid-return-type] src/bokeh/layouts.py:666:16: Return type does not match returned value: expected `list[L]`, found `list[L | list[L]]`
++ error[invalid-argument-type] src/bokeh/server/tornado.py:419:31: Argument to function `issubclass` is incorrect: Expected `type`, found `str | type[RequestHandler] | dict[str, Any]`
+- error[invalid-argument-type] src/bokeh/util/deprecation.py:70:10: Argument to function `warn` is incorrect: Expected `str`, found `str | (tuple[@Todo(Generic tuple specializations), ...] &amp; ~tuple[Unknown, ...])`
++ error[invalid-argument-type] src/bokeh/util/deprecation.py:70:10: Argument to function `warn` is incorrect: Expected `str`, found `str | (tuple[int, int, int] &amp; ~tuple[Unknown, ...]) | (str &amp; ~tuple[Unknown, ...])`
+- Found 920 diagnostics
++ Found 923 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- warning[unused-ignore-comment] static_frame/core/container_util.py:1653:84: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/core/container_util.py:1662:81: Unused blanket `type: ignore` directive
++ warning[possibly-unbound-attribute] static_frame/core/container_util.py:1667:39: Attribute `index_types` on type `IndexBase | IMTOAdapter | Unknown` is possibly unbound
++ warning[unused-ignore-comment] static_frame/core/db_util.py:389:66: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] static_frame/core/db_util.py:391:87: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/core/reduce.py:460:48: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] static_frame/core/reduce.py:484:48: Unused blanket `type: ignore` directive
++ error[invalid-assignment] static_frame/test/unit/test_archive_npy.py:174:21: Too many values to unpack: Expected 2
+- error[invalid-argument-type] static_frame/test/unit/test_store_config.py:13:31: Argument to function `label_encode_tuple` is incorrect: Expected `tuple[Any]`, found `tuple[Unknown, ...]`
+- error[invalid-argument-type] static_frame/test/unit/test_store_config.py:14:31:...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-06-09 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-09 21:45</div>
+            <div class="timeline-body"><p>This is really exciting! One nit:</p>
+<blockquote>
+<p>This adds support for homogeneous tuples (<code>tuple[int, ...]</code>)</p>
+</blockquote>
+<p>I thought we already supported homogenous tuples following https://github.com/astral-sh/ruff/pull/17998 — I thought it was just the mixed partially-homogenous-partially-heterogeneous ones that we didn't support yet?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-06-10 14:11</div>
+            <div class="timeline-body"><blockquote>
+<p>I thought we already supported homogenous tuples following #17998 — I thought it was just the mixed partially-homogenous-partially-heterogeneous ones that we didn't support yet?</p>
+</blockquote>
+<p>Yep you're right! I had just put in a placeholder PR body for now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-06-10 18:35</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Ftuple-spec?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a></h2>
+<h3>Merging #18600 will <strong>degrade performances by 11.29%</strong></h3>
+<p><sub>Comparing <code>dcreager/tuple-spec</code> (e5aa429) with <code>main</code> (d926628)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1 (👁 1)</code> regressions<br />
+<code>✅ 36</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| 👁 | <code>ty_micro[many_tuple_assignments]</code> | 180.7 ms | 203.7 ms | -11.29% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/subscript/tuple.md</code>:105 on 2025-06-10 20:21</div>
+            <div class="timeline-body"><p>There were a lot of ecosystem failures of the form</p>
+<pre><code>Index 8 is out of bounds for tuple `tuple[Any, ...]` with length at least 0
+</code></pre>
+<p>I've fixed this in 2e41487de38c874efe06e0cf3e798f8295adebb5: indexing into a homogeneous or mixed tuple returns the variable-length portion if you index past any fixed-length prefix or suffix.</p>
+<p>But I'm not convinced that's correct, since the spec says that a variable-length tuple is the <em>union</em> of all possible lengths, not the gradual choice of them. That would suggest that we should treat this as a potential out-of-bounds error, since the index isn't valid for all possible elements (i.e. lengths) of the &quot;union&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-06-10 20:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-06-12 13:39</div>
+            <div class="timeline-body"><p>This introduces a new cycle failure in the ecosystem check for <code>mypy</code>, since this <a href="https://github.com/python/mypy/blob/8241059c14f99ad750ae3ac0de6a4795bf990f61/mypy/server/astdiff.py#L118">recursive type alias</a> is now visible:</p>
+<pre><code class="language-py">SnapshotItem: _TypeAlias = tuple[Union[Primitive, &quot;SnapshotItem&quot;], ...]
+</code></pre>
+<p>( :tophat:  to Claude Code for helping me analyze the log files to find it more quickly)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-06-12 15:48</div>
+            <div class="timeline-body"><p>There's a non-trivial performance regression for <code>many_tuple_assignments</code>. I'm inclined to accept the regression, since (a) we're genuinely doing more work, and (b) that benchmark is focused more on a combinatorial explosion of tuples in a union (https://github.com/astral-sh/ty/issues/362), and this PR is not changing that combinatorial behavior.</p>
+<p>But I'd love a second opinion on that before I actually acknowledge the regression in Codspeed!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-06-12 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-06-12 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-06-12 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-06-12 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/subscript/tuple.md</code>:105 on 2025-06-12 15:49</div>
+            <div class="timeline-body"><p>(And if we do go with this behavior, the result for index-past-prefix might need to be the union of the variable-length portion and each element of the suffix, since we don't know for certain which part any particular index will land in.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-06-12 15:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/literal_string.md</code>:61 on 2025-06-12 16:08</div>
+            <div class="timeline-body"><p>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/attributes.md</code>:1724 on 2025-06-12 16:16</div>
+            <div class="timeline-body"><p>what do we think the type of <code>e.__class__()</code> is?</p>
+<p>For this snippet:</p>
+<pre><code class="language-py">def f(x: tuple[int, int]):
+    reveal_type(x.__class__())
+</code></pre>
+<p>Pyright incorrectly says <code>tuple[int, int]</code>.</p>
+<p>Mypy does something more defensible here: it says:</p>
+<pre><code>main.py:2: error: Cannot instantiate type &quot;Type[tuple[int, int]]&quot;  [misc]
+</code></pre>
+<p>and reveals <code>Any</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/binary/tuples.md</code>:34 on 2025-06-12 16:18</div>
+            <div class="timeline-body"><p>The problem isn't limited to legacy type aliases: we also need to be able to preserve some knowledge of the type parameters for things like</p>
+<pre><code class="language-py">class Foo(tuple[int, int]): ...
+</code></pre>
+<p>which is something that's on my monthly goals, since a <code>NamedTuple</code> is really just an easy way of creating a class like ^that but that has some bells and whistles attached. And <code>NamedTuple</code>s are pretty popular!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/subscript/tuple.md</code>:99 on 2025-06-12 16:22</div>
+            <div class="timeline-body"><p>Pyright reveals <code>str | Literal[1, 2, 9, 10]</code> here, which feels overly broad, but <code>str</code> feels incorrectly precise. What if the <code>*tuple[str, ...]</code> part here is zero-length? Wouldn't <code>str | Literal[9]</code> be the best type here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/subscript/tuple.md</code>:100 on 2025-06-12 16:23</div>
+            <div class="timeline-body"><p>Similarly here, wouldn't this be better as <code>str | Literal[9, 10]</code>? If the variadic middle element is length 0, it'll be <code>Literal[10]</code>; if it's length 1, it'll be <code>Literal[9]</code>; and if it's length &gt;=2, it'll be <code>str</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/subscript/tuple.md</code>:105 on 2025-06-12 16:26</div>
+            <div class="timeline-body"><blockquote>
+<p>But I'm not convinced that's correct, since the spec says that a variable-length tuple is the <em>union</em> of all possible lengths, not the gradual choice of them. That would suggest that we should treat this as a potential out-of-bounds error, since the index isn't valid for all possible elements (i.e. lengths) of the &quot;union&quot;.</p>
+</blockquote>
+<p>That's an interesting point, but it's not what we'd do for e.g. <code>x[0]</code> if <code>x</code> is a <code>list[int]</code>, right? A very strict type checker might require you to narrow the type of <code>x</code> to one where you know the length is at least 1 before letting you do that, but in general this is an area where Python type checkers have aimed for usability.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/subscript/tuple.md</code>:138 on 2025-06-12 16:27</div>
+            <div class="timeline-body"><p>Can you add a TODO that says we need to preserve the type parameters better here in due course and track whether the class actually inherited from a heterogeneous tuple?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-12 16:29</div>
+            <div class="timeline-body"><p>(Only reviewed the tests so far!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/literal_string.md</code>:61 on 2025-06-12 16:58</div>
+            <div class="timeline-body"><p>Gah! This is how I selectively run a single mdtest.  Removed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/attributes.md</code>:1724 on 2025-06-12 17:00</div>
+            <div class="timeline-body"><p><code>tuple[Literal[42], ...]</code></p>
+<p>Right now, tuple <em>instances</em> track detailed mixed element information, but I tried to keep the <code>tuple</code> class literal (and generic aliases of it) consistent with its typeshed definition, which has a single typevar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/binary/tuples.md</code>:34 on 2025-06-12 17:10</div>
+            <div class="timeline-body"><p>I think <code>NamedTuple</code> is a slight red herring here (and so are other subclasses of <code>tuple</code>).  That is, we don't have to track the more detailed tuple information here for <code>NamedTuple</code>s to be useful.</p>
+<p>If we handle the former by collapsing it to the latter:</p>
+<pre><code class="language-py">class MyNamedTuple(tuple[int, str]):
+    i: int
+    s: str
+
+class MyNamedTuple(tuple[int | str, ...]):
+    i: int
+    s: str
+</code></pre>
+<p>that wouldn't preclude you from accessing each element <em>by name</em> and getting its correct precise type.  It would just mean that accessing elements <em>by (literal) index</em> would collapse down to the union of all elements.  (That would also be true for a non-literal index, but that is more arguably the correct behavior.)</p>
+<p>Now, I'm not trying to argue strongly that I <em>like</em> this behavior. But...it is what the typeshed says that <code>tuple.__getitem__</code> does!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/subscript/tuple.md</code>:99 on 2025-06-12 17:11</div>
+            <div class="timeline-body"><p>Yes I agree with this, will update the indexing impl accordingly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/subscript/tuple.md</code>:105 on 2025-06-12 17:13</div>
+            <div class="timeline-body"><p>I think we can also rely on the fact that an out-of-bounds index will raise an exception. So <em>if the subscripting returns</em>, then this is the type that the result will have (modulo the comments above to include some of the suffix types as well).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-06-12 17:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-06-12 17:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/binary/tuples.md</code>:34 on 2025-06-12 17:17</div>
+            <div class="timeline-body"><p>(Arguing against myself: why should an instance of <code>tuple[int, str]</code> have the nicer more precise indexing behavior, but an instance of a subclass of it not?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-06-12 17:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/arguments.rs</code>:220 on 2025-06-12 17:23</div>
+            <div class="timeline-body"><p>This should only expand tuples of known length, so <code>tuple[X | Y, ...]</code> shouldn't be expanded to <code>tuple[X, ...], tuple[Y, ...]</code>. Maybe we could add a test case in this file at the end to confirm that this expansion doesn't take place now that we have variable length tuple support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-06-12 18:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/arguments.rs</code>:220 on 2025-06-12 18:40</div>
+            <div class="timeline-body"><p>Oooh great catch.  Added test and fixed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-06-13 15:32</div>
+            <div class="timeline-body"><p>Moving this back to draft while I implement tracking the detail tuple element info through value forms</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @dcreager on 2025-06-13 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/attributes.md</code>:1724 on 2025-06-19 21:14</div>
+            <div class="timeline-body"><p>We now reveal this as <code>tuple[Literal[42], Literal[42]]</code>, tracking the full detail of the tuple elements even in the generic alias that we create for the tuple's class</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/subscript/tuple.md</code>:105 on 2025-06-19 21:15</div>
+            <div class="timeline-body"><p>Updated to include elements from the prefix/suffix as appropriate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/subscript/tuple.md</code>:99 on 2025-06-19 21:15</div>
+            <div class="timeline-body"><p>Updated with some additional examples</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/subscript/tuple.md</code>:100 on 2025-06-19 21:15</div>
+            <div class="timeline-body"><p>ditto</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/binary/tuples.md</code>:34 on 2025-06-19 21:15</div>
+            <div class="timeline-body"><p>We now track the full element detail in the generic aliases</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/subscript/tuple.md</code>:138 on 2025-06-19 21:16</div>
+            <div class="timeline-body"><p>TODO no longer needed, this now does as you suggest</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:551 on 2025-06-19 21:20</div>
+            <div class="timeline-body"><p>The newest changes on this PR now technically make the <code>Type::Tuple</code> variant redundant, since we can represent that as a <code>NominalInstance</code> of an appropriate <code>tuple</code> generic alias. I experimented with actually removing that, but there are a <em>lot</em> of places where we have special-case logic that would have to move into <code>NominalInstance</code>, and it also seemed to introduced a bad performance regression. So I'm leaving the dedicated <code>Type::Tuple</code> variant in place for now. We can investigate removing it in a future PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:276 on 2025-06-19 21:20</div>
+            <div class="timeline-body"><p>The primary way we're doing this is by adding an optional <code>TupleType</code> to <code>Specialization</code>. Iff the specialization is of the <code>tuple</code> class, this is the field that holds the full detail of the tuple elements. By storing it in <code>Specialization</code>, it automatically gets threaded through wherever it needs to be — generic aliases, instances of them, <code>type[X]</code>es of them, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-06-19 21:20</div>
+            <div class="timeline-body"><p>Sheesh, finally! That was a slog, but we're now tracking the full element detail through the specializations of the <code>tuple</code> class.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-06-19 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dcreager on 2025-06-19 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/property_tests/type_generation.rs</code>:3 on 2025-06-20 05:45</div>
+            <div class="timeline-body"><p>Nit: Should we re-export this type from <code>types</code> to reduce some of those import-only diffs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-20 05:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:251 on 2025-06-20 05:52</div>
+            <div class="timeline-body"><p>I don't understand what the meaning of <code>PPPP</code> and <code>SSSS</code> is supposed to be</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-20 05:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:639 on 2025-06-20 06:00</div>
+            <div class="timeline-body"><p>I wonder if we should remove <code>TupleType</code> and instead intern <code>FixedLengthTuple</code> and <code>VariableLengthTuple</code> separately. This has the advantage that each type gets its own interning table (we don't waste memory for the smaller variant).</p>
+<p>I haven't checked if <code>Tuple</code> is used as any salsa query argument. if it is, you can then derive <code>salsa::Supertype</code> on the enum to make it an &quot;ingredient&quot; (Note, this requires that each variant wraps a unique type, e.g. no two variant are allowed to wrap <code>FixedLengthTuple</code>)</p>
+<pre><code class="language-rust">#[derive(salsa::Supertype)]
+enum TupleType&lt;'db&gt; {
+    Fixed(FixedLengthTuple&lt;'db&gt;),
+    Variable(VariableLengthTuple&lt;'db&gt;),
+}
+
+#[salsa::interned]
+struct FixedLengthTuple {
+    ...
+}
+
+#[salsa::interned]
+struct VariableLengthTuple {
+    ...
+}
+</code></pre>
+<p>Note: I'm actually not sure if <code>salsa::Supertype</code> is a derive or a &quot;regular&quot; proc macro.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-20 06:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:639 on 2025-06-20 06:05</div>
+            <div class="timeline-body"><p>The only downside of this is that you could no longer have any <code>&amp;mut</code> methods</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-20 06:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types.rs</code>:625 on 2025-06-20 06:07</div>
+            <div class="timeline-body"><p>Is this worth caching considering that <code>Tuple::homogenous</code> more or less directly interns the tuple (which does caching). Especially considering that the query requires interning its <code>Type</code> and dummy argument.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-20 06:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-20 06:08</div>
+            <div class="timeline-body"><p>I did a salsa-centric review. I leave the semantics to someone who actually understands what's changing here ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-20 11:04</div>
+            <div class="timeline-body"><p>The point I raised in https://github.com/astral-sh/ruff/pull/18600#discussion_r2143160777 still stands: it's unsound to allow <code>tuple</code> generic aliases to be directly instantiated without checking the arguments passed in. Mypy gets this right, pyright gets it wrong, and this branch currently makes the same mistakes as pyright here -- it reveals <code>tuple[int, int]</code> for both <code>reveal_type</code> calls without complaining about them:</p>
+<pre><code class="language-py">reveal_type(tuple[int, int]())
+
+def f(x: tuple[int, int]):
+    reveal_type(x.__class__())
+</code></pre>
+<p>At runtime, both calls create an object of type <code>tuple[()]</code>, <em>not</em> an object of type <code>tuple[int, int]</code>.</p>
+<p>It's okay to defer this for now, but it would be great to have a TODO comment for it somewhere if so!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/binary/tuples.md</code>:25 on 2025-06-20 11:13</div>
+            <div class="timeline-body"><p>this is so cool!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/is_assignable_to.md</code>:416 on 2025-06-20 11:32</div>
+            <div class="timeline-body"><p>Another test you could include is:</p>
+<pre><code class="language-py">static_assert(
+    not is_assignable_to(
+        tuple[Literal[1], Literal[2], *tuple[int, ...], Literal[10]],
+        tuple[Literal[1], Literal[2], int, Literal[10]],
+    )
+)
+</code></pre>
+<p>That test is quite interesting because it succeeds or fails depending on whether <code>...</code> in a tuple type expression is a gradual form or not. The typing spec <a href="https://typing.python.org/en/latest/spec/glossary.html#term-gradual-form">states</a> that <code>...</code> is <em>only</em> a gradual form in the context of <code>tuple[Any, ...]</code>: this has the consequence that <code>tuple[Any, ...]</code> <a href="https://typing.python.org/en/latest/spec/tuples.html#tuple-type-form">should be assignable</a> to <code>tuple[Any]</code>, since the <code>tuple[Any, ...]</code> could materialize to <code>tuple[Any]</code>. But in all other contexts, the spec states that <code>...</code> is not a gradual form in tuple type expressions: <code>tuple[int, ...]</code> should <em>not</em> be assignable to <code>tuple[int]</code>, because it's not a gradual type. <code>tuple[int, ...]</code> expresses &quot;the union of all fixed-length <code>tuple</code> types that only have <code>int</code> elements&quot; rather than &quot;a gradual type that could materialize to any fixed-length <code>tuple</code> type that only has <code>int</code> elements&quot;.</p>
+<p>Relatedly: if we don't already, we should have some tests specifically exercising the special case that the spec carves out here for <code>tuple[Any, ...]</code>. (In our model, I think we should probably apply the same treatment to <code>tuple[Unknown, ...]</code> and <code>tuple[@Todo, ...]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-20 11:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-20 11:39</div>
+            <div class="timeline-body"><blockquote>
+<p>This introduces a new cycle failure in the ecosystem check for <code>mypy</code>, since this <a href="https://github.com/python/mypy/blob/8241059c14f99ad750ae3ac0de6a4795bf990f61/mypy/server/astdiff.py#L118">recursive type alias</a> is now visible:</p>
+<pre><code class="language-python">SnapshotItem: _TypeAlias = tuple[Union[Primitive, &quot;SnapshotItem&quot;], ...]
+</code></pre>
+<p>( 🎩 to Claude Code for helping me analyze the log files to find it more quickly)</p>
+</blockquote>
+<p>I was somewhat surprised that this PR didn't cause us to crash on typeshed, given that typeshed uses a recursive type alias for <code>isinstance()</code> and <code>issubclass()</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/7982edac9009e44f4928a44bde2c30216975616c/crates/ty_vendored/vendor/typeshed/stdlib/builtins.pyi#L1527-L1534</p>
+<p>But I guess the reason is that we still infer the <code>|</code> union as a value form there, so the subtle difference between that and mypy's alias saves us from attempting to infer the recursive alias?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:368 on 2025-06-20 11:45</div>
+            <div class="timeline-body"><p>is it worth it/possible to use a smallvec for <code>prefix</code>/<code>suffix</code>? They're unlikely to be very large usually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:625 on 2025-06-20 11:53</div>
+            <div class="timeline-body"><p>If we decide that we don't need the caching, I think I'd prefer to get rid of this method entirely; a version without it feels easier to understand to me:</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types.rs b/crates/ty_python_semantic/src/types.rs
+index cd8e8009be..0a555f811b 100644
+--- a/crates/ty_python_semantic/src/types.rs
++++ b/crates/ty_python_semantic/src/types.rs
+@@ -621,14 +621,6 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+         matches!(self, Type::Dynamic(_))
+     }
+ 
+-    pub(crate) fn tuple_of(self, db: &amp;'db dyn Db) -&gt; &amp;'db Tuple&lt;'db&gt; {
+-        #[salsa::tracked(returns(ref))]
+-        fn tuple_of&lt;'db&gt;(_db: &amp;'db dyn Db, ty: Type&lt;'db&gt;, _dummy: ()) -&gt; Tuple&lt;'db&gt; {
+-            Tuple::homogeneous(ty)
+-        }
+-        tuple_of(db, self, ())
+-    }
+-
+     /// Returns the top materialization (or upper bound materialization) of this type, which is the
+     /// most general form of the type that is fully static.
+     #[must_use]
+diff --git a/crates/ty_python_semantic/src/types/generics.rs b/crates/ty_python_semantic/src/types/generics.rs
+index bbd069f3d9..77d357d94b 100644
+--- a/crates/ty_python_semantic/src/types/generics.rs
++++ b/crates/ty_python_semantic/src/types/generics.rs
+@@ -278,14 +278,14 @@ pub struct Specialization&lt;'db&gt; {
+ 
+ impl&lt;'db&gt; Specialization&lt;'db&gt; {
+     /// Returns the tuple spec for a specialization of the `tuple` class.
+-    pub(crate) fn tuple(self, db: &amp;'db dyn Db) -&gt; &amp;'db Tuple&lt;'db&gt; {
++    pub(crate) fn tuple(self, db: &amp;'db dyn Db) -&gt; Cow&lt;'db, Tuple&lt;'db&gt;&gt; {
+         if let Some(tuple) = self.tuple_inner(db).map(|tuple_type| tuple_type.tuple(db)) {
+-            return tuple;
++            return Cow::Borrowed(tuple);
+         }
+         if let [element_type] = self.types(db) {
+-            return element_type.tuple_of(db);
++            return Cow::Owned(Tuple::homogeneous(*element_type));
+         }
+-        Type::unknown().tuple_of(db)
++        Cow::Owned(Tuple::homogeneous(Type::unknown()))
+     }
+ 
+     /// Returns the type that a typevar is mapped to, or None if the typevar isn't part of this
+diff --git a/crates/ty_python_semantic/src/types/instance.rs b/crates/ty_python_semantic/src/types/instance.rs
+index 07b4f6e112..d709f9397a 100644
+--- a/crates/ty_python_semantic/src/types/instance.rs
++++ b/crates/ty_python_semantic/src/types/instance.rs
+@@ -19,7 +19,7 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+                 TupleType::homogeneous(db, Type::unknown())
+             }
+             (ClassType::Generic(alias), Some(KnownClass::Tuple)) =&gt; {
+-                Self::tuple(db, TupleType::new(db, alias.specialization(db).tuple(db)))
++                Self::tuple(db, TupleType::new(db, &amp;*alias.specialization(db).tuple(db)))
+             }
+             _ if class.class_literal(db).0.is_protocol(db) =&gt; {
+                 Self::ProtocolInstance(ProtocolInstanceType::from_class(class))
+</code></pre>
+<p>If we <em>do</em> keep this method, I think it would be great to add a doc-comment describing what it does</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:1 on 2025-06-20 11:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">//! Types describing fixed- and variable-length tuples.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:6 on 2025-06-20 11:57</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">//! &quot;homogeneous&quot; tuples that have an unknown number of elements of the same single type. And in
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:43 on 2025-06-20 12:02</div>
+            <div class="timeline-body"><p>This means that we iterate over a tuple's fixed elements twice when constructing it: once in the <code>TupleType</code> construction, and once here. We could probably avoid iterating over the tuple twice by doing this check in <code>VariableLengthTuple::mixed()</code> and <code>FixedLengthTuple::from_elements()</code>, then change this check here into a <code>debug_assert!()</code> that ensures that the inner constructors upheld the invariant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:179 on 2025-06-20 12:21</div>
+            <div class="timeline-body"><p>it feels a bit silly to have two methods that do exactly the same thing -- can't we merge <code>fixed_elements()</code> and <code>all_elements()</code> into a single <code>elements()</code> method? It feels self-evident that they will return the same thing for a <code>FixedLengthTuple</code> instance 😆</p>
+<p>could we also maybe rename <code>as_slice()</code> to <code>elements_slice()</code>, to more clearly indicate that it returns a slice of the underlying elements?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:506 on 2025-06-20 12:43</div>
+            <div class="timeline-body"><p>I don't think a variable-length tuple is ever assignable to a fixed-length tuple <em>except</em> for the exception the spec carves out for <code>tuple[Any, ...]</code> that I mentioned in https://github.com/astral-sh/ruff/pull/18600#discussion_r2158745057. And a variable-length tuple is <em>never</em> a subtype of a fixed-length tuple.</p>
+<p>What's the purpose of this branch? If I replace it all with this locally (which I think is correct), no tests seem to fail:</p>
+<pre><code class="language-suggestion">        match other {
+            Tuple::Fixed(_) =&gt; false,
+</code></pre>
+<p>If we <em>do</em> need to keep this branch, I think you need to fixup your comment :-)</p>
+<pre><code class="language-suggestion">        match other {
+            Tuple::Fixed(other) =&gt; {
+                // The other tuple must have enough elements to match up with this tuple's prefix
+                // and suffix, and each of those elements must pairwise satisfy the relation.
+                let mut other_iter = other.0.iter();
+                for self_ty in &amp;self.prefix {
+                    let Some(other_ty) = other_iter.next() else {
+                        return false;
+                    };
+                    if !self_ty.has_relation_to(db, *other_ty, relation) {
+                        return false;
+                    }
+                }
+                for self_ty in self.suffix.iter().rev() {
+                    let Some(other_ty) = other_iter.next_back() else {
+                        return false;
+                    };
+                    if !self_ty.has_relation_to(db, *other_ty, relation) {
+                        return false;
+                    }
+                }
+
+                // In addition, the variable-length portion of this tuple must satisfy
+                // any remaining elements in the other tuple
+                other_iter.all(|other_ty| self.variable.has_relation_to(db, *other_ty, relation))
+            }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:776 on 2025-06-20 12:47</div>
+            <div class="timeline-body"><p>The invariant here seems to be that two &quot;pure homogeneous tuples&quot; <code>tuple[A, ...]</code> and <code>tuple[B, ...]</code> (both tuples without prefixes and suffixes) can never be disjoint even if <code>A</code> and <code>B</code> are disjoint, because <code>tuple[Never, ...]</code> (== <code>tuple[()]</code>) would be assignable to both? That might be useful to add as a comment!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] [WIP] Homogeneous and mixed tuples" to "[ty] Homogeneous and mixed tuples" by @dcreager on 2025-06-20 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-20 12:50</div>
+            <div class="timeline-body"><p>This looks excellent overall!! I haven't reviewed the changes to <code>unpacker.rs</code> and <code>util/subscript.rs</code> in any depth</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:639 on 2025-06-20 12:59</div>
+            <div class="timeline-body"><blockquote>
+<p>The only downside of this is that you could no longer have any <code>&amp;mut</code> methods</p>
+</blockquote>
+<p>Yep, this part is important to keep, with how we're building up tuples during type inference and unpacking.</p>
+<blockquote>
+<p>we don't waste memory for the smaller variant</p>
+</blockquote>
+<p>I had actually considered using a <code>SmallVec</code> in <code>FixedLengthTuple</code> to make it take up roughly the same amount of space as <code>VariableLengthTuple</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/property_tests/type_generation.rs</code>:3 on 2025-06-20 13:03</div>
+            <div class="timeline-body"><p>[sad trombone] I had found that pattern confusing, tbh, since it means that we're importing types from somewhere other than where they're actually defined.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:251 on 2025-06-20 13:08</div>
+            <div class="timeline-body"><p>Added an explanation to the comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:368 on 2025-06-20 13:16</div>
+            <div class="timeline-body"><p>I had thought that wouldn't be important to optimize, since this will typically be hidden behind a salsa-interned <code>TupleType</code> anyway, so an extra heap allocation won't be that bad.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-06-20 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:111 on 2025-06-20 13:40</div>
+            <div class="timeline-body"><p>I don't <em>love</em> having an <code>is_disjoint_from_class</code> method because a <code>ClassType</code> isn't really a <em>type</em> (despite its name) -- whether or not a <code>NominalInstanceType</code> is &quot;disjoint from a ClassType&quot; depends on whether the ClassType is wrapped in a <code>Type::NominalInstance</code> variant, a <code>Type::SubclassOf</code> variant or something else entirely. The signature of <code>NominalInstanceType::is_disjoint_from()</code> expresses this clearly, but the signature of the new method doesn't</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-20 13:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:43 on 2025-06-20 16:50</div>
+            <div class="timeline-body"><blockquote>
+<p>by doing this check in <code>VariableLengthTuple::mixed()</code> and <code>FixedLengthTuple::from_elements()</code></p>
+</blockquote>
+<p>The issue with that is that there will be some tuple specs (for unpacking and splatting) where I think we <em>don't</em> want to collapse a tuple containing <code>Never</code> into <code>Never</code> itself.  I don't anticipate tuples will be large enough to make that double iteration an bottleneck.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:625 on 2025-06-20 16:52</div>
+            <div class="timeline-body"><p>I had the <code>Cow</code> version originally and then did this to try to remove it! I ended up with a version that doesn't need <code>Cow</code> <em>or</em> the <code>tuple_of</code> function. As @MichaReiser points out, <code>TupleType</code> itself does the caching that we need to always be able to return a <code>&amp;'db</code> ref.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:179 on 2025-06-20 16:55</div>
+            <div class="timeline-body"><p>Done! I had the two copies so that both tuple variants has methods that aligned, but that's not really necessary</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-06-20 16:56</div>
+            <div class="timeline-body"><p>Some initial responses</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-20 17:00</div>
+            <div class="timeline-body"><p>Since @MichaReiser did a Salsa-focused review and @AlexWaygood did a semantics-focused review, I'll consider that good enough! Let me know if there's anything in particular you want me to look at here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @carljm on 2025-06-20 17:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-20 17:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:368 on 2025-06-20 17:07</div>
+            <div class="timeline-body"><p>SG, we can leave this unless it shows up in profiles later</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:43 on 2025-06-20 17:09</div>
+            <div class="timeline-body"><blockquote>
+<p>The issue with that is that there will be some tuple specs (for unpacking and splatting) where I think we <em>don't</em> want to collapse a tuple containing <code>Never</code> into <code>Never</code> itself.</p>
+</blockquote>
+<p>hmm... do you have any examples? :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-20 17:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-06-20 17:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:43 on 2025-06-20 17:40</div>
+            <div class="timeline-body"><p><a href="https://github.com/astral-sh/ruff/blob/45cd117ea4a361db9041304462bca7b8be7a8a80/crates/ty_python_semantic/src/types/unpacker.rs#L281-L310">Here</a> is where we're building up a new tuple spec (but not a tuple type) during unpacking. Right now that only works on fixed-length tuples, but in a later PR I want to extend that to support mixed tuples as well, and use that whole machinery for splatting. We'd use tuple specs to describe the positional parameters and arguments, and I wanted to be able to retain the information about which particular params/args are <code>Never</code> without having to collapse the whole thing down to a single <code>Never</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:43 on 2025-06-20 17:45</div>
+            <div class="timeline-body"><p>Or put another way, <code>Tuple</code> (the Rust type) will not only be used to represent instances of <code>tuple</code> (the Python type). That might have been too implicit in this PR? I can add some clarifying documentation about that point if so.</p>
+<p>(I've been using &quot;tuple spec&quot; in my comments to mean &quot;a sequence of types, which might have a homogeneous variable-length bit in the middle&quot;. A <code>tuple</code> instance is <em>one</em> of the things that is described by a tuple spec, but not the only one. We do want the &quot;collapse the <code>Never</code>s&quot; behavior for <code>tuple</code> instances, but (I contend) that's not universally true of tuple specs.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-06-20 17:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:43 on 2025-06-20 17:48</div>
+            <div class="timeline-body"><p>Ahh, thanks, that makese sense! I guess the only quibbles I have in that case are that you could maybe adjust the docstrings for <code>FixedLengthTuple</code> and <code>VariableLengthTuple</code> -- i.e., since <code>FixedLengthTuple</code> (intentionally!) does not uphold all the invariants maintained by <code>TupleType</code>, the first sentence is not <em>really</em> accurate:</p>
+<blockquote>
+<p>/// A fixed-length tuple.</p>
+</blockquote>
+<p>It would be <em>more</em> accurate to say &quot;Inner data for a fixed-length tuple.&quot; And maybe explicitly call out in the docstring that not all invariants we maintain for <code>TupleType</code> are maintained by this inner struct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-20 17:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-20 17:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:43 on 2025-06-20 17:49</div>
+            <div class="timeline-body"><p>oops, I posted my response before seeing your second comment. Yes, some clarifying docs would be great! And maybe it would even be good to rename your <code>Tuple</code> struct to <code>TupleSpec</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-06-20 17:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:111 on 2025-06-20 17:51</div>
+            <div class="timeline-body"><p>Would it be enough to rename this to something like <code>is_disjoint_from_nominal_instance_of_class</code>?</p>
+<p>The issue is that I need to be able to perform a disjointness check between a <code>tuple</code> instance and an instance of some other type, in the current world where <code>tuple</code> instances are not stored as <code>NominalInstance</code>s. So this was a way to reuse the existing disjointness logic without having to jump through hoops to create a <code>NominalInstance</code> for the tuple. (I'm otherwise trying very hard to enforce that it's not possible to create a <code>NominalInstance</code> of <code>KnownClass::Tuple</code>, since there is so much special-case behavior for tuples.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:111 on 2025-06-20 18:20</div>
+            <div class="timeline-body"><p>Hmmm, I see. I still don't <em>love</em> it, but I now understand the reason for it, and that name would definitely be better. Could you also add a comment encapsulating what you said above, as well -- that the method here is required so that we can preserve the invariant that tuples are always represented as <code>Type::Tuple</code>s, never as <code>Type::Instance</code>s (even &quot;pure homogeneous&quot; tuples)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-20 18:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:111 on 2025-06-20 18:56</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:43 on 2025-06-20 18:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Yes, some clarifying docs would be great! And maybe it would even be good to rename your <code>Tuple</code> struct to <code>TupleSpec</code>?</p>
+</blockquote>
+<p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-06-20 18:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-20 21:02</div>
+            <div class="timeline-body"><p>(It's fine to address this comment in a followup; doesn't need to be tackled in this PR!) --</p>
+<p>Do we need to add some more tests and TODOs around generics solving for mixed tuples and pure-homogeneous tuples? It looks like for these four <code>reveal_type</code> calls, we're only able to solve the <code>TypeVar</code> for the call to <code>g()</code> on this branch -- the rest of the calls are all revealed as <code>Unknown</code>:</p>
+<pre><code class="language-py">from typing import reveal_type
+
+def f[T](x: tuple[int, bytes, *tuple[str, ...], T, int]) -&gt; T:
+    return x[-2]
+
+reveal_type(f((1, b&quot;foo&quot;, &quot;bar&quot;, &quot;baz&quot;, True, 42)))  # Unknown
+
+def f2[T](x: tuple[int, T, *tuple[str, ...], bool, int]) -&gt; T:
+    return x[1]
+
+reveal_type(f2((1, b&quot;foo&quot;, &quot;bar&quot;, &quot;baz&quot;, True, 42)))  # Unknown
+
+def g[T](x: tuple[T, int]) -&gt; T:
+    return x[0]
+
+reveal_type(g((True, 42)))  # bool
+
+def h[T](x: tuple[T, ...]) -&gt; T:
+    return x[0]
+
+reveal_type(h((42,)))  # Unknown
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:776 on 2025-06-20 21:32</div>
+            <div class="timeline-body"><p>Err, actually I was just going with &quot;false negatives are okay if you haven't thought about this case yet&quot; :sweat_smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:506 on 2025-06-20 21:32</div>
+            <div class="timeline-body"><p>I added several other test cases (including for the <code>tuple[Any, ...]</code> carveout) and updated this branch accordingly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/is_assignable_to.md</code>:416 on 2025-06-20 21:39</div>
+            <div class="timeline-body"><p>Added these all in a new section below (ditto for subtyping)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-06-20 21:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/is_assignable_to.md</code>:471 on 2025-06-20 21:53</div>
+            <div class="timeline-body"><p>it would be great to link to the specific parts of the spec that describe this special case, so that it's obvious to future readers of this test why it exists (https://typing.python.org/en/latest/spec/glossary.html#term-gradual-form, https://typing.python.org/en/latest/spec/tuples.html#tuple-type-form)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-06-20 21:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-20 21:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @dcreager on 2025-06-20 21:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-06-20 21:56</div>
+            <div class="timeline-body"><blockquote>
+<p>The point I raised in <a href="https://github.com/astral-sh/ruff/pull/18600#discussion_r2143160777">#18600 (comment)</a> still stands: it's unsound to allow <code>tuple</code> generic aliases to be directly instantiated without checking the arguments passed in.</p>
+</blockquote>
+<p>I misunderstood this the first time around — I thought you were asking about <code>reveal_type((1, 2).__class__)</code>, not <code>reveal_type((1, 2).__class__())</code>. Now that I understand what you mean, I added these as TODO tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-06-20 22:00</div>
+            <div class="timeline-body"><p>Really great work -- thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/is_assignable_to.md</code>:471 on 2025-06-20 22:00</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-06-20 22:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-20 22:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:776 on 2025-06-20 22:02</div>
+            <div class="timeline-body"><p>I <em>think</em> that my reasoning here nonetheless holds (for pure-homogeneous tuples, but not for mixed tuples), so you could consider adding it as a comment 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-06-20 22:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Do we need to add some more tests and TODOs around generics solving for mixed tuples and pure-homogeneous tuples?</p>
+</blockquote>
+<p>Done. (We already had a TODO comment in the code, just no TODO tests)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:776 on 2025-06-20 22:12</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-06-20 22:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-06-20 22:23</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Ftuple-spec?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
+<h3>Merging #18600 will <strong>improve performances by 4.04%</strong></h3>
+<p><sub>Comparing <code>dcreager/tuple-spec</code> (e5aa429) with <code>main</code> (d926628)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements<br />
+<code>✅ 5</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>medium[colour-science]</code> | 9 s | 8.7 s | +4.04% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-20 22:23</div>
+            <div class="timeline-body"><p>There is a fairly big primer report here -- have you spot-checked them/do the new diagnostics make sense?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-06-20 22:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-06-20 22:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-20 22:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-21 20:47</div>
+            <div class="timeline-body"><p>Another really useful follow-up to uncover any issues here would be to add support to our property tests to generate variadic and mixed tuple types. Should be pretty easy (unless it uncovers actual problems!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-06-23 06:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-06-23 06:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-23 08:12</div>
+            <div class="timeline-body"><blockquote>
+<p>There is a fairly big primer report here</p>
+</blockquote>
+<p>I uploaded a rich diff here: https://shark.fish/diff-tuple-spec.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-23 12:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I uploaded a rich diff here: <a href="https://shark.fish/diff-tuple-spec.html">shark.fish/diff-tuple-spec.html</a></p>
+</blockquote>
+<p>I have a WIP patch locally to fix the 58 new <code>incompatible-slots</code> false positives on sympy</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-06-23 12:59</div>
+            <div class="timeline-body"><blockquote>
+<p><code>strawberry/tools/merge_types.py</code>
+[error] unresolved-attribute - <a href="https://github.com/strawberry-graphql/strawberry/blob/0c79fb79a1673b54c2ae624b94e78ced5b8b0fee/strawberry/tools/merge_types.py#L26">:26:11</a> - Type <code>type</code> has no attribute <code>__strawberry_definition__</code></p>
+</blockquote>
+<p>This one is because there's a function that returns a <code>TypeGuard</code> of a <code>Protocol</code>, where the protocol includes the attribute in question</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-06-23 13:27</div>
+            <div class="timeline-body"><p>A lot of the new <code>possibly-unbound-attribute</code> diagnostics are because of https://github.com/astral-sh/ty/issues/625 — there's a union with <code>Unknown</code>, which means we fall back on the typeshed definition of <code>tuple.__getitem__</code>, which returns a union of all elements instead of hitting our special-case logic to pull out a specific element.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:35 UTC
+    </footer>
+</body>
+</html>

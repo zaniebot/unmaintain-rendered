@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Improve handling of disjointness for `NominalInstanceType`s and `SubclassOfType`s - astral-sh/ruff #18864</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Improve handling of disjointness for <code>NominalInstanceType</code>s and <code>SubclassOfType</code>s</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18864">#18864</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-06-22 18:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-22 18:19</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR makes a number of improvements to our disjointness handling for instance types and <code>type[]</code> types:</p>
+<ul>
+<li><p>The calculation of whether two nominal instance types are disjoint is moved from the somewhat-awkardly-named <code>NominalInstanceType::is_disjoint_from_nominal_instance_of_class</code> function to a new <code>ClassLiteral::could_coexist_in_mro_with()</code> method. This reflects the fact that the relation between <em>types</em> (the disjointness relation) is derived from a relation between <em>runtime class objects</em> (MRO compatibility). It also allows us to reuse the method for determining disjointness between two <code>SubclassOfType</code>s. Prior to now, that wouldn't have been helpful, but with the other improvements in this PR (see below), it <em>is</em> helpful.</p>
+</li>
+<li><p>Following https://github.com/astral-sh/ruff/pull/15129, we have understood that classes like this raise <code>TypeError</code> at runtime, and have emitted errors if we see such class definitions in first-party code:</p>
+<pre><code class="language-py">class A:
+    __slots__ = &quot;a&quot;,
+
+class B:
+    __slots__ = &quot;a&quot;,
+
+class C(A, B): ...
+</code></pre>
+<p>However, we haven't understood that this also makes the types <code>A</code> and <code>B</code> disjoint: the intersection <code>A &amp; B</code> simplifies to <code>Never</code>, since <code>A</code> and <code>B</code> can never both exist in any single MRO! This PR generalizes and incorporates our understanding of <code>__slots__</code> so that we now recognize any class with a non-empty <code>__slots__</code> definition as being a &quot;solid base&quot;. If there are two solid bases <code>A</code> and <code>B</code>, and <code>A</code> is not a subclass of <code>B</code> and <code>B</code> is not a subclass of <code>A</code>, <code>A</code> and <code>B</code> will be disjoint. Similarly, if <code>A</code> has a subclass <code>C</code> and <code>B</code> has a subclass <code>D</code>, <code>C</code> and <code>D</code> will be disjoint because they have disjoint solid bases in their respective MROs.</p>
+</li>
+<li><p>Two bugs are also fixed in our handling of <code>__slots__</code>. One long-standing one is that we used to think that this class definition raised <code>TypeError</code>; this PR teaches ty that it doesn't:</p>
+<pre><code class="language-py">class A:
+    __slots__ = &quot;a&quot;,
+
+class B(A):
+    __slots__ = &quot;b&quot;,
+
+class C(B, A): ...
+</code></pre>
+<p>Another one was only introduced recently: see https://github.com/astral-sh/ruff/pull/18864#discussion_r2161608672</p>
+</li>
+<li><p>In addition to understanding that classes with non-empty <code>__slots__</code> definitions are solid bases, this PR also adds an understanding to ty that certain builtin classes are also solid bases due to the special way that they are implemented in C. This is done via a <code>KnownClass::is_solid_base</code> method.</p>
+</li>
+<li><p>Lastly, diagnostics for classes that have conflicting solid bases are improved:</p>
+<ul>
+<li>We now only issue one diagnostic for each class that would raise <code>TypeError</code></li>
+<li>Subdiagnostics are used to highlight and explain the class bases that create issues</li>
+</ul>
+</li>
+</ul>
+<h2>Test Plan</h2>
+<ul>
+<li>Mdtests</li>
+<li><code>QUICKCHECK_TESTS=100000 cargo test --release -p ty_python_semantic -- --ignored types::property_tests::stable</code></li>
+<li>Manual testing of diagnostics on the CLI</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "alex/disjointness" to "[ty] Improve handling of disjointness for `NominalInstanceType`s and `SubclassOfType`s" by @AlexWaygood on 2025-06-22 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-06-22 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-22 18:22</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">parso (https://github.com/davidhalter/parso)
+- error[incompatible-slots] parso/python/tree.py:169:23: Class base has incompatible `__slots__`
+- error[incompatible-slots] parso/python/tree.py:169:34: Class base has incompatible `__slots__`
+- Found 79 diagnostics
++ Found 77 diagnostics
+
+operator (https://github.com/canonical/operator)
++ warning[redundant-cast] ops/_private/harness.py:3716:36: Value is already of type `str`
++ warning[redundant-cast] ops/pebble.py:1944:21: Value is already of type `bytes`
+- Found 112 diagnostics
++ Found 114 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
+- error[invalid-return-type] dulwich/ignore.py:48:12: Return type does not match returned value: expected `str`, found `str | ~bytes`
++ error[invalid-return-type] dulwich/ignore.py:48:12: Return type does not match returned value: expected `str`, found `~bytes`
+- error[invalid-argument-type] dulwich/mailmap.py:123:39: Argument to function `parse_identity` is incorrect: Expected `bytes`, found `(bytes &amp; ~tuple[Unknown, ...]) | (tuple[bytes | None, bytes | None] &amp; ~tuple[Unknown, ...])`
++ error[invalid-argument-type] dulwich/mailmap.py:123:39: Argument to function `parse_identity` is incorrect: Expected `bytes`, found `bytes | (tuple[bytes | None, bytes | None] &amp; ~tuple[Unknown, ...])`
++ error[unresolved-attribute] dulwich/pack.py:2035:31: Type `int` has no attribute `type_num`
+- Found 152 diagnostics
++ Found 153 diagnostics
+
+check-jsonschema (https://github.com/python-jsonschema/check-jsonschema)
+- error[invalid-argument-type] src/check_jsonschema/transforms/azure_pipelines.py:130:26: Argument to function `traverse_dict` is incorrect: Expected `dict[Unknown, Unknown]`, found `(dict[Unknown, Unknown] &amp; ~list[Unknown]) | (list[Unknown] &amp; ~list[Unknown])`
++ error[invalid-argument-type] src/check_jsonschema/transforms/azure_pipelines.py:130:26: Argument to function `traverse_dict` is incorrect: Expected `dict[Unknown, Unknown]`, found `dict[Unknown, Unknown] | (list[Unknown] &amp; ~list[Unknown])`
+
+kornia (https://github.com/kornia/kornia)
+- error[invalid-argument-type] kornia/contrib/models/tiny_vit.py:307:21: Argument to bound method `__init__` is incorrect: Expected `int | float`, found `@Todo(Subscript expressions on intersections) | (int &amp; ~list[Unknown]) | (float &amp; ~list[Unknown]) | (list[int | float] &amp; ~list[Unknown])`
++ error[invalid-argument-type] kornia/contrib/models/tiny_vit.py:307:21: Argument to bound method `__init__` is incorrect: Expected `int | float`, found `@Todo(Subscript expressions on intersections) | int | float | (list[int | float] &amp; ~list[Unknown])`
++ warning[possibly-unbound-attribute] kornia/enhance/adjust.py:180:14: Attribute `to` on type `int | (Unknown &amp; ~float) | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] kornia/enhance/normalize.py:249:12: Attribute `shape` on type `(Unknown &amp; ~float) | int | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] kornia/enhance/normalize.py:249:27: Attribute `shape` on type `(Unknown &amp; ~float) | int | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] kornia/enhance/normalize.py:250:16: Attribute `shape` on type `(Unknown &amp; ~float) | int | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] kornia/enhance/normalize.py:250:52: Attribute `shape` on type `(Unknown &amp; ~float) | int | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] kornia/enhance/normalize.py:251:90: Attribute `shape` on type `(Unknown &amp; ~float) | int | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] kornia/enhance/normalize.py:254:12: Attribute `shape` on type `(Unknown &amp; ~float) | int | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] kornia/enhance/normalize.py:254:26: Attribute `shape` on type `(Unknown &amp; ~float) | int | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] kornia/enhance/normalize.py:255:16: Attribute `shape` on type `(Unknown &amp; ~float) | int | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] kornia/enhance/normalize.py:255:51: Attribute `shape` on type `(Unknown &amp; ~float) | int | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] kornia/enhance/normalize.py:256:89: Attribute `shape` on type `(Unknown &amp; ~float) | int | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] kornia/filters/kernels.py:106:18: Attribute `shape` on type `(Unknown &amp; ~float) | int | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] kornia/filters/kernels.py:110:40: Attribute `device` on type `(Unknown &amp; ~float) | int | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] kornia/filters/kernels.py:110:60: Attribute `dtype` on type `(Unknown &amp; ~float) | int | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] kornia/filters/kernels.py:115:43: Attribute `device` on type `(Unknown &amp; ~float) | int | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] kornia/filters/kernels.py:115:63: Attribute `dtype` on type `(Unknown &amp; ~float) | int | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] kornia/filters/kernels.py:120:42: Attribute `pow` on type `(Unknown &amp; ~float) | int | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] kornia/filters/kernels.py:146:18: Attribute `shape` on type `(Unknown &amp; ~float) | int | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] kornia/filters/kernels.py:148:43: Attribute `device` on type `(Unknown &amp; ~float) | int | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] kornia/filters/kernels.py:148:63: Attribute `dtype` on type `(Unknown &amp; ~float) | int | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] kornia/filters/kernels.py:150:22: Attribute `abs` on type `(Unknown &amp; ~float) | int | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] kornia/filters/kernels.py:276:55: Attribute `exp` on type `@Todo(map_with_boundness: intersections with negative contributions) | int` is possibly unbound
++ error[not-iterable] kornia/geometry/transform/affwarp.py:705:36: Object of type `int` is not iterable
+- Found 782 diagnostics
++ Found 805 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- error[invalid-argument-type] pydantic/_internal/_decorators.py:389:49: Argument to function `mro` is incorrect: Expected `type[Any]`, found `(type[Any] &amp; ~tuple[Unknown, ...]) | (tuple[type[Any], ...] &amp; ~tuple[Unknown, ...])`
++ error[invalid-argument-type] pydantic/_internal/_decorators.py:389:49: Argument to function `mro` is incorrect: Expected `type[Any]`, found `type[Any] | (tuple[type[Any], ...] &amp; ~tuple[Unknown, ...])`
+- error[invalid-assignment] pydantic/main.py:866:13: Object of type `tuple[(type[Any] &amp; ~tuple[Unknown, ...]) | (tuple[type[Any], ...] &amp; ~tuple[Unknown, ...])]` is not assignable to `type[Any] | tuple[type[Any], ...]`
++ error[invalid-assignment] pydantic/main.py:866:13: Object of type `tuple[type[Any] | (tuple[type[Any], ...] &amp; ~tuple[Unknown, ...])]` is not assignable to `type[Any] | tuple[type[Any], ...]`
+- error[invalid-argument-type] pydantic/main.py:870:67: Argument to function `map_generic_model_arguments` is incorrect: Expected `tuple[Any, ...]`, found `(type[Any] &amp; tuple[Unknown, ...]) | (tuple[type[Any], ...] &amp; tuple[Unknown, ...]) | type[Any] | tuple[type[Any], ...]`
++ error[invalid-argument-type] pydantic/main.py:870:67: Argument to function `map_generic_model_arguments` is incorrect: Expected `tuple[Any, ...]`, found `(tuple[type[Any], ...] &amp; tuple[Unknown, ...]) | type[Any] | tuple[type[Any], ...]`
+- error[invalid-assignment] pydantic/v1/generics.py:100:13: Object of type `tuple[(type[Any] &amp; ~tuple[Unknown, ...]) | (tuple[type[Any], ...] &amp; ~tuple[Unknown, ...])]` is not assignable to `type[Any] | tuple[type[Any], ...]`
++ error[invalid-assignment] pydantic/v1/generics.py:100:13: Object of type `tuple[type[Any] | (tuple[type[Any], ...] &amp; ~tuple[Unknown, ...])]` is not assignable to `type[Any] | tuple[type[Any], ...]`
+- error[invalid-argument-type] pydantic/v1/generics.py:106:37: Argument to function `check_parameters_count` is incorrect: Expected `tuple[Any, ...]`, found `(type[Any] &amp; tuple[Unknown, ...]) | (tuple[type[Any], ...] &amp; tuple[Unknown, ...]) | type[Any] | tuple[type[Any], ...]`
++ error[invalid-argument-type] pydantic/v1/generics.py:106:37: Argument to function `check_parameters_count` is incorrect: Expected `tuple[Any, ...]`, found `(tuple[type[Any], ...] &amp; tuple[Unknown, ...]) | type[Any] | tuple[type[Any], ...]`
+- error[invalid-argument-type] pydantic/v1/validators.py:326:26: Argument to bound method `__init__` is incorrect: Expected `bytes | None`, found `(Any &amp; bytes &amp; ~str) | (Any &amp; bytearray &amp; ~str) | UUID`
++ error[invalid-argument-type] pydantic/v1/validators.py:326:26: Argument to bound method `__init__` is incorrect: Expected `bytes | None`, found `(Any &amp; bytes) | (Any &amp; bytearray) | UUID`
+
+jinja (https://github.com/pallets/jinja)
+- error[invalid-argument-type] src/jinja2/compiler.py:1133:38: Argument to bound method `ref` is incorrect: Expected `str`, found `(str &amp; ~tuple[Unknown, ...]) | (tuple[str, str] &amp; ~tuple[Unknown, ...])`
++ error[invalid-argument-type] src/jinja2/compiler.py:1133:38: Argument to bound method `ref` is incorrect: Expected `str`, found `str | (tuple[str, str] &amp; ~tuple[Unknown, ...])`
+- error[invalid-argument-type] src/jinja2/compiler.py:1136:52: Argument to bound method `ref` is incorrect: Expected `str`, found `(str &amp; ~tuple[Unknown, ...]) | (tuple[str, str] &amp; ~tuple[Unknown, ...])`
++ error[invalid-argument-type] src/jinja2/compiler.py:1136:52: Argument to bound method `ref` is incorrect: Expected `str`, found `str | (tuple[str, str] &amp; ~tuple[Unknown, ...])`
+- error[invalid-argument-type] src/jinja2/compiler.py:1149:38: Argument to bound method `ref` is incorrect: Expected `str`, found `(str &amp; ~tuple[Unknown, ...]) | (tuple[str, str] &amp; ~tuple[Unknown, ...])`
++ error[invalid-argument-type] src/jinja2/compiler.py:1149:38: Argument to bound method `ref` is incorrect: Expected `str`, found `str | (tuple[str, str] &amp; ~tuple[Unknown, ...])`
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- error[invalid-return-type] src/hydra_zen/wrapper/_implementations.py:932:24: Return type does not match returned value: expected `DataClass_`, found `(((...) -&gt; Any) &amp; type &amp; ~type[HydraConf]) | (DataClass_ &amp; type &amp; ~type[HydraConf]) | (list[Any] &amp; type &amp; ~type[HydraConf]) | (dict[Any, Any] &amp; type &amp; ~type[HydraConf])`
++ error[invalid-return-type] src/hydra_zen/wrapper/_implementations.py:932:24: Return type does not match returned value: expected `DataClass_`, found `(((...) -&gt; Any) &amp; type &amp; ~type[HydraConf]) | (DataClass_ &amp; type &amp; ~type[HydraConf])`
+- error[invalid-return-type] src/hydra_zen/wrapper/_implementations.py:941:16: Return type does not match returned value: expected `DataClass_`, found `(((...) -&gt; Any) &amp; ~type) | (DataClass_ &amp; ~type) | (list[Any] &amp; ~type) | (dict[Any, Any] &amp; ~type)`
++ error[invalid-return-type] src/hydra_zen/wrapper/_implementations.py:941:16: Return type does not match returned value: expected `DataClass_`, found `(((...) -&gt; Any) &amp; ~type) | (DataClass_ &amp; ~type) | list[Any] | dict[Any, Any]`
+
+vision (https://github.com/pytorch/vision)
+- error[invalid-assignment] torchvision/models/detection/transform.py:110:13: Object of type `tuple[int &amp; ~list[Unknown] &amp; ~tuple[Unknown, ...]]` is not assignable to `int`
++ error[invalid-assignment] torchvision/models/detection/transform.py:110:13: Object of type `tuple[int]` is not assignable to `int`
+- error[invalid-assignment] torchvision/prototype/transforms/_misc.py:56:13: Object of type `dict[Any, (tuple[int, int] &amp; ~dict[Unknown, Unknown]) | (dict[type, tuple[int, int] | None] &amp; ~dict[Unknown, Unknown])]` is not assignable to `tuple[int, int] | dict[type, tuple[int, int] | None]`
++ error[invalid-assignment] torchvision/prototype/transforms/_misc.py:56:13: Object of type `dict[Any, tuple[int, int] | (dict[type, tuple[int, int] | None] &amp; ~dict[Unknown, Unknown])]` is not assignable to `tuple[int, int] | dict[type, tuple[int, int] | None]`
+- error[invalid-argument-type] torchvision/transforms/_functional_pil.py:179:42: Argument to function `expand` is incorrect: Expected `int | tuple[int, ...]`, found `(int &amp; Number &amp; ~list[Unknown]) | (list[int] &amp; Number &amp; ~list[Unknown]) | (tuple[int, ...] &amp; Number &amp; ~list[Unknown]) | (int &amp; tuple[Unknown, ...] &amp; ~list[Unknown]) | (list[int] &amp; tuple[Unknown, ...] &amp; ~list[Unknown]) | (tuple[int, ...] &amp; tuple[Unknown, ...] &amp; ~list[Unknown]) | (int &amp; list[Unknown] &amp; ~list[Unknown]) | (list[int] &amp; list[Unknown] &amp; ~list[Unknown]) | (tuple[int, ...] &amp; list[Unknown] &amp; ~list[Unknown]) | tuple[Unknown, ...] | @Todo(Subscript expressions on intersections)`
++ error[invalid-argument-type] torchvision/transforms/_functional_pil.py:179:42: Argument to function `expand` is incorrect: Expected `int | tuple[int, ...]`, found `(int &amp; Number) | (list[int] &amp; Number &amp; ~list[Unknown]) | (tuple[int, ...] &amp; Number) | (tuple[int, ...] &amp; tuple[Unknown, ...]) | (list[int] &amp; list[Unknown] &amp; ~list[Unknown]) | tuple[Unknown, ...] | @Todo(Subscript expressions on intersections)`
+- error[invalid-argument-type] torchvision/transforms/_functional_pil.py:183:37: Argument to function `expand` is incorrect: Expected `int | tuple[int, ...]`, found `(int &amp; Number &amp; ~list[Unknown]) | (list[int] &amp; Number &amp; ~list[Unknown]) | (tuple[int, ...] &amp; Number &amp; ~list[Unknown]) | (int &amp; tuple[Unknown, ...] &amp; ~list[Unknown]) | (list[int] &amp; tuple[Unknown, ...] &amp; ~list[Unknown]) | (tuple[int, ...] &amp; tuple[Unknown, ...] &amp; ~list[Unknown]) | (int &amp; list[Unknown] &amp; ~list[Unknown]) | (list[int] &amp; list[Unknown] &amp; ~list[Unknown]) | (tuple[int, ...] &amp; list[Unknown] &amp; ~list[Unknown]) | tuple[Unknown, ...] | @Todo(Subscript expressions on intersections)`
++ error[invalid-argument-type] torchvision/transforms/_functional_pil.py:183:37: Argument to function `expand` is incorrect: Expected `int | tuple[int, ...]`, found `(int &amp; Number) | (list[int] &amp; Number &amp; ~list[Unknown]) | (tuple[int, ...] &amp; Number) | (tuple[int, ...] &amp; tuple[Unknown, ...]) | (list[int] &amp; list[Unknown] &amp; ~list[Unknown]) | tuple[Unknown, ...] | @Todo(Subscript expressions on intersections)`
+- error[invalid-argument-type] torchvision/transforms/functional.py:1226:45: Argument to function `_get_inverse_affine_matrix` is incorrect: Expected `list[int | float]`, found `(list[int] &amp; list[Unknown]) | (list[int] &amp; tuple[Unknown, ...]) | list[Unknown]`
+- error[invalid-argument-type] torchvision/transforms/functional.py:1226:60: Argument to function `_get_inverse_affine_matrix` is incorrect: Expected `list[int | float]`, found `(list[int] &amp; list[Unknown] &amp; ~tuple[Unknown, ...]) | (list[int] &amp; tuple[Unknown, ...] &amp; ~tuple[Unknown, ...]) | list[Unknown]`
+- Found 1512 diagnostics
++ Found 1510 diagnostics
+
+schemathesis (https://github.com/schemathesis/schemathesis)
+- error[invalid-argument-type] src/schemathesis/cli/commands/run/handlers/output.py:1219:32: Argument to function `_print_up_to_three` is incorrect: Expected `list[str] | set[str]`, found `(set[str] &amp; ~dict[Unknown, Unknown]) | (dict[Unknown, Unknown] &amp; ~dict[Unknown, Unknown])`
++ error[invalid-argument-type] src/schemathesis/cli/commands/run/handlers/output.py:1219:32: Argument to function `_print_up_to_three` is incorrect: Expected `list[str] | set[str]`, found `set[str] | (dict[Unknown, Unknown] &amp; ~dict[Unknown, Unknown])`
+
+boostedblob (https://github.com/hauntsaninja/boostedblob)
+- error[invalid-argument-type] boostedblob/request.py:235:28: Argument to function `dict_to_xml` is incorrect: Expected `Mapping[str, Any]`, found `(dict[str, Any] &amp; ~bytes &amp; ~bytearray) | memoryview[Unknown]`
++ error[invalid-argument-type] boostedblob/request.py:235:28: Argument to function `dict_to_xml` is incorrect: Expected `Mapping[str, Any]`, found `dict[str, Any] | (memoryview[Unknown] &amp; ~memoryview[Unknown])`
+
+mkdocs (https://github.com/mkdocs/mkdocs)
+- error[invalid-argument-type] mkdocs/structure/nav.py:223:17: Argument to bound method `__init__` is incorrect: Expected `str`, found `@Todo(map_with_boundness: intersections with negative contributions) | None`
++ error[invalid-argument-type] mkdocs/structure/nav.py:223:17: Argument to bound method `__init__` is incorrect: Expected `str`, found `@Todo(Type::Intersection.call()) | None`
+
+pwndbg (https://github.com/pwndbg/pwndbg)
+- error[invalid-argument-type] pwndbg/chain.py:140:21: Argument to function `get` is incorrect: Expected `int | None`, found `(int &amp; ~list[Unknown]) | (list[int] &amp; ~list[Unknown])`
++ error[invalid-argument-type] pwndbg/chain.py:140:21: Argument to function `get` is incorrect: Expected `int | None`, found `int | (list[int] &amp; ~list[Unknown])`
+
+urllib3 (https://github.com/urllib3/urllib3)
+- warning[unused-ignore-comment] src/urllib3/contrib/pyopenssl.py:490:58: Unused blanket `type: ignore` directive
+- Found 510 diagnostics
++ Found 509 diagnostics
+
+pywin32 (https://github.com/mhammond/pywin32)
+- warning[possibly-unresolved-reference] com/win32com/test/GenTestScripts.py:72:54: Name `name` used when possibly not defined
+- warning[possibly-unresolved-reference] com/win32com/test/GenTestScripts.py:78:54: Name `name` used when possibly not defined
+- Found 2117 diagnostics
++ Found 2115 diagnostics
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
++ error[non-subscriptable] schema_salad/jsonld_context.py:132:34: Cannot subscript object of type `None` with no `__getitem__` method
+- error[invalid-return-type] schema_salad/sourceline.py:214:12: Return type does not match returned value: expected `int | float | str | CommentedMap | CommentedSeq | None`, found `(int &amp; ~CommentedMap &amp; ~CommentedSeq &amp; ~MutableMapping[Unknown, Unknown] &amp; ~MutableSequence[Unknown]) | (float &amp; ~CommentedMap &amp; ~CommentedSeq &amp; ~MutableMapping[Unknown, Unknown] &amp; ~MutableSequence[Unknown]) | (str &amp; ~CommentedMap &amp; ~CommentedSeq &amp; ~MutableMapping[Unknown, Unknown] &amp; ~MutableSequence[Unknown]) | (MutableMapping[str, Any] &amp; ~CommentedMap &amp; ~CommentedSeq &amp; ~MutableMapping[Unknown, Unknown] &amp; ~MutableSequence[Unknown]) | (MutableSequence[Any] &amp; ~CommentedMap &amp; ~CommentedSeq &amp; ~MutableMapping[Unknown, Unknown] &amp; ~MutableSequence[Unknown]) | None`
++ error[invalid-return-type] schema_salad/sourceline.py:214:12: Return type does not match returned value: expected `int | float | str | CommentedMap | CommentedSeq | None`, found `(int &amp; ~MutableMapping[Unknown, Unknown] &amp; ~MutableSequence[Unknown]) | (float &amp; ~MutableMapping[Unknown, Unknown] &amp; ~MutableSequence[Unknown]) | (str &amp; ~MutableMapping[Unknown, Unknown] &amp; ~MutableSequence[Unknown]) | (MutableMapping[str, Any] &amp; ~CommentedMap &amp; ~CommentedSeq &amp; ~MutableMapping[Unknown, Unknown] &amp; ~MutableSequence[Unknown]) | (MutableSequence[Any] &amp; ~CommentedMap &amp; ~CommentedSeq &amp; ~MutableMapping[Unknown, Unknown] &amp; ~MutableSequence[Unknown]) | None`
+- Found 162 diagnostics
++ Found 163 diagnostics
+
+bokeh (https://github.com/bokeh/bokeh)
+- error[invalid-argument-type] src/bokeh/embed/util.py:199:34: Argument to bound method `__init__` is incorrect: Expected `dict[Model, Unknown]`, found `(list[Model] &amp; ~list[Unknown]) | (dict[Model, Unknown] &amp; ~list[Unknown]) | dict[Unknown, Unknown] | @Todo(dict comprehension type)`
++ error[invalid-argument-type] src/bokeh/embed/util.py:199:34: Argument to bound method `__init__` is incorrect: Expected `dict[Model, Unknown]`, found `(list[Model] &amp; ~list[Unknown]) | dict[Model, Unknown] | dict[Unknown, Unknown] | @Todo(dict comprehension type)`
+- error[invalid-argument-type] src/bokeh/util/deprecation.py:70:10: Argument to function `warn` is incorrect: Expected `str`, found `str | (tuple[int, int, int] &amp; ~tuple[Unknown, ...]) | (str &amp; ~tuple[Unknown, ...])`
++ error[invalid-argument-type] src/bokeh/util/deprecation.py:70:10: Argument to function `warn` is incorrect: Expected `str`, found `str | (tuple[int, int, int] &amp; ~tuple[Unknown, ...])`
+
+streamlit (https://github.com/streamlit/streamlit)
+- error[invalid-argument-type] lib/tests/streamlit/external/langchain/capturing_callback_handler.py:96:42: Argument to function `load_records_from_file` is incorrect: Expected `str`, found `(list[CallbackRecord] &amp; ~list[Unknown]) | (str &amp; ~list[Unknown])`
++ error[invalid-argument-type] lib/tests/streamlit/external/langchain/capturing_callback_handler.py:96:42: Argument to function `load_records_from_file` is incorrect: Expected `str`, found `(list[CallbackRecord] &amp; ~list[Unknown]) | str`
+- error[invalid-return-type] scripts/run_bare_execution_tests.py:59:12: Return type does not match returned value: expected `str`, found `(str &amp; ~list[Unknown]) | (list[str] &amp; ~list[Unknown])`
++ error[invalid-return-type] scripts/run_bare_execution_tests.py:59:12: Return type does not match returned value: expected `str`, found `str | (list[str] &amp; ~list[Unknown])`
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
++ warning[redundant-cast] ddtrace/contrib/internal/subprocess/patch.py:250:26: Value is already of type `list[str]`
+- error[invalid-return-type] ddtrace/internal/processor/stats.py:77:12: Return type does not match returned value: expected `tuple[str, str, str, str, int, bool]`, found `tuple[Unknown | str, (Unknown &amp; ~AlwaysFalsy) | (str &amp; ~AlwaysFalsy) | (Any &amp; ~float &amp; ~AlwaysFalsy) | (int &amp; ~float &amp; ~AlwaysFalsy) | Literal[&quot;&quot;], (str &amp; ~AlwaysFalsy) | Literal[&quot;&quot;], (Unknown &amp; ~AlwaysFalsy) | (str &amp; ~AlwaysFalsy) | Literal[&quot;&quot;], int, bool]`
++ error[invalid-return-type] ddtrace/internal/processor/stats.py:77:12: Return type does not match returned value: expected `tuple[str, str, str, str, int, bool]`, found `tuple[Unknown | str, (Unknown &amp; ~AlwaysFalsy) | (str &amp; ~AlwaysFalsy) | (Any &amp; ~float &amp; ~AlwaysFalsy) | (int &amp; ~AlwaysFalsy) | Literal[&quot;&quot;], (str &amp; ~AlwaysFalsy) | Literal[&quot;&quot;], (Unknown &amp; ~AlwaysFalsy) | (str &amp; ~AlwaysFalsy) | Literal[&quot;&quot;], int, bool]`
+- Found 7038 diagnostics
++ Found 7039 diagnostics
+
+zulip (https://github.com/zulip/zulip)
+- error[invalid-return-type] zerver/lib/recipient_parsing.py:10:12: Return type does not match returned value: expected `int`, found `(int &amp; ~list[Unknown]) | (list[int] &amp; ~list[Unknown])`
++ error[invalid-return-type] zerver/lib/recipient_parsing.py:10:12: Return type does not match returned value: expected `int`, found `int | (list[int] &amp; ~list[Unknown])`
+- error[invalid-assignment] zerver/lib/test_classes.py:2685:13: Object of type `dict[(str &amp; ~bytes) | None, list[(str &amp; ~bytes) | None]]` is not assignable to `dict[str, list[str]]`
++ error[invalid-assignment] zerver/lib/test_classes.py:2685:13: Object of type `dict[str | None, list[str | None]]` is not assignable to `dict[str, list[str]]`
+
+scikit-learn (https://github.com/scikit-learn/scikit-learn)
+- error[invalid-assignment] sklearn/externals/array_api_extra/_lib/_funcs.py:510:9: Object of type `tuple[(int &amp; ~tuple[Unknown, ...]) | (tuple[int, ...] &amp; ~tuple[Unknown, ...])]` is not assignable to `int | tuple[int, ...]`
++ error[invalid-assignment] sklearn/externals/array_api_extra/_lib/_funcs.py:510:9: Object of type `tuple[int | (tuple[int, ...] &amp; ~tuple[Unknown, ...])]` is not assignable to `int | tuple[int, ...]`
+- error[invalid-argument-type] sklearn/externals/array_api_extra/_lib/_funcs.py:511:25: Argument to function `len` is incorrect: Expected `Sized`, found `(int &amp; tuple[Unknown, ...]) | (tuple[int, ...] &amp; tuple[Unknown, ...]) | int | tuple[int, ...]`
++ error[invalid-argument-type] sklearn/externals/array_api_extra/_lib/_funcs.py:511:25: Argument to function `len` is incorrect: Expected `Sized`, found `(tuple[int, ...] &amp; tuple[Unknown, ...]) | int | tuple[int, ...]`
+- error[invalid-argument-type] sklearn/externals/array_api_extra/_lib/_funcs.py:512:28: Argument to function `min` is incorrect: Expected `Iterable[Unknown]`, found `(int &amp; tuple[Unknown, ...] &amp; ~tuple[()]) | (tuple[int, ...] &amp; tuple[Unknown, ...] &amp; ~tuple[()]) | (int &amp; ~tuple[()]) | (tuple[int, ...] &amp; ~tuple[()])`
++ error[invalid-argument-type] sklearn/externals/array_api_extra/_lib/_funcs.py:512:28: Argument to function `min` is incorrect: Expected `Iterable[Unknown]`, found `(tuple[int, ...] &amp; tuple[Unknown, ...] &amp; ~tuple[()]) | int | (tuple[int, ...] &amp; ~tuple[()])`
+- error[invalid-argument-type] sklearn/externals/array_api_extra/_lib/_funcs.py:512:49: Argument to function `max` is incorrect: Expected `Iterable[Unknown]`, found `(int &amp; tuple[Unknown, ...] &amp; ~tuple[()]) | (tuple[int, ...] &amp; tuple[Unknown, ...] &amp; ~tuple[()]) | (int &amp; ~tuple[()]) | (tuple[int, ...] &amp; ~tuple[()])`
++ error[invalid-argument-type] sklearn/externals/array_api_extra/_lib/_funcs.py:512:49: Argument to function `max` is incorrect: Expected `Iterable[Unknown]`, found `(tuple[int, ...] &amp; tuple[Unknown, ...] &amp; ~tuple[()]) | int | (tuple[int, ...] &amp; ~tuple[()])`
+- error[not-iterable] sklearn/externals/array_api_extra/_lib/_funcs.py:517:40: Object of type `(int &amp; tuple[Unknown, ...]) | (tuple[int, ...] &amp; tuple[Unknown, ...]) | int | tuple[int, ...]` may not be iterable
++ error[not-iterable] sklearn/externals/array_api_extra/_lib/_funcs.py:517:40: Object of type `(tuple[int, ...] &amp; tuple[Unknown, ...]) | int | tuple[int, ...]` may not be iterable
+
+prefect (https://github.com/PrefectHQ/prefect)
+- error[invalid-return-type] src/prefect/cli/cloud/__init__.py:266:12: Return type does not match returned value: expected `str | T`, found `(str &amp; ~tuple[Unknown, ...]) | (tuple[T, str] &amp; ~tuple[Unknown, ...]) | @Todo(Subscript expressions on intersections)`
++ error[invalid-return-type] src/prefect/cli/cloud/__init__.py:266:12: Return type does not match returned value: expected `str | T`, found `str | (tuple[T, str] &amp; ~tuple[Unknown, ...]) | @Todo(Subscript expressions on intersections)`
+- error[invalid-argument-type] src/prefect/server/orchestration/core_policy.py:778:17: Argument to function `clamped_poisson_interval` is incorrect: Expected `int | float`, found `@Todo(Subscript expressions on intersections) | (int &amp; ~list[Unknown] &amp; ~AlwaysFalsy) | (float &amp; ~list[Unknown] &amp; ~AlwaysFalsy) | (list[int] &amp; ~list[Unknown] &amp; ~AlwaysFalsy) | (list[int | float] &amp; ~list[Unknown] &amp; ~AlwaysFalsy) | Literal[0]`
++ error[invalid-argument-type] src/prefect/server/orchestration/core_policy.py:778:17: Argument to function `clamped_poisson_interval` is incorrect: Expected `int | float`, found `@Todo(Subscript expressions on intersections) | (int &amp; ~AlwaysFalsy) | (float &amp; ~AlwaysFalsy) | (list[int] &amp; ~list[Unknown] &amp; ~AlwaysFalsy) | (list[int | float] &amp; ~list[Unknown] &amp; ~AlwaysFalsy) | Literal[0]`
+- error[invalid-return-type] src/prefect/utilities/templating.py:166:20: Return type does not match returned value: expected `T | type[NotSet]`, found `str &amp; ~int &amp; ~float`
++ error[invalid-return-type] src/prefect/utilities/templating.py:166:20: Return type does not match returned value: expected `T | type[NotSet]`, found `str`
++ error[invalid-assignment] src/prefect/utilities/templating.py:199:25: Object of type `str` is not assignable to `T`
++ error[invalid-assignment] src/prefect/utilities/templating.py:201:21: Object of type `str` is not assignable to `T`
+- error[invalid-return-type] src/prefect/utilities/templating.py:203:20: Return type does not match returned value: expected `T | type[NotSet]`, found `(str &amp; ~int &amp; ~float) | @Todo(map_with_boundness: intersections with negative contributions)`
++ error[invalid-return-type] src/prefect/utilities/templating.py:203:20: Return type does not match returned value: expected `T | type[NotSet]`, found `str | T`
+- error[invalid-return-type] src/prefect/utilities/templating.py:336:20: Return type does not match returned value: expected `T | dict[str, Any]`, found `str &amp; ~dict[Unknown, Unknown] &amp; ~list[Unknown]`
++ error[invalid-return-type] src/prefect/utilities/templating.py:336:20: Return type does not match returned value: expected `T | dict[str, Any]`, found `str`
+- Found 4277 diagnostics
++ Found 4279 diagnostics
+
+scipy (https://github.com/scipy/scipy)
+- error[invalid-assignment] scipy/_lib/array_api_extra/src/array_api_extra/_lib/_funcs.py:566:9: Object of type `tuple[(int &amp; ~tuple[Unknown, ...]) | (tuple[int, ...] &amp; ~tuple[Unknown, ...])]` is not assignable to `int | tuple[int, ...]`
++ error[invalid-assignment] scipy/_lib/array_api_extra/src/array_api_extra/_lib/_funcs.py:566:9: Object of type `tuple[int | (tuple[int, ...] &amp; ~tuple[Unknown, ...])]` is not assignable to `int | tuple[int, ...]`
+- error[invalid-argument-type] scipy/_lib/array_api_extra/src/array_api_extra/_lib/_funcs.py:567:25: Argument to function `len` is incorrect: Expected `Sized`, found `(int &amp; tuple[Unknown, ...]) | (tuple[int, ...] &amp; tuple[Unknown, ...]) | int | tuple[int, ...]`
++ error[invalid-argument-type] scipy/_lib/array_api_extra/src/array_api_extra/_lib/_funcs.py:567:25: Argument to function `len` is incorrect: Expected `Sized`, found `(tuple[int, ...] &amp; tuple[Unknown, ...]) | int | tuple[int, ...]`
+- error[invalid-argument-type] scipy/_lib/array_api_extra/src/array_api_extra/_lib/_funcs.py:568:28: Argument to function `min` is incorrect: Expected `Iterable[Unknown]`, found `(int &amp; tuple[Unknown, ...] &amp; ~tuple[()]) | (tuple[int, ...] &amp; tuple[Unknown, ...] &amp; ~tuple[()]) | (int &amp; ~tuple[()]) | (tuple[int, ...] &amp; ~tuple[()])`
++ error[invalid-argument-type] scipy/_lib/array_api_extra/src/array_api_extra/_lib/_funcs.py:568:28: Argument to function `min` is incorrect: Expected `Iterable[Unknown]`, found `(tuple[int, ...] &amp; tuple[Unknown, ...] &amp; ~tuple[()]) | int | (tuple[int, ...] &amp; ~tuple[()])`
+- error[invalid-argument-type] scipy/_lib/array_api_extra/src/array_api_extra/_lib/_funcs.py:568:49: Argument to function `max` is incorrect: Expected `Iterable[Unknown]`, found `(int &amp; tuple[Unknown, ...] &amp; ~tuple[()]) | (tuple[int, ...] &amp; tuple[Unknown, ...] &amp; ~tuple[()]) | (int &amp; ~tuple[()]) | (tuple[int, ...] &amp; ~tuple[()])`
++ error[invalid-argument-type] scipy/_lib/array_api_extra/src/array_api_extra/_lib/_funcs.py:568:49: Argument to function `max` is incorrect: Expected `Iterable[Unknown]`, found `(tuple[int, ...] &amp; tuple[Unknown, ...] &amp; ~tuple[()]) | int | (tuple[int, ...] &amp; ~tuple[()])`
+- error[not-iterable] scipy/_lib/array_api_extra/src/array_api_extra/_lib/_funcs.py:573:40: Object of type `(int &amp; tuple[Unknown, ...]) | (tuple[int, ...] &amp; tuple[Unknown, ...]) | int | tuple[int, ...]` may not be iterable
++ error[not-iterable] scipy/_lib/array_api_extra/src/array_api_extra/_lib/_funcs.py:573:40: Object of type `(tuple[int, ...] &amp; tuple[Unknown, ...]) | int | tuple[int, ...]` may not be iterable
+
+sympy (https://github.com/sympy/sympy)
+- error[incompatible-slots] sympy/codegen/ast.py:872:14: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/codegen/ast.py:872:20: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/codegen/ast.py:1332:19: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/codegen/ast.py:1332:36: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/codegen/ast.py:1870:20: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/codegen/ast.py:1870:27: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/codegen/fnodes.py:673:12: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/codegen/fnodes.py:673:19: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/codegen/fnodes.py:680:16: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/codegen/fnodes.py:680:23: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/codegen/matrix_nodes.py:27:19: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/codegen/matrix_nodes.py:27:26: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/core/add.py:93:11: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/core/add.py:93:17: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/core/expr.py:47:12: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/core/expr.py:47:19: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/core/expr.py:4000:18: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/core/expr.py:4000:24: Class base has incompatible `__slots__`
++ warning[possibly-unbound-attribute] sympy/core/exprtools.py:345:24: Attribute `p` on type `(Unknown &amp; Number) | Number | @Todo(Type::Intersection.call())` is possibly unbound
++ warning[possibly-unbound-attribute] sympy/core/exprtools.py:346:41: Attribute `p` on type `(Unknown &amp; Number) | Number | @Todo(Type::Intersection.call())` is possibly unbound
++ warning[possibly-unbound-attribute] sympy/core/exprtools.py:347:37: Attribute `q` on type `(Unknown &amp; Number) | Number | @Todo(Type::Intersection.call())` is possibly unbound
+- warning[possibly-unbound-attribute] sympy/core/exprtools.py:370:23: Attribute `copy` on type `(Unknown &amp; ~Factors &amp; ~Literal[0] &amp; ~Expr) | None | (Basic &amp; ~Factors &amp; ~Expr)` is possibly unbound
++ warning[possibly-unbound-attribute] sympy/core/exprtools.py:370:23: Attribute `copy` on type `(Unknown &amp; ~Factors &amp; ~Literal[0] &amp; ~Expr) | None | (Basic &amp; ~Expr)` is possibly unbound
+- error[incompatible-slots] sympy/core/function.py:382:16: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/core/function.py:382:29: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/core/mul.py:91:11: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/core/mul.py:91:17: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/core/relational.py:73:18: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/core/relational.py:73:27: Class base has incompatible `__slots__`
++ warning[unused-ignore-comment] sympy/core/symbol.py:227:36: Unused blanket `type: ignore` directive
+- error[incompatible-slots] sympy/core/tests/test_power.py:624:18: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/core/tests/test_power.py:624:27: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/functions/elementary/miscellaneous.py:379:18: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/functions/elementary/miscellaneous.py:379:24: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/functions/elementary/miscellaneous.py:683:11: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/functions/elementary/miscellaneous.py:683:23: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/functions/elementary/miscellaneous.py:801:11: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/functions/elementary/miscellaneous.py:801:23: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/geometry/entity.py:71:22: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/geometry/entity.py:71:29: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/geometry/entity.py:540:19: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/geometry/entity.py:540:35: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/logic/boolalg.py:573:11: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/logic/boolalg.py:573:22: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/logic/boolalg.py:746:10: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/logic/boolalg.py:746:21: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/matrices/expressions/matadd.py:19:14: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/matrices/expressions/matadd.py:19:26: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/matrices/expressions/matmul.py:24:14: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/matrices/expressions/matmul.py:24:26: Class base has incompatible `__slots__`
+- error[unsupported-operator] sympy/matrices/expressions/slice.py:10:13: Operator `&lt;` is not supported for types `tuple[Unknown, Unknown, Unknown]` and `Literal[0]`, in comparing `(Unknown &amp; ~slice[Any, Any, Any] &amp; ~tuple[Unknown, ...] &amp; ~list[Unknown] &amp; ~Tuple) | (tuple[Unknown, Unknown, Unknown] &amp; ~tuple[Unknown, ...] &amp; ~list[Unknown] &amp; ~Tuple)` with `Literal[0]`
++ error[unsupported-operator] sympy/matrices/expressions/slice.py:10:13: Operator `&lt;` is not supported for types `tuple[Unknown, Unknown, Unknown]` and `Literal[0]`, in comparing `(Unknown &amp; ~slice[Any, Any, Any] &amp; ~tuple[Unknown, ...] &amp; ~list[Unknown] &amp; ~Tuple) | (tuple[Unknown, Unknown, Unknown] &amp; ~tuple[Unknown, ...])` with `Literal[0]`
+- error[incompatible-slots] sympy/physics/control/lti.py:366:27: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/physics/control/lti.py:366:34: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/printing/tests/test_fortran.py:656:23: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/printing/tests/test_fortran.py:656:32: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/sets/sets.py:48:11: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/sets/sets.py:48:18: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/sets/sets.py:1319:13: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/sets/sets.py:1319:18: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/sets/sets.py:1496:20: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/sets/sets.py:1496:25: Class base has incompatible `__slots__`
++ warning[unused-ignore-comment] sympy/stats/rv.py:362:55: Unused blanket `type: ignore` directive
+- error[incompatible-slots] sympy/stats/symbolic_multivariate_probability.py:17:25: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/stats/symbolic_multivariate_probability.py:17:38: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/stats/symbolic_multivariate_probability.py:116:22: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/stats/symbolic_multivariate_probability.py:116:32: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/stats/symbolic_multivariate_probability.py:204:29: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/stats/symbolic_multivariate_probability.py:204:41: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/tensor/tensor.py:2417:15: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/tensor/tensor.py:2417:25: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/tensor/tensor.py:3394:15: Class base has incompatible `__slots__`
+- error[incompatible-slots] sympy/tensor/tensor.py:3394:25: Class base has incompatible `__slots__`
+- Found 17974 diagnostics
++ Found 17915 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:3364 on 2025-06-23 13:13</div>
+            <div class="timeline-body"><p>This branch looks a little different to how it does on <code>main</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/b64307f65ef9fc5029ecd8b22f51adae18eaaed9/crates/ty_python_semantic/src/types/slots.rs#L37-L43</p>
+<p>The reason for the change is to fix a regression from https://github.com/astral-sh/ruff/pull/18600 where we started incorrectly reporting that classes like this would raise <code>TypeError</code> because the tuples are &quot;not empty&quot;:</p>
+<pre><code class="language-py">class Foo:
+    __slots__: tuple[str, ...] = ()
+
+class Bar:
+    __slots__: tuple[str, ...] = ()
+
+class Baz(Foo, Bar): ...
+</code></pre>
+<p>See https://github.com/astral-sh/ruff/pull/18600#issuecomment-2996375418</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:369 on 2025-06-23 13:15</div>
+            <div class="timeline-body"><p>I renamed the diagnostic from <code>INCOMPATIBLE_SLOTS</code> to <code>INSTANCE_LAYOUT_CONFLICT</code> because we now detect all of these with the same rule (it doesn't make sense to split them up into different rules IMO):</p>
+<pre><code class="language-py">class A:
+    __slots__ = &quot;a&quot;,
+
+class B:
+    __slots__ = &quot;a&quot;,
+
+class C(A, B): ...  # error: [instance-layout-conflict]
+class D(A, int): ...  # error: [instance-layout-conflict]
+class E(str, int): ...  # error: [instance-layout-conflict]
+</code></pre>
+<p>The first is due to &quot;incompatible slots&quot;; the second has something to do with <code>__slots__</code> but it's not really accurate to describe the issue as &quot;incompatible slots&quot;; the third has nothing to do with slots -- <code>str</code> and <code>int</code> don't define <code>__slots__</code>, but are considered solid bases anyway for other reasons.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-23 13:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-23 13:40</div>
+            <div class="timeline-body"><p>Primer analysis:</p>
+<ul>
+<li>Lots of <code>incompatible-slots</code> false positives going away!</li>
+<li>In general we see fewer long/complicated intersection types, and fewer <code>@Todo</code> types, which probably makes for a better user experience overall.</li>
+<li>A lot of new diagnostics on <code>kornia</code>. These mostly seem to be because we now understand <code>int</code> and <code>float</code> as being disjoint types, meaning that <code>(JustInt | JustFloat) &amp; ~JustFloat</code> (for example) simplifies to <code>JustInt</code> rather than <code>JustInt &amp; ~JustFloat</code>. Attribute access on intersections with negative contributions <a href="https://play.ty.dev/8187dac0-ee85-4f6e-a0ef-14c6863e6905">gives you a <code>@Todo</code> type currently</a>, so the additional simplifications we're now able to do gives you a stricter type-checking experience. An example of where this kind of narrowing happens in <code>kornia</code> is <a href="https://github.com/kornia/kornia/blob/a63f4f0f44da0b89b276cbc81ea467ec181d5ca2/kornia/enhance/adjust.py#L37-L49">here</a>. The type annotation <code>Union[Tensor, float]</code> is transformed by us to the type <code>JustFloat | JustInt | Unknown</code> due to a combination of the <code>float</code>/<code>int</code> special case and the fact that we apparently can't resolve the <code>Tensor</code> type. Then the first <code>isinstance()</code> call causes the type to be intersected with <code>~JustFloat</code>, so the type of <code>Factor</code> in the <code>elif isinstance(factor, Tensor):</code> branch is <code>JustInt | (Unknown &amp; ~JustFloat)</code></li>
+</ul>
+<p>In general, I think this is all positive. Though the <code>kornia</code> issue makes me wonder if we should intersect with <code>Unknown</code> if we see an <code>isinstance()</code> call where the second argument is of type <code>Unknown</code>, e.g.:</p>
+<pre><code class="language-py">from c_extension import SomethingUnresolved
+
+class Foo: ...
+
+def f(x: Foo | SomethingUnresolved):
+    if isinstance(x, SomethingUnresolved):
+        reveal_type(x)  # currently `Foo | Unknown`; `(Foo &amp; Unknown) | Unknown` would probably respect the gradual guarantee better?
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-06-23 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-06-23 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-06-23 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-06-23 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-06-23 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-23 13:43</div>
+            <div class="timeline-body"><p>Some screenshots of what the <code>instance-layout-conflict</code> diagnostics look like on this branch:</p>
+<p><img src="https://github.com/user-attachments/assets/f8201079-0ad7-4694-8938-483fa346020e" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-23 16:43</div>
+            <div class="timeline-body"><blockquote>
+<p>we should intersect with <code>Unknown</code> if we see an <code>isinstance()</code> call where the second argument is of type <code>Unknown</code></p>
+</blockquote>
+<p>Yes, I think we should -- it's clearly a violation of the gradual guarantee not to do so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/narrow/conditionals/elif_else.md</code>:54 on 2025-06-23 16:49</div>
+            <div class="timeline-body"><p>I wonder whether it doesn't serve the purpose of this test better to use custom types <code>A</code> and <code>B</code> and still be able to observe that the effect of narrowing here is the type <code>A &amp; ~B</code>, rather than hiding that fact with the use of types that we now understand as disjoint</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/narrow/type_guards.md</code>:199 on 2025-06-23 16:50</div>
+            <div class="timeline-body"><p>Similar here -- should we switch to custom types <code>A</code> and <code>B</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/slots.md</code>:155 on 2025-06-23 16:52</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">Certain classes implemented in C extensions are also considered &quot;solid bases&quot; in the same way as
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-23 17:22</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>we should intersect with <code>Unknown</code> if we see an <code>isinstance()</code> call where the second argument is of type <code>Unknown</code></p>
+</blockquote>
+<p>Yes, I think we should -- it's clearly a violation of the gradual guarantee not to do so.</p>
+</blockquote>
+<p>See #18900</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-06-23 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @AlexWaygood on 2025-06-23 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-23 17:32</div>
+            <div class="timeline-body"><p>I never heard the term solid base before and searching for it on google also doesn't give any good results. Is there another term we could use or can we explain the term or link to some reference documentation (or hint that it is explained in the rule's documentation)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:368 on 2025-06-23 19:56</div>
+            <div class="timeline-body"><p>Proposed edit to avoid the term &quot;solid base&quot; in user-facing documentation:</p>
+<pre><code class="language-suggestion">    /// Additionally, this check is not exhaustive: many C extensions (including several in
+    /// the standard library) define classes whose instances have an extended memory
+    /// layout, and thus can't be multiply-inherited with other such classes.
+    /// Since we don't currently represent this fact in stub files, having a full knowledge
+    /// of these classes would be impossible; ty only hard-codes a number of known cases.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:369 on 2025-06-23 19:58</div>
+            <div class="timeline-body"><p>FWIW, ultimately it's all the same issue -- classes whose instances have an extended memory layout beyond just the core object metadata and a dictionary of attributes. <code>__slots__</code> is just a Python-facing way to opt into the same internal &quot;slots&quot; system that C-extension classes can opt into directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/slots.md</code>:158 on 2025-06-23 20:00</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">Certain classes implemented in C extensions also have an extended instance memory layout, in the
+same way as classes that define non-empty `__slots__`. (CPython internally calls all such classes
+with a unique instance memory layout &quot;solid bases&quot;, and we also borrow this term.) There is currently
+no generalized way for ty to detect such a C-extension class, as the information isn't present in type
+stubs, but ty special-cases certain builtin classes:
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/slots.md_-_`__slots__`_-_Built-ins_with_impli…_(8170194eb9ad3094).snap</code>:57 on 2025-06-23 20:03</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">info: Two classes with incompatible instance memory layouts cannot coexist in a class's MRO
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/slots.md_-_`__slots__`_-_Built-ins_with_impli…_(8170194eb9ad3094).snap</code>:62 on 2025-06-23 20:03</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">  |     --- `int` is a C extension type with a distinct instance memory layout
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/slots.md_-_`__slots__`_-_Built-ins_with_impli…_(8170194eb9ad3094).snap</code>:92 on 2025-06-23 20:04</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">   |     - `B` has a distinct instance memory layout because it defines non-empty `__slots__`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2204 on 2025-06-23 20:07</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// CPython internally considers a class a &quot;solid base&quot; if it has an atypical instance memory layout,
+/// with additional memory &quot;slots&quot; for each instance, besides the default object metadata and an
+/// attribute dictionary. A &quot;solid base&quot; can be a class defined in a C extension which defines C-level
+/// instance slots, or a Python class that defines non-empty `__slots__`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:472 on 2025-06-23 20:17</div>
+            <div class="timeline-body"><p>All tests pass if I replace this line with <code>solid_base_1 != solid_base_2</code>.</p>
+<p>I think that means we are missing a test for a case like this:</p>
+<pre><code class="language-py">&gt;&gt;&gt; class A:
+...     __slots__ = (&quot;a&quot;,)
+...
+&gt;&gt;&gt; class B(A):
+...     __slots__ = (&quot;b&quot;,)
+...
+&gt;&gt;&gt; class C(B):
+...     pass
+...
+&gt;&gt;&gt; class D(A):
+...     pass
+...
+&gt;&gt;&gt; class F(C, D):
+...     pass
+...
+&gt;&gt;&gt; F.__mro__
+(&lt;class '__main__.F'&gt;, &lt;class '__main__.C'&gt;, &lt;class '__main__.B'&gt;, &lt;class '__main__.D'&gt;, &lt;class '__main__.A'&gt;, &lt;class 'object'&gt;)
+&gt;&gt;&gt; C.__mro__
+(&lt;class '__main__.C'&gt;, &lt;class '__main__.B'&gt;, &lt;class '__main__.A'&gt;, &lt;class 'object'&gt;)
+&gt;&gt;&gt; D.__mro__
+(&lt;class '__main__.D'&gt;, &lt;class '__main__.A'&gt;, &lt;class 'object'&gt;)
+</code></pre>
+<p>In this case <code>C</code> and <code>D</code> have different solid bases (<code>A</code> vs <code>B</code>), but they can still be multiply inherited because <code>B</code> inherits <code>A</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:375 on 2025-06-23 20:22</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Classes that have &quot;dynamic&quot; definitions of `__slots__` (definitions do not consist
+    /// of string literals, or tuples of string literals) are not currently recognized by ty as
+    /// having a distinct instance layout.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:1908 on 2025-06-23 20:24</div>
+            <div class="timeline-body"><p>May as well match the diagnostic code here, considering its also shorter:</p>
+<pre><code class="language-suggestion">pub(crate) fn report_instance_layout_conflict(
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:1925 on 2025-06-23 20:25</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        builder.into_diagnostic(&quot;Class will raise `TypeError` at runtime due to incompatible bases&quot;);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-23 20:33</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-23 20:35</div>
+            <div class="timeline-body"><blockquote>
+<p>I never heard the term solid base before and searching for it on google also doesn't give any good results. Is there another term we could use or can we explain the term or link to some reference documentation (or hint that it is explained in the rule's documentation)</p>
+</blockquote>
+<p>AFAIK the term is only used internally in the CPython code base, not in user-facing docs or error messages. I think we should follow a similar pattern. The term (and concept) are useful in implementing the semantics, and the alternatives are more verbose, so we should go ahead and use the term internally (with a clear definition in a doc comment, which I elaborate on in a review comment above), but avoid the term in user-facing documentation or diagnostics (which I also addressed in review comments above.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-23 20:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:369 on 2025-06-23 20:54</div>
+            <div class="timeline-body"><p>Right, but trying to distinguish between &quot;<code>__slots__</code>&quot; and &quot;slots&quot; is <em>asking</em> for users to be confused 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-23 21:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:368 on 2025-06-23 21:00</div>
+            <div class="timeline-body"><p>This is better than what I have, thanks! I'll apply a variant of it.</p>
+<p>I'm not sure that talking about an &quot;extended memory layout&quot; is <em>significantly</em> more user-friendly than talking about a &quot;solid base&quot;, though. I think few Python users think deeply about how their instances are laid out in memory; sort of the point of the language is that you shouldn't have to care most of the time. <em>I</em> certainly don't think about this kind of thing most of the time when I'm writing Python.</p>
+<p>The fundamental problem is that this is really a place where CPython leaks implementation details to end users and doesn't really document it properly anywhere. (If only we had a CPython core developer or two around here who could engage upstream and push for improvements there, right?! 😆)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-23 21:10</div>
+            <div class="timeline-body"><blockquote>
+<p>I never heard the term solid base before and searching for it on google also doesn't give any good results. Is there another term we could use or can we explain the term or link to some reference documentation (or hint that it is explained in the rule's documentation)</p>
+</blockquote>
+<p>Yeah, this stuff is really badly documented unfortunately. It's also an important part of Python's semantics (builtin types are common!), though, so I do think it's important that we emulate the semantics... I'll try to improve the docs along the lines of @carljm's suggestions.</p>
+<p>I think the best explanation I've found of the semantics might be this stack overflow answer: https://stackoverflow.com/a/48136198/13990016</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-23 21:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:368 on 2025-06-23 21:53</div>
+            <div class="timeline-body"><blockquote>
+<p>The fundamental problem is that this is really a place where CPython leaks implementation details to end users and doesn't really document it properly anywhere.</p>
+</blockquote>
+<p>I agree with this.</p>
+<blockquote>
+<p>I'm not sure that talking about an &quot;extended memory layout&quot; is <em>significantly</em> more user-friendly than talking about a &quot;solid base&quot;, though.</p>
+</blockquote>
+<p>But I don't agree with this. I think talking about memory layouts <em>is</em> significantly better.</p>
+<p>For those users who don't understand or care to think about the underlying implementation details, I'll grant that both terms are equally gobbledygook that they'll just have to take our word for. I'm not sure we can do much better than that, for this category of user, given the &quot;fundamental problem&quot; you mentioned.</p>
+<p>But there are a significant number of Python users who <em>do</em> have systems programming experience (Micha, for example :) ), or are interested in learning about underlying Python implementation details, and making our diagnostics useful to those users matters as well. And for those users (assuming they haven't worked in the CPython codebase specifically), talking about &quot;solid bases&quot; will still be gobbledygook that doesn't even give useful Google search results, whereas talking about incompatible memory layouts will make sense and give them a good hook for googling and further exploration of the problem.</p>
+<p>Also, the diagnostic itself is called <code>[instance-layout-conflict]</code>, so we may as well stick to a single way of describing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-23 22:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:368 on 2025-06-23 22:09</div>
+            <div class="timeline-body"><p>Right, I agree that your wording is better here, for all the reasons you mentioned! I just wish we didn't have to talk about &quot;solid bases&quot; <em>or</em> &quot;extended memory layouts&quot; since, if this type checker is successful, my experience from triaging mypy issues suggests we'll have lots of users who are new to programming in general :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-06-24 11:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-06-24 11:49</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fdisjointness?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
+<h3>Merging #18864 will <strong>degrade performances by 4.79%</strong></h3>
+<p><sub>Comparing <code>alex/disjointness</code> (6aad76f) with <code>main</code> (e44c489)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1</code> regressions<br />
+<code>✅ 7</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fdisjointness?runnerMode=WallTime">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>medium[pandas]</code> | 32.3 s | 33.9 s | -4.79% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-24 12:08</div>
+            <div class="timeline-body"><p>Ecosystem analysis at https://github.com/astral-sh/ruff/actions/runs/15849503790/artifacts/3391568817</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-06-24 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-24 15:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:472 on 2025-06-24 15:41</div>
+            <div class="timeline-body"><p>We actually already had a test like that. The reason why it passed even with your edit is that there was an (unnecessary) check immediately above this that returned <code>true</code> if <code>self.is_subclass_of(other)</code> or <code>other.is_subclass_of(self)</code> returned <code>true</code>.</p>
+<p>I added your test anyway in https://github.com/astral-sh/ruff/pull/18864/commits/2a8e9854c6749547bed7d4e6b7d4162a7b3e3010 (as it's more complex than mine, and more test coverage is good!) and removed the unnecessary check immediately above this. That also seems to have had the happy side effect of producing a decent speedup when typechecking pydantic...!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/instance_layout_conf…_-_Tests_for_ty's_`inst…_-_Built-ins_with_impli…_(f5857d64ce69ca1d).snap</code>:59 on 2025-06-24 19:56</div>
+            <div class="timeline-body"><p>is this better than the shorter &quot;... if their instances have incompatible memory layouts&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-06-24 20:00</div>
+            <div class="timeline-body"><p>Nice!</p>
+<p>There's still an open comment about a rephrasing away from &quot;solid base&quot; in a code comment, but I don't think this is necessary, it's OK if we refer to solid bases in code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-24 20:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/instance_layout_conf…_-_Tests_for_ty's_`inst…_-_Built-ins_with_impli…_(f5857d64ce69ca1d).snap</code>:59 on 2025-06-24 20:05</div>
+            <div class="timeline-body"><p>that's better, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-06-24 20:11</div>
+            <div class="timeline-body"><p>The new diagnostic docs look great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-24 20:15</div>
+            <div class="timeline-body"><blockquote>
+<p>The new diagnostic docs look great!</p>
+</blockquote>
+<p>Great to hear -- thanks for the excellent review!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-24 20:25</div>
+            <div class="timeline-body"><p>For posterity, this is what the final version of these diagnostics looks like:</p>
+<p><img src="https://github.com/user-attachments/assets/8db65252-6e1d-4727-b500-2824d58c6da4" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-06-24 20:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-06-24 20:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-24 20:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:36 UTC
+    </footer>
+</body>
+</html>

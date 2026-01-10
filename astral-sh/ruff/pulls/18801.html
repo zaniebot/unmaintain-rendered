@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid generating diagnostics with per-file ignores - astral-sh/ruff #18801</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid generating diagnostics with per-file ignores</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18801">#18801</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-06-19 19:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-19 19:30</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR avoids one of the three calls to <code>NoqaCode::rule</code> from https://github.com/astral-sh/ruff/pull/18391 by applying per-file ignores in the <code>LintContext</code>. To help with this, it also replaces all direct uses of <code>LinterSettings.rules.enabled</code> with a <code>LintContext::enabled</code> (or <code>Checker::enabled</code>, which defers to its context) method. There are still some direct accesses to <code>settings.rules</code>, but as far as I can tell these are not in a part of the code where we can really access a <code>LintContext</code>. I believe all of the code reachable from <code>check_path</code>, where the replaced per-file ignore code was, should be converted to the new methods.</p>
+<h2>Test Plan</h2>
+<p>Existing tests, with a single snapshot updated for RUF100, which I think actually shows a more accurate diagnostic message now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-06-19 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-06-19 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-19 19:39</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+8 -1 violations, +0 -0 fixes in 2 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+7 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/d8b58471f9812127ea1955c8163af3747f1cbe25/airflow-core/tests/unit/models/test_renderedtifields.py#L205'>airflow-core/tests/unit/models/test_renderedtifields.py:205:9:</a> PLC0415 `import` should be at the top-level of a file
++ <a href='https://github.com/apache/airflow/blob/d8b58471f9812127ea1955c8163af3747f1cbe25/airflow-core/tests/unit/serialization/serializers/test_serializers.py#L249'>airflow-core/tests/unit/serialization/serializers/test_serializers.py:249:9:</a> PLC0415 `import` should be at the top-level of a file
++ <a href='https://github.com/apache/airflow/blob/d8b58471f9812127ea1955c8163af3747f1cbe25/providers/google/tests/unit/google/cloud/hooks/test_bigquery.py#L157'>providers/google/tests/unit/google/cloud/hooks/test_bigquery.py:157:9:</a> PLC0415 `import` should be at the top-level of a file
++ <a href='https://github.com/apache/airflow/blob/d8b58471f9812127ea1955c8163af3747f1cbe25/providers/google/tests/unit/google/cloud/hooks/test_bigquery.py#L158'>providers/google/tests/unit/google/cloud/hooks/test_bigquery.py:158:9:</a> PLC0415 `import` should be at the top-level of a file
++ <a href='https://github.com/apache/airflow/blob/d8b58471f9812127ea1955c8163af3747f1cbe25/providers/google/tests/unit/google/cloud/hooks/test_bigquery_system.py#L40'>providers/google/tests/unit/google/cloud/hooks/test_bigquery_system.py:40:13:</a> PLC0415 `import` should be at the top-level of a file
++ <a href='https://github.com/apache/airflow/blob/d8b58471f9812127ea1955c8163af3747f1cbe25/providers/google/tests/unit/google/cloud/hooks/test_bigquery_system.py#L44'>providers/google/tests/unit/google/cloud/hooks/test_bigquery_system.py:44:13:</a> PLC0415 `import` should be at the top-level of a file
++ <a href='https://github.com/apache/airflow/blob/d8b58471f9812127ea1955c8163af3747f1cbe25/providers/weaviate/tests/unit/weaviate/hooks/test_weaviate.py#L393'>providers/weaviate/tests/unit/weaviate/hooks/test_weaviate.py:393:9:</a> PLC0415 `import` should be at the top-level of a file
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+1 -1 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/fc1b6a73820b98768568a65555d5a88748e32f1b/ibis/backends/tests/signature/typecheck.py#L8'>ibis/backends/tests/signature/typecheck.py:8:1:</a> RUF100 Unused `noqa` directive (non-enabled: `D205`, `D415`, `D400`)
+- <a href='https://github.com/ibis-project/ibis/blob/fc1b6a73820b98768568a65555d5a88748e32f1b/ibis/backends/tests/signature/typecheck.py#L8'>ibis/backends/tests/signature/typecheck.py:8:1:</a> RUF100 Unused `noqa` directive (unused: `D205`, `D415`, `D400`)
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLC0415 | 7 | 7 | 0 | 0 | 0 |
+| RUF100 | 2 | 1 | 1 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+8 -1 violations, +0 -0 fixes in 2 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+7 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/d8b58471f9812127ea1955c8163af3747f1cbe25/airflow-core/tests/unit/models/test_renderedtifields.py#L205'>airflow-core/tests/unit/models/test_renderedtifields.py:205:9:</a> PLC0415 `import` should be at the top-level of a file
++ <a href='https://github.com/apache/airflow/blob/d8b58471f9812127ea1955c8163af3747f1cbe25/airflow-core/tests/unit/serialization/serializers/test_serializers.py#L249'>airflow-core/tests/unit/serialization/serializers/test_serializers.py:249:9:</a> PLC0415 `import` should be at the top-level of a file
++ <a href='https://github.com/apache/airflow/blob/d8b58471f9812127ea1955c8163af3747f1cbe25/providers/google/tests/unit/google/cloud/hooks/test_bigquery.py#L157'>providers/google/tests/unit/google/cloud/hooks/test_bigquery.py:157:9:</a> PLC0415 `import` should be at the top-level of a file
++ <a href='https://github.com/apache/airflow/blob/d8b58471f9812127ea1955c8163af3747f1cbe25/providers/google/tests/unit/google/cloud/hooks/test_bigquery.py#L158'>providers/google/tests/unit/google/cloud/hooks/test_bigquery.py:158:9:</a> PLC0415 `import` should be at the top-level of a file
++ <a href='https://github.com/apache/airflow/blob/d8b58471f9812127ea1955c8163af3747f1cbe25/providers/google/tests/unit/google/cloud/hooks/test_bigquery_system.py#L40'>providers/google/tests/unit/google/cloud/hooks/test_bigquery_system.py:40:13:</a> PLC0415 `import` should be at the top-level of a file
++ <a href='https://github.com/apache/airflow/blob/d8b58471f9812127ea1955c8163af3747f1cbe25/providers/google/tests/unit/google/cloud/hooks/test_bigquery_system.py#L44'>providers/google/tests/unit/google/cloud/hooks/test_bigquery_system.py:44:13:</a> PLC0415 `import` should be at the top-level of a file
++ <a href='https://github.com/apache/airflow/blob/d8b58471f9812127ea1955c8163af3747f1cbe25/providers/weaviate/tests/unit/weaviate/hooks/test_weaviate.py#L393'>providers/weaviate/tests/unit/weaviate/hooks/test_weaviate.py:393:9:</a> PLC0415 `import` should be at the top-level of a file
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+1 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/fc1b6a73820b98768568a65555d5a88748e32f1b/ibis/backends/tests/signature/typecheck.py#L8'>ibis/backends/tests/signature/typecheck.py:8:1:</a> RUF100 Unused `noqa` directive (non-enabled: `D205`, `D415`, `D400`)
+- <a href='https://github.com/ibis-project/ibis/blob/fc1b6a73820b98768568a65555d5a88748e32f1b/ibis/backends/tests/signature/typecheck.py#L8'>ibis/backends/tests/signature/typecheck.py:8:1:</a> RUF100 Unused `noqa` directive (unused: `D205`, `D415`, `D400`)
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLC0415 | 7 | 7 | 0 | 0 | 0 |
+| RUF100 | 2 | 1 | 1 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-06-19 19:39</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/brent%2Fearlier-per-file-ignores?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a></h2>
+<h3>Merging #18801 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>brent/earlier-per-file-ignores</code> (0e7769f) with <code>main</code> (073a71c)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 37</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-19 19:55</div>
+            <div class="timeline-body"><p>I'm a bit confused by both the ecosystem and benchmark results. It's at least plausible that I broke per-file ignores, but I don't see PLC0415 in Airflow's main <code>pyproject.toml</code>, at least. And I'm really surprised that these changes could be slower since they should be skipping the creation of diagnostics that previously would have been created and then discarded. We clone the <code>RuleTable</code> if there are any per-file ignores, but I didn't expect that to be too expensive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-19 20:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:478 on 2025-06-19 20:01</div>
+            <div class="timeline-body"><p>Oh, removing the const here could be problematic because the <code>RuleTable</code> lookup requires some bit operations and I assume that they might no longer happen at comp time</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-19 20:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:3121 on 2025-06-19 20:02</div>
+            <div class="timeline-body"><p>I wonder if it's cheaper to just clone the rule table. It's just a large array or we could consider using an <code>Rc</code> instead</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-19 20:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:478 on 2025-06-19 20:03</div>
+            <div class="timeline-body"><p>Ahhh, hopefully that's it. I'll try just always cloning, the <code>Cow</code> is the reason I removed these consts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-19 20:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/noqa.rs</code>:232 on 2025-06-19 20:04</div>
+            <div class="timeline-body"><p>Hmm. The behavior here might be different? It explicitly checked if the rule is disabled in the per file ignores (not sure why?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-19 20:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/noqa.rs</code>:232 on 2025-06-19 20:06</div>
+            <div class="timeline-body"><p>I cloned the airflow repo and I'm not getting any hits for PLC0415 with this branch locally. Hopefully it will go away when I push another commit. I thought <code>enabled</code> should have that folded in now, but maybe there is a subtle difference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-19 20:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:478 on 2025-06-19 20:35</div>
+            <div class="timeline-body"><p>I guess that was it, thank you! Now there's a very slight speedup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-19 20:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:478 on 2025-06-19 20:38</div>
+            <div class="timeline-body"><p>Yeah, the rule checks are in a very hot path. Still surprising that it would regress by that much</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-19 20:43</div>
+            <div class="timeline-body"><p>We override the rule selection for airflow to all, see https://github.com/astral-sh/ruff/blob/10a78fbc3b04e896e494d177fa408bce45e09ff4/python/ruff-ecosystem/ruff_ecosystem/defaults.py#L23-L26 Not sure why we see this difference.</p>
+<p>You can also see the command in the ecosystem results:</p>
+<pre><code>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-19 20:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/linter.rs</code>:252 on 2025-06-19 20:47</div>
+            <div class="timeline-body"><p>Nit: This reads a bit strange. It gives the impression that we iterate over diagnostics (the enabled diagnostics).</p>
+<p>I'm inclined to rename <code>diagnostics</code> to <code>context</code>, and rename all methods to <code>is_rule_enabled</code>, <code>iter_enabled_rules</code>...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-19 20:48</div>
+            <div class="timeline-body"><p>Thanks, I can reproduce this locally now. There are 2579 hits for PLC0415 on 0.12, so I'll try to see if there's anything different about the 7 new ones.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-19 21:08</div>
+            <div class="timeline-body"><p>I think the Airflow hits have to do with PLC0415 checking if TID253 is enabled:</p>
+<p>https://github.com/astral-sh/ruff/blob/beff9c766aeabc4e827405bfdbc46b1a120dd9b7/crates/ruff_linter/src/rules/pylint/rules/import_outside_top_level.rs#L65-L69</p>
+<p>Airflow <em>does</em> have per-file <a href="https://github.com/apache/airflow/blob/275a81a30a11d4484cdf227cd582fe467d195ca0/pyproject.toml#L746-L750">ignores</a> for TID253 that cover all of the new hits. It seems like <code>--select ALL</code> was taking precedence before, but now <code>per-file-ignores</code> is taking precedence, disabling TID253 and causing these diagnostics. Does that sound right to you, or was the old behavior correct?</p>
+<p>That also explains why I wasn't reproducing this with just <code>--select PLC0415</code>, you have to select both rules, or <code>ALL</code> obviously.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/linter.rs</code>:252 on 2025-06-19 21:09</div>
+            <div class="timeline-body"><p>I agree, I'm not sure why I called this <code>diagnostics</code> in the first place...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-19 21:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-19 21:11</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the Airflow hits have to do with PLC0415 checking if TID253 is enabled:</p>
+</blockquote>
+<p>This does sounds plossible and, judging by the comment, the new behavior seems more correct</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-19 21:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/linter.rs</code>:252 on 2025-06-19 21:13</div>
+            <div class="timeline-body"><p>Should I rename <code>Checker::enabled</code> and <code>Checker::any_enabled</code> too? I was trying to be consistent with those for the method names.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-19 21:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/linter.rs</code>:252 on 2025-06-19 21:16</div>
+            <div class="timeline-body"><p>I think so. It's not <code>checker</code> that's enabled, it's whether a rule is enabled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-06-19 21:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-06-19 21:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @ntBre on 2025-06-19 21:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> removed by @MichaReiser on 2025-06-20 07:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-06-20 07:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-20 07:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:3122 on 2025-06-20 07:43</div>
+            <div class="timeline-body"><p>I feel like this check should be inside <code>ignores_from_path</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:3117 on 2025-06-20 07:43</div>
+            <div class="timeline-body"><p>I found it somewhat convenient that <code>LintContext</code> stores the settings, as I think it will allow us to pass <code>LintContext</code> in most places where we currently pass <code>Checker</code>.</p>
+<p>But I guess it makes sense not to store the settings if we also store them on <code>Checker</code>, although I think we should just remove it from <code>Checker</code>. Either way. This seems unrelated to this PR and not urgent but maybe something for a contributor issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-06-20 07:45</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-20 12:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:3117 on 2025-06-20 12:23</div>
+            <div class="timeline-body"><p>That makes sense. I just thought it might be confusing to have access to a <code>RulesTable</code> through either <code>self.settings.rules</code> or just <code>self.rules</code>. These fields are all private anyway, though.</p>
+<p>If we want to keep the settings on the context, it might be convenient to partially revert the removal here, otherwise someone will have to plumb all the lifetimes back through. The rest sounds like a good follow-up like you said.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-20 16:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:3117 on 2025-06-20 16:38</div>
+            <div class="timeline-body"><p>Okay I restored the settings field with an <code>expect(unused)</code> and a TODO, just to preserve all of the lifetimes for a follow-up. I can open an issue too and possibly tag it help-wanted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-06-20 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-06-20 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-20 17:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:35 UTC
+    </footer>
+</body>
+</html>

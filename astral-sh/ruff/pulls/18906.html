@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add missing rule code comments - astral-sh/ruff #18906</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add missing rule code comments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18906">#18906</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-06-24 00:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-24 00:48</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>While making some of my other changes, I noticed some of the lints were missing comments with their lint code/had the wrong numbered lint code. These comments are super useful since they allow for very easily and quickly finding the source code of a lint, so I decided to try and normalize them.</p>
+<p>Most of them were fairly straightforward, just adding a doc comment/comment in the appropriate place.</p>
+<p>I decided to make all of the <code>Pylint</code> rules have the <code>PL</code> prefix. Previously it was split between no prefix and having prefix, but I decided to normalize to with prefix since that's what's in the docs, and the with prefix will show up on no prefix searches, while the reverse is not true.</p>
+<p>I also ran into a lot of rules with implementations in &quot;non-standard&quot; places (where &quot;standard&quot; means inside a file matching the glob <code>crates/ruff_linter/rules/*/rules/**/*.rs</code> and/or the same rule file where the rule <code>struct</code>/<code>ViolationMetadata</code> is defined).</p>
+<p>I decided to move all the implementations out of <code>crates/ruff_linter/src/checkers/ast/analyze/deferred_scopes.rs</code> and into their own files, since that is what the rest of the rules in <code>deferred_scopes.rs</code> did, and those were just the outliers.</p>
+<p>There were several rules which I did not end up moving, which you can see as the extra paths I had to add to my python code besides the &quot;standard&quot; glob. These rules are generally the error-type rules that just wrap an error from the parser, and have very small implementations/are very tightly linked to the module they are in, and generally every rule of that type was implemented in module instead of in the &quot;standard&quot; place.</p>
+<p>Resolving that requires answering a question I don't think I'm equipped to handle: Is the point of these comments to give quick access to the rule definition/docs, or the rule implementation? For all the rules with implementations in the &quot;standard&quot; location this isn't a problem, as they are the same, but it is an issue for all of these error type rules. In the end I chose to leave the implementations where they were, but I'm not sure if that was the right choice.</p>
+<details>
+<summary>Python script I wrote to find missing comments</summary>
+
+<p>This script assumes it is placed in the top level <code>ruff</code> directory (ie next to <code>.git</code>/<code>crates</code>/<code>README.md</code>)</p>
+<pre><code class="language-py">import re
+from copy import copy
+from pathlib import Path
+
+linter_to_code_prefix = {
+    &quot;Airflow&quot;: &quot;AIR&quot;,
+    &quot;Eradicate&quot;: &quot;ERA&quot;,
+    &quot;FastApi&quot;: &quot;FAST&quot;,
+    &quot;Flake82020&quot;: &quot;YTT&quot;,
+    &quot;Flake8Annotations&quot;: &quot;ANN&quot;,
+    &quot;Flake8Async&quot;: &quot;ASYNC&quot;,
+    &quot;Flake8Bandit&quot;: &quot;S&quot;,
+    &quot;Flake8BlindExcept&quot;: &quot;BLE&quot;,
+    &quot;Flake8BooleanTrap&quot;: &quot;FBT&quot;,
+    &quot;Flake8Bugbear&quot;: &quot;B&quot;,
+    &quot;Flake8Builtins&quot;: &quot;A&quot;,
+    &quot;Flake8Commas&quot;: &quot;COM&quot;,
+    &quot;Flake8Comprehensions&quot;: &quot;C4&quot;,
+    &quot;Flake8Copyright&quot;: &quot;CPY&quot;,
+    &quot;Flake8Datetimez&quot;: &quot;DTZ&quot;,
+    &quot;Flake8Debugger&quot;: &quot;T10&quot;,
+    &quot;Flake8Django&quot;: &quot;DJ&quot;,
+    &quot;Flake8ErrMsg&quot;: &quot;EM&quot;,
+    &quot;Flake8Executable&quot;: &quot;EXE&quot;,
+    &quot;Flake8Fixme&quot;: &quot;FIX&quot;,
+    &quot;Flake8FutureAnnotations&quot;: &quot;FA&quot;,
+    &quot;Flake8GetText&quot;: &quot;INT&quot;,
+    &quot;Flake8ImplicitStrConcat&quot;: &quot;ISC&quot;,
+    &quot;Flake8ImportConventions&quot;: &quot;ICN&quot;,
+    &quot;Flake8Logging&quot;: &quot;LOG&quot;,
+    &quot;Flake8LoggingFormat&quot;: &quot;G&quot;,
+    &quot;Flake8NoPep420&quot;: &quot;INP&quot;,
+    &quot;Flake8Pie&quot;: &quot;PIE&quot;,
+    &quot;Flake8Print&quot;: &quot;T20&quot;,
+    &quot;Flake8Pyi&quot;: &quot;PYI&quot;,
+    &quot;Flake8PytestStyle&quot;: &quot;PT&quot;,
+    &quot;Flake8Quotes&quot;: &quot;Q&quot;,
+    &quot;Flake8Raise&quot;: &quot;RSE&quot;,
+    &quot;Flake8Return&quot;: &quot;RET&quot;,
+    &quot;Flake8Self&quot;: &quot;SLF&quot;,
+    &quot;Flake8Simplify&quot;: &quot;SIM&quot;,
+    &quot;Flake8Slots&quot;: &quot;SLOT&quot;,
+    &quot;Flake8TidyImports&quot;: &quot;TID&quot;,
+    &quot;Flake8Todos&quot;: &quot;TD&quot;,
+    &quot;Flake8TypeChecking&quot;: &quot;TC&quot;,
+    &quot;Flake8UnusedArguments&quot;: &quot;ARG&quot;,
+    &quot;Flake8UsePathlib&quot;: &quot;PTH&quot;,
+    &quot;Flynt&quot;: &quot;FLY&quot;,
+    &quot;Isort&quot;: &quot;I&quot;,
+    &quot;McCabe&quot;: &quot;C90&quot;,
+    &quot;Numpy&quot;: &quot;NPY&quot;,
+    &quot;PandasVet&quot;: &quot;PD&quot;,
+    &quot;PEP8Naming&quot;: &quot;N&quot;,
+    &quot;Perflint&quot;: &quot;PERF&quot;,
+    &quot;Pycodestyle&quot;: &quot;&quot;,
+    &quot;Pydoclint&quot;: &quot;DOC&quot;,
+    &quot;Pydocstyle&quot;: &quot;D&quot;,
+    &quot;Pyflakes&quot;: &quot;F&quot;,
+    &quot;PygrepHooks&quot;: &quot;PGH&quot;,
+    &quot;Pylint&quot;: &quot;PL&quot;,
+    &quot;Pyupgrade&quot;: &quot;UP&quot;,
+    &quot;Refurb&quot;: &quot;FURB&quot;,
+    &quot;Ruff&quot;: &quot;RUF&quot;,
+    &quot;Tryceratops&quot;: &quot;TRY&quot;,
+}
+
+ruff = Path(__file__).parent / &quot;crates&quot;
+
+ruff_linter = ruff / &quot;ruff_linter&quot; / &quot;src&quot;
+
+code_to_rule_name = {}
+
+with open(ruff_linter / &quot;codes.rs&quot;) as codes_file:
+    for linter, code, rule_name in re.findall(
+        # The (?&lt;! skips ruff test rules
+        # Only Preview|Stable rules are checked
+        r&quot;(?&lt;!#\[cfg\(any\(feature = \&quot;test-rules\&quot;, test\)\)\]\n)        \((\w+), \&quot;(\w+)\&quot;\) =&gt; \(RuleGroup::(?:Preview|Stable), [\w:]+::(\w+)\)&quot;,
+        codes_file.read(),
+    ):
+        code_to_rule_name[linter_to_code_prefix[linter] + code] = (rule_name, [])
+
+ruff_linter_rules = ruff_linter / &quot;rules&quot;
+for rule_file_path in [
+    *ruff_linter_rules.rglob(&quot;*/rules/**/*.rs&quot;),
+    ruff / &quot;ruff_python_parser&quot; / &quot;src&quot; / &quot;semantic_errors.rs&quot;,
+    ruff_linter / &quot;pyproject_toml.rs&quot;,
+    ruff_linter / &quot;checkers&quot; / &quot;noqa.rs&quot;,
+    ruff_linter / &quot;checkers&quot; / &quot;ast&quot; / &quot;mod.rs&quot;,
+    ruff_linter / &quot;checkers&quot; / &quot;ast&quot; / &quot;analyze&quot; / &quot;unresolved_references.rs&quot;,
+    ruff_linter / &quot;checkers&quot; / &quot;ast&quot; / &quot;analyze&quot; / &quot;expression.rs&quot;,
+    ruff_linter / &quot;checkers&quot; / &quot;ast&quot; / &quot;analyze&quot; / &quot;statement.rs&quot;,
+]:
+    with open(rule_file_path, encoding=&quot;utf-8&quot;) as f:
+        rule_file_content = f.read()
+    for code, (rule, _) in copy(code_to_rule_name).items():
+        if rule in rule_file_content:
+            if f&quot;// {code}&quot; in rule_file_content or f&quot;, {code}&quot; in rule_file_content:
+                del code_to_rule_name[code]
+            else:
+                code_to_rule_name[code][1].append(rule_file_path)
+
+for code, rule in code_to_rule_name.items():
+    print(code, rule[0])
+    for path in rule[1]:
+        print(path)
+</code></pre>
+</details>
+
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>N/A, no tests/functionality affected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-24 00:56</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/statement.rs</code>:842 on 2025-06-24 02:32</div>
+            <div class="timeline-body"><p>This could be a good target for a follow-up PR, but we could fold these <code>if checker.is_rule_enabled { checker.report_diagnostic</code> checks into calls to <code>checker.report_diagnostic_if_enabled</code>. I didn't notice these when adding that method.</p>
+<p>Also, the docs on <code>Checker::report_diagnostic_if_enabled</code> and <code>LintContext::report_diagnostic_if_enabled</code> are outdated now that the <code>Rule</code> conversion is basically free :sweat_smile:</p>
+<p>No pressure to take on this refactor, just an idea if you're interested!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-24 02:47</div>
+            <div class="timeline-body"><p>Nice! I always grep for the rule codes first, so this will definitely help me. I'm curious if @MichaReiser has any strong feelings about moving the rule implementations, but I think that makes sense to me too.</p>
+<blockquote>
+<p>Resolving that requires answering a question I don't think I'm equipped to handle: Is the point of these comments to give quick access to the rule definition/docs, or the rule implementation?</p>
+</blockquote>
+<p>If I had to pick one, I'd probably say implementation. The implementation is virtually guaranteed to include a reference to the <code>Violation</code> struct, and it's a bit easier to jump to definition on that struct than find all references from the struct definition, in my opinion. So I think you put them in the right place, for my tastes at least.</p>
+<p>I also think it made sense to leave those very short rules in place. They're basically one-liners, especially if we switch to <code>report_diagnostic_if_enabled</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-06-24 02:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> reviewed on 2025-06-24 05:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/statement.rs</code>:842 on 2025-06-24 05:49</div>
+            <div class="timeline-body"><p>Sure, I could see if I can make something up for that after this is merged (~~because otherwise there'd probably be a billion merge conflicts~~ Looking at it more, probably not actually?). Side note, I find it really funny how I'm basically writing lints in python for the rust code of a python linter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-24 06:04</div>
+            <div class="timeline-body"><p>I'd prefer if we can split the PR into</p>
+<ol>
+<li>Add the missing rule comments</li>
+<li>Anything changing the structure</li>
+</ol>
+<p>That makes the discussion easier. I personally don't find &quot;standard locations&quot; to be that important to find an implementation because I use go to definition or find all references to find the implementation. It's also often easier to understand the implementation if everything is in one place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-24 17:48</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd prefer if we can split the PR into</p>
+<ol>
+<li>Add the missing rule comments</li>
+<li>Anything changing the structure</li>
+</ol>
+<p>That makes the discussion easier. I personally don't find &quot;standard locations&quot; to be that important to find an implementation because I use go to definition or find all references to find the implementation. It's also often easier to understand the implementation if everything is in one place.</p>
+</blockquote>
+<p>Split out, I think I did all the git stuff correct. I'll wait to make a PR on the movement parts since the comments for the ones that I'm considering moving would not be moved in that branch, making a mess. Those changes are now <a href="https://github.com/MeGaGiGaGon/ruff/tree/move-big-rule-imeplementations">in this branch</a></p>
+<p>I guess in the end I prefer the comments on the implementation, since that's what I usually want to see. Having them gets rid of a jump or two, since while it's not too hard it does take a while to navigate through the links and find what you're looking for. The unfortunate part of having the comments on the implementations is that it's harder to get to the docs if that's your goal, but oh well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-24 19:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Split out, I think I did all the git stuff correct.</p>
+</blockquote>
+<p>Thank you! And sorry for the extra work.</p>
+<blockquote>
+<p>The unfortunate part of having the comments on the implementations is that it's harder to get to the docs if that's your goal, but oh well.</p>
+</blockquote>
+<p>Yeah, there's no perfect solution. What I do is that I search where we emit the diagnostic and then use Go to definition to jump to the violation definition. I find that easier than going from the violation definition to the implementation (IDEs are slower at finding all references)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-06-25 01:17</div>
+            <div class="timeline-body"><p>Awesome, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-06-25 01:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-06-25 01:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-25 01:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:36 UTC
+    </footer>
+</body>
+</html>

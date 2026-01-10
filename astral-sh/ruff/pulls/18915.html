@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>py-fuzzer: allow relative executable paths - astral-sh/ruff #18915</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>py-fuzzer: allow relative executable paths</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18915">#18915</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-06-24 12:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-24 12:32</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I tried running <code>py-fuzzer</code> using executables in the current working directory, but that failed with:</p>
+<pre><code>▶ uvx --from ./python/py-fuzzer --reinstall fuzz --test-executable ./ty_feature --bin=ty --baseline-executable ./ty_main --only-new-bugs 0-500
+Usage: fuzz [-h] [--only-new-bugs] [--quiet] [--test-executable TEST_EXECUTABLE] [--baseline-executable BASELINE_EXECUTABLE] --bin {ruff,ty} seeds [seeds ...]
+fuzz: error: Bad argument passed to `--baseline-executable`: no such file or executable PosixPath('ty_main')
+ &quot;Bad argument passed to `--baseline-executable`: no such file or executable PosixPath('ty_main')&quot;
+</code></pre>
+<p>Using <code>.absolute()</code> on the <code>Path</code> fixes this.</p>
+<h2>Test Plan</h2>
+<p>Successful <code>py-fuzzer</code> run with the invocation above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-06-24 12:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @sharkdp on 2025-06-24 12:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-24 12:41</div>
+            <div class="timeline-body"><p>Or we could call <code>resolve()</code> eagerly when parsing the CLI arguments?</p>
+<pre><code class="language-diff">diff --git a/python/py-fuzzer/fuzz.py b/python/py-fuzzer/fuzz.py
+index 226cab31fa..5359e28273 100644
+--- a/python/py-fuzzer/fuzz.py
++++ b/python/py-fuzzer/fuzz.py
+@@ -54,9 +54,7 @@ def ty_contains_bug(code: str, *, ty_executable: Path) -&gt; bool:
+         input_file = Path(tempdir, &quot;input.py&quot;)
+         input_file.write_text(code)
+         completed_process = subprocess.run(
+-            [ty_executable.resolve(), &quot;check&quot;, input_file],
+-            capture_output=True,
+-            text=True,
++            [ty_executable, &quot;check&quot;, input_file], capture_output=True, text=True
+         )
+     return completed_process.returncode not in {0, 1, 2}
+ 
+@@ -308,6 +306,10 @@ class ResolvedCliArgs:
+     quiet: bool
+ 
+ 
++def resolved_path(p: str) -&gt; Path:
++    return Path(p).resolve()
++
++
+ def parse_args() -&gt; ResolvedCliArgs:
+     &quot;&quot;&quot;Parse command-line arguments&quot;&quot;&quot;
+     parser = argparse.ArgumentParser(
+@@ -339,7 +341,7 @@ def parse_args() -&gt; ResolvedCliArgs:
+             &quot;Executable to test. &quot;
+             &quot;Defaults to a fresh build of the currently checked-out branch.&quot;
+         ),
+-        type=Path,
++        type=resolved_path,
+     )
+     parser.add_argument(
+         &quot;--baseline-executable&quot;,
+@@ -348,7 +350,7 @@ def parse_args() -&gt; ResolvedCliArgs:
+             &quot;Defaults to whatever version is installed &quot;
+             &quot;in the Python environment.&quot;
+         ),
+-        type=Path,
++        type=resolved_path,
+     )
+     parser.add_argument(
+         &quot;--bin&quot;,
+@@ -369,9 +371,7 @@ def parse_args() -&gt; ResolvedCliArgs:
+             )
+         try:
+             subprocess.run(
+-                [args.baseline_executable.resolve(), &quot;--version&quot;],
+-                check=True,
+-                capture_output=True,
++                [args.baseline_executable, &quot;--version&quot;], check=True, capture_output=True
+             )
+         except FileNotFoundError:
+             parser.error(
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-06-24 12:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-24 12:42</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-24 12:42</div>
+            <div class="timeline-body"><p>Or use <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.absolute"><code>absolute</code></a> because we don't need to resolve symlinks ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-06-24 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-06-24 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-24 13:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:36 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove redundant `settings` field from  `Checker` - astral-sh/ruff #18845</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove redundant <code>settings</code> field from  <code>Checker</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18845">#18845</a>
+        opened by <a href="https://github.com/LaBatata101">@LaBatata101</a>
+        on 2025-06-21 02:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-06-21 02:21</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This PR removes the redundant <code>settings</code> field from <code>Checker</code> in favor of the <code>Checker::context.settings</code>.</p>
+<p>Closes <a href="https://github.com/astral-sh/ruff/issues/18828">#18828</a></p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Use the LinterSettings on LintContext instead of Checker" to "Use the `LinterSettings` on `LintContext` instead of `Checker`" by @LaBatata101 on 2025-06-21 02:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-21 16:29</div>
+            <div class="timeline-body"><p>I think the new lifetime parameter and the <code>settings</code> method were bad suggestions from me that really complicate things and might even be impossible. Sorry about that. There's definitely at least one place where a <code>settings</code> method can't be used because it borrows the whole <code>Checker</code> instead of just the field like the field access. I think that may be the problem here too because I ran into this same group of functions even without the new lifetime parameter.</p>
+<p>The easiest fix of just replacing every <code>checker.settings</code> access with <code>checker.context.settings</code> and making those fields <code>pub(crate)</code> might be the way to go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-21 16:31</div>
+            <div class="timeline-body"><blockquote>
+<p>The easiest fix of just replacing every checker.settings access with checker.context.settings and making those fields pub(crate) might be the way to go.</p>
+</blockquote>
+<p>Can you go into more details? I would really prefer if we could lock down some of the <code>Checker</code> fields. Giving direct access has complicated refactors like this in the past (and do now) because moving the field always requires updating all uses</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-21 16:44</div>
+            <div class="timeline-body"><p>I reverted the liftime changes and changed <code>settings</code> to return <code>&amp;'a LinterSettings</code>. This fixes all lifetime problems</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-21 16:45</div>
+            <div class="timeline-body"><p>Amazing, thanks Micha. Obviously I did over-complicate things but not in the way I thought. I also thought I tried that but clearly I did not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-21 17:00</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Use the `LinterSettings` on `LintContext` instead of `Checker`" to "Remove redundant `settings` field from  `Checker`" by @LaBatata101 on 2025-06-21 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @LaBatata101 on 2025-06-21 20:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @LaBatata101 on 2025-06-21 20:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-06-22 12:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2025-06-23 09:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-06-23 09:06</div>
+            <div class="timeline-body"><p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-06-23 09:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-23 09:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-23 13:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:36 UTC
+    </footer>
+</body>
+</html>

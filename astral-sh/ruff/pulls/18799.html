@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] eliminate is_fully_static - astral-sh/ruff #18799</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] eliminate is_fully_static</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18799">#18799</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-06-19 17:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-06-19 17:52</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Having a recursive type method to check whether a type is fully static is inefficient, unnecessary, and makes us overly strict about subtyping relations.</p>
+<p>It's inefficient because we end up re-walking the same types many times to check for fully-static-ness.</p>
+<p>It's unnecessary because we can check relations involving the dynamic type appropriately, depending whether the relation is subtyping or assignability.</p>
+<p>We use the subtyping relation to simplify unions and intersections. We can usefully consider that <code>S &lt;: T</code> for gradual types also, as long as it remains true that <code>S | T</code> is equivalent to <code>T</code> and <code>S &amp; T</code> is equivalent to <code>S</code>.</p>
+<p>One conservative definition (implemented here) that satisfies this requirement is that we consider <code>S &lt;: T</code> if, for every possible pair of materializations <code>S'</code> and <code>T'</code>, <code>S' &lt;: T'</code>. Or put differently the top materialization of <code>S</code> (<code>S+</code> -- the union of all possible materializations of <code>S</code>) is a subtype of the bottom materialization of <code>T</code> (<code>T-</code> -- the intersection of all possible materializations of <code>T</code>). In the most basic cases we can usefully say that <code>Any &lt;: object</code> and that <code>Never &lt;: Any</code>, and we can handle more complex cases inductively from there.</p>
+<p>This definition of subtyping for gradual subtypes is not reflexive (<code>Any</code> is not a subtype of <code>Any</code>).</p>
+<p>As a corollary, we also remove <code>is_gradual_equivalent_to</code> -- <code>is_equivalent_to</code> now has the meaning that <code>is_gradual_equivalent_to</code> used to have. If necessary, we could restore an <code>is_fully_static_equivalent_to</code> or similar (which would not do an <code>is_fully_static</code> pre-check of the types, but would instead pass a relation-kind enum down through a recursive equivalence check, similar to <code>has_relation_to</code>), but so far this doesn't appear to be necessary.</p>
+<p>Credit to @JelleZijlstra for the observation that <code>is_fully_static</code> is unnecessary and overly restrictive on subtyping.</p>
+<p>There is another possible definition of gradual subtyping: instead of requiring that <code>S+ &lt;: T-</code>, we could instead require that <code>S+ &lt;: T+</code> and <code>S- &lt;: T-</code>. In other words, instead of requiring all materializations of <code>S</code> to be a subtype of every materialization of <code>T</code>, we just require that every materialization of <code>S</code> be a subtype of <em>some</em> materialization of <code>T</code>, and that every materialization of <code>T</code> be a supertype of some materialization of <code>S</code>. This definition also preserves the core invariant that <code>S &lt;: T</code> implies that <code>S | T = T</code> and <code>S &amp; T = S</code>, and it restores reflexivity: under this definition, <code>Any</code> is a subtype of <code>Any</code>, and for any equivalent types <code>S</code> and <code>T</code>, <code>S &lt;: T</code> and <code>T &lt;: S</code>. But unfortunately, this definition breaks transitivity of subtyping, because nominal subclasses in Python use assignability (&quot;consistent subtyping&quot;) to define acceptable overrides. This means that we may have a class <code>A</code> with <code>def method(self) -&gt; Any</code> and a subtype <code>B(A)</code> with <code>def method(self) -&gt; int</code>, since <code>int</code> is assignable to <code>Any</code>. This means that if we have a protocol <code>P</code> with <code>def method(self) -&gt; Any</code>, we would have <code>B &lt;: A</code> (from nominal subtyping) and <code>A &lt;: P</code> (<code>Any</code> is a subtype of <code>Any</code>), but not <code>B &lt;: P</code> (<code>int</code> is not a subtype of <code>Any</code>). Breaking transitivity of subtyping is not tenable, so we don't use this definition of subtyping.</p>
+<h2>Test Plan</h2>
+<p>Existing tests (modified in some cases to account for updated semantics.)</p>
+<p>Stable property tests pass at a million iterations: <code>QUICKCHECK_TESTS=1000000 cargo test -p ty_python_semantic -- --ignored types::property_tests::stable</code></p>
+<h3>Changes to property test type generation</h3>
+<p>Since we no longer have a method of categorizing built types as fully-static or not-fully-static, I had to add a previously-discussed feature to the property tests so that some tests can build types that are known by construction to be fully static, because there are still properties that only apply to fully-static types (for example, reflexiveness of subtyping.)</p>
+<h2>Changes to handling of <code>*args, **kwargs</code> signatures</h2>
+<p>This PR &quot;discovered&quot; that, once we allow non-fully-static types to participate in subtyping under the above definitions, <code>(*args: Any, **kwargs: Any) -&gt; Any</code> is now a subtype of <code>() -&gt; object</code>. This is true, if we take a literal interpretation of the former signature: all materializations of the parameters <code>*args: Any, **kwargs: Any</code> can accept zero arguments, making the former signature a subtype of the latter. But the spec actually says that <code>*args: Any, **kwargs: Any</code> should be interpreted as equivalent to <code>...</code>, and that makes a difference here: <code>(...) -&gt; Any</code> is not a subtype of <code>() -&gt; object</code>, because (unlike a literal reading of <code>(*args: Any, **kwargs: Any)</code>), <code>...</code> can materialize to <em>any</em> signature, including a signature with required positional arguments.</p>
+<p>This matters for this PR because it makes the &quot;any two types are both assignable to their union&quot; property test fail if we don't implement the equivalence to <code>...</code>. Because <code>FunctionType.__call__</code> has the signature <code>(*args: Any, **kwargs: Any) -&gt; Any</code>, and if we take that at face value it's a subtype of <code>() -&gt; object</code>, making <code>FunctionType</code> a subtype of <code>() -&gt; object)</code> -- but then a function with a required argument is also a subtype of <code>FunctionType</code>, but not a subtype of <code>() -&gt; object</code>. So I went ahead and implemented the equivalence to <code>...</code> in this PR.</p>
+<h2>Ecosystem analysis</h2>
+<ul>
+<li>Most of the ecosystem report are cases of improved union/intersection simplification. For example, we can now simplify a union like <code>bool | (bool &amp; Unknown) | Unknown</code> to simply <code>bool | Unknown</code>, because we can now observe that every possible materialization of <code>bool &amp; Unknown</code> is still a subtype of <code>bool</code> (whereas before we would set aside <code>bool &amp; Unknown</code> as a not-fully-static type.) This is clearly an improvement.</li>
+<li>The <code>possibly-unresolved-reference</code> errors in sockeye, pymongo, ignite, scrapy and others are true positives for conditional imports that were formerly silenced by bogus conflicting-declarations (which we currently don't issue a diagnostic for), because we considered two different declarations of <code>Unknown</code> to be conflicting (we used <code>is_equivalent_to</code> not <code>is_gradual_equivalent_to</code>). In this PR that distinction disappears and all equivalence is gradual, so a declaration of <code>Unknown</code> no longer conflicts with a declaration of <code>Unknown</code>, which then results in us surfacing the possibly-unbound error.</li>
+<li>We will now issue &quot;redundant cast&quot; for casting from a typevar with a gradual bound to the same typevar (the hydra-zen diagnostic). This seems like an improvement.</li>
+<li>The new diagnostics in bandersnatch are interesting. For some reason primer in CI seems to be checking bandersnatch on Python 3.10 (not yet sure why; this doesn't happen when I run it locally). But bandersnatch uses <code>enum.StrEnum</code>, which doesn't exist on 3.10. That makes the <code>class SimpleDigest(StrEnum)</code> a class that inherits from <code>Unknown</code> (and bypasses our current TODO handling for accessing attributes on enum classes, since we don't recognize it as an enum class at all). This PR improves our understanding of assignability to classes that inherit from <code>Any</code> / <code>Unknown</code>, and we now recognize that a string literal is not assignable to a class inheriting <code>Any</code> or <code>Unknown</code>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-19 17:55</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">trio (https://github.com/python-trio/trio)
+- error[invalid-argument-type] src/trio/testing/_fake_net.py:330:56: Argument to bound method `from_python_sockaddr` is incorrect: Expected `tuple[str, int] | tuple[str, int, int, int]`, found `(@Todo(Support for `typing.TypeAlias`) &amp; None) | None | @Todo(generic `typing.Awaitable` type)`
++ error[invalid-argument-type] src/trio/testing/_fake_net.py:330:56: Argument to bound method `from_python_sockaddr` is incorrect: Expected `tuple[str, int] | tuple[str, int, int, int]`, found `None | @Todo(generic `typing.Awaitable` type)`
+
+comtypes (https://github.com/enthought/comtypes)
+- error[unresolved-attribute] comtypes/_vtbl.py:123:5: Unresolved attribute `has_outargs` on type `def call_with_this(*args, **kw) -&gt; Unknown`.
++ error[unresolved-attribute] comtypes/_vtbl.py:123:5: Unresolved attribute `has_outargs` on type `def call_with_this(...) -&gt; Unknown`.
+
+sockeye (https://github.com/awslabs/sockeye)
++ warning[possibly-unresolved-reference] sockeye/model.py:512:22: Name `faiss` used when possibly not defined
+- Found 340 diagnostics
++ Found 341 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- error[invalid-return-type] bson/regex.py:83:16: Return type does not match returned value: expected `Regex[_T]`, found `Regex[str]`
++ warning[possibly-unresolved-reference] pymongo/asynchronous/auth.py:235:31: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/asynchronous/auth.py:236:50: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/asynchronous/auth.py:243:31: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/asynchronous/auth.py:245:30: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/asynchronous/auth.py:251:27: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/asynchronous/auth.py:251:72: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/asynchronous/auth.py:253:22: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/asynchronous/auth.py:261:16: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/asynchronous/auth.py:268:23: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/asynchronous/auth.py:279:26: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/asynchronous/auth.py:283:27: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/asynchronous/auth.py:292:30: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/asynchronous/auth.py:299:16: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/asynchronous/auth.py:302:16: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/asynchronous/auth.py:302:48: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/asynchronous/auth.py:305:23: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/asynchronous/auth.py:314:13: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/asynchronous/auth.py:316:12: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/synchronous/auth.py:232:31: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/synchronous/auth.py:233:50: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/synchronous/auth.py:240:31: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/synchronous/auth.py:242:30: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/synchronous/auth.py:248:27: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/synchronous/auth.py:248:72: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/synchronous/auth.py:250:22: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/synchronous/auth.py:258:16: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/synchronous/auth.py:265:23: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/synchronous/auth.py:276:26: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/synchronous/auth.py:280:27: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/synchronous/auth.py:289:30: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/synchronous/auth.py:296:16: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/synchronous/auth.py:299:16: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/synchronous/auth.py:299:48: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/synchronous/auth.py:302:23: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/synchronous/auth.py:311:13: Name `kerberos` used when possibly not defined
++ warning[possibly-unresolved-reference] pymongo/synchronous/auth.py:313:12: Name `kerberos` used when possibly not defined
+- Found 509 diagnostics
++ Found 544 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- error[conflicting-declarations] strawberry/relay/types.py:863:21: Conflicting declared types for `edges`: list[Edge[Unknown]], list[Edge[Unknown]]
+- error[conflicting-declarations] strawberry/relay/types.py:869:21: Conflicting declared types for `edges`: list[Edge[Unknown]], list[Edge[Unknown]]
+- Found 371 diagnostics
++ Found 369 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
++ warning[redundant-cast] src/hydra_zen/third_party/beartype.py:130:12: Value is already of type `_T`
+- Found 597 diagnostics
++ Found 598 diagnostics
+
+asynq (https://github.com/quora/asynq)
+- error[unresolved-attribute] asynq/decorators.py:92:9: Unresolved attribute `is_pure_async_fn` on type `def sync_to_async_fn_wrapper(*args, **kwargs) -&gt; Unknown`.
++ error[unresolved-attribute] asynq/decorators.py:92:9: Unresolved attribute `is_pure_async_fn` on type `def sync_to_async_fn_wrapper(...) -&gt; Unknown`.
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+- error[unresolved-attribute] tests/test_misc.py:187:13: Unresolved attribute `communicate` on type `def fake_popen(*args, **kwargs) -&gt; Unknown`.
++ error[unresolved-attribute] tests/test_misc.py:187:13: Unresolved attribute `communicate` on type `def fake_popen(...) -&gt; Unknown`.
+- error[unresolved-attribute] tests/test_misc.py:189:13: Unresolved attribute `returncode` on type `def fake_popen(*args, **kwargs) -&gt; Unknown`.
++ error[unresolved-attribute] tests/test_misc.py:189:13: Unresolved attribute `returncode` on type `def fake_popen(...) -&gt; Unknown`.
+- error[unresolved-attribute] tests/test_misc.py:190:13: Unresolved attribute `called` on type `def fake_popen(*args, **kwargs) -&gt; Unknown`.
++ error[unresolved-attribute] tests/test_misc.py:190:13: Unresolved attribute `called` on type `def fake_popen(...) -&gt; Unknown`.
+
+bandersnatch (https://github.com/pypa/bandersnatch)
++ error[invalid-argument-type] src/bandersnatch/tests/test_configuration.py:141:13: Argument is incorrect: Expected `SimpleDigest`, found `Unknown | Literal[&quot;sha256&quot;]`
++ error[invalid-argument-type] src/bandersnatch/tests/test_configuration.py:161:13: Argument is incorrect: Expected `SimpleDigest`, found `Unknown | Literal[&quot;sha256&quot;]`
++ error[invalid-argument-type] src/bandersnatch/tests/test_configuration.py:184:13: Argument is incorrect: Expected `SimpleDigest`, found `Unknown | Literal[&quot;sha256&quot;]`
+- Found 125 diagnostics
++ Found 128 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
++ warning[possibly-unresolved-reference] ignite/distributed/comp_models/horovod.py:154:13: Name `hvd_mp_spawn` used when possibly not defined
+- Found 2351 diagnostics
++ Found 2352 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
+- error[conflicting-declarations] src/urllib3/response.py:27:5: Conflicting declared types for `brotli`: Unknown, Unknown
++ warning[possibly-unbound-attribute] src/urllib3/response.py:137:25: Attribute `Decompressor` on type `Unknown | None` is possibly unbound
++ warning[possibly-unresolved-reference] src/urllib3/response.py:157:25: Name `zstd` used when possibly not defined
++ warning[possibly-unresolved-reference] src/urllib3/response.py:165:29: Name `zstd` used when possibly not defined
++ warning[possibly-unresolved-reference] src/urllib3/response.py:195:29: Name `zstd` used when possibly not defined
++ warning[possibly-unresolved-reference] src/urllib3/response.py:203:33: Name `zstd` used when possibly not defined
+- error[conflicting-declarations] test/__init__.py:26:5: Conflicting declared types for `brotli`: Unknown, Unknown
++ warning[possibly-unbound-attribute] test/test_response.py:394:16: Attribute `compress` on type `Unknown | None` is possibly unbound
++ warning[possibly-unbound-attribute] test/test_response.py:402:16: Attribute `compress` on type `Unknown | None` is possibly unbound
+- Found 509 diagnostics
++ Found 514 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
++ warning[possibly-unresolved-reference] scrapy/utils/_compression.py:87:20: Name `brotli` used when possibly not defined
+- Found 1154 diagnostics
++ Found 1155 diagnostics
+
+freqtrade (https://github.com/freqtrade/freqtrade)
+- error[no-matching-overload] freqtrade/strategy/strategy_wrapper.py:26:21: No overload of function `getattr` matches arguments
+- Found 437 diagnostics
++ Found 436 diagnostics
+
+PyGithub (https://github.com/PyGithub/PyGithub)
+- warning[possibly-unbound-attribute] github/MainClass.py:542:39: Attribute `strftime` on type `@Todo(unknown type subscript) | (_NotSetType &amp; Unknown) | _NotSetType | (@Todo(unknown type subscript) &amp; datetime)` is possibly unbound
++ warning[possibly-unbound-attribute] github/MainClass.py:542:39: Attribute `strftime` on type `@Todo(unknown type subscript) | _NotSetType | (@Todo(unknown type subscript) &amp; datetime)` is possibly unbound
+- warning[possibly-unbound-attribute] github/MainClass.py:904:42: Attribute `_identity` on type `@Todo(unknown type subscript) | (_NotSetType &amp; Unknown) | _NotSetType` is possibly unbound
++ warning[possibly-unbound-attribute] github/MainClass.py:904:42: Attribute `_identity` on type `@Todo(unknown type subscript) | _NotSetType` is possibly unbound
+- warning[possibly-unbound-attribute] github/Milestone.py:200:41: Attribute `strftime` on type `@Todo(unknown type subscript) | (_NotSetType &amp; Unknown) | _NotSetType | (@Todo(unknown type subscript) &amp; date)` is possibly unbound
++ warning[possibly-unbound-attribute] github/Milestone.py:200:41: Attribute `strftime` on type `@Todo(unknown type subscript) | _NotSetType | (@Todo(unknown type subscript) &amp; date)` is possibly unbound
+- warning[possibly-unbound-attribute] github/NamedUser.py:444:39: Attribute `strftime` on type `@Todo(unknown type subscript) | (_NotSetType &amp; Unknown) | _NotSetType | (@Todo(unknown type subscript) &amp; datetime)` is possibly unbound
++ warning[possibly-unbound-attribute] github/NamedUser.py:444:39: Attribute `strftime` on type `@Todo(unknown type subscript) | _NotSetType | (@Todo(unknown type subscript) &amp; datetime)` is possibly unbound
+
+discord.py (https://github.com/Rapptz/discord.py)
+- error[invalid-argument-type] discord/ext/commands/converter.py:1122:16: Argument to function `len` is incorrect: Expected `Sized`, found `(tuple[T] &amp; tuple[Unknown, ...]) | (T &amp; tuple[Unknown, ...]) | tuple[T] | T`
++ error[invalid-argument-type] discord/ext/commands/converter.py:1122:16: Argument to function `len` is incorrect: Expected `Sized`, found `tuple[T] | T`
++ warning[possibly-unresolved-reference] discord/voice_client.py:388:15: Name `nacl` used when possibly not defined
++ warning[possibly-unresolved-reference] discord/voice_client.py:399:15: Name `nacl` used when possibly not defined
++ warning[possibly-unresolved-reference] discord/voice_client.py:408:15: Name `nacl` used when possibly not defined
++ warning[possibly-unresolved-reference] discord/voice_client.py:409:17: Name `nacl` used when possibly not defined
++ warning[possibly-unresolved-reference] discord/voice_client.py:409:35: Name `nacl` used when possibly not defined
++ warning[possibly-unresolved-reference] discord/voice_client.py:416:15: Name `nacl` used when possibly not defined
+- Found 566 diagnostics
++ Found 572 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- warning[possibly-unbound-attribute] src/_pytest/python.py:1310:37: Attribute `stash` on type `Node | None | (Unknown &amp; Module) | @Todo(map_with_boundness: intersections with negative contributions)` is possibly unbound
++ warning[possibly-unbound-attribute] src/_pytest/python.py:1310:37: Attribute `stash` on type `Node | None | @Todo(map_with_boundness: intersections with negative contributions)` is possibly unbound
+
+cwltool (https://github.com/common-workflow-language/cwltool)
+- warning[possibly-unbound-attribute] cwltool/main.py:455:9: Attribute `update` on type `(Unknown &amp; None) | None | Unknown | MutableMapping[str, @Todo(Inference of subscript on special form) | None] | dict[Unknown, Unknown]` is possibly unbound
++ warning[possibly-unbound-attribute] cwltool/main.py:455:9: Attribute `update` on type `None | Unknown | MutableMapping[str, @Todo(Inference of subscript on special form) | None] | dict[Unknown, Unknown]` is possibly unbound
+
+aiohttp (https://github.com/aio-libs/aiohttp)
++ warning[possibly-unresolved-reference] aiohttp/compression_utils.py:280:21: Name `brotli` used when possibly not defined
+- Found 137 diagnostics
++ Found 138 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- error[invalid-argument-type] paasta_tools/api/views/autoscaler.py:106:17: Argument to bound method `set_autoscaled_instances` is incorrect: Expected `int`, found `(Unknown &amp; int) | int | None`
++ error[invalid-argument-type] paasta_tools/api/views/autoscaler.py:106:17: Argument to bound method `set_autoscaled_instances` is incorrect: Expected `int`, found `int | None`
+- error[conflicting-declarations] paasta_tools/clusterman.py:18:9: Conflicting declared types for `clusterman_metrics`: Unknown, Unknown
+- Found 937 diagnostics
++ Found 936 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
+- error[type-assertion-failure] tests/test_frame.py:1090:9: Argument does not have asserted type `Series[Any]`
+- error[type-assertion-failure] tests/test_frame.py:1094:9: Argument does not have asserted type `Series[Any]`
+- error[type-assertion-failure] tests/test_frame.py:1098:9: Argument does not have asserted type `Series[Any]`
+- error[type-assertion-failure] tests/test_frame.py:1157:9: Argument does not have asserted type `Series[Any]`
+- error[type-assertion-failure] tests/test_frame.py:1163:9: Argument does not have asserted type `Series[Any]`
+- error[type-assertion-failure] tests/test_frame.py:3893:11: Argument does not have asserted type `Series[Any]`
+- error[type-assertion-failure] tests/test_series.py:3660:9: Argument does not have asserted type `Series[Any]`
+- Found 2779 diagnostics
++ Found 2772 diagnostics
+
+pycryptodome (https://github.com/Legrandin/pycryptodome)
+- error[conflicting-declarations] lib/Crypto/Math/Numbers.py:47:9: Conflicting declared types for `_implementation`: Unknown, Unknown
+- Found 1543 diagnostics
++ Found 1542 diagnostics
+
+openlibrary (https://github.com/internetarchive/openlibrary)
+- error[conflicting-declarations] openlibrary/core/helpers.py:21:5: Conflicting declared types for `genshi`: Unknown, Unknown
+- Found 719 diagnostics
++ Found 718 diagnostics
+
+streamlit (https://github.com/streamlit/streamlit)
++ error[invalid-argument-type] lib/streamlit/elements/lib/built_in_chart_utils.py:195:9: Argument is incorrect: Expected `PrepDataColumns`, found `dict[Unknown, Unknown]`
+- error[invalid-return-type] lib/streamlit/runtime/fragment.py:450:12: Return type does not match returned value: expected `((F, /) -&gt; F) | F`, found `((F | None, /) -&gt; F | None) | F | None`
+- error[invalid-return-type] lib/streamlit/runtime/fragment.py:478:12: Return type does not match returned value: expected `((F, /) -&gt; F) | F`, found `((F | None, /) -&gt; F | None) | F | None`
+- Found 3275 diagnostics
++ Found 3274 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
+- warning[possibly-unbound-attribute] src/integrations/prefect-dbt/prefect_dbt/cloud/models.py:20:44: Attribute `name` on type `(FlowRun &amp; Unknown) | (None &amp; Unknown) | Unknown | FlowRun | None` is possibly unbound
++ warning[possibly-unbound-attribute] src/integrations/prefect-dbt/prefect_dbt/cloud/models.py:20:44: Attribute `name` on type `FlowRun | None | Unknown` is possibly unbound
+- warning[possibly-unbound-attribute] src/prefect/server/orchestration/global_policy.py:460:13: Attribute `state_details` on type `Unknown | (Unknown &amp; None) | (State &amp; @Todo(specialized non-generic class)) | None` is possibly unbound
++ warning[possibly-unbound-attribute] src/prefect/server/orchestration/global_policy.py:460:13: Attribute `state_details` on type `Unknown | None | (State &amp; @Todo(specialized non-generic class))` is possibly unbound
+- error[invalid-argument-type] src/prefect/testing/utilities.py:245:9: Argument to bound method `aread` is incorrect: Expected `str`, found `str | None | (Any &amp; str) | (Any &amp; None) | @Todo(map_with_boundness: intersections with negative contributions)`
++ error[invalid-argument-type] src/prefect/testing/utilities.py:245:9: Argument to bound method `aread` is incorrect: Expected `str`, found `str | None | @Todo(map_with_boundness: intersections with negative contributions)`
+- error[invalid-argument-type] src/prefect/testing/utilities.py:262:50: Argument to bound method `read_block_document` is incorrect: Expected `UUID`, found `UUID | None | (Any &amp; UUID) | (Any &amp; None)`
++ error[invalid-argument-type] src/prefect/testing/utilities.py:262:50: Argument to bound method `read_block_document` is incorrect: Expected `UUID`, found `UUID | None`
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- error[unresolved-attribute] benchmarks/bm/iast_fixtures/str_methods.py:703:13: Unresolved attribute `s_variables` on type `def wrapper(*args, **kwargs) -&gt; Unknown`.
++ error[unresolved-attribute] benchmarks/bm/iast_fixtures/str_methods.py:703:13: Unresolved attribute `s_variables` on type `def wrapper(...) -&gt; Unknown`.
++ warning[possibly-unresolved-reference] ddtrace/contrib/internal/aiobotocore/patch.py:161:77: Name `ClientResponseContentProxy` used when possibly not defined
+- error[conflicting-declarations] ddtrace/contrib/internal/langchain/patch.py:36:9: Conflicting declared types for `get_openai_token_cost_for_model`: Unknown, Unknown
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/lex.py:221:31: Attribute `_lextokens` on type `(Unknown &amp; ModuleType) | ModuleType` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/lex.py:222:31: Attribute `_lexreflags` on type `(Unknown &amp; ModuleType) | ModuleType` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/lex.py:223:31: Attribute `_lexliterals` on type `(Unknown &amp; ModuleType) | ModuleType` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/lex.py:225:31: Attribute `_lexstateinfo` on type `(Unknown &amp; ModuleType) | ModuleType` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/lex.py:226:31: Attribute `_lexstateignore` on type `(Unknown &amp; ModuleType) | ModuleType` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/lex.py:229:31: Attribute `_lexstatere` on type `(Unknown &amp; ModuleType) | ModuleType` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/lex.py:233:47: Attribute `_lexreflags` on type `(Unknown &amp; ModuleType) | ModuleType` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/lex.py:239:30: Attribute `_lexstateerrorf` on type `(Unknown &amp; ModuleType) | ModuleType` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/lex.py:243:30: Attribute `_lexstateeoff` on type `(Unknown &amp; ModuleType) | ModuleType` is possibly unbound
++ error[unresolved-attribute] ddtrace/vendor/ply/lex.py:221:31: Type `ModuleType` has no attribute `_lextokens`
++ error[unresolved-attribute] ddtrace/vendor/ply/lex.py:222:31: Type `ModuleType` has no attribute `_lexreflags`
++ error[unresolved-attribute] ddtrace/vendor/ply/lex.py:223:31: Type `ModuleType` has no attribute `_lexliterals`
++ error[unresolved-attribute] ddtrace/vendor/ply/lex.py:225:31: Type `ModuleType` has no attribute `_lexstateinfo`
++ error[unresolved-attribute] ddtrace/vendor/ply/lex.py:226:31: Type `ModuleType` has no attribute `_lexstateignore`
++ error[unresolved-attribute] ddtrace/vendor/ply/lex.py:229:31: Type `ModuleType` has no attribute `_lexstatere`
++ error[unresolved-attribute] ddtrace/vendor/ply/lex.py:233:47: Type `ModuleType` has no attribute `_lexreflags`
++ error[unresolved-attribute] ddtrace/vendor/ply/lex.py:239:30: Type `ModuleType` has no attribute `_lexstateerrorf`
++ error[unresolved-attribute] ddtrace/vendor/ply/lex.py:243:30: Type `ModuleType` has no attribute `_lexstateeoff`
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/yacc.py:1987:12: Attribute `_tabversion` on type `(Unknown &amp; ModuleType) | ModuleType` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/yacc.py:1990:26: Attribute `_lr_action` on type `(Unknown &amp; ModuleType) | ModuleType` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/yacc.py:1991:24: Attribute `_lr_goto` on type `(Unknown &amp; ModuleType) | ModuleType` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/yacc.py:1994:18: Attribute `_lr_productions` on type `(Unknown &amp; ModuleType) | ModuleType` is possibly unbound
++ error[unresolved-attribute] ddtrace/vendor/ply/yacc.py:1987:12: Type `ModuleType` has no attribute `_tabversion`
++ error[unresolved-attribute] ddtrace/vendor/ply/yacc.py:1990:26: Type `ModuleType` has no attribute `_lr_action`
++ error[unresolved-attribute] ddtrace/vendor/ply/yacc.py:1991:24: Type `ModuleType` has no attribute `_lr_goto`
++ error[unresolved-attribute] ddtrace/vendor/ply/yacc.py:1994:18: Type `ModuleType` has no attribute `_lr_productions`
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/yacc.py:1997:26: Attribute `_lr_method` on type `(Unknown &amp; ModuleType) | ModuleType` is possibly unbound
+- warning[possibly-unbound-attribute] ddtrace/vendor/ply/yacc.py:1998:16: Attribute `_lr_signature` on type `(Unknown &amp; ModuleType) | ModuleType` is possibly unbound
++ error[unresolved-attribute] ddtrace/vendor/ply/yacc.py:1997:26: Type `ModuleType` has no attribute `_lr_method`
++ error[unresolved-attribute] ddtrace/vendor/ply/yacc.py:1998:16: Type `ModuleType` has no attribute `_lr_signature`
+- error[invalid-assignment] ddtrace/vendor/psutil/_compat.py:254:13: Object of type `Unknown` is not assignable to attribute `__wrapped__` on type `(def wrapper(*args, **kwds) -&gt; Unknown) | (def wrapper(*args, **kwds) -&gt; Unknown) | (def wrapper(*args, **kwds) -&gt; Unknown)`
++ error[invalid-assignment] ddtrace/vendor/psutil/_compat.py:254:13: Object of type `Unknown` is not assignable to attribute `__wrapped__` on type `(def wrapper(...) -&gt; Unknown) | (def wrapper(...) -&gt; Unknown) | (def wrapper(...) -&gt; Unknown)`
+- error[invalid-assignment] ddtrace/vendor/psutil/_compat.py:255:13: Object of type `def cache_info() -&gt; Unknown` is not assignable to attribute `cache_info` on type `(def wrapper(*args, **kwds) -&gt; Unknown) | (def wrapper(*args, **kwds) -&gt; Unknown) | (def wrapper(*args, **kwds) -&gt; Unknown)`
++ error[invalid-assignment] ddtrace/vendor/psutil/_compat.py:255:13: Object of type `def cache_info() -&gt; Unknown` is not assignable to attribute `cache_info` on type `(def wrapper(...) -&gt; Unknown) | (def wrapper(...) -&gt; Unknown) | (def wrapper(...) -&gt; Unknown)`
+- error[invalid-assignment] ddtrace/vendor/psutil/_compat.py:256:13: Object of type `def cache_clear() -&gt; Unknown` is not assignable to attribute `cache_clear` on type `(def wrapper(*args, **kwds) -&gt; Unknown) | (def wrapper(*args, **kwds) -&gt; Unknown) | (def wrapper(*args, **kwds) -&gt; Unknown)`
++ error[invalid-assignment] ddtrace/vendor/psutil/_compat.py:256:13: Object of type `def cache_clear() -&gt; Unknown` is not assignable to attribute `cache_clear` on type `(def wrapper(...) -&gt; Unknown) | (def wrapper(...) -&gt; Unknown) | (def wrapper(...) -&gt; Unknown)`
+- warning[possibly-unbound-attribute] tests/profiling_v2/collector/test_stack.py:754:13: Attribute `ignore_profiler` on type `(Unknown &amp; StackCollector) | StackCollector` is possibly unbound
++ error[unresolved-attribute] tests/profiling_v2/collector/test_stack.py:754:13: Type `StackCollector` has no attribute `ignore_profiler`
+
+scikit-learn (https://github.com/scikit-learn/scikit-learn)
+- warning[possibly-unbound-attribute] sklearn/ensemble/_hist_gradient_boosting/tests/test_grower.py:155:12: Attribute `value` on type `(Unknown &amp; None) | None` is possibly unbound
+- warning[possibly-unbound-attribute] sklearn/ensemble/_hist_gradient_boosting/tests/test_grower.py:156:12: Attribute `left_child` on type `(Unknown &amp; None) | None` is possibly unbound
+- warning[possibly-unbound-attribute] sklearn/ensemble/_hist_gradient_boosting/tests/test_grower.py:157:12: Attribute `right_child` on type `(Unknown &amp; None) | None` is possibly unbound
++ error[unresolved-attribute] sklearn/ensemble/_hist_gradient_boosting/tests/test_grower.py:155:12: Type `None` has no attribute `value`
++ error[unresolved-attribute] sklearn/ensemble/_hist_gradient_boosting/tests/test_grower.py:156:12: Type `None` has no attribute `left_child`
++ error[unresolved-attribute] sklearn/ensemble/_hist_gradient_boosting/tests/test_grower.py:157:12: Type `None` has no attribute `right_child`
+- error[invalid-argument-type] sklearn/externals/array_api_extra/_lib/_funcs.py:511:25: Argument to function `len` is incorrect: Expected `Sized`, found `(tuple[int, ...] &amp; tuple[Unknown, ...]) | int | tuple[int, ...]`
++ error[invalid-argument-type] sklearn/externals/array_api_extra/_lib/_funcs.py:511:25: Argument to function `len` is incorrect: Expected `Sized`, found `tuple[int, ...] | int`
+- error[invalid-argument-type] sklearn/externals/array_api_extra/_lib/_funcs.py:512:28: Argument to function `min` is incorrect: Expected `Iterable[Unknown]`, found `(tuple[int, ...] &amp; tuple[Unknown, ...] &amp; ~tuple[()]) | int | (tuple[int, ...] &amp; ~tuple[()])`
++ error[invalid-argument-type] sklearn/externals/array_api_extra/_lib/_funcs.py:512:28: Argument to function `min` is incorrect: Expected `Iterable[Unknown]`, found `(tuple[int, ...] &amp; ~tuple[()]) | int`
+- error[invalid-argument-type] sklearn/externals/array_api_extra/_lib/_funcs.py:512:49: Argument to function `max` is incorrect: Expected `Iterable[Unknown]`, found `(tuple[int, ...] &amp; tuple[Unknown, ...] &amp; ~tuple[()]) | int | (tuple[int, ...] &amp; ~tuple[()])`
++ error[invalid-argument-type] sklearn/externals/array_api_extra/_lib/_funcs.py:512:49: Argument to function `max` is incorrect: Expected `Iterable[Unknown]`, found `(tuple[int, ...] &amp; ~tuple[()]) | int`
+- error[not-iterable] sklearn/externals/array_api_extra/_lib/_funcs.py:517:40: Object of type `(tuple[int, ...] &amp; tuple[Unknown, ...]) | int | tuple[int, ...]` may not be iterable
++ error[not-iterable] sklearn/externals/array_api_extra/_lib/_funcs.py:517:40: Object of type `tuple[int, ...] | int` may not be iterable
+- warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_ridge.py:554:12: Attribute `shape` on type `(Unknown &amp; float) | float` is possibly unbound
++ error[unresolved-attribute] sklearn/linear_model/tests/test_ridge.py:554:12: Type `float` has no attribute `shape`
+- error[unresolved-attribute] sklearn/utils/_metadata_requests.py:1353:9: Unresolved attribute `__signature__` on type `def func(*args, **kw) -&gt; Unknown`.
++ error[unresolved-attribute] sklearn/utils/_metadata_requests.py:1353:9: Unresolved attribute `__signature__` on type `def func(...) -&gt; Unknown`.
++ warning[possibly-unresolved-reference] sklearn/utils/validation.py:924:42: Name `SparseDtype` used when possibly not defined
++ warning[possibly-unresolved-reference] sklearn/utils/validation.py:1002:42: Name `SparseDtype` used when possibly not defined
+- Found 2293 diagnostics
++ Found 2295 diagnostics
+
+scipy (https://github.com/scipy/scipy)
+- error[invalid-argument-type] scipy/_lib/array_api_extra/src/array_api_extra/_lib/_funcs.py:567:25: Argument to function `len` is incorrect: Expected `Sized`, found `(tuple[int, ...] &amp; tuple[Unknown, ...]) | int | tuple[int, ...]`
++ error[invalid-argument-type] scipy/_lib/array_api_extra/src/array_api_extra/_lib/_funcs.py:567:25: Argument to function `len` is incorrect: Expected `Sized`, found `tuple[int, ...] | int`
+- error[invalid-argument-type] scipy/_lib/array_api_extra/src/array_api_extra/_lib/_funcs.py:568:28: Argument to function `min` is incorrect: Expected `Iterable[Unknown]`, found `(tuple[int, ...] &amp; tuple[Unknown, ...] &amp; ~tuple[()]) | int | (tuple[int, ...] &amp; ~tuple[()])`
++ error[invalid-argument-type] scipy/_lib/array_api_extra/src/array_api_extra/_lib/_funcs.py:568:28: Argument to function `min` is incorrect: Expected `Iterable[Unknown]`, found `(tuple[int, ...] &amp; ~tuple[()]) | int`
+- error[invalid-argument-type] scipy/_lib/array_api_extra/src/array_api_extra/_lib/_funcs.py:568:49: Argument to function `max` is incorrect: Expected `Iterable[Unknown]`, found `(tuple[int, ...] &amp; tuple[Unknown, ...] &amp; ~tuple[()]) | int | (tuple[int, ...] &amp; ~tuple[()])`
++ error[invalid-argument-type] scipy/_lib/array_api_extra/src/array_api_extra/_lib/_funcs.py:568:49: Argument to function `max` is incorrect: Expected `Iterable[Unknown]`, found `(tuple[int, ...] &amp; ~tuple[()]) | int`
+- error[not-iterable] scipy/_lib/array_api_extra/src/array_api_extra/_lib/_funcs.py:573:40: Object of type `(tuple[int, ...] &amp; tuple[Unknown, ...]) | int | tuple[int, ...]` may not be iterable
++ error[not-iterable] scipy/_lib/array_api_extra/src/array_api_extra/_lib/_funcs.py:573:40: Object of type `tuple[int, ...] | int` may not be iterable
+- error[invalid-assignment] scipy/_lib/decorator.py:239:5: Object of type `(Unknown &amp; ~partial[Unknown]) | @Todo(specialized non-generic class)` is not assignable to attribute `__wrapped__` on type `(def fun(*args, **kw) -&gt; Unknown) | (def fun(*args, **kw) -&gt; Unknown) | (def fun(*args, **kw) -&gt; Unknown)`
++ error[invalid-assignment] scipy/_lib/decorator.py:239:5: Object of type `(Unknown &amp; ~partial[Unknown]) | @Todo(specialized non-generic class)` is not assignable to attribute `__wrapped__` on type `(def fun(...) -&gt; Unknown) | (def fun(...) -&gt; Unknown) | (def fun(...) -&gt; Unknown)`
+- error[invalid-assignment] scipy/_lib/decorator.py:240:5: Object of type `Signature` is not assignable to attribute `__signature__` on type `(def fun(*args, **kw) -&gt; Unknown) | (def fun(*args, **kw) -&gt; Unknown) | (def fun(*args, **kw) -&gt; Unknown)`
++ error[invalid-assignment] scipy/_lib/decorator.py:240:5: Object of type `Signature` is not assignable to attribute `__signature__` on type `(def fun(...) -&gt; Unknown) | (def fun(...) -&gt; Unknown) | (def fun(...) -&gt; Unknown)`
+- warning[possibly-unbound-attribute] scipy/integrate/_quadrature.py:538:13: Attribute `reshape` on type `(Unknown &amp; None) | None | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
++ warning[possibly-unbound-attribute] scipy/integrate/_quadrature.py:538:13: Attribute `reshape` on type `None | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
+- error[unresolved-attribute] scipy/optimize/tests/test_bracket.py:155:13: Type `def f(*args, **kwargs) -&gt; Unknown` has no attribute `f_evals`
++ error[unresolved-attribute] scipy/optimize/tests/test_bracket.py:155:13: Type `def f(...) -&gt; Unknown` has no attribute `f_evals`
+- error[unresolved-attribute] scipy/optimize/tests/test_bracket.py:157:9: Unresolved attribute `f_evals` on type `def f(*args, **kwargs) -&gt; Unknown`.
++ error[unresolved-attribute] scipy/optimize/tests/test_bracket.py:157:9: Unresolved attribute `f_evals` on type `def f(...) -&gt; Unknown`.
+- error[unresolved-attribute] scipy/optimize/tests/test_bracket.py:188:35: Type `def f(*args, **kwargs) -&gt; Unknown` has no attribute `f_evals`
++ error[unresolved-attribute] scipy/optimize/tests/test_bracket.py:188:35: Type `def f(...) -&gt; Unknown` has no attribute `f_evals`
+- error[unresolved-attribute] scipy/optimize/tests/test_chandrupatla.py:228:13: Type `def f(*args, **kwargs) -&gt; Unknown` has no attribute `f_evals`
++ error[unresolved-attribute] scipy/optimize/tests/test_chandrupatla.py:228:13: Type `def f(...) -&gt; Unknown` has no attribute `f_evals`
+- error[unresolved-attribute] scipy/optimize/tests/test_chandrupatla.py:230:9: Unresolved attribute `f_evals` on type `def f(*args, **kwargs) -&gt; Unknown`.
++ error[unresolved-attribute] scipy/optimize/tests/test_chandrupatla.py:230:9: Unresolved attribute `f_evals` on type `def f(...) -&gt; Unknown`.
+- error[unresolved-attribute] scipy/optimize/tests/test_chandrupatla.py:247:36: Type `def f(*args, **kwargs) -&gt; Unknown` has no attribute `f_evals`
++ error[unresolved-attribute] scipy/optimize/tests/test_chandrupatla.py:247:36: Type `def f(...) -&gt; Unknown` has no attribute `f_evals`
+- error[unresolved-attribute] scipy/optimize/tests/test_chandrupatla.py:248:35: Type `def f(*args, **kwargs) -&gt; Unknown` has no attribute `f_evals`
++ error[unresolved-attribute] scipy/optimize/tests/test_chandrupatla.py:248:35: Type `def f(...) -&gt; Unknown` has no attribute `f_evals`
+- error[unresolved-attribute] scipy/optimize/tests/test_chandrupatla.py:581:13: Type `def f(*args, **kwargs) -&gt; Unknown` has no attribute `f_evals`
++ error[unresolved-attribute] scipy/optimize/tests/test_chandrupatla.py:581:13: Type `def f(...) -&gt; Unknown` has no attribute `f_evals`
+- error[unresolved-attribute] scipy/optimize/tests/test_chandrupatla.py:583:9: Unresolved attribute `f_evals` on type `def f(*args, **kwargs) -&gt; Unknown`.
++ error[unresolved-attribute] scipy/optimize/tests/test_chandrupatla.py:583:9: Unresolved attribute `f_evals` on type `def f(...) -&gt; Unknown`.
+- error[unresolved-attribute] scipy/optimize/tests/test_chandrupatla.py:610:40: Type `def f(*args, **kwargs) -&gt; Unknown` has no attribute `f_evals`
++ error[unresolved-attribute] scipy/optimize/tests/test_chandrupatla.py:610:40: Type `def f(...) -&gt; Unknown` has no attribute `f_evals`
+- error[unresolved-attribute] scipy/optimize/tests/test_chandrupatla.py:619:39: Type `def f(*args, **kwargs) -&gt; Unknown` has no attribute `f_evals`
++ error[unresolved-attribute] scipy/optimize/tests/test_chandrupatla.py:619:39: Type `def f(...) -&gt; Unknown` has no attribute `f_evals`
+- warning[possibly-unbound-attribute] scipy/sparse/linalg/_eigen/lobpcg/lobpcg.py:121:16: Attribute `shape` on type `(Unknown &amp; None) | None | @Todo(Type::Intersection.call())` is possibly unbound
++ warning[possibly-unbound-attribute] scipy/sparse/linalg/_eigen/lobpcg/lobpcg.py:121:16: Attribute `shape` on type `None | @Todo(Type::Intersection.call())` is possibly unbound
+- warning[possibly-unbound-attribute] scipy/sparse/linalg/_eigen/lobpcg/lobpcg.py:125:39: Attribute `shape` on type `(Unknown &amp; None) | None | @Todo(Type::Intersection.call())` is possibly unbound
++ warning[possibly-unbound-attribute] scipy/sparse/linalg/_eigen/lobpcg/lobpcg.py:125:39: Attribute `shape` on type `None | @Todo(Type::Intersection.call())` is possibly unbound
+- error[unresolved-attribute] scipy/stats/_mstats_basic.py:1919:7: Type `bool` has no attribute `filled`
++ warning[possibly-unbound-attribute] scipy/stats/_mstats_basic.py:1919:7: Attribute `filled` on type `bool | @Todo(Type::Intersection.call())` is possibly unbound
+
+sympy (https://github.com/sympy/sympy)
+- warning[possibly-unbound-attribute] sympy/core/exprtools.py:345:24: Attribute `p` on type `(Unknown &amp; Number) | Number | @Todo(Type::Intersection.call())` is possibly unbound
+- warning[possibly-unbound-attribute] sympy/core/exprtools.py:346:41: Attribute `p` on type `(Unknown &amp; Number) | Number | @Todo(Type::Intersection.call())` is possibly unbound
+- warning[possibly-unbound-attribute] sympy/core/exprtools.py:347:37: Attribute `q` on type `(Unknown &amp; Number) | Number | @Todo(Type::Intersection.call())` is possibly unbound
++ error[unresolved-attribute] sympy/core/exprtools.py:345:24: Type `Number` has no attribute `p`
++ error[unresolved-attribute] sympy/core/exprtools.py:346:41: Type `Number` has no attribute `p`
++ error[unresolved-attribute] sympy/core/exprtools.py:347:37: Type `Number` has no attribute `q`
+- error[unsupported-operator] sympy/core/tests/test_numbers.py:983:12: Operator `+` is unsupported between objects of type `(Unknown &amp; ~Literal[1]) | (NaN &amp; Unknown) | NaN` and `(Unknown &amp; ~Literal[1]) | (NaN &amp; Unknown) | NaN`
++ error[unsupported-operator] sympy/core/tests/test_numbers.py:983:12: Operator `+` is unsupported between objects of type `(Unknown &amp; ~Literal[1]) | NaN` and `(Unknown &amp; ~Literal[1]) | NaN`
+- error[unsupported-operator] sympy/core/tests/test_numbers.py:984:19: Operator `*` is unsupported between objects of type `(Unknown &amp; ~Literal[1]) | (NaN &amp; Unknown) | NaN` and `Literal[-5]`
++ error[unsupported-operator] sympy/core/tests/test_numbers.py:984:19: Operator `*` is unsupported between objects of type `(Unknown &amp; ~Literal[1]) | NaN` and `Literal[-5]`
+- error[unsupported-operator] sympy/core/tests/test_numbers.py:1001:16: Operator `+` is unsupported between objects of type `(Unknown &amp; ~Literal[1]) | (NaN &amp; Unknown) | NaN` and `Literal[1] | float | Unknown | One | NegativeOne | Float`
++ error[unsupported-operator] sympy/core/tests/test_numbers.py:1001:16: Operator `+` is unsupported between objects of type `(Unknown &amp; ~Literal[1]) | NaN` and `Literal[1] | float | Unknown | One | NegativeOne | Float`
+- error[unsupported-operator] sympy/core/tests/test_numbers.py:1002:16: Operator `-` is unsupported between objects of type `(Unknown &amp; ~Literal[1]) | (NaN &amp; Unknown) | NaN` and `Literal[1] | float | Unknown | One | NegativeOne | Float`
++ error[unsupported-operator] sympy/core/tests/test_numbers.py:1002:16: Operator `-` is unsupported between objects of type `(Unknown &amp; ~Literal[1]) | NaN` and `Literal[1] | float | Unknown | One | NegativeOne | Float`
+- error[unsupported-operator] sympy/core/tests/test_numbers.py:1004:16: Operator `/` is unsupported between objects of type `(Unknown &amp; ~Literal[1]) | (NaN &amp; Unknown) | NaN` and `Literal[1] | float | Unknown | One | NegativeOne | Float`
++ error[unsupported-operator] sympy/core/tests/test_numbers.py:1004:16: Operator `/` is unsupported between objects of type `(Unknown &amp; ~Literal[1]) | NaN` and `Literal[1] | float | Unknown | One | NegativeOne | Float`
+- warning[possibly-unbound-attribute] sympy/geometry/line.py:1675:45: Attribute `x` on type `(Unknown &amp; Point) | Point` is possibly unbound
+- warning[possibly-unbound-attribute] sympy/geometry/line.py:1675:67: Attribute `x` on type `(Unknown &amp; Point) | Point` is possibly unbound
+- warning[possibly-unbound-attribute] sympy/geometry/line.py:1679:45: Attribute `y` on type `(Unknown &amp; Point) | Point` is possibly unbound
+- warning[possibly-unbound-attribute] sympy/geometry/line.py:1679:67: Attribute `y` on type `(Unknown &amp; Point) | Point` is possibly unbound
++ error[unresolved-attribute] sympy/geometry/line.py:1675:45: Type `Point` has no attribute `x`
++ error[unresolved-attribute] sympy/geometry/line.py:1675:67: Type `Point` has no attribute `x`
++ error[unresolved-attribute] sympy/geometry/line.py:1679:45: Type `Point` has no attribute `y`
++ error[unresolved-attribute] sympy/geometry/line.py:1679:67: Type `Point` has no attribute `y`
+- error[not-iterable] sympy/holonomic/holonomic.py:1055:22: Object of type `None | Unknown | (Unknown &amp; None) | dict[Unknown, Unknown]` may not be iterable
++ error[not-iterable] sympy/holonomic/holonomic.py:1055:22: Object of type `None | Unknown | dict[Unknown, Unknown]` may not be iterable
+- error[conflicting-declarations] sympy/interactive/printing.py:511:13: Conflicting declared types for `stringify_func`: Unknown, Unknown
+- error[conflicting-declarations] sympy/interactive/printing.py:518:13: Conflicting declared types for `stringify_func`: Unknown, Unknown
+- error[unsupported-operator] sympy/logic/algorithms/dpll2.py:44:8: Operator `in` is not supported for types `set[Unknown]` and `None`, in comparing `set[Unknown]` with `Unknown | (Unknown &amp; None) | (Unknown &amp; list[Unknown]) | None | list[Unknown]`
++ error[unsupported-operator] sympy/logic/algorithms/dpll2.py:44:8: Operator `in` is not supported for types `set[Unknown]` and `None`, in comparing `set[Unknown]` with `Unknown | None | list[Unknown]`
+- error[unsupported-operator] sympy/logic/algorithms/dpll2.py:54:24: Operator `+` is unsupported between objects of type `Unknown | (Unknown &amp; None) | (Unknown &amp; list[Unknown]) | None | list[Unknown]` and `Unknown | list[Unknown]`
++ error[unsupported-operator] sympy/logic/algorithms/dpll2.py:54:24: Operator `+` is unsupported between objects of type `Unknown | None | list[Unknown]` and `Unknown | list[Unknown]`
+- error[unsupported-operator] sympy/logic/algorithms/minisat22_wrapper.py:13:8: Operator `in` is not supported for types `set[Unknown]` and `None`, in comparing `set[Unknown]` with `Unknown | (Unknown &amp; None) | (Unknown &amp; list[Unknown]) | None | list[Unknown]`
++ error[unsupported-operator] sympy/logic/algorithms/minisat22_wrapper.py:13:8: Operator `in` is not supported for types `set[Unknown]` and `None`, in comparing `set[Unknown]` with `Unknown | None | list[Unknown]`
+- error[unsupported-operator] sympy/logic/algorithms/pycosat_wrapper.py:12:8: Operator `in` is not supported for types `set[Unknown]` and `None`, in comparing `set[Unknown]` with `Unknown | (Unknown &amp; None) | (Unknown &amp; list[Unknown]) | None | list[Unknown]`
++ error[unsupported-operator] sympy/logic/algorithms/pycosat_wrapper.py:12:8: Operator `in` is not supported for types `set[Unknown]` and `None`, in comparing `set[Unknown]` with `Unknown | None | list[Unknown]`
+- warning[possibly-unbound-attribute] sympy/physics/control/lti.py:2892:41: Attribute `is_StateSpace_object` on type `(Unknown &amp; TransferFunction &amp; ~AlwaysFalsy) | (Unknown &amp; Series &amp; ~AlwaysFalsy) | (Unknown &amp; StateSpace &amp; ~AlwaysFalsy) | (Unknown &amp; Feedback &amp; ~AlwaysFalsy) | TransferFunction` is possibly unbound
++ warning[possibly-unbound-attribute] sympy/physics/control/lti.py:2892:41: Attribute `is_StateSpace_object` on type `TransferFunction | (Unknown &amp; Series &amp; ~AlwaysFalsy) | (Unknown &amp; StateSpace &amp; ~AlwaysFalsy) | (Unknown &amp; Feedback &amp; ~AlwaysFalsy)` is possibly unbound
+- error[not-iterable] sympy/printing/numpy.py:120:51: Object of type `@Todo(Subscript expressions on intersections) | Basic` may not be iterable
++ error[not-iterable] sympy/printing/numpy.py:120:51: Object of type `Basic` is not iterable
+- warning[possibly-unbound-attribute] sympy/solvers/ode/subscheck.py:157:17: Attribute `getO` on type `(Unknown &amp; Basic) | Unknown | Basic` is possibly unbound
++ warning[possibly-unbound-attribute] sympy/solvers/ode/subscheck.py:157:17: Attribute `getO` on type `Basic | Unknown` is possibly unbound
+- warning[possibly-unbound-attribute] sympy/solvers/ode/subscheck.py:158:18: Attribute `removeO` on type `(Unknown &amp; Basic) | Unknown | Basic` is possibly unbound
++ warning[possibly-unbound-attribute] sympy/solvers/ode/subscheck.py:158:18: Attribute `removeO` on type `Basic | Unknown` is possibly unbound
+- error[unsupported-operator] sympy/solvers/ode/subscheck.py:165:20: Operator `-` is unsupported between objects of type `(Unknown &amp; Basic) | Unknown | Basic` and `(Unknown &amp; Basic) | Unknown | Basic`
++ error[unsupported-operator] sympy/solvers/ode/subscheck.py:165:20: Operator `-` is unsupported between objects of type `Basic | Unknown` and `Basic | Unknown`
+- error[unsupported-operator] sympy/solvers/ode/subscheck.py:180:24: Operator `-` is unsupported between objects of type `(Unknown &amp; Basic) | Unknown | Basic` and `(Unknown &amp; Basic) | Unknown | Basic`
++ error[unsupported-operator] sympy/solvers/ode/subscheck.py:180:24: Operator `-` is unsupported between objects of type `Basic | Unknown` and `Basic | Unknown`
+- error[unsupported-operator] sympy/solvers/pde.py:451:15: Operator `-` is unsupported between objects of type `(Unknown &amp; Basic) | Unknown | Basic` and `(Unknown &amp; Basic) | Unknown | Basic`
++ error[unsupported-operator] sympy/solvers/pde.py:451:15: Operator `-` is unsupported between objects of type `Basic | Unknown` and `Basic | Unknown`
+- error[unsupported-operator] sympy/solvers/simplex.py:1068:77: Operator `*` is unsupported between objects of type `(Unknown &amp; None) | None | @Todo(list comprehension type)` and `Unknown | MutableDenseMatrix`
++ error[unsupported-operator] sympy/solvers/simplex.py:1068:77: Operator `*` is unsupported between objects of type `None | @Todo(list comprehension type)` and `Unknown | MutableDenseMatrix`
+- error[invalid-argument-type] sympy/solvers/simplex.py:1068:84: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `(Unknown &amp; None) | None | @Todo(list comprehension type)`
++ error[invalid-argument-type] sympy/solvers/simplex.py:1068:84: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `None | @Todo(list comprehension type)`
+- error[invalid-argument-type] sympy/testing/runtests_pytest.py:453:42: Argument to function `update_args_with_paths` is incorrect: Expected `tuple[str] | None`, found `tuple[Unknown, ...] | tuple[()]`
+- error[index-out-of-bounds] sympy/vector/implicitregion.py:466:48: Index 0 is out of bounds for tuple `tuple[()]` with length 0
+- error[index-out-of-bounds] sympy/vector/implicitregion.py:467:48: Index 1 is out of bounds for tuple `tuple[()]` with length 0
+- error[index-out-of-bounds] sympy/vector/implicitregion.py:485:48: Index 0 is out of bounds for tuple `tuple[()]` with length 0
+- error[index-out-of-bounds] sympy/vector/implicitregion.py:486:48: Index 1 is out of bounds for tuple `tuple[()]` with length 0
+- error[index-out-of-bounds] sympy/vector/implicitregion.py:487:48: Index 2 is out of bounds for tuple `tuple[()]` with length 0
+- Found 17919 diagnostics
++ Found 17911 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-06-19 18:08</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/cjm%2Fnofullystatic?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a></h2>
+<h3>Merging #18799 will <strong>improve performances by 61.94%</strong></h3>
+<p><sub>Comparing <code>cjm/nofullystatic</code> (271062e) with <code>main</code> (66f50fb)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements<br />
+<code>✅ 36</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>ty_micro[many_tuple_assignments]</code> | 207.4 ms | 128.1 ms | +61.94% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-06-19 21:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-06-20 03:29</div>
+            <div class="timeline-body"><blockquote>
+<p>we can usefully consider two gradual types S and T to have a subtype relation S &lt;: T if all possible materializations of S are a subtype of all possible materializations of T</p>
+</blockquote>
+<p>This seems to imply that Any is not a subtype of itself, because there are materializations of Any that are not subtypes of other materializations of Any.</p>
+<p>I think the right formulation is the following: given two gradual types <code>A</code> and <code>B</code>,
+<code>A</code> is a subtype of <code>B</code> if every materialization of <code>A</code> is a subtype of a materialization of <code>B</code>, and every materialization of <code>B</code> is a supertype of a materialization of <code>A</code>. But I'm still thinking about whether this is right; in particular, I want to prove that this definition allows us to derive that if A &lt;: B, then A | B is equivalent to B.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-20 03:57</div>
+            <div class="timeline-body"><blockquote>
+<p>This seems to imply that Any is not a subtype of itself</p>
+</blockquote>
+<p>Yes, it didn't seem correct to me to consider <code>Any</code> a subtype of itself (presuming two unrelated <code>Any</code>), because we don't have enough information to say that either one is definitely a superset of the other. But I think you may be right that this is still a stricter approach than is necessary, for purposes of simplifying unions and intersections.</p>
+<p>We do (in this PR, and before it) simplify <code>Any | Any</code> to <code>Any</code> in a union, but this simplification is not based on subtyping, it's based on gradual equivalence, which means that <code>Any | Any</code> doesn't provide any more information about the type than <code>Any</code> does.</p>
+<blockquote>
+<p>I think the right formulation is the following: given two gradual types <code>A</code> and <code>B</code>,
+<code>A</code> is a subtype of <code>B</code> if every materialization of <code>A</code> is a subtype of a materialization of <code>B</code>, and every materialization of <code>B</code> is a supertype of a materialization of <code>A</code>.</p>
+</blockquote>
+<p>Yes, I can see the rationale here. If every materialization of <code>A</code> is a subtype of some materialization of <code>B</code>, then simplifying <code>A | B</code> to <code>B</code> cannot change the upper bound of possible materializations -- <code>A</code> did not contribute any materializations to the union that are not subsumed by some materialization of <code>B</code>. And the lower bound of possible materializations cannot change either, because for any small materialization we imagine for <code>A</code>, there is some materialization provided by <code>B</code> which is a supertype of it, and the union would resolve to that materialization from <code>B</code> anyway.</p>
+<p>And I think dual arguments apply for simplifying <code>A &amp; B</code> to <code>A</code>.</p>
+<p>I will try out this definition tomorrow and see if there are any difficulties implementing it, and how it impacts this PR. It definitely has some nice properties, since it restores both reflexivity of subtyping, and also that equivalence implies subtyping. And it should make union/intersection simplification simpler, since it can be based only on subtyping, instead of requiring that we check both subtyping and equivalence.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-20 04:02</div>
+            <div class="timeline-body"><blockquote>
+<p><code>Any | Any</code> doesn't provide any more information about the type than <code>Any</code> does.</p>
+</blockquote>
+<p>I think this is a key point. I was thinking of subtyping in terms of &quot;can we say for sure that whatever type B materializes to is a subtype of whatever type A materializes to?&quot; But if subtyping is really only used for simplifying unions and intersections, then we can instead define it in terms of &quot;does this type contribute any information to the union/intersection that this other type doesn't?&quot; or &quot;can we simplify this union/intersection and still have an equivalent type?&quot; -- and I think that leads us to your definition.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-06-20 05:34</div>
+            <div class="timeline-body"><blockquote>
+<p>If every materialization of A is a subtype of some materialization of B, then simplifying A | B to B cannot change the upper bound of possible materializations -- A did not contribute any materializations to the union that are not subsumed by some materialization of B. And the lower bound of possible materializations cannot change either, because for any small materialization we imagine for A, there is some materialization provided by B which is a supertype of it, and the union would resolve to that materialization from B anyway.</p>
+</blockquote>
+<p>I feel a version of that argument would imply that we can also simplify <code>int | Any</code> to <code>Any</code>, which is wrong. That's why my definition includes the additional condition &quot;every materialization of B is a supertype of a materialization of A&quot; but I need to think more about why that makes sense.</p>
+<p>Some other thoughts that I need to develop further but that may be of interest to you:</p>
+<ul>
+<li>I think gradual equivalence can be implemented as mutual gradual subtyping: that is, if A &lt;: B and B &lt;: A, then A is equivalent to B.</li>
+<li>I am using my definition of gradual subtyping in pycroscope for implementing overloads. I need to think about whether this algorithm is equivalent to that in the spec; if so, you can plausibly implement overloads without the &quot;top materialization&quot; trick.</li>
+</ul>
+<p>And a general note: As you may have noticed, I recently nerdsniped myself into thinking a lot about the theory of the type system. It sounds like my ruminations have been useful for ty, but feel free to ignore my ideas if they distract you from building a practically useful type checker. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-06-20 12:48</div>
+            <div class="timeline-body"><p>I'm excited about the performance improvement to <code>many_tuple_assignments</code>, since #18600 will claw some of it right back :sweat_smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-20 16:36</div>
+            <div class="timeline-body"><blockquote>
+<p>I feel a version of that argument would imply that we can also simplify <code>int | Any</code> to <code>Any</code>, which is wrong. That's why my definition includes the additional condition &quot;every materialization of B is a supertype of a materialization of A&quot; but I need to think more about why that makes sense.</p>
+</blockquote>
+<p>Yes, I think my argument on the lower bound was incomplete; we need that additional condition to ensure the lower bound of the union type does not grow by the removal of <code>A</code>. If we imagine a small materialization of <code>B</code>, it must still be a super-type of some materialization of <code>A</code>, or else the lower bound of <code>A | B</code> grows by removing <code>A</code> from the union.</p>
+<blockquote>
+<ul>
+<li>I think gradual equivalence can be implemented as mutual gradual subtyping: that is, if A &lt;: B and B &lt;: A, then A is equivalent to B.</li>
+</ul>
+</blockquote>
+<p>Yes, with your definition of gradual subtyping, I think this is true.</p>
+<blockquote>
+<ul>
+<li>I am using my definition of gradual subtyping in pycroscope for implementing overloads.</li>
+</ul>
+</blockquote>
+<p>I am curious to hear more about how you use it. Is it just for step 5 (where we use top materialization)?</p>
+<blockquote>
+<p>It sounds like my ruminations have been useful for ty</p>
+</blockquote>
+<p>Definitely!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-06-20 16:53</div>
+            <div class="timeline-body"><blockquote>
+<p>I am curious to hear more about how you use it. Is it just for step 5 (where we use top materialization)?</p>
+</blockquote>
+<p>My approach predates the spec and doesn't follow it exactly, but it seems mostly compliant, though I need to test more. I haven't had time yet to verify whether it's actually equivalent to the spec. When I initially implemented this I wrote up an explanation at https://pyanalyze.readthedocs.io/en/latest/reference/signature.html#pyanalyze.signature.OverloadedSignature.check_call . Since then, I've changed the concept of a &quot;match due to Any&quot; to &quot;a match that matches under assignability but not subtyping&quot;. This behaves similarly to step 5 in the spec but not sure if it's equivalent. I can write more about it when I get around to looking into this further.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-20 19:23</div>
+            <div class="timeline-body"><p>Recording a few observations here that arose in discussion with @sharkdp:</p>
+<p>Let's write &quot;top materialization of S&quot; as <code>S+</code> and &quot;bottom materialization of <code>S</code>&quot; as <code>S-</code>.</p>
+<p>The definition of subtyping I implemented here so far corresponds to saying that <code>S &lt;: T</code> iff <code>S+ &lt;: T-</code>. Your proposed definition corresponds to saying that <code>S &lt;: T</code> iff <code>S+ &lt;: T+</code> and <code>S- &lt;: T-</code>.</p>
+<p>It's interesting to note that neither definition is able to simplify <code>S | T</code> or <code>S &amp; T</code> where <code>T- &lt;: S-</code> and <code>S+ &lt;: T+</code> (that is, <code>S</code> is a more precise type than <code>T</code>, with greater lower bound and lesser upper bound). In a system where all gradual types are represented by their top and bottom materialization, <code>S | T</code> could be simplified to a new gradual type defined by <code>(S-, T+)</code> and <code>S &amp; T</code> could be simplified to a new gradual type defined by <code>(T-, S+)</code>.</p>
+<p>(But this is all setting aside the fact that it's not clear how we can even define a bottom materialization for some Python gradual types, particularly invariant generics such as <code>list[Any]</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-22 03:55</div>
+            <div class="timeline-body"><p>I've implemented the expanded form of &quot;gradual subtyping&quot; discussed above. It mostly seems to work out well -- all tests pass, union/intersection builder can now be simplified to use only subtyping and not a separate equivalence check, reflexivity of subtyping is restored for all types.</p>
+<p>But the property tests do reveal one problem: transitivity of subtyping is now broken by <a href="https://github.com/python/typeshed/blob/main/stdlib/types.pyi#L114"><code>FunctionType.__call__</code></a> and <a href="https://github.com/python/typeshed/blob/main/stdlib/builtins.pyi#L214"><code>type.__call__</code></a>. We now consider both of these to be subtypes of <code>Callable[..., Any]</code> (because they have an equivalent signature), but we don't consider many particular types/functions to be subtypes of <code>Callable[..., Any]</code> (because they have a more specific signature that isn't a subtype of <code>Callable[..., Any]</code>). And of course any particular type/function must be a subtype of <code>type</code>/<code>FunctionType</code>.</p>
+<p>We could maybe work around this problem specifically for <code>FunctionType.__call__</code> and <code>type.__call__</code>, but it seems like a more general problem. <code>FunctionType.__call__</code> and <code>type.__call__</code> are Liskov-valid, because Python uses assignability (&quot;consistent subtyping&quot;) to decide if a subclass override is OK. Allowing overrides based on assignability, but then doing gradual structural subtyping according to the <code>S- &lt;: T- &amp;&amp; S+ &lt;: T+</code> rule, unavoidably permits subtyping to not be transitive.</p>
+<p>I'm not sure what can be done about this.</p>
+<p>The stricter form of gradual subtyping that I originally implemented here (requiring that <code>S+ &lt;: T-</code>) does not have this problem, because it ensures that any two gradual types that have a subtype relation cannot possibly materialize in any way that would violate that subtype relation. But of course the stricter form breaks reflexivity of subtyping.</p>
+<p>Losing transitivity of subtyping is a serious problem for consistent simplification of unions and intersections, because it means the order in which types are added to a union/intersection can change the result of simplification.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-23 14:47</div>
+            <div class="timeline-body"><p>My plan here is to revert this PR back to the <code>S+ &lt;: T-</code> rule that I originally implemented. I'm sad to give up reflexivity of subtyping (and the potential to implement gradual equivalence as bidirectional subtyping), but I think we can afford to give that up, and we can't afford to give up transitivity. And I don't see any way around the latter issue, barring a much deeper re-thinking of how subtyping applies to nominal types with gradual members in Python (essentially treating them as structural such that <code>class X(Y)</code> doesn't necessarily imply that <code>X &lt;: Y</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-06-23 17:33</div>
+            <div class="timeline-body"><p>Yes I think that unfortunately makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @carljm on 2025-06-24 00:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-06-24 00:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-06-24 00:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @carljm on 2025-06-24 00:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2025-06-24 00:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @sharkdp on 2025-06-24 06:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/is_equivalent_to.md</code>:18 on 2025-06-24 06:33</div>
+            <div class="timeline-body"><p>Minor: Maybe we could add</p>
+<pre><code class="language-suggestion">static_assert(is_equivalent_to(Unknown, Unknown))
+static_assert(is_equivalent_to(Any, Unknown))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/is_gradual_equivalent_to.md</code>:1 on 2025-06-24 06:37</div>
+            <div class="timeline-body"><p>I think it would be great if this file could be merged with <code>is_equivalent_to.md</code>, as a follow-up. Could probably also be a contributor task. Looks like there is quite a bit of duplication.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/is_subtype_of.md</code>:326 on 2025-06-24 06:45</div>
+            <div class="timeline-body"><p>It might be valuable to add a few positive cases in this section now? For example:</p>
+<pre><code class="language-py">static_assert(is_subtype_of(tuple[Any, ...], tuple[object, ...]))
+static_assert(is_subtype_of(tuple[Never, ...], tuple[Any, ...]))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/is_subtype_of.md</code>:800 on 2025-06-24 06:52</div>
+            <div class="timeline-body"><p>This sentence was a bit hard to understand, maybe add:</p>
+<pre><code class="language-suggestion">Instances of classes that inherit `Any` are not subtypes of some other `Arbitrary` class, because the
+`Any` they inherit from could materialize to something (e.g. `object`) that is not a subclass of that class.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/is_subtype_of.md</code>:803 on 2025-06-24 06:56</div>
+            <div class="timeline-body"><p>Maybe</p>
+<pre><code class="language-suggestion">Similarly, they are not subtypes of `Any`, because there are possible materializations of `Any` that
+would not satisfy the subtype relation.
+</code></pre>
+<p>This is also something that is generally true (and could even be a property test) according to this new <code>S+ &lt;: T-</code> subtyping rule: Nothing (except for <code>Never</code>) is a subtype of <code>T = Any</code>, because <code>T- = Never</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:935 on 2025-06-24 07:10</div>
+            <div class="timeline-body"><p>The doc comment above seems to imply that implicit <code>Unknown</code> &quot;annotations&quot; as in <code>(*args, **kwargs)</code> should also be considered equivalent to <code>...</code>? Should this be changed to the following? (similar for other checks above?)</p>
+<pre><code class="language-suggestion">            &amp;&amp; value
+                .iter()
+                .any(|p| p.is_variadic() &amp;&amp; p.annotated_type().is_none_or(|ty| ty.is_dynamic()))
+            &amp;&amp; value.iter().any(|p| {
+                p.is_keyword_variadic() &amp;&amp; p.annotated_type().is_none_or(|ty| ty.is_dynamic())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/property_tests.rs</code>:238 on 2025-06-24 07:25</div>
+            <div class="timeline-body"><p>Was this test deliberately removed? If so, why? It doesn't seem to be directly related to the changes here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:410 on 2025-06-24 07:31</div>
+            <div class="timeline-body"><p>Did the previous behavior here cause problems (because other simplifications were not considered when simply swapping <code>bool</code> into the place of the pre-existing literal)? Or is the optimization just not needed anymore?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1193 on 2025-06-24 07:42</div>
+            <div class="timeline-body"><p>At the call-site of <code>must_be_fully_static</code>, it looks like this is just an optimization/fast-path. But this <code>true</code> here seems to be required for correctness (some tests fail when I change it to <code>false</code>)?</p>
+<p>If this is really just an optimization, should the behavior be fixed in <code>has_relation_to</code> instead? Or is this hard to fix... hence the TODO?</p>
+<p>In any case, we could maybe document the problem in a test case:</p>
+<pre><code class="language-py"># TODO: `InheritsAny` is not a subtype of itself, this should not be an error
+# error: [static-assert-error]
+static_assert(not is_subtype_of(InheritsAny, InheritsAny))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1169 on 2025-06-24 07:45</div>
+            <div class="timeline-body"><p>If I understand the intention here correctly, should this maybe have a comment similar to &quot;this function may have false negatives, but should not have false positives&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1206 on 2025-06-24 07:45</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// `target`). In other words, for all possible pairs of materializations `self'` and
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-06-24 07:52</div>
+            <div class="timeline-body"><p>This is great! Thank you for the detailed write-up and the doc comments. And for trying out the <code>S- &lt;: T- &amp;&amp; S+ &lt;: T+</code> approach, even if it didn't work out. Very nice to see how this leads to a lot of simplification, too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-24 08:14</div>
+            <div class="timeline-body"><p>I won't look in depth since @sharkdp already has, but lmk if there's anything specific you'd like my feedback on!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-06-24 08:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-06-24 12:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ty_python_semantic/src/types/property_tests.rs</code>:238 on 2025-06-24 12:25</div>
+            <div class="timeline-body"><p>It uses <code>is_fully_static</code> which was removed. This property doesn't hold for gradual types; <code>~Any</code> is not disjoint from <code>Any</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-06-24 13:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/property_tests.rs</code>:238 on 2025-06-24 13:28</div>
+            <div class="timeline-body"><blockquote>
+<p>It uses <code>is_fully_static</code> which was removed.</p>
+</blockquote>
+<p>Yes, but Carl introduced the option to quantify these property tests using <code>forall fully_static_types t. …</code>. We still test some properties that only hold true for fully static types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-24 17:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/is_gradual_equivalent_to.md</code>:1 on 2025-06-24 17:01</div>
+            <div class="timeline-body"><p>I just went ahead and did this, it wasn't very hard.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-24 17:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/property_tests.rs</code>:238 on 2025-06-24 17:10</div>
+            <div class="timeline-body"><p>Oops, yeah, I meant to restore these tests after I added the fully-static quantification feature, but I missed this one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:410 on 2025-06-24 17:17</div>
+            <div class="timeline-body"><p>The previous behavior caused problems, because it assumed that <code>bool</code> has no subtypes other than <code>Literal[True]</code> and <code>Literal[False]</code>, but with this PR that is no longer the case: <code>bool &amp; Any</code> is now a subtype of <code>bool</code>.</p>
+<p>The tests requiring this change to pass are the &quot;regression tests for complex nested simplifications&quot; that I added at the end of this section: https://github.com/astral-sh/ruff/blob/cjm/nofullystatic/crates/ty_python_semantic/resources/mdtest/intersection_types.md#simplifications-of-bool-alwaystruthy-and-alwaysfalsy</p>
+<p>(This was discovered by property tests.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-24 17:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @carljm on 2025-06-24 20:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-06-24 21:10</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/cjm%2Fnofullystatic?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
+<h3>Merging #18799 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>cjm/nofullystatic</code> (271062e) with <code>main</code> (66f50fb)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 8</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-24 21:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1193 on 2025-06-24 21:57</div>
+            <div class="timeline-body"><p>Thanks for pushing me to look at this more carefully! I renamed <code>must_be_fully_static</code> to <code>subtyping_is_reflexive</code>, to better reflect the invariant we actually need from it. It turns out that this <code>TODO</code> only applied to <code>GenericAlias</code> and <code>NominalInstance</code>, and not actually due to inheriting <code>Any</code> (that does make a type non-fully-static, but it still has reflexive subtyping) but due to the possibility that it is generic over <code>Any</code>, which means its subtyping is no longer reflexive. But in those two cases we already handled everything correctly later on, and this branch is unnecessary.</p>
+<p>This branch was only necessary for correctness in the case of <code>ClassLiteral</code> -- and in the case of <code>ClassLiteral</code>, there is no <code>TODO</code> needed, it is correct to return <code>true</code> here. Subtyping is always reflexive for <code>ClassLiteral</code> types, whether they inherit <code>Any</code> or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1193 on 2025-06-24 21:59</div>
+            <div class="timeline-body"><p>It is not quite true that this method is purely an optimization; we would need to add a new <code>ClassLiteral</code> vs <code>ClassLiteral</code> arm in <code>has_relation_to</code> for that to be true. But I'm not sure I see the value in adding that arm, when we can't observe its absence via any test. (And we do already have tests that would fail if we removed this <code>is_subtyping_reflexive</code> check and thus needed that arm.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-06-24 21:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-24 21:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1197 on 2025-06-24 21:59</div>
+            <div class="timeline-body"><p>I'd prefer to have an exhaustive match here, so that we don't forget to update this method if we add other variants in the future where subtyping is reflexive</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @carljm on 2025-06-25 00:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-25 01:01</div>
+            <div class="timeline-body"><p>Had to make some significant additional changes to UnionBuilder to fix issues found by property tests, but this now passes all tests and property tests. I'm going to go ahead and merge, but open to post-merge review comments!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-06-25 01:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-06-25 01:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-25 01:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 18:39:35 UTC
+    </footer>
+</body>
+</html>
