@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix tests on 32-bit architectures - astral-sh/ruff #19652</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix tests on 32-bit architectures</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19652">#19652</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-07-30 22:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-30 22:52</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #19640. I'm not sure these are the exact fixes we really want, but I
+reproduced the issue in a 32-bit Docker container and tracked down the causes,
+so I figured I'd open a PR.</p>
+<p>As I commented on the issue, the <code>goto_references</code> test depends on the iteration
+order of the files in an <code>FxHashSet</code> in <code>Indexed</code>. In this case, we can just
+sort the output in test code.</p>
+<p>Similarly, the tuple case depended on the order of overloads inserted in an
+<code>FxHashMap</code>. <code>FxIndexMap</code> seemed like a convenient drop-in replacement, but I
+don't know if that will have other detrimental effects. I did have to change the
+assertion for the tuple test, but I think it should now be stable across
+architectures.</p>
+<h2>Test Plan</h2>
+<p>Running the tests in the aforementioned Docker container</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-30 22:54</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on typing conformance tests</h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-30 23:11</div>
+            <div class="timeline-body"><p>Surprisingly, I don't think the mypy_primer failure is my fault. I tried <code>main</code> on pandas-stubs and also got a panic. They're also failing their strict pyright CI check, so I think it's just a problem in the package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @ntBre on 2025-07-30 23:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @ntBre on 2025-07-30 23:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-07-31 06:15</div>
+            <div class="timeline-body"><p>Thank you for looking into this!</p>
+<p>The goto reference changes look good to me. I'm less sure if this is the right place (it seems unfortunate to pay the overhead of an ordered map to fix a test only issue). I'd appreciate if @AlexWaygood could take a look at that code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:632 on 2025-07-31 11:31</div>
+            <div class="timeline-body"><p>tiny nit: I think an <a href="https://github.com/astral-sh/ruff/blob/27b03a9d7bf779049585bb6cfbf229f18352572d/crates/ty_python_semantic/src/lib.rs#L50"><code>FxIndexMap</code></a> would suffice here, because we shouldn't need to hash it anywhere</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-07-31 11:32</div>
+            <div class="timeline-body"><p>This makes sense to me. I doubt that this method will be very hot (attribute access should be cached, and we only enter it for <code>__getitem__</code> attribute access on tuple classes), so I don't think switching to an <code>FxOrderMap</code> (or <code>FxIndexMap</code>) is likely to significantly impact performance here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-31 11:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Surprisingly, I don't think the mypy_primer failure is my fault. I tried <code>main</code> on pandas-stubs and also got a panic. They're also failing their strict pyright CI check, so I think it's just a problem in the package.</p>
+</blockquote>
+<p>I merged a workaround for this in https://github.com/astral-sh/ruff/pull/19659 for now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-31 12:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:632 on 2025-07-31 12:34</div>
+            <div class="timeline-body"><p>Ah, makes sense! I had that first and then noticed <code>FxOrderMap</code> was already in scope :laughing: I'll switch back</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-31 12:42</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-07-31 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @ntBre on 2025-07-31 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @ntBre on 2025-07-31 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @ntBre on 2025-07-31 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @ntBre on 2025-07-31 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @ntBre on 2025-07-31 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @ntBre on 2025-07-31 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-31 12:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:632 on 2025-07-31 12:45</div>
+            <div class="timeline-body"><p>yeah, I have no idea why <code>FxOrderMap</code> is defined in this submodule rather than in <code>lib.rs</code> with our other <code>Fx*</code> aliases! It should probably be moved</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-07-31 12:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-07-31 12:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-31 12:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:43 UTC
+    </footer>
+</body>
+</html>

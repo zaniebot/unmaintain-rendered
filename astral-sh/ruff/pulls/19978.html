@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Look for `site-packages` directories in `&lt;sys.prefix&gt;/lib64/` as well as `&lt;sys.prefix&gt;/lib/` on non-Windows systems - astral-sh/ruff #19978</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Look for <code>site-packages</code> directories in <code>&lt;sys.prefix&gt;/lib64/</code> as well as <code>&lt;sys.prefix&gt;/lib/</code> on non-Windows systems</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19978">#19978</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-08-18 21:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-18 21:48</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ty/issues/1043; fixes https://github.com/astral-sh/ty/issues/257.</p>
+<p>According to <a href="https://docs.python.org/3/library/sys.html#sys.platlibdir">the documentation of <code>sys.platlibdir</code></a> in the standard library, Python modules should never be installed into the <code>lib64/pythonX.Y/site-packages</code> directory; that directory should only be used for C extensions (which can never be submodules of a Python package, only top-level modules). Empirically, however, some installers appear to put Python files into the <code>lib64/pythonX.Y/site-packages</code> directory rather than the <code>lib/pythonX.Y/site-packages</code> directory, in some situations. I'm not sure why they're doing this -- but we'll need to start looking at the <code>lib64</code> directory at some point in the future anyway to solve https://github.com/astral-sh/ty/issues/487, so we may as well start looking at it now.</p>
+<p>The practical implication of this is that a virtual environment can often have two <code>site-packages</code> directories on Unix, and so can a system environment. This isn't too big of a change to our overall model, since there were already situations where we accumulated <code>site-packages</code> directories from several different environments and added them all as search paths, but it requires a little bit of a refactor to <code>site_packages.rs</code>.</p>
+<h2>Test Plan</h2>
+<p>I added a CLI integration test.</p>
+<p>I looked at whether it would be possible to add a unit test for this as an mdtest or in <code>site_packages.rs</code>... but concluded that both would be too much pain for too little gain here. The mdtest framework abstracts away the path to the <code>site-packages</code> directory by using &quot;magic&quot; <code>&lt;path-to-site-packages&gt;</code> path segments; this allows us to write platform-independent tests for <code>site-packages</code> import resolution, but means that we cannot add a unit test for something like this.</p>
+<p>It would be possible to expand the testing framework in <code>site_packages.rs</code> to allow for us to add a unit test there, but it would be a big diff; I don't think it's worth it for a single test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-08-18 21:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-18 21:50</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-18 21:56</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-18 22:01</div>
+            <div class="timeline-body"><p>I'm guessing this also fixes https://github.com/astral-sh/ty/issues/257, but haven't verified that</p>
+<p>EDIT: @geofft kindly verified that poetry is indeed putting those packages into the <code>lib64/pythonX.Y/site-packages</code> directory, so it almost certainly seems to be the same issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-08-19 11:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-08-19 11:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-08-19 11:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-08-19 11:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-08-19 11:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/site_packages.rs</code>:118 on 2025-08-19 11:23</div>
+            <div class="timeline-body"><p>Nit: Coudl we use the <code>from_iter</code> implementation below?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/site_packages.rs</code>:276 on 2025-08-19 11:25</div>
+            <div class="timeline-body"><p>I think I'd prefer using <code>as_path()</code> over <code>as_ref</code> as it is converting to a more specific type and not a less specific (e.g. String -&gt; str).</p>
+<p>Especially considering that this type also implements <code>as_str</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/site_packages.rs</code>:282 on 2025-08-19 11:26</div>
+            <div class="timeline-body"><p>Does this work</p>
+<pre><code class="language-suggestion">impl PartialEq&lt;str&gt; for UnixLibDir {
+    fn eq(&amp;self, other: &amp;str) -&gt; bool {
+        self.as_str() == other
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/site_packages.rs</code>:292 on 2025-08-19 11:26</div>
+            <div class="timeline-body"><p>Nit: You could do</p>
+<pre><code class="language-suggestion">        other == self 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-08-19 11:28</div>
+            <div class="timeline-body"><p>Nice, thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-19 11:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/site_packages.rs</code>:282 on 2025-08-19 11:46</div>
+            <div class="timeline-body"><p>if I do that then it makes the places where I'm using the <code>impl</code> less ergonomic; I have to do awkward dereferences</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-19 11:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/site_packages.rs</code>:276 on 2025-08-19 11:48</div>
+            <div class="timeline-body"><p>hmm, but we already implement <code>AsRef&lt;SystemPath&gt;</code> for <code>str</code> -- isn't that also converting to a more specific type?</p>
+<p>I'd prefer to leave things as they are because it means I can pass <code>UnixLibDir</code>s directly into <code>SystemPath::join()</code>, which requires the argument passed in to implement <code>AsRef&lt;SystemPath&gt;</code>. There are ways round this, but they all make the code less ergonomic</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-19 11:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/site_packages.rs</code>:118 on 2025-08-19 11:49</div>
+            <div class="timeline-body"><p>The <code>FromIterator</code> implementation was unused, so I got rid of that one and kept the new one that's used</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-08-19 11:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-08-19 11:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-19 11:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:44 UTC
+    </footer>
+</body>
+</html>

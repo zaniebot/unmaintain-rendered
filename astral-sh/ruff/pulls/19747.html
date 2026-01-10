@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-blind-except`] Change `BLE001` to correctly parse exception tuples - astral-sh/ruff #19747</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-blind-except</code>] Change <code>BLE001</code> to correctly parse exception tuples</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19747">#19747</a>
+        opened by <a href="https://github.com/deliro">@deliro</a>
+        on 2025-08-04 18:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/deliro">@deliro</a> on 2025-08-04 18:14</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR enhances the <code>BLE001</code> rule to correctly detect blind exception handling in tuple exceptions. Previously, the rule only checked single exception types, but Python allows catching multiple exceptions using tuples like <code>except (Exception, ValueError):</code>.</p>
+<h2>Test Plan</h2>
+<p>It fails the following (whereas the main branch does not):</p>
+<pre><code class="language-bash">cargo run -p ruff -- check somefile.py --no-cache --select=BLE001
+</code></pre>
+<pre><code class="language-python"># somefile.py
+
+try:
+    1/0
+except (ValueError, Exception) as e:
+    print(e)
+</code></pre>
+<pre><code>somefile.py:3:21: BLE001 Do not catch blind exception: `Exception`
+  |
+1 | try:
+2 |     1/0
+3 | except (ValueError, Exception) as e:
+  |                     ^^^^^^^^^ BLE001
+4 |     print(e)
+  |
+
+Found 1 error.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2025-08-04 20:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[flake8-blind-except] Change BLE001 to correctly parse exception tuples" to "[f`lake8-blind-except`] Change `BLE001` to correctly parse exception tuples" by @dylwil3 on 2025-08-04 20:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-08-04 20:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_blind_except/BLE.py</code>:1 on 2025-08-04 20:34</div>
+            <div class="timeline-body"><p>Can you add a test fixture with a tuple and an <code>as</code> clause? And verify that the rule is still skipped when the exception is re-raised?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> requested changes on 2025-08-04 20:39</div>
+            <div class="timeline-body"><p>Neat, thank you! I'm gonna call this a bug instead of an extension of the rule - I don't think it needs to be gated behind preview. Let's just add a couple more tests - the implementation looks good to me though!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-04 20:41</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+3 -0 violations, +0 -0 fixes in 2 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/c2059b9394d021cf955cf8bae13da8c39965bd92/airflow-core/src/airflow/models/dagbundle.py#L74'>airflow-core/src/airflow/models/dagbundle.py:74:31:</a> BLE001 Do not catch blind exception: `Exception`
++ <a href='https://github.com/apache/airflow/blob/c2059b9394d021cf955cf8bae13da8c39965bd92/providers/celery/src/airflow/providers/celery/executors/celery_executor_utils.py#L283'>providers/celery/src/airflow/providers/celery/executors/celery_executor_utils.py:283:13:</a> BLE001 Do not catch blind exception: `Exception`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/3ae0c4c68b10b493396eb51b8a8800d5a6e66c4f/zerver/webhooks/slack/view.py#L225'>zerver/webhooks/slack/view.py:225:29:</a> BLE001 Do not catch blind exception: `Exception`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| BLE001 | 3 | 3 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+3 -0 violations, +0 -0 fixes in 2 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/c2059b9394d021cf955cf8bae13da8c39965bd92/airflow-core/src/airflow/models/dagbundle.py#L74'>airflow-core/src/airflow/models/dagbundle.py:74:31:</a> BLE001 Do not catch blind exception: `Exception`
++ <a href='https://github.com/apache/airflow/blob/c2059b9394d021cf955cf8bae13da8c39965bd92/providers/celery/src/airflow/providers/celery/executors/celery_executor_utils.py#L283'>providers/celery/src/airflow/providers/celery/executors/celery_executor_utils.py:283:13:</a> BLE001 Do not catch blind exception: `Exception`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/3ae0c4c68b10b493396eb51b8a8800d5a6e66c4f/zerver/webhooks/slack/view.py#L225'>zerver/webhooks/slack/view.py:225:29:</a> BLE001 Do not catch blind exception: `Exception`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| BLE001 | 3 | 3 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/deliro">@deliro</a> reviewed on 2025-08-04 20:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/deliro">@deliro</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_blind_except/BLE.py</code>:1 on 2025-08-04 20:45</div>
+            <div class="timeline-body"><p>Sure! <a href="https://github.com/astral-sh/ruff/compare/5620d2f5b5c7dac12c8c6cff228db24445dcb66b..e433fe784a7861a396a726b9fab3ec7f2e1877fd">Added</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dylwil3 by @deliro on 2025-08-04 20:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[f`lake8-blind-except`] Change `BLE001` to correctly parse exception tuples" to "[`flake8-blind-except`] Change `BLE001` to correctly parse exception tuples" by @deliro on 2025-08-04 20:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> approved on 2025-08-04 21:10</div>
+            <div class="timeline-body"><p>Nice, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dylwil3 on 2025-08-04 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-08-04 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-05 05:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:43 UTC
+    </footer>
+</body>
+</html>

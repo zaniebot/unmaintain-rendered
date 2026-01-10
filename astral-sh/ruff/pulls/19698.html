@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Remap Jupyter notebook cell indices in `ruff_db` - astral-sh/ruff #19698</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Remap Jupyter notebook cell indices in <code>ruff_db</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19698">#19698</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-08-01 20:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-01 20:44</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR remaps ranges in Jupyter notebooks from simple <code>row:column</code> indices in the concatenated source code to <code>cell:row:col</code> to match Ruff's output. This is probably not a likely change to land upstream in <code>annotate-snippets</code>, but I didn't see a good way around it.</p>
+<p>The remapping logic is taken nearly verbatim from here:</p>
+<p>https://github.com/astral-sh/ruff/blob/cd6bf1457d667dd17058e07fa4198dae4bfb75f6/crates/ruff_linter/src/message/text.rs#L212-L222</p>
+<h2>Test Plan</h2>
+<p>New <code>full</code> rendering test for a notebook</p>
+<p>I was mainly focused on Ruff, but in local tests this also works for ty:</p>
+<pre><code>error[invalid-assignment]: Object of type `Literal[1]` is not assignable to `str`
+ --&gt; Untitled.ipynb:cell 1:3:1
+  |
+1 | import math
+2 |
+3 | x: str = 1
+  | ^
+  |
+info: rule `invalid-assignment` is enabled by default
+
+error[invalid-assignment]: Object of type `Literal[1]` is not assignable to `str`
+ --&gt; Untitled.ipynb:cell 2:3:1
+  |
+1 | import math
+2 |
+3 | x: str = 1
+  | ^
+  |
+info: rule `invalid-assignment` is enabled by default
+</code></pre>
+<p>This isn't a duplicate diagnostic, just an unimaginative example:</p>
+<pre><code class="language-py"># cell 1
+import math
+
+x: str = 1
+# cell 2
+import math
+
+x: str = 1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @ntBre on 2025-08-01 20:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-08-01 20:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-01 20:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_annotate_snippets/src/renderer/display_list.rs</code>:899 on 2025-08-01 20:46</div>
+            <div class="timeline-body"><p>I guess another option here is</p>
+<pre><code class="language-rust">struct Position {
+    row: usize,
+    col: usize,
+    cell: Option&lt;usize&gt;,
+}
+</code></pre>
+<p>or even just adding the <code>Option&lt;usize&gt;</code> to the tuple we had before. That could deduplicate a little code in the <code>match</code> above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-01 20:54</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-08-01 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @ntBre on 2025-08-01 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-08-01 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-08-01 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @ntBre on 2025-08-01 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @ntBre on 2025-08-01 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @ntBre on 2025-08-01 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @ntBre on 2025-08-01 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @ntBre on 2025-08-01 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @ntBre on 2025-08-01 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @ntBre on 2025-08-01 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_annotate_snippets/src/renderer/display_list.rs</code>:899 on 2025-08-01 21:32</div>
+            <div class="timeline-body"><p>I think I'd prefer using an <code>Option</code> with named fields.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_annotate_snippets/src/snippet.rs</code>:81 on 2025-08-01 21:34</div>
+            <div class="timeline-body"><p>Hmm, we might need to add this to the <code>Annotation</code> because a <code>Diagnostic</code> with multiple ranges may span multiple cells. Or is this already what snippet represents. A single code frame?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:642 on 2025-08-02 08:54</div>
+            <div class="timeline-body"><p>Can you extend the documentation to account for notebooks?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-02 08:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-02 08:55</div>
+            <div class="timeline-body"><p>Thanks for working on this. Adding this to the rendering will also improve ty's notebook support :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-03 20:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_annotate_snippets/src/snippet.rs</code>:81 on 2025-08-03 20:41</div>
+            <div class="timeline-body"><p>I believe this is what a snippet represents, based on our <code>RenderableSnippet::new</code> docs:</p>
+<p>https://github.com/astral-sh/ruff/blob/5f149fcc15b3b71d3bfc817734f60333a2b09cb1/crates/ruff_db/src/diagnostic/render.rs#L578-L579</p>
+<p>and this usage in the same function:</p>
+<p>https://github.com/astral-sh/ruff/blob/5f149fcc15b3b71d3bfc817734f60333a2b09cb1/crates/ruff_db/src/diagnostic/render.rs#L593-L594</p>
+<p>Oh, I guess this is documented just above this too:</p>
+<p>https://github.com/astral-sh/ruff/blob/5f149fcc15b3b71d3bfc817734f60333a2b09cb1/crates/ruff_annotate_snippets/src/snippet.rs#L67-L70</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_annotate_snippets/src/snippet.rs</code>:81 on 2025-08-04 06:25</div>
+            <div class="timeline-body"><pre><code>/// One `Snippet` is meant to represent a single, continuous, 
+/// slice of source code that you want to annotate. 
+</code></pre>
+<p>I'm not sure this is sufficient. You could have one snippet with multiple annotations but there's no guarantee that all annotations belong to the same cell and this would also be hard to guarantee in the linter (or formatter) because they run on the concatenated notebook source.</p>
+<p>That's why I think that each annotation might need to have its own cell in addition to the snippet itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-04 06:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-04 12:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_annotate_snippets/src/snippet.rs</code>:81 on 2025-08-04 12:53</div>
+            <div class="timeline-body"><blockquote>
+<p>in addition to the snippet itself</p>
+</blockquote>
+<p>Ah, okay I think I see what you mean. It turns out we have an existing mechanism that helps here. If the context windows for the annotations don't overlap, the secondary annotation gets a small sub-header, which already works for our notebooks:</p>
+<pre><code>error[unused-import]: `os` imported but unused
+ --&gt; notebook.ipynb:cell 1:2:8                
+  |                                           
+1 | # cell 1                                  
+2 | import os                                 
+  |        ^^                                 
+  |                                           
+ ::: notebook.ipynb:cell 3:4:5                
+  |                                           
+2 | def foo():                                
+3 |     print()                               
+4 |     x = 1                                 
+  |     - second cell                         
+  |                                           
+help: Remove unused import: `os`              
+</code></pre>
+<p>The <code>- second cell</code> line is the secondary annotation with a very short underline.</p>
+<p>This doesn't currently trigger if the context windows overlap:</p>
+<pre><code>error[unused-import]: `os` imported but unused
+ --&gt; notebook.ipynb:cell 1:2:8                
+  |                                           
+1 | # cell 1                                  
+2 | import os                                 
+  |        ^^                                 
+3 | # cell 2                                  
+4 | import math                               
+  |        ---- second cell                   
+5 |                                           
+6 | print('hello world')                      
+  |                                           
+help: Remove unused import: `os`              
+</code></pre>
+<p>So there may be a very neat solution here without having to modify the <code>Snippet</code> or <code>Annotation</code> representation. I might just need better bookkeeping of the cell indices when computing context windows. We already truncate the first cell's context in the first example to fit within the cell, so I think this is all that's missing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-04 13:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_annotate_snippets/src/snippet.rs</code>:81 on 2025-08-04 13:46</div>
+            <div class="timeline-body"><p>Oh I see. And we also never print the cell if they do overlap. So maybe that's fine as is? But it probably makes sense to add a test demonstrating the behavior at least</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-04 13:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_annotate_snippets/src/snippet.rs</code>:81 on 2025-08-04 13:49</div>
+            <div class="timeline-body"><p>I think we should render something like this in the second case or the line numbers are a bit misleading:</p>
+<pre><code>error[unused-import]: `os` imported but unused
+ --&gt; notebook.ipynb:cell 1:2:8
+  |
+1 | # cell 1
+2 | import os
+  |        ^^
+  |
+ ::: notebook.ipynb:cell 2:2:8
+  |
+1 | # cell 2
+2 | import math
+  |        ---- second cell
+3 |
+4 | print('hello world')
+  |
+help: Remove unused import: `os`
+</code></pre>
+<p>That's the test I'm working on passing now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_annotate_snippets/src/renderer/display_list.rs</code>:899 on 2025-08-04 15:51</div>
+            <div class="timeline-body"><p>Yeah I like the <code>Option</code> better here as well. Or the very least, enum variants with named fields. (i.e., Which <code>usize</code> is which?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-04 15:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-04 15:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_annotate_snippets/src/renderer/display_list.rs</code>:899 on 2025-08-04 15:59</div>
+            <div class="timeline-body"><p>That sounds good. I <em>think</em> the old code had the names backwards even with only two fields in the tuple, so named fields will be helpful.</p>
+<p>https://github.com/astral-sh/ruff/blob/af8587eabf83fa38fad153bfe25f714524542c07/crates/ruff_annotate_snippets/src/renderer/display_list.rs#L252-L257</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-04 16:36</div>
+            <div class="timeline-body"><p>This should be ready for another look. We now always render additional annotations in different cells with their own sub-headings, even if the concatenated source lines are adjacent:</p>
+<pre><code>error[unused-import]: `os` imported but unused
+ --&gt; notebook.ipynb:cell 1:2:8                
+  |                                           
+1 | # cell 1                                  
+2 | import os                                 
+  |        ^^                                 
+  |                                           
+ ::: notebook.ipynb:cell 2:2:8                
+  |                                           
+1 | # cell 2                                  
+2 | import math                               
+  |        ---- second cell                   
+3 |                                           
+4 | print('hello world')                      
+  |                                           
+help: Remove unused import: `os`              
+</code></pre>
+<p>in this concatenated source:</p>
+<pre><code class="language-py"># cell 1            
+import os           
+# cell 2            
+import math         
+                    
+print('hello world')
+</code></pre>
+<p>I double-checked that we reuse the same snippet if they <em>are</em> in the same cell too:</p>
+<pre><code>error[test-diagnostic]: main diagnostic message
+ --&gt; notebook.ipynb:cell 2:2:8                 
+  |                                            
+1 | # cell 2                                   
+2 | import math                                
+  |        ^^^^ second cell                    
+3 |                                            
+4 | print('hello world')                       
+  | ----- print statement                      
+  |                                            
+help: Remove `print` statement                 
+</code></pre>
+<p>I also updated the docs and <code>Position</code> representation, as suggested!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_annotate_snippets/src/snippet.rs</code>:81 on 2025-08-04 16:53</div>
+            <div class="timeline-body"><p>Oh, that makes sense!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-04 16:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-08-04 17:45</div>
+            <div class="timeline-body"><p>I buy what you're selling!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-08-05 08:00</div>
+            <div class="timeline-body"><p>Nice, this is great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-08-05 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @ntBre on 2025-08-05 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-08-05 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-08-05 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-05 18:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:43 UTC
+    </footer>
+</body>
+</html>

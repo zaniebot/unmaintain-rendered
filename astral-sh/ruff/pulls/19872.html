@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Reduce memory usage of `TupleSpec` and `TupleType` - astral-sh/ruff #19872</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Reduce memory usage of <code>TupleSpec</code> and <code>TupleType</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19872">#19872</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-08-11 21:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-11 21:44</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ty/issues/956. Use boxed slices rather than Vecs where possible for types interned in the salsa database, to save on memory.</p>
+<h2>Test Plan</h2>
+<p>Existing tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-08-11 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-11 21:46</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-11 21:48</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">sphinx (https://github.com/sphinx-doc/sphinx)
+-     struct fields = ~17MB
++     struct fields = ~16MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-11 22:15</div>
+            <div class="timeline-body"><p>Not sure if this is worth it — CI reports no significant memory-usage reductions in the <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/primer/memory.txt">memory.txt projects</a>, and codspeed reports 1% regressions on several benchmarks.</p>
+<p>Tomorrow I'll try getting some memory-usage reports for projects that we know have some complicated tuple types in them, such as colour-science and static-frame. Opening up for review now anyway, to see what folks think of the approach!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-08-11 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-08-11 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-08-11 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-08-11 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-12 06:12</div>
+            <div class="timeline-body"><p>You probably want to wait for https://github.com/astral-sh/ruff/pull/19790 (or rebase on top) to get a full picture. The memory report today only accounts for queries (heap and stack size) and the stack size of tracked struct, but it doesn't account for the heap size of tracked structs. That means, the only memory reduction you'd see is from reducing the stack memory from  48 + <code>stack_size::&lt;T&gt;</code> to 32 + <code>stack_size::&lt;T&gt;</code>. That on its own might still be significant but only if we create a large number of tuple specs (and intern them)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-12 06:21</div>
+            <div class="timeline-body"><p>This is the full memory report comparison from running on a large project. You can see how the tuple type's stack size has become much smaller. It's just not significant in overall terms because there aren't many enough (or put differently, some other queries use up so much space that the tuple type improvement is negligible). I suggest re-running the analysis with #19790</p>
+<p>https://www.diffchecker.com/ZkHpFHCN/</p>
+<p>Edit: The reason why we have different counts for some ingredients is because ty still panics when analysing some files and that leads to non-deterministic results.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-12 11:23</div>
+            <div class="timeline-body"><p>I just ran main with the salsa struct memory usage information and the total memory usage for tuples is only:</p>
+<pre><code>`TupleType`                                        metadata=6.65MB   fields=13.88MB  count=118827
+</code></pre>
+<p>So i don't think this will lead to a very significant improvement</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-12 11:45</div>
+            <div class="timeline-body"><p>I tried running memory reports on colour-science and static-frame, which were codebases I thought might be interesting because we know operations on tuple types are quite hot when typechecking those codebases. The top-level memory usage for both those codebases is the same on <code>main</code> and with this PR. The memory taken up by <code>TupleType</code> does go down, but it's a small fraction of the overall memory usage</p>
+<table>
+<tr>
+ <td>Project
+ <td>TupleType memory usage (main)
+ <td>TupleType memory usage (this PR)
+ <td>Total memory usage (main and this PR)
+<tr>
+ <td>static-frame
+ <td>metadata: 0.98MB<br>fields: 1.91MB
+ <td>metadata: 0.98MB<br>fields: 1.58MB
+ <td>348MB
+<tr>
+ <td>colour
+ <td>metadata: 0.12MB<br>fields: 0.44MB
+ <td>metadata: 0.12MB<br>fields: 0.39MB
+ <td>298MB
+</table>
+
+<p>(All measurements done by executing <code>TY_MEMORY_REPORT=full cargo run --release --manifest-path ../ruff/Cargo.toml -p ty check --quiet</code>)</p>
+<p>That does seem like a pretty decent reduction in memory usage on tuples in <code>static-frame</code>, even if it's a small slice of the overall pie. Using boxed slices is also consistent with what we do elsewhere for our Salsa-interned structs, and is more expressive of the fact that types are immutable once they're stored in the Salsa cache. I think the main question is whether this is worth the increase in code complexity -- I could go either way on that.</p>
+<p>Performance is in the noise -- some benchmarks are showing tiny speedups, other ones tiny slowdowns.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-08-12 11:49</div>
+            <div class="timeline-body"><p>I think the immutability of <code>TupleSpec</code> is a nice side effect that I value more than the tiny memory improvement :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-12 11:49</div>
+            <div class="timeline-body"><p>Eh, sphinx has a memory reduction 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-08-12 11:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-08-12 11:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-12 11:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:44 UTC
+    </footer>
+</body>
+</html>

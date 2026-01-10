@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] fix deferred name loading in PEP695 generic classes/functions - astral-sh/ruff #19888</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] fix deferred name loading in PEP695 generic classes/functions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19888">#19888</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-08-13 01:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-08-13 01:16</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>For PEP 695 generic functions and classes, there is an extra &quot;type params scope&quot; (a child of the outer scope, and wrapping the body scope) in which the type parameters are defined; class bases and function parameter/return annotations are resolved in that type-params scope.</p>
+<p>This PR fixes some longstanding bugs in how we resolve name loads from inside these PEP 695 type parameter scopes, and also defers type inference of PEP 695 typevar bounds/constraints/default, so we can handle cycles without panicking.</p>
+<p>We were previously treating these type-param scopes as lazy nested scopes, which is wrong. In fact they are eager nested scopes; the class <code>C</code> here inherits <code>int</code>, not <code>str</code>, and previously we got that wrong:</p>
+<pre><code class="language-py">Base = int
+
+class C[T](Base): ...
+
+Base = str
+</code></pre>
+<p>But certain syntactic positions within type param scopes (typevar bounds/constraints/defaults) are lazy at runtime, and we should use deferred name resolution for them. This also means they can have cycles; in order to handle that without panicking in type inference, we need to actually defer their type inference until after we have constructed the <code>TypeVarInstance</code>.</p>
+<p>PEP 695 does specify that typevar bounds and constraints cannot be generic, and that typevar defaults can only reference prior typevars, not later ones. This reduces the scope of (valid from the type-system perspective) cycles somewhat, although cycles are still possible (e.g. <code>class C[T: list[C]]</code>). And this is a type-system-only restriction; from the runtime perspective an &quot;invalid&quot; case like <code>class C[T: T]</code> actually works fine.</p>
+<p>I debated whether to implement the PEP 695 restrictions as a way to avoid some cycles up-front, but I ended up deciding against that; I'd rather model the runtime name-resolution semantics accurately, and implement the PEP 695 restrictions as a separate diagnostic on top. (This PR doesn't yet implement those diagnostics, thus some <code># TODO: error</code> in the added tests.)</p>
+<p>Introducing the possibility of cyclic typevars made typevar display potentially stack overflow. For now I've handled this by simply removing typevar details (bounds/constraints/default) from typevar display. This impacts display of two kinds of types. If you <code>reveal_type(T)</code> on an unbound <code>T</code> you now get just <code>typing.TypeVar</code> instead of <code>typing.TypeVar(&quot;T&quot;, ...)</code> where <code>...</code> is the bound/constraints/default. This matches pyright and mypy; pyrefly uses <code>type[TypeVar[T]]</code> which seems a bit confusing, but does include the name. (We could easily include the name without cycle issues, if there's a syntax we like for that.)</p>
+<p>It also means that displaying a generic function type like <code>def f[T: int](x: T) -&gt; T: ...</code> now displays as <code>f[T](x: T) -&gt; T</code> instead of <code>f[T: int](x: T) -&gt; T</code>. This matches pyright and pyrefly; mypy does include bound/constraints/defaults of typevars in function/callable type display. If we wanted to add this, we would either need to thread a visitor through all the type display code, or add a <code>decycle</code> type transformation that replaced recursive reoccurrence of a type with a marker.</p>
+<h2>Test Plan</h2>
+<p>Added mdtests and modified existing tests to improve their correctness.</p>
+<p>After this PR, there's only a single remaining py-fuzzer seed in the 0-500 range that panics! (Before this PR, there were 10; the fuzzer likes to generate cyclic PEP 695 syntax.)</p>
+<h2>Ecosystem report</h2>
+<p>It's all just the changes to <code>TypeVar</code> display.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-08-13 01:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-13 01:18</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-08-13 22:34:15.963392901 +0000
++++ new-output.txt	2025-08-13 22:34:16.030393914 +0000
+@@ -1,5 +1,5 @@
+ WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+-fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/918d35d/src/function/execute.rs:215:25 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(104b4)): execute: too many cycle iterations`
++fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/918d35d/src/function/execute.rs:215:25 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(bcb6)): execute: too many cycle iterations`
+ _directives_deprecated_library.py:15:31: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ _directives_deprecated_library.py:30:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+ _directives_deprecated_library.py:36:41: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@__add__`
+@@ -68,9 +68,9 @@
+ aliases_type_statement.py:48:23: error[invalid-type-form] Boolean operations are not allowed in type expressions
+ aliases_type_statement.py:49:23: error[fstring-type-annotation] Type expressions cannot use f-strings
+ aliases_type_statement.py:80:37: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int, str]`?
+-aliases_variance.py:18:24: error[non-subscriptable] Cannot subscript object of type `&lt;class 'ClassA[typing.TypeVar(&quot;T_co&quot;)]'&gt;` with no `__class_getitem__` method
+-aliases_variance.py:28:16: error[non-subscriptable] Cannot subscript object of type `&lt;class 'ClassA[typing.TypeVar(&quot;T_co&quot;)]'&gt;` with no `__class_getitem__` method
+-aliases_variance.py:44:16: error[non-subscriptable] Cannot subscript object of type `&lt;class 'ClassB[typing.TypeVar(&quot;T_co&quot;), typing.TypeVar(&quot;T_contra&quot;)]'&gt;` with no `__class_getitem__` method
++aliases_variance.py:18:24: error[non-subscriptable] Cannot subscript object of type `&lt;class 'ClassA[typing.TypeVar]'&gt;` with no `__class_getitem__` method
++aliases_variance.py:28:16: error[non-subscriptable] Cannot subscript object of type `&lt;class 'ClassA[typing.TypeVar]'&gt;` with no `__class_getitem__` method
++aliases_variance.py:44:16: error[non-subscriptable] Cannot subscript object of type `&lt;class 'ClassB[typing.TypeVar, typing.TypeVar]'&gt;` with no `__class_getitem__` method
+ annotations_forward_refs.py:22:7: error[unresolved-reference] Name `ClassA` used when not defined
+ annotations_forward_refs.py:23:12: error[unresolved-reference] Name `ClassA` used when not defined
+ annotations_forward_refs.py:49:10: error[invalid-type-form] Variable of type `Literal[1]` is not allowed in a type expression
+@@ -384,7 +384,7 @@
+ generics_defaults_referential.py:95:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+ generics_defaults_specialization.py:26:5: error[type-assertion-failure] Argument does not have asserted type `SomethingWithNoDefaults[int, str]`
+ generics_defaults_specialization.py:27:5: error[type-assertion-failure] Argument does not have asserted type `SomethingWithNoDefaults[int, bool]`
+-generics_defaults_specialization.py:30:1: error[non-subscriptable] Cannot subscript object of type `&lt;class 'SomethingWithNoDefaults[int, typing.TypeVar(&quot;DefaultStrT&quot;, default=str)]'&gt;` with no `__class_getitem__` method
++generics_defaults_specialization.py:30:1: error[non-subscriptable] Cannot subscript object of type `&lt;class 'SomethingWithNoDefaults[int, typing.TypeVar]'&gt;` with no `__class_getitem__` method
+ generics_defaults_specialization.py:45:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+ generics_paramspec_basic.py:27:38: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ generics_paramspec_components.py:83:18: error[parameter-already-assigned] Multiple values provided for parameter 1 (`x`) of function `foo`
+@@ -492,7 +492,6 @@
+ generics_syntax_infer_variance.py:144:1: error[invalid-assignment] Object of type `ShouldBeInvariant5[int]` is not assignable to `ShouldBeInvariant5[int | float]`
+ generics_syntax_infer_variance.py:155:1: error[invalid-assignment] Object of type `ShouldBeContravariant1[int]` is not assignable to `ShouldBeContravariant1[int | float]`
+ generics_syntax_infer_variance.py:156:1: error[invalid-assignment] Object of type `ShouldBeContravariant1[int | float]` is not assignable to `ShouldBeContravariant1[int]`
+-generics_syntax_scoping.py:18:26: error[unresolved-reference] Name `T` used when not defined
+ generics_syntax_scoping.py:35:7: error[unresolved-reference] Name `T` used when not defined
+ generics_syntax_scoping.py:40:23: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `((...) -&gt; R@decorator1, /) -&gt; (...) -&gt; R@decorator1`
+ generics_syntax_scoping.py:44:17: error[unresolved-reference] Name `T` used when not defined
+@@ -564,20 +563,20 @@
+ generics_variance.py:14:6: error[invalid-legacy-type-variable] A legacy `typing.TypeVar` cannot be both covariant and contravariant
+ generics_variance.py:26:27: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Iterator[T_co@ImmutableList]`
+ generics_variance.py:57:28: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `B_co@func`
+-generics_variance.py:175:25: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Contra[typing.TypeVar(&quot;T_contra&quot;)]'&gt;` with no `__class_getitem__` method
+-generics_variance.py:175:35: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Co[typing.TypeVar(&quot;T_co&quot;)]'&gt;` with no `__class_getitem__` method
+-generics_variance.py:179:29: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Contra[typing.TypeVar(&quot;T_contra&quot;)]'&gt;` with no `__class_getitem__` method
+-generics_variance.py:179:39: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Contra[typing.TypeVar(&quot;T_contra&quot;)]'&gt;` with no `__class_getitem__` method
+-generics_variance.py:183:21: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Co[typing.TypeVar(&quot;T_co&quot;)]'&gt;` with no `__class_getitem__` method
+-generics_variance.py:183:27: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Co[typing.TypeVar(&quot;T_co&quot;)]'&gt;` with no `__class_getitem__` method
+-generics_variance.py:187:25: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Co[typing.TypeVar(&quot;T_co&quot;)]'&gt;` with no `__class_getitem__` method
+-generics_variance.py:187:31: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Contra[typing.TypeVar(&quot;T_contra&quot;)]'&gt;` with no `__class_getitem__` method
+-generics_variance.py:191:33: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Contra[typing.TypeVar(&quot;T_contra&quot;)]'&gt;` with no `__class_getitem__` method
+-generics_variance.py:191:43: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Co[typing.TypeVar(&quot;T_co&quot;)]'&gt;` with no `__class_getitem__` method
+-generics_variance.py:191:49: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Contra[typing.TypeVar(&quot;T_contra&quot;)]'&gt;` with no `__class_getitem__` method
+-generics_variance.py:196:5: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Contra[typing.TypeVar(&quot;T_contra&quot;)]'&gt;` with no `__class_getitem__` method
+-generics_variance.py:196:15: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Contra[typing.TypeVar(&quot;T_contra&quot;)]'&gt;` with no `__class_getitem__` method
+-generics_variance.py:196:25: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Contra[typing.TypeVar(&quot;T_contra&quot;)]'&gt;` with no `__class_getitem__` method
++generics_variance.py:175:25: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Contra[typing.TypeVar]'&gt;` with no `__class_getitem__` method
++generics_variance.py:175:35: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Co[typing.TypeVar]'&gt;` with no `__class_getitem__` method
++generics_variance.py:179:29: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Contra[typing.TypeVar]'&gt;` with no `__class_getitem__` method
++generics_variance.py:179:39: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Contra[typing.TypeVar]'&gt;` with no `__class_getitem__` method
++generics_variance.py:183:21: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Co[typing.TypeVar]'&gt;` with no `__class_getitem__` method
++generics_variance.py:183:27: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Co[typing.TypeVar]'&gt;` with no `__class_getitem__` method
++generics_variance.py:187:25: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Co[typing.TypeVar]'&gt;` with no `__class_getitem__` method
++generics_variance.py:187:31: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Contra[typing.TypeVar]'&gt;` with no `__class_getitem__` method
++generics_variance.py:191:33: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Contra[typing.TypeVar]'&gt;` with no `__class_getitem__` method
++generics_variance.py:191:43: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Co[typing.TypeVar]'&gt;` with no `__class_getitem__` method
++generics_variance.py:191:49: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Contra[typing.TypeVar]'&gt;` with no `__class_getitem__` method
++generics_variance.py:196:5: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Contra[typing.TypeVar]'&gt;` with no `__class_getitem__` method
++generics_variance.py:196:15: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Contra[typing.TypeVar]'&gt;` with no `__class_getitem__` method
++generics_variance.py:196:25: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Contra[typing.TypeVar]'&gt;` with no `__class_getitem__` method
+ generics_variance_inference.py:19:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `T3@ClassA`
+ generics_variance_inference.py:24:5: error[invalid-assignment] Object of type `ClassA[int | float, int, int]` is not assignable to `ClassA[int, int, int]`
+ generics_variance_inference.py:25:5: error[invalid-assignment] Object of type `ClassA[int | float, int, int]` is not assignable to `ClassA[int | float, int | float, int]`
+@@ -860,5 +859,5 @@
+ typeddicts_operations.py:60:1: error[type-assertion-failure] Argument does not have asserted type `str | None`
+ typeddicts_type_consistency.py:101:1: error[invalid-assignment] Object of type `Unknown | None` is not assignable to `str`
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 861 diagnostics
++Found 860 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-13 01:21</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">bidict (https://github.com/jab/bidict)
+- bidict/_typing.py:40:39: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Iterable[tuple[typing.TypeVar(&quot;KT&quot;), typing.TypeVar(&quot;VT&quot;)]]'&gt;` with no `__class_getitem__` method
++ bidict/_typing.py:40:39: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Iterable[tuple[typing.TypeVar, typing.TypeVar]]'&gt;` with no `__class_getitem__` method
+
+Expression (https://github.com/cognitedata/Expression)
+- expression/collections/maptree.py:47:18: error[invalid-argument-type] Argument to class `MapTreeLeaf` is incorrect: Expected `SupportsLessThan`, found `typing.TypeVar(&quot;Key&quot;, bound=SupportsLessThan)`
++ expression/collections/maptree.py:47:18: error[invalid-argument-type] Argument to class `MapTreeLeaf` is incorrect: Expected `SupportsLessThan`, found `typing.TypeVar`
+- tests/test_map.py:49:19: error[invalid-argument-type] Argument to function `pipe` is incorrect: Expected `(Map[str, int], /) -&gt; Unknown`, found `def to_seq[_Key: SupportsLessThan, _Value](table: Map[_Key@to_seq, _Value@to_seq]) -&gt; Iterable[tuple[_Key@to_seq, _Value@to_seq]]`
++ tests/test_map.py:49:19: error[invalid-argument-type] Argument to function `pipe` is incorrect: Expected `(Map[str, int], /) -&gt; Unknown`, found `def to_seq[_Key, _Value](table: Map[_Key@to_seq, _Value@to_seq]) -&gt; Iterable[tuple[_Key@to_seq, _Value@to_seq]]`
+
+black (https://github.com/psf/black)
+- src/black/rusty.py:28:23: error[invalid-argument-type] Argument to class `Err` is incorrect: Expected `Exception`, found `typing.TypeVar(&quot;E&quot;, bound=Exception)`
++ src/black/rusty.py:28:23: error[invalid-argument-type] Argument to class `Err` is incorrect: Expected `Exception`, found `typing.TypeVar`
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- pymongo/asynchronous/collection.py:104:5: error[invalid-argument-type] Argument to class `InsertOne` is incorrect: Expected `Mapping[str, Any]`, found `typing.TypeVar(&quot;_DocumentType&quot;, bound=Mapping[str, Any])`
++ pymongo/asynchronous/collection.py:104:5: error[invalid-argument-type] Argument to class `InsertOne` is incorrect: Expected `Mapping[str, Any]`, found `typing.TypeVar`
+- pymongo/asynchronous/collection.py:107:5: error[invalid-argument-type] Argument to class `ReplaceOne` is incorrect: Expected `Mapping[str, Any]`, found `typing.TypeVar(&quot;_DocumentType&quot;, bound=Mapping[str, Any])`
++ pymongo/asynchronous/collection.py:107:5: error[invalid-argument-type] Argument to class `ReplaceOne` is incorrect: Expected `Mapping[str, Any]`, found `typing.TypeVar`
+- pymongo/synchronous/collection.py:103:5: error[invalid-argument-type] Argument to class `InsertOne` is incorrect: Expected `Mapping[str, Any]`, found `typing.TypeVar(&quot;_DocumentType&quot;, bound=Mapping[str, Any])`
++ pymongo/synchronous/collection.py:103:5: error[invalid-argument-type] Argument to class `InsertOne` is incorrect: Expected `Mapping[str, Any]`, found `typing.TypeVar`
+- pymongo/synchronous/collection.py:106:5: error[invalid-argument-type] Argument to class `ReplaceOne` is incorrect: Expected `Mapping[str, Any]`, found `typing.TypeVar(&quot;_DocumentType&quot;, bound=Mapping[str, Any])`
++ pymongo/synchronous/collection.py:106:5: error[invalid-argument-type] Argument to class `ReplaceOne` is incorrect: Expected `Mapping[str, Any]`, found `typing.TypeVar`
+
+schemathesis (https://github.com/schemathesis/schemathesis)
+- src/schemathesis/core/result.py:27:23: error[invalid-argument-type] Argument to class `Err` is incorrect: Expected `Exception`, found `typing.TypeVar(&quot;E&quot;, bound=Exception)`
++ src/schemathesis/core/result.py:27:23: error[invalid-argument-type] Argument to class `Err` is incorrect: Expected `Exception`, found `typing.TypeVar`
+
+pytest (https://github.com/pytest-dev/pytest)
+- src/_pytest/raises.py:1004:33: error[invalid-argument-type] Argument to class `RaisesExc` is incorrect: Expected `BaseException`, found `typing.TypeVar(&quot;BaseExcT_co&quot;, bound=BaseException)`
++ src/_pytest/raises.py:1004:33: error[invalid-argument-type] Argument to class `RaisesExc` is incorrect: Expected `BaseException`, found `typing.TypeVar`
+
+discord.py (https://github.com/Rapptz/discord.py)
+- discord/app_commands/commands.py:111:64: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar(&quot;T&quot;)]'&gt;` with no `__class_getitem__` method
++ discord/app_commands/commands.py:111:64: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar]'&gt;` with no `__class_getitem__` method
+- discord/app_commands/commands.py:113:61: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar(&quot;T&quot;)]'&gt;` with no `__class_getitem__` method
++ discord/app_commands/commands.py:113:61: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar]'&gt;` with no `__class_getitem__` method
+- discord/app_commands/commands.py:116:52: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar(&quot;T&quot;)]'&gt;` with no `__class_getitem__` method
++ discord/app_commands/commands.py:116:52: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar]'&gt;` with no `__class_getitem__` method
+- discord/app_commands/commands.py:122:62: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar(&quot;T&quot;)]'&gt;` with no `__class_getitem__` method
++ discord/app_commands/commands.py:122:62: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar]'&gt;` with no `__class_getitem__` method
+- discord/app_commands/commands.py:123:54: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar(&quot;T&quot;)]'&gt;` with no `__class_getitem__` method
++ discord/app_commands/commands.py:123:54: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar]'&gt;` with no `__class_getitem__` method
+- discord/app_commands/commands.py:132:48: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar(&quot;T&quot;)]'&gt;` with no `__class_getitem__` method
++ discord/app_commands/commands.py:132:48: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar]'&gt;` with no `__class_getitem__` method
+- discord/app_commands/commands.py:133:46: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar(&quot;T&quot;)]'&gt;` with no `__class_getitem__` method
++ discord/app_commands/commands.py:133:46: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar]'&gt;` with no `__class_getitem__` method
+- discord/app_commands/commands.py:134:49: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar(&quot;T&quot;)]'&gt;` with no `__class_getitem__` method
++ discord/app_commands/commands.py:134:49: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar]'&gt;` with no `__class_getitem__` method
+- discord/app_commands/commands.py:135:61: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar(&quot;T&quot;)]'&gt;` with no `__class_getitem__` method
++ discord/app_commands/commands.py:135:61: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar]'&gt;` with no `__class_getitem__` method
+- discord/app_commands/commands.py:139:53: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar(&quot;T&quot;)]'&gt;` with no `__class_getitem__` method
++ discord/app_commands/commands.py:139:53: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar]'&gt;` with no `__class_getitem__` method
+- discord/app_commands/commands.py:139:63: error[invalid-argument-type] Argument to class `Choice` is incorrect: Expected `str | int | float`, found `typing.TypeVar(&quot;ChoiceT&quot;, str, int, int | float, str | int | float)`
++ discord/app_commands/commands.py:139:63: error[invalid-argument-type] Argument to class `Choice` is incorrect: Expected `str | int | float`, found `typing.TypeVar`
+- discord/app_commands/commands.py:140:45: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar(&quot;T&quot;)]'&gt;` with no `__class_getitem__` method
++ discord/app_commands/commands.py:140:45: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar]'&gt;` with no `__class_getitem__` method
+- discord/app_commands/commands.py:140:55: error[invalid-argument-type] Argument to class `Choice` is incorrect: Expected `str | int | float`, found `typing.TypeVar(&quot;ChoiceT&quot;, str, int, int | float, str | int | float)`
++ discord/app_commands/commands.py:140:55: error[invalid-argument-type] Argument to class `Choice` is incorrect: Expected `str | int | float`, found `typing.TypeVar`
+- discord/app_commands/tree.py:76:10: error[invalid-argument-type] Argument to class `Interaction` is incorrect: Expected `Client`, found `typing.TypeVar(&quot;ClientT&quot;, bound=Client, default=Client)`
++ discord/app_commands/tree.py:76:10: error[invalid-argument-type] Argument to class `Interaction` is incorrect: Expected `Client`, found `typing.TypeVar`
+- discord/ext/commands/_types.py:47:26: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar(&quot;T&quot;)]'&gt;` with no `__class_getitem__` method
++ discord/ext/commands/_types.py:47:26: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar]'&gt;` with no `__class_getitem__` method
+- discord/ext/commands/_types.py:48:22: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar(&quot;T&quot;)]'&gt;` with no `__class_getitem__` method
++ discord/ext/commands/_types.py:48:22: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar]'&gt;` with no `__class_getitem__` method
+- discord/ext/commands/_types.py:53:45: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar(&quot;T&quot;)]'&gt;` with no `__class_getitem__` method
++ discord/ext/commands/_types.py:53:45: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar]'&gt;` with no `__class_getitem__` method
+- discord/ext/commands/_types.py:53:80: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar(&quot;T&quot;)]'&gt;` with no `__class_getitem__` method
++ discord/ext/commands/_types.py:53:80: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar]'&gt;` with no `__class_getitem__` method
+- discord/ext/commands/_types.py:54:62: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar(&quot;T&quot;)]'&gt;` with no `__class_getitem__` method
++ discord/ext/commands/_types.py:54:62: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar]'&gt;` with no `__class_getitem__` method
+- discord/ext/commands/_types.py:54:113: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar(&quot;T&quot;)]'&gt;` with no `__class_getitem__` method
++ discord/ext/commands/_types.py:54:113: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar]'&gt;` with no `__class_getitem__` method
+- discord/ext/commands/hybrid.py:85:50: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar(&quot;T&quot;)]'&gt;` with no `__class_getitem__` method
++ discord/ext/commands/hybrid.py:85:50: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar]'&gt;` with no `__class_getitem__` method
+- discord/ext/commands/hybrid.py:86:44: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar(&quot;T&quot;)]'&gt;` with no `__class_getitem__` method
++ discord/ext/commands/hybrid.py:86:44: error[non-subscriptable] Cannot subscript object of type `&lt;class 'Coroutine[Any, Any, typing.TypeVar]'&gt;` with no `__class_getitem__` method
+
+cwltool (https://github.com/common-workflow-language/cwltool)
+- cwltool/process.py:1182:5: error[invalid-parameter-default] Default value of type `def urljoin[AnyStr: (str, bytes)](base: AnyStr@urljoin, url: AnyStr@urljoin | None, allow_fragments: bool = Literal[True]) -&gt; AnyStr@urljoin` is not assignable to annotated parameter type `(str, str, /) -&gt; str`
++ cwltool/process.py:1182:5: error[invalid-parameter-default] Default value of type `def urljoin[AnyStr](base: AnyStr@urljoin, url: AnyStr@urljoin | None, allow_fragments: bool = Literal[True]) -&gt; AnyStr@urljoin` is not assignable to annotated parameter type `(str, str, /) -&gt; str`
+
+django-stubs (https://github.com/typeddjango/django-stubs)
+- django-stubs/contrib/admin/options.pyi:148:66: error[invalid-argument-type] Argument to class `QuerySet` is incorrect: Expected `Model`, found `typing.TypeVar(&quot;_ModelT&quot;, bound=Model)`
++ django-stubs/contrib/admin/options.pyi:148:66: error[invalid-argument-type] Argument to class `QuerySet` is incorrect: Expected `Model`, found `typing.TypeVar`
+- django-stubs/contrib/auth/forms.pyi:115:1: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `SetPasswordForm` with bases list `[typing.Generic[_UserType: AbstractBaseUser], &lt;class 'SetPasswordMixin'&gt;, &lt;class 'Form'&gt;]`
++ django-stubs/contrib/auth/forms.pyi:115:1: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `SetPasswordForm` with bases list `[typing.Generic[_UserType], &lt;class 'SetPasswordMixin'&gt;, &lt;class 'Form'&gt;]`
+- django-stubs/forms/formsets.pyi:28:1: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `BaseFormSet` with bases list `[typing.Generic[_F: BaseForm], &lt;class 'Sized'&gt;, &lt;class 'RenderableFormMixin'&gt;]`
++ django-stubs/forms/formsets.pyi:28:1: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `BaseFormSet` with bases list `[typing.Generic[_F], &lt;class 'Sized'&gt;, &lt;class 'RenderableFormMixin'&gt;]`
+- ext/django_stubs_ext/annotations.py:18:33: error[invalid-argument-type] Argument to class `Annotations` is incorrect: Expected `Mapping[str, Any]`, found `typing.TypeVar(&quot;_Annotations&quot;, bound=Mapping[str, Any])`
++ ext/django_stubs_ext/annotations.py:18:33: error[invalid-argument-type] Argument to class `Annotations` is incorrect: Expected `Mapping[str, Any]`, found `typing.TypeVar`
+
+meson (https://github.com/mesonbuild/meson)
+- unittests/helpers.py:228:16: error[invalid-return-type] Return type does not match returned value: expected `((...) -&gt; R@xfail_if_jobname, /) -&gt; (...) -&gt; R@xfail_if_jobname`, found `def expectedFailure[_FT: (...) -&gt; Any](test_item: _FT@expectedFailure) -&gt; _FT@expectedFailure`
++ unittests/helpers.py:228:16: error[invalid-return-type] Return type does not match returned value: expected `((...) -&gt; R@xfail_if_jobname, /) -&gt; (...) -&gt; R@xfail_if_jobname`, found `def expectedFailure[_FT](test_item: _FT@expectedFailure) -&gt; _FT@expectedFailure`
+- unittests/linuxliketests.py:712:48: error[invalid-argument-type] Argument to function `copytree` is incorrect: Expected `(str, str, /) -&gt; object`, found `def copyfile[_StrOrBytesPathT: @Todo(Support for `typing.TypeAlias`)](src: @Todo(Support for `typing.TypeAlias`), dst: _StrOrBytesPathT@copyfile, *, follow_symlinks: bool = Literal[True]) -&gt; _StrOrBytesPathT@copyfile`
++ unittests/linuxliketests.py:712:48: error[invalid-argument-type] Argument to function `copytree` is incorrect: Expected `(str, str, /) -&gt; object`, found `def copyfile[_StrOrBytesPathT](src: @Todo(Support for `typing.TypeAlias`), dst: _StrOrBytesPathT@copyfile, *, follow_symlinks: bool = Literal[True]) -&gt; _StrOrBytesPathT@copyfile`
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/test/property/strategies.py:927:17: error[invalid-argument-type] Argument to function `get_index_hierarchy` is incorrect: Expected `(...) -&gt; IndexHierarchy`, found `(bound method type[Index[Any]].from_labels[I: Index[Any]](labels: Iterable[Unknown], *, /, name: Unknown = None) -&gt; I@from_labels) | (bound method &lt;class 'Index'&gt;.from_labels[I: Index[Any]](labels: Iterable[Unknown], *, /, name: Unknown = None) -&gt; I@from_labels)`
++ static_frame/test/property/strategies.py:927:17: error[invalid-argument-type] Argument to function `get_index_hierarchy` is incorrect: Expected `(...) -&gt; IndexHierarchy`, found `(bound method type[Index[Any]].from_labels[I](labels: Iterable[Unknown], *, /, name: Unknown = None) -&gt; I@from_labels) | (bound method &lt;class 'Index'&gt;.from_labels[I](labels: Iterable[Unknown], *, /, name: Unknown = None) -&gt; I@from_labels)`
+- static_frame/test/unit/test_type_clinic.py:2878:9: error[invalid-argument-type] Argument to class `Index` is incorrect: Expected `generic[Any]`, found `typing.TypeVar(&quot;T&quot;, bound=generic[Any])`
++ static_frame/test/unit/test_type_clinic.py:2878:9: error[invalid-argument-type] Argument to class `Index` is incorrect: Expected `generic[Any]`, found `typing.TypeVar`
+- static_frame/test/unit/test_type_clinic.py:2879:9: error[invalid-argument-type] Argument to class `Index` is incorrect: Expected `generic[Any]`, found `typing.TypeVar(&quot;T&quot;, bound=generic[Any])`
++ static_frame/test/unit/test_type_clinic.py:2879:9: error[invalid-argument-type] Argument to class `Index` is incorrect: Expected `generic[Any]`, found `typing.TypeVar`
+- static_frame/test/unit/test_type_clinic.py:2902:9: error[invalid-argument-type] Argument to class `Index` is incorrect: Expected `generic[Any]`, found `typing.TypeVar(&quot;T&quot;, signedinteger[_64Bit], float64)`
++ static_frame/test/unit/test_type_clinic.py:2902:9: error[invalid-argument-type] Argument to class `Index` is incorrect: Expected `generic[Any]`, found `typing.TypeVar`
+- static_frame/test/unit/test_type_clinic.py:2903:9: error[invalid-argument-type] Argument to class `Index` is incorrect: Expected `generic[Any]`, found `typing.TypeVar(&quot;T&quot;, signedinteger[_64Bit], float64)`
++ static_frame/test/unit/test_type_clinic.py:2903:9: error[invalid-argument-type] Argument to class `Index` is incorrect: Expected `generic[Any]`, found `typing.TypeVar`
+- static_frame/test/unit/test_type_clinic.py:2922:9: error[invalid-argument-type] Argument to class `Index` is incorrect: Expected `generic[Any]`, found `typing.TypeVar(&quot;T&quot;, signedinteger[_64Bit], float64)`
++ static_frame/test/unit/test_type_clinic.py:2922:9: error[invalid-argument-type] Argument to class `Index` is incorrect: Expected `generic[Any]`, found `typing.TypeVar`
+- static_frame/test/unit/test_type_clinic.py:2923:9: error[invalid-argument-type] Argument to class `Index` is incorrect: Expected `generic[Any]`, found `typing.TypeVar(&quot;T&quot;, signedinteger[_64Bit], float64)`
++ static_frame/test/unit/test_type_clinic.py:2923:9: error[invalid-argument-type] Argument to class `Index` is incorrect: Expected `generic[Any]`, found `typing.TypeVar`
+- static_frame/test/unit/test_type_clinic.py:2947:9: error[invalid-argument-type] Argument to class `Index` is incorrect: Expected `generic[Any]`, found `typing.TypeVar(&quot;T&quot;)`
++ static_frame/test/unit/test_type_clinic.py:2947:9: error[invalid-argument-type] Argument to class `Index` is incorrect: Expected `generic[Any]`, found `typing.TypeVar`
+- static_frame/test/unit/test_type_clinic.py:2948:9: error[invalid-argument-type] Argument to class `Index` is incorrect: Expected `generic[Any]`, found `typing.TypeVar(&quot;T&quot;)`
++ static_frame/test/unit/test_type_clinic.py:2948:9: error[invalid-argument-type] Argument to class `Index` is incorrect: Expected `generic[Any]`, found `typing.TypeVar`
+
+zulip (https://github.com/zulip/zulip)
+- zerver/lib/rest.py:189:40: error[invalid-argument-type] Argument is incorrect: Expected `typing.TypeVar(&quot;_F&quot;, bound=(...) -&gt; Any)`, found `(...) -&gt; HttpResponse`
++ zerver/lib/rest.py:189:40: error[invalid-argument-type] Argument is incorrect: Expected `typing.TypeVar`, found `(...) -&gt; HttpResponse`
+- zerver/lib/rest.py:205:40: error[invalid-argument-type] Argument is incorrect: Expected `typing.TypeVar(&quot;_F&quot;, bound=(...) -&gt; Any)`, found `(...) -&gt; HttpResponse`
++ zerver/lib/rest.py:205:40: error[invalid-argument-type] Argument is incorrect: Expected `typing.TypeVar`, found `(...) -&gt; HttpResponse`
+- zerver/lib/rest.py:215:43: error[invalid-argument-type] Argument to function `process_as_post` is incorrect: Expected `(...) -&gt; HttpResponse`, found `((...) -&gt; HttpResponse) | typing.TypeVar(&quot;_F&quot;, bound=(...) -&gt; Any)`
++ zerver/lib/rest.py:215:43: error[invalid-argument-type] Argument to function `process_as_post` is incorrect: Expected `(...) -&gt; HttpResponse`, found `((...) -&gt; HttpResponse) | typing.TypeVar`
+- zerver/views/auth.py:1178:1: error[invalid-argument-type] Argument is incorrect: Expected `typing.TypeVar(&quot;_F&quot;, bound=(...) -&gt; Any)`, found `def api_get_server_settings(request: HttpRequest) -&gt; HttpResponse`
++ zerver/views/auth.py:1178:1: error[invalid-argument-type] Argument is incorrect: Expected `typing.TypeVar`, found `def api_get_server_settings(request: HttpRequest) -&gt; HttpResponse`
+- zerver/views/development/email_log.py:52:1: error[invalid-argument-type] Argument is incorrect: Expected `typing.TypeVar(&quot;_F&quot;, bound=(...) -&gt; Any)`, found `def generate_all_emails(request: HttpRequest) -&gt; HttpResponse`
++ zerver/views/development/email_log.py:52:1: error[invalid-argument-type] Argument is incorrect: Expected `typing.TypeVar`, found `def generate_all_emails(request: HttpRequest) -&gt; HttpResponse`
+- zerver/views/realm.py:579:1: error[invalid-argument-type] Argument is incorrect: Expected `typing.TypeVar(&quot;_F&quot;, bound=(...) -&gt; Any)`, found `def check_subdomain_available(request: HttpRequest, subdomain: str) -&gt; HttpResponse`
++ zerver/views/realm.py:579:1: error[invalid-argument-type] Argument is incorrect: Expected `typing.TypeVar`, found `def check_subdomain_available(request: HttpRequest, subdomain: str) -&gt; HttpResponse`
+- zerver/views/report.py:13:1: error[invalid-argument-type] Argument to function `csrf_exempt` is incorrect: Argument type `typing.TypeVar(&quot;_F&quot;, bound=(...) -&gt; Any)` does not satisfy upper bound of type variable `_F`
++ zerver/views/report.py:13:1: error[invalid-argument-type] Argument to function `csrf_exempt` is incorrect: Argument type `typing.TypeVar` does not satisfy upper bound of type variable `_F`
+- zerver/views/report.py:14:1: error[invalid-argument-type] Argument is incorrect: Expected `typing.TypeVar(&quot;_F&quot;, bound=(...) -&gt; Any)`, found `(...) -&gt; Unknown`
++ zerver/views/report.py:14:1: error[invalid-argument-type] Argument is incorrect: Expected `typing.TypeVar`, found `(...) -&gt; Unknown`
+- zerver/views/video_calls.py:297:1: error[invalid-argument-type] Argument to function `csrf_exempt` is incorrect: Argument type `typing.TypeVar(&quot;_F&quot;, bound=(...) -&gt; Any)` does not satisfy upper bound of type variable `_F`
++ zerver/views/video_calls.py:297:1: error[invalid-argument-type] Argument to function `csrf_exempt` is incorrect: Argument type `typing.TypeVar` does not satisfy upper bound of type variable `_F`
+- zerver/views/video_calls.py:298:1: error[invalid-argument-type] Argument is incorrect: Expected `typing.TypeVar(&quot;_F&quot;, bound=(...) -&gt; Any)`, found `(...) -&gt; Unknown`
++ zerver/views/video_calls.py:298:1: error[invalid-argument-type] Argument is incorrect: Expected `typing.TypeVar`, found `(...) -&gt; Unknown`
+
+sympy (https://github.com/sympy/sympy)
+- sympy/polys/series/ring.py:49:19: error[invalid-argument-type] Argument to class `PowerSeriesRingProto` is incorrect: Expected `RingElement`, found `typing.TypeVar(&quot;Er&quot;, bound=RingElement)`
++ sympy/polys/series/ring.py:49:19: error[invalid-argument-type] Argument to class `PowerSeriesRingProto` is incorrect: Expected `RingElement`, found `typing.TypeVar`
+- sympy/polys/series/ring.py:49:40: error[invalid-argument-type] Argument to class `TSeries` is incorrect: Expected `RingElement`, found `typing.TypeVar(&quot;Er&quot;, bound=RingElement)`
++ sympy/polys/series/ring.py:49:40: error[invalid-argument-type] Argument to class `TSeries` is incorrect: Expected `RingElement`, found `typing.TypeVar`
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @carljm on 2025-08-13 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-08-13 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-08-13 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @carljm on 2025-08-13 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2025-08-13 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/union_call.md_-_Calling_a_union_of_f…_-_Try_to_cover_all_pos…_-_Cover_non-keyword_re…_(707b284610419a54).snap</code>:89 on 2025-08-13 21:40</div>
+            <div class="timeline-body"><p>This is the place where I'm most leery of not including bounds/constraints/defaults in the rendering of a typevar. Though pyright also does not include them here, so your argument still holds!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4525 on 2025-08-13 21:46</div>
+            <div class="timeline-body"><p>optional nit: These would all be mildly shorter if you added <code>From</code> impls to create eager bounds, constraints, and defaults.</p>
+<pre><code class="language-suggestion">                    (Some(bound), None) =&gt; Some(TypeVarBoundOrConstraints::UpperBound(*bound).into()),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> approved on 2025-08-13 21:51</div>
+            <div class="timeline-body"><p>Looks good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6872 on 2025-08-13 21:52</div>
+            <div class="timeline-body"><p>eh, not sure about the <code>maybe_</code> prefixes here -- I feel like that's already expressed well by the fact that the type of the field is an <code>Option</code>.</p>
+<p>I guess I see more of an argument for giving the <code>bound_or_constraints</code> field a different name, since any TypeVar without an explicit upper bound or constraints implicitly has an upper bound of <code>object</code>. But if the aim here is to differentiate between explicit and implicit upper bounds then I'd call it <code>explicit_bound_or_constraints</code> rather than <code>maybe_bound_or_constraints</code>.</p>
+<p>Edit: Oh, hmm, I see you've renamed these because you're adding methods that have the old name? In that case, I think I'd appreciate some docs on these fields that specify that the fields are internal and that you should usually use the methods instead</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-13 21:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/union_call.md_-_Calling_a_union_of_f…_-_Try_to_cover_all_pos…_-_Cover_non-keyword_re…_(707b284610419a54).snap</code>:89 on 2025-08-13 21:57</div>
+            <div class="timeline-body"><p>Yes, agreed. Pyrefly and pyright both do not include typevar details here, mypy does.</p>
+<p>We can add them back in future. I'm not opposed to that at all, it's just gonna require some extra cycle-handling machinery for type display that I don't think is top priority right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:7165 on 2025-08-13 21:59</div>
+            <div class="timeline-body"><p>maybe</p>
+<pre><code class="language-suggestion">/// Whether a TypeVar is eagerly or lazily evaluated at runtime
+#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq, salsa::Update, get_size2::GetSize)]
+pub enum TypeVarDefaultEvaluation&lt;'db&gt; {
+    /// The default type is lazily evaluated.
+    Lazy,
+    /// The default type is eagerly specified.
+    Eager(Type&lt;'db&gt;),
+}
+</code></pre>
+<p>? And similar for your <code>LazyTypeVarBoundOrConstraints</code> enum?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-08-13 22:01</div>
+            <div class="timeline-body"><p>Nice!! Two minor nits about docs/naming; nothing blocking:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-13 22:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6872 on 2025-08-13 22:04</div>
+            <div class="timeline-body"><p>Yeah, I wanted to preserve the external API unchanged, and I struggled finding names for these internal fields. Would underscore-prefixing them be better? That both resolves the name clash and maybe communicates &quot;internal-only&quot; better, too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-13 22:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:7165 on 2025-08-13 22:05</div>
+            <div class="timeline-body"><p>Hmm, yeah, I could go with that. Struggled with naming for this one, too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-13 22:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6872 on 2025-08-13 22:07</div>
+            <div class="timeline-body"><p>yeah, underscore-prefixing feels appealing! I think the main thing that would help would just be a 1-2 sentence doc-comment saying &quot;this is internal, go use the method instead&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-13 22:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6872 on 2025-08-13 22:12</div>
+            <div class="timeline-body"><p>I would be against underscore prefixing since that means &quot;can be <code>dead_code</code>&quot; to the compiler. I'd prefer an <code>_internal</code> suffix or similar instead</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-13 22:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6872 on 2025-08-13 22:13</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd prefer an <code>_internal</code> suffix or similar instead</p>
+</blockquote>
+<p>also works for me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-08-13 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-08-13 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-13 22:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:44 UTC
+    </footer>
+</body>
+</html>

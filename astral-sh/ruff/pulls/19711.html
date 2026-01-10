@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Add diagnostics for invalid `await` expressions - astral-sh/ruff #19711</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Add diagnostics for invalid <code>await</code> expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19711">#19711</a>
+        opened by <a href="https://github.com/theammir">@theammir</a>
+        on 2025-08-03 13:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/theammir">@theammir</a> on 2025-08-03 13:18</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>This PR adds a new lint, <code>invalid-await</code>, for all sorts of reasons why an object may not be <code>await</code>able, as discussed in astral-sh/ty#919.
+Precisely, <code>__await__</code> is guarded against being missing, possibly unbound, or improperly defined (expects additional arguments or doesn't return an iterator).</p>
+<p>Of course, diagnostics need to be fine-tuned.  If <code>__await__</code> cannot be called with no extra arguments, it indicates an error (or a quirk?) in the method signature, not at the call site. Without any doubt, such an object is not <code>Awaitable</code>, but I feel like talking about arguments for an <em>implicit</em> call is a bit leaky.
+I didn't reference any actual diagnostic messages in the lint definition, because I want to hear feedback first.</p>
+<p>Also, there's no mention of the actual required method signature for <code>__await__</code> anywhere in the docs. The only reference I had is the <code>typing</code> stub. I basically ended up linking <code>[Awaitable]</code> to <a href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Awaitable">&quot;must implement <code>__await__</code>&quot;</a>, which is insufficient on its own.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>The following code was tested:</p>
+<pre><code class="language-python">import asyncio
+import typing
+
+
+class Awaitable:
+    def __await__(self) -&gt; typing.Generator[typing.Any, None, int]:
+        yield None
+        return 5
+
+
+class NoDunderMethod:
+    pass
+
+
+class InvalidAwaitArgs:
+    def __await__(self, value: int) -&gt; int:
+        return value
+
+
+class InvalidAwaitReturn:
+    def __await__(self) -&gt; int:
+        return 5
+
+
+class InvalidAwaitReturnImplicit:
+    def __await__(self):
+        pass
+
+
+async def main() -&gt; None:
+    result = await Awaitable()  # valid
+    result = await NoDunderMethod()  # `__await__` is missing
+    result = await InvalidAwaitReturn()  # `__await__` returns `int`, which is not a valid iterator 
+    result = await InvalidAwaitArgs()  # `__await__` expects additional arguments and cannot be called implicitly
+    result = await InvalidAwaitReturnImplicit()  # `__await__` returns `Unknown`, which is not a valid iterator
+
+
+asyncio.run(main())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @theammir on 2025-08-03 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @theammir on 2025-08-03 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @theammir on 2025-08-03 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @theammir on 2025-08-03 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-08-03 13:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-03 13:28</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-08-14 21:31:01.838153846 +0000
++++ new-output.txt	2025-08-14 21:31:01.904154062 +0000
+@@ -1,5 +1,5 @@
+ WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+-fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/918d35d/src/function/execute.rs:215:25 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(1543f)): execute: too many cycle iterations`
++fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/918d35d/src/function/execute.rs:215:25 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(6d14)): execute: too many cycle iterations`
+ _directives_deprecated_library.py:15:31: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ _directives_deprecated_library.py:30:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+ _directives_deprecated_library.py:36:41: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@__add__`
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-03 13:30</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">websockets (https://github.com/aaugustin/websockets)
+- src/websockets/legacy/server.py:607:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes`, found `Unknown | Literal[HTTPStatus.SERVICE_UNAVAILABLE, b&quot;Server is shutting down.\n&quot;] | list[Unknown]`
++ src/websockets/legacy/server.py:607:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes`, found `@Todo(Type::Intersection.call()) | Literal[HTTPStatus.SERVICE_UNAVAILABLE, b&quot;Server is shutting down.\n&quot;] | list[Unknown]`
+
+aiohttp (https://github.com/aio-libs/aiohttp)
++ aiohttp/client.py:771:33: warning[possibly-unbound-attribute] Attribute `get` on type `@Todo(Inference of subscript on special form) | under_cached_property[Unknown]` is possibly unbound
++ aiohttp/client.py:771:68: warning[possibly-unbound-attribute] Attribute `get` on type `@Todo(Inference of subscript on special form) | under_cached_property[Unknown]` is possibly unbound
+- Found 207 diagnostics
++ Found 209 diagnostics
+
+discord.py (https://github.com/Rapptz/discord.py)
++ discord/utils.py:727:26: error[invalid-await] `T@async_all | Awaitable[T@async_all]` is not awaitable
++ discord/webhook/async_.py:194:37: warning[possibly-unbound-attribute] Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
++ discord/webhook/async_.py:208:36: warning[possibly-unbound-attribute] Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
+- Found 549 diagnostics
++ Found 552 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
++ src/integrations/prefect-sqlalchemy/prefect_sqlalchemy/database.py:333:23: error[invalid-await] `None | CoroutineType[Any, Any, None]` is not awaitable
++ src/prefect/_internal/concurrency/services.py:471:11: error[invalid-await] `(tuple[set[Future[bool]], set[Future[bool]]] &amp; ~tuple[Unknown, ...]) | (Coroutine[Any, Any, tuple[set[Future[bool]], set[Future[bool]]] | None] &amp; ~tuple[Unknown, ...])` is not awaitable
+- Found 2969 diagnostics
++ Found 2971 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
++ ddtrace/contrib/internal/asyncio/patch.py:61:22: error[invalid-await] `Any | None` is not awaitable
+- Found 6476 diagnostics
++ Found 6477 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/theammir">@theammir</a> on 2025-08-03 13:46</div>
+            <div class="timeline-body"><p>Oops, I think <code>Unknown</code> is not a known <code>Generator</code> where return type is not explicitly specified.
+Do we treat <code>Unknown</code> like <code>Any</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-04 07:36</div>
+            <div class="timeline-body"><blockquote>
+<p>Oops, I think <code>Unknown</code> is not a known <code>Generator</code> where return type is not explicitly specified.
+Do we treat <code>Unknown</code> like <code>Any</code>?</p>
+</blockquote>
+<p>Yes, exactly. All dynamic types (<code>Any</code>, <code>Unknown</code>, <code>@Todo</code> types) represented by the <code>Type::Dynamic(…)</code> variant in Rust should be treated as being awaitable. Accessing attributes or calling dunder methods on these type should return the same dynamic type. Looks like this is a pre-existing issue in <code>generator_return_type</code> that should hopefully be easy to fix, but let me know if you need help with that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/theammir">@theammir</a> on 2025-08-04 11:03</div>
+            <div class="timeline-body"><p>Do I just...</p>
+<pre><code class="language-diff">     fn generator_return_type(self, db: &amp;'db dyn Db) -&gt; Option&lt;Type&lt;'db&gt;&gt; {
+         // -- snip --
+         match self {
+             Type::NominalInstance(instance) =&gt; {
+                 instance.class.iter_mro(db).find_map(from_class_base)
+             }
+             Type::ProtocolInstance(instance) =&gt; {
+                 if let Protocol::FromClass(class) = instance.inner {
+                     class.iter_mro(db).find_map(from_class_base)
+                 } else {
+                     None
+                 }
+             }
++            ty @ Type::Dynamic(_) =&gt; Some(ty),
+             _ =&gt; None,
+         }
+     }
+</code></pre>
+<p>It seems to work, but is there more to it?
+UPD: now that I think about it, returning <code>Type::unknown()</code> makes way more sense than propagating a dynamic type. Maybe we can get something more specific?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-04 12:05</div>
+            <div class="timeline-body"><blockquote>
+<p>It seems to work, but is there more to it?</p>
+</blockquote>
+<p>That should be all there is to it :smile:. Propagating the dynamic type (instead of returning <code>Unknown</code>) is fine. It's something that we also do elsewhere. The reason is that we want to &quot;bubble up&quot; dynamic types like our <code>Todo</code> types to the outermost layer such that they are user-visible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/theammir">@theammir</a> on 2025-08-04 16:10</div>
+            <div class="timeline-body"><p>Alright, now</p>
+<pre><code class="language-python">class InvalidAwaitReturnImplicit:
+    def __await__(self):
+        pass
+</code></pre>
+<p>is awaitable as far as the type signature goes.</p>
+<p>Also, union types don't work. I suppose I have to check every element for being a generator, and construct a union of possible return types if all of them are, in fact, awaitable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-04 18:01</div>
+            <div class="timeline-body"><blockquote>
+<p>Alright, now</p>
+<pre><code class="language-python">class InvalidAwaitReturnImplicit:
+    def __await__(self):
+        pass
+</code></pre>
+<p>is awaitable as far as the type signature goes.</p>
+</blockquote>
+<p>:+1:</p>
+<blockquote>
+<p>Also, union types don't work. I suppose I have to check every element for being a generator, and construct a union of possible return types if all of them are, in fact, awaitable.</p>
+</blockquote>
+<p>Ah, yes, you're right. Thank you for fixing these. I think you should be able to use <code>UnionType::map</code> to recursively apply <code>generator_return_type</code> to all elements of the union.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-08-04 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/theammir">@theammir</a> on 2025-08-04 20:21</div>
+            <div class="timeline-body"><p>Now distinguishes between</p>
+<pre><code class="language-python">class AwaitableUnion:  # Generator | Unknown, awaitable
+    if datetime.today().weekday() == 6:
+
+        def __await__(self) -&gt; typing.Generator[typing.Any, None, None]:
+            yield
+
+    else:
+
+        def __await__(self):
+            pass
+
+
+class UnawaitableUnion:  # Generator | int, non-awaitable
+    if datetime.today().weekday() == 6:
+
+        def __await__(self) -&gt; typing.Generator[typing.Any, None, None]:
+            yield
+
+    else:
+
+        def __await__(self) -&gt; int:
+            return 5
+</code></pre>
+<p><code>mypy_primer</code> diff looks very promising to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-08-04 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-04 21:23</div>
+            <div class="timeline-body"><blockquote>
+<p><code>mypy_primer</code> diff looks very promising to me.</p>
+</blockquote>
+<p><code>Never</code> should be treated exactly the same like dynamic types. Accessing any argument on <code>Never</code> results in <code>Never</code>. So while it may seem strange, <code>Never</code> should be awaitable. This allows us to silence downstream errors if an expression is inferred as <code>Never</code>.</p>
+<p>This can happen in unreachable code, for example:</p>
+<pre><code class="language-py">a = returns_awaitable()
+
+if sys.version_info &gt;= (3, 12):
+    # the type of `a` is `Never` here when checking on 3.11 or lower
+    x = await a
+else:
+    ...
+</code></pre>
+<p>Now this is obviously a constructed example, but there are valid use cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6844 on 2025-08-05 03:07</div>
+            <div class="timeline-body"><p>I think it's reasonable to emit a diagnostic at the callsite here. It might also be nice to emit a diagnostic where <code>__await__</code> is defined with an incorrect signature, but I would see this as in addition, not instead of.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6858 on 2025-08-05 03:10</div>
+            <div class="timeline-body"><p>Is it possible that in these cases we can highlight the range of the <code>__await__</code> method, or of the definition of the type that is lacking an <code>__await__</code> method?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:573 on 2025-08-05 03:10</div>
+            <div class="timeline-body"><p>why are there TODOs here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-05 03:12</div>
+            <div class="timeline-body"><p>This is looking pretty good, thank you! Can we add some mdtests (maybe in a new <code>diagnostics/invalid_await.md</code>) demonstrating cases where this diagnostic is emitted, and snapshotting their output?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/theammir">@theammir</a> reviewed on 2025-08-05 08:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/theammir">@theammir</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:573 on 2025-08-05 08:20</div>
+            <div class="timeline-body"><p>Wanted to hear feedback before documenting actual error messages, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:573 on 2025-08-05 14:45</div>
+            <div class="timeline-body"><p>I think it's sufficient to include the error code, but not the full message, here. So e.g.</p>
+<pre><code class="language-suggestion">    ///     await InvalidAwait()  # error: [invalid-await]
+    ///     await 42  # error: [invalid-await]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-05 14:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/theammir">@theammir</a> on 2025-08-08 21:09</div>
+            <div class="timeline-body"><p>Added some useful secondary annotations for the lint. Now <code>report_diagnostic</code> is a huge match-case, but from what I've seen, a lot of <code>ty</code> is, too.</p>
+<p>Added mdtests as proposed. Some other tests that rely on <code>await</code> expressions have been broken, for instance:
+https://github.com/astral-sh/ruff/blob/3a542a80f65d66a15e22b6fe161e5af05ddffa83/crates/ty_python_semantic/resources/mdtest/diagnostics/semantic_syntax_errors.md?plain=1#L136-L138
+Would expecting <code>error: [invalid-await]</code> here as well break atomicity?</p>
+<p>Even though providing the type definition of a non-awaitable object is useful, sometimes diagnostics peek into built-ins:</p>
+<pre><code>error[invalid-await]: `Literal[1]` is not awaitable
+   --&gt; test-project/main.py:83:11
+    |
+ 81 |     await Awaitable()  # valid
+ 82 |     await AwaitableUnion()  # valid
+ 83 |     await 1  # invalid
+    |           ^
+ 84 |
+ 85 |     await NonCallableAwait()  # invalid
+    |
+   ::: stdlib/builtins.pyi:337:7
+    |
+335 | _LiteralInteger = _PositiveInteger | _NegativeInteger | Literal[0]  # noqa: Y026  # TODO: Use TypeAlias once mypy bugs are fixed
+336 |
+337 | class int:
+    |       --- type defined here
+338 |     &quot;&quot;&quot;int([x]) -&gt; integer
+339 |     int(x, base=10) -&gt; integer
+    |
+info: `__await__` is missing
+info: rule `invalid-await` is enabled by default
+</code></pre>
+<hr />
+<p>Also, while fooling around, I discovered that awaiting an instance of this type is perfectly valid, and it isn't considered possibly unbound:</p>
+<pre><code class="language-py">class PossiblyUnbound:
+    if datetime.today().weekday() == 0:
+
+        def __await__(self):
+            yield 1
+
+    elif datetime.today().weekday() == 1:
+
+        def __await__(self):
+            yield 2
+</code></pre>
+<p>I wonder why.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-13 13:45</div>
+            <div class="timeline-body"><blockquote>
+<p>Also, while fooling around, I discovered that awaiting an instance of this type is perfectly valid, and it isn't considered possibly unbound</p>
+</blockquote>
+<p>Thanks for this comment! I explored it and found a bug, fixed in https://github.com/astral-sh/ruff/pull/19884</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/theammir">@theammir</a> on 2025-08-13 16:42</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for this comment! I explored it and found a bug, fixed in #19884</p>
+</blockquote>
+<p>Excellent! And thanks for fixing tests for me, I suppose I should merge them from <code>main</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/theammir">@theammir</a> on 2025-08-13 17:30</div>
+            <div class="timeline-body"><p>All mdtests are now passing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-14 20:52</div>
+            <div class="timeline-body"><p>I notice that mypy and pyright both implement these diagnostics by checking that anything you <code>await</code> is assignable to the <code>Awaitable</code> protocol, and then just emitting the usual diagnostics if that assignment fails. (Rather than trying to call <code>__await__</code> and erroring if we can't make that call, or it returns the wrong type.)</p>
+<p>It's not clear to me that using the protocol is a better approach to get good diagnostics here, but it's something we could consider in future. For now I think this PR is good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-14 21:05</div>
+            <div class="timeline-body"><p>@theammir Just for future reference (in case you make future PRs), you may want to note some things I'm fixing in this PR:</p>
+<ul>
+<li><code>cargo dev generate-all</code> (because this PR adds a new diagnostic and we need to generate some rules metadata)</li>
+<li>Adding <code>&lt;!-- snapshot-diagnostics --&gt;</code> to the mdtest so we get full diagnostic snapshots, then running <code>cargo insta test -p ty_python_semantic</code> followed by <code>cargo insta review</code> to approve those snapshots.</li>
+<li>Allowing <code>pre-commit</code> to auto-format the mdtests.</li>
+<li>Avoiding let-chains for now, because our minimum supported Rust version (tested in CI) is still 1.86. (Our policy is latest-2, and latest is 1.89, so we can bump that to 1.87, but that won't help, since let-chains were only stabilized in 1.88.)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2025-08-14 21:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/theammir">@theammir</a> on 2025-08-14 21:18</div>
+            <div class="timeline-body"><blockquote>
+<p>It's not clear to me that using the protocol is a better approach to get good diagnostics here, but it's something we could consider in future. For now I think this PR is good.</p>
+</blockquote>
+<p>My entire reasoning behind the design I went with was trying to build from the blocks available, and that one todo comment in <code>__enter__</code>-related functionality that says that we should check for assignability once we support protocols in the first place.</p>
+<p>That said, pyright's &quot;is not awaitable&quot; diagnostics are thorough, but also deeply nested and somewhat convoluted:</p>
+<pre><code class="language-python">Pyright: &quot;InvalidAwaitArgs&quot; is not awaitable
+     &quot;InvalidAwaitArgs&quot; is incompatible with protocol &quot;Awaitable[_T_co@Awaitable]&quot;
+       &quot;__await__&quot; is an incompatible type
+         Type &quot;(value: int) -&gt; Generator[int, Any, None]&quot; is not assignable to type &quot;() -&gt; Generator[Any, Any, _T_co@Awaitable]&quot;
+           Extra parameter &quot;value&quot; [reportGeneralTypeIssues]
+</code></pre>
+<p>All the info about specific extra parameters is there (if you are careful enough to find it on line 4, otherwise read even further), and there's more to the protocol error message than just reporting unassignability anyway.
+Just thoughts.</p>
+<blockquote>
+<p>Just for future reference (in case you make future PRs), you may want to note some things I'm fixing in this PR:</p>
+</blockquote>
+<p>Thanks! It's been really fun so far, I'd stick around. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-08-14 21:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-08-14 21:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:43 UTC
+    </footer>
+</body>
+</html>

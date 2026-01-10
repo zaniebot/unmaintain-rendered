@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Improve `sys.version_info` special casing - astral-sh/ruff #19894</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Improve <code>sys.version_info</code> special casing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19894">#19894</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-08-13 13:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-13 13:07</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Currently the <code>__getitem__</code> method we infer for <code>sys.version_info</code> is inconsistent with the types we infer for indexing/slicing/unpacking <code>sys.version_info</code>. This isn't really a big deal, but... it would be nice to be consistent :-)</p>
+<p>The reason for the inconsistency is that we infer <code>sys.version_info</code> as inheriting from <code>tuple[int, int, int, @Todo(Type Alias), int]</code> due to <a href="https://github.com/python/typeshed/blob/1e537d6216d4aef76a8c96ffac9da014ccfe7fc3/stdlib/sys/__init__.pyi#L328">typeshed's definition</a>, but our special casing elsewhere treats it as a subtype of <code>tuple[Literal[3], Literal[&lt;minor Python version&gt;], int, Literal[&quot;alpha&quot;, &quot;beta&quot;, &quot;&quot;candidate&quot;, &quot;final&quot;], int]</code>. We can resolve the inconsistency by adding some special-casing for <code>sys.version_info</code> to <code>ClassLiteral::explicit_bases()</code>.</p>
+<p>In theory adding the special casing to <code>ClassLiteral::explicit_bases()</code> would let us remove any special casing for <code>sys.version_info</code> from <code>instance.rs</code>: we could just iterate through the MRO of <code>sys._version_info</code> until we find the tuple type in its MRO, and return the tuple spec of that tuple type. In practice, that (unsurpringly) leads to a big performance regression, however.</p>
+<p>I'm adding the &quot;internal&quot; label since I doubt this really changes any behaviour that users would realistically care about.</p>
+<h2>Test Plan</h2>
+<p>Mdtests added</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-08-13 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-13 13:09</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-08-13 13:09:38.590966201 +0000
++++ new-output.txt	2025-08-13 13:09:38.658966248 +0000
+@@ -1,5 +1,5 @@
+ WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+-fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/918d35d/src/function/execute.rs:215:25 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(34b8)): execute: too many cycle iterations`
++fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/918d35d/src/function/execute.rs:215:25 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(154c3)): execute: too many cycle iterations`
+ _directives_deprecated_library.py:15:31: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ _directives_deprecated_library.py:30:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+ _directives_deprecated_library.py:36:41: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@__add__`
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-13 13:11</div>
+            <div class="timeline-body"><p>We need @carljm to fix the remaining recursive type / generic issues. The conformance test panic is irritating ;) (that's supposed to be pep talk, but I know, I'm not very good at it)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-13 13:12</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2025-08-13 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-08-13 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-08-13 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-08-13 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-08-13 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-13 13:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:1167 on 2025-08-13 13:24</div>
+            <div class="timeline-body"><p>It's fairly easy to add caching to this method if we revert https://github.com/astral-sh/ruff/commit/d76fd103aefd809440654a4e7a31920cd757eca6, but I still haven't been able to find any evidence yet that this would provide a significant speedup. I also haven't tried doing that as an isolated change on the codspeed runners, though; I've only experimented by running benchmarks locally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-13 13:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1353 on 2025-08-13 13:33</div>
+            <div class="timeline-body"><p>Just something to be aware of. This has a risk of lock congestion if <code>explict_bases</code> is very hot because we keep interning the same <code>TupleType</code>. I don't think <code>explict_bases</code> is that hot that this is an issue here but I thought it's worth noting (and it's also something that we might just need to fix in Salsa)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-08-13 13:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-13 13:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1353 on 2025-08-13 13:37</div>
+            <div class="timeline-body"><p>I think this is likely not an issue here because we only intern when we call <code>explicit_bases</code> on the <code>VersionInfo</code> class specifically. And this method is cached so if we do that frequently, all but the first time in a revision wouldn't reach here anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-08-13 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-08-13 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-13 13:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:44 UTC
+    </footer>
+</body>
+</html>

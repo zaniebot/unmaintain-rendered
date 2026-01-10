@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Reduce size of member table - astral-sh/ruff #19572</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Reduce size of member table</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19572">#19572</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-07-26 18:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-26 18:29</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR shrinks the size of the members table by ~28% (from 611MB to 438MB on a large project).</p>
+<p>This is achieved by changing how we store <code>MemberExpr</code>.</p>
+<p><strong>Before</strong></p>
+<pre><code class="language-rust">pub(crate) struct MemberExpr {
+    symbol_name: Name,
+	segments: SmallVec&lt;[MemberSegment; 1]&gt;,
+}
+
+pub(crate) enum MemberSegment {
+    /// An attribute access, e.g. `.y` in `x.y`
+    Attribute(Name),
+    /// An integer-based index access, e.g. `[1]` in `x[1]`
+    IntSubscript(ast::Int),
+    /// A string-based index access, e.g. `[&quot;foo&quot;]` in `x[&quot;foo&quot;]`
+    StringSubscript(String),
+}
+</code></pre>
+<p>There are a few issues with this layout: <code>MemberSegment</code> itself is 32 bytes because it stores a <code>String</code> (or int) for each segment. This is an issue for multiple reasons:</p>
+<ol>
+<li>We can only store a single segment inline</li>
+<li>Even then, the small vec with only a single inline segment accounts for 40 bytes (32 bytes for a single segment + its metadata).</li>
+<li>Each heap allocated segment also takes 32 bytes</li>
+</ol>
+<p>This PR shrinks the size of <code>MemberExpr</code> and <code>MemberSegment</code> and reduces the cases where heap allocating the segments is necessary.</p>
+<p><strong>New</strong></p>
+<pre><code class="language-rust">pub(crate) struct MemberExpr {
+    /// The entire path as a single Name
+    path: Name,
+    /// Metadata for each segment (in forward order)
+    segments: Segments,
+}
+</code></pre>
+<p>The first change is that we change <code>symbol_name</code> to a path. The path stores the entire path of the member expression. For example, <code>a.b[4]</code> becomes <code>ab4</code>. This avoids the need for each segment to store its own <code>Name</code> (or <code>Int</code>)</p>
+<p>The second important change is that <code>Segments</code> is now an enum over a small and a heap variant:</p>
+<pre><code class="language-rust">#[derive(Clone, Debug, PartialEq, Eq, get_size2::GetSize)]
+enum Segments {
+    /// Inline storage for up to 7 segments with 6-bit relative offsets (max 63 bytes per segment)
+    Small(SmallSegments),
+    /// Heap storage for expressions that don't fit inline
+    Heap(Box&lt;[SegmentInfo]&gt;),
+}
+</code></pre>
+<p><code>SmallSegments</code> packs up to 7 segments into a single <code>u64</code> (see docstring for more details).</p>
+<p><code>SegmentInfo</code> packs both an offset and a kind, so that a single segment only takes 4 bytes (it's a <code>u32</code>).</p>
+<p>All these improvements together shrink <code>MemberExpr</code> from 64 bytes to 40 bytes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-07-26 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-26 18:33</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">trio (https://github.com/python-trio/trio)
+- TOTAL MEMORY USAGE: ~167MB
++ TOTAL MEMORY USAGE: ~159MB
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+-     memo fields = ~214MB
++     memo fields = ~204MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-26 18:41</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-03 08:43</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Prototype shrink MemberSize" to "[ty] Reduce size of memory table" by @MichaReiser on 2025-08-03 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-08-06 09:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-08-06 09:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-08-06 09:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-08-06 09:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-08-06 09:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-08-06 10:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/semantic_index/member.rs</code>:705 on 2025-08-06 17:16</div>
+            <div class="timeline-body"><p>This comment doesn't quite make sense to me here? At this point we've already determined that we can fit in inline storage; the checks are above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-08-06 17:17</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Reduce size of memory table" to "[ty] Reduce size of member table" by @MichaReiser on 2025-08-06 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-07 09:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/member.rs</code>:705 on 2025-08-07 09:08</div>
+            <div class="timeline-body"><p>That's what you get for writing large parts of the implementation with claude :) Thanks for catching this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-08-07 09:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-08-07 09:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-07 09:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:43 UTC
+    </footer>
+</body>
+</html>

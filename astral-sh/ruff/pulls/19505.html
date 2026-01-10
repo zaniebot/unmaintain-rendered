@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`isort`] Fix syntax error after docstring ending with backslash (`I002`) - astral-sh/ruff #19505</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>isort</code>] Fix syntax error after docstring ending with backslash (<code>I002</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19505">#19505</a>
+        opened by <a href="https://github.com/jimhoekstra">@jimhoekstra</a>
+        on 2025-07-23 10:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jimhoekstra">@jimhoekstra</a> on 2025-07-23 10:32</div>
+            <div class="timeline-body"><p>Issue: https://github.com/astral-sh/ruff/issues/19498</p>
+<h2>Summary</h2>
+<p><a href="https://docs.astral.sh/ruff/rules/missing-required-import/">missing-required-import</a> inserts the missing import on the line immediately following the last line of the docstring. However, if the dosctring is immediately followed by a continuation token (i.e. backslash) then this leads to a syntax error because Python interprets the docstring and the inserted import to be on the same line.</p>
+<p>The proposed solution in this PR is to check if the first token after a file docstring is a continuation character, and if so, to advance an additional line before inserting the missing import.</p>
+<h2>Test Plan</h2>
+<p>Added a unit test, and the following example was verified manually:</p>
+<p>Given this simple test Python file:</p>
+<pre><code class="language-python">&quot;Hello, World!&quot;\
+
+print(__doc__)
+</code></pre>
+<p>and this ruff linting configuration in the <code>pyproject.toml</code> file:</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+select = [&quot;I&quot;]
+
+[tool.ruff.lint.isort]
+required-imports = [&quot;import sys&quot;]
+</code></pre>
+<p>Without the changes in this PR, the ruff linter would try to insert the missing import in line 2, resulting in a syntax error, and report the following:</p>
+<p><code>error: Fix introduced a syntax error. Reverting all changes.</code></p>
+<p>With the changes in this PR, ruff correctly advances one more line before adding the missing import, resulting in the following output:</p>
+<pre><code class="language-python">&quot;Hello, World!&quot;\
+
+import sys
+
+print(__doc__)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @jimhoekstra on 2025-07-23 11:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @ntBre on 2025-07-24 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-07-25 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-07-25 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-28 20:18</div>
+            <div class="timeline-body"><p>This is great, thank you!</p>
+<p>Would you mind adding an I002 test too? That would also have the benefit of showing a nice snapshot instead of comparing to a <code>TextSize</code> directly. I think <code>22</code> is correct from counting manually, but the snapshot will be an easy way to double check :)</p>
+<p>I think you could probably add another <code>test_case</code> on this function or one of the others nearby:</p>
+<p>https://github.com/astral-sh/ruff/blob/1f0d39a7cedc0c08a1a4265f943d70caa87f1c11/crates/ruff_linter/src/rules/isort/mod.rs#L804-L806</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-28 20:24</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-28 20:29</div>
+            <div class="timeline-body"><p>Don't worry about the ecosystem check yet, I think it's relative to an old commit since I only just approved the workflow. I expect it to clear up after a new commit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jimhoekstra">@jimhoekstra</a> on 2025-07-29 20:09</div>
+            <div class="timeline-body"><p>Thanks for your reply! I've added a snapshot test in my latest commit, how does it look?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jimhoekstra">@jimhoekstra</a> reviewed on 2025-07-29 21:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jimhoekstra">@jimhoekstra</a> on <code>crates/ruff_linter/src/rules/isort/mod.rs</code>:799 on 2025-07-29 21:23</div>
+            <div class="timeline-body"><p>@ntBre Do you think it would be a good idea to rename this existing test case (<code>docstring_with_continuation.py</code>) to something like <code>docstring_with_semicolon_and_continuation.py</code> to avoid ambiguity with the test case that I just added (i.e. <code>docstring_followed_by_continuation.py</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/isort/mod.rs</code>:799 on 2025-07-30 15:08</div>
+            <div class="timeline-body"><p>I think it's fine, but good catch!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-30 15:09</div>
+            <div class="timeline-body"><p>The new snapshots look great, thank you! This is good to merge once CI passes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-07-30 15:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-07-30 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-07-30 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "fix missing-required-imports introducing syntax error after dosctring ending with backslash" to "[`isort`] Fix syntax error after docstring ending with backslash (`I002`)" by @ntBre on 2025-07-30 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-31 07:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:43 UTC
+    </footer>
+</body>
+</html>

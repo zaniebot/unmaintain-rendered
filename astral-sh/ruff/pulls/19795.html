@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] more cases for the class body global fallback - astral-sh/ruff #19795</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] more cases for the class body global fallback</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19795">#19795</a>
+        opened by <a href="https://github.com/oconnor663">@oconnor663</a>
+        on 2025-08-06 22:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-08-06 22:09</div>
+            <div class="timeline-body"><p>I had been tracking https://github.com/astral-sh/ty/issues/875, and I took a look at @mtshiba's https://github.com/astral-sh/ruff/pull/19743 after it closed that bug. It looks like there are some obscure corner cases that don't match CPython's behavior, and some of the refactoring I've been doing for https://github.com/astral-sh/ruff/pull/19703 (particularly a <code>Symbol::is_local</code> method) might be helpful. I expect that all these cases are extremely rare, so this PR is more for my own understanding and to kick the tires on the refactorings I'm already considering. ~~I don't expect to get any ecosystem hits but we'll see.~~ (lol what is scipy doing :sweat_smile:)</p>
+<p>This PR adds three new cases to the class body global fallback tests in <code>global.md</code>:</p>
+<pre><code class="language-py">x: str = &quot;a&quot;
+
+def f(x: int, y: int):
+    ...
+    # Declarations count as definitions, even if there's no binding.
+    class F:
+        reveal_type(x)  # revealed: str
+        x: int
+        reveal_type(x)  # revealed: str
+
+    # Explicitly `nonlocal` variables don't count, even if they're bound.
+    class G:
+        nonlocal x
+        reveal_type(x)  # revealed: int
+        x = 42
+        reveal_type(x)  # revealed: Literal[42]
+
+    # Possibly-unbound variables get unioned with the fallback lookup.
+    class H:
+        if secrets.randbelow(2):
+            x = None
+        reveal_type(x)  # revealed: None | str
+</code></pre>
+<p>These cases all fail in <code>main</code> and pass with this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @oconnor663 on 2025-08-06 22:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @oconnor663 on 2025-08-06 22:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @oconnor663 on 2025-08-06 22:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @oconnor663 on 2025-08-06 22:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:6688 on 2025-08-06 22:11</div>
+            <div class="timeline-body"><p>Removing <code>local_is_unbound</code> from the logic here lets us fall back both the <code>Unbound</code> case (as before) and also in the <code>PossiblyUnbound</code> case (new in this PR). The <code>Bound</code> case never gets here, because we're inside of <code>or_fall_back_to</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> reviewed on 2025-08-06 22:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-06 22:11</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-06 22:13</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">scipy (https://github.com/scipy/scipy)
+- scipy/optimize/_minpack_py.py:521:13: error[unresolved-attribute] Unresolved attribute `skip_lookup` on type `def _memoized_func(params) -&gt; Unknown`.
+- scipy/optimize/tests/test_chandrupatla.py:358:41: error[unresolved-attribute] Type `def callback(res) -&gt; Unknown` has no attribute `xl`
+- scipy/optimize/tests/test_chandrupatla.py:358:67: error[unresolved-attribute] Type `def callback(res) -&gt; Unknown` has no attribute `xr`
+- scipy/optimize/tests/test_chandrupatla.py:359:41: error[unresolved-attribute] Type `def callback(res) -&gt; Unknown` has no attribute `xl`
+- scipy/optimize/tests/test_chandrupatla.py:359:67: error[unresolved-attribute] Type `def callback(res) -&gt; Unknown` has no attribute `xr`
+- scipy/optimize/tests/test_chandrupatla.py:756:48: error[unresolved-attribute] Type `def callback(res) -&gt; Unknown` has no attribute `bracket`
+- scipy/optimize/tests/test_chandrupatla.py:757:50: error[unresolved-attribute] Type `def callback(res) -&gt; Unknown` has no attribute `bracket`
+- scipy/optimize/tests/test_chandrupatla.py:758:50: error[unresolved-attribute] Type `def callback(res) -&gt; Unknown` has no attribute `bracket`
+- scipy/optimize/tests/test_chandrupatla.py:759:52: error[unresolved-attribute] Type `def callback(res) -&gt; Unknown` has no attribute `bracket`
+- Found 6796 diagnostics
++ Found 6787 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> reviewed on 2025-08-06 22:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/ty_python_semantic/resources/mdtest/narrow/assignment.md</code>:78 on 2025-08-06 22:17</div>
+            <div class="timeline-body"><p>This is the one part of this PR I'm really not sure about. Previously we weren't applying the global fallback (because <code>a</code> is possibly bound), but we were still walking enclosing scopes (because <code>scope.is_function_like(db)</code> used to be part of the <code>Unbound</code> short-circuit in <code>infer_place_load</code>). I <em>think</em> that caused us to look up <code>a.x</code> here from an enclosing snapshot, and now we don't?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @oconnor663 on 2025-08-06 22:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @oconnor663 on 2025-08-06 22:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @oconnor663 on 2025-08-06 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @oconnor663 on 2025-08-06 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-06 22:48</div>
+            <div class="timeline-body"><p>Ecosystem hits: it looks like even in non-class scopes, this is now causing us to find an attribute write in an enclosing scope in some cases where previously we did not. That seems like a positive change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-06 22:57</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>unresolved-attribute</code> | 0 | 9 | 0 |
+| <strong>Total</strong> | <strong>0</strong> | <strong>9</strong> | <strong>0</strong> |</p>
+<p><strong><a href="https://jack-class-body-corner-cases.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-08-06 23:01</div>
+            <div class="timeline-body"><p>I'm finding it pretty hard to pin down exactly what's changed there. I think I can minimize those scipy examples down to something like this:</p>
+<pre><code class="language-py">def f():
+    def g():
+        if g.x is not None:
+            g.x = 42
+    g.x = None
+</code></pre>
+<p>This is <em>weird</em> code, and it has plenty of diagnostics both before (3) and after (2) this PR. But the one removed diagnostic is on the assignment <code>g.x = 42</code>. I <em>think</em> <code>ty</code> is now concluding that that line is unreachable? Previously we used to skip walking local scopes if <code>has_bindings_in_this_scope</code> was true, and now we skip it if <code>symbol_resolves_locally</code> is true, and the subtle difference is that the former can be true for attribute/subscript places but the latter can't be. This wasn't exactly intended, but it does seem like &quot;skip walking enclosing scopes&quot; should only apply to bare symbols. Consider this other example I just made up:</p>
+<pre><code class="language-py">def f():
+    x = [1, 2, 3]
+    x[0] = 42
+    def g():
+        reveal_type(x[0])  # previously Unknown, now 42
+        x[0] = 99
+        reveal_type(x[0])  # 99
+</code></pre>
+<p>That seems like an improvement? But I don't claim to understand our non-symbol place logic very well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-08-07 00:05</div>
+            <div class="timeline-body"><p>(copying a question <a href="https://discord.com/channels/1039017663004942429/1343690517745111081/1402792898377945149">from chat</a> to make it easier for me to find later)</p>
+<p>Speaking of non-symbol places, it seems like our handling of those is kind of unsound. For example (both before and after this PR):</p>
+<pre><code class="language-py">def f():
+    x = [&quot;a&quot;]
+    x[0] = 42
+    def g():
+        x = [&quot;b&quot;]
+        def h():
+            reveal_type(x[0])  # 42
+            print(x[0])        # &quot;b&quot;
+</code></pre>
+<p>Is that a known issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-07 23:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Is that a known issue?</p>
+</blockquote>
+<p>It is now! And I just merged @mtshiba 's fix for it :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/narrow/assignment.md</code>:78 on 2025-08-07 23:41</div>
+            <div class="timeline-body"><p>Yes, that looks likely, and we apply the Unknown-widening to the global <code>A</code> but not the function-local one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-08-07 23:56</div>
+            <div class="timeline-body"><p>Looks great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @oconnor663 on 2025-08-08 00:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @oconnor663 on 2025-08-08 00:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-08 00:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:43 UTC
+    </footer>
+</body>
+</html>

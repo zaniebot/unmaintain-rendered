@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Fix attribute access on `TypedDict`s - astral-sh/ruff #19758</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Fix attribute access on <code>TypedDict</code>s</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19758">#19758</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-08-05 10:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-05 10:10</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes a few inaccuracies in attribute access on <code>TypedDict</code>s. It also changes the return type of <code>type(person)</code> to <code>type[dict[str, object]]</code> if <code>person: Person</code> is an inhabitant of a <code>TypedDict</code>  <code>Person</code>. We still use <code>type[Person]</code> as the <em>meta type</em> of Person, however (see reasoning <a href="https://github.com/astral-sh/ruff/pull/19733#discussion_r2253297926">here</a>).</p>
+<h2>Test Plan</h2>
+<p>Updated Markdown tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-08-05 10:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-05 10:12</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-05 10:14</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-05 10:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_ide/src/completion.rs</code>:1257 on 2025-08-05 10:32</div>
+            <div class="timeline-body"><p>These were just (slightly) wrong before. FYI @BurntSushi.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-05 10:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:329 on 2025-08-05 10:36</div>
+            <div class="timeline-body"><p>This is a small bugfix. Instead of trying to access the member on instances of the parent class, just access them on the type that we're adding completions for — similar to how it's done in the method above. If we don't do this, the descriptor protocol will be invoked with the wrong instance type (which is why we see the changes in bound methods).</p>
+<p>It was also possible to change this for <code>TypedDict</code>, because &quot;instances&quot;/inhabitants of <code>TypedDict</code>-based classes are not represented by <code>Type::NominalInstance</code>, but <code>Type::TypedDict</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-08-05 10:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-08-05 10:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-08-05 10:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-08-05 10:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2025-08-05 10:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/typed_dict.md</code>:220 on 2025-08-05 11:10</div>
+            <div class="timeline-body"><p>what you have is accurate as-is, but this might be clearer for a first-time reader:</p>
+<pre><code class="language-suggestion">But they *can* be accessed on `type[Person]`, because this function would accept the class object
+`Person` as an argument:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/typed_dict.md</code>:228 on 2025-08-05 11:10</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">def accepts_typed_dict_class(t_person: type[Person]) -&gt; None:
+    reveal_type(t_person.__total__)  # revealed: bool
+    reveal_type(t_person.__required_keys__)  # revealed: frozenset[str]
+    reveal_type(t_person.__optional_keys__)  # revealed: frozenset[str]
+
+accepts_typed_dict_class(Person)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:672 on 2025-08-05 11:12</div>
+            <div class="timeline-body"><p>nit: I think we should avoid making things <code>pub</code> wherever possible, as Clippy doesn't warn us about unused code if something is <code>pub</code>. (I know there are lots of <code>Type</code> methods that violate this general rule, and ideally we'd clean them up IMO, but it's also probably not that important to do so.)</p>
+<pre><code class="language-suggestion">    pub(crate) const fn is_typed_dict(&amp;self) -&gt; bool {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5623 on 2025-08-05 11:15</div>
+            <div class="timeline-body"><p>Shouldn't this be a class-literal type rather than a subclass-of type? Similar to the way we know that an int-literal must be an instance of exactly <code>int</code> (not a subclass of <code>int</code>), it's invalid for a <code>TypedDict</code> inhabitant to be an instance of a <code>dict</code> subclass -- it must be an instance of exactly <code>dict</code>, I think? This is different to <code>NominalInstance</code> types, which is why we use <code>SubclassOf</code> types as the meta-types for most instance types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-05 11:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-05 11:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5623 on 2025-08-05 11:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Shouldn't this be a class-literal type rather than a subclass-of type?</p>
+</blockquote>
+<p>This is what I had at first. Then I noticed that <code>type({})</code> is <code>type[dict[Unknown, Unknown]]</code> and I tried to model that similarly.</p>
+<blockquote>
+<p>it's invalid for a <code>TypedDict</code> inhabitant to be an instance of a <code>dict</code> subclass -- it must be an instance of exactly <code>dict</code></p>
+</blockquote>
+<p>Yes, I think that's right. Will change back to <code>&lt;class 'dict[str, object]'&gt;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-05 11:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5623 on 2025-08-05 11:40</div>
+            <div class="timeline-body"><blockquote>
+<p>This is what I had at first. Then I noticed that <code>type({})</code> is <code>type[dict[Unknown, Unknown]]</code> and I tried to model that similarly.</p>
+</blockquote>
+<p>yeah, the apparent inconsistency here is due to the fact that with <code>x = {}</code>, we infer the type of <code>x</code> as <code>dict[Unknown, Unknown]</code>, which is &quot;lossy&quot; -- looking at the source code, we know that it is (for now) an instance of <em>exactly</em> <code>dict</code>, but this is not recorded in the type we infer: the type we infer allows for the possibility that <code>x</code> could be an instance of a subclass of <code>dict</code>. That lossiness in the type then means that the only safe type we can infer for <code>type(x)</code> here is <code>type[dict[Unknown, Unknown]]</code> rather than <code>&lt;class 'dict[Unknown, Unknown]'&gt;</code></p>
+<p>And the &quot;lossiness&quot; of the type we infer for <code>x</code> there is sort-of deliberate: you usually want to be able to substitute a subclass of <code>dict</code> wherever a <code>dict</code> is expected! But for <code>TypedDict</code> types, that's not allowed, so we can use a more precise type for <code>type()</code> calls on <code>TypedDict</code> inhabitants.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5621 on 2025-08-05 11:43</div>
+            <div class="timeline-body"><p>this <code>.expect()</code> call feels like it could fail if somebody used a custom typeshed with a silly <code>dict</code> definition -- <code>.unwrap_or_else(Type::unknown)</code> might be safer?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-08-05 11:43</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-08-05 11:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-08-05 11:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-05 11:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:43 UTC
+    </footer>
+</body>
+</html>

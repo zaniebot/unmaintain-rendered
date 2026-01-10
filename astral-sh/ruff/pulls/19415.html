@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move full diagnostic rendering to `ruff_db` - astral-sh/ruff #19415</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Move full diagnostic rendering to <code>ruff_db</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19415">#19415</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-07-17 22:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-17 22:19</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR switches the <code>full</code> output format in Ruff over to use the rendering code
+in <code>ruff_db</code>. As proposed in the design doc, this involves a lot of
+changes to the snapshot output.</p>
+<p>I also had to comment out this assertion with a TODO to replace it after https://github.com/astral-sh/ruff/issues/19688 because many of Ruff's &quot;file-level&quot; annotations aren't actually file-level. They just happen to occur at the start of the file, especially in tests with very short snippets.</p>
+<p>https://github.com/astral-sh/ruff/blob/529d81daca30e0af93a18d7406bd2c419008e8f4/crates/ruff_annotate_snippets/src/renderer/display_list.rs#L1204-L1208</p>
+<p>I broke up the snapshot commits at the end into several blocks, but I don't think it's enough to help with review. The first few (notebooks, syntax errors, and test rules) are small enough to look at, but I couldn't really think of other categories beyond that. I'm happy to break those up or pick out specific examples beyond what I have below, if that would help.</p>
+<p>The minimal code changes are in this <a href="https://github.com/astral-sh/ruff/pull/19415/files/abd28f1e776e442379186e9f24c9aa6290f64163">range</a>, with the snapshot commits following. Moving the <code>FullRenderer</code> and updating the <code>EmitterFlags</code> aren't strictly necessary either. I even dropped the renderer commit this morning but figured it made sense to keep it since we have the <code>full</code> module for tests. I don't feel strongly either way.</p>
+<h2>Test Plan</h2>
+<p>I did actually click through all 1700 snapshots individually instead of
+accepting them all at once, although I moved through them quickly. There are a
+few main categories:</p>
+<h3>Lint diagnostics</h3>
+<pre><code class="language-diff">-unused.py:8:19: F401 [*] `pathlib` imported but unused
++F401 [*] `pathlib` imported but unused
++  --&gt; unused.py:8:19
+    |
+  7 | # Unused, _not_ marked as required (due to the alias).
+  8 | import pathlib as non_alias
+-   |                   ^^^^^^^^^ F401
++   |                   ^^^^^^^^^
+  9 |
+ 10 | # Unused, marked as required.
+    |
+-   = help: Remove unused import: `pathlib`
++help: Remove unused import: `pathlib`
+</code></pre>
+<ul>
+<li>The filename and line numbers are moved to the second line</li>
+<li>The second noqa code next to the underline is removed</li>
+</ul>
+<h3>Syntax errors</h3>
+<p>These are much like the above.</p>
+<pre><code class="language-diff">-    -:1:16: invalid-syntax: Expected one or more symbol names after import
++    invalid-syntax: Expected one or more symbol names after import
++     --&gt; -:1:16
+       |
+     1 | from foo import
+       |                ^
+</code></pre>
+<p>One thing I noticed while reviewing some of these, but I don't think is strictly syntax-error-related, is that some of the new diagnostics have a little less context after the error. I don't think this is a problem, but it's one small discrepancy I hadn't noticed before. Here's a minor example:</p>
+<pre><code class="language-diff">-syntax_errors.py:1:15: invalid-syntax: Expected one or more symbol names after import
++invalid-syntax: Expected one or more symbol names after import
++ --&gt; syntax_errors.py:1:15
+   |
+ 1 | from os import
+   |               ^
+ 2 |
+ 3 | if call(foo
+-4 |     def bar():
+   |
+</code></pre>
+<p>And one of the biggest examples:</p>
+<pre><code class="language-diff">-E30_syntax_error.py:18:11: invalid-syntax: Expected ')', found newline
++invalid-syntax: Expected ')', found newline
++  --&gt; E30_syntax_error.py:18:11
+    |
+ 16 |         pass
+ 17 |
+ 18 | foo = Foo(
+    |           ^
+-19 |
+-20 |
+-21 | def top(
+    |
+</code></pre>
+<p>Similarly, a few of the lint diagnostics showed that the cut indicator calculation for overly long lines is also slightly different, but I think that's okay too.</p>
+<h3>Full-file diagnostics</h3>
+<pre><code class="language-diff">-comment.py:1:1: I002 [*] Missing required import: `from __future__ import annotations`
++I002 [*] Missing required import: `from __future__ import annotations`
++--&gt; comment.py:1:1
++help: Insert required import: `from __future__ import annotations`
++
+</code></pre>
+<p>As noted above, these will be much more rare after #19688 too. This case isn't a true full-file diagnostic and will render a snippet in the future, but you can see that we're now rendering the help message that would have been discarded before. In contrast, this is a true full-file diagnostic and should still look like this after #19688:</p>
+<pre><code class="language-diff">-__init__.py:1:1: A005 Module `logging` shadows a Python standard-library module
++A005 Module `logging` shadows a Python standard-library module
++--&gt; __init__.py:1:1
+</code></pre>
+<h3>Jupyter notebooks</h3>
+<p>There's nothing particularly different about these, just showing off the cell index again.</p>
+<pre><code class="language-diff">-    Jupyter.ipynb:cell 3:1:7: F821 Undefined name `x`
++    F821 Undefined name `x`
++     --&gt; Jupyter.ipynb:cell 3:1:7
+       |
+     1 | print(x)
+-      |       ^ F821
++      |       ^
+       |
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-07-17 22:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-07-17 22:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-17 22:31</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-18 07:24</div>
+            <div class="timeline-body"><p>Thank you for looking into this.</p>
+<p>I'm not sure I understand what the diff shown for <strong>Diagnostics with FixAvailability::Never</strong> or <strong>Sometimes</strong> has to do with the fix availability.</p>
+<p>I think it would be more helpful to list the separate differences:</p>
+<ul>
+<li>The annotated message now shows the help text instead of the rule code (makes sense to me, but I haven't reviewed all snapshot changes)</li>
+<li>The line/column and filename moved: This makes sense to me and is a necessity to support multifile spans</li>
+<li>Full file diagnostics: @BurntSushi didn't you add some special casing for it to ruff's diagnostic rendering?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-18 11:06</div>
+            <div class="timeline-body"><blockquote>
+<p>These are the only ones I noticed that I wasn't very happy with. I tried to
+address these by making the Range on Ruff's diagnostics None</p>
+</blockquote>
+<p>We can't change the range or that would be breaking where suppression comments are allowed. We also can't remove the range or the diagnostic can no longer be suppressed.</p>
+<p>What I don't understand in your example. Is the rendered code frame just empty? Does it collapse lines or does it render the full file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-18 11:24</div>
+            <div class="timeline-body"><blockquote>
+<p>What I don't understand in your example. Is the rendered code frame just empty? Does it collapse lines or does it render the full file?</p>
+</blockquote>
+<p>Okay, I think I understand now what's happening. The issue is that ruff uses empty ranges for file level diagnostics. I think the ideal output would be to only render the file name if both the range and message are empty.</p>
+<p>We could decide to make <code>Range</code> optional but I think we should keep defaulting to an empty range and special case that in the rendering code. My reasoning is that the range is important to know where to place suppressions AND diagnostics like IO errors have truely no range and we don't want to render line column numbers at all.</p>
+<blockquote>
+<p>but it still left a single blank line.</p>
+</blockquote>
+<p>@BurntSushi might be able to help but you might have to bite the bullet and try to find the source of the empty line yourself.</p>
+<p>It's also worth double checking if the new renderer handles these tricky cases</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/blob/77a5c5ac80cfe77def2397e80ed9a7d79e068b34/crates/ruff_linter/src/message/text.rs#L374-L407</li>
+<li>https://github.com/astral-sh/ruff/blob/9aaed4f04b243b092a5c2df7283d4883359476aa/crates/ruff_linter/src/message/text.rs#L287</li>
+<li>https://github.com/astral-sh/ruff/blob/77a5c5ac80cfe77def2397e80ed9a7d79e068b34/crates/ruff_linter/src/message/text.rs#L299</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-18 12:02</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not sure I understand what the diff shown for <strong>Diagnostics with FixAvailability::Never</strong> or <strong>Sometimes</strong> has to do with the fix availability.</p>
+</blockquote>
+<p>Oh sorry, I was using that as a proxy for having a <code>fix_title</code> method and thus help text. I'll update those sections with your suggestions.</p>
+<blockquote>
+<blockquote>
+<p>I tried to address these by making the Range on Ruff's diagnostics None</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>We can't change the range or that would be breaking where suppression comments are allowed. We also can't remove the range or the diagnostic can no longer be suppressed.</p>
+</blockquote>
+<p>Oops, this was really poorly phrased, but I think you still figured out what I meant in your last comment. Yes, we use <code>TextRange::default</code> as a marker for full-file diagnostics:</p>
+<p>https://github.com/astral-sh/ruff/blob/6403eba9e907cfa1e5e0d16ad99b8d998a6750ae/crates/ruff_linter/src/message/text.rs#L119-L121</p>
+<p>I tried making <em>those</em> <code>None</code>, not all Ruff ranges.</p>
+<blockquote>
+<p>I think the ideal output would be to only render the file name if both the range and message are empty.</p>
+</blockquote>
+<p>I totally agree. I got close to that, modulo the blank line I need to track down in <code>annotate-snippets</code>, at least I think it's in there. Concretely, I got output like this:</p>
+<pre><code class="language-diff">-    -:1:1: RUF901 [*] Hey this is a stable test rule with a safe fix.
+-    -:1:1: RUF902 Hey this is a stable test rule with an unsafe fix.
++    [RUF901]: [*] Hey this is a stable test rule with a safe fix.
++
++    [RUF902]: Hey this is a stable test rule with an unsafe fix.
++
+</code></pre>
+<p>I think there was a filename, but maybe not. I'd need to figure that out too.</p>
+<p>I don't think we're even passing anything on stdin in these tests, so the three-line code frame isn't even empty lines in the file, it's entirely synthetic.</p>
+<p>Thanks for the tricky cases. They look similar to some of Andrew's other code I've run across in <code>ruff_db</code> so I kind of assume they're handled, but I'll double check!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-18 13:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/snapshots/ruff_linter__rules__flake8_bugbear__tests__B911_B911.py.snap</code>:52 on 2025-07-18 13:50</div>
+            <div class="timeline-body"><p>I feel like the primary message looks very good in many cases but not all.</p>
+<p>For example here, I think the <code>help</code> text was better. I don't think this is something we need to change in rendering. Instead, we should change how the diagnostic is constructed in the rule.</p>
+<p>The airflow rules are similar. The inline texts are too long.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-07-18 17:41</div>
+            <div class="timeline-body"><p>I looked through my commit history here, but couldn't find anything directly related to file-level diagnostics. There were some changes related to tweaking ranges and even one phantom line terminator (although this came from our code and not <code>annotate-snippets</code>). The closest I could find were the following commits:</p>
+<ul>
+<li>5021f3244909c0513ea434f1d7f29535b2cfca34</li>
+<li>2ff2a54f5699b00b5b12aedefcdd3774b23b32d1</li>
+<li>c9b99e4bee32c0fce91cf97363e1b208c898d242</li>
+<li>602a27c4e3861757e9d78257f49c58bb823d43b9</li>
+<li>2ca2f73ba89498204db3c06fe434934249027045</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-22 18:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/snapshots/ruff_linter__rules__flake8_bugbear__tests__B911_B911.py.snap</code>:52 on 2025-07-22 18:50</div>
+            <div class="timeline-body"><p>I think this is resolved now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-22 23:10</div>
+            <div class="timeline-body"><p>I think I'm getting pretty close to having the output we want, albeit with a potentially hacky implementation. For this input:</p>
+<pre><code class="language-python">import math
+
+x: str = 1
+
+match 42:
+    case _: ...
+</code></pre>
+<p>and this shell command:</p>
+<pre><code class="language-shell">git diff &lt;(ruff check --no-cache tr{i,y}.py --target-version py39) \
+         &lt;(myruff check --no-cache tr{i,y}.py --target-version py39)
+</code></pre>
+<p>I'm currently getting this diff:</p>
+<pre><code class="language-diff">-tri.py:1:1: E902 No such file or directory (os error 2)
+-try.py:1:8: F401 [*] `math` imported but unused
++E902 No such file or directory (os error 2)
++
++F401 [*] `math` imported but unused
++ --&gt; try.py:1:8
+   |
+ 1 | import math
+-  |        ^^^^ F401
++  |        ^^^^
+ 2 |
+ 3 | x: str = 1
+   |
+-  = help: Remove unused import: `math`
++help: Remove unused import: `math`
+ 
+-try.py:5:1: SyntaxError: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
++SyntaxError: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
++ --&gt; try.py:5:1
+   |
+ 3 | x: str = 1
+ 4 |
+</code></pre>
+<p>This all looks good to me except the missing filename for the full-file diagnostic E902. I also tried a bit to get rid of the extra newline without much luck. I think the last two commits Andrew linked are in exactly the right place, but reverting to the version in <a href="https://github.com/astral-sh/ruff/commit/602a27c4e3861757e9d78257f49c58bb823d43b9">602a27c</a> removes all the lines between diagnostics. I think I've convinced myself that it's actually nice to have the &quot;extra&quot; line for E902 since that's consistent with other diagnostics, but maybe I'm just giving up too easily.</p>
+<p>Another issue with the check I added to remove the empty annotations is that some <code>TextRange::default</code> ranges are intentional, I think. For example, this snapshot changed:</p>
+<p>https://github.com/astral-sh/ruff/blob/dc10ab81bd85b8af49ee2fe8ed4a6f767d37d6e0/crates/ty_ide/src/goto_declaration.rs#L289-L294</p>
+<p>when I think it might want to point to the beginning of the file, with a real annotation. I002 is another example of a diagnostic that might actually want a default range and changed in my recent commits:</p>
+<p>https://github.com/astral-sh/ruff/blob/dc10ab81bd85b8af49ee2fe8ed4a6f767d37d6e0/crates/ruff_linter/src/rules/isort/snapshots/ruff_linter__rules__isort__tests__required_import_with_alias_off.py.snap#L5-L8</p>
+<p>I'll keep looking at these remaining issues tomorrow, but at least I made some progress on the brackets and blank lines (maybe) today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-23 06:26</div>
+            <div class="timeline-body"><blockquote>
+<p>This all looks good to me except the missing filename for the full-file diagnostic E902.</p>
+</blockquote>
+<p>I think that actually looks fine. Have you tried how <code>full</code> renders diagnostics without an annotation? Does it add an empty line between them too (which I think would make sense)? Or is the extra line something that isn't visible in that diff?</p>
+<p>Regarding the full range diagnostics. This is obviously something I'd like @BurntSushi's input on before changing but I wonder if the problem here really is that the primary annotation range  does:</p>
+<ol>
+<li>Set the span for the line/column rendering and where the diagnostic can be suppressed</li>
+<li>Enable code span rendering, even if the message is empty (very common)</li>
+</ol>
+<p>Ideally, the diagnostic model would allow a rule to set a span for 1 but without enabling 2.</p>
+<p>The first idea that comes to mind is to add a span to <code>Diagnostic</code> itself. I believe the issue is that the file name rendering is tied to the annotation. Which makes sense, because different annotations could point to different files. That means we would only render the file name if no annotations are present. However, this opens us up to the risk that the <code>primary_annotation</code> and the <code>diagnostic.range </code>could point to different files, in which case omitting the diagnostic range's file name could be confusing. But that's an invariant that we could enforce with assertions.</p>
+<p>An alternative is to mark a primary annotation to say, nope, only render the file name but no message or annotation. This does seem a bit weird given that that's exactly what an annotation is for but again, something we could enforce with an assertion somewhere.</p>
+<p>I think the biggest challenge here might is probably that annotation snippet doesn't allow rendering the file name without a &quot;snippet&quot;. We could probably work around this by simply copy pasting the file name rendering.</p>
+<p>What's unclear to me from a UX perspective if the following is confusing:</p>
+<pre><code>E902 No such file or directory (os error 2)
+--&gt; try.py:1:8
+
+F401 [*] `math` imported but unused
+--&gt; try.py:1:8
+  |
+1 | import math
+  |        ^^^^
+2 |
+3 | x: str = 1
+  |
+help: Remove unused import: `math`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-23 13:42</div>
+            <div class="timeline-body"><blockquote>
+<p>Have you tried how <code>full</code> renders diagnostics without an annotation? Does it add an empty line between them too (which I think would make sense)? Or is the extra line something that isn't visible in that diff?</p>
+</blockquote>
+<p>What do you mean without an annotation? I think in a literal, but maybe unhelpful, sense all Ruff diagnostics have annotations. Here's the full output of the ruff command above with a couple of extra non-existent files, if that helps:</p>
+<pre><code>E902 No such file or directory (os error 2)
+
+E902 No such file or directory (os error 2)
+
+E902 No such file or directory (os error 2)
+
+F401 [*] `math` imported but unused
+ --&gt; /tmp/tmp.gqRJ0jMRZ9/try.py:1:8
+  |
+1 | import math
+  |        ^^^^
+2 |
+3 | x: str = 1
+  |
+help: Remove unused import: `math`
+
+SyntaxError: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+ --&gt; /tmp/tmp.gqRJ0jMRZ9/try.py:5:1
+  |
+3 | x: str = 1
+4 |
+5 | match 42:
+  | ^^^^^
+6 |     case _: ...
+  |
+
+Found 5 errors.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<blockquote>
+<p>Regarding the full range diagnostics. This is obviously something I'd like @BurntSushi's input on before changing but I wonder if the problem here really is that the primary annotation range does:</p>
+<ol>
+<li>Set the span for the line/column rendering and where the diagnostic can be suppressed</li>
+<li>Enable code span rendering, even if the message is empty (very common)</li>
+</ol>
+<p>Ideally, the diagnostic model would allow a rule to set a span for 1 but without enabling 2.</p>
+</blockquote>
+<p>I think that's a very good summary of the problem. And thanks for the other ideas, those seem helpful to explore.</p>
+<blockquote>
+<p>What's unclear to me from a UX perspective if the following is confusing:</p>
+<pre><code>E902 No such file or directory (os error 2)
+--&gt; try.py:1:8
+
+F401 [*] `math` imported but unused
+--&gt; try.py:1:8
+  |
+1 | import math
+  |        ^^^^
+2 |
+3 | x: str = 1
+  |
+help: Remove unused import: `math`
+</code></pre>
+</blockquote>
+<p>Yeah, I do like Ruff's current rendering here, basically collapsing back to concise rendering for E902:</p>
+<pre><code>tri.py:1:1: E902 No such file or directory (os error 2)
+try.py:1:8: F401 [*] `math` imported but unused
+  |
+1 | import math
+  |        ^^^^ F401
+2 |
+3 | x: str = 1
+  |
+  = help: Remove unused import: `math`
+</code></pre>
+<p>But that's also consistent with its full output. I'm not sure if mixing the two is confusing too:</p>
+<pre><code>tri.py:1:1: E902 No such file or directory (os error 2)
+F401 [*] `math` imported but unused
+ --&gt; try.py:1:8
+  |
+1 | import math
+  |        ^^^^
+2 |
+3 | x: str = 1
+  |
+help: Remove unused import: `math`
+</code></pre>
+<p>Ah, it looks like rustc just embeds the filename in the error message when there's no annotation:</p>
+<pre><code>$ rustc fake.rs
+error: couldn't read fake.rs: No such file or directory (os error 2)
+
+error: aborting due to 1 previous error
+</code></pre>
+<p>But then we'd have to modify the message on <code>E902</code> and any other rule like it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-07-23 14:35</div>
+            <div class="timeline-body"><p>I think adding a knob on to <code>Annotation</code> that lets you suppress code snippets is probably the better choice. This &quot;feels&quot; better to me than trying to put a range on the diagnostic itself, which I think could be quite confusing. (Micha noted this.) While true we could enforce this with assertions, it feels like a more complicated change to the diagnostic model than just letting an annotation be &quot;light&quot; in the sense that there are no code snippets.</p>
+<p>I do agree that this makes the name &quot;annotation&quot; somewhat of a misnomer in certain cases. Although, you could recast as, &quot;it's still an annotation, but it applies to contents that are too large to usefully display in an error message.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-23 17:30</div>
+            <div class="timeline-body"><p>We've got filenames!</p>
+<pre><code class="language-diff">-tri.py:1:1: E902 No such file or directory (os error 2)
+-try.py:1:8: F401 [*] `math` imported but unused
++E902 No such file or directory (os error 2)
++--&gt; tri.py:1:1
++
++F401 [*] `math` imported but unused
++ --&gt; try.py:1:8
+   |
+ 1 | import math
+-  |        ^^^^ F401
++  |        ^^^^
+ 2 |
+ 3 | x: str = 1
+   |
+-  = help: Remove unused import: `math`
++help: Remove unused import: `math`
+
+-try.py:5:1: SyntaxError: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
++SyntaxError: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
++ --&gt; try.py:5:1
+   |
+ 3 | x: str = 1
+ 4 |
+</code></pre>
+<p>Plumbing this setting through the <code>Annotation</code>s felt like a nice solution, thank you both for that suggestion! Now we can also set this only in Ruff and avoid the ty snapshot changes I was worried about yesterday. I didn't do this now, but we could also use this on a per-diagnostic basis in Ruff for those rules that happen to point to the start of the file but still want a snippet rendered, unlike E902.</p>
+<p>I think the diagnostic output is where I want it now. I'll look over the implementation again and hopefully open it for review later today!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-23 21:43</div>
+            <div class="timeline-body"><p>I think the implementation looks okay. It's mostly just passing flags (that might need better names!) into annotate-snippets and some touchy formatting changes based on them.</p>
+<p>I also looked closely at the tricky cases Micha mentioned above. The cut indicator ellipsis was easy thanks to #19420, I just had to copy that over to the new file. That also reverted the remaining snapshot changes in ty crates.</p>
+<p>For the <code>SourceCode</code> case, I was able to copy over the code from <code>ruff_linter</code> and integrate it pretty smoothly. ~~We can almost delete the version I copied from, getting back down to one copy, but that code is still used by the <code>grouped</code> output format. I guess we could at least export <code>ceil_char_boundary</code> from <code>ruff_db</code> if we want to avoid the duplication. Hopefully it will get stabilized one day and we can delete both copies, though.~~ This duplication was kind of forcefully resolved by it needing to be <code>pub</code> for the doctests.</p>
+<p>I'm a bit stuck on where to inject the <code>replace_whitespace_and_unprintable</code> call. We definitely need it because the snapshot range fixed in e6e610c274 has regressed. The <code>DiagnosticSource</code> makes it trickier to access and modify the source text directly, at least in <code>ResolvedAnnotation::new</code> where I added the <code>ceil_char_boundary</code> stuff. It might make more sense to add both checks in <code>RenderableSnippet::new</code>, at least that's the other candidate that jumped out to me. I'll keep thinking about this tonight.</p>
+<p>All of the code changes except the line terminator fix in the last commit are in <a href="https://github.com/astral-sh/ruff/pull/19415/files/e787f975c0a93b6036a97783cf16682eca8a0762">this range</a>. I'll update the summary before marking this ready for review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[prototype] Move full diagnostic rendering to `ruff_db`" to "Move full diagnostic rendering to `ruff_db`" by @ntBre on 2025-07-23 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-24 05:21</div>
+            <div class="timeline-body"><p>Would it make sense to split this pr into 1) extending the rendering and b) migrating ruff?</p>
+<p>Or can you organize the commits in a way that makes reviewing easier</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-30 16:26</div>
+            <div class="timeline-body"><p>This is up to date again, at least until we merge any other rule PRs, and I squashed the commits into a more linear history. I think I can still split more of them off into standalone PRs, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-31 21:33</div>
+            <div class="timeline-body"><p>This is now based on #19653 and contains very few code changes, even fewer if I didn't split out the <code>FullRenderer</code>.</p>
+<p>I just noticed that we aren't handling Jupyter notebook cell offsets like Ruff's old format or in the new <code>concise</code> format. So I guess I'll be splitting off another PR trying to get that information into <code>annotate-snippets</code> too. It seems like it could be a pretty invasive change without looking into it much yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-06 14:56</div>
+            <div class="timeline-body"><p>This is very nearly ready for review, but I asked Claude to take a look and it found a few additional discrepancies. As it was glad to point out, this affects a very small number of snapshots (8/12,377 or 0.06%), but it might still be worth trying to fix these.</p>
+<h3>EOF handling</h3>
+<p>It looks like <code>annotate-snippets</code> doesn't like our EOF ranges. These used to report a range of 30:1, the first character of the non-existent 30th line in this file), but now fall back to a default range of 1:1:</p>
+<p>https://github.com/astral-sh/ruff/blob/4d57fcd5a488e628aa26aaacd0a61728609ff310/crates/ruff_linter/src/rules/flake8_implicit_str_concat/snapshots/ruff_linter__rules__flake8_implicit_str_concat__tests__ISC001_ISC_syntax_error.py.snap#L186-L200</p>
+<p>We could probably fix that in our own handling of these syntax errors or maybe in <code>annotate-snippets</code>.</p>
+<h3>BOM handling</h3>
+<p>Claude called this an improvement, but I'm a bit skeptical. We now report 1:2 here instead of 1:1:</p>
+<p>https://github.com/astral-sh/ruff/blob/4d57fcd5a488e628aa26aaacd0a61728609ff310/crates/ruff_linter/src/rules/isort/snapshots/ruff_linter__rules__isort__tests__bom_unsorted.py.snap#L4-L11</p>
+<h3>Carriage return handling</h3>
+<p>It seems we're no longer counting carriage returns as line breaks. This case is now reported as 1:40 instead of 2:1:</p>
+<p>https://github.com/astral-sh/ruff/blob/4d57fcd5a488e628aa26aaacd0a61728609ff310/crates/ruff_linter/src/rules/pyupgrade/snapshots/ruff_linter__rules__pyupgrade__tests__UP018_CR.py.snap#L4-L10</p>
+<p>This one kind of makes sense to me, but I can see the argument against it as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-06 16:34</div>
+            <div class="timeline-body"><blockquote>
+<p>It seems we're no longer counting carriage returns as line breaks. This case is now reported as 1:40 instead of 2:1:</p>
+</blockquote>
+<p>It's certainly unfortunate because it's a valid line terminator in Python. But I doubt that it's wildly used and it might be somewhat annoying to fix (unless we patch <code>\r</code> to <code>\n</code> in the source code normalization before passing it to annotated snippets)</p>
+<blockquote>
+<p>Claude called this an improvement, but I'm a bit skeptical. We now report 1:2 here instead of 1:1:</p>
+</blockquote>
+<p>Zed does render the BOM character and also reports 1:2 for the <code>import</code>. So I guess it's not entirely unreasonable. I'm fine deferring this for now (or stripping the BOM as part of our source code normalization).</p>
+<blockquote>
+<p>It looks like annotate-snippets doesn't like our EOF ranges. These used to report a range of 30:1, the first character of the non-existent 30th line in this file), but now fall back to a default range of 1:1:</p>
+</blockquote>
+<p>What do we use as range? Is it <code>TextRange::at(source_text.text_len(), 0)</code> or is it one beyond? If it's one beyond, thank I think the right thing is to fix the range.</p>
+<p>I think we need to fix this in some way that it doesn't point at the start of the file. It seems like this is only a bug in the code that determines the line number as the carret rendering seems correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-06 20:14</div>
+            <div class="timeline-body"><blockquote>
+<p>It's certainly unfortunate because it's a valid line terminator in Python. But I doubt that it's wildly used and it might be somewhat annoying to fix (unless we patch <code>\r</code> to <code>\n</code> in the source code normalization before passing it to annotated snippets)</p>
+</blockquote>
+<p>I think this normalization is a very good idea. It looks like the snapshots are actually quite misleading in this case. This is how the check renders for me locally in the CLI on 0.12.7:</p>
+<pre><code>&gt; ruff check --no-cache --select UP018 UP018_CR.py
+UP018_CR.py:2:1: UP018 [*] Unnecessary `int` call (rewrite as a literal)
+  |
+    1)Keep parenthesis around preserved CR
+  |                                       ^^^^^^^^^^^ UP018
+  |
+  = help: Replace with integer literal
+</code></pre>
+<p>versus the version after a simple normalization in this PR:</p>
+<pre><code>&gt; myruff check --no-cache --select UP018 UP018_CR.py
+UP018 [*] Unnecessary `int` call (rewrite as a literal)
+ --&gt; UP018_CR.py:2:1
+  |
+1 |   # Keep parenthesis around preserved CR
+2 | / int(-
+3 | |     1)
+  | |______^
+4 |   int(+
+5 |       1)
+  |
+help: Replace with integer literal
+</code></pre>
+<p>That seems to be the case for the other two snapshots affected by my normalization in too.</p>
+<blockquote>
+<p>Zed does render the BOM character and also reports 1:2 for the <code>import</code>. So I guess it's not entirely unreasonable. I'm fine deferring this for now (or stripping the BOM as part of our source code normalization).</p>
+</blockquote>
+<p>This normalization was also easy to add. It affected one other BOM test snapshot, but not really in a visible way since the BOM is basically unprintable anyway.</p>
+<blockquote>
+<p>What do we use as range? Is it <code>TextRange::at(source_text.text_len(), 0)</code> or is it one beyond? If it's one beyond, thank I think the right thing is to fix the range.</p>
+<p>I think we need to fix this in some way that it doesn't point at the start of the file. It seems like this is only a bug in the code that determines the line number as the carret rendering seems correct.</p>
+</blockquote>
+<p>Yeah, it's <code>TextRange::at(source_text.text_len(), 0)</code>. For this test, the <code>source.text_len()</code> is 481 in <code>Lexer::new</code>, and the resulting range is 481..481. So it sounds like we need to fix this in <code>annotate-snippets</code> rather than the lexer. I'll take a look at that next.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-07 01:57</div>
+            <div class="timeline-body"><p>(I'll split these off into a separate PR again too, this was just the easiest way to test them first)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/message/text.rs</code>:93 on 2025-08-08 16:02</div>
+            <div class="timeline-body"><p>If you haven't done so already. Can you double check if the diff rendering still looks good?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-08-08 16:06</div>
+            <div class="timeline-body"><p>I didn't review all snapshot changes but this looks great. Thank you for patiently rebasing this PR and splitting out your fixes into smaller PRs!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-08 16:06</div>
+            <div class="timeline-body"><p>This should be ready for review. I left the commits towards the end named as if they resolve the carriage return, BOM, and EOF issues, but after https://github.com/astral-sh/ruff/pull/19806 they just accept the snapshots from the actual code changes in the other PR.</p>
+<p>I also wrote a much shorter AWK version of Claude's script for checking the offsets in the diff. It has three false positives, but I verified that they are just due to git displaying a larger diff in those areas, not real differences in <code>row:column</code> reporting.</p>
+<details><summary>Script and output</summary>
+<p>
+
+<pre><code class="language-awk">#!/usr/bin/awk -f
+
+{
+    # Old line like:
+    # -    -:1:8: F401 [*] `os` imported but unused
+    if (match($0, /-.*:([0-9]+):([0-9]+):/, m)) {
+        row = m[1]
+        col = m[2]
+        line = $0
+    }
+    # New line like:
+    # +    F401 [*] `os` imported but unused
+    else if (match($0, /+.*--&gt;.*:([0-9]+):([0-9]+)/, m)) {
+        new_row = m[1]
+        new_col = m[2]
+        if (new_row != row || new_col != col) {
+            print &quot;MISMATCH:&quot;
+            printf &quot;\tOld line: %s\n&quot;, line
+            printf &quot;\tNew line: %s\n&quot;, $0
+        }
+    }
+}
+</code></pre>
+<p>These are false positives due to how git reports the diff for these files.</p>
+<pre><code class="language-shell">$ git diff main | ./check_offsets.awk
+MISMATCH:
+        Old line: -E501_1.py:5:89: E501 Line too long (150 &gt; 88)
+        New line: + --&gt; E501_1.py:4:89
+MISMATCH:
+        Old line: -E501_1.py:6:89: E501 Line too long (149 &gt; 88)
+        New line: + --&gt; E501_1.py:5:89
+MISMATCH:
+        Old line: -all.py:1:5: D103 Missing docstring in public function
+        New line: +--&gt; all.py:1:1
+</code></pre>
+<p>For example:</p>
+<pre><code class="language-diff">-all.py:1:1: D100 Missing docstring in public module
+-all.py:1:5: D103 Missing docstring in public function
++D100 Missing docstring in public module
++--&gt; all.py:1:1
++
++D103 Missing docstring in public function
++ --&gt; all.py:1:5
+</code></pre>
+<p>The E501 case is similar. Basically all of the E501 diagnostics for the file are jumbled together in the diff because the long-line truncation changes too, but all of the individual diagnostics are still there and reported with the correct line and column numbers.</p>
+</p>
+</details> 
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-08-08 16:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @ntBre on 2025-08-08 16:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @ntBre on 2025-08-08 16:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @ntBre on 2025-08-08 16:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-08-08 16:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @ntBre on 2025-08-08 16:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @ntBre on 2025-08-08 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @ntBre on 2025-08-08 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @ntBre on 2025-08-08 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @ntBre on 2025-08-08 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/message/text.rs</code>:93 on 2025-08-08 16:13</div>
+            <div class="timeline-body"><p>This is the diff rendering that only works in the snapshots (https://github.com/astral-sh/ruff/issues/7352). I didn't notice any changes in those sections of the snapshots, as expected, but is there something else you want me to check here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-08 16:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-08 16:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/message/text.rs</code>:93 on 2025-08-08 16:17</div>
+            <div class="timeline-body"><p>Oh, I thought it's the CLI's --diff mode. Also, is there any existing code that we can delete, now that we moved the diagnostic rendering (e.g. <code>MessageCodeFrame</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-08 16:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/message/text.rs</code>:93 on 2025-08-08 16:19</div>
+            <div class="timeline-body"><p>No the <code>--diff</code> flag is separate and looks good:</p>
+<pre><code class="language-shell">&gt; ruff check try.py --diff
+--- try.py
++++ try.py
+@@ -1 +0,0 @@
+-import math
+
+Would fix 1 error.
+&gt; myruff check try.py --diff
+--- try.py
++++ try.py
+@@ -1 +0,0 @@
+-import math
+
+Would fix 1 error.
+</code></pre>
+<p>We can't quite delete the <code>TextEmitter</code> and the <code>MessageCodeFrame</code> rendering because it's still used by the <code>grouped</code> format. Once we move that over, we can delete a big chunk of code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-08 16:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/message/text.rs</code>:93 on 2025-08-08 16:25</div>
+            <div class="timeline-body"><p>It seems that <code>GroupEmitter::with_show_source</code> is only called in tests. So we could just delete it? But I also don't mind if you do this in a separate PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-08 16:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/message/text.rs</code>:93 on 2025-08-08 16:28</div>
+            <div class="timeline-body"><p>Oh you're right, I forgot about that one. I'll check again for unused code and follow up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-08 16:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/message/text.rs</code>:93 on 2025-08-08 16:31</div>
+            <div class="timeline-body"><p>Sounds good. I'm fine merging this PR and follow up in a separate PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-08-08 16:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-08-08 16:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-08 16:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-08-08 16:58</div>
+            <div class="timeline-body"><p>LGTM!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:42 UTC
+    </footer>
+</body>
+</html>

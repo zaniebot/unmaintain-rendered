@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Async for loops and async iterables - astral-sh/ruff #19634</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Async for loops and async iterables</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19634">#19634</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-07-30 11:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-30 11:31</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Add support for <code>async for</code> loops and async iterables.</p>
+<p>part of https://github.com/astral-sh/ty/issues/151</p>
+<h2>Ecosystem impact</h2>
+<pre><code class="language-diff">- boostedblob/listing.py:445:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+</code></pre>
+<p>This is correct. We now find a true positive in the <code># type: ignore</code>'d code.</p>
+<p>All of the other ecosystem hits are of the type</p>
+<pre><code class="language-diff">trio (https://github.com/python-trio/trio)
++ src/trio/_core/_tests/test_guest_mode.py:532:24: error[not-iterable] Object of type `MemorySendChannel[int] | MemoryReceiveChannel[int]` may not be iterable
+</code></pre>
+<p>The message is correct, because only <code>MemoryReceiveChannel</code> has an <code>__aiter__</code> method, but <code>MemorySendChannel</code> does not. What's not correct is our inferred type here. It should be <code>MemoryReceiveChannel[int]</code>, not the union of the two. This is due to missing unpacking support for tuple subclasses, which @AlexWaygood is working on. I don't think this should block merging this PR, because those wrong types are already there, without this PR.</p>
+<h2>Test Plan</h2>
+<p>New Markdown tests and snapshot tests for diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-07-30 11:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-30 11:33</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on typing conformance tests</h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-30 11:35</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">anyio (https://github.com/agronholm/anyio)
++ src/anyio/_backends/_trio.py:909:47: error[not-iterable] Object of type `MemoryObjectSendStream[Unknown] | MemoryObjectReceiveStream[Unknown]` may not be async-iterable
+- Found 85 diagnostics
++ Found 86 diagnostics
+
+starlette (https://github.com/encode/starlette)
++ starlette/middleware/base.py:165:38: error[not-iterable] Object of type `MemoryObjectSendStream[Unknown] | MemoryObjectReceiveStream[Unknown]` may not be async-iterable
+- Found 161 diagnostics
++ Found 162 diagnostics
+
+trio (https://github.com/python-trio/trio)
++ src/trio/_core/_tests/test_guest_mode.py:532:24: error[not-iterable] Object of type `MemorySendChannel[int] | MemoryReceiveChannel[int]` may not be async-iterable
++ src/trio/_tests/test_channel.py:86:41: error[not-iterable] Object of type `MemorySendChannel[int] | MemoryReceiveChannel[int]` may not be async-iterable
++ src/trio/_tests/test_channel.py:308:29: error[not-iterable] Object of type `MemorySendChannel[int] | MemoryReceiveChannel[int]` may not be async-iterable
+- Found 734 diagnostics
++ Found 737 diagnostics
+
+boostedblob (https://github.com/hauntsaninja/boostedblob)
+- boostedblob/listing.py:445:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 26 diagnostics
++ Found 25 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-30 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-30 13:55</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>not-iterable</code> | 5 | 0 | 0 |
+| <code>unused-ignore-comment</code> | 0 | 1 | 0 |
+| <strong>Total</strong> | <strong>5</strong> | <strong>1</strong> | <strong>0</strong> |</p>
+<p><strong><a href="https://david-async-for.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-30 14:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/for.md_-_For_loops_-_Possibly_invalid_`__…_(c626bde8651b643a).snap</code>:63 on 2025-07-30 14:02</div>
+            <div class="timeline-body"><p>Small drive-by fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-07-30 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-07-30 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-07-30 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-07-30 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/comprehensions/basic.md</code>:150 on 2025-07-30 14:46</div>
+            <div class="timeline-body"><p>hmm, can't we be a bit more confident here in our language? And also more precise (in that it <em>is</em> iterable, but it's not <em>async</em>-iterable, and <em>async</em> iterability is what's required in this case)</p>
+<pre><code class="language-suggestion">    # error: [not-iterable] &quot;Object of type `Iterable` is not async-iterable&quot;
+</code></pre>
+<p>For synchronous iterables, I tried to use &quot;is not iterable&quot; for non-unions, and &quot;may not be iterable&quot; if the inferred type was a union where one element in the union was iterable but one or more other elements were not</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-07-30 14:51</div>
+            <div class="timeline-body"><p>Nice. I think it would be good to distinguish between &quot;iterability&quot; and &quot;async iterability&quot; in error messages</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-30 15:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/comprehensions/basic.md</code>:150 on 2025-07-30 15:30</div>
+            <div class="timeline-body"><p>Done, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-07-30 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-07-30 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-30 15:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:43 UTC
+    </footer>
+</body>
+</html>

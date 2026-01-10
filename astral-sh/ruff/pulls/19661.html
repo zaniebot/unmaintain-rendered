@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PEP 639 license information - astral-sh/ruff #19661</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PEP 639 license information</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19661">#19661</a>
+        opened by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a>
+        on 2025-07-31 12:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on 2025-07-31 12:33</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>New attempt at #19499, which was reverted by #19599 and #19624.</p>
+<ol>
+<li>Declare licenses in <code>pyproject.toml</code> using keys <a href="https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license-and-license-files"><code>license</code> and <code>license-files</code></a>, as per PEP 639:<ul>
+<li><code>license</code>:       SPDX license expression</li>
+<li><code>license-files</code>: list of license file glob patterns</li>
+</ul>
+</li>
+<li>~~Keep the Trove classifier in an attempt to remain compatible with tools that do not support PEP 639 yet, such as pip-licenses. Hopefully the build system will not complain about the redundant/obsolete classifier.~~</li>
+</ol>
+<p>In theory, maturin ≥ 1.9 supports PEP 639, which means the proper licensing metadata should be included in packages and seen by PyPI:
+https://www.maturin.rs/changelog.html</p>
+<p>In practice, maturin &lt; 1.9.3 does not take license-files into account and the <code>LICENSE</code> file is therefore missing from packages (https://github.com/astral-sh/ruff/pull/19599#issuecomment-3139658776).</p>
+<h2>Test Plan</h2>
+<p>Check the package metadata (<code>PKG-INFO</code>) after:</p>
+<pre><code>uv build --sdist
+</code></pre>
+<p>Also test against the obsolete ecosystem (<code>pip-licenses</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> reviewed on 2025-07-31 13:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on <code>pyproject.toml</code>:13 on 2025-07-31 13:03</div>
+            <div class="timeline-body"><p>Note sure about maturin, but setuptools does not need an explicit <code>license-files</code> key according to <a href="https://setuptools.pypa.io/en/latest/userguide/miscellaneous.html">Controlling files in the distribution</a>:</p>
+<blockquote>
+<ul>
+<li>All files specified by the <code>license-files</code> configuration parameter in <code>pyproject.toml</code> and/or equivalent in <code>setup.cfg</code>/<code>setup.py</code>; note that if you don’t explicitly set this parameter, <code>setuptools</code> will include any files that match the following glob patterns: <code>LICEN[CS]E*</code>, <code>COPYING*</code>, <code>NOTICE*</code>, <code>AUTHORS**</code>;</li>
+</ul>
+</blockquote>
+<p>I wonder whether omitting an explicit <code>license-files</code> key might work around the maturin bug - if implicit is supported by maturin of course.</p>
+<p>Would you prefer explicit or implicit?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-31 17:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>pyproject.toml</code>:13 on 2025-07-31 17:04</div>
+            <div class="timeline-body"><blockquote>
+<p>I wonder whether omitting an explicit license-files key might work around the maturin bug</p>
+</blockquote>
+<p>You can test this yourself: run <code>uv build --sdist</code> and check if the created zip contains the <code>LICENSE</code> file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> reviewed on 2025-07-31 17:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on <code>pyproject.toml</code>:13 on 2025-07-31 17:29</div>
+            <div class="timeline-body"><p>The <code>License-File</code> metadata field is fine, but the <code>LICENSE</code> file itself is missing:</p>
+<pre><code class="language-console">$ uv build --sdist
+Building source distribution...
+Running `maturin pep517 write-sdist --sdist-directory /path/to/ruff/dist`
+[...]
+Successfully built dist/ruff-0.12.7.tar.gz
+$ tar xf dist/ruff-0.12.7.tar.gz 
+$ 
+$ grep License ruff-0.12.7/PKG-INFO
+Classifier: License :: OSI Approved :: MIT License
+License-File: LICENSE
+License-Expression: MIT
+[...]
+$ 
+$ find ruff-0.12.7 -name 'LICENSE*'
+ruff-0.12.7/crates/ruff_annotate_snippets/LICENSE-MIT
+ruff-0.12.7/crates/ruff_annotate_snippets/LICENSE-APACHE
+ruff-0.12.7/crates/ty_vendored/vendor/typeshed/LICENSE
+$ 
+</code></pre>
+<p>Omitting <code>license-files</code> does not work around the maturin bug. However, implicit seems better than explicit, so I suggest removing the <code>license-files</code> key anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on 2025-08-04 19:58</div>
+            <div class="timeline-body"><p>Works now:</p>
+<pre><code class="language-console">$ uv build --sdist
+Building source distribution...
+Running `maturin pep517 write-sdist --sdist-directory /path/to/ruff/dist`
+[...]
+📦 Built source distribution to /path/to/ruff/dist/ruff-0.12.7.tar.gz
+ruff-0.12.7.tar.gz
+Successfully built dist/ruff-0.12.7.tar.gz
+$ 
+$ tar xf dist/ruff-0.12.7.tar.gz 
+$ 
+$ grep License ruff-0.12.7/PKG-INFO
+License-File: LICENSE
+License-Expression: MIT
+$ 
+$ find ruff-0.12.7 -name 'LICENSE*'
+ruff-0.12.7/LICENSE
+ruff-0.12.7/crates/ruff_annotate_snippets/LICENSE-MIT
+ruff-0.12.7/crates/ruff_annotate_snippets/LICENSE-APACHE
+ruff-0.12.7/crates/ty_vendored/vendor/typeshed/LICENSE
+$ 
+</code></pre>
+<p>Note that the <code>LICENSE</code> file is <strong>not</strong> picked up if I remove the <code>license-files</code> line. Unlike build systems such as <a href="https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html#setuptools-specific-configuration">setuptools</a> or <a href="https://flit.pypa.io/en/stable/pyproject_toml.html#new-style-metadata">flit</a>, maturin appears not to provide a default glob that would pick up common licence file names.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @DimitriPapadopoulos on 2025-08-04 20:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> reviewed on 2025-08-04 20:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on <code>pyproject.toml</code>:13 on 2025-08-04 20:06</div>
+            <div class="timeline-body"><p>It turns out maturin does <strong>not</strong> currently support omitting <code>license-files</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>pyproject.toml</code>:25 on 2025-08-05 08:13</div>
+            <div class="timeline-body"><p>We should keep this line (for the reason the comment says). we don't want to break downstream users for no good reason.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-05 08:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> reviewed on 2025-08-05 09:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on <code>pyproject.toml</code>:25 on 2025-08-05 09:07</div>
+            <div class="timeline-body"><p>I've read https://github.com/astral-sh/ruff/pull/19599#issue-3269992286 but I don't think &quot;this causes significant churn&quot; any more:</p>
+<ul>
+<li>Lots of projetcs have moved to PEP 639, including:<ul>
+<li><a href="https://github.com/pypa/setuptools/pull/4975">setuptools</a></li>
+<li><a href="https://github.com/pypa/flit/pull/715">flit</a></li>
+<li><a href="https://github.com/pypa/build/pull/914">build</a></li>
+<li><a href="https://github.com/pypa/packaging/pull/881">packaging</a></li>
+<li><a href="https://github.com/pypa/installer/pull/294">installer</a></li>
+<li><a href="https://github.com/pypa/wheel/pull/670">wheel</a></li>
+<li><a href="https://github.com/PyO3/maturin/pull/2690">maturin</a></li>
+<li><a href="https://github.com/pypa/pip/pull/13335">pip</a></li>
+<li><a href="https://github.com/PyCQA/flake8/pull/1990">flake8</a> (removed Trove classifier but still using <code>setup.cfg</code>)</li>
+<li><a href="https://github.com/PyCQA/pycodestyle/pull/1280">pycodestyle</a> (removed Trove classifier but still using <code>setup.cfg</code>)</li>
+<li><a href="https://github.com/psf/black/pull/4479">black</a></li>
+<li>...</li>
+</ul>
+</li>
+<li><a href="https://github.com/raimon49/pip-licenses">pip-licences</a> is unmaintained and has been forked and superseded by <a href="https://github.com/stefan6419846/pip-licenses-cli">pip-licenses-cli</a>.</li>
+<li><a href="https://ichard26.github.io/blog/2025/01/whats-new-in-pip-25.0/">pip 25.0</a> supports <a href="https://ichard26.github.io/blog/2025/01/whats-new-in-pip-25.0/#pep-639-spdx-license-expressions">PEP 639: SPDX License Expressions</a></li>
+<li><code>typing_extensions</code> have <strong>not</strong> reverted their change, instead tooling has been fixed</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-05 09:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>pyproject.toml</code>:25 on 2025-08-05 09:16</div>
+            <div class="timeline-body"><p>It still creates churn for no very good reason as the issues in typing extensions demonstrate. It's also not always easy for projects to update their dependencies.</p>
+<p>I just don't see a strong reason for making this change other than: Some PEP recommends it. That's why I don't feel comfortable merging this as is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> reviewed on 2025-08-05 19:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on <code>pyproject.toml</code>:25 on 2025-08-05 19:01</div>
+            <div class="timeline-body"><p>My point was that projects will have to update their dependencies any way, as other dependencies will force them to. Additionally, ruff usually isn't a dependency of sdist or wheel packages, it's a tool for developers. It shouldn't even appear in the final licence list.</p>
+<p>But then I agree it doesn't hurt to keep the classifier for a few years.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on <code>pyproject.toml</code>:25 on 2025-08-05 19:14</div>
+            <div class="timeline-body"><p>After reverting and putting the classifier back, this PR changes licensing information in <code>PKG-INFO</code> from:</p>
+<pre><code>Classifier: License :: OSI Approved :: MIT License
+License-File: LICENSE
+</code></pre>
+<p>to:</p>
+<pre><code>Classifier: License :: OSI Approved :: MIT License
+License-File: LICENSE
+License-Expression: MIT
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> reviewed on 2025-08-05 19:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-06 06:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>pyproject.toml</code>:25 on 2025-08-06 06:19</div>
+            <div class="timeline-body"><p>This seems fine?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:43 UTC
+    </footer>
+</body>
+</html>

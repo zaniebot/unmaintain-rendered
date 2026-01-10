@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Remove false positives when subscripting `Generic` or `Protocol` with a `ParamSpec` or `TypeVarTuple` - astral-sh/ruff #19749</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Remove false positives when subscripting <code>Generic</code> or <code>Protocol</code> with a <code>ParamSpec</code> or <code>TypeVarTuple</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19749">#19749</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-08-04 19:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-04 19:37</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Diagnostics from <code>Generic[P]</code> and <code>Protocol[P]</code> are changing from one error code to another in https://github.com/astral-sh/ruff/pull/19669. That's distracting in the mypy_primer diff -- but these diagnostics are false positives anyway, and it's fairly easy to get rid of them. So this PR gets rid of them. This gets rid of a bunch of false positives on ecosystem code, and on the typing conformance test suite.</p>
+<h2>Test Plan</h2>
+<p>Mdtests updated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-04 19:39</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree//conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-08-04 19:39:07.502944270 +0000
++++ new-output.txt	2025-08-04 19:39:07.571944764 +0000
+@@ -137,7 +137,6 @@
+ callables_annotation.py:57:18: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `list[int]`?
+ callables_annotation.py:58:5: error[invalid-type-form] Special form `typing.Callable` expected exactly two arguments (parameter types and return type)
+ callables_annotation.py:58:14: error[invalid-type-form] The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+-callables_annotation.py:114:14: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Protocol`
+ callables_kwargs.py:24:5: error[type-assertion-failure] Argument does not have asserted type `int`
+ callables_kwargs.py:32:9: error[type-assertion-failure] Argument does not have asserted type `str`
+ callables_kwargs.py:35:5: error[type-assertion-failure] Argument does not have asserted type `str`
+@@ -148,12 +147,9 @@
+ callables_kwargs.py:65:5: error[missing-argument] No argument provided for required parameter `v3` of function `func2`
+ callables_protocol.py:97:1: error[invalid-assignment] Object of type `def cb4_bad1(x: int) -&gt; None` is not assignable to `Proto4`
+ callables_protocol.py:121:1: error[invalid-assignment] Object of type `def cb6_bad1(*vals: bytes, *, max_len: int | None = None) -&gt; list[bytes]` is not assignable to `NotProto6`
+-callables_protocol.py:176:14: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Protocol`
+ callables_protocol.py:179:62: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `R@__call__`
+ callables_subtyping.py:26:5: error[invalid-assignment] Object of type `(int, /) -&gt; int` is not assignable to `(int | float, /) -&gt; int | float`
+ callables_subtyping.py:29:5: error[invalid-assignment] Object of type `(int | float, /) -&gt; int | float` is not assignable to `(int, /) -&gt; int`
+-callables_subtyping.py:204:21: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Protocol`
+-classes_classvar.py:35:14: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+ classes_classvar.py:38:11: error[invalid-type-form] Type qualifier `typing.ClassVar` expected exactly 1 argument, got 2
+ classes_classvar.py:39:14: error[invalid-type-form] Int literals are not allowed in this context in a type expression
+ classes_classvar.py:40:14: error[unresolved-reference] Name `var` used when not defined
+@@ -386,7 +382,6 @@
+ generics_defaults.py:55:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+ generics_defaults.py:59:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+ generics_defaults.py:63:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+-generics_defaults.py:76:23: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+ generics_defaults.py:79:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+ generics_defaults.py:80:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+ generics_defaults.py:91:26: error[invalid-argument-type] `@Todo` is not a valid argument to `Generic`
+@@ -417,7 +412,6 @@
+ generics_paramspec_semantics.py:38:28: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ generics_paramspec_semantics.py:53:34: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ generics_paramspec_semantics.py:57:34: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+-generics_paramspec_semantics.py:67:9: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+ generics_paramspec_semantics.py:76:30: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+ generics_paramspec_semantics.py:82:5: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+ generics_paramspec_semantics.py:82:28: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `list[int]`?
+@@ -430,12 +424,9 @@
+ generics_paramspec_semantics.py:133:23: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ generics_paramspec_semantics.py:138:29: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ generics_paramspec_semantics.py:143:25: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+-generics_paramspec_specialization.py:13:14: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+-generics_paramspec_specialization.py:18:29: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+ generics_paramspec_specialization.py:32:27: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int, bool]`?
+ generics_paramspec_specialization.py:40:27: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[()]`?
+ generics_paramspec_specialization.py:40:31: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[()]`?
+-generics_paramspec_specialization.py:48:14: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+ generics_paramspec_specialization.py:52:22: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int, str, bool]`?
+ generics_scoping.py:14:1: error[type-assertion-failure] Argument does not have asserted type `int`
+ generics_scoping.py:15:1: error[type-assertion-failure] Argument does not have asserted type `str`
+@@ -541,7 +532,6 @@
+ generics_typevartuple_basic.py:16:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `tuple[@Todo, ...]`
+ generics_typevartuple_basic.py:23:13: error[invalid-argument-type] `@Todo` is not a valid argument to `Generic`
+ generics_typevartuple_basic.py:42:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `tuple[@Todo, ...]`, found `Literal[1]`
+-generics_typevartuple_basic.py:52:14: error[invalid-argument-type] `TypeVarTuple` is not a valid argument to `Generic`
+ generics_typevartuple_basic.py:65:27: error[unknown-argument] Argument `covariant` does not match any known parameter of function `__new__`
+ generics_typevartuple_basic.py:66:27: error[too-many-positional-arguments] Too many positional arguments to function `__new__`: expected 2, got 4
+ generics_typevartuple_basic.py:67:27: error[unknown-argument] Argument `bound` does not match any known parameter of function `__new__`
+@@ -794,7 +784,6 @@
+ protocols_subtyping.py:16:6: error[call-non-callable] Cannot instantiate class `Proto1`: This call will raise `TypeError` at runtime
+ protocols_subtyping.py:38:5: error[invalid-assignment] Object of type `Proto2` is not assignable to `Concrete2`
+ protocols_subtyping.py:55:5: error[invalid-assignment] Object of type `Proto2` is not assignable to `Proto3`
+-protocols_variance.py:84:16: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Protocol`
+ protocols_variance.py:85:62: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `R@__call__`
+ qualifiers_annotated.py:43:17: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int, str]`?
+ qualifiers_annotated.py:44:17: error[invalid-type-form] Tuple literals are not allowed in this context in a type expression
+@@ -896,4 +885,4 @@
+ tuples_type_form.py:36:1: error[invalid-assignment] Object of type `tuple[Literal[1], Literal[2], Literal[3], Literal[&quot;&quot;]]` is not assignable to `tuple[int, ...]`
+ typeddicts_operations.py:60:1: error[type-assertion-failure] Argument does not have asserted type `str | None`
+ typeddicts_type_consistency.py:101:1: error[invalid-assignment] Object of type `Unknown | None` is not assignable to `str`
+-Found 897 diagnostics
++Found 886 diagnostics
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-04 19:40</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">Expression (https://github.com/cognitedata/Expression)
+- expression/core/fn.py:14:16: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- Found 230 diagnostics
++ Found 229 diagnostics
+
+comtypes (https://github.com/enthought/comtypes)
+- comtypes/hints.pyi:150:33: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- comtypes/hints.pyi:160:28: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- comtypes/hints.pyi:174:34: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- comtypes/hints.pyi:183:29: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- comtypes/hints.pyi:196:34: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- comtypes/hints.pyi:205:29: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- Found 407 diagnostics
++ Found 401 diagnostics
+
+starlette (https://github.com/encode/starlette)
+- starlette/middleware/__init__.py:17:26: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Protocol`
+- Found 162 diagnostics
++ Found 161 diagnostics
+
+discord.py (https://github.com/Rapptz/discord.py)
+- discord/app_commands/commands.py:568:15: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- discord/ext/commands/core.py:296:29: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- Found 533 diagnostics
++ Found 531 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- src/hydra_zen/typing/_implementations.py:139:32: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Protocol`
+- src/hydra_zen/wrapper/_implementations.py:110:11: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- Found 569 diagnostics
++ Found 567 diagnostics
+
+asynq (https://github.com/quora/asynq)
+- asynq/decorators.pyi:35:70: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- asynq/decorators.pyi:39:58: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- asynq/decorators.pyi:72:62: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- Found 188 diagnostics
++ Found 185 diagnostics
+
+mkdocs (https://github.com/mkdocs/mkdocs)
+- mkdocs/plugins.py:460:21: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- Found 183 diagnostics
++ Found 182 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- mitmproxy/utils/signals.py:68:19: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- mitmproxy/utils/signals.py:81:20: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- Found 1823 diagnostics
++ Found 1821 diagnostics
+
+streamlit (https://github.com/streamlit/streamlit)
++ lib/streamlit/runtime/caching/cache_utils.py:127:39: warning[unused-ignore-comment] Unused `ty: ignore` directive: 'invalid-argument-type'
++ lib/streamlit/runtime/caching/cache_utils.py:173:40: warning[unused-ignore-comment] Unused `ty: ignore` directive: 'invalid-argument-type'
++ lib/streamlit/runtime/caching/cache_utils.py:199:35: warning[unused-ignore-comment] Unused `ty: ignore` directive: 'invalid-argument-type'
+- Found 148 diagnostics
++ Found 151 diagnostics
+
+zulip (https://github.com/zulip/zulip)
+- zerver/lib/cache.py:745:39: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- Found 7425 diagnostics
++ Found 7424 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/prefect/flow_engine.py:163:25: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- src/prefect/flows.py:121:31: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- src/prefect/flows.py:145:12: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- src/prefect/server/database/dependencies.py:205:20: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- src/prefect/server/database/dependencies.py:257:5: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- src/prefect/server/database/dependencies.py:325:45: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- src/prefect/task_engine.py:119:25: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- src/prefect/tasks.py:300:12: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+- Found 3844 diagnostics
++ Found 3836 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-08-04 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-08-04 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-08-04 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-08-04 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-08-04 20:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> approved on 2025-08-04 20:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-08-04 20:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-08-04 20:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-04 20:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:43 UTC
+    </footer>
+</body>
+</html>

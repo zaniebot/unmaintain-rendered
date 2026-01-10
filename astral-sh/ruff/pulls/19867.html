@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Short circuit `ReachabilityConstraints::analyze_single` for dynamic types - astral-sh/ruff #19867</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Short circuit <code>ReachabilityConstraints::analyze_single</code> for dynamic types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19867">#19867</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-08-11 16:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-11 16:29</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ty/issues/968</p>
+<p>This reduces the wall time for a large project from ~24s to ~19s. I plan to do another perf recording to verify that the lock congestion is entirely gone but I first need to walk the dog :)</p>
+<p>See inline comment for more details.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2025-08-11 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-08-11 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-08-11 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-08-11 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-08-11 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-08-11 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2025-08-11 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-08-11 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-11 16:31</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-08-11 16:39</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Fshort-circuit-into-callable?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
+<h3>Merging #19867 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>micha/short-circuit-into-callable</code> (c353acd) with <code>main</code> (f3f4db7)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 8</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-11 16:40</div>
+            <div class="timeline-body"><p>Nice, this is even a win for non concurrent runs. All credit goes to @carljm for the much better fix than what I came up with</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> approved on 2025-08-11 16:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-08-11 16:48</div>
+            <div class="timeline-body"><p>Very nice!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/semantic_index/reachability_constraints.rs</code>:826 on 2025-08-11 16:49</div>
+            <div class="timeline-body"><p>Sorry, I gave you the wrong info here, I had the sense of this constraint reversed in my head. This needs to return <code>Truthiness::AlwaysFalse</code>, not <code>Truthiness::AlwaysTrue</code>! I suspect the mypy-primer run is taking so long because there are now tons more bogus diagnostics 😆</p>
+<p>The fact that no test failed on this change also suggests we need an explicit mdtest like this:</p>
+<pre><code class="language-py">from typing import Never, Any
+
+def f(func: Any) -&gt; Never:
+    func()
+</code></pre>
+<p>Where an <code>invalid-return-type</code> is expected (because the call to <code>func()</code> is <em>not</em> terminal). That test fails on this PR currently.</p>
+<pre><code class="language-suggestion">                    return Truthiness::AlwaysFalse.negate_if(!predicate.is_positive);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> requested changes on 2025-08-11 16:49</div>
+            <div class="timeline-body"><p>Perf results look amazing! Hopefully they persist once we get the logic right 😆 (I expect they will)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-11 18:24</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-11 18:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/reachability_constraints.rs</code>:826 on 2025-08-11 18:25</div>
+            <div class="timeline-body"><p>Don't worry, it does. The most congested lock is now for <code>IntersectionType</code>:</p>
+<p><img width="1015" height="442" alt="image" src="https://github.com/user-attachments/assets/3c67927d-8a5e-42eb-ae7d-43e081c04de7" /></p>
+<p>And the wall clock time on the large project on my linux machine goes from 42s .. to 16s which is rather ridiculous</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-08-11 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-11 18:33</div>
+            <div class="timeline-body"><p>Okay, the single threaded benchmarks don't improve by that much anymore. But it's still a huge improvement for multi threaded workloads (with many cores... not what github actions provides)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-08-11 19:22</div>
+            <div class="timeline-body"><p>Awesome!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-08-11 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-08-11 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-11 19:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:44 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] New `Type` variant for `TypedDict` - astral-sh/ruff #19733</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] New <code>Type</code> variant for <code>TypedDict</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19733">#19733</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-08-04 08:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-04 08:47</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds a new <code>Type::TypedDict</code> variant. Before this PR, we treated <code>TypedDict</code>-based types as dynamic Todo-types, and I originally planned to make this change a no-op. And we do in fact still treat that new variant similar to a dynamic type when it comes to type properties such as assignability and subtyping. But then I somehow tricked myself into implementing some of the things correctly, so here we are. The two main behavioral changes are: (1) we now also detect generic <code>TypedDict</code>s, which removes a few false positives in the ecosystem, and (2) we now support <em>attribute</em> access (not key-based indexing!) on these types, i.e. we infer proper types for something like <code>MyTypedDict.__required_keys__</code>. Nothing exciting yet, but gets the infrastructure into place.</p>
+<p>Note that with this PR, the type of (the type) <code>MyTypedDict</code> itself is still represented as a <code>Type::ClassLiteral</code> or <code>Type::GenericAlias</code> (in case <code>MyTypedDict</code> is generic). Only inhabitants of <code>MyTypedDict</code> (instances of <code>dict</code> at runtime) are represented by <code>Type::TypedDict</code>. We may want to revisit this decision in the future, if this turns out to be too error-prone. Right now, we need to use <code>.is_typed_dict(db)</code> in all the right places to distinguish between actual (generic) classes and <code>TypedDict</code>s. But so far, it seemed unnecessary to add additional <code>Type</code> variants for these as well.</p>
+<p>~~Note: this PR crucially depends on https://github.com/salsa-rs/salsa/pull/954 by @MichaReiser. I'm not sure if we want to merge this before it has landed in salsa.~~ (this is now merged, updated the commit ref to the latest commit on salsa main)</p>
+<p>part of https://github.com/astral-sh/ty/issues/154</p>
+<h2>Ecosystem impact</h2>
+<p>The new diagnostics on <code>cloud-init</code> look like true positives to me.</p>
+<h2>Test Plan</h2>
+<p>Updated and new Markdown tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-08-04 08:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-04 08:49</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree//conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-08-05 08:54:39.534836544 +0000
++++ new-output.txt	2025-08-05 08:54:39.597836730 +0000
+@@ -137,6 +137,7 @@
+ callables_annotation.py:57:18: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `list[int]`?
+ callables_annotation.py:58:5: error[invalid-type-form] Special form `typing.Callable` expected exactly two arguments (parameter types and return type)
+ callables_annotation.py:58:14: error[invalid-type-form] The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
++callables_annotation.py:114:14: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Protocol`
+ callables_kwargs.py:24:5: error[type-assertion-failure] Argument does not have asserted type `int`
+ callables_kwargs.py:32:9: error[type-assertion-failure] Argument does not have asserted type `str`
+ callables_kwargs.py:35:5: error[type-assertion-failure] Argument does not have asserted type `str`
+@@ -147,9 +148,12 @@
+ callables_kwargs.py:65:5: error[missing-argument] No argument provided for required parameter `v3` of function `func2`
+ callables_protocol.py:97:1: error[invalid-assignment] Object of type `def cb4_bad1(x: int) -&gt; None` is not assignable to `Proto4`
+ callables_protocol.py:121:1: error[invalid-assignment] Object of type `def cb6_bad1(*vals: bytes, *, max_len: int | None = None) -&gt; list[bytes]` is not assignable to `NotProto6`
++callables_protocol.py:176:14: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Protocol`
+ callables_protocol.py:179:62: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `R@__call__`
+ callables_subtyping.py:26:5: error[invalid-assignment] Object of type `(int, /) -&gt; int` is not assignable to `(int | float, /) -&gt; int | float`
+ callables_subtyping.py:29:5: error[invalid-assignment] Object of type `(int | float, /) -&gt; int | float` is not assignable to `(int, /) -&gt; int`
++callables_subtyping.py:204:21: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Protocol`
++classes_classvar.py:35:14: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+ classes_classvar.py:38:11: error[invalid-type-form] Type qualifier `typing.ClassVar` expected exactly 1 argument, got 2
+ classes_classvar.py:39:14: error[invalid-type-form] Int literals are not allowed in this context in a type expression
+ classes_classvar.py:40:14: error[unresolved-reference] Name `var` used when not defined
+@@ -382,6 +386,7 @@
+ generics_defaults.py:55:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+ generics_defaults.py:59:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+ generics_defaults.py:63:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
++generics_defaults.py:76:23: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+ generics_defaults.py:79:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+ generics_defaults.py:80:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+ generics_defaults.py:91:26: error[invalid-argument-type] `@Todo` is not a valid argument to `Generic`
+@@ -412,6 +417,7 @@
+ generics_paramspec_semantics.py:38:28: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ generics_paramspec_semantics.py:53:34: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ generics_paramspec_semantics.py:57:34: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
++generics_paramspec_semantics.py:67:9: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+ generics_paramspec_semantics.py:76:30: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+ generics_paramspec_semantics.py:82:5: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+ generics_paramspec_semantics.py:82:28: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `list[int]`?
+@@ -424,9 +430,12 @@
+ generics_paramspec_semantics.py:133:23: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ generics_paramspec_semantics.py:138:29: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ generics_paramspec_semantics.py:143:25: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
++generics_paramspec_specialization.py:13:14: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
++generics_paramspec_specialization.py:18:29: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+ generics_paramspec_specialization.py:32:27: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int, bool]`?
+ generics_paramspec_specialization.py:40:27: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[()]`?
+ generics_paramspec_specialization.py:40:31: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[()]`?
++generics_paramspec_specialization.py:48:14: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+ generics_paramspec_specialization.py:52:22: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int, str, bool]`?
+ generics_scoping.py:14:1: error[type-assertion-failure] Argument does not have asserted type `int`
+ generics_scoping.py:15:1: error[type-assertion-failure] Argument does not have asserted type `str`
+@@ -532,6 +541,7 @@
+ generics_typevartuple_basic.py:16:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `tuple[@Todo, ...]`
+ generics_typevartuple_basic.py:23:13: error[invalid-argument-type] `@Todo` is not a valid argument to `Generic`
+ generics_typevartuple_basic.py:42:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `tuple[@Todo, ...]`, found `Literal[1]`
++generics_typevartuple_basic.py:52:14: error[invalid-argument-type] `TypeVarTuple` is not a valid argument to `Generic`
+ generics_typevartuple_basic.py:65:27: error[unknown-argument] Argument `covariant` does not match any known parameter of function `__new__`
+ generics_typevartuple_basic.py:66:27: error[too-many-positional-arguments] Too many positional arguments to function `__new__`: expected 2, got 4
+ generics_typevartuple_basic.py:67:27: error[unknown-argument] Argument `bound` does not match any known parameter of function `__new__`
+@@ -784,6 +794,7 @@
+ protocols_subtyping.py:16:6: error[call-non-callable] Cannot instantiate class `Proto1`: This call will raise `TypeError` at runtime
+ protocols_subtyping.py:38:5: error[invalid-assignment] Object of type `Proto2` is not assignable to `Concrete2`
+ protocols_subtyping.py:55:5: error[invalid-assignment] Object of type `Proto2` is not assignable to `Proto3`
++protocols_variance.py:84:16: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Protocol`
+ protocols_variance.py:85:62: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `R@__call__`
+ qualifiers_annotated.py:43:17: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int, str]`?
+ qualifiers_annotated.py:44:17: error[invalid-type-form] Tuple literals are not allowed in this context in a type expression
+@@ -885,4 +896,4 @@
+ tuples_type_form.py:36:1: error[invalid-assignment] Object of type `tuple[Literal[1], Literal[2], Literal[3], Literal[&quot;&quot;]]` is not assignable to `tuple[int, ...]`
+ typeddicts_operations.py:60:1: error[type-assertion-failure] Argument does not have asserted type `str | None`
+ typeddicts_type_consistency.py:101:1: error[invalid-assignment] Object of type `Unknown | None` is not assignable to `str`
+-Found 886 diagnostics
++Found 897 diagnostics
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-04 08:51</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">pydantic (https://github.com/pydantic/pydantic)
+- pydantic/json_schema.py:1734:9: error[invalid-assignment] Object of type `Any | list[Any]` is not assignable to `ConfigDict`
+- Found 767 diagnostics
++ Found 766 diagnostics
+
+yarl (https://github.com/aio-libs/yarl)
+- tests/test_url.py:2395:25: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 49 diagnostics
++ Found 48 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
++ cloudinit/netinfo.py:596:25: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -&gt; LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -&gt; str]` cannot be called with key of type `Literal[&quot;ip&quot;]` on object of type `str`
++ cloudinit/netinfo.py:597:25: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -&gt; LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -&gt; str]` cannot be called with key of type `Literal[&quot;mask&quot;]` on object of type `str`
++ cloudinit/netinfo.py:598:25: warning[possibly-unbound-attribute] Attribute `get` on type `str | @Todo(Support for `TypedDict`)` is possibly unbound
++ cloudinit/netinfo.py:609:25: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -&gt; LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -&gt; str]` cannot be called with key of type `Literal[&quot;ip&quot;]` on object of type `str`
++ cloudinit/netinfo.py:611:25: warning[possibly-unbound-attribute] Attribute `get` on type `str | @Todo(Support for `TypedDict`)` is possibly unbound
++ cloudinit/sources/DataSourceVMware.py:1017:20: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -&gt; LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -&gt; str]` cannot be called with key of type `Literal[&quot;ip&quot;]` on object of type `str`
++ cloudinit/sources/DataSourceVMware.py:1027:20: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -&gt; LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -&gt; str]` cannot be called with key of type `Literal[&quot;ip&quot;]` on object of type `str`
++ cloudinit/sources/DataSourceVMware.py:1155:62: error[invalid-argument-type] Argument to function `convert_to_netifaces_ipv4_format` is incorrect: Expected `dict[Unknown, Unknown]`, found `str`
++ cloudinit/sources/DataSourceVMware.py:1157:62: error[invalid-argument-type] Argument to function `convert_to_netifaces_ipv6_format` is incorrect: Expected `dict[Unknown, Unknown]`, found `str`
+- Found 598 diagnostics
++ Found 607 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
++ src/urllib3/connection.py:992:70: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 395 diagnostics
++ Found 396 diagnostics
+
+altair (https://github.com/vega/altair)
++ tests/vegalite/v6/test_api.py:410:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/vegalite/v6/test_api.py:430:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/vegalite/v6/test_api.py:465:57: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/vegalite/v6/test_theme.py:1073:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/vegalite/v6/test_theme.py:1074:39: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 1303 diagnostics
++ Found 1304 diagnostics
+
+openlibrary (https://github.com/internetarchive/openlibrary)
++ openlibrary/core/lists/model.py:421:24: warning[possibly-unbound-attribute] Attribute `key` on type `(Thing &amp; ~str &amp; ~dict[Unknown, Unknown]) | (AnnotatedSeed &amp; ~str &amp; ~dict[Unknown, Unknown])` is possibly unbound
+- Found 705 diagnostics
++ Found 706 diagnostics
+
+zulip (https://github.com/zulip/zulip)
+- corporate/views/support.py:582:35: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Realm | None`, found `Self@Model`
+- corporate/views/support.py:894:52: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `RemoteRealm`, found `Self@Model`
+- corporate/views/support.py:894:65: warning[possibly-unresolved-reference] Name `remote_realm` used when possibly not defined
+- corporate/views/support.py:902:52: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `RemoteZulipServer`, found `Self@Model`
+- corporate/views/support.py:902:66: warning[possibly-unresolved-reference] Name `remote_server` used when possibly not defined
+- zerver/lib/message_report.py:35:60: error[invalid-argument-type] Argument to function `silent_mention_syntax_for_user` is incorrect: Expected `UserProfile | UserDisplayRecipient`, found `Unknown | _ST@ForeignKey`
+- zerver/lib/reminders.py:35:58: error[invalid-argument-type] Argument to function `silent_mention_syntax_for_user` is incorrect: Expected `UserProfile | UserDisplayRecipient`, found `Unknown | _ST@ForeignKey`
+- Found 7424 diagnostics
++ Found 7417 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-08-04 08:57</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/david%2Ftypeddict?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a></h2>
+<h3>Merging #19733 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>david/typeddict</code> (bfa22e9) with <code>main</code> (351121c)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 42</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-04 08:59</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-08-04 10:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-04 10:59</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-argument-type</code> | 7 | 5 | 0 |
+| <code>unused-ignore-comment</code> | 4 | 3 | 0 |
+| <code>possibly-unbound-attribute</code> | 3 | 0 | 0 |
+| <code>possibly-unresolved-reference</code> | 0 | 2 | 0 |
+| <code>invalid-assignment</code> | 0 | 1 | 0 |
+| <strong>Total</strong> | <strong>14</strong> | <strong>11</strong> | <strong>0</strong> |</p>
+<p><strong><a href="https://david-typeddict.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-08-04 12:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-08-04 12:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-08-04 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-08-04 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-08-04 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-08-04 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-08-04 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-08-04 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] New Type variant for TypedDict" to "[ty] New `Type` variant for `TypedDict`" by @sharkdp on 2025-08-04 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-08-04 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-08-04 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-04 18:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/typed_dict.md</code>:64 on 2025-08-04 18:55</div>
+            <div class="timeline-body"><p>I added this because I noticed that <code>alice</code> here is just a <code>dict[Unknown, Unknown]</code>. <code>bob</code>, however, is a real <code>Person</code>.</p>
+<p>This doesn't come as a surprise, but shows again that we'll either need bidirectional type inference or a resolution to https://github.com/astral-sh/ty/issues/136 to be able to support <code>TypedDict</code>s properly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/typed_dict.md</code>:311 on 2025-08-04 18:56</div>
+            <div class="timeline-body"><p>Basically just moved from above. We don't support the functional syntax at all, so far.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-04 18:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-04 18:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/typed_dict.md</code>:156 on 2025-08-04 18:56</div>
+            <div class="timeline-body"><p>This was moved to the last section of the file (<code>Person</code> =&gt; <code>Message</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-08-04 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-08-04 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-08-04 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-08-04 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/typed_dict.md</code>:64 on 2025-08-04 20:55</div>
+            <div class="timeline-body"><blockquote>
+<p><code>bob</code>, however, is a real <code>Person</code>.</p>
+</blockquote>
+<p>I'm happy for bob!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/typed_dict.md</code>:186 on 2025-08-04 20:57</div>
+            <div class="timeline-body"><p>is it worth also adding some tests that demonstrate that these attributes <em>cannot</em> be accessed from inhabitants of the <code>TypedDict</code> type (unlike most <code>ClassVar</code>s)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/semantic_model.rs</code>:221 on 2025-08-04 21:00</div>
+            <div class="timeline-body"><p><code>TypedDict</code> feels a bit different to the other ones in this branch -- the others are all class objects (or similar) whereas <code>Type::TypedDict</code> is more similar to <code>Type::NominalInstance</code> or <code>Type::ProtocolInstance</code> IIUC, in that it inhabits the type defined by a class rather than actually <em>being</em> the class (or a subclass of the class)</p>
+<p>I wonder if calling the variant <code>TypedDictInhabitant</code> might make this clearer?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1101 on 2025-08-04 21:02</div>
+            <div class="timeline-body"><p>We'll need to do more here in due course, I think (but fine to leave this like this for now, of course!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1136 on 2025-08-04 21:07</div>
+            <div class="timeline-body"><p>is it true that subtyping is always reflexive for a <code>TypedDict</code> type? What about gradual <code>TypedDict</code> types? I don't think this <code>TypedDict</code> is a subtype of itself, because it's a gradual type:</p>
+<pre><code class="language-py">from typing import Any, TypedDict
+
+class Foo(TypedDict):
+    x: Any
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1786 on 2025-08-04 21:09</div>
+            <div class="timeline-body"><p>you could do something like this for now: if <code>Mapping[str, object]</code> is disjoint from the other type, any <code>TypedDict</code> type will also be disjoint from the other type, since all <code>TypedDict</code> types are subtypes of <code>Mapping[str, object]</code></p>
+<pre><code class="language-suggestion">                KnownClass::Mapping.to_specialized_instance(db, [KnownClass::Str.to_instance(db), Type::object(db)]).is_disjoint_from(db, other)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:3559 on 2025-08-04 21:13</div>
+            <div class="timeline-body"><p>this isn't correct: if the <code>TypedDict</code> is empty, all its inhabitants will be falsy:</p>
+<pre><code class="language-py">from typing import TypedDict
+
+class Empty(TypedDict): ...
+
+x: Empty = {}
+print(bool(x))  # False
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5248 on 2025-08-04 21:14</div>
+            <div class="timeline-body"><p>style nit:</p>
+<pre><code class="language-suggestion">                    _ if class.is_typed_dict(db) =&gt; Type::TypedDict(TypedDictType::new(db, ClassType::NonGeneric(*class))),
+                    _ =&gt; Type::instance(db, class.default_specialization(db)),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5261 on 2025-08-04 21:15</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            Type::GenericAlias(alias) if alias.is_typed_dict(db) =&gt; Ok(Type::TypedDict(TypedDictType::new(
+                        db,
+                        ClassType::from(*alias),
+                    ))),
+            Type::GenericAlias(alias) =&gt; Ok(Type::instance(db, ClassType::from(*alias))),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5594 on 2025-08-04 21:18</div>
+            <div class="timeline-body"><p>I'm not sure this is correct, because at runtime <code>TypedDict</code> inhabitants are always instances of exactly <code>dict</code>. We use <code>Type::to_meta_type()</code> to infer the type of things like <code>type(x)</code> and <code>x.__class__</code> -- if <code>x</code> is an inhabitant of a <code>TypedDict</code> type, both of those will be <code>&lt;class 'dict'&gt;</code> at runtime. Which would imply that this should be</p>
+<pre><code class="language-suggestion">            Type::TypedDict(typed_dict) =&gt; KnownClass::Dict.to_class_literal(db),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:979 on 2025-08-04 21:24</div>
+            <div class="timeline-body"><p>they're always instances of exactly <code>dict</code> at runtime, but it may not be worth the complexity trying to model that here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:172 on 2025-08-04 21:25</div>
+            <div class="timeline-body"><p>(You'll need to change this too if you think my comments above about the meta-type of <code>TypedDict</code>s is reasonable)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-04 21:26</div>
+            <div class="timeline-body"><p>Thank you! <code>TypedDict</code> types are odd in a number of ways; there's a few things to think through here --</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/semantic_model.rs</code>:221 on 2025-08-05 03:39</div>
+            <div class="timeline-body"><p>If we rename to anything, I think <code>TypedDictInstance</code> is better than <code>TypedDictInhabitant</code> -- but I don't think a rename is necessary.</p>
+<p>(I do agree that this should be a <code>CompletionKind::Struct</code>, not a <code>CompletionKind::Class</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:734 on 2025-08-05 03:43</div>
+            <div class="timeline-body"><p>We should have a TODO here, because this will need to create a new <code>TypedDict</code> type with any gradual item types materialized.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1101 on 2025-08-05 03:43</div>
+            <div class="timeline-body"><p>Agreed, but I would favor leaving an explicit TODO comment in each particular place where we know the handling will need to be improved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1136 on 2025-08-05 03:44</div>
+            <div class="timeline-body"><p>Yes, I think given this method is supposed to be a non-recursive quick check, the right thing here is not a TODO but to simply move this into the <code>false</code> branch, and leave it there permanently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:2621 on 2025-08-05 03:48</div>
+            <div class="timeline-body"><p>Hmm, shouldn't this fallback to attributes of <code>dict</code>? (But I must be missing something, since it seems like similar should be true for many of the other types above in this arm.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:474 on 2025-08-05 04:00</div>
+            <div class="timeline-body"><p>This should have a TODO comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-05 04:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5594 on 2025-08-05 06:37</div>
+            <div class="timeline-body"><p>I don't think so. This way, we would lose important information. Sure, inhabitants are instances of <code>dict</code> at runtime. But a <code>Type::TypedDict</code> also represents a (special sub)set of <code>dict</code> instances. And its meta type should be the specific class that describes that subset.</p>
+<p>Consider what happens if we access <code>person[&quot;name&quot;]</code> on <code>person: Person</code>. Under the hood, we call <code>type(person).__getitem__(person, &quot;name&quot;)</code>. If we model <code>type(person)</code> as being of type <code>&lt;class 'dict'&gt;</code>, we would get a generic answer like <code>object</code>. But we want this to be the type of the <code>name</code> item on <code>Person</code>.</p>
+<p>Other type checkers also infer <code>type[Person]</code> for <code>type(Person)</code> (except for mypy, which infers <code>Person</code> as a function).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-05 06:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-05 06:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:2621 on 2025-08-05 06:48</div>
+            <div class="timeline-body"><p><code>find_name_in_mro</code> only works on class-like types. It is conceptually similar to the following function:</p>
+<pre><code class="language-py">def find_name_in_mro(cls, name, default):
+    &quot;Emulate _PyType_Lookup() in Objects/typeobject.c&quot;
+    for base in cls.__mro__:
+        if name in vars(base):
+            return vars(base)[name]
+    return default
+</code></pre>
+<p>Accessing members on instance-like types will always go through <code>class_member</code>, which calls <code>to_meta_type</code> first (<code>ty.class_member(…) = ty.to_meta_type(…).find_name_in_mro(…)</code>), similar to how an attribute access of <code>obj.attr</code> is always <code>type(obj).attr</code> under the hood (except for instance attributes, which are handled elsewhere).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:3559 on 2025-08-05 06:59</div>
+            <div class="timeline-body"><p>Oh, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-05 06:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1786 on 2025-08-05 07:08</div>
+            <div class="timeline-body"><p>Will keep this comment in mind for the next iteration. Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-05 07:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-05 07:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5594 on 2025-08-05 07:09</div>
+            <div class="timeline-body"><p>Hmm, okay, interesting. I think what this maybe implies in that case is that we'll need to treat <code>type[]</code> types quite differently for TypedDicts than for other classes: you can only access the synthesised TypedDict methods (and any methods from Mapping) on <code>type(x)</code> (where x is a TypedDict inhabitant) — you can't access <code>__required_keys__</code> and the other ClassVars on <code>_TypedDictFallback</code> from <code>type(x)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-05 07:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:3559 on 2025-08-05 07:18</div>
+            <div class="timeline-body"><p><code>{}</code> is also an inhabitant of <code>TypedDict</code>s with <code>total=False</code> or a <code>TypedDict</code> where all items are <code>NotRequired</code>.</p>
+<p>Conversely, through subtyping, inhabitants of <code>Empty</code> may not be falsy:</p>
+<pre><code class="language-py">class Empty(TypedDict):
+    pass
+
+class OneKey(Empty):
+    a: int
+
+def accepts_empty(e: Empty):
+    reveal_type(bool(e))
+
+accepts_empty(OneKey({&quot;a&quot;: 1}))
+</code></pre>
+<p>I guess it's best to just return <code>Ambiguous</code>/<code>bool</code> for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-05 07:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/typed_dict.md</code>:186 on 2025-08-05 07:35</div>
+            <div class="timeline-body"><p>Yes, thanks. I added a test, but it fails (added a TODO). No other type checker gets this right, so I'm not going to invest time right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-05 08:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5594 on 2025-08-05 08:24</div>
+            <div class="timeline-body"><p>That's a good observation, yes. I attempted to fix this and found a <a href="https://github.com/astral-sh/ty/issues/937">pre-existing bug</a> related to annotated assignments without a right hand side (but with type qualifiers) in stub files. As this relates to the <code>__total__: ClassVar[bool]</code> annotations in <code>TypedDictFallback</code>, I need to fix this first. I'd like to do that in a separate PR as it might have a wider-spread impact.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/truthiness.md</code>:240 on 2025-08-05 08:34</div>
+            <div class="timeline-body"><p>But note that if something like https://peps.python.org/pep-0728 was accepted and the TypedDict was marked as <code>closed=True</code>, we <em>would</em> be able to infer <code>Literal[False]</code> here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:3555 on 2025-08-05 08:35</div>
+            <div class="timeline-body"><p>Could add a TODO here too saying that we could infer more precise truthiness in some specific situations?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-05 08:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-08-05 08:37</div>
+            <div class="timeline-body"><p>LGTM if we're happy with the salsa bump!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-05 08:53</div>
+            <div class="timeline-body"><blockquote>
+<p>LGTM if we're happy with the salsa bump!</p>
+</blockquote>
+<p>@MichaReiser's PR has been merged and I updated the commit to the latest from salsa main.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-08-05 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-08-05 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-05 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-05 10:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5594 on 2025-08-05 10:46</div>
+            <div class="timeline-body"><p>See bugfix <a href="https://github.com/astral-sh/ruff/pull/19756">here</a> and follow-up <a href="https://github.com/astral-sh/ruff/pull/19758">here</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-05 11:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/ide_support/all_members.md</code>:234 on 2025-08-05 11:06</div>
+            <div class="timeline-body"><p>It looks like you maybe deleted the <code>### Unions</code> header above accidentally here</p>
+<pre><code class="language-suggestion">### Unions
+
+For unions, `ide_support::all_members` only returns members that are available on all elements of
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-05 12:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/ide_support/all_members.md</code>:234 on 2025-08-05 12:00</div>
+            <div class="timeline-body"><p>Ah, yeah. I noticed that to independently and fixed it in https://github.com/astral-sh/ruff/pull/19758</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:43 UTC
+    </footer>
+</body>
+</html>

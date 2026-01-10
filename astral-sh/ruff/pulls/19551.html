@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Implemented support for &quot;rename&quot; language server feature - astral-sh/ruff #19551</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Implemented support for &quot;rename&quot; language server feature</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19551">#19551</a>
+        opened by <a href="https://github.com/UnboundVariable">@UnboundVariable</a>
+        on 2025-07-25 04:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on 2025-07-25 04:59</div>
+            <div class="timeline-body"><p>This PR adds support for the &quot;rename&quot; language server feature. It builds upon existing functionality used for &quot;go to references&quot;.</p>
+<p>The &quot;rename&quot; feature involves two language server requests. The first is a &quot;prepare rename&quot; request that determines whether renaming should be possible for the identifier at the current offset. The second is a &quot;rename&quot; request that returns a list of file ranges where the rename should be applied.</p>
+<p>Care must be taken when attempting to rename symbols that span files, especially if the symbols are defined in files that are not part of the project. We don't want to modify code in the user's Python environment or in the vendored stub files.</p>
+<p>I found a few bugs in the &quot;go to references&quot; feature when implementing &quot;rename&quot;, and those bug fixes are included in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @UnboundVariable on 2025-07-25 04:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @UnboundVariable on 2025-07-25 04:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @UnboundVariable on 2025-07-25 04:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @UnboundVariable on 2025-07-25 04:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @UnboundVariable on 2025-07-25 04:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-25 05:03</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-07-25 07:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-07-25 07:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-07-25 07:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/rename.rs</code>:65 on 2025-07-25 07:13</div>
+            <div class="timeline-body"><p>Do we need to perform any validation on whether the new name is a valid python name?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/rename.rs</code>:95 on 2025-07-25 07:15</div>
+            <div class="timeline-body"><p><code>is_file_included</code> is not the right method here. It only returns whether the file matches any <code>include</code> pattern and isn't excluded by an <code>exclude</code> pattern but it might incorrectly return <code>true</code> for a file that's git ignored.</p>
+<p>We should use the more expensive <code>db.files().contains(file)</code> instead. There's an issue to make <code>is_file_included</code> more accurate so that we don't have to index all files to determine if a file is part of a project or not</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/rename.rs</code>:202 on 2025-07-25 07:17</div>
+            <div class="timeline-body"><p>Same as what I mentioned on another PR. You could add multiple annotations to the same diagnostic instead where the first annotation highlights the identifier that the user wants to rename and all other annotations show where the renames are necessary.</p>
+<p>That would reduce the redundant information in tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-07-25 07:21</div>
+            <div class="timeline-body"><p>This is great.</p>
+<p>Do you know how editors handle renames if multiple LSPs provide the feature?</p>
+<p>I'm asking because our go to definition implementation still has some &quot;holes&quot;. Meaning, ty will miss renames where another LSP (that users might run side to side with ty) would do a proper rename. Or do editors merge the rename result from all LSPs (union vs taking the result from one LSP)?</p>
+<p>If editors only pick the result from one LSP, it migth then be best to wait landing this feature and add an explicit client setting for users to opt in to our experimental renaming.</p>
+<p>We're fine landing this if editors union the result.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/UnboundVariable">@UnboundVariable</a> reviewed on 2025-07-25 15:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on <code>crates/ty_ide/src/rename.rs</code>:65 on 2025-07-25 15:58</div>
+            <div class="timeline-body"><p>I checked, and other Python language servers don't prevent this. It's something that could be added in the future based on user feedback.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on 2025-07-25 16:02</div>
+            <div class="timeline-body"><blockquote>
+<p>If editors only pick the result from one LSP, it migth then be best to wait landing this feature and add an explicit client setting for users to opt in to our experimental renaming.</p>
+</blockquote>
+<p>Editors don't merge results from multiple language servers for the &quot;rename&quot; feature. There's really no good way to do it. Instead, they pick one language server and use its results.</p>
+<p>We can certainly wait to land this feature if you're concerned about this. It's up to you.</p>
+<p>It sounds like we'll be able to plug the &quot;nonlocal&quot; and &quot;global&quot; hole soon, so maybe it's best if we wait for that fix to land first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-25 17:11</div>
+            <div class="timeline-body"><p>Yeah, it might be good to keep this disable for the moment. We could also land this but not register the provider and @dhruvmanila could enable it once he added support for client settings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-07 05:00</div>
+            <div class="timeline-body"><p>I can take this up now that we have proper client settings infrastructure in place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-07 05:02</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-07 07:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/rename.rs</code>:65 on 2025-08-07 07:27</div>
+            <div class="timeline-body"><p>Interesting, given that the spec explicilty mentiones this:</p>
+<pre><code>	/**
+	 * The new name of the symbol. If the given name is not valid the
+	 * request must return a [ResponseError](#ResponseError) with an
+	 * appropriate message set.
+	 */
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-08-07 10:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-08-07 10:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:43 UTC
+    </footer>
+</body>
+</html>

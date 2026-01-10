@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Detect `NamedTuple` classes where fields without default values follow fields with default values - astral-sh/ruff #19945</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Detect <code>NamedTuple</code> classes where fields without default values follow fields with default values</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19945">#19945</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-08-16 22:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-16 22:40</div>
+            <div class="timeline-body"><p>(Stacked on top of https://github.com/astral-sh/ruff/pull/19943 and https://github.com/astral-sh/ruff/pull/19944; review them first.)</p>
+<h2>Summary</h2>
+<p>This raises a <code>TypeError</code> at runtime, and the typing spec states that type checkers must detect this in order to be compliant:</p>
+<pre><code class="language-pytb">&gt;&gt;&gt; from typing import NamedTuple
+&gt;&gt;&gt; class Foo(NamedTuple):
+...     x: int = 0
+...     y: str
+...     
+Traceback (most recent call last):
+  File &quot;&lt;python-input-1&gt;&quot;, line 1, in &lt;module&gt;
+    class Foo(NamedTuple):
+        x: int = 0
+        y: str
+  File &quot;/Users/alexw/.pyenv/versions/3.13.1/lib/python3.13/typing.py&quot;, line 3007, in __new__
+    raise TypeError(f&quot;Non-default namedtuple field {field_name} &quot;
+    ...&lt;2 lines&gt;...
+                    f&quot;{', '.join(default_names)}&quot;)
+TypeError: Non-default namedtuple field y cannot follow default field x
+</code></pre>
+<p>Closes https://github.com/astral-sh/ty/issues/545. After this PR has landed, the only significant remaining piece of work for <code>NamedTuple</code> support is the functional syntax for defining a <code>NamedTuple</code> class. I don't think it's essential that we get that landed before the beta, and I'd also prefer to hold off until the in-progress work on <code>NewType</code> has landed, since I think some of the refactors being done for that will make supporting functional syntax for <code>NamedTuple</code>s easier.</p>
+<h2>Test Plan</h2>
+<p>Mdtests/snapshots.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-08-16 22:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-08-16 22:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-08-16 22:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-08-16 22:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-16 22:42</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-08-19 08:54:25.988519402 +0000
++++ new-output.txt	2025-08-19 08:54:28.460538226 +0000
+@@ -668,6 +668,7 @@
+ namedtuples_define_class.py:47:18: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `Literal[3]`
+ namedtuples_define_class.py:48:22: error[too-many-positional-arguments] Too many positional arguments: expected 4, got 5
+ namedtuples_define_class.py:49:23: error[unknown-argument] Argument `other` does not match any known parameter
++namedtuples_define_class.py:59:5: error[invalid-named-tuple] NamedTuple field without default value cannot follow field(s) with default value(s): Field `latitude` defined here without a default value
+ namedtuples_define_class.py:94:1: error[type-assertion-failure] Argument does not have asserted type `Property[int | float]`
+ namedtuples_define_class.py:95:1: error[type-assertion-failure] Argument does not have asserted type `int | float`
+ namedtuples_define_class.py:96:1: error[type-assertion-failure] Argument does not have asserted type `int | float`
+@@ -859,5 +860,5 @@
+ typeddicts_operations.py:60:1: error[type-assertion-failure] Argument does not have asserted type `str | None`
+ typeddicts_type_consistency.py:101:1: error[invalid-assignment] Object of type `Unknown | None` is not assignable to `str`
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 860 diagnostics
++Found 861 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-16 22:44</div>
+            <div class="timeline-body"><p>The new diagnostic on the typing conformance suite (https://github.com/python/typing/blob/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance/tests/namedtuples_define_class.py#L52-L59) is correct!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-16 22:44</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-08-16 22:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-17 18:02</div>
+            <div class="timeline-body"><p>Hmm, I just realised that there's a considerable overlap here with #19825. The only differences really are:</p>
+<ul>
+<li>Dataclasses are more complicated due to the <code>KW_ONLY</code> sentinel, the <code>kw_only=True</code> class decorator argument, and the <code>kw_only=True</code> field argument.</li>
+<li>I've been a bit fancier here with trying to display subdiagnostics to point to the previous field that had a default value. We could probably do similar with the dataclasses diagnostic, though it's not essential.</li>
+</ul>
+<p>#19825 probably deserves to be merged first given it's been open longer! Whichever one gets merged first, I'm happy to look into combining the implementations to reduce the extent to which logic is duplicated between two locations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-08-19 01:29</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-19 01:30</div>
+            <div class="timeline-body"><p>I just looked at #19825 and I don't think it's quite ready yet, so I think you can go ahead with this; we can revisit to combine the implementations once they are both landed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-08-19 08:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-08-19 08:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-08-19 08:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-19 08:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:44 UTC
+    </footer>
+</body>
+</html>

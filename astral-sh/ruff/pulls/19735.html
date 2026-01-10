@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Return `Option&lt;TupleType&gt;` from `infer_tuple_type_expression` - astral-sh/ruff #19735</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Return <code>Option&lt;TupleType&gt;</code> from <code>infer_tuple_type_expression</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19735">#19735</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-08-04 09:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-04 09:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR reduces the virality of some of the <code>Todo</code> types in <code>infer_tuple_type_expression</code>. Rather than inferring <code>Todo</code>, we instead infer <code>tuple[Todo, ...]</code>. This reflects the fact that whatever the contents of the slice in a <code>tuple[]</code> type expression, we would always infer some kind of tuple type as the result of the type expression. Any tuple type should be assignable to <code>tuple[Todo, ...]</code>, so this shouldn't introduce any new false positives; this can be seen in the ecosystem report.</p>
+<p>As a result of the change, we are now able to enforce in the signature of <code>Type::infer_tuple_type_expression</code> that it returns an <code>Option&lt;TupleType&lt;'db&gt;&gt;</code>, which is more strongly typed and expresses clearly the invariant that a tuple type expression should always be inferred as a <code>tuple</code> type. To enable this, it was necessary to refactor several <code>TupleType</code> constructors in <code>tuple.rs</code> so that they return <code>Option&lt;TupleType&gt;</code> rather than <code>Type</code>; this means that callers of these constructor functions are now free to either propagate the <code>Option&lt;TupleType&lt;'db&gt;&gt;</code> or convert it to a <code>Type&lt;'db&gt;</code>.</p>
+<h2>Test Plan</h2>
+<p>Mdtests updated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-08-04 09:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-04 09:29</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on typing conformance tests</h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-08-04 09:40:35.310532097 +0000
++++ new-output.txt	2025-08-04 09:40:35.375532383 +0000
+@@ -532,23 +532,31 @@
+ generics_type_erasure.py:40:16: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | None`, found `Literal[0]`
+ generics_type_erasure.py:47:1: error[type-assertion-failure] Argument does not have asserted type `int`
+ generics_type_erasure.py:56:1: error[type-assertion-failure] Argument does not have asserted type `bytes`
++generics_typevartuple_args.py:16:34: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `tuple[@Todo, ...]`
+ generics_typevartuple_args.py:20:1: error[type-assertion-failure] Argument does not have asserted type `tuple[int, str]`
++generics_typevartuple_args.py:27:77: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `tuple[@Todo, ...]`
+ generics_typevartuple_args.py:31:1: error[type-assertion-failure] Argument does not have asserted type `tuple[()]`
+ generics_typevartuple_args.py:32:1: error[type-assertion-failure] Argument does not have asserted type `tuple[int, str]`
+ generics_typevartuple_basic.py:12:14: error[invalid-argument-type] `@Todo` is not a valid argument to `Generic`
++generics_typevartuple_basic.py:16:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `tuple[@Todo, ...]`
+ generics_typevartuple_basic.py:23:13: error[invalid-argument-type] `@Todo` is not a valid argument to `Generic`
++generics_typevartuple_basic.py:42:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `tuple[@Todo, ...]`, found `Literal[1]`
+ generics_typevartuple_basic.py:52:14: error[invalid-argument-type] `TypeVarTuple` is not a valid argument to `Generic`
+ generics_typevartuple_basic.py:65:27: error[unknown-argument] Argument `covariant` does not match any known parameter of function `__new__`
+ generics_typevartuple_basic.py:66:27: error[too-many-positional-arguments] Too many positional arguments to function `__new__`: expected 2, got 4
+ generics_typevartuple_basic.py:67:27: error[unknown-argument] Argument `bound` does not match any known parameter of function `__new__`
++generics_typevartuple_basic.py:75:50: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `tuple[@Todo, ...]`
+ generics_typevartuple_basic.py:84:1: error[type-assertion-failure] Argument does not have asserted type `tuple[int]`
+ generics_typevartuple_basic.py:106:14: error[invalid-argument-type] `@Todo` is not a valid argument to `Generic`
++generics_typevartuple_callable.py:29:57: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `tuple[@Todo, ...]`
+ generics_typevartuple_callable.py:33:54: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `tuple[int | float | complex, str, int]`
+ generics_typevartuple_callable.py:37:34: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `tuple[str]`
+ generics_typevartuple_callable.py:41:1: error[type-assertion-failure] Argument does not have asserted type `tuple[str, int, int | float | complex]`
+ generics_typevartuple_callable.py:42:1: error[type-assertion-failure] Argument does not have asserted type `tuple[str]`
++generics_typevartuple_callable.py:45:43: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `tuple[@Todo, ...]`
+ generics_typevartuple_callable.py:49:1: error[type-assertion-failure] Argument does not have asserted type `tuple[int | float, str, int | float | complex]`
+ generics_typevartuple_concat.py:22:13: error[invalid-argument-type] `@Todo` is not a valid argument to `Generic`
++generics_typevartuple_concat.py:47:42: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `tuple[@Todo, ...]`
+ generics_typevartuple_concat.py:52:1: error[type-assertion-failure] Argument does not have asserted type `tuple[int, bool, str]`
+ generics_typevartuple_overloads.py:16:13: error[invalid-argument-type] `@Todo` is not a valid argument to `Generic`
+ generics_typevartuple_specialization.py:16:13: error[invalid-argument-type] `@Todo` is not a valid argument to `Generic`
+@@ -560,15 +568,14 @@
+ generics_typevartuple_specialization.py:52:5: error[type-assertion-failure] Argument does not have asserted type `tuple[str, @Todo]`
+ generics_typevartuple_specialization.py:52:37: error[invalid-type-form] Tuple literals are not allowed in this context in a type expression: Did you mean `tuple[()]`?
+ generics_typevartuple_specialization.py:59:14: error[invalid-argument-type] `@Todo` is not a valid argument to `Generic`
+-generics_typevartuple_specialization.py:92:67: error[invalid-type-form] Variable of type `type[@Todo]` is not allowed in a type expression
+ generics_typevartuple_specialization.py:93:5: error[type-assertion-failure] Argument does not have asserted type `tuple[str, int]`
+ generics_typevartuple_specialization.py:94:5: error[type-assertion-failure] Argument does not have asserted type `tuple[int | float]`
+ generics_typevartuple_specialization.py:95:5: error[type-assertion-failure] Argument does not have asserted type `tuple[Any, *tuple[Any, ...]]`
+-generics_typevartuple_specialization.py:130:35: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `tuple[@Todo, T1@func7, T2@func7]`
++generics_typevartuple_specialization.py:130:35: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `tuple[tuple[@Todo, ...], T1@func7, T2@func7]`
+ generics_typevartuple_specialization.py:135:5: error[type-assertion-failure] Argument does not have asserted type `tuple[tuple[()], str, bool]`
+ generics_typevartuple_specialization.py:136:5: error[type-assertion-failure] Argument does not have asserted type `tuple[tuple[str], bool, int | float]`
+ generics_typevartuple_specialization.py:137:5: error[type-assertion-failure] Argument does not have asserted type `tuple[tuple[str, bool], int | float, int]`
+-generics_typevartuple_specialization.py:143:39: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `tuple[@Todo, T1@func9, T2@func9, T3@func9]`
++generics_typevartuple_specialization.py:143:39: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `tuple[tuple[@Todo, ...], T1@func9, T2@func9, T3@func9]`
+ generics_typevartuple_specialization.py:148:5: error[type-assertion-failure] Argument does not have asserted type `tuple[tuple[()], str, bool, int | float]`
+ generics_typevartuple_specialization.py:149:5: error[type-assertion-failure] Argument does not have asserted type `tuple[tuple[bool], str, int | float, int]`
+ generics_typevartuple_specialization.py:157:5: error[type-assertion-failure] Argument does not have asserted type `tuple[*tuple[int, ...], int]`
+@@ -889,4 +896,4 @@
+ tuples_type_form.py:36:1: error[invalid-assignment] Object of type `tuple[Literal[1], Literal[2], Literal[3], Literal[&quot;&quot;]]` is not assignable to `tuple[int, ...]`
+ typeddicts_operations.py:60:1: error[type-assertion-failure] Argument does not have asserted type `str | None`
+ typeddicts_type_consistency.py:101:1: error[invalid-assignment] Object of type `Unknown | None` is not assignable to `str`
+-Found 890 diagnostics
++Found 897 diagnostics
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-04 09:31</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-04 09:37</div>
+            <div class="timeline-body"><p>The typing-conformance diff looks great to me: one false positive going away, and a bunch of new true-positive <code>invalid-return-type</code> diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-08-04 10:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-08-04 10:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-08-04 10:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-08-04 10:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-08-04 10:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> approved on 2025-08-04 12:42</div>
+            <div class="timeline-body"><p>Looks good to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-08-04 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-08-04 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-04 12:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:43 UTC
+    </footer>
+</body>
+</html>

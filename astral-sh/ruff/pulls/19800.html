@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Add `ty.experimental.rename` server setting - astral-sh/ruff #19800</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Add <code>ty.experimental.rename</code> server setting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19800">#19800</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-08-07 10:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-07 10:32</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR is a follow-up from https://github.com/astral-sh/ruff/pull/19551 and adds a new <code>ty.experimental.rename</code> setting to conditionally register for the rename capability. The complementary PR in ty VS Code extension is https://github.com/astral-sh/ty-vscode/pull/111.</p>
+<p>This is done using dynamic registration after the settings have been resolved. The experimental group is part of the global settings because they're applied for all workspaces that are managed by the client.</p>
+<h2>Test Plan</h2>
+<p>Add E2E tests.</p>
+<p>In VS Code, with the following setting:</p>
+<pre><code class="language-json">{
+	&quot;ty.experimental.rename&quot;: &quot;true&quot;,
+	&quot;python.languageServer&quot;: &quot;None&quot;
+}
+</code></pre>
+<p>I get the relevant log entry:</p>
+<pre><code>2025-08-07 16:05:40.598709000 DEBUG client_response{id=3 method=&quot;client/registerCapability&quot;}: Registered rename capability
+</code></pre>
+<p>And, I'm able to rename a symbol. Once I set it to <code>false</code>, then I can see this log entry:</p>
+<pre><code>2025-08-07 16:08:39.027876000 DEBUG Rename capability is disabled in the client settings
+</code></pre>
+<p>And, I don't see the &quot;Rename Symbol&quot; open in the VS Code dropdown.</p>
+<p>https://github.com/user-attachments/assets/501659df-ba96-4252-bf51-6f22acb4920b</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @dhruvmanila on 2025-08-07 10:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2025-08-07 10:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dhruvmanila on 2025-08-07 10:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-07 10:34</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-07 10:36</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-08-07 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-08-07 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2025-08-07 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-08-07 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-08-07 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @dhruvmanila on 2025-08-07 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @dhruvmanila on 2025-08-07 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @dhruvmanila on 2025-08-07 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @UnboundVariable by @dhruvmanila on 2025-08-07 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/session.rs</code>:574 on 2025-08-07 11:07</div>
+            <div class="timeline-body"><p>This isn't incorrect but the LSP supports sending multiple registrations in a single request. Should we change the <code>regsiter_*</code> to a <code>register_dynamic_capability</code> method that registers all dynamic capabilities (collects the one it must remove and then collects the one it needs to add)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-08-07 11:12</div>
+            <div class="timeline-body"><p>I think it's safe to assume that clients that don't support dynamic registration probably also don't support the configuration request.</p>
+<p>Should we register the rename provider for those statically if the experimental rename feature is enabled in the initialization options? We should probably do the same for workspace diagnsotics unless we're already doing this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-07 11:47</div>
+            <div class="timeline-body"><blockquote>
+<p>I think it's safe to assume that clients that don't support dynamic registration probably also don't support the configuration request.</p>
+</blockquote>
+<p>I'm not sure if we can assume that as dynamic registrations are scoped to individual capabilities and workspace configuration is an independent capability. So, a client might have dynamic registration for one capability while it might not for another.</p>
+<p>For workspace diagnostics, the server checks whether dynamic registration is supported. If not, it will statically register for the diagnostic capability during initialization but without looking at the <code>ty.diagnosticMode</code> value. It will always advertise as supporting workspace diagnostics.</p>
+<p>We could do the same for the rename capability which is that we would check whether dynamic registration is supported for the rename capability and if it's not supported, statically register it during initialization. We could then check in the rename request handler whether the user has enabled this or not and return early if not.</p>
+<p>Does this make sense?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-08-07 11:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/session.rs</code>:574 on 2025-08-07 11:48</div>
+            <div class="timeline-body"><p>Yeah, I wanted to do something like that but the difference here is that for the rename capability we <em>do</em> want to unregister the capability but then we should <em>avoid</em> re-registering the capability. This scenario is only valid when we support <code>didChangeConfiguration</code> but I don't want to make any assumptions that might be incorrect later on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-08-07 11:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/session.rs</code>:574 on 2025-08-07 11:49</div>
+            <div class="timeline-body"><p>Oh, I could have two separate methods <code>unregister_dynamic_capability</code> and <code>register_dynamic_capability</code> which would solve this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-07 11:50</div>
+            <div class="timeline-body"><blockquote>
+<p>We could do the same for the rename capability which is that we would check whether dynamic registration is supported for the rename capability and if it's not supported, statically register it during initialization. We could then check in the rename request handler whether the user has enabled this or not and return early if not.</p>
+</blockquote>
+<p>I didn't see a meaningful value that the client could return in that case. That's why I suspect the best second solution is to only register the provider if the settings (resolved at this point) also enable it. It seems a better experience than one where users can't opt into the setting at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-07 11:58</div>
+            <div class="timeline-body"><blockquote>
+<p>I didn't see a meaningful value that the client could return in that case. That's why I suspect the best second solution is to only register the provider if the settings (resolved at this point) also enable it. It seems a better experience than one where users can't opt into the setting at all.</p>
+</blockquote>
+<p>Ok, so are you saying that the server would check the resolved initialization options and check whether the client supports dynamic registration for the relevant capability (rename and diagnostic) and set the server capability according the relevant server setting (<code>ty.experimental.rename</code> and <code>ty.diagnosticMode</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-08-07 12:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/capabilities.rs</code>:306 on 2025-08-07 12:52</div>
+            <div class="timeline-body"><p>This is the behavior that was discussed in the review feedback.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-08-07 12:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/session.rs</code>:574 on 2025-08-07 12:52</div>
+            <div class="timeline-body"><p>I'm going to do this as a follow-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-08-07 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-08-07 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-07 12:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:44 UTC
+    </footer>
+</body>
+</html>

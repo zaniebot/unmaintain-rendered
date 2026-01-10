@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] support recursive type aliases - astral-sh/ruff #19805</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] support recursive type aliases</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19805">#19805</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-08-07 12:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-08-07 12:39</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Support recursive type aliases by adding a <code>Type::TypeAlias</code> type variant, which allows referring to a type alias directly as a type without eagerly unpacking it to its value.</p>
+<p>We still unpack type aliases when they are added to intersections and unions, so that we can simplify the intersection/union appropriately based on the unpacked value of the type alias.</p>
+<p>This introduces new possible recursive types, and so also requires expanding our usage of recursion-detecting visitors in Type methods. The use of these visitors is still not fully comprehensive in this PR, and will require further expansion to support recursion in more kinds of types (I already have further work on this locally), but I think it may be better to do this incrementally in multiple PRs.</p>
+<h2>Test Plan</h2>
+<p>Added some recursive type-alias tests and made them pass.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-08-07 12:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-07 12:41</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-08-12 00:50:16.219875316 +0000
++++ new-output.txt	2025-08-12 00:50:16.282875419 +0000
+@@ -1,4 +1,5 @@
+ WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
++fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/940f9c0/src/function/execute.rs:204:25 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(dc1d)): execute: too many cycle iterations`
+ _directives_deprecated_library.py:15:31: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ _directives_deprecated_library.py:30:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+ _directives_deprecated_library.py:36:41: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@__add__`
+@@ -67,23 +68,6 @@
+ aliases_type_statement.py:48:23: error[invalid-type-form] Boolean operations are not allowed in type expressions
+ aliases_type_statement.py:49:23: error[fstring-type-annotation] Type expressions cannot use f-strings
+ aliases_type_statement.py:80:37: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int, str]`?
+-aliases_typealiastype.py:32:7: error[unresolved-attribute] Type `typing.TypeAliasType` has no attribute `other_attrib`
+-aliases_typealiastype.py:39:26: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int, str]`?
+-aliases_typealiastype.py:52:40: error[invalid-type-form] Function calls are not allowed in type expressions
+-aliases_typealiastype.py:53:40: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int, str]`?
+-aliases_typealiastype.py:54:42: error[invalid-type-form] Tuple literals are not allowed in this context in a type expression
+-aliases_typealiastype.py:54:43: error[invalid-type-form] Tuple literals are not allowed in this context in a type expression: Did you mean `tuple[int, str]`?
+-aliases_typealiastype.py:55:42: error[invalid-type-form] List comprehensions are not allowed in type expressions
+-aliases_typealiastype.py:56:42: error[invalid-type-form] Dict literals are not allowed in type expressions
+-aliases_typealiastype.py:57:42: error[invalid-type-form] Function calls are not allowed in type expressions
+-aliases_typealiastype.py:58:48: error[invalid-type-form] Int literals are not allowed in this context in a type expression
+-aliases_typealiastype.py:59:42: error[invalid-type-form] `if` expressions are not allowed in type expressions
+-aliases_typealiastype.py:60:42: error[invalid-type-form] Variable of type `Literal[3]` is not allowed in a type expression
+-aliases_typealiastype.py:61:42: error[invalid-type-form] Boolean literals are not allowed in this context in a type expression
+-aliases_typealiastype.py:62:42: error[invalid-type-form] Int literals are not allowed in this context in a type expression
+-aliases_typealiastype.py:63:42: error[invalid-type-form] Boolean operations are not allowed in type expressions
+-aliases_typealiastype.py:64:42: error[invalid-type-form] F-strings are not allowed in type expressions
+-aliases_typealiastype.py:66:47: error[unresolved-reference] Name `BadAlias21` used when not defined
+ aliases_variance.py:18:24: error[non-subscriptable] Cannot subscript object of type `&lt;class 'ClassA[typing.TypeVar(&quot;T_co&quot;)]'&gt;` with no `__class_getitem__` method
+ aliases_variance.py:28:16: error[non-subscriptable] Cannot subscript object of type `&lt;class 'ClassA[typing.TypeVar(&quot;T_co&quot;)]'&gt;` with no `__class_getitem__` method
+ aliases_variance.py:44:16: error[non-subscriptable] Cannot subscript object of type `&lt;class 'ClassB[typing.TypeVar(&quot;T_co&quot;), typing.TypeVar(&quot;T_contra&quot;)]'&gt;` with no `__class_getitem__` method
+@@ -884,4 +868,5 @@
+ typeddicts_operations.py:60:1: error[type-assertion-failure] Argument does not have asserted type `str | None`
+ typeddicts_type_consistency.py:101:1: error[invalid-assignment] Object of type `Unknown | None` is not assignable to `str`
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 885 diagnostics
++Found 869 diagnostics
++WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-07 12:43</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- test/mitmproxy/contentviews/test__utils.py:23:38: error[invalid-argument-type] Argument to function `make_metadata` is incorrect: Expected `Message | TCPMessage | UDPMessage | WebSocketMessage | DNSMessage`, found `Response | None`
++ test/mitmproxy/contentviews/test__utils.py:23:38: error[invalid-argument-type] Argument to function `make_metadata` is incorrect: Expected `ContentviewMessage`, found `Response | None`
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @carljm on 2025-08-07 12:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-08-07 12:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-08-07 12:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @carljm on 2025-08-07 12:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @carljm on 2025-08-07 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-07 13:04</div>
+            <div class="timeline-body"><p>Converting back to draft while I look into the new panic on the conformance suite.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-07 22:22</div>
+            <div class="timeline-body"><p>Ok, the new panic in the conformance suite is for an invalid type alias, so it shouldn't be a case that affects much if any real code (as seen in the fact that there aren't new ecosystem panics). I have a plan for how to fix it (as well as fixing recursive legacy/bare type aliases), but it will be significant enough that I'd rather do it in a separate PR. So putting this back up for review as-is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @carljm on 2025-08-07 22:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:207 on 2025-08-08 09:27</div>
+            <div class="timeline-body"><p>I think it would be beneficial to have documentation outlining the different strategies and their respective needs and when to use which one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-08 09:31</div>
+            <div class="timeline-body"><p>Exciting!</p>
+<p>I assume this change is because we no longer normalize the argument union:</p>
+<pre><code>mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- test/mitmproxy/contentviews/test__utils.py:23:38: error[invalid-argument-type] Argument to function `make_metadata` is incorrect: Expected `Message | TCPMessage | UDPMessage | WebSocketMessage | DNSMessage`, found `Response | None`
++ test/mitmproxy/contentviews/test__utils.py:23:38: error[invalid-argument-type] Argument to function `make_metadata` is incorrect: Expected `ContentviewMessage`, found `Response | None`
+</code></pre>
+<p>I must say, I very much prefer the new output (but agree, that changing this in general is out of scope for this PR)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:780 on 2025-08-08 09:50</div>
+            <div class="timeline-body"><p>Looking at <code>CycleDetector</code>, making <code>visit</code> use a <code>&amp;self</code> sounds fairly reasonable, given that the caching and <code>seen</code> aren't exposed (they're all handled inside <code>visit</code>).
+It also feels idiomatic that caching and seen would be &quot;transparant&quot; from the outside.</p>
+<p>The alternative is to change <code>Self::mixed</code> to take <code> Vec&lt;Type&gt;</code> so that we at least can reuse the collection (because it always collects anyway)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/pep695_type_aliases.md</code>:171 on 2025-08-08 09:50</div>
+            <div class="timeline-body"><p>Ideally we'd complain about this at the point where it's defined, right? To warn the user that we might not interpret this in the way they expect, and that they've likely made a mistake in their type annotations?</p>
+<p>Interpreting it as simplifying to <code>int</code> seems reasonable (though falling back to <code>Unknown</code> would also be fine here, I think), but the alias still doesn't really make any sense. Should we add a TODO about this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/pep695_type_aliases.md</code>:171 on 2025-08-08 09:51</div>
+            <div class="timeline-body"><p>The name of this alias reminds me of a song from one of my favourite albums https://www.youtube.com/watch?v=cPbNpIG8x_s&amp;ab_channel=Love-Topic</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-08-08 09:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-08-08 09:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:8714 on 2025-08-08 10:06</div>
+            <div class="timeline-body"><p>You could possibly simplify the <code>from_elements_impl</code> signature here a bit -- it would make it less ergonomic for callers, but there are only two callers, and having fewer signatures with complicated trait bounds seems like a nice win:</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types.rs b/crates/ty_python_semantic/src/types.rs
+index 763d153102..d72be366da 100644
+--- a/crates/ty_python_semantic/src/types.rs
++++ b/crates/ty_python_semantic/src/types.rs
+@@ -8687,23 +8687,22 @@ impl&lt;'db&gt; UnionType&lt;'db&gt; {
+         I: IntoIterator&lt;Item = T&gt;,
+         T: Into&lt;Type&lt;'db&gt;&gt;,
+     {
+-        Self::from_elements_impl(db, elements, UnionStrategy::EliminateSubtypes)
++        Self::from_elements_impl(
++            db,
++            elements.into_iter().map(Into::into),
++            UnionStrategy::EliminateSubtypes,
++        )
+     }
+ 
+-    pub(crate) fn from_elements_impl&lt;I, T&gt;(
++    pub(crate) fn from_elements_impl(
+         db: &amp;'db dyn Db,
+-        elements: I,
++        elements: impl Iterator&lt;Item = Type&lt;'db&gt;&gt;,
+         strategy: UnionStrategy,
+-    ) -&gt; Type&lt;'db&gt;
+-    where
+-        I: IntoIterator&lt;Item = T&gt;,
+-        T: Into&lt;Type&lt;'db&gt;&gt;,
+-    {
++    ) -&gt; Type&lt;'db&gt; {
+         elements
+-            .into_iter()
+             .fold(
+                 UnionBuilder::new(db).strategy(strategy),
+-                |builder, element| builder.add(element.into()),
++                builder::UnionBuilder::add,
+             )
+             .build()
+     }
+diff --git a/crates/ty_python_semantic/src/types/tuple.rs b/crates/ty_python_semantic/src/types/tuple.rs
+index 8bcacbb5bb..f24699b96a 100644
+--- a/crates/ty_python_semantic/src/types/tuple.rs
++++ b/crates/ty_python_semantic/src/types/tuple.rs
+@@ -1134,7 +1134,7 @@ impl&lt;'db&gt; Tuple&lt;Type&lt;'db&gt;&gt; {
+         db: &amp;'db dyn Db,
+         union_strategy: UnionStrategy,
+     ) -&gt; Type&lt;'db&gt; {
+-        UnionType::from_elements_impl(db, self.all_elements(), union_strategy)
++        UnionType::from_elements_impl(db, self.all_elements().map(Type::from), union_strategy)
+     }
+ 
+     /// Concatenates another tuple to the end of this tuple, returning a new tuple.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:207 on 2025-08-08 10:07</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+pub(crate) enum UnionStrategy {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:213 on 2025-08-08 10:07</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    pub(crate) const fn should_eliminate_subtypes(self) -&gt; bool {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:454 on 2025-08-08 10:10</div>
+            <div class="timeline-body"><p>I'm surprised the equivalence check here is safe if the subtype check isn't. Doesn't the <code>is_equivalent_to</code> implementation also involve evaluating the inner value?</p>
+<p>It seems like it should be fine to also avoid simplifying equivalent types out of unions -- we could probably replace this with a naive <code>==</code> check and be fine?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:249 on 2025-08-08 10:11</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                f.write_str(&amp;alias.name(self.db))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:7157 on 2025-08-08 10:16</div>
+            <div class="timeline-body"><p>nit: I think our pattern elsewhere has generally been to use the <code>_type</code> prefix for methods like this rather than <code>_impl</code>. E.g. <code>infer_binary_expression</code> calls <code>infer_binary_expression_type</code> which is an inner method that recursively calls itself; <code>infer_compare_expression</code> calls <code>infer_binary_type_comparison</code> (not a prefix, but a similar-ish principle!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/visitor.rs</code>:228 on 2025-08-08 10:20</div>
+            <div class="timeline-body"><p>Should we add a <code>visit_type_alias_type</code> to the trait so that concrete implementations of the trait have it available as a hook?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-08-08 10:20</div>
+            <div class="timeline-body"><p>Looks great!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/pep695_type_aliases.md</code>:1 on 2025-08-08 12:36</div>
+            <div class="timeline-body"><p>Awesome</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1761 on 2025-08-08 12:50</div>
+            <div class="timeline-body"><p>Do the other recursive calls to <code>is_equivalent_to</code> in this method need to be updated to use <code>is_equivalent_to_impl</code> instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1336 on 2025-08-08 12:53</div>
+            <div class="timeline-body"><p>Is there a rule of thumb (ideally documented) for when you can make the recursive call directly, and when it needs to be guarded by <code>visitor.visit</code>? My guess would be that you only need the visitor guard on the variants where a cycle would connect back to itself?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:780 on 2025-08-08 13:03</div>
+            <div class="timeline-body"><blockquote>
+<p>The alternative is to change <code>Self::mixed</code> to take <code> Vec&lt;Type&gt;</code> so that we at least can reuse the collection (because it always collects anyway)</p>
+</blockquote>
+<p>+1 to this — <code>Self::mixed</code> is purely internal so you can make the callers responsible for collecting, and then you avoid this issue entirely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> approved on 2025-08-08 13:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-11 20:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:780 on 2025-08-11 20:54</div>
+            <div class="timeline-body"><p>Going with the change to <code>Self::mixed</code> for now, as that's more localized; we can consider interior mutability for <code>TypeTransformer</code> / <code>CycleDetector</code> as a separate change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-11 22:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:780 on 2025-08-11 22:14</div>
+            <div class="timeline-body"><p>I lied, I decided that making visitors use interior mutability is a better long-term answer, and if we're doing that anyway, then the change to <code>mixed</code> doesn't really make sense (just makes all the call sites more verbose). https://github.com/astral-sh/ruff/pull/19871 looks like an improvement to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-11 22:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/pep695_type_aliases.md</code>:171 on 2025-08-11 22:15</div>
+            <div class="timeline-body"><p>Yes, I think ideally we'd complain about this here, but I don't think it's high-priority; I'll add a TODO</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-12 00:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:8714 on 2025-08-12 00:04</div>
+            <div class="timeline-body"><p>I removed this altogether in the latest version of the PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-12 00:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:454 on 2025-08-12 00:05</div>
+            <div class="timeline-body"><p>In the latest version of the PR, I no longer need the new UnionStrategy, so I've removed it; we can add it back in and consider it separately for UX or perf (not cycle) reasons.</p>
+<p>It's no longer needed because now <code>TupleType::into_class_type</code> is a Salsa query, and cycle handling on that query means we no longer need to avoid the union simplification.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-12 00:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:213 on 2025-08-12 00:06</div>
+            <div class="timeline-body"><p>No longer present.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-12 00:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:207 on 2025-08-12 00:06</div>
+            <div class="timeline-body"><p>No longer present.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-12 00:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:780 on 2025-08-12 00:26</div>
+            <div class="timeline-body"><p>This is now rebased on top of that change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-08-12 00:39</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/cjm%2Frecta?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
+<h3>Merging #19805 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>cjm/recta</code> (0ca632a) with <code>main</code> (d76fd10)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 8</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-12 00:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1336 on 2025-08-12 00:49</div>
+            <div class="timeline-body"><p>I added some documentation on this to the top of <code>types/cyclic.rs</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-12 14:55</div>
+            <div class="timeline-body"><blockquote>
+<p>I assume this change is because we no longer normalize the argument union</p>
+</blockquote>
+<p>No, this change is because we no longer eagerly unpack type aliases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1761 on 2025-08-12 15:29</div>
+            <div class="timeline-body"><p>Yes, at some point. There are also some places in <code>has_relation_to_impl</code> that need this update. I'd been debating whether to fully thread through the visitors everywhere in this PR, or do it as a follow-up PR, with added regression tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-12 15:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:226 on 2025-08-12 15:44</div>
+            <div class="timeline-body"><p>the fact that static-frame is the most significant benchmark regression makes me suspect that this has something to do with the performance regressions. We <a href="https://github.com/astral-sh/ruff/pull/19844">know</a> that this method is extremely hot when checking static-frame for some reason (https://github.com/astral-sh/ruff/pull/19811#issuecomment-3168844143, https://github.com/astral-sh/ruff/pull/19811#issuecomment-3169041607), so if there's now a chance that we'll sometimes have to recover from cycles when calling this function, that seems likely to slow down static-frame quite a bit. This also means that the static-frame repo isn't necessarily representative of most real-world code, however; it seems like a pretty extreme case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-12 15:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-12 15:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:207 on 2025-08-12 15:55</div>
+            <div class="timeline-body"><p><code>UnionStrategy</code> is no longer part of this PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-12 15:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:226 on 2025-08-12 15:59</div>
+            <div class="timeline-body"><p>Yeah, this was one thing I've looked into a bit. I've confirmed (via Salsa tracing) that in checking static frame, we don't ever actually hit a cycle on this query (which is not surprising; if we did, then we likely would have panicked on static-frame before this PR). It's possible that there is still some effect simply from having the cycle handlers in place (Salsa does go into a different path for executing such queries), though I don't recall seeing a visible effect from that when we've added cycle handling to queries in the past. Even if it's very hot, presumably most of those accesses are cached; in that case, cycle handling shouldn't cause any overhead at all.</p>
+<p>If this is the cause, then I think we just have to eat it, pending generalized improvements to the efficiency of Salsa cycle handling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-12 16:01</div>
+            <div class="timeline-body"><p>Perf regression seems reduced to the 1-3% range. Possible causes are either overhead from adding cycle handling to a hot query, or overhead from passing around CycleDetector visitors through many more hot methods (<code>has_relation_to</code> in particular) -- I suspect it's more the latter. Either way, though, I think this is an acceptable level of regression, and one we will have to accept in order to gain recursive type support. So I'm ready to land this.</p>
+<p>PR has changed somewhat, but mostly by removing <code>UnionStrategy</code>, so I'm going to go with the approvals I've already got -- post-land review of the more recent changes is welcome!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-08-12 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-08-12 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-12 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-12 16:07</div>
+            <div class="timeline-body"><p>Let's go!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:44 UTC
+    </footer>
+</body>
+</html>

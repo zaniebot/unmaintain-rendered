@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Include column numbers in GitLab output format. - astral-sh/ruff #19708</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Include column numbers in GitLab output format.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19708">#19708</a>
+        opened by <a href="https://github.com/cristian64">@cristian64</a>
+        on 2025-08-02 22:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/cristian64">@cristian64</a> on 2025-08-02 22:56</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The CodeClimate report format, which GitLab adopted in a reduced form, supports two ways for specifying diagnostic error locations:</p>
+<pre><code class="language-json">{
+  &quot;path&quot;: &quot;path/to/file.css&quot;,
+  &quot;lines&quot;: {
+    &quot;begin&quot;: 13,
+    &quot;end&quot;: 14
+  }
+}
+</code></pre>
+<pre><code class="language-json">{
+  &quot;path&quot;: &quot;path/to/file.css&quot;,
+  &quot;positions&quot;: {
+    &quot;begin&quot;: {
+      &quot;line&quot;: 3,
+      &quot;column&quot;: 10
+    },
+    &quot;end&quot;: {
+      &quot;line&quot;: 4,
+      &quot;column&quot;: 12
+    }
+  }
+}
+</code></pre>
+<p>The second form is richer, as it can include column numbers, which Ruff happens to be able to provide. Ruff will now use the second form.</p>
+<p>More details on the specification in https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#locations.</p>
+<p>GitLab supports both forms; see https://docs.gitlab.com/ci/testing/code_quality/#code-quality-report-format.</p>
+<h2>Test Plan</h2>
+<p>Change is covered by unit tests; snapshots have been updated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/message/gitlab.rs</code>:78 on 2025-08-03 07:54</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-rust">let (start_location, end_location) = if self.context.is_notebook(&amp;filename) {
+	Default::default()
+} else {
+	start_location = diagnostic.expect_ruff_start_location();
+  end_location = diagnostic.expect_ruff_end_location();
+};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/message/gitlab.rs</code>:120 on 2025-08-03 07:55</div>
+            <div class="timeline-body"><p>Would this work?</p>
+<pre><code class="language-suggestion">                        &quot;begin&quot;: start_location,
+                        &quot;end&quot;: end_location,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-03 07:55</div>
+            <div class="timeline-body"><p>Thank you. I've a few nit comments but that overall looks good</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @MichaReiser on 2025-08-03 07:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cristian64">@cristian64</a> on <code>crates/ruff_linter/src/message/gitlab.rs</code>:78 on 2025-08-03 09:00</div>
+            <div class="timeline-body"><p>Did you mean</p>
+<pre><code class="language-rust">            let (start_location, end_location) = if self.context.is_notebook(&amp;filename) {
+                // We can't give a reasonable location for the structured formats,
+                // so we show one that's clearly a fallback
+                (LineColumn::default(), LineColumn::default())
+            } else {
+                (
+                    diagnostic.expect_ruff_start_location(),
+                    diagnostic.expect_ruff_end_location(),
+                )
+            };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cristian64">@cristian64</a> reviewed on 2025-08-03 09:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-03 09:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/message/gitlab.rs</code>:78 on 2025-08-03 09:05</div>
+            <div class="timeline-body"><p>Oh yes, sorry. The else branch should return a tuple. I think using <code>Default::default</code> might work for the notebook branch (I think)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-08-03 12:33</div>
+            <div class="timeline-body"><p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-08-03 12:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-08-03 12:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-03 12:45</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:43 UTC
+    </footer>
+</body>
+</html>

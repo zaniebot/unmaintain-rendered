@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Upcast heterogeneous and mixed tuples to homogeneous tuples where it's necessary to solve a `TypeVar` - astral-sh/ruff #19635</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Upcast heterogeneous and mixed tuples to homogeneous tuples where it's necessary to solve a <code>TypeVar</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19635">#19635</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-07-30 11:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-30 11:48</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR improves our generics solver such that we are able to solve the <code>TypeVar</code> in this snippet to <code>int | str</code> (the union of the elements in the heterogeneous tuple) by upcasting the heterogeneous tuple to its pure-homogeneous-tuple supertype:</p>
+<pre><code class="language-py">def f[T](x: tuple[T, ...]) -&gt; T:
+    return x[0]
+
+def g(x: tuple[int, str]):
+    reveal_type(f(x))
+</code></pre>
+<h2>Test Plan</h2>
+<p>Mdtests. Some TODOs remain in the mdtest regarding solving <code>TypeVar</code>s for mixed tuples, but I think this PR on its own is a significant step forward for our generics solver when it comes to tuple types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-07-30 11:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-30 11:51</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on typing conformance tests</h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-07-30 14:41:54.734946858 +0000
++++ new-output.txt	2025-07-30 14:41:54.794947483 +0000
+@@ -715,7 +715,6 @@
+ narrowing_typeguard.py:85:9: error[type-assertion-failure] Argument does not have asserted type `int`
+ narrowing_typeguard.py:89:9: error[type-assertion-failure] Argument does not have asserted type `B`
+ narrowing_typeguard.py:93:9: error[type-assertion-failure] Argument does not have asserted type `B`
+-narrowing_typeis.py:19:9: error[type-assertion-failure] Argument does not have asserted type `tuple[str, str]`
+ narrowing_typeis.py:21:9: error[type-assertion-failure] Argument does not have asserted type `tuple[str, ...]`
+ narrowing_typeis.py:38:9: error[type-assertion-failure] Argument does not have asserted type `int`
+ narrowing_typeis.py:72:9: error[type-assertion-failure] Argument does not have asserted type `int`
+@@ -889,4 +888,4 @@
+ tuples_type_form.py:36:1: error[invalid-assignment] Object of type `tuple[Literal[1], Literal[2], Literal[3], Literal[&quot;&quot;]]` is not assignable to `tuple[int, ...]`
+ typeddicts_operations.py:60:1: error[type-assertion-failure] Argument does not have asserted type `str | None`
+ typeddicts_type_consistency.py:101:1: error[invalid-assignment] Object of type `Unknown | None` is not assignable to `str`
+-Found 890 diagnostics
++Found 889 diagnostics
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-30 11:53</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-30 11:54</div>
+            <div class="timeline-body"><p>I expected <em>some</em> primer report here, but I guess we just inferred <code>Unknown</code> when solving (well, failing to solve) these <code>TypeVars</code> before, so it wasn't a significant source of false positives 😄</p>
+<p>The change on the typing conformance tests anyway looks correct!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-07-30 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-07-30 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-07-30 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-07-30 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> approved on 2025-07-30 14:06</div>
+            <div class="timeline-body"><p>I pushed up a commit that simplifies the tuple inference logic by using <code>TupleSpec::resize</code>, so this probably deserves :eyes: from someone other than me in addition to my :heavy_check_mark:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-30 14:29</div>
+            <div class="timeline-body"><p>I think you can go ahead and merge this if @AlexWaygood is happy with @dcreager's simplification and it seems @dcreager approved @AlexWaygood changes already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:766 on 2025-07-30 14:42</div>
+            <div class="timeline-body"><p>@dcreager is it correct to return <code>Ok(())</code> here or should I propagate the error by returning a <code>SpecializationError</code>? On this snippet we have this behaviour, which seems reasonable?</p>
+<pre><code class="language-py">def f[T, U](t: tuple[T, U]) -&gt; T: ...
+
+def _(arg: tuple[int, str, bool]):
+    # revealed: Unknown
+    reveal_type(f(arg))  # Argument to function `f` is incorrect: Expected `tuple[Unknown, Unknown]`, found `tuple[int, str, bool]` (invalid-argument-type)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-30 14:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-07-30 16:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:766 on 2025-07-30 16:09</div>
+            <div class="timeline-body"><p>Right, this example is showing that the length mismatch will be caught during type checking, so I don't think we need to raise it as a specialization error here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> approved on 2025-07-30 16:11</div>
+            <div class="timeline-body"><p>:+1: to the <code>most_precise</code> changes you pushed up</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-07-30 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-07-30 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-30 16:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:43 UTC
+    </footer>
+</body>
+</html>

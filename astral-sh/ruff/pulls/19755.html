@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-blind-except`] Fix `BLE001` false-positive on `raise ... from None` - astral-sh/ruff #19755</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-blind-except</code>] Fix <code>BLE001</code> false-positive on <code>raise ... from None</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19755">#19755</a>
+        opened by <a href="https://github.com/deliro">@deliro</a>
+        on 2025-08-05 08:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/deliro">@deliro</a> on 2025-08-05 08:00</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<ul>
+<li>Refactored <code>BLE001</code> logic for clarity and minor speed-up.</li>
+<li>Improved documentation and comments (previously, <code>BLE001</code> docs claimed it catches bare <code>except:</code>s, but it doesn't).</li>
+<li>Fixed a false-positive bug with <code>from None</code> cause:</li>
+</ul>
+<pre><code class="language-python"># somefile.py
+
+try:
+    pass
+except BaseException as e:
+    raise e from None
+</code></pre>
+<h3>main branch</h3>
+<pre><code>somefile.py:3:8: BLE001 Do not catch blind exception: `BaseException`
+  |
+1 | try:
+2 |     pass
+3 | except BaseException as e:
+  |        ^^^^^^^^^^^^^ BLE001
+4 |     raise e from None
+  |
+
+Found 1 error.
+</code></pre>
+<h3>this change</h3>
+<p><code>cargo run -p ruff -- check somefile.py --no-cache --select=BLE001</code></p>
+<pre><code>All checks passed!
+</code></pre>
+<h2>Test Plan</h2>
+<ul>
+<li>Added a test case to cover <code>raise X from Y</code> clause</li>
+<li>Added a test case to cover <code>raise X from None</code> clause</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-05 08:11</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -1 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/zulip/zulip/blob/1fcf9acd3340f4a34f76452fec764c56e849659b/tools/lib/provision.py#L386'>tools/lib/provision.py:386:20:</a> BLE001 Do not catch blind exception: `BaseException`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| BLE001 | 1 | 0 | 1 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -1 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/zulip/zulip/blob/1fcf9acd3340f4a34f76452fec764c56e849659b/tools/lib/provision.py#L386'>tools/lib/provision.py:386:20:</a> BLE001 Do not catch blind exception: `BaseException`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| BLE001 | 1 | 0 | 1 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`flake8-blind-except`] Enhance `BLE001`: fix docs; light speed-up; improve readability" to "[`flake8-blind-except`] Fix `BLE001`: false-positive trigger with `raise ... from None`" by @deliro on 2025-08-06 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @ntBre on 2025-08-08 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-08-12 18:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-08-12 18:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_blind_except/rules/blind_except.rs</code>:14 on 2025-08-12 18:34</div>
+            <div class="timeline-body"><p>Good catch, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-08-12 18:45</div>
+            <div class="timeline-body"><p>Looks good to me, thank you! And the change in the ecosystem report is exactly like the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-12 18:46</div>
+            <div class="timeline-body"><p>I think the conflicts are just from recent changes to our diagnostic format. Could you just rerun the tests locally and accept the new snapshots? That's probably the easiest way to resolve them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/deliro">@deliro</a> on 2025-08-12 20:22</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the conflicts are just from recent changes to our diagnostic format. Could you just rerun the tests locally and accept the new snapshots? That's probably the easiest way to resolve them.</p>
+</blockquote>
+<p>Thank you! Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @deliro on 2025-08-12 20:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`flake8-blind-except`] Fix `BLE001`: false-positive trigger with `raise ... from None`" to "[`flake8-blind-except`] Fix `BLE001` false-positive on `raise ... from None`" by @ntBre on 2025-08-13 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-08-13 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-08-13 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-13 17:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:43 UTC
+    </footer>
+</body>
+</html>

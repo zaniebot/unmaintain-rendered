@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Implement diagnostic caching - astral-sh/ruff #19605</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Implement diagnostic caching</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19605">#19605</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-07-28 19:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-28 19:55</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support for caching workspace diagnostics.</p>
+<p>For each file, ty now sends a <code>resultId</code> that is the hash of all diagnostics for that file. The client sends the <code>resultId</code>s from the previous workspace diagnostic requests as part of the next request payload. This allows ty to determine if the diagnostics of a file changed and only send a full diagnostic report for those files (and send unchanged for all other files).</p>
+<p>I hoped that this would fix the observed lag for home assistant when workspace diagnostics are enabled. Unfortunately, this isn't the case. It reduces the lag, but it doesn't fix it entirely</p>
+<h2>Test Plan</h2>
+<p>https://github.com/user-attachments/assets/3b0d1a3d-21cd-49a3-8c43-7b2781b1c02f</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-07-28 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-07-28 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-07-28 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-07-28 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-28 19:57</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on typing conformance tests</h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-07-30 09:58:15.659765386 +0000
++++ new-output.txt	2025-07-30 09:58:15.723765355 +0000
+@@ -87,6 +87,7 @@
+ aliases_variance.py:18:24: error[non-subscriptable] Cannot subscript object of type `&lt;class 'ClassA[T_co]'&gt;` with no `__class_getitem__` method
+ aliases_variance.py:28:16: error[non-subscriptable] Cannot subscript object of type `&lt;class 'ClassA[T_co]'&gt;` with no `__class_getitem__` method
+ aliases_variance.py:44:16: error[non-subscriptable] Cannot subscript object of type `&lt;class 'ClassB[T_co, T_contra]'&gt;` with no `__class_getitem__` method
++annotations_coroutines.py:27:5: error[type-assertion-failure] Argument does not have asserted type `str`
+ annotations_forward_refs.py:22:7: error[unresolved-reference] Name `ClassA` used when not defined
+ annotations_forward_refs.py:23:12: error[unresolved-reference] Name `ClassA` used when not defined
+ annotations_forward_refs.py:49:10: error[invalid-type-form] Variable of type `Literal[1]` is not allowed in a type expression
+@@ -101,6 +102,8 @@
+ annotations_forward_refs.py:96:1: error[type-assertion-failure] Argument does not have asserted type `int`
+ annotations_generators.py:86:21: error[invalid-return-type] Return type does not match returned value: expected `int`, found `types.GeneratorType`
+ annotations_generators.py:91:27: error[invalid-return-type] Return type does not match returned value: expected `int`, found `types.AsyncGeneratorType`
++annotations_generators.py:167:5: error[type-assertion-failure] Argument does not have asserted type `AsyncGenerator[str, None]`
++annotations_generators.py:174:5: error[type-assertion-failure] Argument does not have asserted type `AsyncGenerator[str, None]`
+ annotations_generators.py:193:1: error[type-assertion-failure] Argument does not have asserted type `() -&gt; AsyncIterator[int]`
+ annotations_methods.py:31:1: error[type-assertion-failure] Argument does not have asserted type `A`
+ annotations_methods.py:36:1: error[type-assertion-failure] Argument does not have asserted type `B`
+@@ -889,4 +892,4 @@
+ tuples_type_form.py:36:1: error[invalid-assignment] Object of type `tuple[Literal[1], Literal[2], Literal[3], Literal[&quot;&quot;]]` is not assignable to `tuple[int, ...]`
+ typeddicts_operations.py:60:1: error[type-assertion-failure] Argument does not have asserted type `str | None`
+ typeddicts_type_consistency.py:101:1: error[invalid-assignment] Object of type `Unknown | None` is not assignable to `str`
+-Found 890 diagnostics
++Found 893 diagnostics
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-28 19:59</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-28 20:07</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2025-07-29 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-07-29 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-07-29 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-07-29 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-07-29 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-07-29 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @MichaReiser on 2025-07-29 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @MichaReiser on 2025-07-29 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @MichaReiser on 2025-07-29 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @MichaReiser on 2025-07-29 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-29 16:24</div>
+            <div class="timeline-body"><p>(I plan to review this first thing tomorrow morning)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-07-30 03:43</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>This looks relatively straightforward. Do you know how much of a performance improvement does this make?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-30 03:48</div>
+            <div class="timeline-body"><p>Another follow-up would be to add this to document diagnostic as well (<code>textDocument/diagnostic</code>) but I'm not sure if it's beneficial in that request because that request would be sent every time the file got changed and whenever a user is typing, the change would usually produce a syntax error initially before the code gets in a stable state. One scenario where it would be useful is when copy pasting a code snippet which doesn't produce any diagnostic and the locations of existing diagnostics didn't change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-30 06:38</div>
+            <div class="timeline-body"><blockquote>
+<p>This looks relatively straightforward. Do you know how much of a performance improvement does this make?</p>
+</blockquote>
+<p>I don't know how I'd measure this. I'd need to plug into VS code's rendering performance (it's re-rendering the problems list that is slow)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-30 06:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-30 06:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-30 06:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-30 06:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-30 06:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-30 06:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-30 08:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-30 08:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-30 08:04</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't know how I'd measure this. I'd need to plug into VS code's rendering performance (it's re-rendering the problems list that is slow)</p>
+</blockquote>
+<p>A quick way would be to get the numbers that the server logs? I think it logs how long it took a request at the debug or trace level.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-30 08:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-30 08:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-30 08:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-30 08:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-30 09:00</div>
+            <div class="timeline-body"><blockquote>
+<p>A quick way would be to get the numbers that the server logs? I think it logs how long it took a request at the debug or trace level.</p>
+</blockquote>
+<p>I don't think this number will be very meaningful. The issue isn't that the request takes too long. It's that VS code dies diffing the diagnostics and rendering the new diagnostics</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-30 10:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Another follow-up would be to add this to document diagnostic as well (textDocument/diagnostic) but I'm not sure if it's beneficial in that request because that request would be sent every time the file got changed and whenever a user is typing, the change would usually produce a syntax error initially before the code gets in a stable state. One scenario where it would be useful is when copy pasting a code snippet which doesn't produce any diagnostic and the locations of existing diagnostics didn't change.</p>
+</blockquote>
+<p>Done. I think it's still useful because an editor might send <code>pullDiagnostic</code> requests for multiple files and the diagnostics won't change for all of them</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Cache workspace diagnostics" to "[ty] Implement diagnostic caching" by @MichaReiser on 2025-07-30 10:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-07-30 10:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-07-30 10:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-30 10:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:43 UTC
+    </footer>
+</body>
+</html>

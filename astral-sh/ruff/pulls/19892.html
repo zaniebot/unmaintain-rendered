@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Reduce allocations in `tuple.rs` - astral-sh/ruff #19892</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Reduce allocations in <code>tuple.rs</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19892">#19892</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-08-13 11:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-13 11:24</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The vast majority of real-world variable-length tuples are &quot;pure homogeneous&quot; tuples with no prefix and no suffix. We can optimize for the common case by using <code>Option&lt;Box&lt;[T]&gt;&gt;</code> for these fields rather than <code>Box&lt;[T]&gt;</code>, which in many cases allows us to avoid allocating.</p>
+<p>An alternative approach here would be to use a different <code>Tuple</code> variant entirely for pure-homogeneous tuples that have no prefix and no suffix: rather than just <code>Tuple::FixedLength</code> and <code>Tuple::VariableLength</code>, we could have <code>Tuple::Heterogeneous</code>, <code>Tuple::Homogeneous</code> and <code>Tuple::Mixed</code>. I do like that the current design is quite expressive of the fact that a &quot;pure homogeneous&quot; tuple really has exactly the same semantics as a &quot;mixed tuple&quot; with a 0-length prefix and a 0-length suffix, however, so that's an argument for keeping homogeneous tuples and mixed tuples together in one <code>Tuple</code> variant.</p>
+<h2>Test Plan</h2>
+<p>Existing tests pass. The mypy primer report is clean.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-08-13 11:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @AlexWaygood on 2025-08-13 11:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-13 11:26</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-08-13 11:25:55.667497923 +0000
++++ new-output.txt	2025-08-13 11:25:55.735498362 +0000
+@@ -1,5 +1,5 @@
+ WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+-fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/918d35d/src/function/execute.rs:215:25 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(120da)): execute: too many cycle iterations`
++fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/918d35d/src/function/execute.rs:215:25 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(30a0)): execute: too many cycle iterations`
+ _directives_deprecated_library.py:15:31: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ _directives_deprecated_library.py:30:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+ _directives_deprecated_library.py:36:41: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@__add__`
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-13 11:28</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-13 11:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:532 on 2025-08-13 11:32</div>
+            <div class="timeline-body"><p>I don't think <code>Box&lt;[T]&gt;</code> allocates. I'm not sure what an empty box slice uses as start-pointer but they can use any value for as long as they don't dereference it when <code>length</code> is zero</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-13 11:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:532 on 2025-08-13 11:35</div>
+            <div class="timeline-body"><p>Hmm, this is maybe poorly worded. My point is that are lots of places on <code>main</code> where we call <code>.collect()</code> on an iterator to create a <code>Box&lt;[T]&gt;</code> for the <code>prefix</code> or <code>suffix</code>, but we don't really need to if we know ahead of time that the iterator is 0-length (which is by far the most common case).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-13 11:37</div>
+            <div class="timeline-body"><p>No impact on Codspeed benchmarks <code>¯\_(ツ)_/¯</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-08-13 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-13 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-13 11:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:532 on 2025-08-13 11:39</div>
+            <div class="timeline-body"><p>I think this optimization (I'm not sure if it's something we'll see in benchmarks) wouldn't require an <code>Option&lt;Box&lt;[T]&gt;&gt;</code>, you could just call <code>Box::default()</code> if the iterator is empty.</p>
+<p>However, I'd expect Rust to already short-circuit for you if <code>sufix</code> and <code>prefix</code> are known to be empty because Rust can use specialization internally (they can have a custom <code>FromIter</code> implementation when <code>I</code> implements <code>ExactSizeIterator</code>).</p>
+<p>So I suspect that Rust already does all of that for you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-13 11:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:532 on 2025-08-13 11:41</div>
+            <div class="timeline-body"><p>Makes sense. Well, it was just an experiment :-)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:44 UTC
+    </footer>
+</body>
+</html>

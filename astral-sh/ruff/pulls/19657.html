@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Implement streaming for workspace diagnostics - astral-sh/ruff #19657</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Implement streaming for workspace diagnostics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19657">#19657</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-07-31 08:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-31 08:19</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR implements diagnostic streaming for the LSP's workspace diagnostic request. Streaming diagnostics has the advantage that they become visible as soon as ty has finished checking a file and not only when the entire workspace has been checked.</p>
+<p>Streaming diagnostics in the LSP doesn't require any sorting because that's a Client concern.</p>
+<p>The way this is implemented is that I extended the <code>ProgressReporter</code> trait to also get a reference to the diagnostics, and it's now the reporter's responsibility to collect the diagnostics if desired (which we don't want in the LSP case).</p>
+<p>This change fixes the performance issues that I've seen on home assistant where VS code hangs every time new workspace diagnostics come in. I assume that's because it can now process smaller diagnostic chunks.</p>
+<h2>Test Plan</h2>
+<p>https://github.com/user-attachments/assets/4d687d00-d7ee-416d-8090-17faefd9967c</p>
+<p>https://github.com/user-attachments/assets/304dbf3a-1ddd-44ae-94ea-56be83cba045</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-07-31 08:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-07-31 08:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-31 08:21</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on typing conformance tests</h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-31 12:26</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-31 12:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty/tests/cli/rule_selection.rs</code>:879 on 2025-07-31 12:33</div>
+            <div class="timeline-body"><p>This is now consistent with how we order other diagnostics without a file:</p>
+<ul>
+<li>Compare spans</li>
+<li>Compare severity</li>
+<li>Compare id</li>
+</ul>
+<p><code>division-by-zero</code> has an error severity, so it should come before <code>unknown-rule</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-07-31 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-07-31 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-07-31 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-07-31 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-07-31 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-08-01 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/session/capabilities.rs</code>:222 on 2025-08-04 04:19</div>
+            <div class="timeline-body"><p>Could we use an environment variable for this instead? I'm not sure if using client capabilities is correct here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_project/src/lib.rs</code>:136 on 2025-08-04 04:24</div>
+            <div class="timeline-body"><p>nit: it might be useful to have this method be called something else like <code>report_diagnostics_without_file</code> which is a bit verbose but it could convey the method usage because <code>report_diagnostics</code> could mean that any diagnostics can be used to report. Or, it might be useful to expand the documentation of both <code>report_file</code> and <code>report_diagnostics</code> to specify when it's suppose to be used and link to the other method for a different use case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/requests/workspace_diagnostic.rs</code>:440 on 2025-08-04 04:33</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // As per the spec:
+        //
+        // &gt; partial result: The first literal send need to be a WorkspaceDiagnosticReport followed
+        // &gt; by `n` WorkspaceDiagnosticReportPartialResult literals
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/requests/workspace_diagnostic.rs</code>:146 on 2025-08-04 04:35</div>
+            <div class="timeline-body"><p>Any specific reason that this number got changed? I don't mind it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/requests/workspace_diagnostic.rs</code>:251 on 2025-08-04 04:47</div>
+            <div class="timeline-body"><p>nit: these comments doesn't seem useful as it's describing the code, we can remove them</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/requests/workspace_diagnostic.rs</code>:415 on 2025-08-04 04:50</div>
+            <div class="timeline-body"><p>The test part would be useful to document in the <code>tests/e2e/main.rs</code> file otherwise it might hard to know how to write tests without looking at the code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/requests/workspace_diagnostic.rs</code>:418 on 2025-08-04 04:51</div>
+            <div class="timeline-body"><p>The comment says &quot;every ~100ms&quot; but the code is using 50, is that intentional?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/requests/workspace_diagnostic.rs</code>:111 on 2025-08-04 04:58</div>
+            <div class="timeline-body"><p>Just to confirm my understanding, this finish call is mainly used when the reporting mode is &quot;Bulk&quot; to return all of the workspace diagnostics at once and for the diagnostics that are remaining at the end when the reporting mode is &quot;Streaming&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/tests/e2e/main.rs</code>:766 on 2025-08-04 04:59</div>
+            <div class="timeline-body"><p>I think an environment variable would be more suitable for this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/tests/e2e/pull_diagnostics.rs</code>:380 on 2025-08-04 05:04</div>
+            <div class="timeline-body"><p>nit: I've started a habit of briefly documenting these test cases because they can get quite verbose and long and it might take time to understand what each test case is doing when looking at it after some time. It might be useful to do the same here, it doesn't need to be detailed but just describing what behavior this is testing would be quite useful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/tests/e2e/pull_diagnostics.rs</code>:409 on 2025-08-04 05:05</div>
+            <div class="timeline-body"><p>I'd probably remove this as it isn't required to &quot;trigger workspace diagnostics&quot; so it's a bit misleading for the test setup</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/tests/e2e/pull_diagnostics.rs</code>:436 on 2025-08-04 05:06</div>
+            <div class="timeline-body"><p>The comment should be &quot;Process the final report&quot;, right?</p>
+<p>I'm not sure I understand the other part of the comment here -- if it should be a partial report, does it not mean that it should be <code>WorkspaceDiagnosticReportResult::Partial</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/tests/e2e/pull_diagnostics.rs</code>:442 on 2025-08-04 05:11</div>
+            <div class="timeline-body"><p>Can you expand the comment on why this should be 1?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-08-04 05:16</div>
+            <div class="timeline-body"><p>This looks great!</p>
+<p>I think I'd find it extremely useful to have some high level documentation for the methods and data structures. I'll probably forget how they all interact when I come back to it in the future ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-04 06:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/session/capabilities.rs</code>:222 on 2025-08-04 06:39</div>
+            <div class="timeline-body"><p>I don't think so. You can't change environment variables for a running program (it requires unsafe code) and we would only want to change it for a single test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-04 06:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/lib.rs</code>:136 on 2025-08-04 06:40</div>
+            <div class="timeline-body"><p>I think <code>report_diagnostics_without_file</code> is misleading. The diagnostics have a file. But I can see if I can improve the documentation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/requests/workspace_diagnostic.rs</code>:146 on 2025-08-04 06:41</div>
+            <div class="timeline-body"><p>Sending that many <code>$/progress</code> notifications slowed down the overall check time especially when we recheck a project. We may want to implement a time based solution too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-04 06:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-04 06:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/requests/workspace_diagnostic.rs</code>:111 on 2025-08-04 06:42</div>
+            <div class="timeline-body"><p>Yes, that's correct</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-04 06:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/tests/e2e/main.rs</code>:766 on 2025-08-04 06:42</div>
+            <div class="timeline-body"><p>Let's discuss this above</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-04 06:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/tests/e2e/pull_diagnostics.rs</code>:436 on 2025-08-04 06:43</div>
+            <div class="timeline-body"><p>It should be a <code>Partial</code> report, but partial and full reports have the same shape, so that a serialized <code>Partial</code> result gets deserialized as a <code>Full</code> result. That's why we can't test it here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-04 06:45</div>
+            <div class="timeline-body"><blockquote>
+<p>I think I'd find it extremely useful to have some high level documentation for the methods and data structures. I'll probably forget how they all interact when I come back to it in the future ;)</p>
+</blockquote>
+<p>I added a summary in https://github.com/astral-sh/ruff/pull/19670 Is this sufficient or are you looking for more?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-08-04 06:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/session/capabilities.rs</code>:222 on 2025-08-04 06:53</div>
+            <div class="timeline-body"><p>Maybe we could add another entrypoint to create the server like <code>Server::new_for_test</code> that sets this flag?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-08-04 06:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/tests/e2e/pull_diagnostics.rs</code>:436 on 2025-08-04 06:56</div>
+            <div class="timeline-body"><p>We use our own fork of <code>lsp-types</code> which we can update to accommodate this change (https://github.com/astral-sh/ruff/blob/b53424d6b17ccb7efcfc8ea52e1995797a4e921c/Cargo.toml#L119-L121)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-08-04 06:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/tests/e2e/pull_diagnostics.rs</code>:436 on 2025-08-04 06:57</div>
+            <div class="timeline-body"><p>We could also add the <code>PartialWorkspaceProgress</code> in the fork</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-04 06:59</div>
+            <div class="timeline-body"><blockquote>
+<p>I added a summary in #19670 Is this sufficient or are you looking for more?</p>
+</blockquote>
+<p>I think that documentation is great and it provides a good overview of all the things that have been implemented for workspace diagnostics. But, I think it'd still be useful to document the working parts (methods).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-04 09:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/requests/workspace_diagnostic.rs</code>:415 on 2025-08-04 09:17</div>
+            <div class="timeline-body"><p>I added a comment to the test where the behavior matters (and explain the motivation). I decided against adding it to <code>main.rs</code> because I'm worried that it will easily get outdated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-04 09:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/tests/e2e/pull_diagnostics.rs</code>:436 on 2025-08-04 09:20</div>
+            <div class="timeline-body"><p>I thought about that but it feels like more work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-08-04 09:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-08-04 09:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-04 09:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:43 UTC
+    </footer>
+</body>
+</html>

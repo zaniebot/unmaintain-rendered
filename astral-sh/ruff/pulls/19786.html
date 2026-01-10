@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Track when type variables are inferable or not - astral-sh/ruff #19786</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Track when type variables are inferable or not</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19786">#19786</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-08-06 15:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-08-06 15:47</div>
+            <div class="timeline-body"><p><code>Type::TypeVar</code> now distinguishes whether the typevar in question is inferable or not.</p>
+<p>A typevar is <em>not inferable</em> inside the body of the generic class or function that binds it:</p>
+<pre><code class="language-py">def f[T](t: T) -&gt; T:
+    return t
+</code></pre>
+<p>The infered type of <code>t</code> in the function body is <code>TypeVar(T, NotInferable)</code>. This represents how e.g. assignability checks need to be valid for all possible specializations of the typevar. Most of the existing assignability/etc logic only applies to non-inferable typevars.</p>
+<p>Outside of the function body, the typevar is <em>inferable</em>:</p>
+<pre><code class="language-py">f(4)
+</code></pre>
+<p>Here, the parameter type of <code>f</code> is <code>TypeVar(T, Inferable)</code>. This represents how e.g. assignability doesn't need to hold for <em>all</em> specializations; instead, we need to find the constraints under which this specific assignability check holds.</p>
+<p>This is in support of starting to perform specialization inference <em>as part of</em> performing the assignability check at the call site.</p>
+<p>In the [<a href="https://doi.org/10.1145/2676726.2676991">POPL2015</a>] paper, this concept is called <em>monomorphic</em> / <em>polymorphic</em>, but I thought <em>non-inferable</em> / <em>inferable</em> would be clearer for us.</p>
+<p>Depends on #19784</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-08-06 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-06 15:49</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-08-16 22:08:04.048640851 +0000
++++ new-output.txt	2025-08-16 22:08:04.117640859 +0000
+@@ -1,5 +1,5 @@
+ WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+-fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/918d35d/src/function/execute.rs:215:25 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(1201d)): execute: too many cycle iterations`
++fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/918d35d/src/function/execute.rs:215:25 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(1b09b)): execute: too many cycle iterations`
+ _directives_deprecated_library.py:15:31: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ _directives_deprecated_library.py:30:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+ _directives_deprecated_library.py:36:41: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@__add__`
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-06 15:51</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">Expression (https://github.com/cognitedata/Expression)
++ tests/test_array.py:57:57: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/test_array.py:68:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/test_array.py:79:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/test_array.py:90:61: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/test_array.py:98:57: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 226 diagnostics
++ Found 231 diagnostics
+
+kopf (https://github.com/nolar/kopf)
+- kopf/_kits/webhacks.py:81:26: error[invalid-argument-type] Argument to function `wraps` is incorrect: Argument type `(...) -&gt; _RWrapped@wraps` does not satisfy upper bound of type variable `_ServerFn`
+- Found 60 diagnostics
++ Found 59 diagnostics
+
+trio (https://github.com/python-trio/trio)
++ src/trio/_path.py:235:34: error[invalid-argument-type] Argument to function `_wrap_method_path` is incorrect: Expected `(...) -&gt; Path`, found `def readlink(self) -&gt; Self@readlink`
++ src/trio/_path.py:236:32: error[invalid-argument-type] Argument to function `_wrap_method_path` is incorrect: Expected `(...) -&gt; Path`, found `def rename(self, target: str | PurePath) -&gt; Self@rename`
++ src/trio/_path.py:237:33: error[invalid-argument-type] Argument to function `_wrap_method_path` is incorrect: Expected `(...) -&gt; Path`, found `def replace(self, target: str | PurePath) -&gt; Self@replace`
++ src/trio/_path.py:238:33: error[invalid-argument-type] Argument to function `_wrap_method_path` is incorrect: Expected `(...) -&gt; Path`, found `def resolve(self, strict: bool = Literal[False]) -&gt; Self@resolve`
++ src/trio/_path.py:245:34: error[invalid-argument-type] Argument to function `_wrap_method_path` is incorrect: Expected `(...) -&gt; Path`, found `def absolute(self) -&gt; Self@absolute`
++ src/trio/_path.py:246:36: error[invalid-argument-type] Argument to function `_wrap_method_path` is incorrect: Expected `(...) -&gt; Path`, found `def expanduser(self) -&gt; Self@expanduser`
++ src/trio/_tests/type_tests/raisesgroup.py:98:5: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ src/trio/_tests/type_tests/raisesgroup.py:103:5: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- src/trio/_tests/type_tests/raisesgroup.py:92:51: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/trio/_tests/type_tests/raisesgroup.py:95:49: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/trio/_tests/type_tests/raisesgroup.py:99:57: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/trio/_tests/type_tests/raisesgroup.py:102:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/trio/_tests/type_tests/raisesgroup.py:106:67: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/trio/_tests/type_tests/raisesgroup.py:107:69: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 654 diagnostics
++ Found 656 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
++ bson/regex.py:83:16: error[invalid-return-type] Return type does not match returned value: expected `Regex[_T@Regex]`, found `Regex[str]`
+- Found 514 diagnostics
++ Found 515 diagnostics
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
++ schema_salad/sourceline.py:17:33: error[invalid-argument-type] Argument to function `_add_lc_filename` is incorrect: Argument type `AnyStr@_add_lc_filename` does not satisfy constraints of type variable `AnyStr`
++ schema_salad/sourceline.py:20:33: error[invalid-argument-type] Argument to function `_add_lc_filename` is incorrect: Argument type `AnyStr@_add_lc_filename` does not satisfy constraints of type variable `AnyStr`
+- Found 144 diagnostics
++ Found 146 diagnostics
+
+aiohttp (https://github.com/aio-libs/aiohttp)
+- aiohttp/web_request.py:599:16: error[invalid-return-type] Return type does not match returned value: expected `slice[int, int, int]`, found `slice[Any, _StartT_co@slice, _StartT_co@slice | _StopT_co@slice]`
++ aiohttp/web_runner.py:411:16: error[invalid-return-type] Return type does not match returned value: expected `Server[Request]`, found `Server[BaseRequest]`
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- test/mitmproxy/contentviews/test__utils.py:23:38: error[invalid-argument-type] Argument to function `make_metadata` is incorrect: Expected `ContentviewMessage`, found `Response | None`
++ test/mitmproxy/contentviews/test__utils.py:23:38: error[invalid-argument-type] Argument to function `make_metadata` is incorrect: Expected `Message | TCPMessage | UDPMessage | WebSocketMessage | DNSMessage`, found `Response | None`
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/index.py:794:44: error[invalid-argument-type] Argument to bound method `difference` is incorrect: Argument type `Iterable[Unknown]` does not satisfy upper bound of type variable `I`
+- Found 1779 diagnostics
++ Found 1778 diagnostics
+
+zulip (https://github.com/zulip/zulip)
+- analytics/views/stats.py:444:9: error[invalid-assignment] Object of type `Unknown | _ST@ForeignKey` is not assignable to `Realm | None`
+- analytics/views/stats.py:476:25: warning[possibly-unbound-attribute] Attribute `date_created` on type `Realm | None` is possibly unbound
+- analytics/views/stats.py:489:17: warning[possibly-unbound-attribute] Attribute `string_id` on type `Realm | None` is possibly unbound
+- analytics/views/stats.py:517:21: warning[possibly-unbound-attribute] Attribute `id` on type `Realm | None` is possibly unbound
+- confirmation/models.py:205:44: error[invalid-argument-type] Argument to function `confirmation_url` is incorrect: Expected `Realm | None`, found `Unknown | _ST@ForeignKey`
+- corporate/lib/registration.py:14:52: warning[possibly-unbound-attribute] Attribute `exempt_from_license_number_check` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe.py:2168:34: error[invalid-argument-type] Argument to function `get_price_per_license_and_discount` is incorrect: Expected `Customer | None`, found `Unknown | _ST@ForeignKey`
+- corporate/lib/stripe.py:2241:12: warning[possibly-unbound-attribute] Attribute `exempt_from_license_number_check` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe.py:2372:70: error[invalid-argument-type] Argument to function `get_price_per_license_and_discount` is incorrect: Expected `Customer | None`, found `Unknown | _ST@ForeignKey`
+- corporate/lib/stripe.py:2418:71: error[invalid-argument-type] Argument to function `get_price_per_license_and_discount` is incorrect: Expected `Customer | None`, found `Unknown | _ST@ForeignKey`
+- corporate/lib/stripe.py:3073:17: warning[possibly-unbound-attribute] Attribute `exempt_from_license_number_check` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe.py:3109:17: warning[possibly-unbound-attribute] Attribute `exempt_from_license_number_check` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe.py:3157:59: error[invalid-argument-type] Argument to function `get_price_per_license_and_discount` is incorrect: Expected `Customer | None`, found `Unknown | _ST@ForeignKey`
+- corporate/lib/stripe.py:3207:21: warning[possibly-unbound-attribute] Attribute `stripe_customer_id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe.py:3224:20: warning[possibly-unbound-attribute] Attribute `stripe_customer_id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe.py:3230:33: warning[possibly-unbound-attribute] Attribute `licenses` on type `(Unknown &amp; ~None) | (_ST@ForeignKey &amp; ~None)` is possibly unbound
+- corporate/lib/stripe.py:3231:39: warning[possibly-unbound-attribute] Attribute `id` on type `(Unknown &amp; ~None) | (_ST@ForeignKey &amp; ~None)` is possibly unbound
+- corporate/lib/stripe.py:3248:30: warning[possibly-unbound-attribute] Attribute `stripe_customer_id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe.py:3308:34: warning[possibly-unbound-attribute] Attribute `stripe_customer_id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe.py:3354:21: warning[possibly-unbound-attribute] Attribute `flat_discounted_months` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe.py:3355:21: warning[possibly-unbound-attribute] Attribute `save` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe.py:3359:34: warning[possibly-unbound-attribute] Attribute `stripe_customer_id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe.py:3387:16: warning[possibly-unbound-attribute] Attribute `stripe_customer_id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe.py:3407:17: warning[possibly-unbound-attribute] Attribute `stripe_customer_id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe.py:3739:20: warning[possibly-unbound-attribute] Attribute `exempt_from_license_number_check` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe.py:4170:16: warning[possibly-unbound-attribute] Attribute `realm` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe.py:4172:13: warning[possibly-unbound-attribute] Attribute `realm` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe.py:5555:8: warning[possibly-unbound-attribute] Attribute `realm` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe.py:5556:69: warning[possibly-unbound-attribute] Attribute `realm` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe.py:5557:10: warning[possibly-unbound-attribute] Attribute `remote_realm` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe.py:5558:24: warning[possibly-unbound-attribute] Attribute `remote_realm` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe.py:5561:10: warning[possibly-unbound-attribute] Attribute `remote_server` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe.py:5562:25: warning[possibly-unbound-attribute] Attribute `remote_server` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe.py:5634:9: warning[possibly-unbound-attribute] Attribute `id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe_event_handler.py:86:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `RemoteRealm`, found `(Unknown &amp; ~None) | (_ST@OneToOneField &amp; ~None)`
+- corporate/lib/stripe_event_handler.py:88:43: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `RemoteZulipServer`, found `(Unknown &amp; ~None) | (_ST@OneToOneField &amp; ~None)`
+- corporate/lib/stripe_event_handler.py:92:73: error[invalid-argument-type] Argument to function `get_active_user_profile_by_id_in_realm` is incorrect: Expected `Realm`, found `(Unknown &amp; ~None) | (_ST@OneToOneField &amp; ~None)`
+- corporate/lib/stripe_event_handler.py:95:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Realm | None`, found `(Unknown &amp; ~None) | (_ST@OneToOneField &amp; ~None)`
+- corporate/lib/stripe_event_handler.py:109:9: error[invalid-argument-type] Argument to function `get_billing_session_for_stripe_webhook` is incorrect: Expected `Customer`, found `Unknown | _ST@ForeignKey`
+- corporate/lib/stripe_event_handler.py:129:8: warning[possibly-unbound-attribute] Attribute `required_plan_tier` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe_event_handler.py:131:13: error[invalid-argument-type] Argument to function `get_configured_fixed_price_plan_offer` is incorrect: Expected `Customer`, found `Unknown | _ST@ForeignKey`
+- corporate/lib/stripe_event_handler.py:131:23: warning[possibly-unbound-attribute] Attribute `required_plan_tier` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe_event_handler.py:139:66: error[invalid-argument-type] Argument to function `get_billing_session_for_stripe_webhook` is incorrect: Expected `Customer`, found `Unknown | _ST@ForeignKey`
+- corporate/lib/stripe_event_handler.py:140:83: error[invalid-argument-type] Argument to bound method `get_complimentary_access_plan` is incorrect: Expected `Customer | None`, found `Unknown | _ST@ForeignKey`
+- corporate/lib/stripe_event_handler.py:140:83: error[invalid-argument-type] Argument to bound method `get_complimentary_access_plan` is incorrect: Expected `Customer | None`, found `Unknown | _ST@ForeignKey`
+- corporate/lib/stripe_event_handler.py:140:83: error[invalid-argument-type] Argument to bound method `get_complimentary_access_plan` is incorrect: Expected `Customer | None`, found `Unknown | _ST@ForeignKey`
+- corporate/lib/stripe_event_handler.py:141:16: warning[possibly-unbound-attribute] Attribute `required_plan_tier` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe_event_handler.py:143:23: warning[possibly-unbound-attribute] Attribute `required_plan_tier` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe_event_handler.py:165:66: error[invalid-argument-type] Argument to function `get_billing_session_for_stripe_webhook` is incorrect: Expected `Customer`, found `Unknown | _ST@ForeignKey`
+- corporate/lib/stripe_event_handler.py:166:83: error[invalid-argument-type] Argument to bound method `get_complimentary_access_plan` is incorrect: Expected `Customer | None`, found `Unknown | _ST@ForeignKey`
+- corporate/lib/stripe_event_handler.py:166:83: error[invalid-argument-type] Argument to bound method `get_complimentary_access_plan` is incorrect: Expected `Customer | None`, found `Unknown | _ST@ForeignKey`
+- corporate/lib/stripe_event_handler.py:166:83: error[invalid-argument-type] Argument to bound method `get_complimentary_access_plan` is incorrect: Expected `Customer | None`, found `Unknown | _ST@ForeignKey`
+- corporate/lib/stripe_event_handler.py:170:44: warning[possibly-unbound-attribute] Attribute `required_plan_tier` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe_event_handler.py:171:20: warning[possibly-unbound-attribute] Attribute `required_plan_tier` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe_event_handler.py:173:27: warning[possibly-unbound-attribute] Attribute `required_plan_tier` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/lib/stripe_event_handler.py:188:16: warning[possibly-unbound-attribute] Attribute `is_free_trial` on type `(Unknown &amp; ~None) | (_ST@ForeignKey &amp; ~None)` is possibly unbound
+- corporate/lib/stripe_event_handler.py:194:20: warning[possibly-unbound-attribute] Attribute `status` on type `(Unknown &amp; ~None) | (_ST@ForeignKey &amp; ~None)` is possibly unbound
+- corporate/lib/stripe_event_handler.py:196:49: error[invalid-argument-type] Argument to function `get_current_plan_by_customer` is incorrect: Expected `Customer`, found `Unknown | _ST@ForeignKey`
+- corporate/lib/support.py:439:58: error[invalid-argument-type] Argument to function `get_push_status_for_remote_request` is incorrect: Expected `RemoteZulipServer`, found `Unknown | _ST@ForeignKey`
+- corporate/lib/support.py:468:52: error[invalid-argument-type] Argument to function `has_stale_audit_log` is incorrect: Expected `RemoteZulipServer`, found `Unknown | _ST@ForeignKey`
+- corporate/lib/support.py:490:37: error[invalid-argument-type] Argument to function `get_realm_user_data` is incorrect: Expected `Realm`, found `Unknown | Realm | _ST@ForeignKey`
+- corporate/lib/support.py:501:65: error[invalid-argument-type] Argument to function `get_formatted_realm_upload_space_used` is incorrect: Expected `Realm`, found `Unknown | Realm | _ST@ForeignKey`
+- corporate/tests/test_remote_billing.py:86:46: warning[possibly-unbound-attribute] Attribute `host` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/tests/test_remote_billing.py:145:42: warning[possibly-unbound-attribute] Attribute `host` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/tests/test_remote_billing.py:168:35: warning[possibly-unbound-attribute] Attribute `uuid` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/tests/test_remote_billing.py:175:78: warning[possibly-unbound-attribute] Attribute `uuid` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/tests/test_stripe.py:6207:9: error[invalid-assignment] Object of type `None` is not assignable to attribute `stripe_customer_id` on type `Unknown | _ST@ForeignKey`
+- corporate/tests/test_stripe.py:6208:9: warning[possibly-unbound-attribute] Attribute `save` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/views/audit_logs.py:20:12: warning[possibly-unbound-attribute] Attribute `host` on type `(Unknown &amp; ~None) | (_ST@ForeignKey &amp; ~None)` is possibly unbound
+- corporate/views/plan_activity.py:15:16: warning[possibly-unbound-attribute] Attribute `name` on type `(Unknown &amp; ~AlwaysFalsy) | (_ST@OneToOneField &amp; ~AlwaysFalsy)` is possibly unbound
+- corporate/views/plan_activity.py:17:16: warning[possibly-unbound-attribute] Attribute `name` on type `(Unknown &amp; ~AlwaysFalsy) | (_ST@OneToOneField &amp; ~AlwaysFalsy)` is possibly unbound
+- corporate/views/plan_activity.py:19:12: warning[possibly-unbound-attribute] Attribute `hostname` on type `(Unknown &amp; ~None) | (_ST@OneToOneField &amp; ~None)` is possibly unbound
+- corporate/views/realm_activity.py:106:16: warning[possibly-unbound-attribute] Attribute `delivery_email` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/views/sponsorship.py:27:8: warning[possibly-unbound-attribute] Attribute `demo_organization_scheduled_deletion_date` on type `Unknown | Realm | _ST@ForeignKey` is possibly unbound
+- corporate/views/upgrade.py:64:13: warning[possibly-unbound-attribute] Attribute `id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/views/upgrade.py:65:13: warning[possibly-unbound-attribute] Attribute `string_id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- corporate/views/upgrade.py:206:8: warning[possibly-unbound-attribute] Attribute `demo_organization_scheduled_deletion_date` on type `Unknown | Realm | _ST@ForeignKey` is possibly unbound
+- corporate/views/user_activity.py:55:13: warning[possibly-unbound-attribute] Attribute `name` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/alert_words.py:12:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/bots.py:31:13: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/bots.py:41:30: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/bots.py:54:9: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/bots.py:69:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/bots.py:88:59: error[invalid-argument-type] Argument to function `send_bot_owner_update_events` is incorrect: Expected `UserProfile | None`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/bots.py:126:13: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/bots.py:168:13: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/bots.py:205:13: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/channel_folders.py:73:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/channel_folders.py:73:56: warning[possibly-unbound-attribute] Attribute `id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/channel_folders.py:105:22: error[invalid-argument-type] Argument to function `render_channel_folder_description` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:87:13: warning[possibly-unbound-attribute] Attribute `topics_policy` on type `(Unknown &amp; ~None) | (_ST@ForeignKey &amp; ~None)` is possibly unbound
+- zerver/actions/create_user.py:92:42: error[invalid-argument-type] Argument to function `internal_send_stream_message` is incorrect: Expected `Stream`, found `(Unknown &amp; ~None) | (_ST@ForeignKey &amp; ~None)`
+- zerver/actions/create_user.py:106:35: error[invalid-argument-type] Argument to function `realm_user_count` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:112:32: warning[possibly-unbound-attribute] Attribute `default_language` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/create_user.py:116:64: error[invalid-argument-type] Argument to function `send_message_to_signup_notification_stream` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:122:17: error[invalid-argument-type] Argument to function `generate_licenses_low_warning_message_if_required` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:127:61: error[invalid-argument-type] Argument to function `send_group_direct_message_to_admins` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:143:9: error[invalid-assignment] Object of type `Unknown | _ST@ForeignKey` is not assignable to `UserProfile | None`
+- zerver/actions/create_user.py:159:62: warning[possibly-unbound-attribute] Attribute `id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/create_user.py:171:9: error[invalid-argument-type] Argument to function `bulk_add_subscriptions` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:216:22: warning[possibly-unbound-attribute] Attribute `id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/create_user.py:225:87: warning[possibly-unbound-attribute] Attribute `id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/create_user.py:298:21: warning[possibly-unbound-attribute] Attribute `is_zephyr_mirror_realm` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/create_user.py:305:13: warning[possibly-unbound-attribute] Attribute `is_active` on type `(Unknown &amp; ~None) | (_ST@ForeignKey &amp; ~None)` is possibly unbound
+- zerver/actions/create_user.py:309:32: warning[possibly-unbound-attribute] Attribute `default_language` on type `(Unknown &amp; ~None) | (_ST@ForeignKey &amp; ~None)` is possibly unbound
+- zerver/actions/create_user.py:311:59: warning[possibly-unbound-attribute] Attribute `realm_id` on type `(Unknown &amp; ~None) | (_ST@ForeignKey &amp; ~None)` is possibly unbound
+- zerver/actions/create_user.py:312:17: error[invalid-argument-type] Argument to function `internal_send_private_message` is incorrect: Expected `UserProfile`, found `(Unknown &amp; ~None) | (_ST@ForeignKey &amp; ~None)`
+- zerver/actions/create_user.py:339:32: error[invalid-argument-type] Argument to function `notify_invites_changed` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:339:52: error[invalid-argument-type] Argument to function `notify_invites_changed` is incorrect: Expected `UserProfile | None`, found `(Unknown &amp; ~None) | (_ST@ForeignKey &amp; ~None)`
+- zerver/actions/create_user.py:345:8: warning[possibly-unbound-attribute] Attribute `send_welcome_emails` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/create_user.py:356:35: warning[possibly-unbound-attribute] Attribute `welcome_message_custom_text` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/create_user.py:412:13: warning[possibly-unbound-attribute] Attribute `get_active_users` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/create_user.py:415:35: warning[possibly-unbound-attribute] Attribute `get_active_users` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/create_user.py:459:30: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:464:30: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:470:51: error[invalid-argument-type] Argument to function `get_data_for_inaccessible_user` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:473:30: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:482:47: error[invalid-argument-type] Argument to function `stream_name` is incorrect: Expected `Stream | None`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:483:55: error[invalid-argument-type] Argument to function `stream_name` is incorrect: Expected `Stream | None`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:510:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:574:64: error[invalid-argument-type] Argument to function `realm_user_count_by_role` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:577:36: error[invalid-argument-type] Argument to function `maybe_enqueue_audit_log_upload` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:592:66: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Realm | None`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:704:68: error[invalid-argument-type] Argument to function `realm_user_count_by_role` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:707:40: error[invalid-argument-type] Argument to function `maybe_enqueue_audit_log_upload` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:709:70: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Realm | None`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:732:64: error[invalid-argument-type] Argument to function `realm_user_count_by_role` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:735:36: error[invalid-argument-type] Argument to function `maybe_enqueue_audit_log_upload` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:741:17: warning[possibly-unbound-attribute] Attribute `is_active` on type `(Unknown &amp; ~None) | (_ST@ForeignKey &amp; ~None)` is possibly unbound
+- zerver/actions/create_user.py:759:66: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Realm | None`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:765:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:774:13: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:776:18: warning[possibly-unbound-attribute] Attribute `get_human_admin_users` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/create_user.py:788:30: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:794:69: error[invalid-argument-type] Argument to function `send_bot_owner_update_events` is incorrect: Expected `UserProfile | None`, found `(Unknown &amp; ~None) | (_ST@ForeignKey &amp; ~None)`
+- zerver/actions/create_user.py:801:9: error[invalid-argument-type] Argument to function `bulk_get_subscriber_peer_info` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:813:9: error[invalid-argument-type] Argument to function `send_peer_subscriber_events` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/create_user.py:838:34: error[invalid-argument-type] Argument to function `send_update_events_for_anonymous_group_settings` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/custom_profile_fields.py:169:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/custom_profile_fields.py:197:52: error[invalid-argument-type] Argument to function `render_stream_description` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/default_streams.py:75:32: error[invalid-argument-type] Argument to function `notify_default_streams` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/default_streams.py:83:28: error[invalid-argument-type] Argument to function `notify_default_streams` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/invites.py:340:36: warning[possibly-unbound-attribute] Attribute `id` on type `(Unknown &amp; ~None) | (_ST@ForeignKey &amp; ~None)` is possibly unbound
+- zerver/actions/invites.py:407:28: error[invalid-argument-type] Argument to function `notify_invites_changed` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/invites.py:427:28: error[invalid-argument-type] Argument to function `notify_invites_changed` is incorrect: Expected `Realm`, found `(Unknown &amp; ~None) | (_ST@ForeignKey &amp; ~None)`
+- zerver/actions/invites.py:427:35: error[invalid-argument-type] Argument to function `notify_invites_changed` is incorrect: Expected `UserProfile | None`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/invites.py:432:13: warning[possibly-unbound-attribute] Attribute `realm` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/invites.py:438:35: error[invalid-argument-type] Argument to function `notify_invites_changed` is incorrect: Expected `UserProfile | None`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/invites.py:469:35: warning[possibly-unbound-attribute] Attribute `full_name` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/invites.py:470:31: warning[possibly-unbound-attribute] Attribute `delivery_email` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/invites.py:492:30: error[invalid-argument-type] Argument to function `common_context` is incorrect: Expected `UserProfile`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/invites.py:495:23: warning[possibly-unbound-attribute] Attribute `full_name` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/invites.py:496:24: warning[possibly-unbound-attribute] Attribute `delivery_email` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_delete.py:120:28: warning[possibly-unbound-attribute] Attribute `id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:169:12: warning[possibly-unbound-attribute] Attribute `allow_message_editing` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:176:8: warning[possibly-unbound-attribute] Attribute `message_content_edit_limit_seconds` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:177:28: warning[possibly-unbound-attribute] Attribute `message_content_edit_limit_seconds` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:273:28: warning[possibly-unbound-attribute] Attribute `default_language` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:313:24: error[invalid-argument-type] Argument to function `do_delete_messages` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_edit.py:343:45: error[invalid-argument-type] Argument to function `stream_message_url` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_edit.py:346:32: warning[possibly-unbound-attribute] Attribute `default_language` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:362:32: warning[possibly-unbound-attribute] Attribute `default_language` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:483:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_edit.py:554:18: warning[possibly-unbound-attribute] Attribute `id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:555:9: error[invalid-argument-type] Argument to function `get_recipient_info` is incorrect: Expected `Recipient`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_edit.py:736:34: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_edit.py:849:13: warning[possibly-unbound-attribute] Attribute `id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:915:13: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_edit.py:1052:17: warning[possibly-unbound-attribute] Attribute `id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:1213:13: warning[possibly-unbound-attribute] Attribute `id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:1223:13: error[invalid-argument-type] Argument to function `bulk_access_stream_messages_query` is incorrect: Expected `UserProfile`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_edit.py:1237:16: warning[possibly-unbound-attribute] Attribute `is_bot` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:1238:57: error[invalid-argument-type] Argument to function `apply_automatic_unmute_follow_topics_policy` is incorrect: Expected `UserProfile`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_edit.py:1240:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_edit.py:1310:17: warning[possibly-unbound-attribute] Attribute `id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:1357:35: warning[possibly-unbound-attribute] Attribute `move_messages_within_stream_limit_seconds` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:1361:13: warning[possibly-unbound-attribute] Attribute `move_messages_within_stream_limit_seconds` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:1365:34: warning[possibly-unbound-attribute] Attribute `move_messages_between_streams_limit_seconds` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:1370:13: warning[possibly-unbound-attribute] Attribute `move_messages_between_streams_limit_seconds` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:1391:40: warning[possibly-unbound-attribute] Attribute `type_id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:1391:67: error[invalid-argument-type] Argument to function `get_stream_by_id_in_realm` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_edit.py:1489:22: warning[possibly-unbound-attribute] Attribute `type_id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:1490:61: error[invalid-argument-type] Argument to function `get_stream_by_id_in_realm` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_edit.py:1498:46: error[invalid-argument-type] Argument to function `get_stream_topics_policy` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_edit.py:1600:17: warning[possibly-unbound-attribute] Attribute `move_messages_within_stream_limit_seconds` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:1604:21: warning[possibly-unbound-attribute] Attribute `move_messages_within_stream_limit_seconds` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:1620:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `UserProfile | None`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_edit.py:1631:13: error[invalid-argument-type] Argument to function `render_incoming_message` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_edit.py:1637:56: warning[possibly-unbound-attribute] Attribute `type_id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:1638:52: error[invalid-argument-type] Argument to function `stream_wildcard_mention_allowed` is incorrect: Expected `UserProfile`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_edit.py:1638:76: error[invalid-argument-type] Argument to function `stream_wildcard_mention_allowed` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_edit.py:1643:40: warning[possibly-unbound-attribute] Attribute `id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:1643:58: warning[possibly-unbound-attribute] Attribute `id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:1646:17: error[invalid-argument-type] Argument to function `topic_wildcard_mention_allowed` is incorrect: Expected `UserProfile`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_edit.py:1646:58: error[invalid-argument-type] Argument to function `topic_wildcard_mention_allowed` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_edit.py:1665:17: warning[possibly-unbound-attribute] Attribute `move_messages_between_streams_limit_seconds` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_edit.py:1669:21: warning[possibly-unbound-attribute] Attribute `move_messages_between_streams_limit_seconds` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_flags.py:99:32: error[invalid-argument-type] Argument to function `send_event_rollback_unsafe` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_flags.py:142:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_flags.py:185:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_flags.py:391:30: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_send.py:603:42: warning[possibly-unbound-attribute] Attribute `id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_send.py:608:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `UserProfile | None`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_send.py:612:21: warning[possibly-unbound-attribute] Attribute `type_id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_send.py:621:18: warning[possibly-unbound-attribute] Attribute `id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_send.py:622:9: error[invalid-argument-type] Argument to function `get_recipient_info` is incorrect: Expected `Recipient`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_send.py:636:9: error[invalid-argument-type] Argument to function `render_incoming_message` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_send.py:697:9: error[invalid-argument-type] Argument is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_send.py:753:8: warning[possibly-unbound-attribute] Attribute `type` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_send.py:1273:8: warning[possibly-unbound-attribute] Attribute `type` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_send.py:1470:8: warning[possibly-unbound-attribute] Attribute `is_zephyr_mirror_realm` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_send.py:1470:47: warning[possibly-unbound-attribute] Attribute `deactivated` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/message_send.py:1492:51: warning[possibly-unbound-attribute] Attribute `realm_id` on type `(Unknown &amp; ~None) | (_ST@ForeignKey &amp; ~None)` is possibly unbound
+- zerver/actions/message_send.py:1493:9: error[invalid-argument-type] Argument to function `internal_send_private_message` is incorrect: Expected `UserProfile`, found `(Unknown &amp; ~None) | (_ST@ForeignKey &amp; ~None)`
+- zerver/actions/message_send.py:1515:32: warning[possibly-unbound-attribute] Attribute `default_language` on type `(Unknown &amp; ~None) | (_ST@ForeignKey &amp; ~None)` is possibly unbound
+- zerver/actions/message_send.py:1744:9: error[invalid-assignment] Object of type `Unknown | _ST@ForeignKey` is not assignable to `Realm | None`
+- zerver/actions/message_send.py:1755:77: error[invalid-argument-type] Argument to function `validate_stream_name_with_pm_notification` is incorrect: Expected `Realm`, found `Realm | None`
+- zerver/actions/message_send.py:1757:73: error[invalid-argument-type] Argument to function `validate_stream_id_with_pm_notification` is incorrect: Expected `Realm`, found `Realm | None`
+- zerver/actions/message_send.py:1791:50: error[invalid-argument-type] Argument to function `get_stream_topics_policy` is incorrect: Expected `Realm`, found `Realm | None`
+- zerver/actions/message_send.py:1808:44: error[invalid-argument-type] Argument to function `check_sender_can_access_recipients` is incorrect: Expected `Realm`, found `Realm | None`
+- zerver/actions/message_send.py:1811:13: error[invalid-argument-type] Argument to function `get_recipients_for_user_creation_events` is incorrect: Expected `Realm`, found `Realm | None`
+- zerver/actions/message_send.py:1826:39: error[invalid-argument-type] Argument to function `check_can_send_direct_message` is incorrect: Expected `Realm`, found `Realm | None`
+- zerver/actions/message_send.py:1893:65: error[invalid-argument-type] Argument to function `stream_wildcard_mention_allowed` is incorrect: Expected `Realm`, found `Realm | None`
+- zerver/actions/message_send.py:1901:81: error[invalid-argument-type] Argument to function `topic_wildcard_mention_allowed` is incorrect: Expected `Realm`, found `Realm | None`
+- zerver/actions/message_send.py:1993:9: error[invalid-argument-type] Argument to function `_internal_prep_message` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_send.py:2046:9: error[invalid-argument-type] Argument to function `_internal_prep_message` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_summary.py:91:53: error[invalid-argument-type] Argument to function `clean_narrow_for_message_fetch` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_summary.py:95:9: error[invalid-argument-type] Argument to function `fetch_messages` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_summary.py:126:9: error[invalid-argument-type] Argument to function `messages_for_ids` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/message_summary.py:213:50: error[invalid-argument-type] Argument to function `markdown_convert` is incorrect: Expected `Realm | None`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/muted_users.py:24:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/muted_users.py:41:65: error[invalid-argument-type] Argument to function `get_user_mutes` is incorrect: Expected `UserProfile`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/muted_users.py:42:26: warning[possibly-unbound-attribute] Attribute `realm` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/muted_users.py:42:54: warning[possibly-unbound-attribute] Attribute `id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/muted_users.py:45:15: warning[possibly-unbound-attribute] Attribute `realm` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/muted_users.py:50:40: warning[possibly-unbound-attribute] Attribute `id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/navigation_views.py:38:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/navigation_views.py:96:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/navigation_views.py:121:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/onboarding_steps.py:12:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/presence.py:77:32: error[invalid-argument-type] Argument to function `send_event_rollback_unsafe` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/presence.py:269:13: warning[possibly-unbound-attribute] Attribute `presence_disabled` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/reactions.py:47:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/reactions.py:80:21: warning[possibly-unbound-attribute] Attribute `type_id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/reactions.py:161:29: error[invalid-argument-type] Argument to function `check_emoji_request` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/realm_domains.py:61:48: error[invalid-argument-type] Argument to function `get_realm_domains` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/realm_domains.py:73:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/realm_domains.py:92:48: error[invalid-argument-type] Argument to function `get_realm_domains` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/realm_domains.py:97:65: warning[possibly-unbound-attribute] Attribute `emails_restricted_to_domains` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/realm_domains.py:102:31: error[invalid-argument-type] Argument to function `do_set_realm_property` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/realm_domains.py:104:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/realm_domains.py:104:56: warning[possibly-unbound-attribute] Attribute `id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/realm_emoji.py:65:24: error[invalid-argument-type] Argument to function `notify_realm_emoji` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/realm_export.py:26:25: error[invalid-argument-type] Argument to function `notify_realm_export` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/realm_settings.py:540:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@OneToOneField`
+- zerver/actions/realm_settings.py:540:56: warning[possibly-unbound-attribute] Attribute `id` on type `Unknown | _ST@OneToOneField` is possibly unbound
+- zerver/actions/reminders.py:31:9: error[invalid-argument-type] Argument to function `check_message` is incorrect: Expected `Realm | None`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/reminders.py:52:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/saved_snippets.py:40:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/saved_snippets.py:69:30: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/saved_snippets.py:91:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/scheduled_messages.py:90:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/scheduled_messages.py:99:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/scheduled_messages.py:165:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/scheduled_messages.py:193:9: error[invalid-argument-type] Argument to function `get_recipient_ids` is incorrect: Expected `Recipient | None`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/scheduled_messages.py:294:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/scheduled_messages.py:310:34: error[invalid-argument-type] Argument to function `access_message` is incorrect: Expected `UserProfile`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/scheduled_messages.py:312:22: error[invalid-argument-type] Argument to function `get_reminder_formatted_content` is incorrect: Expected `UserProfile`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/scheduled_messages.py:320:51: warning[possibly-unbound-attribute] Attribute `id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/scheduled_messages.py:321:9: error[invalid-argument-type] Argument to function `internal_send_private_message` is incorrect: Expected `UserProfile`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/scheduled_messages.py:339:8: warning[possibly-unbound-attribute] Attribute `deactivated` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/scheduled_messages.py:342:12: warning[possibly-unbound-attribute] Attribute `is_active` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/scheduled_messages.py:355:42: error[invalid-argument-type] Argument to function `for_stream` is incorrect: Expected `Stream`, found `(Unknown &amp; ~None) | (_ST@ForeignKey &amp; ~None)`
+- zerver/actions/scheduled_messages.py:362:60: error[invalid-argument-type] Argument to function `for_user_ids` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/scheduled_messages.py:371:9: error[invalid-argument-type] Argument to function `check_message` is incorrect: Expected `UserProfile`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/scheduled_messages.py:372:9: error[invalid-argument-type] Argument to function `check_message` is incorrect: Expected `Client`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/scheduled_messages.py:375:9: error[invalid-argument-type] Argument to function `check_message` is incorrect: Expected `Realm | None`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/scheduled_messages.py:385:37: error[invalid-argument-type] Argument to function `notify_remove_scheduled_message` is incorrect: Expected `UserProfile`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:166:53: error[invalid-argument-type] Argument to function `do_remove_streams_from_default_stream_group` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:176:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:178:32: error[invalid-argument-type] Argument to function `send_stream_deletion_event` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:190:28: warning[possibly-unbound-attribute] Attribute `default_language` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/streams.py:267:18: warning[possibly-unbound-attribute] Attribute `id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/streams.py:289:55: error[invalid-argument-type] Argument to function `get_streams_traffic` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:301:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:305:9: error[invalid-argument-type] Argument to function `send_stream_creation_event` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:314:28: warning[possibly-unbound-attribute] Attribute `default_language` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/streams.py:340:8: warning[possibly-unbound-attribute] Attribute `id` on type `(Unknown &amp; ~None) | (_ST@ForeignKey &amp; ~None)` is possibly unbound
+- zerver/actions/streams.py:340:35: warning[possibly-unbound-attribute] Attribute `id` on type `(Unknown &amp; ~None) | (_ST@ForeignKey &amp; ~None)` is possibly unbound
+- zerver/actions/streams.py:1217:30: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:1226:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:1239:28: warning[possibly-unbound-attribute] Attribute `default_language` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/streams.py:1356:33: warning[possibly-unbound-attribute] Attribute `get_admin_users_and_bots` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/streams.py:1368:59: error[invalid-argument-type] Argument to function `get_streams_traffic` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:1371:13: error[invalid-argument-type] Argument to function `send_stream_creation_event` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:1382:33: warning[possibly-unbound-attribute] Attribute `get_admin_users_and_bots` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/streams.py:1395:30: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:1412:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:1471:28: warning[possibly-unbound-attribute] Attribute `default_language` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/streams.py:1536:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:1538:28: warning[possibly-unbound-attribute] Attribute `default_language` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/streams.py:1558:28: warning[possibly-unbound-attribute] Attribute `default_language` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/streams.py:1592:26: error[invalid-argument-type] Argument to function `render_stream_description` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:1617:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:1636:21: warning[possibly-unbound-attribute] Attribute `message_retention_days` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/streams.py:1638:21: warning[possibly-unbound-attribute] Attribute `message_retention_days` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/streams.py:1640:28: warning[possibly-unbound-attribute] Attribute `default_language` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/streams.py:1706:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:1748:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:1752:59: warning[possibly-unbound-attribute] Attribute `default_language` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/streams.py:1777:32: warning[possibly-unbound-attribute] Attribute `default_language` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/streams.py:1855:13: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:1861:63: error[invalid-argument-type] Argument to function `get_streams_traffic` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:1864:17: error[invalid-argument-type] Argument to function `send_stream_creation_event` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:1880:17: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:1885:40: error[invalid-argument-type] Argument to function `send_stream_deletion_event` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:1887:30: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:1902:34: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:1916:34: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/streams.py:1962:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/submessage.py:63:9: error[invalid-argument-type] Argument to function `set_visibility_policy_possible` is incorrect: Expected `UserProfile`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/submessage.py:63:17: error[invalid-argument-type] Argument to function `set_visibility_policy_possible` is incorrect: Expected `Message`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/submessage.py:65:9: warning[possibly-unbound-attribute] Attribute `automatically_follow_topics_policy` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/submessage.py:66:9: warning[possibly-unbound-attribute] Attribute `automatically_unmute_topics_in_muted_streams_policy` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/submessage.py:68:21: warning[possibly-unbound-attribute] Attribute `recipient` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/submessage.py:69:45: error[invalid-argument-type] Argument to function `access_stream_by_id` is incorrect: Expected `UserProfile`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/submessage.py:72:73: error[invalid-argument-type] Argument to function `visibility_policy_for_participation` is incorrect: Expected `UserProfile`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/submessage.py:75:17: error[invalid-argument-type] Argument to function `should_change_visibility_policy` is incorrect: Expected `UserProfile`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/submessage.py:77:28: warning[possibly-unbound-attribute] Attribute `topic_name` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/submessage.py:80:21: error[invalid-argument-type] Argument to function `do_set_user_topic_visibility_policy` is incorrect: Expected `UserProfile`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/submessage.py:82:32: warning[possibly-unbound-attribute] Attribute `topic_name` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/typing.py:59:83: error[invalid-argument-type] Argument to function `get_user_by_id_in_realm_including_cross_realm` is incorrect: Expected `Realm | None`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/typing.py:65:9: error[invalid-argument-type] Argument to function `do_send_typing_notification` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/typing.py:102:32: error[invalid-argument-type] Argument to function `send_event_rollback_unsafe` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/typing.py:141:32: error[invalid-argument-type] Argument to function `send_event_rollback_unsafe` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/typing.py:152:79: error[invalid-argument-type] Argument to function `get_user_by_id_in_realm_including_cross_realm` is incorrect: Expected `Realm | None`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/typing.py:173:32: error[invalid-argument-type] Argument to function `send_event_rollback_unsafe` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/uploads.py:33:30: warning[possibly-unbound-attribute] Attribute `currently_used_upload_space_bytes` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/uploads.py:35:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/uploads.py:47:44: warning[possibly-unbound-attribute] Attribute `type_id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/uploads.py:51:44: error[invalid-argument-type] Argument to function `validate_attachment_request` is incorrect: Expected `UserProfile | AnonymousUser`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/uploads.py:63:17: warning[possibly-unbound-attribute] Attribute `id` on type `Unknown | _ST@ForeignKey` is possibly unbound
+- zerver/actions/uploads.py:76:38: error[invalid-argument-type] Argument to function `notify_attachment_update` is incorrect: Expected `UserProfile`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/user_groups.py:215:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unknown | _ST@ForeignKey`
+- zerver/actions/user_groups.py:252:26: error[invalid-argument-type] Argument to function `send_event_on_commit` is incorrect: Expected `Realm`, found `Unkno...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Track when type variables are inferrable or not" to "[ty] Track when type variables are inferable or not" by @dcreager on 2025-08-06 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @dcreager on 2025-08-06 16:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-08-06 17:05</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Finferrable?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
+<h3>Merging #19786 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>dcreager/inferrable</code> (3c9d084) with <code>main</code> (9ac39ce)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 8</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @dcreager on 2025-08-11 19:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @dcreager on 2025-08-11 19:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-11 19:51</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-argument-type</code> | 8 | 2 | 6 |
+| <code>unused-ignore-comment</code> | 5 | 6 | 0 |
+| <code>invalid-return-type</code> | 2 | 0 | 0 |
+| <strong>Total</strong> | <strong>15</strong> | <strong>8</strong> | <strong>6</strong> |</p>
+<p><strong><a href="https://dcreager-inferrable.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-08-11 21:59</div>
+            <div class="timeline-body"><p>Looking at some of the ecosystem results:</p>
+<ul>
+<li><code>aiohttp</code> is a new true positive, because <code>Server</code> uses an invariant typevar</li>
+<li><code>schema_salad</code> is a false positive we were <a href="https://play.ty.dev/6ae21754-d3a0-4596-a285-9e827cd59c3c">already seeing</a> for non-recursive calls, which now shows up for recursive calls too because we're tracking the inferable/non-inferable typevars separately</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-08-12 20:49</div>
+            <div class="timeline-body"><ul>
+<li><code>trio</code> false positives are because we are not recursing into <code>Callable</code> to infer specializations of typevars in a function call. We would then try to check the argument type against the parameter type that still contains an unspecialized typevar. Before, we would perform that assignability check as if we were in the function body, checking the argument against the typevar bound. Now, we see that there's an <em>inferrable</em> typevar that was not specialized, and (for now) treat that as &quot;not assignable&quot;.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-08-13 16:21</div>
+            <div class="timeline-body"><ul>
+<li><code>mongo-python-driver</code> false positive is because there's a <code>todo</code> type that doesn't let us simplify an intersection that we get from a narrowing constraint, and that intersection therefore isn't equivalent to the invariant typevar in the <code>Regex</code> we're supposed to return</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @dcreager on 2025-08-13 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @dcreager on 2025-08-13 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @dcreager on 2025-08-13 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @dcreager on 2025-08-13 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-08-13 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-08-13 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-08-13 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-08-13 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dcreager on 2025-08-13 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-08-13 19:31</div>
+            <div class="timeline-body"><p>Addressed an earlier performance regression, looked at the ecosystem report. This is ready for review!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-13 20:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Addressed an earlier performance regression, looked at the ecosystem report. This is ready for review!</p>
+</blockquote>
+<p>Hmm I still see a 9% regression in https://github.com/astral-sh/ruff/pull/19786#issuecomment-3160920788 (and at https://codspeed.io/astral-sh/ruff/branches/dcreager%2Finferrable?runnerMode=WallTime) — is that expected?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-08-13 20:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm I still see a 9% regression in <a href="https://github.com/astral-sh/ruff/pull/19786#issuecomment-3160920788">#19786 (comment)</a> (and at https://codspeed.io/astral-sh/ruff/branches/dcreager%2Finferrable?runnerMode=WallTime) — is that expected?</p>
+</blockquote>
+<p>It is not! I was basing my claim on the CI job having a green :heavy_check_mark:. I wonder why that job passed if there's still an unacknowledged regression...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-14 06:35</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Hmm I still see a 9% regression in <a href="https://github.com/astral-sh/ruff/pull/19786#issuecomment-3160920788">#19786 (comment)</a> (and at <a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Finferrable?runnerMode=WallTime">codspeed.io/astral-sh/ruff/branches/dcreager%2Finferrable?runnerMode=WallTime</a>) — is that expected?</p>
+</blockquote>
+<p>It is not! I was basing my claim on the CI job having a green ✔️. I wonder why that job passed if there's still an unacknowledged regression...</p>
+</blockquote>
+<p>I reported this to the codspee folks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:104 on 2025-08-14 17:51</div>
+            <div class="timeline-body"><p>What are the reasons we need to do this eagerly, rather than wait and infer the type of <code>Self</code> as a typevar at call time, based on the self-type stored in the <code>BoundMethod</code> type? Seems like it should have the same result.</p>
+<p>I wonder if this is a significant part of the perf regression? Because even on methods that don't use <code>Self</code> (the vast majority of methods), now we have to eagerly traverse the signature looking for <code>Self</code> to replace, rather than waiting until call time and handling it if we run across it in the signature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:342 on 2025-08-14 17:58</div>
+            <div class="timeline-body"><p>Oh, I guess this (and similar for parameters below) is another candidate for the perf regression, since we now have to always walk all of these types looking for typevars, even for functions that don't use typevars.</p>
+<p>It feels like in principle we should be able to do this via contextual type inference rather than via a type substitution -- but we don't have contextual type inference yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:1132 on 2025-08-14 17:59</div>
+            <div class="timeline-body"><p>Is this right? Are typevars in the default type of a parameter actually inferable? I don't think they are...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:615 on 2025-08-14 18:33</div>
+            <div class="timeline-body"><p>I think this distinction is pretty subtle, so these doc comments will be important. And I don't think this quite captures it. When I think &quot;outside the generic class or function that binds it&quot;, I think of</p>
+<pre><code class="language-py">T = TypeVar(&quot;T&quot;)
+
+T # &lt;-- here
+
+def f(x: T) -&gt; T: ...
+</code></pre>
+<p>But that's not <code>Type::TypeVar</code>, that's <code>Type::KnownInstance</code>.</p>
+<p>I feel like what we really want to say here is something more like &quot;only in the externally-visible signature of a generic function that binds it, or in the signature of the constructor of a generic class that binds it.&quot;</p>
+<p>I don't think inferrable typevars are even a thing for generic classes at all, except for in a constructor signature? (How is that case handled in this PR? I don't remember seeing it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:619 on 2025-08-14 18:37</div>
+            <div class="timeline-body"><p>Would &quot;inside the body of&quot; make this clearer? Because to me, &quot;in the signature&quot; still feels like &quot;inside&quot;, if not otherwise clarified.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1519 on 2025-08-14 18:54</div>
+            <div class="timeline-body"><p>It's not totally clear to me how this PR will interact with the case discussed in https://github.com/astral-sh/ty/issues/95, where we end up needing to consider equivalence and subtyping of inferrable typevars, but not in a context where we are actually specializing a call, we are just doing subtyping/equivalence/assignability of generic function signatures.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:2834 on 2025-08-14 18:56</div>
+            <div class="timeline-body"><p>What are example cases where we would ever access a member on an inferrable typevar? It seems like inferrable typevars only exist in signatures, not in arbitrary code?</p>
+<p>Separately, I'm not sure what this constraint could practically look like, other than the constraint &quot;must be a subtype of [synthesized protocol with given instance member]&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6886 on 2025-08-14 19:00</div>
+            <div class="timeline-body"><p>I think similar comments apply to this text as to the doc comments above the type variants.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6904 on 2025-08-14 19:03</div>
+            <div class="timeline-body"><p>This enum seems unused? Is it left over from an earlier approach, but no longer needed now that you are using distinct <code>Type</code> variants?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:8338 on 2025-08-14 19:04</div>
+            <div class="timeline-body"><p>Not clear how &quot;instance of the bound type&quot; differs from &quot;the bound instance type&quot;. For a class method, shouldn't it be &quot;subclass-of the bound type&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:8452 on 2025-08-14 19:05</div>
+            <div class="timeline-body"><p>The classmethod handling here seems like a (desirable) behavior change; is there a test demonstrating that behavior improvement?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-14 19:10</div>
+            <div class="timeline-body"><p>This is a thought-provoking one! Lots of questions here; I'm not sure I've fully wrapped my head around this yet.</p>
+<p>It felt a bit &quot;wrong&quot; to me initially to use separate types for this, because the use of &quot;inferrable&quot; type var types seems quite limited and contextual. That said, threading that context through all the places we need it does seem quite challenging, and using a separate Type variant does solve that pretty neatly. So I think I'm convinced that makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-14 19:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1519 on 2025-08-14 19:19</div>
+            <div class="timeline-body"><p>The thought is that with https://github.com/astral-sh/ruff/pull/19838, this would infer the constraints under which the assignability holds, and so for https://github.com/astral-sh/ty/issues/95 that would produce (constraints that solve to) a <code>T = U</code> specialization.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-14 19:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1519 on 2025-08-14 19:29</div>
+            <div class="timeline-body"><p>And if <code>T</code> and <code>U</code> had incompatible bounds/constraints, there would then be no solution to the constraints, so we'd deny the assignability?</p>
+<p>And for example in a case like checking whether <code>[T](T) -&gt; T</code> is a supertype or subtype of <code>(int) -&gt; int</code>, we'd end up with the constraints that <code>int &lt;: T</code> and <code>T &lt;: int</code> (because of seeing those in both a covariant and contravariant position), which also wouldn't solve, so we'd (correctly) deny that as well.</p>
+<p>Yeah, OK, it does seem like that should all work out correctly!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-14 20:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1519 on 2025-08-14 20:19</div>
+            <div class="timeline-body"><blockquote>
+<p>And for example in a case like checking whether <code>[T](T) -&gt; T</code> is a supertype or subtype of <code>(int) -&gt; int</code>, we'd end up with the constraints that <code>int &lt;: T</code> and <code>T &lt;: int</code> (because of seeing those in both a covariant and contravariant position), which also wouldn't solve, so we'd (correctly) deny that as well.</p>
+</blockquote>
+<p>A clarification: it would solve to <code>{T = int}</code>, indicating that the two types are equivalent when <code>T = int</code>, and neither super- nor subtypes of each other otherwise. That would actually let you check both whether there are <em>any</em> specializations where assignability holds, and whether it holds for <em>all</em> specializations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-14 21:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1519 on 2025-08-14 21:10</div>
+            <div class="timeline-body"><p>Makes sense. I think that is relevant to the original question about issue 95, then? Because I think when we are doing subtyping between two generic functions, we need it to hold for <em>all</em> specializations. (It's when we are actually inferring a call to a generic function that we just need it to hold for <em>any</em> specialization, and then that specialization is the one we should use for the return type.) So that means if we get the constraint <code>{T = U}</code>, we need that constraint to hold for all specializations, which is only true if the bounds and constraints of <code>T</code> and <code>U</code> are equivalent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-08-14 21:49</div>
+            <div class="timeline-body"><p>With local testing, this latest patch addresses the performance regression; :crossed_fingers: that Codspeed agrees!</p>
+<p>If so, the issue was with the new <code>BindSelf</code> type mapping, which is used e.g. with bound methods — when we bind the <code>self</code> parameter to a particular type, we also go through and substitute all occurrences of <code>typing.Self</code> with that same type. We do that inside of <code>into_callable_type</code>, which can be called as part of assignability checking (when comparing with a <code>Callable</code> type, for instance). We weren't caching the result, and so if a particular bound method participates in many assignability checks, we could end up repeating a lot of work — and this PR adds to the amount of stuff that we do in that repeated work. Caching <code>into_callable_type</code> seems to alleviate that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:8452 on 2025-08-14 22:09</div>
+            <div class="timeline-body"><p>The <code>reveal_type</code> output here shows it</p>
+<p>https://github.com/astral-sh/ruff/pull/19786/files#diff-60e548f13a26365603be56addf56cee3daf1c35ced7f4517a7a36a0eb6301190R246</p>
+<p>since <code>NamedTuple._make</code> is a classmethod. But I can add a more explicit test for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:104 on 2025-08-14 22:17</div>
+            <div class="timeline-body"><blockquote>
+<p>What are the reasons we need to do this eagerly, rather than wait and infer the type of <code>Self</code> as a typevar at call time, based on the self-type stored in the <code>BoundMethod</code> type? Seems like it should have the same result.</p>
+</blockquote>
+<p>I think that would work as far as inferring those call sites correctly. One benefit of this approach is how bound methods are rendered. e.g.</p>
+<pre><code class="language-py">class C:
+    def method(self) -&gt; Self:
+        return self
+
+class D(C):
+    pass
+
+reveal_type(C.method)    # revealed: def method(self) -&gt; Self@method
+reveal_type(C().method)  # revealed: bound method C.method() -&gt; C
+reveal_type(D().method)  # revealed: bound method D.method() -&gt; D
+</code></pre>
+<p>You could argue that's purely cosmetic, but binding the self parameter is when the <code>Self</code> type is fixed, even before the method is called.</p>
+<blockquote>
+<p>I wonder if this is a significant part of the perf regression?</p>
+</blockquote>
+<p>This was a good guess!  See above, I address the perf regression with some cachine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:342 on 2025-08-14 22:33</div>
+            <div class="timeline-body"><blockquote>
+<p>It feels like in principle we should be able to do this via contextual type inference rather than via a type substitution -- but we don't have contextual type inference yet.</p>
+</blockquote>
+<p>We discussed this part in our 1:1. We could possibly have a type context that includes &quot;inferrable position or not&quot; in addition to things like &quot;type form or value form&quot;. But we don't have that machinery at the moment.</p>
+<blockquote>
+<p>Oh, I guess this (and similar for parameters below) is another candidate for the perf regression, since we now have to always walk all of these types looking for typevars, even for functions that don't use typevars.</p>
+</blockquote>
+<p>It could be, though I think it's less worrisome than <code>BindSelf</code>, since this was already inside of a salsa-cached method, which amortizes the cost.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-14 22:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-15 06:44</div>
+            <div class="timeline-body"><p>Nice find on the perf regression. I spent a few minutes looking at perf profiles yesterday and couldn't spot anything. Congrats on narrowing it down!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:1132 on 2025-08-15 17:32</div>
+            <div class="timeline-body"><p>I think you're right. I was thinking they'd need to be inferable in case the default was applied — but that happens <em>after</em> inference takes place, if no suitable assignment was found for the typevar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:615 on 2025-08-15 17:53</div>
+            <div class="timeline-body"><blockquote>
+<p>I feel like what we really want to say here is something more like &quot;only in the externally-visible signature of a generic function that binds it, or in the signature of the constructor of a generic class that binds it.&quot;</p>
+</blockquote>
+<p>I went with &quot;in a context where we can infer a specialization for it&quot;</p>
+<blockquote>
+<p>I don't think inferrable typevars are even a thing for generic classes at all, except for in a constructor signature? (How is that case handled in this PR? I don't remember seeing it.)</p>
+</blockquote>
+<p>This is correct. I made the comment mention that it's the <em>constructor</em> of a generic class that has an inferable typevar, not the class itself. This is handled in <code>GenericContext::identity_specialization</code> (which isn't changed in this PR), which is called during the call constructor machinery, and which maps each of the class's typevars to the <em>inferable</em> version of itself. (Added some documentation to clarify that)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:619 on 2025-08-15 17:55</div>
+            <div class="timeline-body"><p>Ditto above, went with &quot;in a context where we cannot infer a specialization&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:2834 on 2025-08-15 17:57</div>
+            <div class="timeline-body"><blockquote>
+<p>What are example cases where we would ever access a member on an inferrable typevar? It seems like inferrable typevars only exist in signatures, not in arbitrary code?</p>
+</blockquote>
+<p>I think that's correct; the &quot;consider&quot; is pretty load-bearing in my comment :sweat_smile:</p>
+<p>Do you feel confident enough in that for me to turn this into a panic? (Or at least a <code>debug_assert</code>)</p>
+<blockquote>
+<p>Separately, I'm not sure what this constraint could practically look like, other than the constraint &quot;must be a subtype of [synthesized protocol with given instance member]&quot;?</p>
+</blockquote>
+<p>That's the only reasonable constraint I can think of.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6886 on 2025-08-15 17:58</div>
+            <div class="timeline-body"><p>moot; this is dead code per below</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6904 on 2025-08-15 17:58</div>
+            <div class="timeline-body"><p>Yes that's right, this is from an earlier attempt to have this be a field of a single <code>Type::TypeVar</code> variant</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:8338 on 2025-08-15 18:00</div>
+            <div class="timeline-body"><p>I might be wording things poorly here. For a classmethod</p>
+<pre><code class="language-py">class C:
+    @classmethod
+    def method(cls) -&gt; Self: ...
+</code></pre>
+<p>The &quot;bound instance type&quot; (aka the <code>self_instance</code> field of the <code>BoundMethod</code>) will be the type of the <code>cls</code> parameter, aka <code>type[C]</code>. But the return value (and what <code>Self</code> should be bound to) is <code>C</code> — that is, an instance of the &quot;bound instance type&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:8452 on 2025-08-15 18:04</div>
+            <div class="timeline-body"><p>Tests added</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-15 18:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-15 19:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:1132 on 2025-08-15 19:29</div>
+            <div class="timeline-body"><p>Sounds like you might be thinking of a typevar default? I think you're right that those also aren't inferable. But this is a function parameter default, and those aren't inferable because they aren't really part of the external signature at all (only presence/absence of a default is). We only need the actual type of the default for the parameter when inferring the type of that parameter inside the body of the function. And the default is a value expression, not a type expression, which I think also makes it clear any typevars in it can't be inferable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-15 19:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:2834 on 2025-08-15 19:38</div>
+            <div class="timeline-body"><p>If we can't come up with a scenario, then I'd favor a <code>debug_assert</code>, so that if we're wrong, we are more likely to find out and can consider the correct handling of that case explicitly. (Or it reveals a bug to us where an inferrable TypeVar escapes where it shouldn't.)</p>
+<p>Same for the other similar case with callability below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:256 on 2025-08-15 19:41</div>
+            <div class="timeline-body"><p>Aha, this comment is very helpful! I realize now that this function subtly changed without its source code changing, because it now make a non-inferrable typevar inferrable!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:623 on 2025-08-15 19:43</div>
+            <div class="timeline-body"><p>This wording is great! Seems very clear to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:8338 on 2025-08-15 19:46</div>
+            <div class="timeline-body"><p>Ah right, that makes sense. Will propose a (very) minor tweak that would have clarified this for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:8434 on 2025-08-15 19:47</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// This is normally the bound-instance type (the type of `self` or `cls`), but if the bound method is
+    /// a `@classmethod`, then it should be an instance of that bound-instance type.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-08-15 19:47</div>
+            <div class="timeline-body"><p>Looks great, thank you!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-16 12:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:2834 on 2025-08-16 12:16</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:2834 on 2025-08-16 12:26</div>
+            <div class="timeline-body"><blockquote>
+<p>if we're wrong, we are more likely to find out and can consider the correct handling of that case explicitly. (Or it reveals a bug to us where an inferrable TypeVar escapes where it shouldn't.)</p>
+</blockquote>
+<p>Well that didn't take long! The new assert is firing in the ecosystem report. Investigating...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-16 12:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-16 13:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:2834 on 2025-08-16 13:26</div>
+            <div class="timeline-body"><p>The minimal repro for this is:</p>
+<pre><code class="language-py">class Base[T, U=T]:
+    def __init__(self) -&gt; None: ...
+
+b = Base()
+reveal_type(b)  # revealed: Base[Unknown, T@Base]
+</code></pre>
+<p>(and in particular, that's an inferable <code>T@Base</code> in the specialization)</p>
+<p>Removing the <code>__init__</code> method, or removing the default type for the typevar, both change the revealed type to <code>Base[Unknown, Unknown]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-16 21:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:2834 on 2025-08-16 21:47</div>
+            <div class="timeline-body"><p>The issue was that when we create a <code>Specialization</code> during specialization inference, we weren't invoking <code>specialize_partial</code>, which is where we have the logic to repeatedly apply the specialization in case a typevar default refers to another typevar. We <em>were</em> calling <code>specialize_partial</code> when applying an explicit specialization (e.g. <code>Base[int, int]</code>) or when applying the <em>default</em> specialization (e.g. <code>Base</code>).</p>
+<p>Added a test case for this along with the fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-08-16 22:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-08-16 22:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-16 22:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:43 UTC
+    </footer>
+</body>
+</html>

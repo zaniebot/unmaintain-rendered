@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Synthesize precise `__getitem__` overloads for tuple subclasses - astral-sh/ruff #19493</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Synthesize precise <code>__getitem__</code> overloads for tuple subclasses</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19493">#19493</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-07-22 18:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-22 18:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds synthesized <code>__getitem__</code> overloads for tuple subclasses, such that for <code>f</code> in the following example, we can infer that <code>f[0]</code> evaluates to <code>int</code> and <code>f[1]</code> evaluates to <code>str</code>:</p>
+<pre><code class="language-py">class Foo(tuple[int, str]): ...
+
+f = Foo((42, &quot;foo&quot;))
+reveal_type(f[0])
+reveal_type(f[1])
+</code></pre>
+<p>It was initially my hope when embarking on this PR that we would be able to use these synthesized overloads to fully get rid of the special casing we have for tuples in <code>infer_subscript_expression_types</code>. Over the course of writing the PR, I realised that this would not be possible, for the following reasons:</p>
+<ol>
+<li><p>The special casing for slice literals is too complicated to be reasonably implemented via synthesized overloads.</p>
+<p>The synthesized overloads being added for int literals in this PR are already (I believe) the most complicated synthesized functions we have anywhere in our codebase so far. The synthesized overloads required to support slice literals would be far more complicated. It might be theoretically possible to generate them, but I think the inherent complexity makes this realistically untenable. It could also cause performance problems to synthesize that many overloads.</p>
+</li>
+<li><p>The index-out-of-bounds error can't be implemented via synthesized overloads.</p>
+<p>I'd like to explore generalising this diagnostic so that we don't just emit it for specific <code>Type</code> variants that we know to have fixed lengths, but for any type where <code>Type::len()</code> returns <code>Some()</code>. That's for another PR, however.</p>
+</li>
+<li><p>For a tuple type like <code>tuple[int, *tuple[str, ...], bytes]</code>, it's impossible to express &quot;if it's subscripted with any literal integer higher than 1, you should infer <code>str | bytes</code> rather than <code>int | str | bytes</code> using synthesized overloads.</p>
+<p>This is currently implemented in our tuple special-casing, and it would be a shame to introduce a regression on this.</p>
+</li>
+</ol>
+<p>Because of these issues, I've come to the conclusion that we will not be able to get rid of the hardcoded special casing for tuples in <code>TypeInferenceBuilder::infer_suscript_expression_types</code>, and that we will probably have to extend it so that it also applies to tuple subclasses. Nonetheless, I'm opening this PR anyway, because inferring precise signatures for <code>__getitem__</code> attributes on specialised tuples has advantages even if we don't end up using these signatures directly when inferring the types of subscript expressions against tuples. A good example of why is protocol assignability: it would be ideal if <code>Bar</code> is understood by ty as a subtype of <code>Proto</code> in the following example:</p>
+<pre><code class="language-py">from typing import Protocol, Literal
+
+class Proto(Protocol):
+    def __getitem__(self, index: Literal[0], /) -&gt; int: ...
+
+class Bar(tuple[int, str]): ...
+</code></pre>
+<p>We <a href="https://play.ty.dev/4f46d225-fc80-4fb5-b453-fd5e9c01aa49">currently say</a> that <code>Bar</code> is indeed a subtype of <code>Proto</code>, but (if we do not land something similar to this PR), that will no longer be the case after fixing https://github.com/astral-sh/ty/issues/889. After fixing that issue, we will strictly validate the signature of a class's method against the signature of a protocol it claims to be an instance of. Without this PR, we would look up the <code>__getitem__</code> signature on <code>tuple[int]</code> and fallback to the generic <code>__getitem__</code> signature in typeshed, which would lead us to incorrectly infer that <code>Bar</code> is not a subtype of <code>Proto</code>. With this PR, however, we should have the necessary pieces in place that we continue to consider <code>Bar</code> a subtype of <code>Proto</code> even after #889 has been fixed, because the lookup of <code>__getitem__</code> on the <code>Bar</code> class object would return the precise synthesized overloads being added here.</p>
+<h2>Test Plan</h2>
+<p>Mdtests. The ecosystem hits also LGTM. They use <code>os.stat()</code> and <code>pwd.getpwuid()</code>, both of which return instances of tuple subclasses.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-07-22 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-22 18:52</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">paasta (https://github.com/yelp/paasta)
+- paasta_tools/utils.py:3111:12: error[invalid-return-type] Return type does not match returned value: expected `str`, found `str | int`
+- Found 885 diagnostics
++ Found 884 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
+- tests/unittests/sources/test_smartos.py:560:32: error[invalid-argument-type] Argument to function `oct` is incorrect: Expected `SupportsIndex`, found `int | float`
+- tests/unittests/sources/test_smartos.py:576:32: error[invalid-argument-type] Argument to function `oct` is incorrect: Expected `SupportsIndex`, found `int | float`
+- tests/unittests/sources/test_smartos.py:632:35: error[invalid-argument-type] Argument to function `oct` is incorrect: Expected `SupportsIndex`, found `int | float`
+- Found 599 diagnostics
++ Found 596 diagnostics
+
+cwltool (https://github.com/common-workflow-language/cwltool)
+- cwltool/cwlprov/__init__.py:16:20: warning[possibly-unbound-attribute] Attribute `split` on type `str | int` is possibly unbound
+- Found 127 diagnostics
++ Found 126 diagnostics
+
+scipy (https://github.com/scipy/scipy)
+- scipy/_lib/_util.py:310:23: error[call-non-callable] Method `__getitem__` of type `Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]]` is not callable on object of type `tuple[Unknown, ...]`
++ scipy/_lib/_util.py:310:23: error[call-non-callable] Method `__getitem__` of type `Overload[(index: SupportsIndex, /) -&gt; Unknown, (index: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]]` is not callable on object of type `tuple[Unknown, ...]`
+- scipy/optimize/tests/test_chandrupatla.py:687:9: error[call-non-callable] Method `__getitem__` of type `Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]]` is not callable on object of type `tuple[Unknown]`
++ scipy/optimize/tests/test_chandrupatla.py:687:9: error[call-non-callable] Method `__getitem__` of type `Overload[(index: SupportsIndex, /) -&gt; Unknown, (index: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]]` is not callable on object of type `tuple[Unknown]`
+- scipy/optimize/tests/test_chandrupatla.py:691:9: error[call-non-callable] Method `__getitem__` of type `Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]]` is not callable on object of type `tuple[Unknown]`
++ scipy/optimize/tests/test_chandrupatla.py:691:9: error[call-non-callable] Method `__getitem__` of type `Overload[(index: SupportsIndex, /) -&gt; Unknown, (index: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]]` is not callable on object of type `tuple[Unknown]`
+- scipy/optimize/tests/test_chandrupatla.py:699:9: error[call-non-callable] Method `__getitem__` of type `Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]]` is not callable on object of type `tuple[Unknown]`
++ scipy/optimize/tests/test_chandrupatla.py:699:9: error[call-non-callable] Method `__getitem__` of type `Overload[(index: SupportsIndex, /) -&gt; Unknown, (index: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]]` is not callable on object of type `tuple[Unknown]`
+- scipy/optimize/tests/test_chandrupatla.py:702:9: error[call-non-callable] Method `__getitem__` of type `Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]]` is not callable on object of type `tuple[Unknown]`
++ scipy/optimize/tests/test_chandrupatla.py:702:9: error[call-non-callable] Method `__getitem__` of type `Overload[(index: SupportsIndex, /) -&gt; Unknown, (index: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]]` is not callable on object of type `tuple[Unknown]`
+- scipy/optimize/tests/test_chandrupatla.py:710:9: error[call-non-callable] Method `__getitem__` of type `Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]]` is not callable on object of type `tuple[Unknown]`
++ scipy/optimize/tests/test_chandrupatla.py:710:9: error[call-non-callable] Method `__getitem__` of type `Overload[(index: SupportsIndex, /) -&gt; Unknown, (index: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]]` is not callable on object of type `tuple[Unknown]`
+- scipy/optimize/tests/test_chandrupatla.py:713:9: error[call-non-callable] Method `__getitem__` of type `Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]]` is not callable on object of type `tuple[Unknown]`
++ scipy/optimize/tests/test_chandrupatla.py:713:9: error[call-non-callable] Method `__getitem__` of type `Overload[(index: SupportsIndex, /) -&gt; Unknown, (index: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]]` is not callable on object of type `tuple[Unknown]`
+- scipy/optimize/tests/test_chandrupatla.py:719:9: error[call-non-callable] Method `__getitem__` of type `Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]]` is not callable on object of type `tuple[Unknown]`
++ scipy/optimize/tests/test_chandrupatla.py:719:9: error[call-non-callable] Method `__getitem__` of type `Overload[(index: SupportsIndex, /) -&gt; Unknown, (index: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]]` is not callable on object of type `tuple[Unknown]`
+- scipy/optimize/tests/test_chandrupatla.py:724:9: error[call-non-callable] Method `__getitem__` of type `Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]]` is not callable on object of type `tuple[Unknown]`
++ scipy/optimize/tests/test_chandrupatla.py:724:9: error[call-non-callable] Method `__getitem__` of type `Overload[(index: SupportsIndex, /) -&gt; Unknown, (index: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]]` is not callable on object of type `tuple[Unknown]`
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-29 13:41</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on typing conformance tests</h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-07-30 11:24:12.533913338 +0000
++++ new-output.txt	2025-07-30 11:24:12.595913773 +0000
+@@ -87,6 +87,7 @@
+ aliases_variance.py:18:24: error[non-subscriptable] Cannot subscript object of type `&lt;class 'ClassA[T_co]'&gt;` with no `__class_getitem__` method
+ aliases_variance.py:28:16: error[non-subscriptable] Cannot subscript object of type `&lt;class 'ClassA[T_co]'&gt;` with no `__class_getitem__` method
+ aliases_variance.py:44:16: error[non-subscriptable] Cannot subscript object of type `&lt;class 'ClassB[T_co, T_contra]'&gt;` with no `__class_getitem__` method
++annotations_coroutines.py:27:5: error[type-assertion-failure] Argument does not have asserted type `str`
+ annotations_forward_refs.py:22:7: error[unresolved-reference] Name `ClassA` used when not defined
+ annotations_forward_refs.py:23:12: error[unresolved-reference] Name `ClassA` used when not defined
+ annotations_forward_refs.py:49:10: error[invalid-type-form] Variable of type `Literal[1]` is not allowed in a type expression
+@@ -101,6 +102,8 @@
+ annotations_forward_refs.py:96:1: error[type-assertion-failure] Argument does not have asserted type `int`
+ annotations_generators.py:86:21: error[invalid-return-type] Return type does not match returned value: expected `int`, found `types.GeneratorType`
+ annotations_generators.py:91:27: error[invalid-return-type] Return type does not match returned value: expected `int`, found `types.AsyncGeneratorType`
++annotations_generators.py:167:5: error[type-assertion-failure] Argument does not have asserted type `AsyncGenerator[str, None]`
++annotations_generators.py:174:5: error[type-assertion-failure] Argument does not have asserted type `AsyncGenerator[str, None]`
+ annotations_generators.py:193:1: error[type-assertion-failure] Argument does not have asserted type `() -&gt; AsyncIterator[int]`
+ annotations_methods.py:31:1: error[type-assertion-failure] Argument does not have asserted type `A`
+ annotations_methods.py:36:1: error[type-assertion-failure] Argument does not have asserted type `B`
+@@ -889,4 +892,4 @@
+ tuples_type_form.py:36:1: error[invalid-assignment] Object of type `tuple[Literal[1], Literal[2], Literal[3], Literal[&quot;&quot;]]` is not assignable to `tuple[int, ...]`
+ typeddicts_operations.py:60:1: error[type-assertion-failure] Argument does not have asserted type `str | None`
+ typeddicts_type_consistency.py:101:1: error[invalid-assignment] Object of type `Unknown | None` is not assignable to `str`
+-Found 890 diagnostics
++Found 893 diagnostics
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-07-29 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-07-29 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-07-29 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-07-29 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/subscript/tuple.md</code>:7 on 2025-07-30 07:09</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">python-version = &quot;3.11&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/subscript/tuple.md</code>:31 on 2025-07-30 07:19</div>
+            <div class="timeline-body"><p>Here, and in the Rust source code, I would find it much easier to have type names that I could easily associated with the index at which they appear.</p>
+<p>Also, having worked on slicing/index math before, I know that it's easy to run into integer overflows and other fun issues, so I would appreciate if we could also add tests for lengths 0-2.</p>
+<p>So I would probably start with a set of tests like:</p>
+<pre><code class="language-py">class I0: ...
+class I1: ...
+class I2: ...
+
+class HeterogeneousSubclass0(tuple[()]): ...
+
+# revealed: Overload[(self, index: SupportsIndex, /) -&gt; Never, (self, index: slice[Any, Any, Any], /) -&gt; tuple[()]]
+reveal_type(HeterogeneousSubclass0.__getitem__)
+
+
+class HeterogeneousSubclass1(tuple[I0]): ...
+
+# revealed: Overload[(self, index: SupportsIndex, /) -&gt; I0, (self, index: slice[Any, Any, Any], /) -&gt; tuple[I0, ...]]
+reveal_type(HeterogeneousSubclass1.__getitem__)
+
+
+class HeterogeneousSubclass2(tuple[I0, I1]): ...
+
+# revealed: Overload[(self, index: Literal[-2, 0], /) -&gt; I0, (self, index: Literal[-1, 1], /) -&gt; I1, (self, index: SupportsIndex, /) -&gt; I0 | I1, (self, index: slice[Any, Any, Any], /) -&gt; tuple[I0 | I1, ...]]
+reveal_type(HeterogeneousSubclass2.__getitem__)
+
+
+class HeterogeneousSubclass3(tuple[I0, I1, I2]): ...
+
+# revealed: Overload[(self, index: Literal[-3, 0], /) -&gt; I0, (self, index: Literal[-2, 1], /) -&gt; I1, (self, index: Literal[-1, 2], /) -&gt; I2, (self, index: SupportsIndex, /) -&gt; I0 | I1 | I2, (self, index: slice[Any, Any, Any], /) -&gt; tuple[I0 | I1 | I2, ...]]
+reveal_type(HeterogeneousSubclass3.__getitem__)
+</code></pre>
+<p>In fact, it's interesting to see the differences between <code>HeterogeneousSubclass0</code> and <code>HeterogeneousSubclass1</code>. The first one has an overload that returns <code>Never</code> for all indices... which is correct. The second one has a fallback overload that returns <code>I0</code> for all indices.. which is also fine, given that we'll add a index-out-of-bounds error elsewhere(?).</p>
+<hr />
+<p>When I read this first test here with <code>tuple[int, str, int, bytes]</code> I was first slightly annoyed by the fact that it used <code>int</code> twice, until I realized that this is of course intended. So I think I would appreciate a short explanation:</p>
+<pre><code class="language-py">class A: ...
+class B: ...
+class C: ...
+
+# Note that the first and third elements have the same type:
+class HeterogeneousSubclass(tuple[A, B, A, C]): ...
+
+# revealed: Overload[(self, index: Literal[-4, -2, 0, 2], /) -&gt; A, (self, index: Literal[-3, 1], /) -&gt; B, (self, index: Literal[-1, 3], /) -&gt; C, (self, index: SupportsIndex, /) -&gt; A | B | C, (self, index: slice[Any, Any, Any], /) -&gt; tuple[A | B | C, ...]]
+reveal_type(HeterogeneousSubclass.__getitem__)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/subscript/tuple.md</code>:49 on 2025-07-30 07:31</div>
+            <div class="timeline-body"><p>I understand that we &quot;only&quot; generate O(tuple_length) overloads here. But I wonder if this could still lead to performance problems for large lengths, given that overload resolution will have to work with this huge set of overloads? I guess it's fine and we probably don't even need a benchmark for this, as tuple subclasses of extremely large tuples are hopefully not existent?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/subscript/tuple.md</code>:148 on 2025-07-30 07:37</div>
+            <div class="timeline-body"><p><code>stat_result</code> is based on <code>tuple[int, int, int, int, int, int, int, float, float, float]</code>, so why don't we see the special overload for <code>float</code> here? Because <code>float</code> splits into <code>int | float</code>? And <code>int | float</code> is also equal to the union of all element types? Makes sense... but maybe worth a comment? Or is there another stdlib API that we could use as a more interesting example?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/subscript/tuple.md</code>:137 on 2025-07-30 07:38</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">reveal_type(os.stat(&quot;my_file.txt&quot;)[stat.ST_MODE])  # revealed: int
+reveal_type(os.stat(&quot;my_file.txt&quot;)[stat.ST_ATIME])  # revealed: int | float
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-07-30 07:43</div>
+            <div class="timeline-body"><p>Thank you very much.</p>
+<p>This is extremely cool. It makes me a little sad, because the protocol matching seems to be the only effect of this once we add the special-casing logic in <code>infer_suscript_expression_types</code> for tuple subclasses. And I'm not really convinced that this is a real world concern?</p>
+<p>If it <em>is</em> a real world concern, then why do we do this for tuple sublcasses only? Shouldn't the same logic apply to normal tuples as well?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-30 07:51</div>
+            <div class="timeline-body"><blockquote>
+<p>If it <em>is</em> a real world concern, then why do we do this for tuple sublcasses only? Shouldn't the same logic apply to normal tuples as well?</p>
+</blockquote>
+<p>I should have been clearer in my PR description. While the original motivation for trying this out was to support tuple subclasses, we synthesize these overloads for the tuple type as well (not just subclasses of the tuple type), so <code>tuple[int, str]</code> will also be understood as a subtype of the <code>Proto</code> class in my PR description.</p>
+<p>I should probably add tests for these specifically, to ensure they don't unexpectedly break when we're further along in our protocols implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-30 09:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/subscript/tuple.md</code>:148 on 2025-07-30 09:48</div>
+            <div class="timeline-body"><p>I think <code>stat_result</code> is a good one to test here, as there are several hits in the mypy_primer diff showing that people often index into it with an index &lt;=6 and expect the type checker to understand that the result is an <code>int</code>. But I'll add a comment -- and I can add some tests with &quot;more heterogeneous&quot; stdlib APIs too!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-30 10:45</div>
+            <div class="timeline-body"><blockquote>
+<p>This is extremely cool. It makes me a little sad, because the protocol matching seems to be the only effect of this once we add the special-casing logic in <code>infer_suscript_expression_types</code> for tuple subclasses. And I'm not really convinced that this is a real world concern?</p>
+</blockquote>
+<p>Yes, I was in two minds after finishing this whether it was worth the added complexity or not. I'm still not <em>totally</em> sure that it is. How often do people try to use tuples (or tuple subtypes) as subtypes of protocols? I'm not sure -- though I also think I'd find it surprising if I tried this as a user, and found that it didn't work!</p>
+<p>As a general principle, I think we should try to implement as much of our per-type special casing as possible via synthesized methods on the class object (where it would be sensible to do so) rather than in places like <code>TypeInferenceBuilder::infer_subscript_expression_types</code> or <code>Type::bindings()</code>. Doing it via synthesized methods means you get a sensible type when you access the dunder directly from the class object as well as from instances; it means that protocol assignability (which uses the member access machinery) will &quot;just work&quot;; it'll mean that our Liskov implementation (once it's landed) will be able to accurately check for compatibility of overriding methods; and it'll mean that the special casing added in the synthesized method will naturally carry over to subclasses. Adding these synthesized methods for tuples moves us closer to that general goal.</p>
+<p>It may also still be possible to <em>reduce</em> the special casing we have in <code>infer_subscript_expression_types</code> in the future. If we land this <em>and</em> generalize the index-out-of-bounds error as I suggest in my PR description here, the only remaining piece that we'd need to special-case for tuples in that method would be the special casing for slice expressions.</p>
+<p>I chatted with Carl on Friday and he was generally supportive of the idea of something like this PR, despite the caveats. That said, I don't think he's taken a look at the actual PR branch.</p>
+<p>Overall I still weakly lean towards landing this, especially since the code it's adding is all very localised (it'll be easy to rip it out later if we end up deciding it's really not that useful after all).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-07-30 11:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-07-30 11:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-30 11:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-30 14:10</div>
+            <div class="timeline-body"><blockquote>
+<p>As a general principle, I think we should try to implement as much of our per-type special casing as possible via synthesized methods on the class object (where it would be sensible to do so) rather than in places like <code>TypeInferenceBuilder::infer_subscript_expression_types</code> or <code>Type::bindings()</code>.</p>
+</blockquote>
+<p>I strongly agree with this</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:43 UTC
+    </footer>
+</body>
+</html>

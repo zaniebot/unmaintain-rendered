@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ruff`] Support comment preservation during f-string conversion (`RU… - astral-sh/ruff #19772</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>ruff</code>] Support comment preservation during f-string conversion (`RU…</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19772">#19772</a>
+        opened by <a href="https://github.com/mikeleppane">@mikeleppane</a>
+        on 2025-08-05 20:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mikeleppane">@mikeleppane</a> on 2025-08-05 20:59</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Previously, the rule (RUF010) would silently remove comments when transforming expressions like <code>f&quot;{ascii(# comment\n1)}&quot;</code> to <code>f&quot;{1!a}&quot;</code>. This change adds a slightly improved comment analysis to distinguish between safe and unsafe transformations. <code>explicit_f_string_type_conversion</code></p>
+<h2>Changes</h2>
+<ul>
+<li><strong>Added comment preservation analysis</strong>: New function analyzes whether comments within f-string expressions can be preserved during transformation <code>analyze_comment_preservation</code></li>
+<li><strong>Safe vs unsafe fix classification</strong>:<ul>
+<li><strong>Safe fixes</strong>: Comments within function argument parentheses are preserved (e.g., <code>f&quot;{ascii((# comment\n1))}&quot;</code> → <code>f&quot;{(# comment\n1)!a}&quot;</code>)</li>
+<li><strong>Unsafe fixes</strong>: Comments between function name and arguments would be lost (e.g., <code>f&quot;{ascii # comment\n(1)}&quot;</code> → <code>f&quot;{1!a}&quot;</code>)</li>
+</ul>
+</li>
+</ul>
+<h2>Examples</h2>
+<p><strong>Safe transformations</strong> (comments preserved):</p>
+<pre><code class="language-python">f&quot;{ascii((  # comment inside
+    1
+))}&quot;  # → f&quot;{(  # comment inside\n    1\n)!a}&quot;
+</code></pre>
+<p><strong>Unsafe transformations</strong> (comments lost, requires ): <code>--unsafe-fixes</code></p>
+<pre><code class="language-python">f&quot;{ascii  # comment here
+    (1)}&quot;  # → f&quot;{1!a}&quot;  # comment disappears
+</code></pre>
+<p>This ensures users have explicit control over potentially destructive transformations while maximizing the cases where safe automatic fixes can be applied.</p>
+<p>See: <a href="https://github.com/astral-sh/ruff/issues/19745">ISSUE</a></p>
+<h2>Test Plan</h2>
+<pre><code class="language-bash">cargo test
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-05 21:10</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-08-06 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-08-06 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/explicit_f_string_type_conversion.rs</code>:184 on 2025-08-06 17:12</div>
+            <div class="timeline-body"><p>I think we should be able to use our existing <code>Applicability</code> type here:</p>
+<p>https://github.com/astral-sh/ruff/blob/ec5660d78613352cb618d296f923d6ed086ee542/crates/ruff_diagnostics/src/fix.rs#L14</p>
+<p>it integrates with <code>Fix</code> via <code>Fix::applicable_edit</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/explicit_f_string_type_conversion.rs</code>:247 on 2025-08-06 17:13</div>
+            <div class="timeline-body"><p>Similarly, we have code for checking comment ranges. With the range of the replacement, which we have above, you should just be able to use <code>CommentRanges::interesects</code>. Here's a complete example of what this usually looks like in another rule:</p>
+<p>https://github.com/astral-sh/ruff/blob/4d57fcd5a488e628aa26aaacd0a61728609ff310/crates/ruff_linter/src/rules/perflint/rules/unnecessary_list_cast.rs#L148-L155</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF010.py</code>:38 on 2025-08-06 17:14</div>
+            <div class="timeline-body"><p>nit: can you revert this? It makes the diff a lot easier to review if the existing snapshots don't shift around.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-08-06 17:15</div>
+            <div class="timeline-body"></div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:43 UTC
+    </footer>
+</body>
+</html>

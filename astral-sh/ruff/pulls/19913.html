@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Speedup project file discovery  - astral-sh/ruff #19913</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Speedup project file discovery</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19913">#19913</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-08-14 11:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-14 11:59</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The <code>ProjectFilesWalker</code> discovers all the files to check in a ty project by spawning multiple threads that walk the directory tree.
+The walker's output is a <code>Vec</code> or <code>Set</code> of all the <code>File</code>s. The way this works today is that we first collect all file paths (multi threaded)
+into a single <code>Vec</code>, and the main thread then interns the paths to their <code>File</code>'s.</p>
+<p>The problem with this approach is that <code>system_path_to_file</code> is fairly expensive when called for many files because it does a <code>stat</code> call internally.</p>
+<p>The ideal solution would move the <code>system_path_to_file</code> call to the walker threads. That would also eliminate the shared <code>Vec</code> that collects all paths. Unfortunately, this isn't possible because <code>&amp;dyn Db</code> isn't <code>Send</code> nor does <code>&amp;dyn Db</code> implement <code>Clone</code> (Salsa does have a <code>fork_db</code> feature but this isn't publicly exposed as of today). We also can't add a <code>fork</code> method to <code>ty_project::Db</code> that returns a cloned <code>Self</code> because the <code>Db</code> trait must be dyn compatible.</p>
+<p>~~The solution I've taken here is to move the stat files into the walker threads, which fixes most of the waterfall effect and is much simpler than exposing <code>fork_db</code> properly in salsa.~~</p>
+<p>I implemented the ideal solution thanks to @ibraheemdev's suggestion to add a <code>dyn_clone</code>!</p>
+<p>Fixes https://github.com/astral-sh/ty/issues/970</p>
+<h2>Test Plan</h2>
+<p>Before
+<img width="689" height="960" alt="Screenshot 2025-08-14 at 14 04 46" src="https://github.com/user-attachments/assets/67908e8c-0881-4a98-9446-9d03a984706d" /></p>
+<p>After</p>
+<p><img width="689" height="960" alt="Screenshot 2025-08-14 at 14 04 59" src="https://github.com/user-attachments/assets/3501d3da-912d-46b0-9ead-daa937b31f73" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2025-08-14 11:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-08-14 11:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2025-08-14 11:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-08-14 11:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-14 12:01</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-08-14 18:13:06.319161224 +0000
++++ new-output.txt	2025-08-14 18:13:06.387161856 +0000
+@@ -1,5 +1,5 @@
+ WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+-fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/918d35d/src/function/execute.rs:215:25 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(409cd)): execute: too many cycle iterations`
++fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/918d35d/src/function/execute.rs:215:25 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(ac97)): execute: too many cycle iterations`
+ _directives_deprecated_library.py:15:31: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ _directives_deprecated_library.py:30:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+ _directives_deprecated_library.py:36:41: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@__add__`
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-14 12:03</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-08-14 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-08-14 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-08-14 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-08-14 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @MichaReiser on 2025-08-14 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @MichaReiser on 2025-08-14 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @MichaReiser on 2025-08-14 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @MichaReiser on 2025-08-14 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ibraheemdev by @MichaReiser on 2025-08-14 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Fix waterfall when discovering project files" to "[ty] Speedup project file discovery " by @MichaReiser on 2025-08-14 12:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/files.rs</code>:107 on 2025-08-14 17:17</div>
+            <div class="timeline-body"><p>How come? If <code>metadata</code> lets you cheaply query the file type, can you still return a <code>Result</code> here?</p>
+<p>I mention this because it seems like we are otherwise careful not to allow a <code>File</code> to be backed by a directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_project/src/walk.rs</code>:242 on 2025-08-14 17:24</div>
+            <div class="timeline-body"><p>I was wondering why you can't use <code>ignore::DirEntry::file_type</code> here, and I think it's because you also need the file permissions? Because directory entries (on Unix) will include the <code>FileType</code> free of charge. But not permissions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-08-14 17:25</div>
+            <div class="timeline-body"><p>Nice! This makes sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> approved on 2025-08-14 17:38</div>
+            <div class="timeline-body"><blockquote>
+<p>We also can't add a fork method to ty_project::Db that returns a cloned Self because the Db trait must be dyn compatible.</p>
+</blockquote>
+<p>The usual workaround for this is to have a <code>dyn_clone</code> method that returns a <code>Box&lt;dyn Db&gt;</code>, but the solution here also seems perfectly fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-14 17:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/walk.rs</code>:242 on 2025-08-14 17:51</div>
+            <div class="timeline-body"><p>Yeah, I thought about using the walk dir entry directly, but we, unfortunately, also need the permissions and, more importantly, the last modified time</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-14 18:01</div>
+            <div class="timeline-body"><blockquote>
+<p>The usual workaround for this is to have a dyn_clone method that returns a Box<dyn Db>, but the solution here also seems perfectly fine.</p>
+</blockquote>
+<p>Oh nice, that's exactly what I was looking for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-14 18:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/files.rs</code>:107 on 2025-08-14 18:04</div>
+            <div class="timeline-body"><p>Yeah we could. I had a versio where I did just that.</p>
+<p>I considered it to be fine because <code>Files::try_system</code> also doesn't return a <code>Result</code> but the file directly (even if the path maps to a directory). This where I consider the distinction between <code>system_path_to_file</code> which makes sure it adds a query dependency on status (so that your query re-runs if the status changes) and protects you from getting a <code>File</code> that points to a directory or doesn't exist.</p>
+<p>Either way, I'm going to revert all of this thanks to @ibraheemdev's suggestion</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> approved on 2025-08-14 18:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-08-14 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-08-14 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-14 18:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:44 UTC
+    </footer>
+</body>
+</html>

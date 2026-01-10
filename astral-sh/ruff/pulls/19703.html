@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Track enclosing definitions and nested references in the semantic index - astral-sh/ruff #19703</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Track enclosing definitions and nested references in the semantic index</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19703">#19703</a>
+        opened by <a href="https://github.com/oconnor663">@oconnor663</a>
+        on 2025-08-02 01:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-08-02 01:15</div>
+            <div class="timeline-body"><p>Add three new maps to the <code>SemanticIndex</code>:</p>
+<ul>
+<li><code>definitions_in_enclosing_scopes</code></li>
+<li><code>references_in_nested_scopes</code></li>
+<li><code>bindings_in_nested_scopes</code></li>
+</ul>
+<p>These will serve several purposes:</p>
+<ul>
+<li>LSP is going to need these for features like &quot;find all references&quot; and &quot;rename&quot;.</li>
+<li>We currently re-implement scope walking in several places, including <code>add_binding</code>, <code>infer_place_load</code>, and <code>ide_support.rs</code>. I don't know whether the performance cost of that matters (maybe not, since scopes aren't usually super deeply nested), but there are a lot of corner cases that it would be nice to unify, like skipping class bodies, <code>nonlocal</code> on top of <code>global</code>, etc.</li>
+<li>We don't currently consider bindings from sibling/cousin scopes when inferring types, and it would be nice to consider them.</li>
+</ul>
+<p>To populate these maps, <code>SemanticIndexBuilder</code> tracks a set of free variables for each scope. (There's an interesting reason this has to be per-scope, see the new comment in <code>struct ScopeInfo</code>.) When popping scopes, it checks to see whether the popped scope resolves any free variables from nested scopes, and whether it creates any new ones. This makes us agnostic to whether the definition or the use comes first, since either way we'll have encountered both by the time we pop the defining scope.</p>
+<p>The first/main commit in this PR defines the new maps and populates them. There are a couple of small follow-on commits that make use of the new data:</p>
+<ul>
+<li>deleting <code>infer_nonlocal()</code>, which is now fully redundant with checks the <code>SemanticIndexBuilder</code> is already doing</li>
+<li>removing the scope walk from <code>add_binding</code></li>
+</ul>
+<p>Larger changes are still TODO. I could add more to this PR, but I need some help with these bits to understand how things work today and how best to change things:</p>
+<ul>
+<li><code>infer_place_load</code>. This one is kinda doing two separate scope walks at the same time. One is <a href="https://github.com/astral-sh/ruff/blob/85bd961fd3a98208e170e3265797816aad7c7961/crates/ty_python_semantic/src/types/infer.rs#L6743-L6763">calling <code>place()</code> and unioning <code>nonlocal</code> types as it goes</a>, which will benefit from using the new maps (particularly to include <code>nonlocal</code> bindings from other nested scoeps). The other is <a href="https://github.com/astral-sh/ruff/blob/85bd961fd3a98208e170e3265797816aad7c7961/crates/ty_python_semantic/src/types/infer.rs#L6653-L6709">looking at <code>enclosing_snapshots</code></a>, which is a completely separate mechanism. (There are also a couple of bugs in how the snapshot mechanism handles scopes: https://github.com/astral-sh/ty/issues/916 and https://github.com/astral-sh/ty/issues/927.)</li>
+<li><code>ide_support.rs</code>. Some of this might be straightforward for all I know, but I haven't touched this file at all yet.</li>
+</ul>
+<p>cc @mtshiba</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @oconnor663 on 2025-08-02 01:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @oconnor663 on 2025-08-02 01:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @oconnor663 on 2025-08-02 01:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @oconnor663 on 2025-08-02 01:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @oconnor663 on 2025-08-02 01:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @oconnor663 on 2025-08-02 01:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @oconnor663 on 2025-08-02 01:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-02 01:17</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on typing conformance tests</h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-02 01:19</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">flake8 (https://github.com/pycqa/flake8)
+-     memo fields = ~52MB
++     memo fields = ~54MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-02 01:27</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/symbol.rs</code>:146 on 2025-08-02 08:22</div>
+            <div class="timeline-body"><p>Would it be possible to store this information directly on <code>Symbol</code>, given that these maps are indexed by <code>ScopedSymbolId</code>. Or are we using a hash map because only few symbols in a scope need this information?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/symbol.rs</code>:144 on 2025-08-02 08:24</div>
+            <div class="timeline-body"><p>Given that this is a subset. Could we store an extra flag in <code>references_in_nested_scopes</code> that tells them apart. This reduces the number of Vecs and hash maps</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/symbol.rs</code>:141 on 2025-08-02 08:44</div>
+            <div class="timeline-body"><p>You Could use a <code>SmallVec</code> here. This would allow us to store 4 scoped symbol ids inline.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-02 08:44</div>
+            <div class="timeline-body"><p>Thank you for working on this</p>
+<p>What would help me to review this PR is to extend the PR summary with more details on what the new data is that we collect and why it is essential that we do this during semantic indexing.</p>
+<p>I'm asking because we build the semantic index for every file in completeness, even for third-party files (eagerly) and we keep it in memory forever. The semantic index is also by far the largest query result and we've made various efforts to reduce its size (and have more planned). This raises the questions if it would be better if this computation is a separate lazy query (should be sufficient for rename, or it doesn't even have to be a query), recomputing, in fact, is fine (the performance profiles on this PR suggest a small regression). The part that's the least clear to me is that we want to consider those bindings for type infernece. I don't understand the use case enough to judge if there isn't an alternative or if upfront collection is indeed the only way to go.</p>
+<p>The good news is: This PR doesn't regress memory usage that much. I ran it on a large repository and it only increases the semantic index size by 216 MB or ~3% (but that's still more than what an optimization like https://github.com/astral-sh/ruff/pull/19572 gives us back). So maybe that's fine and maybe there's a way we can get this down if we can avoid some of the hash maps or inner vecs</p>
+<p>I haven't been involved in this work before. So I'm sorry if this is something that you discussed at length with @carljm and @AlexWaygood. If that's the case, feel free to disregard this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/ty_python_semantic/src/semantic_index/symbol.rs</code>:132 on 2025-08-03 16:09</div>
+            <div class="timeline-body"><p>Wouldn't it be enough to just store <code>FileScopeId</code> as the value here, rather than <code>(FileScopeId, ScopedSymbolId)</code>?
+Because, for instance, the recorded values are used <a href="https://github.com/astral-sh/ruff/blob/b036317b8e51b9d777ecb2f60410df19ee825897/crates/ty_python_semantic/src/types/infer.rs#L1805-L1812">here</a>, but we can get the <code>PlaceTable</code> of the enclosing scope from <code>enclosing_scope_id</code> (using <code>self.index.place_table()</code>), and then get the <code>ScopedSymbolId</code> with <code>PlaceTable::symbol_id</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/ty_python_semantic/src/semantic_index/symbol.rs</code>:141 on 2025-08-03 16:15</div>
+            <div class="timeline-body"><p>For the same reason as above, wouldn't it be enough to just store <code>FileScopeId</code> as the value for the following maps?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:99 on 2025-08-03 16:30</div>
+            <div class="timeline-body"><p>For the same reason as described below (<code>symbol.rs</code>), it seems that this <code>ScopedSymbolId</code> is redundant (it can be obtained from the <code>PlaceTable</code> of the nested scope).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-08-03 16:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/ty_python_semantic/src/semantic_index/symbol.rs</code>:144 on 2025-08-04 19:36</div>
+            <div class="timeline-body"><p>My thinking was that most variables aren't bound in nested scopes, but many are used, and I wanted it to be quick to ask &quot;do we actually need to look at any of these references?&quot; during typechecking. But now that you have me thinking more about storage overhead, maybe the best thing would be to just allocate another bit in <code>SymbolFlags</code> called something like <code>IS_BOUND_IN_NESTED_SCOPE</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> reviewed on 2025-08-04 19:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-08-04 20:01</div>
+            <div class="timeline-body"><blockquote>
+<p>I haven't been involved in this work before. So I'm sorry if this is something that you discussed at length with @carljm and @AlexWaygood. If that's the case, feel free to disregard this.</p>
+</blockquote>
+<p>@carljm and I discussed it, but I can't say it was <em>at length</em> :) My impression was that he didn't want &quot;find all references&quot; / &quot;rename all&quot; to require walking all scopes. But now that you mention it, my understanding of the problem isn't very good: I don't know whether that's because we expect it to perform poorly, or whether we don't want the LSP to be doing complicated things, or what? Carl could you clarify? (I wonder if part of the problem with doing a big walk is just that it would get invalidated frequently?)</p>
+<blockquote>
+<p>The part that's the least clear to me is that we want to consider those bindings for type infernece.</p>
+</blockquote>
+<p>In my head it would be nice to handle cases like this:</p>
+<pre><code class="language-py">x = None
+def f():
+    global x
+    x = 42
+reveal_type(x);  # revealed: `None` (should be `None | Literal[42]`?)
+</code></pre>
+<p>I know I've seen cases like that come up in ecosystem analysis results for <code>nonlocal</code> changes, but I don't know how common any of it is. @AlexWaygood I think you've expressed some skepticism about whether we'd want do analyze these? (Related TODOs in mdtests: <a href="https://github.com/astral-sh/ruff/blob/739c94f95a4871d8f31e42817c3ce13b5c561ddd/crates/ty_python_semantic/resources/mdtest/scopes/global.md#L241">this one</a> and <a href="https://github.com/astral-sh/ruff/blob/739c94f95a4871d8f31e42817c3ce13b5c561ddd/crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md#L129">these ones</a>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-05 04:35</div>
+            <div class="timeline-body"><p>In our initial discussions around this PR, I was mostly thinking about the <code>bindings_in_nested_scopes</code> piece of it, which seems the most beneficial to me.</p>
+<p>On the &quot;benefit&quot; side, it was primarily motivated by a) goto-definition including nested definitions (and sibling definitions, if you goto-definition on a nested reference!) without having to re-walk all nested scopes, which @UnboundVariable mentioned as a significant TODO in the goto-definition PR, and b) considering these nested definitions in type inference, which I had originally thought maybe we wouldn't do, but is definitely nicer / more accurate if we can do it, for scenarios like the one shown by @oconnor663 (and similar ones with <code>nonlocal</code>), and if we track this information for goto-definition anyway, then it is not too hard to do.</p>
+<p>On the &quot;cost&quot; side, my assumption had been that use of <code>nonlocal</code> and <code>global</code> is rare enough that this wouldn't be a significant extra memory cost, if we pay some attention to optimizing our storage. (And this also makes it a good tradeoff to do up-front when we are already walking the AST anyway, since it is cheap to store relatively rare information, but would be expensive to always re-walk all nested/sibling scopes later on, even though by doing so we are unlikely to discover any nested <code>global</code> or <code>nonlocal</code> statements referencing a given symbol.)</p>
+<p>I'm less clear on the cost-benefit analysis for <code>references_in_nested_scopes</code> and <code>definitions_in_enclosing_scopes</code>. Both of these will be much more commonly populated (nested references are more common than <code>nonlocal</code> and <code>global</code> bindings), therefore have a higher storage cost.</p>
+<p>The latter can avoid the need to re-walk scope ancestors respecting Python scoping rules (which, as the PR description notes, we do, with some code redundancy, in a few different places). This could be a nice code simplification, but I'm not sure if it is a good tradeoff performance-wise or not. Walking just ancestor scopes is cheaper than walking all sibling/nested scopes.</p>
+<p>The former seems mostly useful for rename-all and find-all-references. But these are features where I think users will accept a bit slower response time, and features that are less frequently used (relative to e.g. core type inference), so it's less clear to me that it's worth paying a cost in every semantic indexing just in order to speed up these features.</p>
+<p>If it's not too much work (I haven't reviewed the PR in detail yet), I think it would be ideal to split these, and initially land a diff adding only <code>bindings_in_nested_scopes</code>, evaluate its memory cost, and then also make use of it to fix the TODOs in goto-definition, and consider nested bindings in type inference. And then separately evaluate the tradeoffs of the other two maps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @oconnor663 on 2025-08-06 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-08-08 04:00</div>
+            <div class="timeline-body"><p>Closing in favor of https://github.com/astral-sh/ruff/pull/19820.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @oconnor663 on 2025-08-08 04:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:43 UTC
+    </footer>
+</body>
+</html>

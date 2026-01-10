@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update end-of-file ranges to point to the actual last line - astral-sh/ruff #19812</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Update end-of-file ranges to point to the actual last line</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19812">#19812</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-08-07 17:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-07 17:29</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>See https://github.com/astral-sh/ruff/pull/19806#discussion_r2260365462. In short, we would previously report EOF ranges as being on a line that didn't actually exist:</p>
+<pre><code>try.py:5:1: SyntaxError: unexpected EOF while parsing
+  |
+3 | 'x'
+4 | )
+  |  ^
+  |
+</code></pre>
+<p>Note the final line is 4 in the file and in the diagnostic, but the header reports 5:1 as the location.</p>
+<p>I split off this PR because I think this is basically a bug fix in Ruff. I'll leave the ty diagnostic change in #19806.</p>
+<h2>Test Plan</h2>
+<p>I was a bit worried that some of the output formats might differ in the way they calculate line locations, so I added a copy of the <code>output_format</code> CLI test that runs on a snippet minimized from the <code>ISC_syntax_error.py</code> case that also changed in this PR. I guess my fears have been allayed, so we don't necessarily have to keep the CLI test if we don't want to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-08-07 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-08-07 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-07 17:40</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-08-07 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-08-07 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-08 07:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/tests/lint.rs</code>:5809 on 2025-08-08 07:59</div>
+            <div class="timeline-body"><p>Okay, now I'm a bit confused.</p>
+<p>I assumed that the issue here was that we showed 5:1 for a file with no line break at the end of the file:</p>
+<pre><code>(
+'''unterminated string
+'x'
+)
+</code></pre>
+<p>Here, I expect Ruff to use 4:2 as the location.</p>
+<p>But I'm not so sure if this is the right fix if the file does end with a new line. I tested both textmate and VS code and both allow me to navigate to <code>5:1</code> for</p>
+<pre><code>(
+'''unterminated string
+'x'
+)
+
+</code></pre>
+<p>which is why I think it's more accurate if we do report 5:1 if the offset points to the end of file and we should instead fix the rendering in annotated snippet.</p>
+<p>I'm sorry that I misunderstood this in your other PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-08 11:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/tests/lint.rs</code>:5809 on 2025-08-08 11:51</div>
+            <div class="timeline-body"><p>No worries, I realized that I was a bit confused yesterday afternoon too. I think I also thought there was no trailing newline initially and then somehow convinced myself it still made sense to do this when the newline was present.</p>
+<p>I'll look into the rendering instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @ntBre on 2025-08-08 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-08-08 12:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-08 12:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:44 UTC
+    </footer>
+</body>
+</html>

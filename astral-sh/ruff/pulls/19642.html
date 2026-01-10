@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Remove special casing for string-literal-in-tuple `__contains__` - astral-sh/ruff #19642</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Remove special casing for string-literal-in-tuple <code>__contains__</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19642">#19642</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-07-30 16:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-30 16:47</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR rips out the special casing for <code>&lt;string literal&gt; in &lt;tuple&gt;</code> that was added in https://github.com/astral-sh/ruff/pull/18251.</p>
+<p>We were unsure at the time whether it was worth it to add this special casing, since it added complexity to our type inference machinery but didn't appear to remove any false positives or false negatives when checking user code (the mypy_primer report on that PR is an empty diff). At the time, we thought that the benefits outweighed the costs, however, since the added complexity wasn't <em>very</em> large, and it allowed us to test our new <code>ide_support::all_members</code> API in an elegant way in mdtests.</p>
+<p>I think we should reconsider this, however. It's fundamentally inconsistent behaviour for us to infer the expression <code>&quot;foo&quot; in (&quot;foo&quot;,)</code> as evaluating to <code>Literal[True]</code> if we do not also infer the expression <code>&quot;foo&quot; in SingleElementTupleSubclass((&quot;foo&quot;,))</code> as evaluating to <code>Literal[True]</code> (where <code>SingleElementTupleSubclass</code> is considered by ty to be a subtype of <code>tuple[Literal[&quot;foo&quot;]]</code>). We therefore have three options:</p>
+<ol>
+<li>Convert the special casing to use synthesized <code>__contains__</code> overloads, similar to what was done for <code>__getitem__</code> in https://github.com/astral-sh/ruff/pull/19493</li>
+<li>Adapt the existing special casing in <code>TypeInferenceBuilder::infer_binary_type_comparison</code> so that it also applies to tuple subclasses</li>
+<li>Remove the special casing</li>
+</ol>
+<p>(1) and (2) are both viable paths here, but they would both add significant complexity to the implementation of the special case, and I'm not sure it's worth doing that without evidence of patterns in user code that this enables us to understand better. Additionally, if we went with option (2) we would have to forbid users from overriding <code>__contains__</code> on tuple subclasses in order for us to make tuple subclasses sound. If we went with option (1) we would not have to <em>forbid</em> overrides of <code>__contains__</code> on user subclasses of <code>tuple</code>; but in practice, we'd make it very difficult for users to do so after our implementation of the Liskov Substitution Principle has landed. Either forbidding <code>__contains__</code> overrides outright, or de-facto forbidding them by requiring the override to duplicate complicated overloads from the base class, feels overly pedantic to me. This PR therefore goes with option (3): ripping out the special casing.</p>
+<p>The remaining question was, therefore: what to do about our <code>all_members.md</code> test? The solution this PR proposes is to adapt that test by adding a new <code>ty_extensions.has_member()</code> function that returns <code>Literal[True]</code> if our <code>ide_support_all_members</code> routine considers an object to have a particular member, and <code>Literal[False]</code> if not.</p>
+<h2>Test Plan</h2>
+<p>Mdtests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-07-30 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-07-30 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-07-30 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-07-30 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-07-30 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-30 16:50</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on typing conformance tests</h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-30 16:51</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-31 07:34</div>
+            <div class="timeline-body"><blockquote>
+<p>It's fundamentally inconsistent behaviour for us to infer the expression <code>&quot;foo&quot; in (&quot;foo&quot;,)</code> as evaluating to <code>Literal[True]</code> if we do not also infer the expression <code>&quot;foo&quot; in SingleElementTupleSubclass((&quot;foo&quot;,))</code> as evaluating to <code>Literal[True]</code></p>
+</blockquote>
+<p>Not sure I'm totally following here. Why do you think that this is fundamentally inconsistent? <em>Inferring</em> something more precise for the supertype doesn't necessarily imply LSP incompatibility, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-31 10:16</div>
+            <div class="timeline-body"><p>We discussed this in person in our 1:1 today -- for completeness, here's an (admittedly slightly contrived) example where the current special casing would lead us to infer <code>Literal[True]</code> even though the result at runtime is <code>False</code>:</p>
+<pre><code class="language-py">from typing import Literal
+
+class Bar(tuple[Literal[&quot;foo&quot;]]):
+    def __contains__(self, item) -&gt; Literal[False]:
+        return False
+
+def is_foo_in_tuple(x: tuple[Literal[&quot;foo&quot;]]) -&gt; Literal[True]:
+    return &quot;foo&quot; in x
+
+reveal_type(is_foo_in_tuple(Bar((&quot;foo&quot;,))))
+</code></pre>
+<p>We would continue to let this example pass type checking without diagnostics even after https://github.com/astral-sh/ty/issues/166 is implemented, because our current special casing does not synthesize a precise <code>__contains__</code> method for tuple types, it just applies the special casing directly in <code>infer_binary_type_comparison</code>.</p>
+<p>Even putting aside soundness issues, it feels very strange to me that you'd get a more precise result here by upcasting a tuple subclass to its supertype (and a less precise result after narrowing the type) -- you would usually expect the opposite:</p>
+<pre><code class="language-py">from typing import Literal
+
+class Bar(tuple[Literal[&quot;foo&quot;]]): ...
+
+x = (&quot;foo&quot;,)
+
+reveal_type(&quot;foo&quot; in x)  # Literal[True]
+
+if isinstance(x, Bar):
+    reveal_type(&quot;foo&quot; in x)  # now bool, even though the type of `x` is now more precise
+
+def upcast(x: tuple[Literal[&quot;foo&quot;]]) -&gt; tuple[Literal[&quot;foo&quot;]]:
+    return x
+
+def _(x: Bar):
+    reveal_type(&quot;foo&quot; in x)  # revealed: bool
+    reveal_type(&quot;foo&quot; in upcast(x))  # Literal[True], even though the `upcast()` function makes the type of `x` less precise!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-07-31 10:26</div>
+            <div class="timeline-body"><p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-07-31 10:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-07-31 10:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-31 10:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:52:43 UTC
+    </footer>
+</body>
+</html>
