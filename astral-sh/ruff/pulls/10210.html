@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split `CallPath` into `QualifiedName` and `UnqualifiedName` - astral-sh/ruff #10210</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Split <code>CallPath</code> into <code>QualifiedName</code> and <code>UnqualifiedName</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10210">#10210</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-03-03 16:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-03 16:25</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Charlie can probably explain this better than I but it turns out, <code>CallPath</code> is used for two different things:</p>
+<ul>
+<li>To represent unqualified names like <code>version</code> where <code>version</code> can be a local variable or imported (e.g. <code>from sys import version</code> where the full qualified name is <code>sys.version</code>)</li>
+<li>To represent resolved, full qualified names</li>
+</ul>
+<p>This PR splits <code>CallPath</code> into two types to make this destinction clear.</p>
+<blockquote>
+<p>Note: I haven't renamed all <code>call_path</code> variables to <code>qualified_name</code> or <code>unqualified_name</code>. I can do that if that's welcomed but I first want to get feedback on the approach and naming overall.</p>
+</blockquote>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-03-03 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-03-03 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2024-03-03 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-03 16:45</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -1 violations, +0 -0 fixes in 1 projects; 42 projects unchanged)</p>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/pandas-dev/pandas/blob/1bf86a35a56405e07291aec8e07bd5f7b8b6b748/pandas/_libs/reshape.pyi#L6'>pandas/_libs/reshape.pyi:6:5:</a> PLR0917 Too many positional arguments (7/5)
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLR0917 | 1 | 0 | 1 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-03 20:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/name.rs</code>:141 on 2024-03-03 20:12</div>
+            <div class="timeline-body"><p>(Do these need to be <code>pub</code>? Are there usages that don't go through the structs?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-03-03 20:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-03 20:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/name.rs</code>:141 on 2024-03-03 20:14</div>
+            <div class="timeline-body"><p>There are :( I can try to eliminate it entirely because it's really just a <code>UnqualifiedName::from_expr(expr).map(ToString::to_string)</code> and this doesm't seem a good pattern IMO</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-03-04 09:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-03-04 09:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-04 09:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:47:54 UTC
+    </footer>
+</body>
+</html>

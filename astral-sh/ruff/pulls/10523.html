@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid dropping node from `as` pattern - astral-sh/ruff #10523</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid dropping node from <code>as</code> pattern</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10523">#10523</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-03-22 10:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-22 10:00</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR addresses the feedback given here: https://github.com/astral-sh/ruff/pull/10477#discussion_r1533540673</p>
+<p><strong>Problem:</strong> The <code>as</code> pattern containing both the pattern and name (<code>foo as bar</code>) cannot be converted to an expression as there's no AST node to represent that.</p>
+<p>The solution for now is to not drop any nodes, panic in the conversion if the parser is doing so, and make sure the calling code is avoiding the panic.</p>
+<p>There are 3 places where the conversion happens:</p>
+<ol>
+<li>Mapping pattern</li>
+<li>Class pattern</li>
+<li>Complex literal pattern</li>
+</ol>
+<p>Another thing to keep in mind is that the <code>parse_match_pattern_lhs</code> method only parses the <code>as</code> pattern if it's parenthesized. The reason being that the <code>(</code> is ambiguous as to whether it's a parenthesized pattern or the start of a sequence pattern.</p>
+<p>Now, the mapping items are parsed using list parsing and it's only called if the start token is in the FIRST set which the <code>(</code> token isn't. This avoids the panic in mapping pattern.</p>
+<p>For the class and complex literal pattern, the starting point is <code>parse_match_pattern_lhs</code> method. It then checks if the parser is at <code>(</code> (as in <code>Foo(x, y)</code>) or <code>+</code>/<code>-</code> (as in <code>1 + 1j</code>) and continues with the respective parsing methods. We want to avoid going further in case we have an <code>as</code> pattern to avoid the panic. This means we'll exit early in that case.</p>
+<h2>Test Plan</h2>
+<p>Added a few test cases, updated the snapshots.</p>
+<p>Note that this PR isn't focused on error recovery, it's to avoid dropping any potential node which is the case when converting from an <code>as</code> pattern to an expression.</p>
+<p>Another thing to note is that the following test case fails (not added) because the error recovery is bad and the node ranges aren't in order:</p>
+<pre><code class="language-python">match subject:
+    case {x as y: 1}:
+        pass
+</code></pre>
+<details><summary>Click here to view the AST and errors for the above code:</summary>
+<p>
+
+<pre><code class="language-rs">Module(
+    ModModule {
+        range: 0..50,
+        body: [
+            Match(
+                StmtMatch {
+                    range: 0..49,
+                    subject: Name(
+                        ExprName {
+                            range: 6..13,
+                            id: &quot;subject&quot;,
+                            ctx: Load,
+                        },
+                    ),
+                    cases: [
+                        MatchCase {
+                            range: 19..49,
+                            pattern: MatchMapping(
+                                PatternMatchMapping {
+                                    range: 24..35,
+                                    keys: [
+                                        Name(
+                                            ExprName {
+                                                range: 25..26,
+                                                id: &quot;x&quot;,
+                                                ctx: Store,
+                                            },
+                                        ),
+                                        Name(
+                                            ExprName {
+                                                range: 30..31,
+                                                id: &quot;y&quot;,
+                                                ctx: Store,
+                                            },
+                                        ),
+                                    ],
+                                    patterns: [
+                                        MatchValue(
+                                            PatternMatchValue {
+                                                range: 29..29,
+                                                value: Name(
+                                                    ExprName {
+                                                        range: 27..29,
+                                                        id: &quot;as&quot;,
+                                                        ctx: Load,
+                                                    },
+                                                ),
+                                            },
+                                        ),
+                                        MatchValue(
+                                            PatternMatchValue {
+                                                range: 33..34,
+                                                value: NumberLiteral(
+                                                    ExprNumberLiteral {
+                                                        range: 33..34,
+                                                        value: Int(
+                                                            1,
+                                                        ),
+                                                    },
+                                                ),
+                                            },
+                                        ),
+                                    ],
+                                    rest: None,
+                                },
+                            ),
+                            guard: None,
+                            body: [
+                                Pass(
+                                    StmtPass {
+                                        range: 45..49,
+                                    },
+                                ),
+                            ],
+                        },
+                    ],
+                },
+            ),
+        ],
+    },
+)
+</code></pre>
+<p>Errors:</p>
+<pre><code>Syntax Error: invalid mapping pattern key at byte range 25..26
+  |
+1 | match subject:
+2 |     case {x as y: 1}:
+  |           ^ Syntax Error: invalid mapping pattern key
+3 |         pass
+  |
+
+
+Syntax Error: expected Colon, found As at byte range 27..29
+  |
+1 | match subject:
+2 |     case {x as y: 1}:
+  |             ^^ Syntax Error: expected Colon, found As
+3 |         pass
+  |
+
+
+Syntax Error: expected Comma, found Name at byte range 30..31
+  |
+1 | match subject:
+2 |     case {x as y: 1}:
+  |                ^ Syntax Error: expected Comma, found Name
+3 |         pass
+  |
+</code></pre>
+</p>
+</details> 
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-03-22 10:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-03-22 10:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-22 10:20</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-03-22 13:16</div>
+            <div class="timeline-body"><p>Do you plan to look into the incorrect range issue of the following code (that you shared) separately?</p>
+<pre><code>match subject:
+    case {x as y: 1}:
+        pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-22 14:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you plan to look into the incorrect range issue of the following code (that you shared) separately?</p>
+</blockquote>
+<p>Yeah, my hunch is that it's got to do something with the empty nodes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-03-22 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-03-22 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-22 14:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:48:02 UTC
+    </footer>
+</body>
+</html>

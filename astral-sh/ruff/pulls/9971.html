@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limit `isort.lines-after-imports` to 1 for stub files - astral-sh/ruff #9971</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Limit <code>isort.lines-after-imports</code> to 1 for stub files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9971">#9971</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-02-13 08:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-13 08:33</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Setting the <code>isort.lines-after-imports</code> setting to a value larger than 1 leads to formatter incompatibilities when formatting typing stub files because
+the formatter enforces at most one blank line for stub files according to <a href="https://github.com/python/typeshed/blob/main/CONTRIBUTING.md#stub-file-coding-style">typeshed's style guide</a>.</p>
+<p>This PR changes our <code>isort</code> implementation to limit <code>lines-after-imports</code> to 1 for stub files the same as isort does for black (<a href="https://github.com/PyCQA/isort/commit/b228c373ab3bc5c571ba0a616f13cac8f03ca99f">commit</a>, <a href="https://github.com/PyCQA/isort/blob/eed5d059a8ea5442266be892322f8815074800a5/isort/output.py#L211-L225">code</a>).</p>
+<p>Fixes https://github.com/astral-sh/ruff/issues/9353</p>
+<h2>Breaking Change?</h2>
+<p>This is a breaking change and we may need to wait for 0.3 to merge. The only &quot;excuse&quot; not to consider this a breaking change is that we say our <code>isort</code> configuration is intended to be black/ruff formatter compatible by default (<code>isort</code> profile black). In this case, this is a bug fix.</p>
+<p>I did a code search on GitHub for <a href="https://github.com/search?type=code&amp;auto_enroll=true&amp;q=%22lines-after-imports+%3D+2%22+path%3Apyproject.toml+language%3Atoml"><code>lines-after-imports=2</code></a> (I didn't find any usages with values &gt; 2). Most repositories don't have <code>pyi</code> files and are unaffected by the change. The following repositories contain pyi files and use <code>lines-after-imports=2</code></p>
+<ul>
+<li>https://github.com/Ayan-Bandyopadhyay/BentoML: Fork of https://github.com/bentoml/BentoML The <code>lines-after-imports</code> setting was removed upstream in https://github.com/bentoml/BentoML/pull/3864 -&gt; No longer an issue</li>
+<li>https://github.com/python-poetry/poetry/ The pyi files are excluded from linting. Running this branch does not raise any new lint errors.</li>
+<li>https://github.com/conda/conda-lock Pyi file locations are excluded.</li>
+<li>https://github.com/pytest-dev/pytest/ All <code>pyi</code> files are empty <code>__init__.pyi</code> files (contain no imports)</li>
+<li><strong>https://github.com/sdss/lvmgort</strong> They have <code>__init__.pyi</code> files that contain imports. They added two blank lines when migrating to ruff ;( https://github.com/sdss/lvmgort/commit/ca8206a68107c6ee689e427f7a13d1ec2f016cff</li>
+<li>https://github.com/bugbakery/whispercpp They exclude the typing directory</li>
+<li><strong>https://github.com/sdss/yao</strong> Use two blank lines after imports in typing files. They don't use the formatter</li>
+</ul>
+<p>From that it seems safe to conclude that using <code>lines-after-imports=2</code> with typing files isn't common, but at least two projects would see new errors after upgrading.</p>
+<h2>Test Plan</h2>
+<p>Added test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @MichaReiser on 2024-02-13 08:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-02-13 08:48</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2024-02-13 09:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @MichaReiser on 2024-02-13 09:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-02-13 09:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-13 18:18</div>
+            <div class="timeline-body"><p>To confirm my understanding: if a project today doesn't set <code>lines-after-imports</code>, we <em>do</em> use 1 as a default in <code>.pyi</code> files, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-13 20:26</div>
+            <div class="timeline-body"><blockquote>
+<p>To confirm my understanding: if a project today doesn't set <code>lines-after-imports</code>, we <em>do</em> use 1 as a default in <code>.pyi</code> files, right?</p>
+</blockquote>
+<p>Is this a very friendly hint that my implementation is wrong because it is wrong ;) It uses -1 which uses 2 empty lines if the following statement is a class or function. I have to add a test and fix the implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-14 14:10</div>
+            <div class="timeline-body"><blockquote>
+<p>To confirm my understanding: if a project today doesn't set <code>lines-after-imports</code>, we <em>do</em> use 1 as a default in <code>.pyi</code> files, right?</p>
+</blockquote>
+<p>I think I know understand why you asked this question... Yes, the change isn't just a breaking change when using <code>lines-after-imports=2</code> but also when using the default configuration if the imports are directly followed by a class or function declaration (which I assume is fairly common).</p>
+<p>I think that's reason enough for us to wait with merging until 0.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @MichaReiser on 2024-02-14 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.3.0" by @MichaReiser on 2024-02-14 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-15 00:48</div>
+            <div class="timeline-body"><p>I asked because my guess was that it <em>wasn't</em> a breaking change for files that <em>don't</em> set <code>lines-after-imports</code>, because I thought we already limited to 1 in stub files. But it sounds like my guess was wrong :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-02-28 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-02-28 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-28 16:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:47:50 UTC
+    </footer>
+</body>
+</html>

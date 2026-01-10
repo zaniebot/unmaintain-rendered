@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ruff`] Implement compound comparison rule (`RUF029`) - astral-sh/ruff #10028</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>ruff</code>] Implement compound comparison rule (<code>RUF029</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10028">#10028</a>
+        opened by <a href="https://github.com/tjkuson">@tjkuson</a>
+        on 2024-02-18 15:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/tjkuson">@tjkuson</a> on 2024-02-18 15:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Implements <code>non-transitive-compound-comparison</code> (<code>RUF029</code>) that disallows certain compound comparisons.</p>
+<p>As <a href="https://github.com/astral-sh/ruff/issues/8964#issuecomment-1837194529">suggested</a>,</p>
+<blockquote>
+<p>Arguably we should lint against all compound Compares <em>except</em> the following:</p>
+<pre><code>* Both compares are `is`: `a is b is c`
+
+* Both compares are `==`: `a == b ==c`
+
+* Both compares are one of `&lt;`, `&lt;=`: `a &lt;= b &lt; c` (probably the most common use  of compound Compare)
+
+* Both compares are one of `&gt;`, `&gt;=`: `a &gt;= b &gt; c`</code></pre>
+</blockquote>
+<p>Not a huge fan of the name I gave it, though. Chose <code>RUF029</code> as <code>RUF028</code> has been used in a bunch of open PRs.</p>
+<p>Closes #8964.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2024-02-18 16:08</div>
+            <div class="timeline-body"><p>I don't think the <code>ecosystem</code> CI failure is to do with me...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-02-18 22:37</div>
+            <div class="timeline-body"><p>This pylint rule is related (to the introduction mostly):
+https://pylint.pycqa.org/en/latest/user_guide/messages/refactor/chained-comparison.html</p>
+<p>Perhaps you'd be interested to implement it too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2024-02-18 23:18</div>
+            <div class="timeline-body"><p>Huh, I thought that was already implemented in Ruff. Thanks for the idea @sbrugman, I'll implement it tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2024-02-21 21:54</div>
+            <div class="timeline-body"><p>Make sense for this to be a pylint rule more than a RUF rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2024-02-22 09:34</div>
+            <div class="timeline-body"><blockquote>
+<p>Make sense for this to be a pylint rule more than a RUF rule.</p>
+</blockquote>
+<p>I am not aware of there being a corresponding Pylint rule on which to map, is there one?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2024-02-22 22:16</div>
+            <div class="timeline-body"><p>Yeah, in RUFF it would be <code>PLR1716</code> See https://github.com/astral-sh/ruff/issues/970</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2024-02-22 22:26</div>
+            <div class="timeline-body"><p>I might be misunderstanding something, sorry. That turns things into compound comparisons (have a PR for that tomorrow). This rule does the opposite. They should be separate rules, no?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-02-22 22:59</div>
+            <div class="timeline-body"><p>Indeed, I understand it the same way. The current PR implements a new rule that does not exist in pylint (although it would be a good fit there) and thus should be assigned the latest available RUFF code, e.g. RUF029.</p>
+<p>The PLR1716 is the linked related rule that is included by Pylint, but not implemented in the PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2024-02-23 01:16</div>
+            <div class="timeline-body"><p>Ah you are right, my bad.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2024-02-23 07:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-05 10:31</div>
+            <div class="timeline-body"><p>I'm undecided how we should categorize this rule. To me it's a restriction rule because it disallows a subset of Python's grammar. However, I could also see that the rule fits into suspicious because the code probably doesn't do what you intended.  @AlexWaygood what do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-05 10:33</div>
+            <div class="timeline-body"><p>I think it's a useful rule to enforce a Python style that's more readable, but I'd certainly agree that it should be disabled by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-05 13:08</div>
+            <div class="timeline-body"><p>Thank you @tjkuson for working on this rule and sorry for the late feedback.</p>
+<p>We agree that the rule itself is valuable and think it should be added to Ruff eventually. But we don't feel comfortable doing it today before #1774 is merged. The rule restricts the allowed Python syntax in an opinionated way, which we aren't comfortable enabling by default but all users that use <code>RUFF</code> or <code>ALL</code> today would automatically opt in to the rule.</p>
+<p>That's why we want to hold back with the rule for now but hope to get back to it after #1774 is completed. Sorry that we only decided this after you implemented the rule (without mentioning on the issue)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-04-05 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-05 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2024-04-05 15:08</div>
+            <div class="timeline-body"><p>@MichaReiser No worries!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:47:50 UTC
+    </footer>
+</body>
+</html>

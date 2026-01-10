@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug fix: Prevent fully defined links [``name``](link) from being reformatted - astral-sh/ruff #10442</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bug fix: Prevent fully defined links <a href="link"><code>name</code></a> from being reformatted</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10442">#10442</a>
+        opened by <a href="https://github.com/augustelalande">@augustelalande</a>
+        on 2024-03-18 01:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-03-18 01:06</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Currently fully define markdown links which include ticks are being reformatted by
+https://github.com/astral-sh/ruff/blob/861998612300520f2c18dbc7b8a6226300ceb508/crates/ruff_dev/src/generate_docs.rs#L105-L114</p>
+<p><code>[`name`](link)</code> -&gt; <code>[`name`][name](link)</code></p>
+<p>For example: https://docs.astral.sh/ruff/rules/typed-argument-default-in-stub/</p>
+<p>This PR excludes the open parentheses from the regex, so that these types of links won't be reformatted.</p>
+<h2>Test Plan</h2>
+<p>Extended the regression test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Bug fix: Prevent fully defineds links [`name`](link) from being reformatted" to "Bug fix: Prevent fully defined links [`name`](link) from being reformatted" by @augustelalande on 2024-03-18 01:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Bug fix: Prevent fully defined links [`name`](link) from being reformatted" to "Bug fix: Prevent fully defined links [\`name\`](link) from being reformatted" by @augustelalande on 2024-03-18 01:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Bug fix: Prevent fully defined links [\`name\`](link) from being reformatted" to "Bug fix: Prevent fully defined links [``name``](link) from being reformatted" by @augustelalande on 2024-03-18 01:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-18 01:27</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-18 01:29</div>
+            <div class="timeline-body"><p>Does the example in https://docs.astral.sh/ruff/rules/typed-argument-default-in-stub/ now render correctly? I think this hack exists because MkDocs wasn't respecting backticks within URLs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-03-18 01:39</div>
+            <div class="timeline-body"><p>It does work. Although looking again at <a href="https://github.com/Python-Markdown/markdown/issues/280">#280</a> I'm not sure why.
+<img src="https://github.com/astral-sh/ruff/assets/5696119/9ae58033-431c-4308-a330-8888bcb440ae" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-18 01:41</div>
+            <div class="timeline-body"><p>Is it possible that something changed in MkDocs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-03-18 01:52</div>
+            <div class="timeline-body"><p>Wait actually this always worked even in https://github.com/Python-Markdown/markdown/issues/280</p>
+<blockquote>
+<pre><code>&gt;&gt;&gt; markdown.markdown('[`hello`](world)')
+'&lt;p&gt;&lt;a href=&quot;world&quot;&gt;&lt;code&gt;hello&lt;/code&gt;&lt;/a&gt;&lt;/p&gt;'
+</code></pre>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-03-18 01:56</div>
+            <div class="timeline-body"><p>What doesn't work is empty references with code formatting, so the proposed fix is reasonable.</p>
+<blockquote>
+<pre><code>&gt;&gt;&gt; markdown.markdown('[`hello`][]\n\n[`hello`]: world')
+'&lt;p&gt;[&lt;code&gt;hello&lt;/code&gt;][]&lt;/p&gt;'
+</code></pre>
+</blockquote>
+<p>And actually the current implementation doesn't address https://github.com/Python-Markdown/markdown/issues/280</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-18 02:01</div>
+            <div class="timeline-body"><p>Oh right, I think the motivating case was specifically about reference links.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-18 02:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-18 02:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-18 02:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2024-03-18 02:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-18 02:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:48:00 UTC
+    </footer>
+</body>
+</html>

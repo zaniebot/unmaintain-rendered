@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nested namespace packages support - astral-sh/ruff #10541</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Nested namespace packages support</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10541">#10541</a>
+        opened by <a href="https://github.com/dizzy57">@dizzy57</a>
+        on 2024-03-24 08:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dizzy57">@dizzy57</a> on 2024-03-24 08:34</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>PEP 420 says <a href="https://peps.python.org/pep-0420/#nested-namespace-packages">nested namespace packages</a> are allowed, i.e. marking a directory as a namespace package marks all subdirectories in the subtree as namespace packages.</p>
+<p><code>is_package</code> is modified to use <code>Path::starts_with</code> and the order of checks is reversed to do in-memory checks first before hitting the disk.</p>
+<h2>Test Plan</h2>
+<p>Added unit tests. Previously all tests were run with <code>namespace_packages == &amp;[]</code>. Verified that one of the tests was failing before changing the implementation.</p>
+<h2>Future Improvements</h2>
+<p>The <code>is_package_with_cache</code> can probably be rewritten to avoid repeated calls to <code>Path::starts_with</code>, by caching all directories up to the <code>namespace_root</code>:</p>
+<pre><code class="language-ruff">let namespace_root = namespace_packages
+    .iter()
+    .filter(|namespace_package| path.starts_with(namespace_package))
+    .min();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dizzy57">@dizzy57</a> on 2024-03-24 08:43</div>
+            <div class="timeline-body"><p>Related: #6114 #5149</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-24 08:47</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2024-03-24 20:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-24 20:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-24 20:11</div>
+            <div class="timeline-body"><p>Did you run into an issue with this in practice that motivated this change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dizzy57">@dizzy57</a> on 2024-03-24 20:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Did you run into an issue with this in practice that motivated this change?</p>
+</blockquote>
+<p>We have a monorepo where all the files are located in an <code>organization/project/subproject/</code> structure and both <code>organization/</code> and <code>organization/project/</code> directories are meant to be namespace packages, so no <code>__init__.py</code> in them.</p>
+<p>We wanted to use <a href="https://docs.astral.sh/ruff/rules/banned-api/">banned-api (TID251)</a>, but for python sources it detected <code>subproject</code> as python package name. We didn't want to mark all the <code>organization/project/</code> directories as namespace packages (it would be brittle, as more projects might be added without changing the ruff config), but marking just <code>organization/</code> as a namespace package didn't work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dizzy57">@dizzy57</a> on 2024-03-24 21:12</div>
+            <div class="timeline-body"><p>This test illustrates our situation pretty well. Currently ruff assigns package name <code>core</code> to this directory, but we want it to be recognized as <code>python_modules.core.core</code> with only <code>python_modules</code> being marked as namespace package.</p>
+<p>https://github.com/dizzy57/ruff/blob/7607b2d64083c797aa334b3f2e767a2a12bf191b/crates/ruff_linter/src/packaging.rs#L111-L117</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-03-25 02:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-25 02:53</div>
+            <div class="timeline-body"><p>Okay thanks. I think this is correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @charliermarsh on 2024-03-25 02:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-25 02:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-25 02:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-27 18:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:48:03 UTC
+    </footer>
+</body>
+</html>

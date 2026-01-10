@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement client setting initialization and resolution for `ruff server` - astral-sh/ruff #10764</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement client setting initialization and resolution for <code>ruff server</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10764">#10764</a>
+        opened by <a href="https://github.com/snowsignal">@snowsignal</a>
+        on 2024-04-03 20:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-04-03 20:53</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>When a language server initializes, it is passed a serialized JSON object, which is known as its &quot;initialization options&quot;. Until now, <code>ruff server</code> has ignored those initialization options, meaning that user-provided settings haven't worked. This PR is the first step for supporting settings from the LSP client. It implements procedures to deserialize initialization options into a settings object, and then resolve those settings objects into concrete settings for each workspace.</p>
+<p>One of the goals for user settings implementation in <code>ruff server</code> is backwards compatibility with <code>ruff-lsp</code>'s settings. We won't support all settings that <code>ruff-lsp</code> had, but the ones that we do support should work the same and use the same schema as <code>ruff-lsp</code>.</p>
+<p>These are the existing settings from <code>ruff-lsp</code> that we will continue to support, and which are part of the settings schema in this PR:</p>
+<p>| Setting                                | Default Value | Description                                                                            |
+|----------------------------------------|---------------|----------------------------------------------------------------------------------------|
+| <code>codeAction.disableRuleComment.enable</code> | <code>true</code>        | Whether to display Quick Fix actions to disable rules via <code>noqa</code> suppression comments. |
+| <code>codeAction.fixViolation.enable</code>       | <code>true</code>        | Whether to display Quick Fix actions to autofix violations.                            |
+| <code>fixAll</code>                               | <code>true</code>        | Whether to register Ruff as capable of handling <code>source.fixAll</code> actions.               |
+| <code>lint.enable</code>                          | <code>true</code>        | Whether to enable linting. Set to <code>false</code> to use Ruff exclusively as a formatter.      |
+| <code>organizeImports</code>                      | <code>true</code>        | Whether to register Ruff as capable of handling <code>source.organizeImports</code> actions.      |</p>
+<p>To be clear: this PR does not implement 'support' for these settings, individually. Rather, it constructs a framework for these settings to be used by the server in the future.</p>
+<p>Notably, we are choosing <em>not</em> to support <code>lint.args</code> and <code>format.args</code> as settings for <code>ruff server</code>. This is because we're now interfacing with Ruff at a lower level than its CLI, and converting CLI arguments back into configuration is too involved.</p>
+<p>We will have support for linter and formatter specific settings in follow-up PRs. We will also 'hook up' user settings to work with the server in follow up PRs.</p>
+<h2>Test Plan</h2>
+<h3>Snapshot Tests</h3>
+<p>Tests have been created in <code>crates/ruff_server/src/session/settings/tests.rs</code> to ensure that deserialization and settings resolution works as expected.</p>
+<h3>Manual Testing</h3>
+<p>Since we aren't using the resolved settings anywhere yet, we'll have to add a few printing statements.</p>
+<p>We want to capture what the resolved settings look like when sent as part of a snapshot, so modify <code>Session::take_snapshot</code> to be the following:</p>
+<pre><code class="language-rust">    pub(crate) fn take_snapshot(&amp;self, url: &amp;Url) -&gt; Option&lt;DocumentSnapshot&gt; {
+        let resolved_settings = self.workspaces.client_settings(url, &amp;self.global_settings);
+        tracing::info!(&quot;Resolved settings for document {url}: {resolved_settings:?}&quot;);
+        Some(DocumentSnapshot {
+            configuration: self.workspaces.configuration(url)?.clone(),
+            resolved_client_capabilities: self.resolved_client_capabilities.clone(),
+            client_settings: resolved_settings,
+            document_ref: self.workspaces.snapshot(url)?,
+            position_encoding: self.position_encoding,
+            url: url.clone(),
+        })
+    }
+</code></pre>
+<p>Once you've done that, build the server and start up your extension testing environment.</p>
+<ol>
+<li>Set up a workspace in VS Code with two workspace folders, each one having some variant of Ruff file-based configuration (<code>pyproject.toml</code>, <code>ruff.toml</code>, etc.). We'll call these folders <code>folder_a</code> and <code>folder_b</code>.</li>
+<li>In each folder, open up <code>.vscode/settings.json</code>.</li>
+<li>In folder A, use these settings:</li>
+</ol>
+<pre><code class="language-json">{
+    &quot;ruff.codeAction.disableRuleComment&quot;: {
+        &quot;enable&quot;: true
+    }
+}
+</code></pre>
+<ol start="4">
+<li>In folder B, use these settings:</li>
+</ol>
+<pre><code class="language-json">{
+    
+    &quot;ruff.codeAction.disableRuleComment&quot;: {
+        &quot;enable&quot;: false
+    }
+}
+</code></pre>
+<ol start="5">
+<li>Finally, open up your VS Code User Settings and un-check the <code>Ruff &gt; Code Action: Disable Rule Comment</code> setting.</li>
+<li>When opening files in <code>folder_a</code>, you should see logs that look like this:</li>
+</ol>
+<pre><code>Resolved settings for document &lt;file&gt;: ResolvedClientSettings { fix_all: true, organize_imports: true, lint_enable: true, disable_rule_comment_enable: true, fix_violation_enable: true }
+</code></pre>
+<ol start="7">
+<li>When opening files in <code>folder_b</code>, you should see logs that look like this:</li>
+</ol>
+<pre><code>Resolved settings for document &lt;file&gt;: ResolvedClientSettings { fix_all: true, organize_imports: true, lint_enable: true, disable_rule_comment_enable: false, fix_violation_enable: true }
+</code></pre>
+<ol start="8">
+<li>To test invalid configuration, change <code>.vscode/settings.json</code> in either folder to be this:</li>
+</ol>
+<pre><code class="language-json">{
+    &quot;ruff.codeAction.disableRuleComment&quot;: {
+        &quot;enable&quot;: &quot;invalid&quot;
+    },
+}
+</code></pre>
+<ol start="10">
+<li>You should now see these error logs:</li>
+</ol>
+<pre><code>&lt;time&gt; [info]    &lt;duration&gt; ERROR ruff_server::session::settings Failed to deserialize initialization options: data did not match any variant of untagged enum InitializationOptions. Falling back to default client settings...
+
+&lt;time&gt; [info]    &lt;duration&gt; WARN ruff_server::server No workspace settings found for file:///Users/jane/testbed/pandas
+   &lt;duration&gt; WARN ruff_server::server No workspace settings found for file:///Users/jane/foss/scipy
+</code></pre>
+<ol start="11">
+<li>Opening files in either folder should now print the following configuration:</li>
+</ol>
+<pre><code>Resolved settings for document &lt;file&gt;: ResolvedClientSettings { fix_all: true, organize_imports: true, lint_enable: true, disable_rule_comment_enable: true, fix_violation_enable: true }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @snowsignal on 2024-04-03 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-03 21:06</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2024-04-04 08:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server.rs</code>:50 on 2024-04-04 08:18</div>
+            <div class="timeline-body"><p>Nit: This is unrelated to your PR but I was confused why <code>Session</code> accepts <code>server_capabilities</code>. It seems the only reason is to extract the <code>position_encoding</code>. I wonder if we should instead:</p>
+<ul>
+<li>Have a dedicated function to compute the <code>position_encoding</code>: <code>let position_encoding = choose_position_encoding(&amp;client_capabilities)</code></li>
+<li>Pass the position encoding to <code>server_capabilities</code>: <code>Self::server_capabilities(&amp;client_capabilities, position_encoding)</code>;</li>
+<li>Pass the position encoding to <code>Session</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session.rs</code>:40 on 2024-04-04 08:19</div>
+            <div class="timeline-body"><p>Does Rust consider it dead code because there's no read outside of tests?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/settings/tests.rs</code>:1 on 2024-04-04 08:21</div>
+            <div class="timeline-body"><p>Nit: I would be okay having this inline of <code>settings.rs</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/settings.rs</code>:16 on 2024-04-04 08:24</div>
+            <div class="timeline-body"><p>I would find it helpful to document what the key of <code>workspace_settings</code> is. Is it keyed by the workspace root URL? If so, how do we ensure that workspace removal removes the settings from the <code>workspace_settings</code> map (how do we avoid stale entries)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/settings.rs</code>:69 on 2024-04-04 08:25</div>
+            <div class="timeline-body"><p>I'm generally a fan of newtype wrappers but I think I prefer a simple bool here. There's just too much boilerplate involved and there are so many boolean fields and the benefits of the newtype wrappers here isn't clear to me (I like <code>RunWhen</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/settings.rs</code>:199 on 2024-04-04 08:28</div>
+            <div class="timeline-body"><p>Would it make sense to use an enum for <code>self</code> that encodes that fact as well that the settings are either: Global only, or Global with workspace settings. I think it would make the distinction more clear (I was very confused why we only log the message when the workspace isn't empty)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/settings.rs</code>:242 on 2024-04-04 08:29</div>
+            <div class="timeline-body"><p>NIt: I would rename this to <code>resolve_impl</code>, <code>resolve_value</code> or even make it a free standing function. The <code>_</code> prefix convention is used to mark allowed unused methods, which isn't what we have here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/settings.rs</code>:214 on 2024-04-04 08:32</div>
+            <div class="timeline-body"><p>What I understand is that we can have at most two settings:</p>
+<ul>
+<li>the global settings</li>
+<li>an optional workspace settings</li>
+</ul>
+<p>I think I would encode this explicitly in the API (you can still use a slice internally if it simplifies the implementation)</p>
+<pre><code class="language-suggestion">    fn resolve(global_settings: UserSettings, workspace_settings: Option&lt;&amp;UserSettings&gt;) -&gt; Self {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/settings.rs</code>:39 on 2024-04-04 08:33</div>
+            <div class="timeline-body"><p>I find the name <code>UserSettings</code> somewhat confusing because VS Code has the concept of user settings. User settings in VS code are the settings that apply to all workspaces (they are probably stored in your home directory?).</p>
+<p>Should we name this ClientSettings OR extension settings?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/settings.rs</code>:244 on 2024-04-04 08:34</div>
+            <div class="timeline-body"><p>I know it requires a bit more code to deref the value but passing <code>&amp;&amp;T</code> feels strange in a function argument</p>
+<pre><code class="language-suggestion">        get: impl Fn(&amp;UserSettings) -&gt; Option&lt;T&gt;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server.rs</code>:54 on 2024-04-04 08:36</div>
+            <div class="timeline-body"><p>Would it be possible to recover from this error or show users a helpful error message? Can you demonstrate in your test plan on how this looks?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/settings/tests.rs</code>:29 on 2024-04-04 08:55</div>
+            <div class="timeline-body"><p>To me, the tests in here have a too high complexity. I don't feel like I can jump into fixing an issue because:</p>
+<ul>
+<li>The macro requires me to learn a DSL just to understand the tests. This adds cognitive overhead</li>
+<li>The test, the input and expected output are spread across multiple files.</li>
+</ul>
+<p>I think we should try simplifying the logic so that tests become easy to read and maintain, especially because there's not that much repetition.</p>
+<p>That's why I think I would use</p>
+<ul>
+<li>Helper functions for deserializing (even if it requires repeating one line)</li>
+<li>Helper functions that define recurring test input (can use <code>include_str</code> if the input is large or define the input inline)</li>
+<li>Using insta snapshots to assert the deserialization output (inline or out of file depending on the snapshot size)</li>
+</ul>
+<pre><code class="language-rust"> use insta::assert_debug_snapshot;
+use super::*;
+
+mod fixtures;
+
+fn deserialize_initialization_options(json: &amp;str) -&gt; InitializationOptions {
+    serde_json::from_str(json).expect(&quot;test fixture JSON should deserialize&quot;)
+}
+
+fn vs_code_initialization_options() -&gt; InitializationOptions {
+    deserialize_initialization_options(include_str!(&quot;./tests/fixtures/vs_code_initialization_options.json&quot;))
+}
+
+fn global_only_options() -&gt; InitializationOptions {
+    deserialize_initialization_options(r#&quot;{
+        &quot;settings&quot;: {
+            &quot;codeAction&quot;: {
+                &quot;disableRuleComment&quot;: {
+                    &quot;enable&quot;: false
+                }
+            },
+            &quot;lint&quot;: {
+                &quot;run&quot;: &quot;onSave&quot;
+            },
+            &quot;fixAll&quot;: false,
+            &quot;logLevel&quot;: &quot;warn&quot;
+        }
+    }&quot;#)
+}
+
+#[test]
+fn test_vs_code_init_options_deserialize() {
+    let options = vs_code_initialization_options();
+
+    assert_debug_snapshot!(options);
+}
+
+#[test]
+fn test_vs_code_workspace_settings_resolve() {
+    let options = vs_code_initialization_options();
+    let settings_map = SettingsController::from_init_options(options);
+    assert_eq!(
+        settings_map.settings_for_workspace(Path::new(&quot;/Users/test/projects/pandas&quot;)),
+        ResolvedUserSettings {
+            fix_all: FixAll(true),
+            organize_imports: OrganizeImports(true),
+            lint_enable: LintEnable(true),
+            run: RunWhen::OnType,
+            disable_rule_comment_enable: CodeActionEnable(false),
+            fix_violation_enable: CodeActionEnable(false),
+            log_level: LogLevel::Error,
+        }
+    );
+    assert_eq!(
+        settings_map.settings_for_workspace(Path::new(&quot;/Users/test/projects/scipy&quot;)),
+        ResolvedUserSettings {
+            fix_all: FixAll(true),
+            organize_imports: OrganizeImports(true),
+            lint_enable: LintEnable(true),
+            run: RunWhen::OnType,
+            disable_rule_comment_enable: CodeActionEnable(true),
+            fix_violation_enable: CodeActionEnable(false),
+            log_level: LogLevel::Error,
+        }
+    );
+}
+
+#[test]
+fn test_vs_code_unknown_workspace_resolves_to_fallback() {
+    let options = vs_code_initialization_options();
+
+    let settings_map = SettingsController::from_init_options(options);
+    assert_eq!(
+        settings_map.settings_for_workspace(Path::new(&quot;/Users/test/invalid/workspace&quot;)),
+        ResolvedUserSettings {
+            fix_all: FixAll(false),
+            organize_imports: OrganizeImports(true),
+            lint_enable: LintEnable(true),
+            run: RunWhen::OnType,
+            disable_rule_comment_enable: CodeActionEnable(false),
+            fix_violation_enable: CodeActionEnable(false),
+            log_level: LogLevel::Error,
+        }
+    );
+}
+
+#[test]
+fn test_global_only_init_options_deserialize() {
+    let options = global_only_options();
+
+    assert_debug_snapshot!(options, @r###&quot;
+    GlobalOnly {
+        settings: Some(
+            UserSettings {
+                fix_all: Some(
+                    FixAll(
+                        false,
+                    ),
+                ),
+                organize_imports: None,
+                lint: Some(
+                    Lint {
+                        enable: None,
+                        run: Some(
+                            OnSave,
+                        ),
+                    },
+                ),
+                code_action: Some(
+                    CodeAction {
+                        disable_rule_comment: Some(
+                            CodeActionSettings {
+                                enable: Some(
+                                    CodeActionEnable(
+                                        false,
+                                    ),
+                                ),
+                            },
+                        ),
+                        fix_violation: None,
+                    },
+                ),
+                log_level: Some(
+                    Warn,
+                ),
+            },
+        ),
+    }
+    &quot;###);
+}
+
+#[test]
+fn test_global_only_resolves_correctly() {
+    let options = global_only_options();
+
+    let settings_map = SettingsController::from_init_options(options);
+    assert_eq!(
+        settings_map.settings_for_workspace(Path::new(&quot;/Users/test/some/workspace&quot;)),
+        ResolvedUserSettings {
+            fix_all: FixAll(false),
+            organize_imports: OrganizeImports(true),
+            lint_enable: LintEnable(true),
+            run: RunWhen::OnSave,
+            disable_rule_comment_enable: CodeActionEnable(false),
+            fix_violation_enable: CodeActionEnable(true),
+            log_level: LogLevel::Warn,
+        }
+    );
+}
+
+#[test]
+fn test_empty_init_options_deserialize() {
+    let empty = deserialize_initialization_options(&quot;{}&quot;);
+
+    assert_debug_snapshot!(empty, @r###&quot;
+    GlobalOnly {
+        settings: None,
+    }
+    &quot;###);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2024-04-04 09:04</div>
+            <div class="timeline-body"><p>I would prefer if we exclude <code>lint.run</code> from this PR. What I understood from @charliermarsh's comment in your settings proposal document is that the setting was added to address a performance issue with Ruff's LSP. I would like first to verify if this is still an issue with the new LSP before adding support for the setting.</p>
+<p><code>logLevel</code>: I don't know if the LSP must know about this setting because it is only used today to set up tracing. We should remove it EXCEPT if it is necessary to correctly deserialize the settings when the field is set in the VS Code configuration.</p>
+<p>Should the settings struct support all fields of today's LSP or what happens if VS code sends the settings of the LSP today? Will it just fail to start? Can we design this more gracefully (can be something for a follow up PR).</p>
+<p>I like that you didn't implement the logic to respect the settings in this PR. However, I would like a test plan showing that initialization is working. The unit tests show that the deserialization works but it doesn't demonstrate that the settings are correctly loaded during initialization. One thing we could do is to trace the settings (resolved settings?) during startup with a debug log level, similar to what the LSP does today. This should be easy to implement but would demonstrate the functionality.</p>
+<p>I think the current implementation doesn't correctly recycle workspace configurations when workspaces are added and removed. It might be worth exploring a data structure design where this happens automatically (e.g., by storing the configuration on the workspace).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/settings.rs</code>:88 on 2024-04-04 09:15</div>
+            <div class="timeline-body"><p>Maybe <code>RunTrigger</code>?</p>
+<p>We could also move the <code>Default</code> implementation here from down below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/settings.rs</code>:150 on 2024-04-04 09:20</div>
+            <div class="timeline-body"><p>This is unrelated to the PR but I want to understand how are these log messages being sent to the client. Currently, we use <code>tracing</code> which I think just dumps the messsages to stderr which is what the client is picking up?</p>
+<p>It's not required to be done in this PR but it would be useful to move to providing useful messages to the user using either of the following:</p>
+<ol>
+<li><a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#window_showMessage">Show message notification</a></li>
+<li><a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#window_showMessageRequest">Show message request</a></li>
+<li><a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#window_logMessage">Log message</a></li>
+</ol>
+<p>For <code>ruff-lsp</code>, we use a combination of (2) and (3) depending on user config and the log level.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-04 09:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-04-04 22:25</div>
+            <div class="timeline-body"><p>@MichaReiser:</p>
+<blockquote>
+<p>I would prefer if we exclude lint.run from this PR. What I understood from @charliermarsh's comment in your settings proposal document is that the setting was added to address a performance issue with Ruff's LSP. I would like first to verify if this is still an issue with the new LSP before adding support for the setting.</p>
+</blockquote>
+<p>Your reasoning makes sense, I'll leave this off for now.</p>
+<blockquote>
+<p><code>logLevel</code>: I don't know if the LSP must know about this setting because it is only used today to set up tracing. We should remove it EXCEPT if it is necessary to correctly deserialize the settings when the field is set in the VS Code configuration.</p>
+</blockquote>
+<p>I'll take this one out for now, since we do need some better planning around logging/tracing for the server. Also, I don't think the VS Code extension even supports this setting at the moment.</p>
+<blockquote>
+<p>Should the settings struct support all fields of today's LSP or what happens if VS code sends the settings of the LSP today? Will it just fail to start? Can we design this more gracefully (can be something for a follow up PR).</p>
+</blockquote>
+<p>We've talked about this elsewhere but by default, <code>serde_json</code> allows deserialization from a struct with additional fields. You can see this in our unit tests for VS Code configuration, which passes in extraneous fields that we don't need and aren't using.</p>
+<blockquote>
+<p>I think the current implementation doesn't correctly recycle workspace configurations when workspaces are added and removed. It might be worth exploring a data structure design where this happens automatically (e.g., by storing the configuration on the workspace).</p>
+</blockquote>
+<p>I agree that stale configuration from removed workspaces is an issue and I'll work to address that in this PR, though adding new workspace settings when a workspace is added is going to require extension-side work, so that's a future problem to solve. The good news is that this issue will be transient, and can be fixed by a server reload if anyone runs into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-04 22:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session/settings.rs</code>:150 on 2024-04-04 22:28</div>
+            <div class="timeline-body"><p>Right now, we using the <code>tracing</code> library for logging, which writes out to <code>stderr</code>. This does show up in the <code>Output</code> window in the editor, though it's always tagged as <code>[info]</code> and it would be nice to have log messages tagged properly. Switching over to use <code>window/logMessage</code> has actually been a side project that I've made some progress on this week. I hope to open some PRs in the near future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-04 22:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session/settings.rs</code>:88 on 2024-04-04 22:29</div>
+            <div class="timeline-body"><p>We might actually remove this setting for the time being (see <a href="https://github.com/astral-sh/ruff/pull/10764#pullrequestreview-1979073417">Micha's comment</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-04 22:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session.rs</code>:40 on 2024-04-04 22:30</div>
+            <div class="timeline-body"><p>Right. This will be used in follow-up PRs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @snowsignal on 2024-04-05 07:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @snowsignal on 2024-04-05 07:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/settings.rs</code>:450 on 2024-04-05 07:30</div>
+            <div class="timeline-body"><p>Is it intentional that we don't assert to what the empty options deserialize to? Like we could add a <code>assert_eq(deserialized, InitialzationOptions::default())</code> to at least compare to something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/settings.rs</code>:214 on 2024-04-05 07:37</div>
+            <div class="timeline-body"><p>Nit: the fact that the macro concatenates the path breaks some IDE functionality. For example, JetBrain IDEs allow me to click on the argument passed to <code>include_str!</code> and it opens the file for me. However, that only works when the path is static. That's why I still think not using a macro here is preferred:</p>
+<pre><code class="language-rust">fn deserialize_fixture&lt;T&gt;(content: &amp;str) -&gt; T {
+    serde_json::from_str(content).expect(&quot;test fixture JSON should deserialize&quot;)
+}
+</code></pre>
+<p>and inside tests you can either write</p>
+<pre><code class="language-rust">let options: InitializationOptions =
+            deserialize_fixture(include_str!(&quot;../../resources/test/fixtures/settings/vs_code_initialization_options.json&quot;));
+
+// or 
+let options: InitializationOptions =
+            deserialize_fixture(include_str!(&quot;{}&quot;));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/settings.rs</code>:16 on 2024-04-05 07:39</div>
+            <div class="timeline-body"><p>Nit: Can we add a TODO to remove the <code>dead_code</code> warning</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/settings.rs</code>:151 on 2024-04-05 07:44</div>
+            <div class="timeline-body"><p>Nit: It's possible to avoid some of the <code>and_then</code> by using the try operator (I'm okay with <code>and_then</code> if that's what you prefer)</p>
+<pre><code class="language-suggestion">                |settings| settings.lint.as_ref()?.enable,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/settings.rs</code>:162 on 2024-04-05 07:44</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    settings
+                        .code_action
+                        .as_ref()?
+                        .disable_rule_comment
+                        .as_ref()?
+                        .enable
+                },
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/settings.rs</code>:173 on 2024-04-05 07:45</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                |settings| settings.code_action.as_ref()?.fix_violation?.enable,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session.rs</code>:242 on 2024-04-05 07:51</div>
+            <div class="timeline-body"><p>Nit: can we create an issue to track this that outlines the problem (and possible options)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session.rs</code>:293 on 2024-04-05 07:52</div>
+            <div class="timeline-body"><p>Nit: Maybe <code>client_settings</code> to more clearly distinguish it from Ruff settings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/settings.rs</code>:94 on 2024-04-05 07:55</div>
+            <div class="timeline-body"><p>Nit: I don't know if this is unintentional or your persoanl preference. I prefer to have the impl block follow the <code>struct</code> definition because it allows me to read through the code from top to bottom without having to jump between struct definition and implementations and I think that's what we generally do in the Ruff code base</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/settings.rs</code>:8 on 2024-04-05 07:55</div>
+            <div class="timeline-body"><p>Nit: Can we document what the <code>key</code> in the map is?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-04-05 07:58</div>
+            <div class="timeline-body"><p>Thanks, this looks good.</p>
+<p>Could you please update your test plan and show that the settings are correctly passed from VS code?</p>
+<blockquote>
+<p>I like that you didn't implement the logic to respect the settings in this PR. However, I would like a test plan showing that initialization is working. The unit tests show that the deserialization works but it doesn't demonstrate that the settings are correctly loaded during initialization. One thing we could do is to trace the settings (resolved settings?) during startup with a debug log level, similar to what the LSP does today. This should be easy to implement but would demonstrate the functionality.</p>
+</blockquote>
+<p>Edit: I just saw that there's now a manual test plan. Consider this as resolved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/settings.rs</code>:137 on 2024-04-05 08:26</div>
+            <div class="timeline-body"><p>nit: I leave this up to you but I find the <code>_only</code> prefix redundant, I'd probably remove it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/settings.rs</code>:190 on 2024-04-05 08:31</div>
+            <div class="timeline-body"><p>Can we add documentation for <code>resolve_or</code>? What I understand is that it applies the <code>get</code> function for all <code>ClientSettings</code> in the <em>order</em> provided, falling back to <code>default</code>. This means that the order of <code>all_settings</code> is important here which we can mention in the documentation.</p>
+<p>Separately, does this function need to be part of the <code>impl</code> block or can it be a standalone helper function scoped to this module? I'm fine with either way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/settings.rs</code>:214 on 2024-04-05 08:37</div>
+            <div class="timeline-body"><blockquote>
+<p>For example, JetBrain IDEs allow me to click on the argument passed to <code>include_str!</code> and it opens the file for me. However, that only works when the path is static.</p>
+</blockquote>
+<p>Neovim also has a similar functionality where you can press a key (<code>gf</code>) and it will take you to that file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server.rs</code>:65 on 2024-04-05 08:45</div>
+            <div class="timeline-body"><p>I don't think this should be a warning, it should be at info or debug. Neovim doesn't have the concept of workspaces builtin so it will always default to providing it as global settings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-04-05 08:46</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>I tested it on Neovim, provided some logs for the same which prints the resolved settings as mentioned in the PR test plan:</p>
+<pre><code>[ERROR][2024-04-05 14:11:24] .../vim/lsp/rpc.lua:789	&quot;rpc&quot;	&quot;/Users/dhruv/work/astral/ruff-test/target/release/ruff&quot;	&quot;stderr&quot;	&quot;┘\n   0.008890s INFO ruff_server::session Resolved settings for document file:///Users/dhruv/playground/ruff/src/lsp.py: ResolvedClientSettings { fix_all: false, organize_imports: false, lint_enable: false, disable_rule_comment_enable: false, fix_violation_enable: false }\n&quot;
+[ERROR][2024-04-05 14:13:15] .../vim/lsp/rpc.lua:789	&quot;rpc&quot;	&quot;/Users/dhruv/work/astral/ruff-test/target/release/ruff&quot;	&quot;stderr&quot;	&quot;   0.045634s INFO ruff_server::session Resolved settings for document file:///Users/dhruv/playground/ruff/src/lsp.py: ResolvedClientSettings { fix_all: false, organize_imports: false, lint_enable: false, disable_rule_comment_enable: true, fix_violation_enable: false }\n&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-05 22:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session/settings.rs</code>:450 on 2024-04-05 22:04</div>
+            <div class="timeline-body"><p>No, that was an oversight. Let's add that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-05 22:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session/settings.rs</code>:151 on 2024-04-05 22:09</div>
+            <div class="timeline-body"><p>I agree that the try operator looks cleaner here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-05 22:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session/settings.rs</code>:94 on 2024-04-05 22:15</div>
+            <div class="timeline-body"><p>I usually prefer to group struct definitions at the top and then put all the <code>impl</code>s below - I think it makes the struct definitions themselves easier to read, and I think it makes sense for the heavily-nested structs here. What I can do, though, is move <code>AllSettings</code> down to be closer to its associated <code>impl</code> block.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-05 22:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session/settings.rs</code>:190 on 2024-04-05 22:18</div>
+            <div class="timeline-body"><p>The function doesn't have to be part of the <code>impl</code> block, but I'd prefer to keep it that way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @snowsignal on 2024-04-05 22:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @snowsignal on 2024-04-05 22:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-05 22:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-05 23:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session.rs</code>:242 on 2024-04-05 23:26</div>
+            <div class="timeline-body"><p>Issue created here: https://github.com/astral-sh/ruff/issues/10797</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:48:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start tracking quoting style in the AST - astral-sh/ruff #10298</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Start tracking quoting style in the AST</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10298">#10298</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-03-08 13:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-08 13:28</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR modifies our AST so that nodes for string literals, bytes literals and f-strings all retain the following information:</p>
+<ul>
+<li>The quoting style used (double or single quotes)</li>
+<li>Whether the string is triple-quoted or not</li>
+<li>Whether the string is raw or not</li>
+</ul>
+<p>This PR is a followup to #10256. Like with that PR, this PR does not, in itself, fix any bugs. However, it means that we will have the necessary information to preserve quoting style and rawness of strings in the <code>ExprGenerator</code> in a followup PR, which will allow us to provide a fix for https://github.com/astral-sh/ruff/issues/7799.</p>
+<p>The PR should be easiest to review commit-by-commit:</p>
+<ol>
+<li>The <a href="https://github.com/astral-sh/ruff/pull/10298/commits/6349648f77b55530047ff76bdfc608f4ab8c58ac">first commit</a> makes the necessary modifications for tracking this information in <code>ast::StringLiteral</code> nodes</li>
+<li>The <a href="https://github.com/astral-sh/ruff/pull/10298/commits/89c6be270267b6ddc8ec2dfb110fc43c39563d6b">second commit</a> does the same for <code>ast::BytesLiteral</code> nodes</li>
+<li>The <a href="https://github.com/astral-sh/ruff/pull/10298/commits/3b31804a29b696a9075e3fa3be3a2abd94e9eef9">third commit</a> does the same for <code>ast::FString</code> nodes</li>
+</ol>
+<p>The information is recorded on the AST nodes using a bitflag field on each node, similarly to how we recorded the information on <code>Tok::String</code>, <code>Tok::FStringStart</code> and <code>Tok::FStringMiddle</code> tokens in #10298. Rather than reusing the bitflag I used for the tokens, however, I decided to create a custom bitflag for each AST node.</p>
+<p>Using different bitflags for each node allows us to make invalid states unrepresentable: it is valid to set a <code>u</code> prefix on a string literal, but not on a bytes literal or an f-string. It also allows us to have better debug representations for each AST node modified in this PR.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2024-03-08 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-03-08 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-08 13:35</div>
+            <div class="timeline-body"><p>Performance is <a href="https://codspeed.io/astral-sh/ruff/branches/AlexWaygood:quotestyle-ast">neutral on all benchmarks</a> according to Codspeed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-08 13:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/token.rs</code>:50 on 2024-03-08 13:38</div>
+            <div class="timeline-body"><p>I couldn't figure out a way to &quot;unpack&quot; the <code>FStringStart</code> node in <code>python.lalrpop</code> while keeping it a tuple variant rather than a struct variant. Not sure if it's possible to do that? If it is, I could make the diff slightly smaller for the third commit :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1240 on 2024-03-08 13:40</div>
+            <div class="timeline-body"><p>Nit. It might be worth exposing <code>quote_style</code> as a method on <code>FString</code>. I think that could be useful in other situations too. I see that even exists.</p>
+<pre><code class="language-suggestion">        f.debug_struct(&quot;FStringFlags&quot;)
+            .field(&quot;quote_style&quot;, &amp;self.quote_style())
+            .field(&quot;raw&quot;, &amp;self.contains(Self::R_PREFIX))
+            .field(&quot;triple_quoted&quot;, &amp;self.contains(Self::TRIPLE_QUOTED))
+            .finish()
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1211 on 2024-03-08 13:41</div>
+            <div class="timeline-body"><p>What's the reason for implementing <code>Default</code> on <code>FString</code>. I'm not sure if <code>Default</code> on a node makes a lot of sense because ideally you set a <code>TextRange</code>. It's also something that no other node has.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1554 on 2024-03-08 13:42</div>
+            <div class="timeline-body"><p>I recommend expsoing prefix and quote_style as methods and reusing the methods here.</p>
+<pre><code class="language-suggestion">        f.debug_struct(&quot;StringLiteralFlags&quot;)
+            .field(&quot;quote_style&quot;, &amp;self.quote_style())
+            .field(&quot;prefix&quot;, &amp;self.prefix())
+            .field(&quot;triple_quoted&quot;, &amp;self.contains(Self::TRIPLE_QUOTED))
+            .finish()
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1597 on 2024-03-08 13:44</div>
+            <div class="timeline-body"><p>Nit,</p>
+<pre><code class="language-suggestion">    pub const fn is_unicode(&amp;self) -&gt; bool { 
+</code></pre>
+<p>Potentially without the <code>string</code> postfix because that's given by the enclosing type. E.g it's also <code>is_triple_quoted</code> and not <code>is_triple_quoted_string</code>. E.g let's compare some call-sites: <code>string_literal.is_unicode_string()</code> seems repetivie in comparison to <code>string_literal.is_unicode()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/node.rs</code>:4433 on 2024-03-08 13:45</div>
+            <div class="timeline-body"><p>I think it was very deliberate that the author used destructuring here. It ensures that whoever adds a new field thinks about whether it needs to be visited or not. This way, rust guides you when adding a new field</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-08 13:47</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_codegen/src/stylist.rs</code>:112 on 2024-03-08 13:47</div>
+            <div class="timeline-body"><p>Can we replace the <code>Quote</code> type with <code>QuoteStyle</code>? I would prefer to minimize the number of <code>Quote</code>like types we have.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/token.rs</code>:50 on 2024-03-08 13:49</div>
+            <div class="timeline-body"><p>This should work (when you change the definition at the end of the <code>python.lalrpop</code> file)</p>
+<pre><code>fstring_start =&gt; token::Tok::FStringStart(&lt;StringKind&gt;),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/ast_expr.rs</code>:224 on 2024-03-08 13:57</div>
+            <div class="timeline-body"><p>Nit: I think I would prefer <code>Unicode</code>, it avoids the <code>string</code> repetition</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/ast_expr.rs</code>:226 on 2024-03-08 13:57</div>
+            <div class="timeline-body"><p>Nit: Empty?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-03-08 14:00</div>
+            <div class="timeline-body"><p>Nice. It would be nice to use the new string flags in the formatter to avoid parsing them from source. But that's nothing for this PR.</p>
+<p>https://github.com/astral-sh/ruff/blob/72bf1c28805787d0aa842fcf493b4406e0e97d2d/crates/ruff_python_formatter/src/string/mod.rs#L121-L144</p>
+<p>I posted a solution that avoids the need to change <code>FStringStart</code>. I would prefer if we keep it as is to reduce the diff size.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-08 14:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/ast_expr.rs</code>:226 on 2024-03-08 14:05</div>
+            <div class="timeline-body"><p>Sure!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-08 14:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/ast_expr.rs</code>:224 on 2024-03-08 14:06</div>
+            <div class="timeline-body"><p>I dislike <code>Unicode</code>, because <em>all</em> strings in Python are unicode... the <code>u</code> prefix does nothing at runtime, it's purely there for Python 2 compatibility. (In fact, it was originally removed in Python 3.0, but they added it back in a later Python 3 version because it was so difficult to write code that worked on both Python 2 and Python 3 if the prefix was gone in Python 3.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-08 14:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/ast_expr.rs</code>:226 on 2024-03-08 14:07</div>
+            <div class="timeline-body"><p>Or maybe <code>None</code>, for the Rustys</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-08 14:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/node.rs</code>:4433 on 2024-03-08 14:08</div>
+            <div class="timeline-body"><p>Thanks, that makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-08 14:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1597 on 2024-03-08 14:08</div>
+            <div class="timeline-body"><p>Same response as https://github.com/astral-sh/ruff/pull/10298#discussion_r1517761719</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-08 14:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/ast_expr.rs</code>:224 on 2024-03-08 14:09</div>
+            <div class="timeline-body"><p>That's fair. But it is the unicode flag ;) Can you do a quick check on what we call it in other places in the code base? It would be nice if it is consistent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-08 14:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/ast_expr.rs</code>:226 on 2024-03-08 14:26</div>
+            <div class="timeline-body"><blockquote>
+<p>Or maybe <code>None</code>, for the Rustys</p>
+</blockquote>
+<p>I think I'm still adjusting to the fact that <code>None</code> isn't a keyword in Rust 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-08 14:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/node.rs</code>:4433 on 2024-03-08 14:41</div>
+            <div class="timeline-body"><p>Unfortunately it is hard to go back to the destructuring approach here, because the <code>flags</code> field I have added is private (and I'd prefer to keep it that way). It's possible to do this:</p>
+<pre><code class="language-rs">        let ast::FString {elements, range: _, ..} = self;
+
+        for fstring_element in elements {
+            visitor.visit_f_string_element(fstring_element);
+        }
+</code></pre>
+<p>But that's no more type-safe than what I have currently</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/node.rs</code>:4433 on 2024-03-08 14:43</div>
+            <div class="timeline-body"><p>I'm a huge fan of encapsulation and would probably have made all fields private if I started working the AST today. But I don't think the field should be private for consistency. All our AST fields are public; I would rather change this holistically or it becomes confusing when using the AST node because you never know if destructuring is possible or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-08 14:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-08 14:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/node.rs</code>:4433 on 2024-03-08 14:46</div>
+            <div class="timeline-body"><p>Hmm. Maybe I could use a newtype, like I did with the bitflag for the tokens in https://github.com/astral-sh/ruff/pull/10256, so that the <code>flag</code> field is public but its internals are private.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-08 14:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_codegen/src/stylist.rs</code>:112 on 2024-03-08 14:57</div>
+            <div class="timeline-body"><p>We could do, but it would require making the <code>ruff_python_literal</code> crate have a dependency on the <code>ruff_python_ast</code> crate (or vice versa), due to this:</p>
+<p>https://github.com/astral-sh/ruff/blob/965adbed4b56a76d6cce02534e47c4d7a2a9cd32/crates/ruff_python_codegen/src/stylist.rs#L123-L130</p>
+<p>If we used <code>ruff_python_ast::str::QuoteStyle</code> there instead of <code>ruff_python_codegen::stylist::Quote</code>, we wouldn't be able to have the implementation of that trait in the <code>ruff_python_codegen</code> crate, since the <code>QuoteStyle</code> enum comes from the <code>ruff_python_literal</code> crate. <code>ruff_python_literal</code> does not currently depend on <code>ruff_python_ast</code> (nor vice versa).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-08 15:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1211 on 2024-03-08 15:00</div>
+            <div class="timeline-body"><p>It should be easy to remove the <code>Default</code> implementations for the nodes if I make the <code>flags</code> field public</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-08 18:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/token.rs</code>:50 on 2024-03-08 18:02</div>
+            <div class="timeline-body"><p>That worked, thanks! Could've sworn I tried that, but oh well...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-08 18:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/ast_expr.rs</code>:224 on 2024-03-08 18:58</div>
+            <div class="timeline-body"><p>I did a grep -- there's a pyupgrade rule called <code>UnicodeKindPrefix</code>, but other than that, I can't see <em>much</em> use of the term <code>Unicode</code> across the codebase to describe this prefix...</p>
+<p>I'd still rather keep this as-is -- I personally would find it really confusing to refer to these strings as &quot;unicode strings&quot;, given that <em>all</em> strings are unicode strings, even without the prefix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-03-08 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-03-08 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-08 19:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:47:55 UTC
+    </footer>
+</body>
+</html>

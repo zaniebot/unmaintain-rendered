@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter: Improve single-with item formatting for Python 3.8 or older - astral-sh/ruff #10276</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter: Improve single-with item formatting for Python 3.8 or older</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10276">#10276</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-03-07 15:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-07 15:30</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR changes how we format <code>with</code> statements with a single with item for Python 3.8 or older. This change is not compatible with Black.</p>
+<p>This is how we format a single-item with statement today</p>
+<pre><code class="language-python">def run(data_path, model_uri):
+    with pyspark.sql.SparkSession.builder.config(
+        key=&quot;spark.python.worker.reuse&quot;, value=True
+    ).config(key=&quot;spark.ui.enabled&quot;, value=False).master(
+        &quot;local-cluster[2, 1, 1024]&quot;
+    ).getOrCreate():
+        # ignore spark log output
+        spark.sparkContext.setLogLevel(&quot;OFF&quot;)
+        print(score_model(spark, data_path, model_uri))
+</code></pre>
+<p>This is different than how we would format the same expression if it is inside any other clause header (<code>while</code>, <code>if</code>, ...):</p>
+<pre><code class="language-python">def run(data_path, model_uri):
+    while (
+        pyspark.sql.SparkSession.builder.config(
+            key=&quot;spark.python.worker.reuse&quot;, value=True
+        )
+        .config(key=&quot;spark.ui.enabled&quot;, value=False)
+        .master(&quot;local-cluster[2, 1, 1024]&quot;)
+        .getOrCreate()
+    ):
+        # ignore spark log output
+        spark.sparkContext.setLogLevel(&quot;OFF&quot;)
+        print(score_model(spark, data_path, model_uri))
+
+</code></pre>
+<p>Which seems inconsistent to me.</p>
+<p>This PR changes the formatting of the single-item with Python 3.8 or older to match that of other clause headers.</p>
+<pre><code class="language-python">def run(data_path, model_uri):
+    with (
+        pyspark.sql.SparkSession.builder.config(
+            key=&quot;spark.python.worker.reuse&quot;, value=True
+        )
+        .config(key=&quot;spark.ui.enabled&quot;, value=False)
+        .master(&quot;local-cluster[2, 1, 1024]&quot;)
+        .getOrCreate()
+    ):
+        # ignore spark log output
+        spark.sparkContext.setLogLevel(&quot;OFF&quot;)
+        print(score_model(spark, data_path, model_uri))
+</code></pre>
+<p>According to our versioning policy, this style change is gated behind a preview flag.</p>
+<h2>Test Plan</h2>
+<p>See added tests.</p>
+<p>Added</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2024-03-07 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-03-07 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-07 15:41</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+2 -2 lines in 1 file in 1 projects; 42 projects unchanged)</p>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+2 -2 lines across 1 file)</summary>
+<p>
+
+<p><a href='https://github.com/rotki/rotki/blob/0e9b5bc8521c98ece568854ed7f45aa8c6c9411f/rotkehlchen/rotkehlchen.py#L1213'>rotkehlchen/rotkehlchen.py~L1213</a></p>
+<pre><code class="language-diff">         if oracle != HistoricalPriceOracle.CRYPTOCOMPARE:
+             return  # only for cryptocompare for now
+ 
+-        with (
+-            contextlib.suppress(UnknownAsset)
++        with contextlib.suppress(
++            UnknownAsset
+         ):  # if suppress -&gt; assets are not crypto or fiat, so we can't query cryptocompare  # noqa: E501
+             self.cryptocompare.create_cache(
+                 from_asset=from_asset,
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+8 -7 lines in 2 files in 2 projects; 41 projects unchanged)</p>
+<details><summary><a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+6 -5 lines across 1 file)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/mlflow/mlflow/blob/13f5cf13e1a2bfd8c9d699534dc7211c5fd1ca93/examples/flower_classifier/score_images_spark.py#L81'>examples/flower_classifier/score_images_spark.py~L81</a></p>
+<pre><code class="language-diff"> @cli_args.MODEL_URI
+ @click.argument(&quot;data-path&quot;)
+ def run(data_path, model_uri):
+-    with pyspark.sql.SparkSession.builder.config(
+-        key=&quot;spark.python.worker.reuse&quot;, value=True
+-    ).config(key=&quot;spark.ui.enabled&quot;, value=False).master(
+-        &quot;local-cluster[2, 1, 1024]&quot;
+-    ).getOrCreate() as spark:
++    with (
++        pyspark.sql.SparkSession.builder.config(key=&quot;spark.python.worker.reuse&quot;, value=True)
++        .config(key=&quot;spark.ui.enabled&quot;, value=False)
++        .master(&quot;local-cluster[2, 1, 1024]&quot;)
++        .getOrCreate()
++    ) as spark:
+         # ignore spark log output
+         spark.sparkContext.setLogLevel(&quot;OFF&quot;)
+         print(score_model(spark, data_path, model_uri))
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+2 -2 lines across 1 file)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/rotki/rotki/blob/0e9b5bc8521c98ece568854ed7f45aa8c6c9411f/rotkehlchen/rotkehlchen.py#L1211'>rotkehlchen/rotkehlchen.py~L1211</a></p>
+<pre><code class="language-diff">         if oracle != HistoricalPriceOracle.CRYPTOCOMPARE:
+             return  # only for cryptocompare for now
+ 
+-        with (
+-            contextlib.suppress(UnknownAsset)
++        with contextlib.suppress(
++            UnknownAsset
+         ):  # if suppress -&gt; assets are not crypto or fiat, so we can't query cryptocompare  # noqa: E501
+             self.cryptocompare.create_cache(
+                 from_asset=from_asset,
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-07 17:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__with.py.snap</code>:727 on 2024-03-07 17:45</div>
+            <div class="timeline-body"><p>This change might be controversial. I would say it's not ideal but the best we can do with the limitations given by Python 3.8, other than not parenthesizing and exceeding the configured line width.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "single with item pre 39" to "Formatter: Improve single-with item formatting for Python 3.8 or older" by @MichaReiser on 2024-03-07 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-03-08 11:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2024-03-08 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-03-08 23:50</div>
+            <div class="timeline-body"><p>This seems reasonable to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-08 23:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-08 23:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-08 23:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:47:55 UTC
+    </footer>
+</body>
+</html>

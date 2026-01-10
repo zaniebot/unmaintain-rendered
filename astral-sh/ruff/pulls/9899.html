@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement RUF028 to detect useless formatter suppression comments - astral-sh/ruff #9899</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement RUF028 to detect useless formatter suppression comments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9899">#9899</a>
+        opened by <a href="https://github.com/snowsignal">@snowsignal</a>
+        on 2024-02-08 19:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-02-08 19:25</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<p>Fixes #6611</p>
+<h2>Summary</h2>
+<p>This lint rule spots comments that are <em>intended</em> to suppress or enable the formatter, but will be ignored by the Ruff formatter.</p>
+<p>We borrow some functions the formatter uses for determining comment placement / putting them in context within an AST.</p>
+<p>The analysis function uses an AST visitor to visit each comment and attach it to the AST. It then uses that context to check:</p>
+<ol>
+<li>Is this comment in an expression?</li>
+<li>Does this comment have bad placement? (e.g. a <code># fmt: skip</code> above a function instead of at the end of a line)</li>
+<li>Is this comment redundant?</li>
+<li>Does this comment actually suppress any code?</li>
+<li>Does this comment have ambiguous placement? (e.g. a <code># fmt: off</code> above an <code>else:</code> block)</li>
+</ol>
+<p>If any of these are true, a violation is thrown. The reported reason depends on the order of the above check-list: in other words, a <code># fmt: skip</code> comment on its own line within a list expression will be reported as being in an expression, since that reason takes priority.</p>
+<p>The lint suggests removing the comment as an unsafe fix, regardless of the reason.</p>
+<h2>Test Plan</h2>
+<p>A snapshot test has been created.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @snowsignal on 2024-02-08 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-02-08 19:28</div>
+            <div class="timeline-body"><h3>Draft Checklist</h3>
+<ul>
+<li>[x] Snapshot test output isn't totally correct yet. We need to correctly resolving dangling comments at the end of indented bodies.</li>
+<li>[x] A few more edge cases need to be added to ensure that all permutations are accounted for.</li>
+<li>[x] We need to check if there's any other scenarios to report, and whether those need new error messages.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-02-14 20:22</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/jane/formatter/useless-noqa">CodSpeed Performance Report</a></h2>
+<h3>Merging #9899 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>jane/formatter/useless-noqa</code> (8fc186e) with <code>main</code> (36bc725)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 30</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @snowsignal on 2024-02-14 22:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-15 13:01</div>
+            <div class="timeline-body"><p>Uhh, it seems there are many failing tests. I'm not sure what happened. It doesn't seem like you changed much on the formatter side.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-02-15 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-02-15 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/module.rs</code>:12 on 2024-02-15 13:12</div>
+            <div class="timeline-body"><p>I would avoid calling it <code>noqa</code> because the formatter suppression comments are not <code>noqa</code> comments (they're <code>fmt: off</code>, <code>fmt: skip</code>, <code>yapf: disable</code> etc but not <code>noqa: RUF001</code>).</p>
+<p>I would also prefer the word invalid over ignored. Maybe <code>InvalidFormatterSuppressionComment</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/noqa.rs</code>:203 on 2024-02-15 13:13</div>
+            <div class="timeline-body"><p>Nit: Maybe move out of the <code>noqa</code> module?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/lib.rs</code>:119 on 2024-02-15 14:15</div>
+            <div class="timeline-body"><p>Nit: I would move this into <code>comments/mod</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_trivia/src/suppression.rs</code>:17 on 2024-02-15 14:17</div>
+            <div class="timeline-body"><p>Nit: I would call this <code>from_str</code> because I wouldn't think of a <code>str</code> as a slice (yes, it is a byte slice, but that's somewhat hidden away).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_trivia/src/suppression.rs</code>:16 on 2024-02-15 14:17</div>
+            <div class="timeline-body"><p>The documentation looks incomplete. I don't know if that was already the case before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/mod.rs</code>:179 on 2024-02-15 14:19</div>
+            <div class="timeline-body"><p>Nit: Maybe just <code>text</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_trivia/src/suppression.rs</code>:92 on 2024-02-15 14:21</div>
+            <div class="timeline-body"><p><code>CommentLinePosition</code> is conceptually independent of suppression comments (it's used for all sort of comments in the formatter). Maybe rename the module to <code>comments</code> instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/lib.rs</code>:123 on 2024-02-15 14:23</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">                SuppressionKind::from_slice(comment.slice_source(source))),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/visitor.rs</code>:96 on 2024-02-15 14:28</div>
+            <div class="timeline-body"><p>Nit: The name <code>text_position</code> stands in contrast with <code>line_position</code> and raises the question how  <code>line_position</code> is different or the same as <code>text_position</code> (The old function name is an old relict before a rename). Maybe name the method <code>from_text</code> or <code>from_str</code>?</p>
+<pre><code class="language-suggestion">                line_position: CommentLinePosition::from_str(
+                    *comment_range,
+                    self.source_code.as_str(),
+                ),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/ignored_formatter_noqa.rs</code>:50 on 2024-02-15 15:21</div>
+            <div class="timeline-body"><p>Reading the rule documentation helped me understand why <code>InvalidSuppressionComment</code> isn't a good name because it also recognise comments that are sementically valid but are useless. We could split the rule into multiple rules as I remember you suggested when starting to work on the rule:</p>
+<ul>
+<li><code>UslessFormatterSuppressionComment</code>: Warns about sementically correct suppression comments that are useless: Disabling formatting at the end of a block, enabling formatting when not inside a suppression, disabling formatting in an already suppressed range.</li>
+<li><code>InvalidFormatterSuppressionComment</code>: Errors for comments that are sementically invalid: Suppression comments in expression positions, skip comments that aren't at the end of the line etc.</li>
+<li><code>UnclosedFormatterSuppressionComment</code>: Warns about <code>fmt: off</code> comments without a matching <code>fmt: on</code> comment</li>
+</ul>
+<p>The benefit of splitting the rules is that <code>InvalidFormatterSuppressionComment</code> warns about a correctness issue where the other two are more opinionated (it's suspicious but not necessarily incorrect). Users may also want to use different severity levels for the rules.</p>
+<p>I think you proposed this once. Maybe <code>UselessFormatterSuppressionComment</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/ignored_formatter_noqa.rs</code>:87 on 2024-02-15 15:23</div>
+            <div class="timeline-body"><p>Would it be worth to filter <code>comment_ranges</code> to ranges that are suppression comments and exit early if there are no suppression comments in the document? We could even consider collecting the ranges with their suppression kind into a vec (or SmallVec) because most files don't contain suppression comments and it's most important to exit early if a file contains no suppression comments.</p>
+<p>Edit: I can see now that the visitor does it to some extend. I suspect that the visitor's handling is still more expensive because it already allocates a bunch of data structures ahead of time AND visits every statement at the root level, but skips traversing into them.</p>
+<p>Moving the logic out might also help with the <code>filter_map</code> in the <code>SuppressionCommentVisitor</code> because the visitor can then just become generic over the <code>Iterator</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/suppression_comment_visitor.rs</code>:44 on 2024-02-15 15:33</div>
+            <div class="timeline-body"><p>Nit: I think I would prefer defining our own <code>Iterator</code> here over using a `Box ed function</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/suppression_comment_visitor.rs</code>:42 on 2024-02-15 15:42</div>
+            <div class="timeline-body"><p>Nit: The reason why the <code>CommentsVisitor</code> in the formatter accepts a <code>builder</code> is because we want to display the comments in the playground and that requires us having a way to collect them. I wonder if it would be easier if the logic would be merged, or at least the <code>check_comment</code> functionality</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/suppression_comment_visitor.rs</code>:162 on 2024-02-15 15:48</div>
+            <div class="timeline-body"><p>Comparing nodes performs a deep comparision which is fairly expensive. You want to use <code>AnyNodeRef::ptr_eq()</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/suppression_comment_visitor.rs</code>:21 on 2024-02-15 15:49</div>
+            <div class="timeline-body"><p>I think it would be helpful to explain the visitor in more detail, especially because it captures additional state (<code>comments_in_scope</code>) that isn't explained and I struggle understanding what it is used for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/suppression_comment_visitor.rs</code>:195 on 2024-02-15 15:57</div>
+            <div class="timeline-body"><p>Delete the <code>allow(dead_code)</code></p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/suppression_comment_visitor.rs</code>:195 on 2024-02-15 15:57</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/suppression_comment_visitor.rs</code>:198 on 2024-02-15 15:59</div>
+            <div class="timeline-body"><p>It might be worthwile to explain this struct and it's equality constraints</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/suppression_comment_visitor.rs</code>:135 on 2024-02-15 15:59</div>
+            <div class="timeline-body"><p>Could you add a comment explaining why we break for comments that are not own line?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/suppression_comment_visitor.rs</code>:202 on 2024-02-15 16:18</div>
+            <div class="timeline-body"><p>Nit: <code>previous_state</code> is a very generic name, not telling me much about what it is without reading the code.</p>
+<p>What I understand from the code is that this is the suppression kind of the previous suppression comment that has a shared enclosing node? Can we refine the name and maybe document the field to explain what it is?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/ignored_formatter_noqa.rs</code>:90 on 2024-02-15 16:27</div>
+            <div class="timeline-body"><p>It seems the main reason to use the <code>BTreeMap</code> here is so that we can emit the Diagnostics in order. I don't think we're making use of the key's uniquness to deduplicate data, because we should capture each comment only once.</p>
+<p>That's why I would prefer using a simple <code>Vec</code> and do a manual sorting before emitting the diagnostic. It makes the sorting more explicit (and removes the need for an <code>Eq</code>, <code>Ord</code> of <code>SuppressionCommentData</code>) and has the advantage that a <code>Vec</code> is cheaper to construct or resize.</p>
+<p>Related. It seems that we only use the <code>TextRange</code> from <code>SuppressionCommentData</code> and no other fields. So it should be possible to change this to <code>Vec&lt;(TextRange, IgnoredReason)&gt;</code> which avoids writting a lot of unnecessary data. It also shows that <code>parent</code> is actually unused on <code>SuppressionCommentData</code>, maybe there's more code that can be deleted</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/ignored_formatter_noqa.rs</code>:128 on 2024-02-15 16:30</div>
+            <div class="timeline-body"><p>Would this return a false negative if you have</p>
+<pre><code class="language-python">if True:
+    # fmt: off
+    test # fmt: skip
+    # fmt: off
+</code></pre>
+<p>or</p>
+<pre><code class="language-python">if True:
+    # fmt: off
+    test 
+    # fmt: skip
+    # fmt: off
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/ignored_formatter_noqa.rs</code>:99 on 2024-02-15 16:31</div>
+            <div class="timeline-body"><p><code>comments_in_scope</code> doesn't seem to be used</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/ignored_formatter_noqa.rs</code>:1 on 2024-02-15 16:41</div>
+            <div class="timeline-body"><p>Can we delete this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/suppression_comment_visitor.rs</code>:52 on 2024-02-15 16:56</div>
+            <div class="timeline-body"><p>Using <code>comment_ranges.len()</code> will almost always allocate a too large <code>Vec</code> because most of the comments in a file are not suppression comments. Keeping it as is makes sense if we only pass the suppression comments to <code>new</code> instead of all comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/suppression_comment_visitor.rs</code>:30 on 2024-02-15 17:00</div>
+            <div class="timeline-body"><p>It seems we always push <code>Some(node)</code>, so using <code>Option&lt;AnyNodeRef&gt;</code> here is unnecessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/ignored_formatter_noqa.rs</code>:58 on 2024-02-15 17:09</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            &quot;This suppression comment will be ignored by the formatter because {}&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2024-02-15 17:48</div>
+            <div class="timeline-body"><p>Nice work. You make it look less complicated than it is. There are some perf opportunities and simplifications that we can do to the code. But there are also still a few cases that are not handled correctly which make it difficult to assess if other cases are handled correctly. We should have a look at those.</p>
+<p>I played around with it in the playground and found a few cases that need improvement:</p>
+<pre><code class="language-python">def body():
+    # fmt: off
+    test
+    # fmt: on
+
+    test2
+</code></pre>
+<p>The rule reports that the last <code>fmt: on</code> comment is unnecessary because formatting is already enabled. This is not the case, formatting was disabled</p>
+<pre><code class="language-python">The rule reports that the `fmt: off` in the `if True` body is unused but that's a valid use. 
+</code></pre>
+<p>One check the rule doesn't cover today but I'm okay leaving to an extension is missing <code>fmt: on</code> comments to re-enable formatting without relying on the automatic re-enabling at the end of a block.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/src/rules/ruff/rules/suppression_comment_visitor.rs</code>:44 on 2024-02-17 05:43</div>
+            <div class="timeline-body"><p>I feel like this gets complicated because of the closure that <code>FilterMap</code> needs, though. There's no easy way to mask the closure type without boxing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/src/rules/ruff/rules/suppression_comment_visitor.rs</code>:42 on 2024-02-17 05:48</div>
+            <div class="timeline-body"><p>I personally like this pattern because it decouples the context generation from analysis. It makes things easier to understand IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/src/rules/ruff/rules/ignored_formatter_noqa.rs</code>:50 on 2024-02-17 05:58</div>
+            <div class="timeline-body"><p>I think one of the reasons I wanted these scenarios under one rule is because invalid comments actually affect how we handle comment state. Like, for example, if a comment is between a decorator node and a function definition, we shouldn't 'count' that as a valid comment. Here's an example of what I mean:</p>
+<pre><code class="language-python">@decorator
+# fmt: off
+def func():
+    # fmt: on
+    pass
+</code></pre>
+<p>In this case, I think we can be smart and warn about <em>both</em> comments on the first pass, since the first comment will be ignored, meaning the second comment is useless here.</p>
+<p>However I understand that users might want to disable/enable some subset of errors. I think one way we could approach this would be to visit the AST once, collect all the errors, and then have each rule filter by the errors associated with it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-02-17 08:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-19 08:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/ignored_formatter_noqa.rs</code>:50 on 2024-02-19 08:02</div>
+            <div class="timeline-body"><p>That makes sense. Yeah, we have other rules where we have a single &quot;implementation&quot; and then branch on the error case to decide which diagnostic to create. That way we avoid code-duplication (and runtime overhead) as well as duplicated warnings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-02-22 20:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/src/rules/ruff/rules/ignored_formatter_noqa.rs</code>:128 on 2024-02-22 20:27</div>
+            <div class="timeline-body"><p>The first case seems to be a false negative, at least.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @snowsignal on 2024-02-23 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-02-23 21:45</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered linter errors</strong>. (no lint changes; 1 project error)</p>
+<details><summary><a href="https://github.com/indico/indico">indico/indico</a> (error)</summary>
+<p>
+
+<pre><code>ruff failed
+  Cause: Rule `S410` was removed and cannot be selected.
+</code></pre>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+2 -0 violations, +0 -0 fixes in 1 projects; 1 project error; 41 projects unchanged)</p>
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/DisnakeDev/disnake/blob/cc1776a76788ac684f7f03bde720b5e22b21606c/disnake/ext/commands/params.py#L481'>disnake/ext/commands/params.py:481:9:</a> RUF028 This suppression comment is invalid because it cannot be in an expression, pattern, argument list, or other non-statement
++ <a href='https://github.com/DisnakeDev/disnake/blob/cc1776a76788ac684f7f03bde720b5e22b21606c/disnake/ext/commands/params.py#L498'>disnake/ext/commands/params.py:498:9:</a> RUF028 This suppression comment is invalid because it cannot be in an expression, pattern, argument list, or other non-statement
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/indico/indico">indico/indico</a> (error)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre><code>ruff failed
+  Cause: Rule `S410` was removed and cannot be selected.
+</code></pre>
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF028 | 2 | 2 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 2 project errors)</p>
+<details><summary><a href="https://github.com/indico/indico">indico/indico</a> (error)</summary>
+<p>
+
+<pre><code>ruff failed
+  Cause: Rule `S410` was removed and cannot be selected.
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to read examples/How_to_handle_rate_limits.ipynb: Expected a Jupyter Notebook, which must be internally stored as JSON, but this file isn't valid JSON: trailing comma at line 47 column 4
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 2 project errors)</p>
+<details><summary><a href="https://github.com/indico/indico">indico/indico</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>ruff failed
+  Cause: Rule `S410` was removed and cannot be selected.
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to read examples/How_to_handle_rate_limits.ipynb: Expected a Jupyter Notebook, which must be internally stored as JSON, but this file isn't valid JSON: trailing comma at line 47 column 4
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/invalid_formatter_suppression_comment.rs</code>:141 on 2024-02-26 09:49</div>
+            <div class="timeline-body"><p>I think this is the same condition, right?</p>
+<pre><code class="language-suggestion">        if comment.kind == SuppressionKind::Skip &amp;&amp; !comment.line_position.is_end_of_line() {
+            return Err(IgnoredReason::SkipHasToBeTrailing);
+        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/suppression_comment_visitor.rs</code>:141 on 2024-02-26 09:56</div>
+            <div class="timeline-body"><p>Can we add some inline documentation why we're doing this check? It seems we're testing if the comment and node start on the same line. Why do we stop as soon as this is no longer the case? What about comments that are on the same line as the node's end?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/suppression_comment_visitor.rs</code>:252 on 2024-02-26 09:58</div>
+            <div class="timeline-body"><p>Nit: Maybe move to <code>ruff_python_trivia::comments</code> (preferred because it's also used in the formatter) or to <code>invalid_formatter_suppression_comments</code> because it isn't used in this visitor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/suppression_comment_visitor.rs</code>:130 on 2024-02-26 09:58</div>
+            <div class="timeline-body"><p>Should this use <code>own_line_comment_indentation</code>? Or do we don't have to because we reimplement the logic but do it comment by comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/suppression_comment_visitor.rs</code>:200 on 2024-02-26 10:03</div>
+            <div class="timeline-body"><p>Nit: I think it would be helpful to explain the fields in more detail or refer to the formatter struct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/invalid_formatter_suppression_comment.rs</code>:241 on 2024-02-26 10:08</div>
+            <div class="timeline-body"><p>Nit: Can we make this a method on <code>AnyNodeRef</code>and reuse it between the formatter and this rule?</p>
+<pre><code class="language-suggestion">/// Returns `true` if `statement` is the first statement in an alternate `body` (e.g. the else of an if statement)
+fn is_first_statement_in_alternate_body(&amp;self, statement: AnyNodeRef) -&gt; bool {
+    match self {
+        AnyNodeRef::StmtFor(ast::StmtFor { orelse, .. })
+        | AnyNodeRef::StmtWhile(ast::StmtWhile { orelse, .. }) =&gt; {
+            are_same_optional(statement, orelse.first())
+        }
+
+        AnyNodeRef::StmtTry(ast::StmtTry {
+            handlers,
+            orelse,
+            finalbody,
+            ..
+        }) =&gt; {
+            are_same_optional(statement, handlers.first())
+                || are_same_optional(statement, orelse.first())
+                || are_same_optional(statement, finalbody.first())
+        }
+
+        AnyNodeRef::StmtIf(ast::StmtIf {
+            elif_else_clauses, ..
+        }) =&gt; are_same_optional(statement, elif_else_clauses.first()),
+        _ =&gt; false,
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/invalid_formatter_suppression_comment.rs</code>:165 on 2024-02-26 10:15</div>
+            <div class="timeline-body"><p>The following isn't supported by the formatter but doesn't get flagged</p>
+<pre><code class="language-python">class Test:
+    @classmethod
+    # fmt: off
+    def cls_method_a(    cls) -&gt; None:
+        pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/invalid_formatter_suppression_comment.rs</code>:135 on 2024-02-26 10:16</div>
+            <div class="timeline-body"><p>We may need to change the condition to whether the enclosing statement is not a statement to also catch</p>
+<pre><code class="language-python">    def cls_method_a(
+            # fmt: off
+            cls) -&gt; None:
+        pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/invalid_formatter_suppression_comment.rs</code>:274 on 2024-02-26 10:18</div>
+            <div class="timeline-body"><p>Is this the terminology we use in the documentation too? <code>ambigious</code> region kind of makes sense but is hard to understand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF028.py</code>:63 on 2024-02-26 10:21</div>
+            <div class="timeline-body"><p>Can we add an example for a <code>fmt: skip</code> that is combined with another suppression comment (it works ;), just to have this tested:</p>
+<pre><code class="language-python">    def cls_method_a(
+            # fmt: off
+            cls) -&gt; None: 
+        # noqa: test # fmt: skip
+        pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-02-26 10:22</div>
+            <div class="timeline-body"><p>I really like how you narrowed down the scope of the rule. This looks good to me. There's one issue around suppression comments in nodes that aren't expressions that we need solving but this is ready otherwise</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.3.0" by @MichaReiser on 2024-02-27 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-02-27 16:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/src/rules/ruff/rules/invalid_formatter_suppression_comment.rs</code>:141 on 2024-02-27 16:14</div>
+            <div class="timeline-body"><p>Oops, my bad.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-02-27 16:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/src/rules/ruff/rules/suppression_comment_visitor.rs</code>:141 on 2024-02-27 16:17</div>
+            <div class="timeline-body"><p>Sure, I could definitely add some documentation here. This checks, after we've determined that this comment is at the end of a line, whether or not it's the same line as the node we're moving out of. For example:</p>
+<pre><code class="language-python">def empty():
+    pass # fmt: skip
+</code></pre>
+<p>And if it's not, the <code>break</code> means &quot;there are no more comments to check for this node.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-02-27 16:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/src/rules/ruff/rules/suppression_comment_visitor.rs</code>:252 on 2024-02-27 16:48</div>
+            <div class="timeline-body"><p>We can't move it to the trivia crate, unfortunately, because of a circular dependency with <code>ruff_python_ast</code>. <code>invalid_formatter_suppression_comments</code> could work, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-02-27 17:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/src/rules/ruff/rules/suppression_comment_visitor.rs</code>:130 on 2024-02-27 17:02</div>
+            <div class="timeline-body"><p>Right - since we process each comment in order, it's assumed that any previous comments would have had valid indentation as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-02-27 18:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/src/rules/ruff/rules/suppression_comment_visitor.rs</code>:130 on 2024-02-27 18:33</div>
+            <div class="timeline-body"><p>That does leave the edge case where an indented non-suppression comment wouldn't be properly accounted for - so on second thought, I'll re-introduce <code>own_line_comment_indentation</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-02-27 18:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF028.py</code>:63 on 2024-02-27 18:59</div>
+            <div class="timeline-body"><p>It seems like this fails because <code># fmt: skip</code> is treated like its on its own line. Is that not supposed to be the case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-28 08:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF028.py</code>:63 on 2024-02-28 08:00</div>
+            <div class="timeline-body"><p>Ah yeah sorry, The comment should be at the end of the function header</p>
+<pre><code class="language-python">    def cls_method_a(
+            cls) -&gt; None:  # noqa: test # fmt: skip
+        pass
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @snowsignal on 2024-02-28 19:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @snowsignal on 2024-02-28 19:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-28 19:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:47:50 UTC
+    </footer>
+</body>
+</html>

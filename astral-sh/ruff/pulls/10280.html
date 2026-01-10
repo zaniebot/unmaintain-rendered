@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix E203 false positive for slices in format strings - astral-sh/ruff #10280</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix E203 false positive for slices in format strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10280">#10280</a>
+        opened by <a href="https://github.com/sciyoshi">@sciyoshi</a>
+        on 2024-03-07 18:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sciyoshi">@sciyoshi</a> on 2024-03-07 18:26</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>The code later in this file that checks for slices relies on the stack of brackets to determine the position. I'm not sure why format strings were being excluded from this, but the tests still pass with these match guards removed.</p>
+<p>Closes #10278</p>
+<h2>Test Plan</h2>
+<p>~Still needs a test.~ Test case added for this example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-07 18:46</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -2 violations, +0 -0 fixes in 1 projects; 42 projects unchanged)</p>
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+0 -2 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/RasaHQ/rasa/blob/ef5ed2e6aa080829b6c7744baffc0992fb59ca92/rasa/nlu/utils/bilou_utils.py#L292'>rasa/nlu/utils/bilou_utils.py:292:58:</a> E203 [*] Whitespace before ':'
+- <a href='https://github.com/RasaHQ/rasa/blob/ef5ed2e6aa080829b6c7744baffc0992fb59ca92/rasa/nlu/utils/bilou_utils.py#L294'>rasa/nlu/utils/bilou_utils.py:294:49:</a> E203 [*] Whitespace before ':'
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| E203 | 2 | 0 | 2 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2024-03-07 21:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-07 21:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-07 22:05</div>
+            <div class="timeline-body"><p>I added this in https://github.com/astral-sh/ruff/pull/8654, but I'm not sure why.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-07 22:07</div>
+            <div class="timeline-body"><p>I probably copied it from <code>missing_whitespace</code>, but again, I don't know why.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-03-07 22:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-07 22:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-07 22:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-07 22:09</div>
+            <div class="timeline-body"><p>I think this is correct, though @dhruvmanila can check my work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-08 04:08</div>
+            <div class="timeline-body"><p>I think this is correct as well, thanks.</p>
+<p>The reason the logic exists in <code>missing_whitespace</code> is to avoid adding whitespace <em>after</em> <code>:</code> in cases where there's a format specifier in a f-string because it then changes the semantic meaning (<code>f&quot;{data:.3f}&quot;</code> vs <code>f&quot;{data: .3f}&quot;</code>).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:47:55 UTC
+    </footer>
+</body>
+</html>

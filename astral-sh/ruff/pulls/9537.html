@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use pointer casting and transmute for fast `Tok` to `TokenKind` conversion - astral-sh/ruff #9537</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use pointer casting and transmute for fast <code>Tok</code> to <code>TokenKind</code> conversion</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9537">#9537</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-01-15 19:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-15 19:53</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR changes the implementation of <code>TokenKind::from_token</code> to use the <code>Tok</code> discriminant
+and <code>transmute</code> instead of an explicit match statement.</p>
+<p>The reason is that a fast conversion between the two is desired. It sometimes shows up in the
+logical lines benchmarks (and blank lines soon?) and the new parser calls the conversion for every token.</p>
+<p>This has the unfortunate downside that it increases the <code>Tok</code> size from 32 bytes to 40 bytes, which kind of makes sense.</p>
+<h2>Test Plan</h2>
+<p><strong>LLVM Lines</strong></p>
+<ul>
+<li>This PR: 8</li>
+<li>Main: 216</li>
+</ul>
+<p>That's a TODO. I need to write a test that tests the conversion for every possible token.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-01-15 20:06</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/transmute-between-token-and-token-kind">CodSpeed Performance Report</a></h2>
+<h3>Merging #9537 will <strong>degrade performances by 6.73%</strong></h3>
+<p><sub>Comparing <code>transmute-between-token-and-token-kind</code> (4ffcf25) with <code>main</code> (b983ab1)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 2</code> regressions
+<code>✅ 28</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/transmute-between-token-and-token-kind">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>transmute-between-token-and-token-kind</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>parser[numpy/ctypeslib.py]</code> | 12.2 ms | 13.1 ms | -6.73% |
+| ❌ | <code>parser[large/dataset.py]</code> | 70.8 ms | 73.8 ms | -4.02% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-01-15 20:17</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-15 20:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_parser/src/token.rs</code>:903 on 2024-01-15 20:34</div>
+            <div class="timeline-body"><p>How sure are we that this was hurting us perf-wise? Another thing to check is whether this was actually doing branching or if the compiler was smart enough to optimize this down without needing <code>unsafe</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-15 20:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/token.rs</code>:903 on 2024-01-15 20:36</div>
+            <div class="timeline-body"><p>That's what I tried to figure out with this PR, but our benchmarks aren't stable enough right now to give much signal. Maybe something to wait and re-test with the new parser.</p>
+<p>I was hoping that Rust is clever enough but the <code>match</code> version generates 200 LLVM lines in release where this version only generates 8 (and likely without any branching which would be beneficial in hot loops where each token has a different kind).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-15 21:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_parser/src/token.rs</code>:903 on 2024-01-15 21:39</div>
+            <div class="timeline-body"><p>Not sure about the LLVM IR, but it looks like the actual code generated should be pretty good: https://godbolt.org/z/8a4Ks3e19</p>
+<p>(I've run into this issue before and have tried the same sort of optimization you're trying here, and I don't recall ever being successful. Probably because the compiler is smart enough to optimize this.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-15 21:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/token.rs</code>:903 on 2024-01-15 21:52</div>
+            <div class="timeline-body"><p>Thx. I take a closer look tomorrow and plan to do some profiling on the new parser before perusing this more</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-02-02 10:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-29 13:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:47:48 UTC
+    </footer>
+</body>
+</html>

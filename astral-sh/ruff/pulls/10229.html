@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove `Expr` postfix from `ExprNamed`, `ExprIf`, and `ExprGenerator` - astral-sh/ruff #10229</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove <code>Expr</code> postfix from <code>ExprNamed</code>, <code>ExprIf</code>, and <code>ExprGenerator</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10229">#10229</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-03-04 11:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-04 11:16</div>
+            <div class="timeline-body"><p>The expression types in our AST are called <code>ExprYield</code>, <code>ExprAwait</code>, <code>ExprStringLiteral</code> etc, except <code>ExprNamedExpr</code>, <code>ExprIfExpr</code> and <code>ExprGenratorExpr</code>. This seems to align with <a href="https://docs.python.org/3/library/ast.html">Python AST's naming</a> but feels inconsistent and excessive.</p>
+<p>This PR removes the <code>Expr</code> postfix from <code>ExprNamedExpr</code>, <code>ExprIfExpr</code>, and <code>ExprGeneratorExpr</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Remove `Expr` postfix from `ExprNamed`" to "Remove `Expr` postfix from `ExprNamed`, `ExprIf`, and `ExprGenerator`" by @MichaReiser on 2024-03-04 11:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-03-04 11:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-04 11:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1520 on 2024-03-04 11:30</div>
+            <div class="timeline-body"><p>This one specifically <em>does</em> feel slightly less clear to me (not sure why)...</p>
+<p>As an alternative, although the &quot;walrus operator&quot; has strictlyy-speaking only ever been a nickname for this piece of syntax -- we <em>could</em> consider calling this variant <code>Expr::Walrus</code>. It would be immediately clear to the reader what this variant is referring to!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-04 11:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1520 on 2024-03-04 11:34</div>
+            <div class="timeline-body"><p>I don't mind <code>Walrus</code> and might prefer it over <code>NamedExpr</code> but it diverges from the Python AST naming (wouldn't be the first time, we renamed <code>FormattedString</code> to <code>FString</code>). The only issue it has is that it is not very approachable for users new to Python: I remember last year at PyCon when someone started talking to me about walrus operators and I was completely lost.</p>
+<p>I would prefer to keep any potential rename to its own PR. It might deserve a dedicated discussion</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-03-04 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-04 11:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1520 on 2024-03-04 11:42</div>
+            <div class="timeline-body"><blockquote>
+<p>I remember last year at PyCon when someone started talking to me about walrus operators and I was completely lost.</p>
+</blockquote>
+<p>Ah, but <em>I</em> see that as a point in <em>favour</em> of renaming it to <code>Walrus</code> ;) I think approximately 0 Python users refer to <code>:=</code> as the &quot;named expression operator&quot;, or the &quot;assignment expression operator&quot;. And just about every mention in CPython's docs refers to it as &quot;the assignment expression operator (also known as the 'walrus operator')&quot;. If we use the more common term for it internally, maybe we'll get less confused when people try to talk to us about it at PyCon ;)</p>
+<p>But I'm fine with postponing renaming the variant to a future PR!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-03-04 11:47</div>
+            <div class="timeline-body"><p>LGTM</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1520 on 2024-03-04 11:47</div>
+            <div class="timeline-body"><p>Assignment expression operator is interesting, that sounds more approachable by non python users ;) But let's decide on a name later</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-04 11:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-03-04 11:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-03-04 11:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-04 11:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-04 11:55</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:47:54 UTC
+    </footer>
+</body>
+</html>

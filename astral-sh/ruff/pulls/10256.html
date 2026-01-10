@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track quoting style in the tokenizer - astral-sh/ruff #10256</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Track quoting style in the tokenizer</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10256">#10256</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-03-06 19:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-06 19:39</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR changes the tokenizer so that all information about quoting style and prefixes is captured in a bitflag; this bitflag is then stored as a field on <code>String</code>, <code>FStringStart</code>, <code>FStringMiddle</code> and <code>FStringEnd</code> tokens.</p>
+<p>By itself, this change does not fix any bugs. However, it's a necessary first step if we want to start tracking this information in the AST, which is necessary if we want to solve #7799 in a principled and universal way.</p>
+<p>It should be easiest to review this PR one commit at a time:</p>
+<ol>
+<li>The first commit adds the bitflag and starts storing it on <code>String</code> tokens.</li>
+<li>The second commit also changes f-string tokens so that they store the same information</li>
+<li>The third commit applies various cleanups and simplifications to various linter rules that are now possible with this refactor.</li>
+</ol>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-03-06 19:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-06 19:51</div>
+            <div class="timeline-body"><p>It looks like some of the benchmarks are showing a 2-3% slowdown for <code>lexer::Lexer::next_token()</code>: https://codspeed.io/astral-sh/ruff/branches/AlexWaygood:quotestyle-tokenizer. I'll see tomorrow if there's anything I can do to ameliorate that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-06 19:58</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+2 -0 violations, +0 -0 fixes in 1 projects; 42 projects unchanged)</p>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/rotki/rotki/blob/e312ac2483317ceec62cf62ff5c58bbcef8dcffe/rotkehlchen/chain/ethereum/modules/eigenlayer/constants.py#L9'>rotkehlchen/chain/ethereum/modules/eigenlayer/constants.py:9:36:</a> Q004 [*] Unnecessary escape on inner quote character
++ <a href='https://github.com/rotki/rotki/blob/e312ac2483317ceec62cf62ff5c58bbcef8dcffe/rotkehlchen/chain/evm/decoding/cowswap/decoder.py#L41'>rotkehlchen/chain/evm/decoding/cowswap/decoder.py:41:45:</a> Q004 [*] Unnecessary escape on inner quote character
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| Q004 | 2 | 2 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+2 -0 violations, +0 -0 fixes in 1 projects; 42 projects unchanged)</p>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/rotki/rotki/blob/e312ac2483317ceec62cf62ff5c58bbcef8dcffe/rotkehlchen/chain/ethereum/modules/eigenlayer/constants.py#L9'>rotkehlchen/chain/ethereum/modules/eigenlayer/constants.py:9:36:</a> Q004 [*] Unnecessary escape on inner quote character
++ <a href='https://github.com/rotki/rotki/blob/e312ac2483317ceec62cf62ff5c58bbcef8dcffe/rotkehlchen/chain/evm/decoding/cowswap/decoder.py#L41'>rotkehlchen/chain/evm/decoding/cowswap/decoder.py:41:45:</a> Q004 [*] Unnecessary escape on inner quote character
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| Q004 | 2 | 2 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-06 20:13</div>
+            <div class="timeline-body"><p>(I'll also look through the ecosystem results tomorrow.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 20:14</div>
+            <div class="timeline-body"><p>@AlexWaygood - It's <em>possible</em> that you have a slightly different version of LALRPOP than whatever was used most recently to generate the parser, hence the thousands of lines of changes in the generated <code>python.rs</code>. Can you check if you're using <code>// auto-generated: &quot;lalrpop 0.20.0&quot;</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-06 20:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you check if you're using <code>// auto-generated: &quot;lalrpop 0.20.0&quot;</code>?</p>
+</blockquote>
+<p>Ah, I'm using 0.20.2 locally :(</p>
+<p>I did wonder...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 20:22</div>
+            <div class="timeline-body"><p>It's one way to buff up your contribution stats.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-06 21:50</div>
+            <div class="timeline-body"><p>I fixed up the huge changes from using the wrong lalrpop version, with some help from @BurntSushi on the necessary <code>git</code>-fu to get there 🥳</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-06 22:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/invalid_escape_sequence.rs</code>:210 on 2024-03-06 22:09</div>
+            <div class="timeline-body"><p>I tend to use: <code>flags.is_some_and(...)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:43 on 2024-03-06 22:13</div>
+            <div class="timeline-body"><p>This may not be necessary, since <code>char</code> is <code>Clone</code> (IIRC). Could we omit it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:68 on 2024-03-06 22:14</div>
+            <div class="timeline-body"><p>Nit: I'd expect these to be cased as <code>DISALLOWED_U_STRING_PREFIXES</code>, to match <code>Self::U_PREFIX</code> and (e.g.) &quot;f-string&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:171 on 2024-03-06 22:15</div>
+            <div class="timeline-body"><p>Could perhaps just be <code>self. prefix_len().len()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:555 on 2024-03-06 22:17</div>
+            <div class="timeline-body"><p>Should this error be propagated? Or is it handled elsewhere / upstream?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:182 on 2024-03-06 22:18</div>
+            <div class="timeline-body"><p>Do we need to set <code>flags = flags.with_double_quotes();</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:200 on 2024-03-06 22:19</div>
+            <div class="timeline-body"><p>Should this happen in <code>lex_string</code>, instead? <code>lex_string</code> currently sets the triple-quoting, for example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-06 22:19</div>
+            <div class="timeline-body"><p>I think this looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:171 on 2024-03-06 22:30</div>
+            <div class="timeline-body"><p>Something like this?</p>
+<pre><code class="language-rs">    pub fn prefix_len(self) -&gt; TextSize {
+        let len: u32 = self.prefix_str().len().try_into().unwrap();
+        TextSize::from(len)
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-06 22:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-06 22:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:555 on 2024-03-06 22:46</div>
+            <div class="timeline-body"><p>This <em>shouldn't</em> ever error -- the only reason this would error out is if it would be invalid to combine the <code>f</code> and <code>r</code> prefixes. But <em>we</em> know that it's always valid to combine the <code>f</code> and <code>r</code> prefixes. So calling <code>unwrap()</code> here should be safe.</p>
+<p>But I should probably change it to an <code>expect()</code> call, so that it's more obvious why it's safe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-06 22:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:171 on 2024-03-06 22:59</div>
+            <div class="timeline-body"><p>I thought there was <code>self.prefix_str().text_len()</code>, does that work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-06 23:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:171 on 2024-03-06 23:02</div>
+            <div class="timeline-body"><p>Didn't know about that -- that does work, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-07 04:18</div>
+            <div class="timeline-body"><p>Can you check if the ecosystem changes are intended?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_quotes/rules/avoidable_escaped_quote.rs</code>:178 on 2024-03-07 08:36</div>
+            <div class="timeline-body"><p>I think we can do better here than searching the strings: <code>inline_quotes</code> is an enum. So we should be able to simply check whether the corresponding bit is set depending on the enum variant of <code>flake8_quotes.inline_quotes</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_quotes/rules/avoidable_escaped_quote.rs</code>:171 on 2024-03-07 08:37</div>
+            <div class="timeline-body"><p><code>flags</code> is a very generic term but I can't think of a much better terminology other than potentially <code>StringKind</code> (defined by quote style, quote numbers, and the set prefixes)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/invalid_escape_sequence.rs</code>:77 on 2024-03-07 08:43</div>
+            <div class="timeline-body"><p>Nit: I think it's safe to return <code>Some</code> (or just <code>flags</code>) because it's guaranteed that f-strings never have the <code>unicode</code> flag set (because they can't). That would simplify the downstream code because you don't need to check if <code>flags</code> is `Some``</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/bad_string_format_character.rs</code>:116 on 2024-03-07 08:45</div>
+            <div class="timeline-body"><p>Should we introduce a method <code>flags.text_len()</code> that returns the entire length of the flags? That would simplify the computation here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/printf_string_formatting.rs</code>:387 on 2024-03-07 08:46</div>
+            <div class="timeline-body"><p>Yeah I think we should have a <code>text_len</code> method. This seems a very common pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/printf_string_formatting.rs</code>:414 on 2024-03-07 08:47</div>
+            <div class="timeline-body"><p>I wonder if we should implement <code>Dipslay</code> for <code>flags</code>, because formatting the prefix, followed by the quotes also seems to be a very common pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/token.rs</code>:59 on 2024-03-07 08:51</div>
+            <div class="timeline-body"><p>What's the motivation for adding the <code>StringFlags</code> to <code>FStringMiddle</code> and <code>FStringEnd</code>? Can't we assume that they always match the flags of <code>FStringStart</code> (at least the quotes)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:3 on 2024-03-07 08:52</div>
+            <div class="timeline-body"><p>Nit: I would probably move this into <code>string.rs</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:171 on 2024-03-07 08:55</div>
+            <div class="timeline-body"><p>The naming here feels inconsistent to me, because it's <code>is_raw</code> and not <code>is_rawstring</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:241 on 2024-03-07 08:56</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">    pub const fn quote_len(self) -&gt; TextSize {
+        if self.is_triple_quoted() {
+            TextSize::new(3)
+        } else {
+            TextSize::new(1)
+        }
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:209 on 2024-03-07 08:58</div>
+            <div class="timeline-body"><p>Todo ;)</p>
+<p>yeah, that might be nice but maybe as a separate PR. Althougth the naming could get very confusing because we suddenly have two <code>QuoteStyle</code> types ;)</p>
+<pre><code>    #[must_use]
+    pub const fn from_style(style: QuoteStyle) -&gt; Option&lt;QuoteChar&gt; {
+        match style {
+            QuoteStyle::Single =&gt; Some(QuoteChar::Single),
+            QuoteStyle::Double =&gt; Some(QuoteChar::Double),
+            QuoteStyle::Preserve =&gt; None,
+        }
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:83 on 2024-03-07 09:07</div>
+            <div class="timeline-body"><p>I like that you abstracted away the fact that we use bitflags internall. I wonder if we should take this one step further by:</p>
+<ul>
+<li>Introducing a new <code>StringPrefix</code> enum that's <code>FString</code>, <code>RawBytes</code>, <code>Raw</code>, <code>UString</code> (similar to the existing <code>StringKind</code> enum)</li>
+<li>Reducing the methods on this type. E.g. instead of <code>string_flags.quote_char()</code> to <code>string_flags.quote_style().as_char()</code> or implement <code>Display</code> for <code>QuoteStyle</code> and <code>StringPrefix</code> (and <code>StringFlags</code>?) so that <code>format!(&quot;{prefix}{quotes}&quot;, string_flags.prefix(), string_flags.quote_style())</code> works.</li>
+</ul>
+<p>The advantage of exposing the <code>StringPrefix</code> is that we can keep the guarantee that you can't construct incorrect invariants without having to use <code>try</code> methods but use the more efficient bitflag storage internally.</p>
+<p>That means, the mutation methods would change to <code>StringFlags::with_prefix(self, prefix: StringPrefix)</code> and they're guaranteed to never fail.</p>
+<p>Doing this could also help with the lexer because we could then keep the lexer largely unchanged because it would call <code>StringPrefix::try_from</code> (or <code>parse</code>?) as it used to before and can construct the <code>StringFlags</code> by calling <code>StringFlags::new(prefix, quotes)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-07 09:10</div>
+            <div class="timeline-body"><p>This looks good. Nice work. I really like how you abstracted away the bit representation and I think it allows us to abstract away even more.</p>
+<p>I recommend changing the API of <code>StringFlags</code> by introducing a new <code>StringPrefix</code> enum (similar to the existing <code>StringKind</code> enum) that guarantees that constructing invalid prefixes is impossible. This should reduce the changes necessary in the lexer and remove the unwrap/except calls (that could be the cause of the perf regression).</p>
+<p>I further recommend removing <code>StringFlags</code> from <code>FStringMiddle</code> and <code>FStringEnd</code> except if we have a very specific use case where knowing the flags is required.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-03-07 09:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer/fstring.rs</code>:6 on 2024-03-07 09:25</div>
+            <div class="timeline-body"><p>I think I would prefer to keep this private even at the crate level and provide a method like <code>flags</code> or <code>into_flags</code> depending on the use-case. The main reason would be to hide the implementation details.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/token.rs</code>:59 on 2024-03-07 09:32</div>
+            <div class="timeline-body"><p>The information would be required at least for <code>FStringMiddle</code> as that contains the string content and is being used by multiple rules. As to <code>FStringStart</code> and <code>FStringEnd</code>, I think we can get away with not including the information in at least one of them, possibly both. I would check the usages of <code>FStringStart</code> / <code>FStringEnd</code> in the codebase and see if there are any and check if we can use <code>FStringMiddle</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-03-07 09:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-07 09:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/snapshots/ruff_python_parser__lexer__tests__fstring_with_format_spec.snap</code>:214 on 2024-03-07 09:57</div>
+            <div class="timeline-body"><p>Nit: It might be worth implementing <code>Debug</code> for <code>StringFlags</code> to get a nicer representation (I think that should be straightforward after introducing <code>StringPrefix</code> because you can than do:</p>
+<pre><code class="language-rust">f.debug_struct(&quot;StringFlags&quot;).field(&quot;prefix&quot;, &amp;self.prefix()).field(&quot;quote_style&quot;, &amp;self.quote_style()).finish()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-07 10:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/token.rs</code>:59 on 2024-03-07 10:00</div>
+            <div class="timeline-body"><p>Hmm, <code>FStringMiddle</code> tracking it makes sense when <code>FStringStart</code> didn't track it. But it seems redundant now that <code>FStringStart</code> exposes the quote information because the prefix (kind) always matches the prefix of the closest <code>FStringStart</code> preceding the <code>FStringMiddle</code> (that wasn't closed with <code>FStringEnd</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-07 10:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:209 on 2024-03-07 10:23</div>
+            <div class="timeline-body"><p>Next time I'll just <code>@</code> you on the PR 😆 I mainly just wanted to have the discussion about whether it's worth &quot;unifying&quot; the various enums we have scattered across the codebase for describing the two quote styles. Maybe it's not -- maybe it's small and obvious enough that it's okay to just duplicate it across the various crates. If it <em>is</em> worth having a single enum somewhere, I'm not really sure where it should go. It feels odd to me to have it live in the parser crate, since -- while it's a useful enumeration for the parser -- it's not really anything parser-specific. It's really something quite abstract and intrinsic to the language (which is why we have similar enums in the linter, the stylist and the formatter already).</p>
+<p>FTR, here's the very-similar enums we already have in various places:</p>
+<p>https://github.com/astral-sh/ruff/blob/461cdad53a1569d6b6dfa242734b140bcad1b7b7/crates/ruff_python_formatter/src/string/mod.rs#L234-L242</p>
+<p>https://github.com/astral-sh/ruff/blob/461cdad53a1569d6b6dfa242734b140bcad1b7b7/crates/ruff_python_codegen/src/stylist.rs#L113-L119</p>
+<p>https://github.com/astral-sh/ruff/blob/461cdad53a1569d6b6dfa242734b140bcad1b7b7/crates/ruff_linter/src/rules/flake8_quotes/settings.rs#L9-L17</p>
+<p>https://github.com/astral-sh/ruff/blob/461cdad53a1569d6b6dfa242734b140bcad1b7b7/crates/ruff_python_literal/src/escape.rs#L1-L5</p>
+<p>That last one is already quite nice and self-contained, so possibly I could use that one here -- but the <code>ruff_python_parser</code> crate doesn't currently depend on the <code>ruff_python_literal</code> crate. Is it worth adding a dependency between the two crates just for this? (Genuine question -- I'm curious for your opinion!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-07 10:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/printf_string_formatting.rs</code>:387 on 2024-03-07 10:29</div>
+            <div class="timeline-body"><p>I agree that it's a common pattern, but the reason I held back from doing this was because it felt potentially quite confusing to me. <code>text_len()</code> would return <code>x + y</code> where <code>x</code> is the length of the prefixes and <code>y</code> is the length of the opening quotes -- right? But I feel like that's potentially a footgun, since you always want to use that for the opening of the string, and never for the closing of the string. If the API forces you to explicitly calculate it, then there's no footgun. Also:</p>
+<ul>
+<li>I wasn't sure what to call it -- <code>text_len()</code> to me implies that it would calculate the length of the contents of the string</li>
+<li>I'm not sure it would actually simplify the code much here, since we still need to do the conversion to <code>usize</code></li>
+</ul>
+<p>Writing this out, though, makes me think that maybe it would be an okay API if we gave it a clear enough name -- maybe something like <code>string_opener_len()</code>. WDYT?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-07 10:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:209 on 2024-03-07 10:30</div>
+            <div class="timeline-body"><p>We probably need to move <code>string_token_flags</code> to the AST once you want to expose it on string nodes ;)</p>
+<p>I would leave this for now and probably even remove the TODO. It's a nice cleanup we could do but having separate types also has its advantages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-07 10:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:209 on 2024-03-07 10:32</div>
+            <div class="timeline-body"><p>I definitely want to leave it for now! I tried, when preparing this PR, to see if I could unify this enum with the one in <code>stylist.rs</code>. It quickly unravelled into a &quot;now you need to rewrite nearly every line in this crate&quot; kind of thing, and I ran away 😆</p>
+<p>I'll remove the TODO 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-07 10:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/token.rs</code>:59 on 2024-03-07 10:38</div>
+            <div class="timeline-body"><p>The issue with f-strings is with empty f-strings. Given an f-string <code>f''</code>, here's what the tokenizer currently emits:</p>
+<pre><code>[
+    Ok(
+        (
+            FStringStart,
+            0..2,
+        ),
+    ),
+    Ok(
+        (
+            FStringEnd,
+            2..3,
+        ),
+    ),
+]
+</code></pre>
+<p>https://play.ruff.rs/dfe9a07c-8082-4ac8-a199-acf2ea354c92</p>
+<p>If we only track quoting style in <code>FStringMiddle</code> tokens, that means we won't be able to distinguish between single/double quotes for empty f-strings. Maybe that's an edge case, but the aim of this PR is to make sure that we can always easily retrieve quoting-style information from the tokenizer, and to prepare the ground so that in a future PR we can easily retrieve that information from the AST as well.</p>
+<p>I can see a few ways of solving this:</p>
+<ol>
+<li>Track quoting style in all three f-string tokens: <code>FStringStart</code>, <code>FStringMiddle</code> and <code>FStringEnd</code>. (What this PR currently does.)</li>
+<li>Only track quoting style in <code>FStringStart</code> tokens. That feels like it makes some sense, given that all f-strings currently have a start, but not all of them currently have a middle (in our representation). It would be quite an invasive change relative to what I'm currently doing, however.</li>
+<li>Start emitting <code>FStringMiddle</code> tokens for empty f-strings</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-07 13:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/printf_string_formatting.rs</code>:414 on 2024-03-07 13:05</div>
+            <div class="timeline-body"><p>I didn't implement <code>Display</code> but I added a <code>format_string_contents()</code> method</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-07 13:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_quotes/rules/avoidable_escaped_quote.rs</code>:171 on 2024-03-07 13:05</div>
+            <div class="timeline-body"><p>I've renamed it to <code>kind</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-07 13:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:63 on 2024-03-07 13:13</div>
+            <div class="timeline-body"><p>@MichaReiser: I made the possible prefixes into an enum, like you suggested. I agree that it makes it much better.</p>
+<p>Were you suggesting to incorporate the value of the enum into the bitflag somehow? How would that work exactly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-07 13:29</div>
+            <div class="timeline-body"><blockquote>
+<ul>
+<li><a href="https://github.com/rotki/rotki/blob/f6a86c7a1961f9518a28dd5ced1e9748bb216130/rotkehlchen/chain/ethereum/modules/eigenlayer/constants.py#L9">rotkehlchen/chain/ethereum/modules/eigenlayer/constants.py:9:36:</a> Q004 [*] Unnecessary escape on inner quote character</li>
+<li><a href="https://github.com/rotki/rotki/blob/f6a86c7a1961f9518a28dd5ced1e9748bb216130/rotkehlchen/chain/evm/decoding/cowswap/decoder.py#L41">rotkehlchen/chain/evm/decoding/cowswap/decoder.py:41:45:</a> Q004 [*] Unnecessary escape on inner quote character</li>
+</ul>
+</blockquote>
+<p>I wish I could say I knew <em>why</em> these changes causes these two lines to be flagged when previously they weren't. But the good news is... I think these are true positives! The <code>\'</code> escape inside both strings does seem to be unnecessary, since the string uses double quotes:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; x = b&quot;\xe7\xeb\x0c\xa1\x1b\x83tN\xce=x\xe9\xbe\x01\xb9\x13B_\xba\xe7\x0c2\xce\'rm\x0e\xcd\xe9.\xf8\xd2&quot;
+&gt;&gt;&gt; y = b&quot;\xe7\xeb\x0c\xa1\x1b\x83tN\xce=x\xe9\xbe\x01\xb9\x13B_\xba\xe7\x0c2\xce'rm\x0e\xcd\xe9.\xf8\xd2&quot;
+&gt;&gt;&gt; x == y
+True
+</code></pre>
+<p>I'll add some tests to make sure these don't regress in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-07 13:35</div>
+            <div class="timeline-body"><p>The codspeed benchmarks are still showing some regressions in the lexer, but are also now showing some speedups in the linter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-07 14:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:3 on 2024-03-07 14:14</div>
+            <div class="timeline-body"><p>I wanted to put it in its own module because:</p>
+<ul>
+<li>It felt (just) big enough to justify it</li>
+<li>I wanted to make sure it was isolated and didn't depend on any other things in this crate (including things in <code>string.rs</code>)</li>
+<li>I wanted to make sure no implementation details of <code>StringKind</code> could be used/accessed by other parts of <code>string.rs</code>.</li>
+</ul>
+<p>But maybe it could live in a separate module inside <code>string.rs</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-07 14:19</div>
+            <div class="timeline-body"><p>Reviews have mostly been addressed -- thanks! The outstanding questions are:</p>
+<ol>
+<li>What to do about f-string tokens: https://github.com/astral-sh/ruff/pull/10256#discussion_r1515773636</li>
+<li>Whether <code>StringKind</code> et al deserve to be in their own module/file, or whether they should be moved to <code>string.rs</code>: https://github.com/astral-sh/ruff/pull/10256#discussion_r1515775011</li>
+<li>The way <code>StringKind</code> stores its data: https://github.com/astral-sh/ruff/pull/10256#discussion_r1516128233</li>
+<li>Getting a better <code>Debug</code> implementation for <code>StringKind</code> (depends on resolving (3) first): https://github.com/astral-sh/ruff/pull/10256#discussion_r1515874783</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @AlexWaygood on 2024-03-07 14:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-03-07 14:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-07 15:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:3 on 2024-03-07 15:08</div>
+            <div class="timeline-body"><p>It's fine. We have to move it to the AST crate anyway when we add the flags to the AST nodes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:26 on 2024-03-07 15:09</div>
+            <div class="timeline-body"><p>I think I would prefer more explicit names than just the characters. Like <code>Unicode</code> or <code>Raw</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-07 15:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:63 on 2024-03-07 15:13</div>
+            <div class="timeline-body"><p>Hmm yeah. The idea was that you would match on <code>StringPrefix</code> and set the corresponding bitflags</p>
+<pre><code class="language-rust">impl StringKind {
+    const fn from_prefix(prefix: StringPrefix,..) -&gt; Self {
+        let mut flags = StringFlags::empty();
+        
+        match prefix {
+            StringPrefix::Unicode =&gt; flags |= StringFlags::Unicode,
+            StringPrefix::Raw =&gt; flags |= StringFlags::Raw,
+            ...
+        }
+    }
+
+    const fn prefix() -&gt; StringPrefix {
+        // not correct, only to show the idea
+        if self.is_uniocde() {
+            StringPrefix::Unicode
+        } else if self.is_raw() {
+            StringPrefix::Raw
+        } else if {
+            ...
+        }
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-07 15:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-07 15:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:63 on 2024-03-07 15:16</div>
+            <div class="timeline-body"><p>Ahh, I see. I'll make the change!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-03-07 15:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/token.rs</code>:59 on 2024-03-07 15:34</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm, <code>FStringMiddle</code> tracking it makes sense when <code>FStringStart</code> didn't track it. But it seems redundant now that <code>FStringStart</code> exposes the quote information because the prefix (kind) always matches the prefix of the closest <code>FStringStart</code> preceding the <code>FStringMiddle</code> (that wasn't closed with <code>FStringEnd</code>)</p>
+</blockquote>
+<p>The reason <code>FStringMiddle</code> is important is because that's the token which contains the string value of f-strings which gives us access to the value itself and the range. This information is used in multiple places (<a href="https://github.com/astral-sh/ruff/blob/461cdad53a1569d6b6dfa242734b140bcad1b7b7/crates/ruff_linter/src/rules/pycodestyle/rules/invalid_escape_sequence.rs#L70-L78">here</a> for text value, <a href="https://github.com/astral-sh/ruff/blob/461cdad53a1569d6b6dfa242734b140bcad1b7b7/crates/ruff_linter/src/rules/pylint/rules/invalid_string_characters.rs#L182-L184">here</a> for the range, <a href="https://github.com/astral-sh/ruff/blob/461cdad53a1569d6b6dfa242734b140bcad1b7b7/crates/ruff_python_index/src/multiline_ranges.rs#L49-L54">here</a>). If we remove this information from <code>FStringMiddle</code>, then we need to add some logic to query this based on the given <code>FStringMiddle</code>.</p>
+<p>I have a hunch that (3) would create a lot of complexities and might require special handling which I want to avoid. It's also not according to the spec.</p>
+<p>(1) seems like the simplest to have for now but I think we can at least not have the information in <code>FStringEnd</code> which, I think, is never required.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-07 15:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/token.rs</code>:59 on 2024-03-07 15:35</div>
+            <div class="timeline-body"><blockquote>
+<p>(1) seems like the simplest to have for now but I think we can at least not have the information in <code>FStringEnd</code> which, I think, is never required.</p>
+</blockquote>
+<p>Good point, I think there are indeed no use cases for carrying the information in <code>FStringEnd</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-03-07 15:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_quotes/rules/avoidable_escaped_quote.rs</code>:178 on 2024-03-07 15:48</div>
+            <div class="timeline-body"><p>I might be misreading this but I don't think this change is equivalent. We were previously checking whether the string value <em>contains</em> the quotes. So, whether <code>'</code> is in <code>&quot;hello ' world&quot;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_quotes/rules/avoidable_escaped_quote.rs</code>:209 on 2024-03-07 15:49</div>
+            <div class="timeline-body"><p>Same query here. Is the change equivalent to the previous logic?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-03-07 15:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-07 15:54</div>
+            <div class="timeline-body"><blockquote>
+<ol>
+<li>What to do about f-string tokens: <a href="https://github.com/astral-sh/ruff/pull/10256#discussion_r1515773636">Track quoting style in the tokenizer #10256 (comment)</a></li>
+</ol>
+</blockquote>
+<p>I would recommend to go with <code>FStringStart</code> and <code>FStringMiddle</code>. I think the next steps, as mentioned in the PR description, is to encode the information in the AST. The parser would use the <code>FStringStart</code> token to get the information. Later, we could potentially move some of the rules from token-based to AST-based which would then make having this information in <code>FStringMiddle</code> not required.</p>
+<p>We could also have a subset of information stored in the <code>FStringMiddle</code> but I think that's what we're trying to avoid here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-07 16:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_quotes/rules/avoidable_escaped_quote.rs</code>:178 on 2024-03-07 16:50</div>
+            <div class="timeline-body"><p>I don't think so. The previous condition is:</p>
+<pre><code class="language-rs">                if !leading_quote(locator.slice(tok_range)).is_some_and(|text| {
+                    contains_quote(text, quotes_settings.inline_quotes.as_char())
+                })
+</code></pre>
+<p>So that's:</p>
+<ol>
+<li>Grab the source-code for the string-token's range</li>
+<li>Call <code>leading_quote()</code> on the result of (1) to get the first quote mark that appears in that source-code string. The result of this call will be <code>Option&lt;&amp;str&gt;</code>. Store this result in a variable named <code>text</code>.</li>
+<li>If <code>text</code> is <code>Some(&amp;str)</code>, iterate through it to see whether this string contains a character representing the user's preferred quotation style</li>
+</ol>
+<p>So we're not iterating through the string token's value to see whether it contains the quote, I don't think -- we're only iterating through a string that represents the opening quote in the string token's source-code range</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-03-07 16:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_quotes/rules/avoidable_escaped_quote.rs</code>:178 on 2024-03-07 16:58</div>
+            <div class="timeline-body"><p>Oh I see. I mis-understood that. Thanks for clarifying :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-07 16:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_quotes/rules/avoidable_escaped_quote.rs</code>:178 on 2024-03-07 16:59</div>
+            <div class="timeline-body"><p>No problem!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-03-07 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @AlexWaygood on 2024-03-07 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-07 17:46</div>
+            <div class="timeline-body"><p>The performance regressions in the lexer seem to have disappeared from the benchmarks. Some of <a href="https://codspeed.io/astral-sh/ruff/branches/AlexWaygood:quotestyle-tokenizer">the benchmarks on codspeed</a> are still showing regressions of around 1%, but I can't really make much sense of them -- I <em>think</em> they're just noise (correct me if I'm wrong!). There's also some nice speedups on some of the lint rules that have been reworked as part of this PR to make use of the information that's now tracked in the tokens:</p>
+<details>
+<summary>Performance improvements on some lint rules</summary>
+
+<p><img src="https://github.com/astral-sh/ruff/assets/66076021/899be95e-b488-4016-ab21-b02d116204fd" alt="image" />
+<img src="https://github.com/astral-sh/ruff/assets/66076021/3f6fa695-5307-4a87-bc3c-9492a2a9548d" alt="image" /></p>
+</details>
+
+<p>Overall, codspeed measures this PR as performance-neutral.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-07 22:15</div>
+            <div class="timeline-body"><p>(Consider me signed off, though I'll leave it to Micha / Dhruv to give the green light!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:47 on 2024-03-08 03:20</div>
+            <div class="timeline-body"><p>nit: we can have the same names as in <code>StringPrefix</code> for consistency</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:170 on 2024-03-08 03:23</div>
+            <div class="timeline-body"><p>nit: I'd prefer to have the <code>string</code> prefix separate for readability</p>
+<pre><code class="language-suggestion">    /// Does the string have a `u` or `U` prefix?
+    pub const fn is_u_string(self) -&gt; bool {
+        self.0.contains(StringFlags::U_PREFIX)
+    }
+
+    /// Does the string have an `r` or `R` prefix?
+    pub const fn is_raw_string(self) -&gt; bool {
+        self.0.contains(StringFlags::R_PREFIX)
+    }
+
+    /// Does the string have an `f` or `F` prefix?
+    pub const fn is_f_string(self) -&gt; bool {
+        self.0.contains(StringFlags::F_PREFIX)
+    }
+
+    /// Does the string have a `b` or `B` prefix?
+    pub const fn is_byte_string(self) -&gt; bool {
+        self.0.contains(StringFlags::B_PREFIX)
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/snapshots/ruff_python_parser__lexer__tests__triple_quoted_windows_eol.snap</code>:13 on 2024-03-08 03:28</div>
+            <div class="timeline-body"><p>I like this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer/fstring.rs</code>:23 on 2024-03-08 03:32</div>
+            <div class="timeline-body"><p>Can we add a <code>debug_assert</code> here as a sanity check to make sure that the <code>kind</code> is only a f-string?</p>
+<pre><code class="language-rs">    pub(crate) const fn new(kind: StringKind, nesting: u32) -&gt; Self {
+		debug_assert!(kind.is_f_string());
+		// ...
+	}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-03-08 03:40</div>
+            <div class="timeline-body"><p>Great work here! Small nits but otherwise good to go from my side.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-08 07:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/snapshots/ruff_python_parser__lexer__tests__triple_quoted_windows_eol.snap</code>:13 on 2024-03-08 07:17</div>
+            <div class="timeline-body"><p>Credit to @MichaReiser for the idea!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-08 08:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:47 on 2024-03-08 08:22</div>
+            <div class="timeline-body"><p>I have a weak preference for keeping them &quot;inconsistent&quot;, as I think it emphasises the fact that just because something has the <code>R_PREFIX</code> flag set doesn't necessarily mean that's the only prefix it has -- it might have other prefixes as well. In that way, it's semantically different to <code>StringPrefix</code> in an important way, since <code>StringPrefix</code> enumerates all the ways in which the prefixes can be validly <em>combined</em>, whereas the bitflag does not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-08 08:34</div>
+            <div class="timeline-body"><p>Thanks, all! On to the AST 🚀</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-03-08 08:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-03-08 08:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-08 23:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:47:54 UTC
+    </footer>
+</body>
+</html>

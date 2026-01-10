@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simplify formatting of strings by using flags from the AST nodes - astral-sh/ruff #10489</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Simplify formatting of strings by using flags from the AST nodes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10489">#10489</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-03-20 12:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-20 12:29</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR simplifies the formatter by using the flags available on AST nodes, which were added in https://github.com/astral-sh/ruff/pull/10298 and refined in https://github.com/astral-sh/ruff/pull/10314. These can be used to query the quoting style and prefix used by a string. (Currently, we compute these by reparsing them from the source code.)</p>
+<p>I was hoping this might lead to a speedup -- locally for me, it seems to be performance-neutral. It's (in my opinion) a nice simplification, anyway.</p>
+<p>Each commit is atomic; the full test suite passes on each commit.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2024-03-20 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @AlexWaygood on 2024-03-20 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-03-20 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-20 12:48</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1250 on 2024-03-20 12:58</div>
+            <div class="timeline-body"><p>Nit. <code>self.0.set(FStringFlagsInner::Double, quote_style.is_double())</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/string/mod.rs</code>:58 on 2024-03-20 13:04</div>
+            <div class="timeline-body"><p>Nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/string/normalize.rs</code>:79 on 2024-03-20 13:09</div>
+            <div class="timeline-body"><p>Using <code>impl</code> here means that all these methods get monomorphized for each <code>StringPart</code> type. It's not a ton of code but still considerable.</p>
+<p>The other downside is that <code>StringPart</code> is a type from the <code>ruff_python_parser</code> crate. Ideally, the formatter would only depend on the AST, but not the parser and would instead be given a parsed AST already (the formatter doesn't really care about parsing).</p>
+<p>That's why I think I would prefer keeping the <code>StringPart</code> enum (or you can have another struct that holds the relevant field and implements <code>From</code> methods for all string types). E.g. all we need is the <code>kind</code>, and <code>possibly</code> the range. So you could define a <code>StringPart</code> struct that stores <code>kind</code> and <code>range</code> and implements <code>From</code> for all possible string part values. This way you avoid monomorphization and depending on a rust parser crate type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/string/any.rs</code>:9 on 2024-03-20 13:14</div>
+            <div class="timeline-body"><p>We should move <code>StringKind</code> to <code>ruff_python_ast</code> if it is something that other crates should depend on. Ideally, the formatter only depends on <code>ruff_python_ast</code> and gets passed an AST, instead of calling parsing itself (because it doesn't really care about how the file was parsed, all it needs is the ast)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2024-03-20 13:16</div>
+            <div class="timeline-body"><p>Nice. It allows us to delete quiet a lot of code.</p>
+<p>There are two concerns:</p>
+<ul>
+<li>Using <code>impl StringPart</code> leads to monomorphization of not entirely trivial functions -&gt; More generated code. I recommend extracting a struct that holds just the information we need to avoid this</li>
+<li>We should move <code>StringKind</code> out of the parser crate because I want to make <code>ruff_python_formatter</code> independent of the parser crate eventually. It should only depend on the <code>ruff_python_ast</code> and not be concerned about how the source file was parsed (that will happen in a caller crate).</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-20 15:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:2109 on 2024-03-20 15:24</div>
+            <div class="timeline-body"><p>Not sure if all this belongs in <code>nodes.rs</code>. <code>ruff_python_ast::str.rs</code> didn't feel right, though, since <code>nodes.rs</code> depends on <code>str.rs</code> (it would have created a circular dependency between the two files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-20 15:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_formatter/src/string/mod.rs</code>:124 on 2024-03-20 15:25</div>
+            <div class="timeline-body"><p>This feels like it could be quite useful generally, so maybe it should live in <code>ruff_python_ast</code> as well? Or maybe we should leave it where it is for now and only move it when we actually do feel the need for it elsewhere?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-20 15:26</div>
+            <div class="timeline-body"><p>Thanks! I added a commit to move the relevant abstractions from <code>ruff_python_parser</code> to <code>ruff_python_ast</code>, and addressed your other comments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-03-20 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-20 16:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/string/mod.rs</code>:124 on 2024-03-20 16:08</div>
+            <div class="timeline-body"><p>Let's move it when we have the need for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-03-20 16:12</div>
+            <div class="timeline-body"><p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-03-20 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-03-20 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-20 16:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:48:02 UTC
+    </footer>
+</body>
+</html>

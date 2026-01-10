@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perf: Skip string normalization when possible - astral-sh/ruff #10116</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Perf: Skip string normalization when possible</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10116">#10116</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-02-25 10:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-25 10:08</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Most strings don't contain any quotes or other characters that need to be normalized. This PR makes use of this fact and short circuits <code>choose_quotes</code> and <code>normalize</code> for strings that contain no such characters. This is done by having one simple loop that searches for the occurrences of any character that needs normalization. This is much faster than the complicated normalization loop.</p>
+<p>This removes the calls to <code>StringNormalizer</code> almost entirely from the flamegraphs (except for users that use <code>\r</code> or <code>\r\n</code> newlines that always need normalisation ;( )</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2024-02-25 10:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2024-02-25 10:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-02-25 10:16</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/perf-string-normalization">CodSpeed Performance Report</a></h2>
+<h3>Merging #10116 will <strong>improve performances by 18.79%</strong></h3>
+<p><sub>Comparing <code>perf-string-normalization</code> (f7a3f92) with <code>main</code> (15b87ea)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 2</code> improvements
+<code>✅ 28</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>perf-string-normalization</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>formatter[numpy/ctypeslib.py]</code> | 10.2 ms | 9.7 ms | +4.62% |
+| ⚡ | <code>formatter[numpy/globals.py]</code> | 1,176.1 µs | 990.1 µs | +18.79% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-02-25 10:37</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to read examples/How_to_handle_rate_limits.ipynb: Expected a Jupyter Notebook, which must be internally stored as JSON, but this file isn't valid JSON: trailing comma at line 47 column 4
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to read examples/How_to_handle_rate_limits.ipynb: Expected a Jupyter Notebook, which must be internally stored as JSON, but this file isn't valid JSON: trailing comma at line 47 column 4
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-02-25 10:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2024-02-26 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-26 15:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/string/normalize.rs</code>:81 on 2024-02-26 15:52</div>
+            <div class="timeline-body"><p>If it's not an f-string, you can omit <code>{</code>, I think? Similarly, if it's a raw string, you can omit <code>\\</code>... (In that case, you could actually use <code>memchr3</code>, but perhaps not worth it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-02-26 15:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-26 17:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/string/normalize.rs</code>:81 on 2024-02-26 17:25</div>
+            <div class="timeline-body"><p>I considered special casing but decided against it because I want to avoid the extra complexity and it doesn't have to be perfect, for as long as it avoids the &quot;expensive&quot; normalization for most strings.</p>
+<p>Using <code>memchr</code> would be nice... but <code>normalize</code> is already now almost gone from the benchmark profiles. That's why I consider this as &quot;good enough&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-02-26 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-02-26 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-26 17:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:47:51 UTC
+    </footer>
+</body>
+</html>

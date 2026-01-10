@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[RUF008] Make it clearer that a mutable default in a dataclass is only valid if it is typed as a ClassVar - astral-sh/ruff #10395</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[RUF008] Make it clearer that a mutable default in a dataclass is only valid if it is typed as a ClassVar</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10395">#10395</a>
+        opened by <a href="https://github.com/Guilherme-Vasconcelos">@Guilherme-Vasconcelos</a>
+        on 2024-03-13 21:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Guilherme-Vasconcelos">@Guilherme-Vasconcelos</a> on 2024-03-13 21:14</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>The previous documentation sounded as if typing a mutable default as a <code>ClassVar</code> were optional. However, it is not, as not doing so causes a <code>ValueError</code>. The snippet below was tested in Python's interactive shell:</p>
+<pre><code>&gt;&gt;&gt; from dataclasses import dataclass
+&gt;&gt;&gt; @dataclass
+... class A:
+...     mutable_default: list[int] = []
+... 
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/usr/lib/python3.11/dataclasses.py&quot;, line 1230, in dataclass
+    return wrap(cls)
+           ^^^^^^^^^
+  File &quot;/usr/lib/python3.11/dataclasses.py&quot;, line 1220, in wrap
+    return _process_class(cls, init, repr, eq, order, unsafe_hash,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/usr/lib/python3.11/dataclasses.py&quot;, line 958, in _process_class
+    cls_fields.append(_get_field(cls, name, type, kw_only))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/usr/lib/python3.11/dataclasses.py&quot;, line 815, in _get_field
+    raise ValueError(f'mutable default {type(f.default)} for field '
+ValueError: mutable default &lt;class 'list'&gt; for field mutable_default is not allowed: use default_factory
+&gt;&gt;&gt;
+</code></pre>
+<p>This behavior is also documented in Python's docs, see <a href="https://docs.python.org/3/library/dataclasses.html#mutable-default-values">here</a>:</p>
+<blockquote>
+<p>[...] the <a href="https://docs.python.org/3/library/dataclasses.html#dataclasses.dataclass">dataclass()</a> decorator will raise a <a href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a> if it detects an unhashable default parameter. The assumption is that if a value is unhashable, it is mutable. This is a partial solution, but it does protect against many common errors.</p>
+</blockquote>
+<p>And <a href="https://docs.python.org/3/library/dataclasses.html#class-variables">here</a> it is documented why it works if it is typed as a <code>ClassVar</code>:</p>
+<blockquote>
+<p>One of the few places where <a href="https://docs.python.org/3/library/dataclasses.html#dataclasses.dataclass">dataclass()</a> actually inspects the type of a field is to determine if a field is a class variable as defined in <a href="https://peps.python.org/pep-0526/">PEP 526</a>. It does this by checking if the type of the field is typing.ClassVar. If a field is a ClassVar, it is excluded from consideration as a field and is ignored by the dataclass mechanisms. Such ClassVar pseudo-fields are not returned by the module-level <a href="https://docs.python.org/3/library/dataclasses.html#dataclasses.fields">fields()</a> function.</p>
+</blockquote>
+<p>In this PR I have changed the documentation to make it a little bit clearer that not using <code>ClassVar</code> makes the code invalid.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-13 21:28</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2024-03-14 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2024-03-14 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-03-14 23:11</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-14 23:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-14 23:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:47:58 UTC
+    </footer>
+</body>
+</html>

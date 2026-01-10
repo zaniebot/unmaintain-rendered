@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[flake8_comprehensions] add sum/min/max to unnecessary comprehension check (C419) - astral-sh/ruff #10759</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[flake8_comprehensions] add sum/min/max to unnecessary comprehension check (C419)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10759">#10759</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-04-03 16:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-04-03 16:33</div>
+            <div class="timeline-body"><p>Fixes #3259</p>
+<h2>Summary</h2>
+<p>Renames <code>UnnecessaryComprehensionAnyAll</code> to <code>UnnecessaryComprehensionInCall</code> and extends the check to <code>sum</code>, <code>min</code>, and <code>max</code>, in addition to <code>any</code> and <code>all</code>.</p>
+<h2>Test Plan</h2>
+<p>Updated snapshot test.</p>
+<p>Built docs locally and verified the docs for this rule still render correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-04-03 16:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-03 16:40</div>
+            <div class="timeline-body"><p>I'm confused about the docs parse error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-04-03 16:42</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm confused about the docs parse error.</p>
+</blockquote>
+<p>I left in a stray unmatched bracket in a code example in the docs. I checked docs rendering locally, but I guess checking syntactic validity of docs code examples is a separate step I didn't run locally. Fixed now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-03 16:42</div>
+            <div class="timeline-body"><p>Oh nice. Yay https://github.com/astral-sh/ruff/pull/10484</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-03 16:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_comprehension_in_call.rs</code>:97 on 2024-04-03 16:55</div>
+            <div class="timeline-body"><p>It's unrelated to your fix, so feel free to ignore, but possibly this could be</p>
+<pre><code class="language-rs">    if !checker
+        .semantic()
+        .resolve_qualified_name(func)
+        .is_some_and(|qualified_name| {
+            matches!(
+                qualified_name.segments(),
+                [&quot;&quot; | &quot;builtins&quot;, &quot;all&quot; | &quot;any&quot; | &quot;sum&quot; | &quot;min&quot; | &quot;max&quot;]
+            )
+        })
+    {
+        return;
+    }
+</code></pre>
+<p>And then the rule would also trigger if a user did something like this:</p>
+<pre><code class="language-py">import builtins
+
+builtins.sum([2 for x in range(100)])
+</code></pre>
+<p>as well as this:</p>
+<pre><code class="language-py">sum([2 for x in range(100)])
+</code></pre>
+<p>A bit of an edge case, though, since obviously importing <code>builtins</code> is pretty rare</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-04-03 16:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-03 16:56</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+41 -0 violations, +0 -0 fixes in 6 projects; 38 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/c65ebdac328f26c9f41a722d4577e0bcb167e669/airflow/providers/weaviate/hooks/weaviate.py#L1045'>airflow/providers/weaviate/hooks/weaviate.py:1045:39:</a> C419 Unnecessary list comprehension
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/commaai/openpilot">commaai/openpilot</a> (+8 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/commaai/openpilot/blob/3f81ea2e0ebccadfe3f6499dc8f9904784f19018/selfdrive/boardd/tests/test_boardd_loopback.py#L95'>selfdrive/boardd/tests/test_boardd_loopback.py:95:17:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/commaai/openpilot/blob/3f81ea2e0ebccadfe3f6499dc8f9904784f19018/selfdrive/car/interfaces.py#L58'>selfdrive/car/interfaces.py:58:10:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/commaai/openpilot/blob/3f81ea2e0ebccadfe3f6499dc8f9904784f19018/selfdrive/car/tests/test_lateral_limits.py#L91'>selfdrive/car/tests/test_lateral_limits.py:91:27:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/commaai/openpilot/blob/3f81ea2e0ebccadfe3f6499dc8f9904784f19018/selfdrive/debug/test_fw_query_on_routes.py#L101'>selfdrive/debug/test_fw_query_on_routes.py:101:25:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/commaai/openpilot/blob/3f81ea2e0ebccadfe3f6499dc8f9904784f19018/selfdrive/locationd/helpers.py#L31'>selfdrive/locationd/helpers.py:31:16:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/commaai/openpilot/blob/3f81ea2e0ebccadfe3f6499dc8f9904784f19018/system/qcomgpsd/qcomgpsd.py#L341'>system/qcomgpsd/qcomgpsd.py:341:33:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/commaai/openpilot/blob/3f81ea2e0ebccadfe3f6499dc8f9904784f19018/system/qcomgpsd/qcomgpsd.py#L353'>system/qcomgpsd/qcomgpsd.py:353:41:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/commaai/openpilot/blob/3f81ea2e0ebccadfe3f6499dc8f9904784f19018/system/tests/test_logmessaged.py#L55'>system/tests/test_logmessaged.py:55:19:</a> C419 Unnecessary list comprehension
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/demisto/content">demisto/content</a> (+23 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/demisto/content/blob/21827a8a7a6db9c5e8f2f8fd163aa4c7f5056d4f/Packs/Akamai_SIEM/Integrations/Akamai_SIEM/Akamai_SIEM.py#L90'>Packs/Akamai_SIEM/Integrations/Akamai_SIEM/Akamai_SIEM.py:90:34:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/demisto/content/blob/21827a8a7a6db9c5e8f2f8fd163aa4c7f5056d4f/Packs/Base/Scripts/DBotFindSimilarIncidentsByIndicators/DBotFindSimilarIncidentsByIndicators.py#L95'>Packs/Base/Scripts/DBotFindSimilarIncidentsByIndicators/DBotFindSimilarIncidentsByIndicators.py:95:20:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/demisto/content/blob/21827a8a7a6db9c5e8f2f8fd163aa4c7f5056d4f/Packs/Base/Scripts/DBotFindSimilarIncidentsByIndicators/DBotFindSimilarIncidentsByIndicators.py#L96'>Packs/Base/Scripts/DBotFindSimilarIncidentsByIndicators/DBotFindSimilarIncidentsByIndicators.py:96:13:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/demisto/content/blob/21827a8a7a6db9c5e8f2f8fd163aa4c7f5056d4f/Packs/Base/Scripts/DBotMLFetchData/DBotMLFetchData.py#L241'>Packs/Base/Scripts/DBotMLFetchData/DBotMLFetchData.py:241:59:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/demisto/content/blob/21827a8a7a6db9c5e8f2f8fd163aa4c7f5056d4f/Packs/Base/Scripts/DBotMLFetchData/DBotMLFetchData.py#L244'>Packs/Base/Scripts/DBotMLFetchData/DBotMLFetchData.py:244:67:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/demisto/content/blob/21827a8a7a6db9c5e8f2f8fd163aa4c7f5056d4f/Packs/Base/Scripts/DBotMLFetchData/DBotMLFetchData.py#L539'>Packs/Base/Scripts/DBotMLFetchData/DBotMLFetchData.py:539:39:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/demisto/content/blob/21827a8a7a6db9c5e8f2f8fd163aa4c7f5056d4f/Packs/Base/Scripts/DBotMLFetchData/DBotMLFetchData.py#L540'>Packs/Base/Scripts/DBotMLFetchData/DBotMLFetchData.py:540:32:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/demisto/content/blob/21827a8a7a6db9c5e8f2f8fd163aa4c7f5056d4f/Packs/Base/Scripts/DBotMLFetchData/DBotMLFetchData.py#L541'>Packs/Base/Scripts/DBotMLFetchData/DBotMLFetchData.py:541:32:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/demisto/content/blob/21827a8a7a6db9c5e8f2f8fd163aa4c7f5056d4f/Packs/Base/Scripts/DBotMLFetchData/DBotMLFetchData.py#L543'>Packs/Base/Scripts/DBotMLFetchData/DBotMLFetchData.py:543:9:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/demisto/content/blob/21827a8a7a6db9c5e8f2f8fd163aa4c7f5056d4f/Packs/Base/Scripts/DBotMLFetchData/DBotMLFetchData.py#L545'>Packs/Base/Scripts/DBotMLFetchData/DBotMLFetchData.py:545:32:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/demisto/content/blob/21827a8a7a6db9c5e8f2f8fd163aa4c7f5056d4f/Packs/Base/Scripts/DBotMLFetchData/DBotMLFetchData.py#L546'>Packs/Base/Scripts/DBotMLFetchData/DBotMLFetchData.py:546:37:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/demisto/content/blob/21827a8a7a6db9c5e8f2f8fd163aa4c7f5056d4f/Packs/Base/Scripts/DBotMLFetchData/DBotMLFetchData.py#L548'>Packs/Base/Scripts/DBotMLFetchData/DBotMLFetchData.py:548:9:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/demisto/content/blob/21827a8a7a6db9c5e8f2f8fd163aa4c7f5056d4f/Packs/Base/Scripts/DBotMLFetchData/DBotMLFetchData.py#L553'>Packs/Base/Scripts/DBotMLFetchData/DBotMLFetchData.py:553:40:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/demisto/content/blob/21827a8a7a6db9c5e8f2f8fd163aa4c7f5056d4f/Packs/Campaign/Scripts/ShowCampaignLastIncidentOccurred/ShowCampaignLastIncidentOccurred.py#L39'>Packs/Campaign/Scripts/ShowCampaignLastIncidentOccurred/ShowCampaignLastIncidentOccurred.py:39:28:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/demisto/content/blob/21827a8a7a6db9c5e8f2f8fd163aa4c7f5056d4f/Packs/CofenseVision/Scripts/ConvertDictOfListToListOfDict/ConvertDictOfListToListOfDict.py#L16'>Packs/CofenseVision/Scripts/ConvertDictOfListToListOfDict/ConvertDictOfListToListOfDict.py:16:23:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/demisto/content/blob/21827a8a7a6db9c5e8f2f8fd163aa4c7f5056d4f/Packs/CommonScripts/Scripts/SSDeepReputation/SSDeepReputation.py#L71'>Packs/CommonScripts/Scripts/SSDeepReputation/SSDeepReputation.py:71:21:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/demisto/content/blob/21827a8a7a6db9c5e8f2f8fd163aa4c7f5056d4f/Packs/CyberArkIdentity/Integrations/CyberArkIdentityEventCollector/CyberArkIdentityEventCollector.py#L160'>Packs/CyberArkIdentity/Integrations/CyberArkIdentityEventCollector/CyberArkIdentityEventCollector.py:160:30:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/demisto/content/blob/21827a8a7a6db9c5e8f2f8fd163aa4c7f5056d4f/Packs/JamfProtect/Integrations/JamfProtectEventCollector/JamfProtectEventCollector.py#L329'>Packs/JamfProtect/Integrations/JamfProtectEventCollector/JamfProtectEventCollector.py:329:31:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/demisto/content/blob/21827a8a7a6db9c5e8f2f8fd163aa4c7f5056d4f/Packs/JamfProtect/Integrations/JamfProtectEventCollector/JamfProtectEventCollector.py#L375'>Packs/JamfProtect/Integrations/JamfProtectEventCollector/JamfProtectEventCollector.py:375:31:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/demisto/content/blob/21827a8a7a6db9c5e8f2f8fd163aa4c7f5056d4f/Packs/RedCanary/Integrations/RedCanary/RedCanary.py#L582'>Packs/RedCanary/Integrations/RedCanary/RedCanary.py:582:26:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/demisto/content/blob/21827a8a7a6db9c5e8f2f8fd163aa4c7f5056d4f/Packs/SCADAfence_CNM/Integrations/SCADAfenceCNM/SCADAfenceCNM.py#L58'>Packs/SCADAfence_CNM/Integrations/SCADAfenceCNM/SCADAfenceCNM.py:58:12:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/demisto/content/blob/21827a8a7a6db9c5e8f2f8fd163aa4c7f5056d4f/Utils/test_upload_flow/create_test_branch.py#L190'>Utils/test_upload_flow/create_test_branch.py:190:35:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/demisto/content/blob/21827a8a7a6db9c5e8f2f8fd163aa4c7f5056d4f/Utils/test_upload_flow/verify_bucket.py#L164'>Utils/test_upload_flow/verify_bucket.py:164:24:</a> C419 Unnecessary list comprehension
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+7 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ docs/source/llms/openai/notebooks/openai-code-helper.ipynb:cell 28:13:21: C419 Unnecessary list comprehension
++ <a href='https://github.com/mlflow/mlflow/blob/f93e1d0cafe52d72b2e3009d5eaa6c9a2888aa4a/mlflow/openai/api_request_parallel_processor.py#L201'>mlflow/openai/api_request_parallel_processor.py:201:37:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/mlflow/mlflow/blob/f93e1d0cafe52d72b2e3009d5eaa6c9a2888aa4a/mlflow/openai/api_request_parallel_processor.py#L214'>mlflow/openai/api_request_parallel_processor.py:214:24:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/mlflow/mlflow/blob/f93e1d0cafe52d72b2e3009d5eaa6c9a2888aa4a/mlflow/recipes/utils/execution.py#L339'>mlflow/recipes/utils/execution.py:339:32:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/mlflow/mlflow/blob/f93e1d0cafe52d72b2e3009d5eaa6c9a2888aa4a/mlflow/sentence_transformers/__init__.py#L548'>mlflow/sentence_transformers/__init__.py:548:13:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/mlflow/mlflow/blob/f93e1d0cafe52d72b2e3009d5eaa6c9a2888aa4a/mlflow/store/model_registry/sqlalchemy_store.py#L662'>mlflow/store/model_registry/sqlalchemy_store.py:662:28:</a> C419 Unnecessary list comprehension
++ <a href='https://github.com/mlflow/mlflow/blob/f93e1d0cafe52d72b2e3009d5eaa6c9a2888aa4a/mlflow/utils/file_utils.py#L1079'>mlflow/utils/file_utils.py:1079:31:</a> C419 Unnecessary list comprehension
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pypa/pip">pypa/pip</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pypa/pip/blob/7c49d06ea4be4635561f16a524e3842817d1169a/src/pip/_internal/commands/search.py#L144'>src/pip/_internal/commands/search.py:144:17:</a> C419 Unnecessary list comprehension
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/rotki/rotki/blob/8593202fecc5af27b9c95817aabc97ca9debb2a3/rotkehlchen/tests/api/test_nfts.py#L398'>rotkehlchen/tests/api/test_nfts.py:398:29:</a> C419 Unnecessary list comprehension
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| C419 | 41 | 41 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-03 16:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_comprehension_in_call.rs</code>:97 on 2024-04-03 16:57</div>
+            <div class="timeline-body"><p>I think the important thing here is that we don't trigger if the user shadows <code>any</code> with their own function. And we don't, because there is a <code>checker().semantic().is_builtin(id)</code> check below.</p>
+<p>I don't think we need to care about <code>builtins.sum(...)</code>, nobody does that :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-03 16:59</div>
+            <div class="timeline-body"><p>I'd suggest looking through the ecosystem checks before merging. Let me know if you have any questions about them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-03 17:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_comprehension_in_call.rs</code>:97 on 2024-04-03 17:00</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think we need to care about <code>builtins.sum(...)</code>, nobody does that :)</p>
+</blockquote>
+<p>Well, <a href="https://grep.app/search?q=builtins.sum%28&amp;filter%5Blang%5D%5B0%5D=Python">some</a> <a href="https://grep.app/search?q=builtins.any%28&amp;case=true&amp;filter%5Blang%5D%5B0%5D=Python">people</a> <a href="https://grep.app/search?q=builtins.all%28&amp;case=true&amp;filter%5Blang%5D%5B0%5D=Python">do</a>, but I agree it's pretty rare :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-04-03 17:05</div>
+            <div class="timeline-body"><p>I looked at all the new hits, they all look like valid and intended applications of the rule. Clearly this will cause new linter errors in stable on existing code though, not sure how we feel about that. I'm guessing in order to keep this in preview only we'd have to make it a new separate code?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-03 17:17</div>
+            <div class="timeline-body"><p>Ah yeah we should probably gate this with preview since it's a significant increase in scope. You don't need a separate code, you can just gate the additional calls with a check for preview.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-03 17:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_comprehension_in_call.rs</code>:97 on 2024-04-03 17:20</div>
+            <div class="timeline-body"><p>Ok, point taken :) Since I'll need to update this to move it to preview anyway, I may integrate your suggestion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-03 19:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_comprehension_in_call.rs</code>:97 on 2024-04-03 19:53</div>
+            <div class="timeline-body"><p>I did this, and then I changed my mind and took it out :) The reason is because there's already <code>QualifiedName.is_builtin()</code>, which is currently false for <code>import builtins; builtins.sum</code>. I feel like if we want to treat <code>import builtins</code> as a way of referencing builtins, we should make that change globally and reflect it in <code>QualifiedName</code> itself, not do it ad-hoc in this particular rule. And that feels like a change that's definitely out of scope for this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-03 19:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C419.py</code>:17 on 2024-04-03 19:58</div>
+            <div class="timeline-body"><p>Probably this deliberate shadowing should go below the existing <code>all()</code> and <code>any()</code> test cases at the bottom of this file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C419.py</code>:17 on 2024-04-03 20:02</div>
+            <div class="timeline-body"><p>Or in a separate file to avoid mistakes adding cases in the future?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-03 20:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-03 20:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C419.py</code>:17 on 2024-04-03 20:06</div>
+            <div class="timeline-body"><p>Oh, I thought it was after all uses of <code>all</code>, but I missed the one inside <code>f()</code>. Which is a perfect illustration of why a separate file is better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_comprehension_in_call.rs</code>:20 on 2024-04-03 20:14</div>
+            <div class="timeline-body"><p>The issue pre-existed your PR, but: list comprehensions don't really &quot;convert generators to lists&quot;</p>
+<pre><code class="language-suggestion">/// any iterable, including a generator. Constructing a list via a comprehension
+/// only to immediately consume the list wastes memory when values could be iterated
+/// over lazily via a generator expression instead.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_comprehension_in_call.rs</code>:40 on 2024-04-03 20:17</div>
+            <div class="timeline-body"><p>Quite a long sentence here; you could possibly split it into two:</p>
+<pre><code class="language-suggestion">/// necessarily greater than generator overhead). Applying this rule simplifies the code and
+/// will usually save memory, therefore, but in the absence of short-circuiting it may
+/// not improve performance. (In some situations, it *may* even slightly regress
+/// performance, but the difference will usually be small.)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-03 20:17</div>
+            <div class="timeline-body"><p>A couple of optional docs nits:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-04-03 20:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-04-03 20:44</div>
+            <div class="timeline-body"><p>Ecosystem results look good (same as before, but now preview only; stable is unchanged); merging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-04-03 20:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-04-03 20:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-03 20:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-04-03 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2024-04-04 14:37</div>
+            <div class="timeline-body"><p>Nice tool, but will there be an config option to match the old C419 behavior at some point? Right now, this is low-stake since it's enabled behind a preview-flag, but users may want to leave the old behavior if it results in a performance penalty of using a generator over a list comp. Would be good to leave it configurable or give it's own error code IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-04-04 16:21</div>
+            <div class="timeline-body"><p>@Skylion007 Thanks for the feedback, it's a reasonable point that perhaps this should be two separate codes, since the tradeoffs look different for <code>any</code>/<code>all</code> vs <code>sum</code>/<code>min</code>/<code>max</code>, and it's reasonable to want to enable the former but disable the latter.</p>
+<p>Would you be willing to open a new issue with a request for these to be two separate codes? Then we can take some time to collect more feedback (that's what preview is for, after all!) and make a decision before this goes stable.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:48:14 UTC
+    </footer>
+</body>
+</html>

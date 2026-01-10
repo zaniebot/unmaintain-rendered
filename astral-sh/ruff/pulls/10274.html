@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix unstable with-items formatting - astral-sh/ruff #10274</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix unstable with-items formatting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10274">#10274</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-03-07 15:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-07 15:05</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ruff/issues/10267</p>
+<p>The issue with the current formatting is that the formatter flips between the <code>SingleParenthesizedContextManager</code>  and <code>ParenthesizeIfExpands</code> or <code>SingleWithTarget</code> because the layouts use incompatible formatting ( <code>SingleParenthesizedContextManager</code>: <code>maybe_parenthesize_expression(context)</code> vs <code>ParenthesizeIfExpands</code>: <code>parenthesize_if_expands(item)</code>, <code>SingleWithTarget</code>: <code>optional_parentheses(item)</code>.</p>
+<p>The fix is to ensure that the layouts between which the formatter flips when adding or removing parentheses are the same. I do this by introducing a new <code>SingleWithoutTarget</code> layout that uses the same formatting as <code>SingleParenthesizedContextManager</code> if it has no target and prefer <code>SingleWithoutTarget</code> over using <code>ParenthesizeIfExpands</code> or <code>SingleWithTarget</code>.</p>
+<h2>Formatting change</h2>
+<p>The downside is that we now use <code>maybe_parenthesize_expression</code> over <code>parenthesize_if_expands</code> for expressions where <code>can_omit_optional_parentheses</code> returns <code>false</code>. This can lead to stable formatting changes. I only found one formatting change in our ecosystem check and, unfortunately, this is necessary to fix the instability (and instability fixes are okay to have as part of minor changes according to our versioning policy)</p>
+<p>The benefit of the change is that <code>with</code> items with a single context manager and without a target are now formatted identically to how the same expression would be formatted in other clause headers.</p>
+<h2>Test Plan</h2>
+<p>I ran the ecosystem check locally</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-03-07 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2024-03-07 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-07 15:32</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+2 -2 lines in 1 file in 1 projects; 42 projects unchanged)</p>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+2 -2 lines across 1 file)</summary>
+<p>
+
+<p><a href='https://github.com/rotki/rotki/blob/0e9b5bc8521c98ece568854ed7f45aa8c6c9411f/rotkehlchen/rotkehlchen.py#L1213'>rotkehlchen/rotkehlchen.py~L1213</a></p>
+<pre><code class="language-diff">         if oracle != HistoricalPriceOracle.CRYPTOCOMPARE:
+             return  # only for cryptocompare for now
+ 
+-        with (
+-            contextlib.suppress(UnknownAsset)
++        with contextlib.suppress(
++            UnknownAsset
+         ):  # if suppress -&gt; assets are not crypto or fiat, so we can't query cryptocompare  # noqa: E501
+             self.cryptocompare.create_cache(
+                 from_asset=from_asset,
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+2 -2 lines in 1 file in 1 projects; 42 projects unchanged)</p>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+2 -2 lines across 1 file)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/rotki/rotki/blob/0e9b5bc8521c98ece568854ed7f45aa8c6c9411f/rotkehlchen/rotkehlchen.py#L1211'>rotkehlchen/rotkehlchen.py~L1211</a></p>
+<pre><code class="language-diff">         if oracle != HistoricalPriceOracle.CRYPTOCOMPARE:
+             return  # only for cryptocompare for now
+ 
+-        with (
+-            contextlib.suppress(UnknownAsset)
++        with contextlib.suppress(
++            UnknownAsset
+         ):  # if suppress -&gt; assets are not crypto or fiat, so we can't query cryptocompare  # noqa: E501
+             self.cryptocompare.create_cache(
+                 from_asset=from_asset,
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aneeshusa">@aneeshusa</a> on 2024-03-07 15:36</div>
+            <div class="timeline-body"><p>I'm traveling today but am happy to give this a try tomorrow! Amazed how quick you put this together, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-07 16:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/statement/with.py</code>:16 on 2024-03-07 16:58</div>
+            <div class="timeline-body"><p>TODO: revert formatting changes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-07 17:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/arguments.rs</code>:208 on 2024-03-07 17:52</div>
+            <div class="timeline-body"><p>I noticed that we pass <code>context</code> and <code>options</code>. Passing the <code>context</code> alone is sufficient because the options can be accessed by <code>context.options()</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-07 17:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/stmt_with.rs</code>:141 on 2024-03-07 17:53</div>
+            <div class="timeline-body"><p>TODO: It might be worth to split the refactor into its own PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-07 22:13</div>
+            <div class="timeline-body"><p>Thanks @aneeshusa :wave:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-03-08 11:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2024-03-08 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/aneeshusa">@aneeshusa</a> reviewed on 2024-03-08 23:25</div>
+            <div class="timeline-body"><p>Can't do a GitHub approval but tested this and this fixes both an isolated repro and the monorepo at $WORK! Would love to see this in a release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-03-08 23:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-08 23:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-08 23:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-08 23:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-09 01:26</div>
+            <div class="timeline-body"><p>Just shipped this in v0.3.2 :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:47:55 UTC
+    </footer>
+</body>
+</html>

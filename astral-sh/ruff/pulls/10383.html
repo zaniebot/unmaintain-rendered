@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unify enums used for internal representation of quoting style - astral-sh/ruff #10383</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unify enums used for internal representation of quoting style</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10383">#10383</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-03-13 14:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-13 14:21</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Currently we have four enums across the codebase for representing the fact that Python strings can either use single quotes (<code>'</code>) or double quotes (<code>&quot;</code>):</p>
+<p>https://github.com/astral-sh/ruff/blob/c269c1a7063bb27e75dc81c2a598eab13aa8b754/crates/ruff_python_ast/src/str.rs#L6-L13</p>
+<p>https://github.com/astral-sh/ruff/blob/c269c1a7063bb27e75dc81c2a598eab13aa8b754/crates/ruff_python_formatter/src/string/mod.rs#L234-L242</p>
+<p>https://github.com/astral-sh/ruff/blob/c269c1a7063bb27e75dc81c2a598eab13aa8b754/crates/ruff_python_codegen/src/stylist.rs#L97-L103</p>
+<p>https://github.com/astral-sh/ruff/blob/c269c1a7063bb27e75dc81c2a598eab13aa8b754/crates/ruff_python_literal/src/escape.rs#L1-L5</p>
+<p>This means we have a lot of <code>impl From&lt;QuoteEnum&gt; for IdenticalOtherQuoteEnum</code> methods, and it's generally somewhat confusing to keep track of the subtle differences between them. This PR unfies them into one enum in <code>ruff_python_ast::str::QuoteStyle</code>.</p>
+<p>Using <code>ruff_python_ast::str::QuoteStyle</code> in the formatter would have created an awkward name clash with <code>ruff_python_formatter::options::QuoteStyle</code>, so I renamed <code>ruff_python_formatter::options::QuoteStyle</code> to <code>ruff_python_formatter::options::QuotePreference</code>. This seemed to me to more accurately reflect what that enum was for, but an alternative here would have been to rename <code>ruff_python_ast::str::QuoteStyle</code>. (Yet another alternative would be to always use the fully qualified name of <code>ruff_python_ast::str:QuoteStyle</code> in the formatter crate, but that felt too cumbersome to me.)</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2024-03-13 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-03-13 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @AlexWaygood on 2024-03-13 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-13 14:50</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-13 16:27</div>
+            <div class="timeline-body"><blockquote>
+<p>Using <code>ruff_python_ast::str::QuoteStyle</code> in the formatter would have created an awkward name clash with <code>ruff_python_ast::options::QuoteStyle</code>, so I renamed <code>ruff_python_ast::options::QuoteStyle</code> to <code>ruff_python_ast::options::QuotePreference</code>.</p>
+</blockquote>
+<p>Another option would be to use <code>ruff_python_ast::str::Quote</code> and keep the <code>ruff_python_formatter::options::QuoteStyle</code>. There's a chance that I might get confused with <code>QuoteStyle</code>'s value coming from the <code>quote-style</code> config option 😅. This would mean that the enum usage would be <code>Quote::Single</code>, <code>Quote::Double</code>, <code>quote.is_single</code>, <code>quote.is_double</code>, etc. What do you think? @AlexWaygood</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-13 16:30</div>
+            <div class="timeline-body"><blockquote>
+<p>here's a chance that I might get confused with <code>QuoteStyle</code>'s value coming from the <code>quote-style</code> config option 😅. This would mean that the enum usage would be <code>Quote::Single</code>, <code>Quote::Double</code>, <code>quote.is_single</code>, <code>quote.is_double</code>, etc. What do you think? @AlexWaygood</p>
+</blockquote>
+<p>Ahh, that makes sense... I should have checked what the config option was called, sorry!</p>
+<p>I'll change the formatter enum's name back, and change the <code>ruff_python_ast</code> enum to <code>Quote</code> 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:235 on 2024-03-13 16:58</div>
+            <div class="timeline-body"><p>Oh nice, I like this change as the <code>current_expressions</code> start with <em>innermost</em> f-string in case of nested f-strings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_literal/Cargo.toml</code>:26 on 2024-03-13 17:02</div>
+            <div class="timeline-body"><p>nit: we tend to have local dependencies first, then third party dependencies ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-03-13 17:03</div>
+            <div class="timeline-body"><p>This is great! So many lines red lines :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-03-13 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-03-13 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-13 17:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:47:58 UTC
+    </footer>
+</body>
+</html>

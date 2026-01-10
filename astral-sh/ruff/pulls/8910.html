@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New rule category `XP`, implement `not-array-agnostic-numpy` (`XP001`) - astral-sh/ruff #8910</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>New rule category <code>XP</code>, implement <code>not-array-agnostic-numpy</code> (<code>XP001</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8910">#8910</a>
+        opened by <a href="https://github.com/lucascolley">@lucascolley</a>
+        on 2023-11-29 17:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/lucascolley">@lucascolley</a> on 2023-11-29 17:04</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes gh-8615</p>
+<ul>
+<li>New rule category <code>XP</code></li>
+<li>New rule <code>NotArrayAgnosticNumPy</code></li>
+</ul>
+<p>Aiming for violations for all non-standard NumPy functions and methods and uses of them. Some of these will have standard aliases or alternatives. We should try to catch as many of the 'compatible' and 'strictness' changes of https://numpy.org/doc/stable/reference/array_api.html as possible (the 'breaking' changes should be caught separately - by <code>NP201</code> or perhaps <code>NP202</code> is also needed).</p>
+<h2>Test Plan</h2>
+<p><em>WIP</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">plugin</span> added by @zanieb on 2023-11-29 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/lucascolley">@lucascolley</a> on <code>crates/ruff_linter/src/registry.rs</code>:211 on 2023-11-29 17:08</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// [Array-agnosticism](https://github.com/data-apis/array-api)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lucascolley">@lucascolley</a> reviewed on 2023-11-29 17:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lucascolley">@lucascolley</a> reviewed on 2023-12-06 18:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/lucascolley">@lucascolley</a> on <code>crates/ruff_linter/src/rules/xp/rules/not_array_agnostic_numpy.rs</code>:374 on 2023-12-06 18:15</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                        &quot; is not in the array API standard&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/lucascolley">@lucascolley</a> on <code>crates/ruff_linter/src/rules/xp/rules/not_array_agnostic_numpy.rs</code>:331 on 2023-12-06 20:02</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lucascolley">@lucascolley</a> reviewed on 2023-12-06 20:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucascolley">@lucascolley</a> on 2023-12-06 23:42</div>
+            <div class="timeline-body"><p>Hey @charliermarsh, here's where I'm at currently. I've included the raw naming differences as replacements so far.</p>
+<h3>To-do:</h3>
+<ul>
+<li>Include the standard extension modules to check against <code>numpy.linalg</code> and <code>numpy.fft</code></li>
+<li>Start work on tests</li>
+</ul>
+<h3>Are these things possible?</h3>
+<ul>
+<li>Detecting methods of <code>numpy.ndarray</code> e.g. we want to change <code>a.astype(...)</code> to <code>np.astype(a, ...)</code> when <code>a</code> is of type <code>numpy.ndarray</code></li>
+<li>Detecting whether certain arguments are passed e.g. if <code>numpy.transpose(a)</code> is used without the <code>axes</code> keyword then it should be replaced with <code>numpy.permute_dims(a, axes=range(a.ndim)[::-1])</code>. If it is provided, then a straight swap for <code>permute_dims</code> is needed</li>
+<li>Detecting the dtypes used with operators e.g.</li>
+</ul>
+<blockquote>
+<p>&quot;Operators (like +) with Python scalars only accept matching scalar types - For example, <code>&lt;int32 array&gt; + 1.0</code> is not allowed.</p>
+</blockquote>
+<ul>
+<li>Changing positional arguments to keyword arguments and vice versa</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @zanieb on 2024-03-12 18:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-28 16:51</div>
+            <div class="timeline-body"><p>Thank you @lucascolley for this rule proposal and implementation. I really like the idea of it. I think such a rule would be very helpful for our users. Unfortunately, Ruff doesn't have a good concept today for very opinionated rules or rules that intentionally restrict the allowed APIs. Ruff also lacks a good default rule set, and, unfortunately, many users assume that <code>ALL</code> is our recommended rule set. That means users using <code>--select ALL</code> would automatically opt into this new restricting rule, and they do not necessarily have the experience to judge whether the pattern flagged by this rule is indeed a &quot;problem&quot; for them or if they are better off by ignoring the rule. We want to hold off from merging restricting rules until #1774 is complete. We're actively working on it, and we hope to have a good place for rules like the one you proposed here.</p>
+<p>I'm sorry that it took us so long to give that feedback to you, and I hope we can get this rule landed once #1774 is completed. Thanks again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-03-28 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucascolley">@lucascolley</a> on 2024-03-28 17:02</div>
+            <div class="timeline-body"><p>Thanks for the reply @MichaReiser , no worries! Happy to return to this once gh-1774 is resolved. I agree that this should be explicitly opt-in at all times.</p>
+<blockquote>
+<p>That means users using --select ALL would automatically opt into this new restricting rule</p>
+</blockquote>
+<p>Does that include <code>preview</code> rules? If so, should it not?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-28 17:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Does that include preview rules? If so, should it not?</p>
+</blockquote>
+<p>It does include preview rules when running ruff with <code>preview = true</code> (you have to opt into preview). We considered accepting rules as preview only but we decided against it because accepting rules without a clear path to stabilization.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:47:47 UTC
+    </footer>
+</body>
+</html>

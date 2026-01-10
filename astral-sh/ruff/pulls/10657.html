@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limit `bitwise_or` precedence for starred expression with error - astral-sh/ruff #10657</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Limit <code>bitwise_or</code> precedence for starred expression with error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10657">#10657</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-03-29 14:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-29 14:21</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates handling the error handling for <code>bitwise_or</code> grammar rule.</p>
+<p><strong>tldr,</strong></p>
+<ul>
+<li>Remove <code>parse_expression_with_bitwise_or_precedence</code></li>
+<li>Add a new <code>validate_expression_with_bitwise_or_precedence</code></li>
+<li>Use the validation method wherever the precedence is <code>bitwise_or</code></li>
+</ul>
+<p>Previously, there was a <code>parse_expression_with_bitwise_or_precedence</code> parser method which would parse the expression with <code>bitwise_or</code> precedence using the Pratt Parsing technique. There are two things to understand with the current implementation of Pratt parser:</p>
+<ol>
+<li>The parsing of LHS expression doesn't take into account the previous precedence. This is important to disallow expression as per the precedence. This has been fixed in #10679.</li>
+<li>The precedence parsing <strong>stops</strong> when the precedence of the current operator is less than the precedence of the previous operator. Note that it doesn't report an error.</li>
+</ol>
+<p>With (2) and <code>yield</code> expression, we are in a bit of a pickle. So, <code>yield</code> is both a statement and an expression. The grammar has <code>yield_stmt</code> and <code>yield_expr</code>. But, our AST doesn't have a node to represent the yield statement. This means the parser always parse it using the expression method. This creates a problem. For reference, the grammar for yield statement and expression is:</p>
+<pre><code>yield_stmt: yield_expr
+
+yield_expr:
+    | 'yield' 'from' expression 
+    | 'yield' [star_expressions]
+
+star_expression:
+	| '*' bitwise_or
+	| expression
+</code></pre>
+<p>And, for some more context, the different between <code>expression</code> and <code>star_expression</code> is that for the later, the precedence of a starred expression is bitwise OR. The <code>expression</code> grammar doesn't allow starred expression but we parse it and then later report an error.</p>
+<p>Now, for the following example:</p>
+<pre><code class="language-py">yield *x and y
+</code></pre>
+<p>How should the AST look like? Should it be <code>(yield *x) and y</code> or <code>yield *(x and y)</code>? This is a yield statement and so it consumes the entire expression. If not, this would become a boolean expression with LHS being <code>yield *x</code> and RHS being <code>y</code>.</p>
+<p>Another problem here is about error reporting. The above is not a valid syntax as starred comparison expression isn't allowed in that context. There are two solutions to this:</p>
+<ol>
+<li>Keep the <code>parse_expression_with_bitwise_or_precedence</code> and use the current token to validate the expression. Remember that this happens because the Pratt Parser stops at the <code>and</code> token due to the precedence. The AST would still output a comparison expression.</li>
+<li>Remove <code>parse_expression_with_bitwise_or_precedence</code>, parse <strong>all</strong> starred expression with the highest precedence, and add a validation step for wherever it is required the precedence to be bitwise OR. This would keep the AST as a yield expression as is in the code. <strong>This is the chosen solution in this PR.</strong></li>
+</ol>
+<p>This also helps in keeping our AST match the program whereas previously, as the Pratt Parsing would stop, the final AST would look a bit different. This can be observed with the updated AST snapshots in this PR.</p>
+<h2>Test Plan</h2>
+<p>Update the snapshots with the new error handling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-03-29 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-29 14:41</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-04-01 05:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-04-01 05:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:1555 on 2024-04-02 13:45</div>
+            <div class="timeline-body"><p>Would it make sense to keep a <code>parse_expression_with_bitwise_or_precedence</code> that calls into <code>parse_conditional_expression_or_higher</code> and calls into the validation to avoid the repetition of the validation code?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-04-02 13:49</div>
+            <div class="timeline-body"><p>Nit: I think an alternative could have been to add a <code>PARENTHESIZED</code> to the <code>ParserContext</code> and only parse <code>yield</code> expression if that's true (or have an explicit <code>ExprContext</code> that is passed around and stores whether the currently parsed expression is parenthesized and, thus, allows yield expressions)</p>
+<p>But that wouldn't have given us such nice error recovery :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-03 07:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:1555 on 2024-04-03 07:31</div>
+            <div class="timeline-body"><p>Yeah, I like that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-04-03 07:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-04-03 07:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-03 07:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:48:10 UTC
+    </footer>
+</body>
+</html>

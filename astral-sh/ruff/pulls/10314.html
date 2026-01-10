@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track casing of r-string prefixes in the tokenizer and AST - astral-sh/ruff #10314</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Track casing of r-string prefixes in the tokenizer and AST</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10314">#10314</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-03-09 14:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-09 14:51</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Following #10298, I wanted to look for places in ruff where we could simplify and/or speedup our code by using the information newly available to us in the AST nodes. One obvious place was the formatter, but when I looked at the formatter's code, I realised it was important to the formatter whether or not an uppercase or lowercase <code>r</code> prefix was used for a raw string:</p>
+<p>https://github.com/astral-sh/ruff/blob/0c84fbb6db646550e00eed5560a692f2ea1b6224/crates/ruff_python_formatter/src/string/mod.rs#L165-L171</p>
+<p>https://github.com/astral-sh/ruff/blob/0c84fbb6db646550e00eed5560a692f2ea1b6224/crates/ruff_python_formatter/src/string/mod.rs#L107-L118</p>
+<p>That information isn't currently captured in the tokens or AST, so we wouldn't, right now, be able to simplify any of that formatter code. This PR makes it so the tokens and AST <em>do</em> capture that information.</p>
+<p>The PR should be easiest to review commit-by-commit.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @AlexWaygood on 2024-03-09 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-03-09 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Track casing of r string prefixes in the tokenizer and AST" to "Track casing of r-string prefixes in the tokenizer and AST" by @AlexWaygood on 2024-03-09 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-09 15:09</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1203 on 2024-03-10 02:11</div>
+            <div class="timeline-body"><p>I think we should just have two separate variants instead of a boolean value: <code>Raw</code> and <code>RawUpper</code>. It's easier to type (<code>FStringPrefix::RawUpper</code> vs <code>FStringPrefix::RawFormat { uppercase: true }</code>) and it clearly separates the two variants w.r.t. an enum. What do you think?</p>
+<p>This would apply to other <code>*Prefix</code> enums as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1629 on 2024-03-10 02:25</div>
+            <div class="timeline-body"><p>nit: can we use <code>is_r_string</code> method if it's accessible here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1627 on 2024-03-10 02:27</div>
+            <div class="timeline-body"><p>What's the reason for removing the default implementation? I think it's reasonable that the default implementation is to not have any prefix. But, I leave this up to you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1200 on 2024-03-10 02:30</div>
+            <div class="timeline-body"><p>nit: maybe we can just use <code>Regular</code> ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:547 on 2024-03-10 02:36</div>
+            <div class="timeline-body"><p>Should this be using <code>FStringPrefix</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:367 on 2024-03-10 03:08</div>
+            <div class="timeline-body"><p>It's unfortunate that we need to use <code>panic</code> here but I understand the reasoning behind it which is that we're going from a wide type containing all possible string prefix to a narrow one for a specific type of string (for example <code>StringPrefix</code> to <code>FStringPrefix</code>).</p>
+<p>I think this should actually be an <code>unreachable</code> instead as our lexer will raise an error for invalid combination of prefixes used.</p>
+<p>I'm sure you must have thought of this but if possible, I would try to find any type-safe way to do this conversion to avoid a potential panic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-03-10 03:09</div>
+            <div class="timeline-body"><p>This makes sense. Thank you for writing all the documentation. It helps in understanding the code :)</p>
+<p>There are a few instances where the documentation is in the form of a question for functions which returns a <code>bool</code>. I think my preference would be to just write it in a simple way like &quot;Returns true if ...&quot; or &quot;Checks if ...&quot;. We could even top it up with an example like <code>Returns true if ... e.g., r&quot;foo&quot;</code></p>
+<p>There are a few nits which I leave at your discretion to apply or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-10 08:50</div>
+            <div class="timeline-body"><p>Hmm I'm not sure if we should track this. It goes a bit beyond what an AST tends to capture. But it's also not clear to me what the downsides would be.</p>
+<p>What does the formatter use the lower prefix for? I thought we always normalize to lower case</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-10 08:53</div>
+            <div class="timeline-body"><blockquote>
+<p>What does the formatter use the lower prefix for? I thought we always normalize to lower case</p>
+</blockquote>
+<p>The formatter normalises all prefixes to lowercase, except for raw strings, where it retains the casing in line with what black does for raw strings: https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#r-strings-and-r-strings</p>
+<blockquote>
+<p>Black normalizes string quotes as well as string prefixes, making them lowercase. One exception to this rule is r-strings. It turns out that the very popular <a href="https://github.com/MagicStack/MagicPython/">MagicPython</a> syntax highlighter, used by default by (among others) GitHub and Visual Studio Code, differentiates between r-strings and R-strings. The former are syntax highlighted as regular expressions while the latter are treated as true raw strings with no special semantics.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-10 09:46</div>
+            <div class="timeline-body"><p>I see and I guess it's fine adding it now that we already track prefixes</p>
+<p>The reason I'm hesitant to add such fine grained data to the ast are</p>
+<ul>
+<li>This kind of Informationen could probably not be represented if we ever migrate to a CST (or would limit us in the design options for the CST)</li>
+<li>Tracking the information increases the struct sizes which has a cost in memory consumption, data to write and to read (both slow operations). It can often times be faster (when considering the entire compilation pipeline) to reparse information that is needed rarely than paying the cost everywhere</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-10 10:00</div>
+            <div class="timeline-body"><blockquote>
+<ul>
+<li>Tracking the information increases the struct sizes which has a cost in memory consumption, data to write and to read (both slow operations). It can often times be faster (when considering the entire compilation pipeline) to reparse information that is needed rarely than paying the cost everywhere</li>
+</ul>
+</blockquote>
+<p>Hmm, but internally we're just storing the new information on the same bitflag, no? The enum variants are only created from the bitflag &quot;on demand&quot; when the <code>prefix()</code> method is called. Possibly I'm misunderstanding, but I don't <em>think</em> this should increase memory consumption significantly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-10 10:12</div>
+            <div class="timeline-body"><p>Also, I think the arguments for preserving the casing of r-strings in the formatter apply equally well to the expression generator. Being able to losslessly round-trip these kinds of details in the expression generator was the original motivation for this series of changes (https://github.com/astral-sh/ruff/issues/7799, #9663, etc)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-10 11:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1627 on 2024-03-10 11:34</div>
+            <div class="timeline-body"><p>I think it's a reasonable default as well. But, looking at this enum again, I pondered whether there was actually any real use-case for implementing <code>Default</code> on this enum. I can't really think of any situation where it would improve readability to use <code>StringLiteralPrefix::default()</code> rather than <code>StringLiteralPrefix::None</code>, and I think there is value in forcing people to be explicit here.</p>
+<p>There are no places where we use <code>StringLiteralPrefix::default()</code> currently; I added it in https://github.com/astral-sh/ruff/pull/10298 more for completeness than anyone else</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-10 12:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1629 on 2024-03-10 12:06</div>
+            <div class="timeline-body"><p>Not available to us here, unfortunately -- that method is only available on variants of the <code>StringLiteralPrefix</code> enum, and we don't know which variant applies to this instance yet without calling the <code>prefix()</code> method (which is the method that we're in right here)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-10 13:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1203 on 2024-03-10 13:01</div>
+            <div class="timeline-body"><p>I'm somewhat torn here. I agree with you that it's easier to type if they're two separate variants. But semantically, they're the same kind of string in Python, just represented in two different ways; having them be two flavours of the same variant feels more expressive of the semantics here. I also think that if I were matching on the prefix in a lint rule (for example), it would be more natural to do this:</p>
+<pre><code class="language-rs">match string_expr.flags.prefix() {
+    StringLiteralPrefix::Regular =&gt; ...,
+    StringLiteralPrefix::Raw { .. } =&gt; ...,
+}
+</code></pre>
+<p>rather than</p>
+<pre><code class="language-rs">match string_expr.flags.prefix() {
+    StringLiteralPrefix::Regular =&gt; ...,
+    StringLiteralPrefix::RawLower | StringLiteralPrefix::RawUpper =&gt; ...,
+}
+</code></pre>
+<p>(In most lint rules, I doubt you'll care much whether it's an <code>R</code> or an <code>r</code>, since they have the same semantics at runtime for Python.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-10 13:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:367 on 2024-03-10 13:05</div>
+            <div class="timeline-body"><p>I agree this is somewhat unfortunate. It might be worth noting, though, that this isn't really any less type-safe than previously -- the <code>panic!</code>s in this function are really just doing the work for us that the <code>debug_assert!</code>s were previously.</p>
+<p>The only other way I can <em>see</em> of doing this would be to implement <code>TryFrom</code> instead of <code>From</code> here -- return an <code>Err</code> variant instead of panicking. But that feels incorrect to me. If we hit the panicking branch, I think we <em>should</em> be immediately bailing from this function, since that indicates a logical error in our code somewhere. If we've written the tokenizer and parser correctly, it should be impossible for us to get here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-10 13:05</div>
+            <div class="timeline-body"><p>Thanks @dhruvmanila! I've implemented many of your suggestions, in particular most of the ones relating to naming and documentation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @AlexWaygood on 2024-03-10 13:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 16:13</div>
+            <div class="timeline-body"><blockquote>
+<p>The reason I'm hesitant to add such fine grained data to the ast are</p>
+</blockquote>
+<blockquote>
+<p>This kind of Informationen could probably not be represented if we ever migrate to a CST (or would limit us in the design options for the CST)
+Tracking the information increases the struct sizes which has a cost in memory consumption, data to write and to read (both slow operations). It can often times be faster (when considering the entire compilation pipeline) to reparse information that is needed rarely than paying the cost everywhere</p>
+</blockquote>
+<p>This was my initial reaction too, but...</p>
+<ol>
+<li>Can you explain more about why this would be a problem for a CST? I don't understand that part.</li>
+<li>I don't <em>think</em> this has a cost, since we're using a bitflag of the same size either way, though I may be mistaken.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-03-11 03:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:367 on 2024-03-11 03:06</div>
+            <div class="timeline-body"><blockquote>
+<p>the <code>panic!</code>s in this function are really just doing the work for us that the <code>debug_assert!</code>s were previously.</p>
+</blockquote>
+<p>You're correct although they differ from a user perspective. <code>debug_assert!</code> will only panic on debug builds while <code>panic</code> will bail out even on the release version.</p>
+<blockquote>
+<p>I think we <em>should</em> be immediately bailing from this function, since that indicates a logical error in our code somewhere. If we've written the tokenizer and parser correctly, it should be impossible for us to get here.</p>
+</blockquote>
+<p>Yes, this is the reason I suggest using the <code>unreachable</code> macro instead. As a developer it's hard to reason about a <code>panic</code> usage unless there's an indicator like a comment. However, if <code>unreachable</code> is used, one can say that this is indeed a logical error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-03-11 03:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1627 on 2024-03-11 03:08</div>
+            <div class="timeline-body"><p>Thank you for the explanation; this reasoning makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-11 07:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:367 on 2024-03-11 07:05</div>
+            <div class="timeline-body"><p>Makes sense — I'll switch to <code>unreachable</code>, thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2024-03-11 07:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-11 09:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:367 on 2024-03-11 09:21</div>
+            <div class="timeline-body"><blockquote>
+<p>Makes sense — I'll switch to <code>unreachable</code>, thanks</p>
+</blockquote>
+<p>Done in https://github.com/astral-sh/ruff/pull/10314/commits/3ee6454f02aa49f2ee451da19f704e280c248dc0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-11 10:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:367 on 2024-03-11 10:42</div>
+            <div class="timeline-body"><p>One way in which we could make this type-safe would be to emit different tokens for string literals and bytes literals. Then we would be able to have the same three-way <code>f-string/bytestring/everything-else</code> distinction at the token level as we do at the AST level, which would mean we would be able to have three different bitflags at the token level. We wouldn't need to do the type narrowing here when creating an AST node from a token because the type would already be narrowed.</p>
+<p>But that would be quite a large change to make.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-18 12:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you explain more about why this would be a problem for a CST? I don't understand that part.</p>
+</blockquote>
+<p>It depends on the CST design. For example, Roslyn, rust-analyzer, Biome, and libswift all use a uniform representation for all nodes that mainly consists of the node's kind, its children and possibly some flags (single flags structure shared between all nodes). That means that node specific attributes or flags aren't possible. You can see this in <a href="https://biomejs.dev/playground/?code=ZgB1AG4AYwB0AGkAbwBuACAAdABlAHMAdAAoACkAIAB7AAoAIAAgAGMAbwBuAHMAbwBsAGUALgBsAG8AZwAoACIAYQAiACkACgB9AA%3D%3D">Biome's playground</a> when opening the syntax tab and looking at the CST content. For each level, it only shows the kind followed by its children.</p>
+<p>A uniform representation has the advantage of traversing the tree without casting to the specific AST nodes. This makes it easy to implement traversal methods like <code>descendants</code> or storing a reference to a node.</p>
+<p>The way we would need to model this with such a CST design is to look at the tokens directly (similar to what we used to do with Locator)</p>
+<blockquote>
+<p>I don't think this has a cost, since we're using a bitflag of the same size either way, though I may be mistaken.</p>
+</blockquote>
+<p>That's correct and what I mentioned in</p>
+<blockquote>
+<p>I see and I guess it's fine adding it now that we already track prefixes</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1236 on 2024-03-18 12:45</div>
+            <div class="timeline-body"><p>Nit: I prefer using <code>f.write_str(self.as_str())</code> when writing a <code>str</code> without any placeholders, to avoid relying on the compiler to remove the write macro overhead.</p>
+<pre><code class="language-suggestion">        f.write_str(self.as_str())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1268 on 2024-03-18 12:48</div>
+            <div class="timeline-body"><p>The following will create an invalid prefix:</p>
+<pre><code class="language-rust">FStringFlags::default().with_prefix(FStringPrefix::Raw { uppercase_r: true }).with_prefix(FStringPrefix::Raw { uppercase_r: false })
+</code></pre>
+<p>Or passing regular after uppercase won't have the desired outcome:</p>
+<pre><code class="language-rust">FStringFlags::default().with_prefix(FStringPrefix::Raw { uppercase_r: true }).with_prefix(FStringPrefix::Regular)
+    .prefix().is_raw() // still returns true
+</code></pre>
+<p>You'll need to unset the Raw flags before setting them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1202 on 2024-03-18 12:51</div>
+            <div class="timeline-body"><p>Nit:I don't think it simplifies anything, so I would probably keep what you have. An alternative flag design would be to have <code>R_PREFIX</code> and <code>R_UPPER_CASE</code> where the <code>R_PREFIX</code> is set for lower or upper case, and upper is only set when using <code>R</code> (but not for <code>r</code>). This could simplify the &quot;has an r flag&quot; check, depending on how it is performed, or simplify the <code>with_prefix</code> because you can always write both flags.</p>
+<pre><code class="language-rust">    #[must_use]
+    pub fn with_prefix(mut self, prefix: FStringPrefix) -&gt; Self {
+        self.0.set(FStringFlagsInner::R_PREFIX_LOWER, matches!(prefix, FStringPrefix::Raw { ..}));
+        self.0.set(FStringFlagsInner::R_PREFIX_UPPER, matches!(prefix, FStringPrefix::Raw { uppercase_r: true }));
+        
+        self
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1606 on 2024-03-18 12:54</div>
+            <div class="timeline-body"><p>Same as for <code>FStringFlags</code>, this can lead to both lower and upper being set (or unicode) when this method is called multiple times on the same flags instance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1307 on 2024-03-18 12:55</div>
+            <div class="timeline-body"><p>Nit: Calling into the prefixe's <code>Debug</code> implementation seems more idiomatic to me rather than using the <code>Display</code> representation.</p>
+<pre><code class="language-suggestion">            .field(&quot;prefix&quot;, &amp;self.prefix())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1650 on 2024-03-18 12:56</div>
+            <div class="timeline-body"><p>Nit: I think I would find calling into the <code>Debug</code> representation more idomatic (rather than using the <code>Display</code> representation)</p>
+<pre><code class="language-suggestion">            .field(&quot;prefix&quot;, &amp;self.prefix())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1693 on 2024-03-18 12:56</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">        f.write_str(self.as_str())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1973 on 2024-03-18 12:57</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">        f.write_str(self.as_str())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:2006 on 2024-03-18 12:57</div>
+            <div class="timeline-body"><p>Same as for other <code>with_prefix</code>: Chaining <code>with_prefix</code> calls can lead to inconsistent internal state.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:2044 on 2024-03-18 12:58</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">            .field(&quot;prefix&quot;, &amp;self.prefix())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:711 on 2024-03-18 12:59</div>
+            <div class="timeline-body"><p>Nice that <code>prefix</code> now is no longer an <code>Option</code> :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:165 on 2024-03-18 13:01</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        f.write_str(self.as_str())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:235 on 2024-03-18 13:03</div>
+            <div class="timeline-body"><p>Nit: It could make sense to move this to <code>StringPrefix:from_kind</code> so that the method is next to <code>StringPrefix::as_flags</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:327 on 2024-03-18 13:03</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">            .field(&quot;prefix&quot;, &amp;self.prefix())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-03-18 13:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-18 13:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1268 on 2024-03-18 13:45</div>
+            <div class="timeline-body"><p>I addressed this in https://github.com/astral-sh/ruff/pull/10314/commits/bc3e406d1e564ffb256badcb2da8794884cb1ebc</p>
+<p>But I also wondered about simply prohibiting calling <code>.with_prefix()</code> if a prefix flag had already been set (using <code>debug_assert!(!self.0.intersects(FStringFlagsInner::R_PREFIX_UPPER | FStringFlagsInner::R_PREFIX_LOWER), &quot;Cannot call .with_prefix() if a prefix has already been set&quot;)</code>. This way is more type-safe, though :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-18 15:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/string_token_flags.rs</code>:235 on 2024-03-18 15:51</div>
+            <div class="timeline-body"><p>Nice idea!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1307 on 2024-03-18 16:10</div>
+            <div class="timeline-body"><p>I tried this out locally... I agree with you that in general it seems correct to use the <code>Debug</code> representation of a field inside the <code>Debug</code> representation of the superstructure, but here it results in lots of snapshot diffs like this:</p>
+<details>
+<summary>Screenshot</summary>
+
+<p><img src="https://github.com/astral-sh/ruff/assets/66076021/9187eba7-7f37-410b-b72b-c4e20c6517ed" alt="image" /></p>
+</details>
+
+<p>In my opinion, that makes the snapshots significantly less readable :/ What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-18 16:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-18 16:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1268 on 2024-03-18 16:36</div>
+            <div class="timeline-body"><p>I would find it surprising if I'm not allowed to call a method multiple times. An alternative is to have a <code>from_prefix</code> method that constructs <code>Self</code>. This way, the compiler guarantees that the method can only be called once during construction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-18 16:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1307 on 2024-03-18 16:38</div>
+            <div class="timeline-body"><p>I agree that it makes the snapshot less readable but it is more accurate in the sense that <code>prefix</code> isn't a string. The main use case for using <code>dbg!</code> is to understand a data structure. That's where it's important to get accurate types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-18 16:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1307 on 2024-03-18 16:39</div>
+            <div class="timeline-body"><p>fair enough!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-03-18 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-03-18 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-18 17:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:47:56 UTC
+    </footer>
+</body>
+</html>

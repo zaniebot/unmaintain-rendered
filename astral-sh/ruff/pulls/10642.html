@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add tests for subscript and slice expressions - astral-sh/ruff #10642</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add tests for subscript and slice expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10642">#10642</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-03-28 04:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-28 04:14</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds test cases for subscript and slice expressions. Slices can only exists inside a subscript expressions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-03-28 04:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @dhruvmanila on 2024-03-28 04:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-03-28 07:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-03-28 07:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:736 on 2024-03-28 08:42</div>
+            <div class="timeline-body"><p>I think it could make sense to copy in the slice rule here because it's unclear to me to which rule you're referring here.</p>
+<p>It' something that I've found useful when reading TypeScript's parser code:</p>
+<ul>
+<li>https://github.com/microsoft/TypeScript/blob/02bb3108ad625cddcec228846b9ff56cc5398976/src/compiler/parser.ts#L4977-L4986</li>
+<li>https://github.com/microsoft/TypeScript/blob/02bb3108ad625cddcec228846b9ff56cc5398976/src/compiler/parser.ts#L5078-L5082</li>
+</ul>
+<p>They also often give examples:</p>
+<ul>
+<li>https://github.com/microsoft/TypeScript/blob/02bb3108ad625cddcec228846b9ff56cc5398976/src/compiler/parser.ts#L5186-L5191</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:773 on 2024-03-28 08:42</div>
+            <div class="timeline-body"><p>Longterm, I think we want to move this checks into <code>checker</code>. Once we have something like that ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@expressions__subscript__invalid_slice_element.py.snap</code>:258 on 2024-03-28 08:46</div>
+            <div class="timeline-body"><p>Do we only parse out a named expression if we're at <code>:=</code> but not when we're at <code>:</code>? I assume that is to avoid ambiguity when parsing assignment parsing <code>a: str</code>, meaning it is unlikely that we want to use namede expression parsing for error recovery if we find a single <code>identifier:</code> in an expression (without the <code>=</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-28 08:47</div>
+            <div class="timeline-body"><p>Looks good. I would like to understand that starred expression as tuple parsing better before merging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-03-28 09:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:736 on 2024-03-28 09:18</div>
+            <div class="timeline-body"><p>I see. Thanks for the reference. My only worry with this is that the grammar might get out of sync but it's probably way down the line. I'll add them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-03-28 09:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@expressions__subscript__invalid_slice_element.py.snap</code>:258 on 2024-03-28 09:26</div>
+            <div class="timeline-body"><blockquote>
+<p>Do we only parse out a named expression if we're at <code>:=</code> but not when we're at <code>:</code>?</p>
+</blockquote>
+<p>This is specific to slices. To understand this, we need to look at the <code>slice</code> grammar:</p>
+<pre><code>slice:
+    | [expression] ':' [expression] [':' [expression] ] 
+    | named_expression 
+</code></pre>
+<p>Here, <code>expression</code> corresponds to <code>parse_conditional_expression_or_higher</code> and <code>named_expression</code> corresponds to <code>parse_named_expression_or_higher</code> method in our parser.</p>
+<p>This basically says that a named expression is only valid if it's a standalone and not followed by a <code>:</code> which then limits the precedence.</p>
+<p>Does this help? If not, I can expand further</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-28 09:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Looks good. I would like to understand that starred expression as tuple parsing better before merging.</p>
+</blockquote>
+<p>Yes, for that let's look at the slices grammar:</p>
+<pre><code>slices:
+    | slice !',' 
+    | ','.(slice | starred_expression)+ [','] 
+
+slice:
+    | [expression] ':' [expression] [':' [expression] ] 
+    | named_expression 
+</code></pre>
+<p>Here, an element can either be a single slice element which cannot contain starred expression, but the second part of the <code>slices</code> grammar says that it actually can be a starred expression. The grammar syntax is custom and the following helps in understanding that:</p>
+<pre><code class="language-py"># s.e+
+#   Match one or more occurrences of e, separated by s. The generated parse tree
+#   does not include the separator. This is otherwise identical to (e (s e)*).
+</code></pre>
+<p>And the CPython parser makes them a tuple if it matches the <code>starred_expression</code>: https://github.com/python/cpython/blob/6c8ac8a32fd6de1960526561c44bc5603fab0f3e/Grammar/python.gram#L831-L833</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-28 10:10</div>
+            <div class="timeline-body"><blockquote>
+<p>The grammar syntax is custom and the following helps in understanding that:</p>
+</blockquote>
+<p>That indeed is helpful. I misread it as it must be a sequence of a <code>,</code> followed by one or more <code>slice</code> or <code>starred_expression</code> elements, followed by an optional trailing comma. But what i understand now is that this is: It's a <code>slice</code> or <code>starred_expression</code>. It then also makes sense that the specification is explicit that the <code>slice</code> syntax has higher priority over any expression syntax because the grammar is ambiguous.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-03-28 10:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-03-29 08:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:736 on 2024-03-29 08:40</div>
+            <div class="timeline-body"><p>I'm thinking of adding this in a future PR clubbed with other document / comment improvements. This way it can be reviewed better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-03-29 08:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-03-29 08:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-29 08:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-29 08:54</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:48:09 UTC
+    </footer>
+</body>
+</html>

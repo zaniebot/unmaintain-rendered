@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colorize the output of ruff format --diff - astral-sh/ruff #10110</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Colorize the output of ruff format --diff</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10110">#10110</a>
+        opened by <a href="https://github.com/senadev42">@senadev42</a>
+        on 2024-02-24 13:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/senadev42">@senadev42</a> on 2024-02-24 13:18</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Adds color to the output of <code>ruff format --diff</code>. Implemented by extracting the logic inside of towriter() and using the Colored library.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>Tested manually in development with one of the files until colored output was achieved.</p>
+<p><code>cargo run -p ruff -- format --diff crates/ruff_linter/resources/test/fixtures/pycodestyle/W29.py --no-cache</code></p>
+<p>Doesn't pass the ``cargo test``` format diff tests and I'm not sure if it's because something's wrong with the implementation or if the tests need to be updated. Would like some help in that direction either way.</p>
+<p>Related issue #9984</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/source_kind.rs</code>:106 on 2024-02-24 13:50</div>
+            <div class="timeline-body"><p>We should re-use your new diffing for the jupyter notebook case below. But that's something that you might have planned anyway</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/source_kind.rs</code>:125 on 2024-02-24 14:06</div>
+            <div class="timeline-body"><p>Nit: We can iterate over the changes in the <code>hunk</code> and use the hunk's display to avoid matching on the first character.</p>
+<pre><code class="language-rust">								// Individual hunks (section of changes)
+                for hunk in unified_diff.iter_hunks() {
+                    writeln!(writer, &quot;{}&quot;, hunk.header())?;
+
+                    // individual lines
+                    for change in hunk.iter_changes() {
+                        match change.tag() {
+                            ChangeTag::Equal =&gt; write!(writer, &quot; {}&quot;, change.value())?,
+                            ChangeTag::Delete =&gt; write!(writer, &quot;{}{}&quot;, &quot;-&quot;.red(), change.value())?,
+                            ChangeTag::Insert =&gt; {
+                                write!(writer, &quot;{}{}&quot;, &quot;+&quot;.green(), change.value())?
+                            }
+                        }
+                    }
+                }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/source_kind.rs</code>:108 on 2024-02-24 14:24</div>
+            <div class="timeline-body"><p>This is not related to your change and might be worth a separate PR but showing the same header for both add and remove doesn't feel that useful... We might want to change this that the caller needs to provide labels.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-24 14:24</div>
+            <div class="timeline-body"><p>I believe the reason why the tests fail is because the header ordering is now different:</p>
+<ul>
+<li>before: <code>---</code> before <code>+++</code></li>
+<li>now: <code>+++</code> before <code>---</code></li>
+</ul>
+<p>I believe the other issue could be that you aren't writing the hunk header (the <code>@@</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-24 14:31</div>
+            <div class="timeline-body"><p>And yes, reading test failures that are diffs of diffs is extremely difficult. I had to play with the code myself to figure out what's wrong</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/senadev42">@senadev42</a> reviewed on 2024-02-25 08:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/senadev42">@senadev42</a> on <code>crates/ruff_linter/src/source_kind.rs</code>:125 on 2024-02-25 08:12</div>
+            <div class="timeline-body"><p>Oh this only colors the + and -  compared to also doing <code>change.value().green()</code> and <code>change.value().red()</code> for the Delete and Insert respectively, or is only coloring the symbols the intended behavior?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/senadev42">@senadev42</a> on 2024-02-25 08:18</div>
+            <div class="timeline-body"><blockquote>
+<p>I believe the reason why the tests fail is because the header ordering is now different:</p>
+<ul>
+<li>before: <code>---</code> before <code>+++</code></li>
+<li>now: <code>+++</code> before <code>---</code></li>
+</ul>
+<p>I believe the other issue could be that you aren't writing the hunk header (the <code>@@</code>)</p>
+</blockquote>
+<p>Yeah the headers were flipped compared to how the built in writer was doing it. Changed that and it passes the original tests it was failing and now it's just failing these two integration tests</p>
+<pre><code>test diff_shows_safe_fixes_by_default ... FAILED
+test diff_shows_unsafe_fixes_with_opt_in ... FAILED
+</code></pre>
+<p>diff_shows_safe_fixes_by_default:
+────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬───────────────────────────────────────────────
+0     0 │ success: false␊
+1     1 │ exit_code: 1␊
+2     2 │ ----- stdout -----␊
+3 │+--- ␊ &lt; is green
+4 │++++ ␊ &lt; is green
+3     5 │ @@ -0,0 +1 @@␊
+4     6 │ +# fix from stable-test-rule-safe-fix␊
+5     7 │ ␊
+6     8 │ ␊
+7     9 │ ----- stderr -----␊
+8       │-Would fix 1 error (1 additional fix available with <code>--unsafe-fixes</code>). &lt; is red
+10 │+Would fix 1 error (1 additional fix available with <code>--unsafe-fixes</code>).␊ &lt; is green
+────────────┴───────────────────────────────────────────────</p>
+<p>I think it has something to do with the ␊ which means linebreak stuff going on so I'll try to play around with the different types of write, writelin and '\n' (which is how the unextracted writer did it but it didn't pass linting) combinations and try to figure it out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-26 09:10</div>
+            <div class="timeline-body"><p>Interesting about the color change of the summary. That's unexpected. Maybe try again after https://github.com/astral-sh/ruff/pull/10127 merges. It mentions a fix related to bogus newlines</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-01 08:51</div>
+            <div class="timeline-body"><p>I didn't see any newline issues after upgrading to the latest insta version. So that seems fixed. I refactored the diff code a bit to avoid passing around <code>writers</code> and tested the output</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/1203881/6d694c80-ffbf-4143-ad7f-9136c4163be2" alt="image" /></p>
+<p>I think this is good for merging. Thanks for working on this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-03-01 08:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-03-01 08:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-03-01 08:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-03-01 08:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-01 09:01</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2024-03-01 09:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/senadev42">@senadev42</a> on 2024-03-01 10:47</div>
+            <div class="timeline-body"><p>Oh yeah it looks much cleaner now, won't lie was worried about how I was going to do that since I knew enough to know it was messy but not enough to know on how to not make it so.</p>
+<p>Also, any reason not to color the whole line (symbols + change.value()) like in the header instead of just the symbols?</p>
+<p>(line 238, 239)</p>
+<pre><code class="language-rust">      match change.tag() {
+          ChangeTag::Equal =&gt; write!(f, &quot; {}&quot;, change.value())?,
+          ChangeTag::Delete =&gt; write!(f, &quot;{}{}&quot;, &quot;-&quot;.red(), change.value())?,
+            //                                                            ^.red()
+          ChangeTag::Insert =&gt; write!(f, &quot;{}{}&quot;, &quot;+&quot;.green(), change.value())?,
+             //                                                             ^.green()  
+      }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-01 11:36</div>
+            <div class="timeline-body"><blockquote>
+<p>Also, any reason not to color the whole line (symbols + change.value()) like in the header instead of just the symbols?</p>
+</blockquote>
+<p>Uhhh no, That's not intentional. Would you be interesting in doing a follow up PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/senadev42">@senadev42</a> on 2024-03-01 12:34</div>
+            <div class="timeline-body"><p>Follow up at #10183</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:47:51 UTC
+    </footer>
+</body>
+</html>

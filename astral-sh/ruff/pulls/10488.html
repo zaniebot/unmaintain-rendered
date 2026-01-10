@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix error message for rule C400 - astral-sh/ruff #10488</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix error message for rule C400</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10488">#10488</a>
+        opened by <a href="https://github.com/VascoSch92">@VascoSch92</a>
+        on 2024-03-20 10:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2024-03-20 10:38</div>
+            <div class="timeline-body"><p>Fix a typos in the error message of rule C400</p>
+<p>With the latest version of Ruff (0.3.3) if I have a <code>scratch.py</code> script like that:</p>
+<pre><code class="language-python">from typing import Dict, List, Tuple
+
+
+def generate_samples(test_cases: Dict) -&gt; List[Tuple]:
+    return list(
+        (input, expected)
+        for input, expected in zip(test_cases[&quot;input_value&quot;], test_cases[&quot;expected_value&quot;])
+    )
+</code></pre>
+<p>and I run ruff</p>
+<pre><code class="language-shell">&gt;&gt;&gt; ruff check scratch.py --select C400
+&gt;&gt;&gt; scratch.py:5:12: C400 Unnecessary generator (rewrite using `list()`
+</code></pre>
+<p>This PR fixes the error message from <em>&quot;(rewrite using <code>list()</code>&quot;</em> to <em>&quot;(rewrite using <code>list()</code>)&quot;</em>, and it fixes also the doc.</p>
+<p>Related question: why I have this error message? The rule is not correct in this case. Should I open an issue for that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-20 11:10</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-03-20 13:20</div>
+            <div class="timeline-body"><p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @MichaReiser on 2024-03-20 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-20 13:22</div>
+            <div class="timeline-body"><blockquote>
+<p>Related question: why I have this error message? The rule is not correct in this case. Should I open an issue for that?</p>
+</blockquote>
+<p>I think the idea is that you write this as</p>
+<pre><code class="language-python">def generate_samples(test_cases: Dict) -&gt; List[Tuple]:
+    return [
+        (input, expected)
+        for input, expected in zip(test_cases[&quot;input_value&quot;], test_cases[&quot;expected_value&quot;])
+    ]
+
+</code></pre>
+<p>But I might be wrong (I don't know Python well). If t</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-03-20 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-03-20 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2024-03-20 13:28</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Related question: why I have this error message? The rule is not correct in this case. Should I open an issue for that?</p>
+</blockquote>
+<p>I think the idea is that you write this as</p>
+<pre><code class="language-python">def generate_samples(test_cases: Dict) -&gt; List[Tuple]:
+    return [
+        (input, expected)
+        for input, expected in zip(test_cases[&quot;input_value&quot;], test_cases[&quot;expected_value&quot;])
+    ]
+</code></pre>
+<p>But I might be wrong (I don't know Python well). If t</p>
+</blockquote>
+<p>@MichaReiser</p>
+<p>But in this case the error message is not so useful right? It should be something like<code> (rewrite using [...])</code></p>
+<p>Should I open an issue to discuss that?</p>
+<p>Because there are also problem with the related rule <code>C416</code>. I think I have a user-case where this happen</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-20 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-20 13:30</div>
+            <div class="timeline-body"><blockquote>
+<p>But in this case the error message is not so useful right? It should be something like (rewrite using [...])</p>
+</blockquote>
+<p>That's true and I think that's probably a bug. The rule has a second branch that suggests rewriting the rule as a generator.</p>
+<blockquote>
+<p>Should I open an issue to discuss that?</p>
+</blockquote>
+<p>That would be great</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:48:02 UTC
+    </footer>
+</body>
+</html>

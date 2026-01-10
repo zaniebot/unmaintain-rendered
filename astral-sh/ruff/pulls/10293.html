@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove `skip_until` parser method - astral-sh/ruff #10293</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove <code>skip_until</code> parser method</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10293">#10293</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-03-08 06:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-08 06:52</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR removes the <code>skip_until</code> parser method. The main use case for it was for error recovery which we want to isolate only in list parsing.</p>
+<p>There are two references which are removed:</p>
+<ol>
+<li><p>Parsing a list of match arguments in a class pattern. Take the following code snippet as an example:</p>
+<pre><code class="language-python">match foo:
+    case Foo(bar.z=1, baz):
+    	pass
+</code></pre>
+<p>This is a syntax error as the keyword argument pattern can only have an identifier but here it's an attribute node. Now, to move on to the next argument (<code>baz</code>), the parser would skip until the end of the argument to recover. What we will do now is to parse the value as a pattern (per spec) thus moving the parser ahead and add the node with an empty identifier.</p>
+<p>The above code will produce the following AST:</p>
+ <details><summary><b>AST</b></summary>
+ <p>
+
+<pre><code class="language-rs">Module(
+    ModModule {
+        range: 0..52,
+        body: [
+            Match(
+                StmtMatch {
+                    range: 0..51,
+                    subject: Name(
+                        ExprName {
+                            range: 6..9,
+                            id: &quot;foo&quot;,
+                            ctx: Load,
+                        },
+                    ),
+                    cases: [
+                        MatchCase {
+                            range: 15..51,
+                            pattern: MatchClass(
+                                PatternMatchClass {
+                                    range: 20..37,
+                                    cls: Name(
+                                        ExprName {
+                                            range: 20..23,
+                                            id: &quot;Foo&quot;,
+                                            ctx: Load,
+                                        },
+                                    ),
+                                    arguments: PatternArguments {
+                                        range: 24..37,
+                                        patterns: [
+                                            MatchAs(
+                                                PatternMatchAs {
+                                                    range: 33..36,
+                                                    pattern: None,
+                                                    name: Some(
+                                                        Identifier {
+                                                            id: &quot;baz&quot;,
+                                                            range: 33..36,
+                                                        },
+                                                    ),
+                                                },
+                                            ),
+                                        ],
+                                        keywords: [
+                                            PatternKeyword {
+                                                range: 24..31,
+                                                attr: Identifier {
+                                                    id: &quot;&quot;,
+                                                    range: 31..31,
+                                                },
+                                                pattern: MatchValue(
+                                                    PatternMatchValue {
+                                                        range: 30..31,
+                                                        value: NumberLiteral(
+                                                            ExprNumberLiteral {
+                                                                range: 30..31,
+                                                                value: Int(
+                                                                    1,
+                                                                ),
+                                                            },
+                                                        ),
+                                                    },
+                                                ),
+                                            },
+                                        ],
+                                    },
+                                },
+                            ),
+                            guard: None,
+                            body: [
+                                Pass(
+                                    StmtPass {
+                                        range: 47..51,
+                                    },
+                                ),
+                            ],
+                        },
+                    ],
+                },
+            ),
+        ],
+    },
+)
+</code></pre>
+ </p>
+ </details> 
+
+</li>
+<li><p>Parsing a list of parameters. Here, our list parsing method makes sure to only call the parse element function when it's a valid list element. A parameter can start either with a <code>Star</code>, <code>DoubleStar</code>, or <code>Name</code> token which corresponds to the 3 <code>if</code> conditions. Thus, the <code>else</code> block is not required as the list parsing will recover without it.</p>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-03-08 06:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-03-08 06:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/pattern.rs</code>:576 on 2024-03-08 08:15</div>
+            <div class="timeline-body"><p>What I understand from this comment is that without this <code>parse_match_pattern</code> call it's possible that the list parsing gets stuck because the <code>item</code> parsing function never progress. Is this what it means? Or does it mean that we should always try to parse the patch pattern value because we're after the <code>=</code> and we know that we should find a value pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-03-08 08:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-03-08 08:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-03-08 08:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/pattern.rs</code>:576 on 2024-03-08 08:50</div>
+            <div class="timeline-body"><p>The former. Taking the example from the PR description, the parser being at <code>1</code>, but it expects a comma thus it breaks out of parsing the list with an error.</p>
+<p>This makes me wonder about the case where there's no pattern after <code>=</code> like in the following snippet:</p>
+<pre><code class="language-python">match foo:
+	case Foo(bar=, baz):
+		pass
+</code></pre>
+<p>It adds an error here:</p>
+<p>https://github.com/astral-sh/ruff/blob/5e0e1f09793508eef3bfac136df42ee865b55e72/crates/ruff_python_parser/src/parser/pattern.rs#L526-L529</p>
+<p>Not sure why it's &quot;Expression expected.&quot;, I'll change it to &quot;Expected a pattern&quot; as by this time we've tried all possible pattern parsing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-08 08:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/pattern.rs</code>:576 on 2024-03-08 08:56</div>
+            <div class="timeline-body"><p>Okay, I think we have a different understanding of <code>stuck</code>. To me, stuck means that the parser goes into an infinite loop. I dont' think that's the case here because the error recovery bails out if it doesn't parse the <code>value_pattern</code>. However, it doesn't recover nicely from the error.</p>
+<p>However, there's a fundamental problem with this parsing method now that we always call <code>parse_match_pattern</code>... we drop the <code>value_pattern</code> in case it isn't a <code>PatternMatchAs</code>. I don't think we should be doing this. Can we instead convert <code>pattern</code> into <code> PatternMatchAs</code> if we've found a <code>=</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-03-08 17:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/pattern.rs</code>:576 on 2024-03-08 17:51</div>
+            <div class="timeline-body"><p>From Discord:</p>
+<blockquote>
+<p>So, the <code>PatternKeyword</code> node structure (for keyword patterns like <code>case Foo(a=1): ...</code>) is that it contains an identifier and a pattern. We can use an empty <code>Expr::Name</code> pattern here and retain the parsed value pattern. This would be similar to the empty <code>Identifier</code> patten.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-03-08 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-03-08 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-08 17:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:47:55 UTC
+    </footer>
+</body>
+</html>

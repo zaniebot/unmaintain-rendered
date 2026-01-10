@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff server` now supports the `source.organizeImports` source action - astral-sh/ruff #10652</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>ruff server</code> now supports the <code>source.organizeImports</code> source action</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10652">#10652</a>
+        opened by <a href="https://github.com/snowsignal">@snowsignal</a>
+        on 2024-03-29 05:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-03-29 05:46</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This builds on top of the work in https://github.com/astral-sh/ruff/pull/10597 to support <code>Ruff: Organize imports</code> as an available source action.</p>
+<p>To do this, we have to support <code>Clone</code>-ing for linter settings, since we need to modify them in place to select import-related diagnostics specifically (<code>I001</code> and <code>I002</code>).</p>
+<h2>Test Plan</h2>
+<p>https://github.com/astral-sh/ruff/assets/19577865/04282d01-dfda-4ac5-aa8f-6a92d5f85bfd</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @snowsignal on 2024-03-29 05:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-29 06:00</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @snowsignal on 2024-03-29 08:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server/api/requests/code_action.rs</code>:137 on 2024-03-29 08:29</div>
+            <div class="timeline-body"><p>Nit: Same as for the <code>fix_all</code> pr. I think I would restructure it to avoid overriding action</p>
+<pre><code class="language-suggestion">    let (edit, data) = if snapshot.resolved_client_capabilities.code_action_deferred_edit_resolution {
+        // The edit will be resolved later in the `CodeActionsResolve` request
+        (None, Some(serde_json::to_value(snapshot.url()).expect(&quot;document url to serialize&quot;)))
+    } else {
+        (
+            resolve_edit_for_organize_imports(
+                document,
+                snapshot.url(),
+                snapshot.configuration().linter.clone(),
+                snapshot.encoding(),
+            )?,
+            None
+        )
+    };
+
+    let action = types::CodeAction {
+        title: format!(&quot;{DIAGNOSTIC_NAME}: Organize imports&quot;),
+        kind: Some(types::CodeActionKind::SOURCE_ORGANIZE_IMPORTS),
+        edit,
+        data,
+        ..Default::default()
+    };
+
+    Ok(types::CodeActionOrCommand::CodeAction(action))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server/api/requests/code_action_resolve.rs</code>:97 on 2024-03-29 08:33</div>
+            <div class="timeline-body"><p>I think you can reference the rule directly</p>
+<pre><code class="language-suggestion">        Rule::UnusedImport
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server/api/requests/code_action_resolve.rs</code>:93 on 2024-03-29 08:34</div>
+            <div class="timeline-body"><p>Hmm, it's unfortunate that this requires making <code>LinterSettings</code> cloneable but I haven't been able to come up with an alternative solution that not at least requires cloning individual fields. Ideally it would be possible to call <code>check</code> with the desired rules, but that's a larger refactor and is probably not worth it.</p>
+<p>I don't feel strongly but I have a slight preference to pass in a <code>LinterSetting</code> and move the cloning into <code>resolve_edit_for_organize_imports</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-03-29 08:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-29 08:36</div>
+            <div class="timeline-body"><p>Would you mind testing that adding the organizeImports action (ruff or the global one) into the on save action works as expected</p>
+<pre><code>{
+  &quot;[python]&quot;: {
+    &quot;editor.formatOnSave&quot;: true,
+    &quot;editor.codeActionsOnSave&quot;: {
+      &quot;source.fixAll&quot;: &quot;explicit&quot;,
+      &quot;source.organizeImports&quot;: &quot;explicit&quot;
+    },
+    &quot;editor.defaultFormatter&quot;: &quot;charliermarsh.ruff&quot;
+  }
+}
+</code></pre>
+<p>(or using the ruff specific actions)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/api/requests/code_action_resolve.rs</code>:93 on 2024-03-29 11:21</div>
+            <div class="timeline-body"><p>Could we do something like the following?</p>
+<ol>
+<li>Take a snapshot of existing settings</li>
+<li>Mutate it temporarily</li>
+<li>Restore the settings with the snapshot</li>
+</ol>
+<p>I'm not sure how involved this is or if it's better than cloning. That said, I wouldn't recommend doing in this PR but something to think about if we need or want to refactor this in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-03-29 11:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-04 21:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server/api/requests/code_action_resolve.rs</code>:93 on 2024-04-04 21:50</div>
+            <div class="timeline-body"><p>@MichaReiser @dhruvmanila I'll make a follow-up issue to look into how we could improve this for the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-04-04 22:13</div>
+            <div class="timeline-body"><p>@MichaReiser I've confirmed that the configuration you've provided works as expected. However, the ruff-specific configuration is not working, but for an unrelated reason, which I'll address in a follow-up issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @snowsignal on 2024-04-04 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @snowsignal on 2024-04-04 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-04 22:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:48:10 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move `Q004` to AST based checker - astral-sh/ruff #10548</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Move <code>Q004</code> to AST based checker</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10548">#10548</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-03-24 17:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-24 17:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Continuing with #7595, this PR moves the <code>Q004</code> rule to the AST checker.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>[x] Existing test cases should pass</li>
+<li>[x] No ecosystem updates</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2024-03-24 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-24 17:40</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-03-24 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-24 18:59</div>
+            <div class="timeline-body"><p>Nice! You could possibly reduce duplication between the <code>StringLiteral</code> and <code>BytesLiteral</code> branches by converting the flags into <code>AnyStringKind</code>s -- something like this? It might also be possible to reduce duplication between the <code>FString</code> branch and the other two branches -- not sure</p>
+<pre><code class="language-diff">(dhruv/move-q004)⚡ % git diff                                                                                                            ~/dev/ruff
+diff --git a/crates/ruff_linter/src/rules/flake8_quotes/rules/unnecessary_escaped_quote.rs b/crates/ruff_linter/src/rules/flake8_quotes/rules/unnecessary_escaped_quote.rs
+index d84dec0dc..6abef285e 100644
+--- a/crates/ruff_linter/src/rules/flake8_quotes/rules/unnecessary_escaped_quote.rs
++++ b/crates/ruff_linter/src/rules/flake8_quotes/rules/unnecessary_escaped_quote.rs
+@@ -1,9 +1,9 @@
+ use ruff_diagnostics::{AlwaysFixableViolation, Diagnostic, Edit, Fix};
+ use ruff_macros::{derive_message_formats, violation};
+ use ruff_python_ast::str::raw_contents;
+-use ruff_python_ast::{self as ast, StringLike};
++use ruff_python_ast::{self as ast, AnyStringKind, StringLike};
+ use ruff_source_file::Locator;
+-use ruff_text_size::Ranged;
++use ruff_text_size::{Ranged, TextRange};
+ 
+ use crate::checkers::ast::Checker;
+ 
+@@ -52,15 +52,15 @@ pub(crate) fn unnecessary_escaped_quote(checker: &amp;mut Checker, string_like: Stri
+ 
+     match string_like {
+         StringLike::String(expr) =&gt; {
+-            for string in &amp;expr.value {
+-                if let Some(diagnostic) = check_string(locator, string) {
++            for ast::StringLiteral { range, flags, .. } in &amp;expr.value {
++                if let Some(diagnostic) = check_stringlike((*flags).into(), *range, locator) {
+                     checker.diagnostics.push(diagnostic);
+                 }
+             }
+         }
+         StringLike::Bytes(expr) =&gt; {
+-            for bytes in &amp;expr.value {
+-                if let Some(diagnostic) = check_bytes(locator, bytes) {
++            for ast::BytesLiteral { range, flags, .. } in &amp;expr.value {
++                if let Some(diagnostic) = check_stringlike((*flags).into(), *range, locator) {
+                     checker.diagnostics.push(diagnostic);
+                 }
+             }
+@@ -68,7 +68,9 @@ pub(crate) fn unnecessary_escaped_quote(checker: &amp;mut Checker, string_like: Stri
+         StringLike::FString(expr) =&gt; {
+             for part in &amp;expr.value {
+                 if let Some(diagnostic) = match part {
+-                    ast::FStringPart::Literal(string) =&gt; check_string(locator, string),
++                    ast::FStringPart::Literal(ast::StringLiteral { range, flags, .. }) =&gt; {
++                        check_stringlike((*flags).into(), *range, locator)
++                    }
+                     ast::FStringPart::FString(f_string) =&gt; check_f_string(locator, f_string),
+                 } {
+                     checker.diagnostics.push(diagnostic);
+@@ -78,54 +80,27 @@ pub(crate) fn unnecessary_escaped_quote(checker: &amp;mut Checker, string_like: Stri
+     }
+ }
+ 
+-fn check_string(locator: &amp;Locator, string: &amp;ast::StringLiteral) -&gt; Option&lt;Diagnostic&gt; {
+-    let ast::StringLiteral { range, flags, .. } = string;
+-    if flags.is_triple_quoted() || flags.prefix().is_raw() {
+-        return None;
+-    }
+-
+-    let contents = raw_contents(locator.slice(string))?;
+-    let quote = flags.quote_style();
+-    let opposite_quote_char = quote.opposite().as_char();
+-
+-    if !contains_escaped_quote(contents, opposite_quote_char) {
+-        return None;
+-    }
+-
+-    let mut diagnostic = Diagnostic::new(UnnecessaryEscapedQuote, *range);
+-    diagnostic.set_fix(Fix::safe_edit(Edit::range_replacement(
+-        format!(
+-            &quot;{prefix}{quote}{value}{quote}&quot;,
+-            prefix = flags.prefix(),
+-            value = unescape_string(contents, opposite_quote_char)
+-        ),
+-        *range,
+-    )));
+-    Some(diagnostic)
+-}
+-
+-fn check_bytes(locator: &amp;Locator, bytes: &amp;ast::BytesLiteral) -&gt; Option&lt;Diagnostic&gt; {
+-    let ast::BytesLiteral { range, flags, .. } = bytes;
+-    if flags.is_triple_quoted() || flags.prefix().is_raw() {
++fn check_stringlike(
++    kind: AnyStringKind,
++    range: TextRange,
++    locator: &amp;Locator,
++) -&gt; Option&lt;Diagnostic&gt; {
++    if kind.is_triple_quoted() || kind.is_raw_string() {
+         return None;
+     }
+ 
+-    let contents = raw_contents(locator.slice(bytes))?;
+-    let quote = flags.quote_style();
++    let contents = raw_contents(locator.slice(range))?;
++    let quote = kind.quote_style();
+     let opposite_quote_char = quote.opposite().as_char();
+ 
+     if !contains_escaped_quote(contents, opposite_quote_char) {
+         return None;
+     }
+ 
+-    let mut diagnostic = Diagnostic::new(UnnecessaryEscapedQuote, *range);
++    let mut diagnostic = Diagnostic::new(UnnecessaryEscapedQuote, range);
+     diagnostic.set_fix(Fix::safe_edit(Edit::range_replacement(
+-        format!(
+-            &quot;{prefix}{quote}{value}{quote}&quot;,
+-            prefix = flags.prefix(),
+-            value = unescape_string(contents, opposite_quote_char)
+-        ),
+-        *range,
++        kind.format_string_contents(&amp;unescape_string(contents, opposite_quote_char)),
++        range,
+     )));
+     Some(diagnostic)
+ }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-03-24 19:08</div>
+            <div class="timeline-body"><p>LGTM — my suggested simplification could be done as a follow-up</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-25 02:28</div>
+            <div class="timeline-body"><p>Thank you for the suggestion. That's a good idea. I'll just do the change for the string and bytes literal here and merge it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-03-25 03:27</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/move-q004">CodSpeed Performance Report</a></h2>
+<h3>Merging #10548 will <strong>improve performances by 5.59%</strong></h3>
+<p><sub>Comparing <code>dhruv/move-q004</code> (5aaf7d3) with <code>main</code> (d625f55)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 2</code> improvements
+<code>✅ 28</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>dhruv/move-q004</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>linter/default-rules[large/dataset.py]</code> | 20.3 ms | 19.3 ms | +5.59% |
+| ⚡ | <code>linter/default-rules[unicode/pypinyin.py]</code> | 1.6 ms | 1.5 ms | +4.63% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-03-25 03:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-03-25 03:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-25 03:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:48:03 UTC
+    </footer>
+</body>
+</html>

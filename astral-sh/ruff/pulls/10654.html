@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff server` now supports commands for auto-fixing, organizing imports, and formatting - astral-sh/ruff #10654</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>ruff server</code> now supports commands for auto-fixing, organizing imports, and formatting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10654">#10654</a>
+        opened by <a href="https://github.com/snowsignal">@snowsignal</a>
+        on 2024-03-29 08:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-03-29 08:04</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This builds off of the work in https://github.com/astral-sh/ruff/pull/10652 to implement a command executor, backwards compatible with the commands from the previous LSP (<code>ruff.applyAutofix</code>, <code>ruff.applyFormat</code> and <code>ruff.applyOrganizeImports</code>).</p>
+<p>This involved a lot of refactoring and tweaks to the code action resolution code - the most notable change is that workspace edits are specified in a slightly different way, using the more general <code>changes</code> field instead of the <code>document_changes</code> field (which isn't supported on all LSP clients). Additionally, the API for synchronous request handlers has been updated to include access to the <code>Requester</code>, which we use to send a <code>workspace/applyEdit</code> request to the client.</p>
+<h2>Test Plan</h2>
+<p>https://github.com/astral-sh/ruff/assets/19577865/7932e30f-d944-4e35-b828-1d81aa56c087</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @snowsignal on 2024-03-29 08:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-03-29 08:05</div>
+            <div class="timeline-body"><p>(This is in draft because I'd like to hold off reviews until the downstream PRs are merged in, and also because I still need to make a test plan video for this)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-29 08:21</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-29 08:38</div>
+            <div class="timeline-body"><p>Sorry for jumping in on a Draft PR. Before publishing, would you mind explaining what happens for editors not supporting the <code>changes</code> field?</p>
+<blockquote>
+<p>the most notable change is that workspace edits are specified in a slightly different way, using the more general changes field instead of the document_changes field (which isn't supported on all LSP clients).</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-03-29 09:55</div>
+            <div class="timeline-body"><p>@MichaReiser:</p>
+<blockquote>
+<p>Sorry for jumping in on a Draft PR. Before publishing, would you mind explaining what happens for editors not supporting the <code>changes</code> field?</p>
+</blockquote>
+<p>It's the <code>document_changes</code> field that isn't supported on all clients. <code>changes</code> should have universal support.</p>
+<p>From the <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#workspaceEdit">LSP specification</a>:</p>
+<pre><code>If a client neither supports `documentChanges` nor `workspace.workspaceEdit.resourceOperations`,
+then only plain `TextEdit`s using the `changes` property are supported.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @snowsignal on 2024-04-04 23:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @snowsignal on 2024-04-04 23:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @snowsignal on 2024-04-04 23:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-05 06:59</div>
+            <div class="timeline-body"><p>Would you mind explaining the motivation for migrating from <code>documentChanges</code> to <code>changes</code>?</p>
+<blockquote>
+<p>This involved a lot of refactoring and tweaks to the code action resolution code - the most notable change is that workspace edits are specified in a slightly different way, using the more general changes field instead of the document_changes field (which isn't supported on all LSP clients).</p>
+</blockquote>
+<p>From the LSP specification</p>
+<blockquote>
+<p>A workspace edit represents changes to many resources managed in the workspace. The edit should either provide changes or documentChanges. If the client can handle versioned document edits and if documentChanges are present, the latter are preferred over changes.</p>
+</blockquote>
+<p>This makes me think that we should use <code>documentChanges</code> whenever possible (probably because of the verisoning)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server/api/requests/execute_command.rs</code>:46 on 2024-04-05 07:03</div>
+            <div class="timeline-body"><p>Nit: We could incline <code>args_as_text_documents</code> to avoid the vec allocation and without increasing the complexity (I almost find it easier to read because I don't need to jump to <code>args_as_text_documents</code> to understand what's happening)</p>
+<pre><code class="language-suggestion">        for argument in params.arguments {
+            let document = serde_json::from_value(argument).with_failure_code(ErrorCode::InvalidParams)?;
+            let snapshot = session
+                .take_snapshot(&amp;document.uri)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server/api/requests/execute_command.rs</code>:104 on 2024-04-05 07:05</div>
+            <div class="timeline-body"><p>What's the motivation for testing this at the very end? Should we instead not promote the server capability (or commands) if the client doesn't support <code>workspace/applyEdit</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server/api/requests/execute_command.rs</code>:88 on 2024-04-05 07:09</div>
+            <div class="timeline-body"><p>Hmm, this could get interesting once we have fixes that can &quot;fix&quot; across file because it is then no longer guaranteed that the changes are not overlapping. But that's something to worry about at another day.</p>
+<p>What we could consider doing is to move this inside the loop?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-05 07:15</div>
+            <div class="timeline-body"><p>Thanks for the extensive test plan.</p>
+<p>This looks good code wise. I'm not sure about migrating from <code>documentChanges</code> to <code>changes</code>. I would like to understand the motivation/reason for this better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/api/requests/execute_command.rs</code>:15 on 2024-04-05 09:01</div>
+            <div class="timeline-body"><p>nit: It's common to at least have the <code>Debug</code> trait derive on types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/api/requests/execute_command.rs</code>:39 on 2024-04-05 09:08</div>
+            <div class="timeline-body"><p>nit: we could possibly implement <code>FromStr</code> for <code>Command</code> and then use <code>?</code> operator to avoid creating an empty <code>anyhow</code> error. I'm not sure how will <code>with_failure_code</code> comes from which I believe you're aware of.</p>
+<pre><code class="language-rs">impl FromStr for Command {
+    type Err = ();
+
+    fn from_str(s: &amp;str) -&gt; Result&lt;Self, Self::Err&gt; {
+        Ok(match command {
+            &quot;ruff.applyAutofix&quot; =&gt; Self::FixAll,
+            &quot;ruff.applyFormat&quot; =&gt; Self::Format,
+            &quot;ruff.applyOrganizeImports&quot; =&gt; Self::OrganizeImports,
+            _ =&gt; return Err(()),
+        })
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/api/requests/execute_command.rs</code>:43 on 2024-04-05 09:12</div>
+            <div class="timeline-body"><p>Can you confirm whether <code>changes</code> support having multiple documents? I can't exactly figure out reading the spec but I presume it does. But, if it doesn't then this will be problematic for Jupyter Notebooks where each cell is its own text document so the edits are tied to multiple documents.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-05 09:15</div>
+            <div class="timeline-body"><p>Thank you! I'll test this now in Neovim.</p>
+<p>I'd also like to understand the migration from <code>document_changes</code> to <code>changes</code>. I've pointed out the reason for that.</p>
+<p>Edit: I tested out in Neovim and it's working well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-05 09:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/api/requests/execute_command.rs</code>:43 on 2024-04-05 09:16</div>
+            <div class="timeline-body"><p>We could possibly test it out by creating a fake <code>changes</code> which have two entries with a single edit which just adds some text to those two files. If that works, then it's probably fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-05 10:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server/api/requests/execute_command.rs</code>:39 on 2024-04-05 10:01</div>
+            <div class="timeline-body"><p>Good catch. I think we should always avoid anyhow error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-05 20:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server/api/requests/execute_command.rs</code>:88 on 2024-04-05 20:59</div>
+            <div class="timeline-body"><p>Multi-file fixes are going to require a lot of refactoring regardless, but yes, this is definitely something we'll need to solve eventually. For now though, it's a future concern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-05 21:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server/api/requests/execute_command.rs</code>:104 on 2024-04-05 21:00</div>
+            <div class="timeline-body"><p>Good idea, I'll move this up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-04-05 21:01</div>
+            <div class="timeline-body"><p>The main reason I switched from <code>documentChanges</code> to <code>changes</code> was over concerns about supporting older versions. I think what I'll do is refactor our code to support <code>documentChanges</code> but use <code>changes</code> as a fallback.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-05 21:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server/api/requests/execute_command.rs</code>:43 on 2024-04-05 21:05</div>
+            <div class="timeline-body"><p><code>changes</code> does enable multi-document edits, though none of the commands will modify multiple files. I think the LSP spec allows treating notebook files as a single document, so we could still have a single <code>changes</code> entry that covers multiple cells in a notebook.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-05 21:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server/api/requests/execute_command.rs</code>:39 on 2024-04-05 21:07</div>
+            <div class="timeline-body"><p>We'd still need to define an error type for <code>FromStr</code> - I think using anyhow as an error makes sense here because it lets us pass an arbitrary error message. The message being empty here was just an oversight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @snowsignal on 2024-04-05 21:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-05 22:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_server/src/server/api/requests/execute_command.rs</code>:55 on 2024-04-05 22:20</div>
+            <div class="timeline-body"><p>I would suggest perhaps passing in whatever's returned by <code>session.resolved_client_capabilities()</code> to reduce the risk of passing in a wrong boolean.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-05 22:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_server/src/server/api/requests/code_action.rs</code>:63 on 2024-04-05 22:22</div>
+            <div class="timeline-body"><p>Can we use <code>document_changes</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-05 22:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_server/src/server/api/requests/execute_command.rs</code>:56 on 2024-04-05 22:28</div>
+            <div class="timeline-body"><p>So is it guaranteed that documents aren't repeated here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-05 22:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_server/src/server/api/requests/execute_command.rs</code>:154 on 2024-04-05 22:29</div>
+            <div class="timeline-body"><p>I naively would've assumed that this would <em>replace</em> or <em>augment</em> the existing edits, rather than erroring. I might suggest making it a replacement (<code>set_edits_for_document</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-05 22:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_server/src/server/api/requests/execute_command.rs</code>:142 on 2024-04-05 22:29</div>
+            <div class="timeline-body"><p>Do you mind adding a rustdoc for this one?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-04-05 22:35</div>
+            <div class="timeline-body"><p>I would be pro-using <code>document_changes</code> everywhere, since that's what we do in the existing LSP and it's never been an issue. My <em>guess</em> is that it's pretty rare for LSP's <em>not</em> to support that (or, at least, that they must be very old), and I'm just not really clear on the implications of using <code>changes</code> in various places.</p>
+<p>(I like that you made it a fallback in some places, but it looks like <code>quick_fix</code> at least still uses <code>changes</code> always.)</p>
+<p>So I'd vote to continue using <code>document_changes</code> everywhere until it proves to be a problem. But it doesn't need to block this PR. You could also make that change (revert the use of <code>changes</code>) and merge without a re-review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-05 22:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server/api/requests/execute_command.rs</code>:56 on 2024-04-05 22:36</div>
+            <div class="timeline-body"><p>We enforce it indirectly by preventing re-setting edits on a document, but we should probably enforce it here too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-05 22:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_server/src/server/api/requests/execute_command.rs</code>:154 on 2024-04-05 22:37</div>
+            <div class="timeline-body"><p>It seems like one of the goals of <code>document_changes</code> is that it's <em>ok</em> to repeat a URI as long as the version differs? So perhaps this check should be on URI and version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-04-05 22:43</div>
+            <div class="timeline-body"><p>You're probably right that <code>changes</code> could be supported without issue. My general policy with features tied to client capabilities is that we <em>should</em> have a fall-back in case that capability doesn't exist, but I should reconsider whether that makes sense going forward. I'm going to err on the side of backwards compatibility for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @snowsignal on 2024-04-05 23:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @snowsignal on 2024-04-05 23:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-05 23:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-06 01:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server/api/requests/execute_command.rs</code>:154 on 2024-04-06 01:17</div>
+            <div class="timeline-body"><p>Still, I don't think it makes sense to apply document edits to the same document at different points in time simultaneously.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/api/requests/execute_command.rs</code>:43 on 2024-04-06 02:39</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the LSP spec allows treating notebook files as a single document, so we could still have a single <code>changes</code> entry that covers multiple cells in a notebook.</p>
+</blockquote>
+<p>Yes, but it's not about a Notebook document here. How would the client know which <em>cell</em> does this edit belong to? This is only known through the text document URI because each cell is represented using text document. Refer to <a href="https://github.com/astral-sh/ruff-lsp/blob/187d7790be0783b9ac41ce025a724cf389bf575c/ruff_lsp/server.py#L1352-L1367">this loop</a> which does that in <code>ruff-lsp</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-06 02:39</div>
+            <div class="timeline-body"></div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:48:10 UTC
+    </footer>
+</body>
+</html>

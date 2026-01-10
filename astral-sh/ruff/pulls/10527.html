@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Correctly handle references in `__all__` definitions when  renaming symbols in autofixes - astral-sh/ruff #10527</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Correctly handle references in <code>__all__</code> definitions when  renaming symbols in autofixes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10527">#10527</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-03-22 17:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-22 17:54</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR is stacked on top of #10525 -- review that one first!</p>
+<p>This PR changes the logic in <code>ruff_linter/src/renamer.rs</code> to correctly rename references to symbols if those references are string references inside <code>__all__</code> definitions. In order for the renamer to be able to distinguish between <code>__all__</code> references (which need to have their quotes stripped before they can be renamed) and other references, a new flag is added to the <code>SemanticModelFlags</code> bitflag, <code>DUNDER_ALL_DEFINITION</code>. This flag is inserted into the semantic model when the model is visiting the r.h.s. of an <code>__all__</code> definition.</p>
+<p>Fixes #10508</p>
+<h2>Test Plan</h2>
+<p>Several new test cases have been added for PYI025. These include <code>__all__</code> definitions with triple-quoted strings, raw strings and implicitly concatenated strings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-03-22 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2024-03-22 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">linter</span> added by @AlexWaygood on 2024-03-22 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-22 18:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/renamer.rs</code>:216 on 2024-03-22 18:02</div>
+            <div class="timeline-body"><p>What happens here if you have something like:</p>
+<pre><code>__all__ = [&quot;Se&quot; 't'&quot;]
+</code></pre>
+<p>I.e., mismatching quotes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-22 18:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:2113 on 2024-03-22 18:04</div>
+            <div class="timeline-body"><p>I think we should set and unset this around the <code>self.semantic.add_global_reference</code> calls, just to be safe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-22 18:14</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-22 18:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/renamer.rs</code>:216 on 2024-03-22 18:15</div>
+            <div class="timeline-body"><p>Aha, we produce invalid syntax! Good catch...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @AlexWaygood on 2024-03-22 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-03-22 20:03</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-03-22 20:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-03-22 20:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-22 20:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:48:03 UTC
+    </footer>
+</body>
+</html>

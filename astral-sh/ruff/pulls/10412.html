@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply NFKC normalization to unicode identifiers in the lexer - astral-sh/ruff #10412</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Apply NFKC normalization to unicode identifiers in the lexer</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10412">#10412</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-03-14 17:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-14 17:34</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>A second attempt to fix #5003, <em>hopefully</em> without the performance problems that https://github.com/astral-sh/ruff/pull/10381 suffered from.</p>
+<p>Python <a href="https://docs.python.org/3/reference/lexical_analysis.html#identifiers">applies NFKC normalization to identifiers that use unicode characters</a>. That means that F821 should not be emitted if ruff encounters the following snippet (but on <code>main</code>, it is), as from Python's perspective, these are all the same identifier:</p>
+<pre><code class="language-py">𝒞 = 500
+print(𝒞)
+print(C + 𝒞)  # ruff says `C` isn't defined
+print(C / 𝒞)
+print(C == 𝑪 == 𝒞 == 𝓒 == 𝕮)  # ruff says `C`, `𝑪`, ... isn't defined
+</code></pre>
+<p>This PR fixes that false positive by NFKC-normalizing identifers as they are encountered in the lexer.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "fix the bug" to "Apply NFKC normalization to unicode identifiers in the lexer" by @AlexWaygood on 2024-03-14 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-14 17:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_formatter/src/expression/expr_name.rs</code>:22 on 2024-03-14 17:38</div>
+            <div class="timeline-body"><p>This debug assertion no longer passes as-is, since the AST node holds the NFKC-normalized identifier, whereas the source code gives us the original identifier.</p>
+<p>If we think this assertion is valuable, we could put it in a <code>#[cfg(test)]</code> block, make the <code>unicode-normalization</code> crate a test-dependency of the formatter, and assert that the NFKC-normalized source code is equal to the AST <code>id</code>. I don't know if that's really worth it, though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2024-03-14 17:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-03-14 17:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-14 17:54</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:173 on 2024-03-15 18:16</div>
+            <div class="timeline-body"><p>nit: maybe <code>is_first_char_ascii</code> / <code>is_first_ascii</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1594 on 2024-03-15 18:19</div>
+            <div class="timeline-body"><p>nit: sorry for name recommendations but maybe <code>is_identifier_ascii_only</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-03-15 18:23</div>
+            <div class="timeline-body"><p>This is great with such a minimal change. Can you please write / update documentation around this change? Maybe the <code>lex_identifier</code> or the <code>Name</code> token?</p>
+<p>It's good to go from my side but I'll let @MichaReiser give the final approval.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-15 18:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:173 on 2024-03-15 18:42</div>
+            <div class="timeline-body"><p>I went for <code>first_char_is_ascii</code> in https://github.com/astral-sh/ruff/pull/10412/commits/d785be50606df110d848606165e2f7a9aa406835</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-03-15 18:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1594 on 2024-03-15 18:42</div>
+            <div class="timeline-body"><p>I went for <code>identifier_is_ascii_only</code> in https://github.com/astral-sh/ruff/pull/10412/commits/d785be50606df110d848606165e2f7a9aa406835</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-15 18:43</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you please write / update documentation around this change? Maybe the <code>lex_identifier</code> or the <code>Name</code> token?</p>
+</blockquote>
+<p>Thanks! I had a go at writing some docs in https://github.com/astral-sh/ruff/pull/10412/commits/d785be50606df110d848606165e2f7a9aa406835 -- how does that look to you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-16 02:32</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks! I had a go at writing some docs in <a href="https://github.com/astral-sh/ruff/commit/d785be50606df110d848606165e2f7a9aa406835">d785be5</a> -- how does that look to you?</p>
+</blockquote>
+<p>Looks good. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-17 21:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_parser/src/token.rs</code>:22 on 2024-03-17 21:36</div>
+            <div class="timeline-body"><p>I was eventually hoping to remove all owned data from the lexer tokens (e.g., prior to this change, we could've conceivably removed this field altogether; if we remove more similar fields from other tokens, we can eventually reduce the size of the <code>Tok</code> enum, which could be great for performance). This now precludes us from doing so. But I don't have enough context on the future design of the lexer-parser to know if it matters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-17 21:36</div>
+            <div class="timeline-body"><p>Looks reasonable to me, I'll defer to Micha and Dhruv to approve.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @MichaReiser on 2024-03-18 09:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/pyflakes/F821_28.py</code>:1 on 2024-03-18 09:35</div>
+            <div class="timeline-body"><p>Nice. Could you add a trimmed down version of this as a lexer or parser test?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_name.rs</code>:22 on 2024-03-18 09:36</div>
+            <div class="timeline-body"><p>I think it's fine to remove it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/token.rs</code>:22 on 2024-03-18 09:42</div>
+            <div class="timeline-body"><p>I think we can still accomplish this and <code>Name</code> isn't the only token that must return the parsed value (e.g. FStrings etc).</p>
+<p>What I have in mind is to:</p>
+<ul>
+<li>Replace <code>Tok</code> with <code>TokenKind</code> (that holds no data)</li>
+<li>Add a <code>take_value()</code> method on <code>Lexer</code> that &quot;takes&quot; the current value (<code>enum</code> over <code>Name</code>, <code>Int</code> etc.).</li>
+</ul>
+<p>This design also fits better into our new parser that already does exactly this internally (except that it &quot;takes&quot; the value from <code>Tok</code>). The advantage of this is that we only pay the overhead of reading or writting a value if it is a value token (and we're interested in the value).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:176 on 2024-03-18 09:44</div>
+            <div class="timeline-body"><p>Nit: I would call <code>first.is_ascii()</code> inside of the method. It avoids leaking the abstraction and the cost of determining if a character is ascii is a simple range comparision that might as well be cheaper than passing a value to a function call (requires pushing and poping from the stack).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:216 on 2024-03-18 09:45</div>
+            <div class="timeline-body"><p>Nit: We can skip the entire <code>match</code> for <code>non-ascii</code> text. The old code didn't do this to avoid branching but we might as well do it now, where we branch on the flag anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-03-18 09:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-03-18 09:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/token.rs</code>:22 on 2024-03-18 09:47</div>
+            <div class="timeline-body"><p>This is a good point. We could potentially move this to the <code>parse_identifier</code> method in the parser as that's the final destination for where this value needs to be. I could come back to this once the new parser is merged and I'm looking into the feedback loop between the lexer and parser.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-03-18 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-03-18 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-18 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-18 11:57</div>
+            <div class="timeline-body"><p>Thanks all!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:47:59 UTC
+    </footer>
+</body>
+</html>

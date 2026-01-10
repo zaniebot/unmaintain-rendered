@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix `E231` bug: Inconsistent catch compared to pycodestyle, such as when dict nested in list - astral-sh/ruff #10469</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix <code>E231</code> bug: Inconsistent catch compared to pycodestyle, such as when dict nested in list</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10469">#10469</a>
+        opened by <a href="https://github.com/augustelalande">@augustelalande</a>
+        on 2024-03-19 04:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-03-19 04:49</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Fix <code>E231</code> bug: Inconsistent catch compared to pycodestyle, such as when dict nested in list. Resolves #10113.</p>
+<h2>Test Plan</h2>
+<p>Example from #10113 added to test fixture.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-19 05:10</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-03-19 08:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/logical_lines/missing_whitespace.rs</code>:58 on 2024-03-20 13:48</div>
+            <div class="timeline-body"><p>We should avoid initializing the stack with one element because it means that we need to allocate two vecs for every logical line, even if that line never has any parentheses.</p>
+<pre><code class="language-suggestion">    let mut lsqb_stack = Vec::new();
+    let mut lbrace_stack = Vec::new();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pycodestyle/snapshots/ruff_linter__rules__pycodestyle__tests__E231_E23.py.snap</code>:153 on 2024-03-20 13:52</div>
+            <div class="timeline-body"><p>Could you add a few tests for when a list contains a dictionary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-20 13:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-20 13:52</div>
+            <div class="timeline-body"><p>Thanks for looking into this. Using a stack here makes sense. I'm surprised that this isn't hitting performance more, considering that we're now allocating a new <code>Vec</code> for each logical line (actually two).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/augustelalande">@augustelalande</a> reviewed on 2024-03-20 18:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/augustelalande">@augustelalande</a> on <code>crates/ruff_linter/src/rules/pycodestyle/snapshots/ruff_linter__rules__pycodestyle__tests__E231_E23.py.snap</code>:153 on 2024-03-20 18:33</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-03-20 18:37</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for looking into this. Using a stack here makes sense. I'm surprised that this isn't hitting performance more, considering that we're now allocating a new <code>Vec</code> for each logical line (actually two).</p>
+</blockquote>
+<p>Ya it's surprising. But is allocating a new <code>Vec</code> really significantly more expensive than allocating any other variable, if it's not populated?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-03-21 05:05</div>
+            <div class="timeline-body"><p>Took inspiration from <code>extraneous_whitespace.rs</code> and reduced it to one stack</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-21 08:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Ya it's surprising. But is allocating a new Vec really significantly more expensive than allocating any other variable, if it's not populated?</p>
+</blockquote>
+<p>That's correct: Creating an empty <code>Vec</code> is &quot;free&quot; because it doesn't allocate. But a <code>Vec</code> is different from e.g. a <code>TextSize</code> in that it allocates memory on the heap when you push the first element. That's different from a <code>TextSize</code>  variable that is always stored on the stack (which is as cheap as memory can be)</p>
+<blockquote>
+<p>Took inspiration from extraneous_whitespace.rs and reduced it to one stack</p>
+</blockquote>
+<p>Nice, thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/logical_lines/missing_whitespace.rs</code>:100 on 2024-03-21 08:13</div>
+            <div class="timeline-body"><p>I find this much easier to understand. Nice refactor</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-03-21 08:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-03-21 08:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-03-21 08:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-21 12:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:48:01 UTC
+    </footer>
+</body>
+</html>

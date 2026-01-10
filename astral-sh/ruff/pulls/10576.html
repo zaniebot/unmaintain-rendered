@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update dependency vite to v4.5.2 - astral-sh/ruff #10576</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Update dependency vite to v4.5.2</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10576">#10576</a>
+        opened by <a href="https://github.com/renovate">@renovate</a>
+        on 2024-03-25 17:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/renovate">@renovate</a> on 2024-03-25 17:33</div>
+            <div class="timeline-body"><p><a href="https://renovatebot.com"><img src="https://app.renovatebot.com/images/banner.svg" alt="Mend Renovate" /></a></p>
+<p>This PR contains the following updates:</p>
+<p>| Package | Change | Age | Adoption | Passing | Confidence |
+|---|---|---|---|---|---|
+| <a href="https://togithub.com/vitejs/vite/tree/main/#readme">vite</a> (<a href="https://togithub.com/vitejs/vite/tree/HEAD/packages/vite">source</a>) | <a href="https://renovatebot.com/diffs/npm/vite/4.4.4/4.5.2"><code>4.4.4</code> -&gt; <code>4.5.2</code></a> | <a href="https://docs.renovatebot.com/merge-confidence/"><img src="https://developer.mend.io/api/mc/badges/age/npm/vite/4.5.2?slim=true" alt="age" /></a> | <a href="https://docs.renovatebot.com/merge-confidence/"><img src="https://developer.mend.io/api/mc/badges/adoption/npm/vite/4.5.2?slim=true" alt="adoption" /></a> | <a href="https://docs.renovatebot.com/merge-confidence/"><img src="https://developer.mend.io/api/mc/badges/compatibility/npm/vite/4.4.4/4.5.2?slim=true" alt="passing" /></a> | <a href="https://docs.renovatebot.com/merge-confidence/"><img src="https://developer.mend.io/api/mc/badges/confidence/npm/vite/4.4.4/4.5.2?slim=true" alt="confidence" /></a> |</p>
+<h3>GitHub Vulnerability Alerts</h3>
+<h4><a href="https://togithub.com/vitejs/vite/security/advisories/GHSA-92r3-m2mg-pj97">CVE-2023-49293</a></h4>
+<h3>Summary</h3>
+<p>When Vite's HTML transformation is invoked manually via <code>server.transformIndexHtml</code>, the original request URL is passed in unmodified, and the <code>html</code> being transformed contains inline module scripts (<code>&lt;script type=&quot;module&quot;&gt;...&lt;/script&gt;</code>), it is possible to inject arbitrary HTML into the transformed output by supplying a malicious URL query string to <code>server.transformIndexHtml</code>.</p>
+<h3>Impact</h3>
+<p>Only apps using <code>appType: 'custom'</code> and using the default Vite HTML middleware are affected. The HTML entry must also contain an inline script. The attack requires a user to click on a malicious URL while running the dev server. Restricted files aren't exposed to the attacker.</p>
+<h3>Patches</h3>
+<p>Fixed in vite@5.0.5, vite@4.5.1, vite@4.4.12</p>
+<h3>Details</h3>
+<p>Suppose <code>index.html</code> contains an inline module script:</p>
+<pre><code class="language-html">&lt;script type=&quot;module&quot;&gt;
+  // Inline script
+&lt;/script&gt;
+</code></pre>
+<p>This script is transformed into a proxy script like</p>
+<pre><code class="language-html">&lt;script type=&quot;module&quot; src=&quot;/index.html?html-proxy&amp;index=0.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+<p>due to Vite's HTML plugin:</p>
+<p>https://github.com/vitejs/vite/blob/7fd7c6cebfcad34ae7021ebee28f97b1f28ef3f3/packages/vite/src/node/plugins/html.ts#L429-L465</p>
+<p>When <code>appType: 'spa' | 'mpa'</code>, Vite serves HTML itself, and <code>htmlFallbackMiddleware</code> rewrites <code>req.url</code> to the canonical path of <code>index.html</code>,</p>
+<p>https://github.com/vitejs/vite/blob/73ef074b80fa7252e0c46a37a2c94ba8cba46504/packages/vite/src/node/server/middlewares/htmlFallback.ts#L44-L47</p>
+<p>so the <code>url</code> passed to <code>server.transformIndexHtml</code> is <code>/index.html</code>.</p>
+<p>However, if <code>appType: 'custom'</code>, HTML is served manually, and if <code>server.transformIndexHtml</code> is called with the unmodified request URL (as the SSR docs suggest), then the path of the transformed <code>html-proxy</code> script varies with the request URL. For example, a request with path <code>/</code> produces</p>
+<pre><code class="language-html">&lt;script type=&quot;module&quot; src=&quot;/@&amp;#8203;id/__x00__/index.html?html-proxy&amp;index=0.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+<p>It is possible to abuse this behavior by crafting a request URL to contain a malicious payload like</p>
+<pre><code>&quot;&gt;&lt;/script&gt;&lt;script&gt;alert('boom')&lt;/script&gt;
+</code></pre>
+<p>so a request to http://localhost:5173/?%22%3E%3C/script%3E%3Cscript%3Ealert(%27boom%27)%3C/script%3E produces HTML output like</p>
+<pre><code class="language-html">&lt;script type=&quot;module&quot; src=&quot;/@&amp;#8203;id/__x00__/?&quot;&gt;&lt;/script&gt;&lt;script&gt;alert(&quot;boom&quot;)&lt;/script&gt;?html-proxy&amp;index=0.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+<p>which demonstrates XSS.</p>
+<h3>PoC</h3>
+<ul>
+<li>Example 1. Serving HTML from <code>vite dev</code> middleware with <code>appType: 'custom'</code><ul>
+<li>Go to https://stackblitz.com/edit/vitejs-vite-9xhma4?file=main.js&amp;terminal=dev-html</li>
+<li>&quot;Open in New Tab&quot;</li>
+<li>Edit URL to set query string to <code>?%22%3E%3C/script%3E%3Cscript%3Ealert(%27boom%27)%3C/script%3E</code> and navigate</li>
+<li>Witness XSS:</li>
+<li><img src="https://user-images.githubusercontent.com/2456381/287434281-13757894-7a63-4a73-b1e9-d2b024c19d14.png" alt="image" /></li>
+</ul>
+</li>
+<li>Example 2. Serving HTML from SSR-style Express server (Vite dev server runs in middleware mode):<ul>
+<li>Go to https://stackblitz.com/edit/vitejs-vite-9xhma4?file=main.js&amp;terminal=server</li>
+<li>(Same steps as above)</li>
+</ul>
+</li>
+<li>Example 3. Plain <code>vite dev</code> (this shows that vanilla <code>vite dev</code> is <em>not</em> vulnerable, provided <code>htmlFallbackMiddleware</code> is used)<ul>
+<li>Go to https://stackblitz.com/edit/vitejs-vite-9xhma4?file=main.js&amp;terminal=dev</li>
+<li>(Same steps as above)</li>
+<li>You should <em>not</em> see the alert box in this case</li>
+</ul>
+</li>
+</ul>
+<h3>Detailed Impact</h3>
+<p>This will probably predominantly affect <a href="https://vitejs.dev/guide/ssr#setting-up-the-dev-server">development-mode SSR</a>, where <code>vite.transformHtml</code> is called using the original <code>req.url</code>, per the docs:</p>
+<p>https://github.com/vitejs/vite/blob/7fd7c6cebfcad34ae7021ebee28f97b1f28ef3f3/docs/guide/ssr.md?plain=1#L114-L126</p>
+<p>However, since this vulnerability affects <code>server.transformIndexHtml</code>, the scope of impact may be higher to also include other ad-hoc calls to <code>server.transformIndexHtml</code> from outside of Vite's own codebase.</p>
+<p>My best guess at bisecting which versions are vulnerable involves the following test script</p>
+<pre><code class="language-js">import fs from 'node:fs/promises';
+import * as vite from 'vite';
+
+const html = `
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot; /&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;script type=&quot;module&quot;&gt;
+      // Inline script
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+`;
+const server = await vite.createServer({ appType: 'custom' });
+const transformed = await server.transformIndexHtml('/?%22%3E%3C/script%3E%3Cscript%3Ealert(%27boom%27)%3C/script%3E', html);
+console.log(transformed);
+await server.close();
+</code></pre>
+<p>and using it I was able to narrow down to #​13581. If this is correct, then vulnerable Vite versions are 4.4.0-beta.2 and higher (which includes 4.4.0).</p>
+<h4><a href="https://togithub.com/vitejs/vite/security/advisories/GHSA-c24v-8rfc-w8vw">CVE-2024-23331</a></h4>
+<h3>Summary</h3>
+<p><a href="https://vitejs.dev/config/server-options.html#server-fs-deny">Vite dev server option</a> <code>server.fs.deny</code> can be bypassed on case-insensitive file systems using case-augmented versions of filenames. Notably this affects servers hosted on Windows.</p>
+<p>This bypass is similar to https://nvd.nist.gov/vuln/detail/CVE-2023-34092 -- with surface area reduced to hosts having case-insensitive filesystems.</p>
+<h3>Patches</h3>
+<p>Fixed in vite@5.0.12, vite@4.5.2, vite@3.2.8, vite@2.9.17</p>
+<h3>Details</h3>
+<p>Since <code>picomatch</code> defaults to case-sensitive glob matching, but the file server doesn't discriminate; a blacklist bypass is possible.</p>
+<p>See <code>picomatch</code>  usage, where <code>nocase</code> is defaulted to <code>false</code>: https://github.com/vitejs/vite/blob/v5.1.0-beta.1/packages/vite/src/node/server/index.ts#L632</p>
+<p>By requesting raw filesystem paths using augmented casing, the matcher derived from <code>config.server.fs.deny</code> fails to block access to sensitive files.</p>
+<h3>PoC</h3>
+<p><strong>Setup</strong></p>
+<ol>
+<li>Created vanilla Vite project using <code>npm create vite@latest</code> on a Standard Azure hosted Windows 10 instance.<ul>
+<li><code>npm run dev -- --host 0.0.0.0</code></li>
+<li>Publicly accessible for the time being here: http://20.12.242.81:5173/</li>
+</ul>
+</li>
+<li>Created dummy secret files, e.g. <code>custom.secret</code> and <code>production.pem</code></li>
+<li>Populated <code>vite.config.js</code> with</li>
+</ol>
+<pre><code class="language-javascript">export default { server: { fs: { deny: ['.env', '.env.*', '*.{crt,pem}', 'custom.secret'] } } }
+</code></pre>
+<p><strong>Reproduction</strong></p>
+<ol>
+<li><code>curl -s http://20.12.242.81:5173/@&amp;#8203;fs//</code><ul>
+<li>Descriptive error page reveals absolute filesystem path to project root</li>
+</ul>
+</li>
+<li><code>curl -s http://20.12.242.81:5173/@&amp;#8203;fs/C:/Users/darbonzo/Desktop/vite-project/vite.config.js</code><ul>
+<li>Discoverable configuration file reveals locations of secrets</li>
+</ul>
+</li>
+<li><code>curl -s http://20.12.242.81:5173/@&amp;#8203;fs/C:/Users/darbonzo/Desktop/vite-project/custom.sEcReT</code><ul>
+<li>Secrets are directly accessible using case-augmented version of filename</li>
+</ul>
+</li>
+</ol>
+<p><strong>Proof</strong>
+<img src="https://user-images.githubusercontent.com/907968/298020728-3a8d3c06-fcfd-4009-9182-e842f66a6ea5.png" alt="Screenshot 2024-01-19 022736" /></p>
+<h3>Impact</h3>
+<p><strong>Who</strong></p>
+<ul>
+<li>Users with exposed dev servers on environments with case-insensitive filesystems</li>
+</ul>
+<p><strong>What</strong></p>
+<ul>
+<li>Files protected by <code>server.fs.deny</code> are both discoverable, and accessible</li>
+</ul>
+<hr />
+<h3>Release Notes</h3>
+<details>
+<summary>vitejs/vite (vite)</summary>
+
+<h3><a href="https://togithub.com/vitejs/vite/releases/tag/v4.5.2"><code>v4.5.2</code></a></h3>
+<p><a href="https://togithub.com/vitejs/vite/compare/v4.5.1...v4.5.2">Compare Source</a></p>
+<p>Please refer to <a href="https://togithub.com/vitejs/vite/blob/v4.5.2/packages/vite/CHANGELOG.md">CHANGELOG.md</a> for details.</p>
+<h3><a href="https://togithub.com/vitejs/vite/releases/tag/v4.5.1"><code>v4.5.1</code></a></h3>
+<p><a href="https://togithub.com/vitejs/vite/compare/v4.5.0...v4.5.1">Compare Source</a></p>
+<p>Please refer to <a href="https://togithub.com/vitejs/vite/blob/v4.5.1/packages/vite/CHANGELOG.md">CHANGELOG.md</a> for details.</p>
+<h3><a href="https://togithub.com/vitejs/vite/releases/tag/v4.5.0"><code>v4.5.0</code></a></h3>
+<p><a href="https://togithub.com/vitejs/vite/compare/v4.4.12...v4.5.0">Compare Source</a></p>
+<p>Please refer to <a href="https://togithub.com/vitejs/vite/blob/v4.5.0/packages/vite/CHANGELOG.md">CHANGELOG.md</a> for details.</p>
+<h3><a href="https://togithub.com/vitejs/vite/releases/tag/v4.4.12"><code>v4.4.12</code></a></h3>
+<p><a href="https://togithub.com/vitejs/vite/compare/v4.4.11...v4.4.12">Compare Source</a></p>
+<p>Please refer to <a href="https://togithub.com/vitejs/vite/blob/v4.4.12/packages/vite/CHANGELOG.md">CHANGELOG.md</a> for details.</p>
+<h3><a href="https://togithub.com/vitejs/vite/releases/tag/v4.4.11"><code>v4.4.11</code></a></h3>
+<p><a href="https://togithub.com/vitejs/vite/compare/v4.4.10...v4.4.11">Compare Source</a></p>
+<p>Please refer to <a href="https://togithub.com/vitejs/vite/blob/v4.4.11/packages/vite/CHANGELOG.md">CHANGELOG.md</a> for details.</p>
+<h3><a href="https://togithub.com/vitejs/vite/releases/tag/v4.4.10"><code>v4.4.10</code></a></h3>
+<p><a href="https://togithub.com/vitejs/vite/compare/v4.4.9...v4.4.10">Compare Source</a></p>
+<p>Please refer to <a href="https://togithub.com/vitejs/vite/blob/v4.4.10/packages/vite/CHANGELOG.md">CHANGELOG.md</a> for details.</p>
+<h3><a href="https://togithub.com/vitejs/vite/blob/HEAD/packages/vite/CHANGELOG.md#small449-2023-08-07-small"><code>v4.4.9</code></a></h3>
+<p><a href="https://togithub.com/vitejs/vite/compare/v4.4.8...v4.4.9">Compare Source</a></p>
+<ul>
+<li>chore: fix eslint warnings (<a href="https://togithub.com/vitejs/vite/issues/14031">#​14031</a>) (<a href="https://togithub.com/vitejs/vite/commit/4021a0e">4021a0e</a>), closes <a href="https://togithub.com/vitejs/vite/issues/14031">#​14031</a></li>
+<li>chore(deps): update all non-major dependencies (<a href="https://togithub.com/vitejs/vite/issues/13938">#​13938</a>) (<a href="https://togithub.com/vitejs/vite/commit/a1b519e">a1b519e</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13938">#​13938</a></li>
+<li>fix: dynamic import vars ignored warning (<a href="https://togithub.com/vitejs/vite/issues/14006">#​14006</a>) (<a href="https://togithub.com/vitejs/vite/commit/4479431">4479431</a>), closes <a href="https://togithub.com/vitejs/vite/issues/14006">#​14006</a></li>
+<li>fix(build): silence warn dynamic import module when inlineDynamicImports true (<a href="https://togithub.com/vitejs/vite/issues/13970">#​13970</a>) (<a href="https://togithub.com/vitejs/vite/commit/7a77aaf">7a77aaf</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13970">#​13970</a></li>
+<li>perf: improve build times and memory utilization (<a href="https://togithub.com/vitejs/vite/issues/14016">#​14016</a>) (<a href="https://togithub.com/vitejs/vite/commit/9d7d45e">9d7d45e</a>), closes <a href="https://togithub.com/vitejs/vite/issues/14016">#​14016</a></li>
+<li>perf: replace startsWith with === (<a href="https://togithub.com/vitejs/vite/issues/14005">#​14005</a>) (<a href="https://togithub.com/vitejs/vite/commit/f5c1224">f5c1224</a>), closes <a href="https://togithub.com/vitejs/vite/issues/14005">#​14005</a></li>
+</ul>
+<h3><a href="https://togithub.com/vitejs/vite/blob/HEAD/packages/vite/CHANGELOG.md#small448-2023-07-31-small"><code>v4.4.8</code></a></h3>
+<p><a href="https://togithub.com/vitejs/vite/compare/v4.4.7...v4.4.8">Compare Source</a></p>
+<ul>
+<li>fix: modulePreload false (<a href="https://togithub.com/vitejs/vite/issues/13973">#​13973</a>) (<a href="https://togithub.com/vitejs/vite/commit/488085d">488085d</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13973">#​13973</a></li>
+<li>fix: multiple entries with shared css and no JS (<a href="https://togithub.com/vitejs/vite/issues/13962">#​13962</a>) (<a href="https://togithub.com/vitejs/vite/commit/89a3db0">89a3db0</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13962">#​13962</a></li>
+<li>fix: use file extensions on type imports so they work with <code>moduleResolution: 'node16'</code> (<a href="https://togithub.com/vitejs/vite/issues/13947">#​13947</a>) (<a href="https://togithub.com/vitejs/vite/commit/aeef670">aeef670</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13947">#​13947</a></li>
+<li>fix(css): enhance error message for missing preprocessor dependency (<a href="https://togithub.com/vitejs/vite/issues/11485">#​11485</a>) (<a href="https://togithub.com/vitejs/vite/commit/65e5c22">65e5c22</a>), closes <a href="https://togithub.com/vitejs/vite/issues/11485">#​11485</a></li>
+<li>fix(esbuild): fix static properties transpile when useDefineForClassFields false (<a href="https://togithub.com/vitejs/vite/issues/13992">#​13992</a>) (<a href="https://togithub.com/vitejs/vite/commit/4ca7c13">4ca7c13</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13992">#​13992</a></li>
+<li>fix(importAnalysis): strip url base before passing as safeModulePaths (<a href="https://togithub.com/vitejs/vite/issues/13712">#​13712</a>) (<a href="https://togithub.com/vitejs/vite/commit/1ab06a8">1ab06a8</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13712">#​13712</a></li>
+<li>fix(importMetaGlob): avoid unnecessary hmr of negative glob (<a href="https://togithub.com/vitejs/vite/issues/13646">#​13646</a>) (<a href="https://togithub.com/vitejs/vite/commit/844451c">844451c</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13646">#​13646</a></li>
+<li>fix(optimizer): avoid double-commit of optimized deps when discovery is disabled (<a href="https://togithub.com/vitejs/vite/issues/13865">#​13865</a>) (<a href="https://togithub.com/vitejs/vite/commit/df77991">df77991</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13865">#​13865</a></li>
+<li>fix(optimizer): enable experimentalDecorators by default (<a href="https://togithub.com/vitejs/vite/issues/13981">#​13981</a>) (<a href="https://togithub.com/vitejs/vite/commit/f8a5ffc">f8a5ffc</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13981">#​13981</a></li>
+<li>perf: replace startsWith with === (<a href="https://togithub.com/vitejs/vite/issues/13989">#​13989</a>) (<a href="https://togithub.com/vitejs/vite/commit/3aab14e">3aab14e</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13989">#​13989</a></li>
+<li>perf: single slash does not need to be replaced (<a href="https://togithub.com/vitejs/vite/issues/13980">#​13980</a>) (<a href="https://togithub.com/vitejs/vite/commit/66f522c">66f522c</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13980">#​13980</a></li>
+<li>perf: use Intl.DateTimeFormatter instead of toLocaleTimeString (<a href="https://togithub.com/vitejs/vite/issues/13951">#​13951</a>) (<a href="https://togithub.com/vitejs/vite/commit/af53a1d">af53a1d</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13951">#​13951</a></li>
+<li>perf: use Intl.NumberFormat instead of toLocaleString (<a href="https://togithub.com/vitejs/vite/issues/13949">#​13949</a>) (<a href="https://togithub.com/vitejs/vite/commit/a48bf88">a48bf88</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13949">#​13949</a></li>
+<li>perf: use magic-string hires boundary for sourcemaps (<a href="https://togithub.com/vitejs/vite/issues/13971">#​13971</a>) (<a href="https://togithub.com/vitejs/vite/commit/b9a8d65">b9a8d65</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13971">#​13971</a></li>
+<li>chore(reporter): remove unnecessary map (<a href="https://togithub.com/vitejs/vite/issues/13972">#​13972</a>) (<a href="https://togithub.com/vitejs/vite/commit/dd9d4c1">dd9d4c1</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13972">#​13972</a></li>
+<li>refactor: add new overload to the type of defineConfig (<a href="https://togithub.com/vitejs/vite/issues/13958">#​13958</a>) (<a href="https://togithub.com/vitejs/vite/commit/24c12fe">24c12fe</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13958">#​13958</a></li>
+</ul>
+<h3><a href="https://togithub.com/vitejs/vite/blob/HEAD/packages/vite/CHANGELOG.md#small447-2023-07-24-small"><code>v4.4.7</code></a></h3>
+<p><a href="https://togithub.com/vitejs/vite/compare/v4.4.6...v4.4.7">Compare Source</a></p>
+<ul>
+<li>fix: <code>optimizeDeps.include</code> not working with paths inside packages (<a href="https://togithub.com/vitejs/vite/issues/13922">#​13922</a>) (<a href="https://togithub.com/vitejs/vite/commit/06e4f57">06e4f57</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13922">#​13922</a></li>
+<li>fix: lightningcss fails with html-proxy (<a href="https://togithub.com/vitejs/vite/issues/13776">#​13776</a>) (<a href="https://togithub.com/vitejs/vite/commit/6b56094">6b56094</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13776">#​13776</a></li>
+<li>fix: prepend <code>config.base</code> to vite/env path (<a href="https://togithub.com/vitejs/vite/issues/13941">#​13941</a>) (<a href="https://togithub.com/vitejs/vite/commit/8e6cee8">8e6cee8</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13941">#​13941</a></li>
+<li>fix(html): support <code>import.meta.env</code> define replacement without quotes (<a href="https://togithub.com/vitejs/vite/issues/13425">#​13425</a>) (<a href="https://togithub.com/vitejs/vite/commit/883089c">883089c</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13425">#​13425</a></li>
+<li>fix(proxy): handle error when proxy itself errors (<a href="https://togithub.com/vitejs/vite/issues/13929">#​13929</a>) (<a href="https://togithub.com/vitejs/vite/commit/4848e41">4848e41</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13929">#​13929</a></li>
+<li>chore(eslint): allow type annotations (<a href="https://togithub.com/vitejs/vite/issues/13920">#​13920</a>) (<a href="https://togithub.com/vitejs/vite/commit/d1264fd">d1264fd</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13920">#​13920</a></li>
+</ul>
+<h3><a href="https://togithub.com/vitejs/vite/blob/HEAD/packages/vite/CHANGELOG.md#small446-2023-07-21-small"><code>v4.4.6</code></a></h3>
+<p><a href="https://togithub.com/vitejs/vite/compare/v4.4.5...v4.4.6">Compare Source</a></p>
+<ul>
+<li>fix: constrain inject helpers for iife (<a href="https://togithub.com/vitejs/vite/issues/13909">#​13909</a>) (<a href="https://togithub.com/vitejs/vite/commit/c89f677">c89f677</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13909">#​13909</a></li>
+<li>fix: display manualChunks warning only when a function is not used (<a href="https://togithub.com/vitejs/vite/issues/13797">#​13797</a>) (<a href="https://togithub.com/vitejs/vite/issues/13798">#​13798</a>) (<a href="https://togithub.com/vitejs/vite/commit/51c271f">51c271f</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13797">#​13797</a> <a href="https://togithub.com/vitejs/vite/issues/13798">#​13798</a></li>
+<li>fix: do not append <code>browserHash</code> on optimized deps during build (<a href="https://togithub.com/vitejs/vite/issues/13906">#​13906</a>) (<a href="https://togithub.com/vitejs/vite/commit/0fb2340">0fb2340</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13906">#​13906</a></li>
+<li>fix: use Bun's implementation of <code>ws</code> instead of the bundled one (<a href="https://togithub.com/vitejs/vite/issues/13901">#​13901</a>) (<a href="https://togithub.com/vitejs/vite/commit/049404c">049404c</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13901">#​13901</a></li>
+<li>feat(client): add guide to press Esc for closing the overlay (<a href="https://togithub.com/vitejs/vite/issues/13896">#​13896</a>) (<a href="https://togithub.com/vitejs/vite/commit/da389cc">da389cc</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13896">#​13896</a></li>
+</ul>
+<h3><a href="https://togithub.com/vitejs/vite/blob/HEAD/packages/vite/CHANGELOG.md#small445-2023-07-20-small"><code>v4.4.5</code></a></h3>
+<p><a href="https://togithub.com/vitejs/vite/compare/v4.4.4...v4.4.5">Compare Source</a></p>
+<ul>
+<li>fix: &quot;EISDIR: illegal operation on a directory, realpath&quot; error on RA… (<a href="https://togithub.com/vitejs/vite/issues/13655">#​13655</a>) (<a href="https://togithub.com/vitejs/vite/commit/6bd5434">6bd5434</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13655">#​13655</a></li>
+<li>fix: transform error message add file info (<a href="https://togithub.com/vitejs/vite/issues/13687">#​13687</a>) (<a href="https://togithub.com/vitejs/vite/commit/6dca41c">6dca41c</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13687">#​13687</a></li>
+<li>fix: warn when publicDir and outDir are nested (<a href="https://togithub.com/vitejs/vite/issues/13742">#​13742</a>) (<a href="https://togithub.com/vitejs/vite/commit/4eb3154">4eb3154</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13742">#​13742</a></li>
+<li>fix(build): remove warning about ineffective dynamic import from node_modules (<a href="https://togithub.com/vitejs/vite/issues/13884">#​13884</a>) (<a href="https://togithub.com/vitejs/vite/commit/33002dd">33002dd</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13884">#​13884</a></li>
+<li>fix(build): style insert order for UMD builds (fix <a href="https://togithub.com/vitejs/vite/issues/13668">#​13668</a>) (<a href="https://togithub.com/vitejs/vite/issues/13669">#​13669</a>) (<a href="https://togithub.com/vitejs/vite/commit/49a1b99">49a1b99</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13668">#​13668</a> <a href="https://togithub.com/vitejs/vite/issues/13669">#​13669</a></li>
+<li>fix(deps): update all non-major dependencies (<a href="https://togithub.com/vitejs/vite/issues/13872">#​13872</a>) (<a href="https://togithub.com/vitejs/vite/commit/975a631">975a631</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13872">#​13872</a></li>
+<li>fix(types): narrow down the return type of <code>defineConfig</code> (<a href="https://togithub.com/vitejs/vite/issues/13792">#​13792</a>) (<a href="https://togithub.com/vitejs/vite/commit/c971f26">c971f26</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13792">#​13792</a></li>
+<li>chore: fix typos (<a href="https://togithub.com/vitejs/vite/issues/13862">#​13862</a>) (<a href="https://togithub.com/vitejs/vite/commit/f54e8da">f54e8da</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13862">#​13862</a></li>
+<li>chore: replace <code>any</code> with <code>string</code> (<a href="https://togithub.com/vitejs/vite/issues/13850">#​13850</a>) (<a href="https://togithub.com/vitejs/vite/commit/4606fd8">4606fd8</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13850">#​13850</a></li>
+<li>chore(deps): update dependency prettier to v3 (<a href="https://togithub.com/vitejs/vite/issues/13759">#​13759</a>) (<a href="https://togithub.com/vitejs/vite/commit/5a56941">5a56941</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13759">#​13759</a></li>
+<li>docs: fix build.cssMinify link (<a href="https://togithub.com/vitejs/vite/issues/13840">#​13840</a>) (<a href="https://togithub.com/vitejs/vite/commit/8a2a3e1">8a2a3e1</a>), closes <a href="https://togithub.com/vitejs/vite/issues/13840">#​13840</a></li>
+</ul>
+</details>
+
+<hr />
+<h3>Configuration</h3>
+<p>📅 <strong>Schedule</strong>: Branch creation - &quot;&quot; (UTC), Automerge - At any time (no schedule defined).</p>
+<p>🚦 <strong>Automerge</strong>: Disabled by config. Please merge this manually once you are satisfied.</p>
+<p>♻ <strong>Rebasing</strong>: Whenever PR becomes conflicted, or you tick the rebase/retry checkbox.</p>
+<p>🔕 <strong>Ignore</strong>: Close this PR and you won't be reminded about this update again.</p>
+<hr />
+<ul>
+<li>[ ] <!-- rebase-check -->If you want to rebase/retry this PR, check this box</li>
+</ul>
+<hr />
+<p>This PR has been generated by <a href="https://www.mend.io/free-developer-tools/renovate/">Mend Renovate</a>. View repository job log <a href="https://developer.mend.io/github/astral-sh/ruff">here</a>.</p>
+<!--renovate-debug:eyJjcmVhdGVkSW5WZXIiOiIzNy4yNjkuMiIsInVwZGF0ZWRJblZlciI6IjM3LjI2OS4yIiwidGFyZ2V0QnJhbmNoIjoibWFpbiJ9-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @renovate[bot] on 2024-03-25 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Update dependency vite to v4.5.2 [SECURITY]" to "Update dependency vite to v4.5.2" by @renovate[bot] on 2024-03-25 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-03-25 22:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-03-25 22:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-25 22:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:48:05 UTC
+    </footer>
+</body>
+</html>

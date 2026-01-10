@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove shadowed import, rather than shadowing import, in F811 - astral-sh/ruff #10388</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove shadowed import, rather than shadowing import, in F811</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10388">#10388</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-13 15:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-13 15:53</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Today, in F811, if you have code like:</p>
+<pre><code>import datetime
+from datetime import datetime
+</code></pre>
+<p>We flag a violation on the second line (the line of the redefinition), and the fix we generate is a removal of the second import. In #10387, I removed the fix in these cases, when the imports map to different symbols.</p>
+<p>It seems &quot;more correct&quot;, though to remove the first import, since the second import is the one that will <em>actually</em> be used in practice. This PR changes that behavior.</p>
+<p>However, I'm sure if this is actually correct, because we're now changing code that's far away from the violation itself. There's an example in our test suite that shows why this isn't ideal:</p>
+<pre><code class="language-python">from typing import (
+    Sequence  # noqa
+)
+
+from typing import (
+    Sequence
+)
+</code></pre>
+<p>In this case, we'd remove the <code>Sequence  # noqa</code> line, since the <code># noqa</code> isn't on the line containing the F811 violation. (I'm not really interested in parsing out the <code># noqa</code> violation from the <code>Sequence  # noqa</code> line, because it risks breaking a bunch of assumptions about how <code># noqa</code> works.)</p>
+<p>Anyway, interested in feedback.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-13 15:58</div>
+            <div class="timeline-body"><p>I think this isn't a great idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-13 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-13 16:06</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:47:58 UTC
+    </footer>
+</body>
+</html>

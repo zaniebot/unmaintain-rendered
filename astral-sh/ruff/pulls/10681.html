@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support to write inline tests for the parser - astral-sh/ruff #10681</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support to write inline tests for the parser</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10681">#10681</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-03-31 10:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-31 10:36</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support to write inline tests for the parser.</p>
+<p>Inline tests are defined in the Rust code itself. The test are written through comments of a specific form:</p>
+<pre><code class="language-rs">// test this_is_the_test_name
+// def foo():
+//     pass
+println!(&quot;some rust code&quot;);
+
+// test_err this_test_should_raise_syntax_err
+// [1, 2
+println!(&quot;some rust code&quot;);
+</code></pre>
+<p>This way it's easier to reason about a specific code in the parser and the tests are used both as an example and a way to test that logic.</p>
+<p>This code runs as an integration tests which fails in the following cases:</p>
+<ol>
+<li><p>When there are test comments but no corresponding test files</p>
+<pre><code>running 1 test
+Error: Following files were not up-to date and has been updated:
+  crates/ruff_python_parser/resources/inline/ok/slice_single_starred_element.py
+  crates/ruff_python_parser/resources/inline/ok/slice_single_element.py
+Re-run the tests with `cargo test`
+
+test generate_inline_tests ... FAILED
+</code></pre>
+</li>
+<li><p>When there are test files but no corresponding test comments</p>
+<pre><code>running 1 test
+Error: Unreferenced test files found for which no comment exists:
+  crates/ruff_python_parser/resources/inline/ok/slice_single_element.py
+  crates/ruff_python_parser/resources/inline/ok/slice_single_starred_element.py
+
+test generate_inline_tests ... FAILED
+</code></pre>
+</li>
+<li><p>When there are multiple tests with the same name</p>
+<pre><code>running 1 test
+Error: Duplicate test found: &quot;slice_single_element&quot; (search '// test slice_single_element' for the location)
+
+test generate_inline_tests ... FAILED
+</code></pre>
+</li>
+</ol>
+<h2>References:</h2>
+<ul>
+<li><code>rust-analyzer</code>: https://github.com/rust-lang/rust-analyzer/blob/e4a405f877efd820bef9c0e77a02494e47c17512/crates/parser/src/tests/sourcegen_inline_tests.rs</li>
+<li><code>biome</code>: https://github.com/biomejs/biome/blob/b9f8ffea9967b098ec4c8bf74fa96826a879f043/xtask/codegen/src/parser_tests.rs</li>
+</ul>
+<h2>Test Plan</h2>
+<p>Using the below code:</p>
+<pre><code class="language-rs">// test slice_single_starred_element
+// x[*y]
+
+// test slice_single_element
+// x[y]
+</code></pre>
+<p>Run the new tests with:</p>
+<pre><code>cargo test --package ruff_python_parser --test generate_inline_tests
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-03-31 10:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @dhruvmanila on 2024-03-31 10:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-31 10:55</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+1 -0 violations, +0 -0 fixes in 1 projects; 43 projects unchanged)</p>
+<details><summary><a href="https://github.com/python/typeshed">python/typeshed</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select E,F,FA,I,PYI,RUF,UP,W</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/python/typeshed/blob/8679e99468d75807cffa3124f9ee2933af75f643/stdlib/unittest/mock.pyi#L356'>stdlib/unittest/mock.pyi:356:1:</a> E999 SyntaxError: unexpected EOF while parsing
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| E999 | 1 | 1 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-04-01 04:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-04-01 04:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/tests/generate_inline_tests.rs</code>:57 on 2024-04-02 07:54</div>
+            <div class="timeline-body"><p>Can we extend the error message with what needs to be done in this case? Is there a specific command that i need to run? Should I delete the test?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/tests/generate_inline_tests.rs</code>:78 on 2024-04-02 07:55</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            &quot;Following files were not up-to date and have been updated:\n  {}\nRe-run the tests with `cargo test` to update the test snapshots.\n&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-04-02 07:57</div>
+            <div class="timeline-body"><p>I think it would be good to extend the <code>CONTRIBUTING.md</code> and mention the parser inline tests (or document them as part of the parser readme file?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-02 10:46</div>
+            <div class="timeline-body"><blockquote>
+<p>I think it would be good to extend the <code>CONTRIBUTING.md</code> and mention the parser inline tests (or document them as part of the parser readme file?)</p>
+</blockquote>
+<p>I'm going to mark this as a TODO for later as I think we should have a README for the parser.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-02 10:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm going to mark this as a TODO for later as I think we should have a README for the parser.</p>
+</blockquote>
+<p>I think having a small note in the README even if the readme itself isn't complete would be useful. E.g. it wasn't clear to me when reading the PR how I would run and update the tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-02 11:22</div>
+            <div class="timeline-body"><p>@MichaReiser I added a basic contributing doc containing a section about inline tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-02 11:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/generate_inline_tests.rs</code>:57 on 2024-04-02 11:23</div>
+            <div class="timeline-body"><p>Updated the message with &quot;Please delete these files manually&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-04-02 12:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-04-02 12:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-02 12:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:48:10 UTC
+    </footer>
+</body>
+</html>

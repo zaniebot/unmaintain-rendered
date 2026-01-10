@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-bugbear`] Allow tuples of exceptions (`B030`) - astral-sh/ruff #10437</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-bugbear</code>] Allow tuples of exceptions (<code>B030</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10437">#10437</a>
+        opened by <a href="https://github.com/ottaviohartman">@ottaviohartman</a>
+        on 2024-03-17 15:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on 2024-03-17 15:02</div>
+            <div class="timeline-body"><p>Fixes #10426</p>
+<h2>Summary</h2>
+<p>Fix rule B030 giving a false positive with Tuple operations like <code>+</code>.</p>
+<p><a href="https://play.ruff.rs/17b086bc-cc43-40a7-b5bf-76d7d5fce78a">Playground</a></p>
+<pre><code class="language-python">try:
+    ...
+except (ValueError,TypeError) + (EOFError,ArithmeticError):
+    ...
+</code></pre>
+<h2>Reviewer notes</h2>
+<p>This is a little more convoluted than I was expecting -- because we can have valid nested Tuples with operations done on them, the flattening logic has become a bit more complex.</p>
+<p>Shall I guard this behind --preview?</p>
+<h2>Test Plan</h2>
+<p>Unit tested.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-17 15:21</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/autinerd">@autinerd</a> on 2024-03-17 15:25</div>
+            <div class="timeline-body"><p>Oh, we seem to have worked on it at the same time, I just wanted to open a PR fixing this as well :sweat_smile:</p>
+<p>I checked out your PR and checked it against my tests, and it doesn't seem to be complete with the nesting.</p>
+<pre><code class="language-python">try:
+    ...
+except (ValueError, *(RuntimeError, TypeError), *((ArithmeticError,) + (EOFError,))):
+                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ B030
+    ...
+</code></pre>
+<p>This is flagged as error, although this is valid.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on 2024-03-17 15:36</div>
+            <div class="timeline-body"><p>Ok I can close this in favor of yours.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on 2024-03-17 16:45</div>
+            <div class="timeline-body"><p>@autinerd actually let me know if you think I should fix that bug and continue, or just close this! Sorry about the confusion - I meant to say that I'd work on this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/autinerd">@autinerd</a> on 2024-03-17 18:05</div>
+            <div class="timeline-body"><p>I think that would be a good idea if you work on it, as my knowledge in the Ruff codebase (and Rust in general) is not really good. My solution was to handle it recursively, maybe it is possible to do it iteratively as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ottaviohartman">@ottaviohartman</a> reviewed on 2024-03-17 19:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B030.py</code>:121 on 2024-03-17 19:44</div>
+            <div class="timeline-body"><p>@autinerd added this test case</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-03-18 00:24</div>
+            <div class="timeline-body"><p>This looks good! Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-18 00:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/except_with_non_exception_classes.rs</code>:99 on 2024-03-18 00:24</div>
+            <div class="timeline-body"><p>Gated these to <code>Operator::Add</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-18 00:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "fix(B030): Allow adding tuples of exception classes" to "[`flake8-bugbear`] Allow tuples of exceptions (`B030`)" by @charliermarsh on 2024-03-18 00:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-18 00:28</div>
+            <div class="timeline-body"><p>No need for preview here since it's a bug fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-18 00:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-18 00:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:48:00 UTC
+    </footer>
+</body>
+</html>
