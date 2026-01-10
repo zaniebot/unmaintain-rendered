@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-12-26T02:51:19Z
 updated_at: 2025-12-26T18:36:46Z
 url: https://github.com/astral-sh/ty/issues/2224
-synced_at: 2026-01-10T01:51:14Z
+synced_at: 2026-01-10T01:52:52Z
 ---
 
 # Inference failure: PEP 695 recursive type aliases resolve to 'Unknown'
@@ -59,6 +59,14 @@ This breakdown of type inference renders the static analysis ineffective for dee
 
 ---
 
+_Renamed from "Inference failure for recursive types (JSONValue) using string forward references" to "Inference failure: PEP 695 recursive type aliases resolve to 'Unknown'" by @Blinkion on 2025-12-26 03:06_
+
+---
+
+_Label `bidirectional inference` added by @mtshiba on 2025-12-26 03:39_
+
+---
+
 _Comment by @carljm on 2025-12-26 17:40_
 
 In your code sample, the type alias `JSONValue` is unused. The inference you see for the type of `test_data` is not related to a recursive type alias at all, it's just our normal inference for un-annotated invariant container literals -- the `Unknown` are to avoid false positives if you didn't intend this dict to be limited to string keys and dictionary values. See #1240 where we plan to provide an option to disable this behavior.
@@ -95,5 +103,13 @@ def f(jsonval: JSONValue):
 ```
 
 Though at a certain point we do currently still fall back to `Any` at the point of recursion -- this is a known limitation tracked in #1157.
+
+---
+
+_Closed by @carljm on 2025-12-26 17:40_
+
+---
+
+_Label `bidirectional inference` removed by @AlexWaygood on 2025-12-26 18:36_
 
 ---
