@@ -1,0 +1,695 @@
+```yaml
+number: 115
+title: "salsa-related panic: \"should have the ingredient index available\""
+type: issue
+state: closed
+author: sharkdp
+labels:
+  - bug
+  - fatal
+assignees: []
+created_at: 2025-04-22T18:08:50Z
+updated_at: 2025-06-12T05:17:02Z
+url: https://github.com/astral-sh/ty/issues/115
+synced_at: 2026-01-10T02:08:20Z
+```
+
+# salsa-related panic: "should have the ingredient index available"
+
+---
+
+_Issue opened by @sharkdp on 2025-04-22 18:08_
+
+Occurred twice today in mypy_primer CI runs, went away when retrying:
+
+```
+thread '<unnamed>' panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/zalsa.rs:269:14:
+should have the ingredient index available
+```
+
+<details>
+
+<summary>Full backtrace</summary>
+
+```
+thread '<unnamed>' panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/zalsa.rs:269:14:
+should have the ingredient index available
+stack backtrace:
+   0: rust_begin_unwind
+             at /rustc/05f9846f893b09a1be1fc8560e33fc3c815cfecb/library/std/src/panicking.rs:695:5
+   1: core::panicking::panic_fmt
+             at /rustc/05f9846f893b09a1be1fc8560e33fc3c815cfecb/library/core/src/panicking.rs:75:14
+   2: core::panicking::panic_display
+             at /rustc/05f9846f893b09a1be1fc8560e33fc3c815cfecb/library/core/src/panicking.rs:261:5
+   3: core::option::expect_failed
+             at /rustc/05f9846f893b09a1be1fc8560e33fc3c815cfecb/library/core/src/option.rs:2024:5
+   4: core::option::Option<T>::expect
+             at /rustc/05f9846f893b09a1be1fc8560e33fc3c815cfecb/library/core/src/option.rs:933:21
+   5: salsa::zalsa::Zalsa::lookup_page_type_id
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/zalsa.rs:265:10
+   6: red_knot_python_semantic::types::class::_::<impl salsa::id::FromIdWithDb for red_knot_python_semantic::types::class::ClassLiteralType>::from_id
+             at /tmp/mypy_primer/knot_old/ruff/crates/red_knot_python_semantic/src/types/class.rs:451:63
+   7: <red_knot_python_semantic::types::class::ClassLiteralType::inheritance_cycle::inheritance_cycle_::Configuration_ as salsa::function::Configuration>::id_to_input
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/components/salsa-macro-rules/src/setup_tracked_fn.rs:225:29
+   8: salsa::function::execute::<impl salsa::function::IngredientImpl<C>>::execute
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/execute.rs:59:48
+   9: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch_cold
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:195:20
+  10: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::refresh_memo::{{closure}}
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:54:29
+  11: core::option::Option<T>::or_else
+             at /rustc/05f9846f893b09a1be1fc8560e33fc3c815cfecb/library/core/src/option.rs:1552:21
+  12: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::refresh_memo
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:52:33
+  13: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:18:20
+  14: red_knot_python_semantic::types::class::ClassLiteralType::inheritance_cycle::inheritance_cycle_::{{closure}}
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/components/salsa-macro-rules/src/setup_tracked_fn.rs:341:25
+  15: salsa::attach::Attached::attach
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/attach.rs:72:9
+  16: salsa::attach::attach::{{closure}}
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/attach.rs:92:23
+  17: std::thread::local::LocalKey<T>::try_with
+             at /rustc/05f9846f893b09a1be1fc8560e33fc3c815cfecb/library/std/src/thread/local.rs:310:12
+  18: std::thread::local::LocalKey<T>::with
+             at /rustc/05f9846f893b09a1be1fc8560e33fc3c815cfecb/library/std/src/thread/local.rs:274:15
+  19: salsa::attach::attach
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/attach.rs:92:5
+  20: red_knot_python_semantic::types::class::ClassLiteralType::inheritance_cycle::inheritance_cycle_
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/components/salsa-macro-rules/src/setup_tracked_fn.rs:333:13
+  21: red_knot_python_semantic::types::class::ClassLiteralType::inheritance_cycle
+             at /tmp/mypy_primer/knot_old/ruff/crates/red_knot_python_semantic/src/types/class.rs:458:1
+  22: red_knot_python_semantic::types::infer::TypeInferenceBuilder::check_class_definitions
+             at /tmp/mypy_primer/knot_old/ruff/crates/red_knot_python_semantic/src/types/infer.rs:750:46
+  23: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_region_scope
+             at /tmp/mypy_primer/knot_old/ruff/crates/red_knot_python_semantic/src/types/infer.rs:718:9
+  24: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_region
+             at /tmp/mypy_primer/knot_old/ruff/crates/red_knot_python_semantic/src/types/infer.rs:664:46
+  25: red_knot_python_semantic::types::infer::TypeInferenceBuilder::finish
+             at /tmp/mypy_primer/knot_old/ruff/crates/red_knot_python_semantic/src/types/infer.rs:6554:9
+  26: <red_knot_python_semantic::types::infer::infer_scope_types::Configuration_ as salsa::function::Configuration>::execute::inner_
+             at /tmp/mypy_primer/knot_old/ruff/crates/red_knot_python_semantic/src/types/infer.rs:124:5
+  27: <red_knot_python_semantic::types::infer::infer_scope_types::Configuration_ as salsa::function::Configuration>::execute
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/components/salsa-macro-rules/src/setup_tracked_fn.rs:204:21
+  28: salsa::function::execute::<impl salsa::function::IngredientImpl<C>>::execute
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/execute.rs:59:33
+  29: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch_cold
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:195:20
+  30: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::refresh_memo::{{closure}}
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:54:29
+  31: core::option::Option<T>::or_else
+             at /rustc/05f9846f893b09a1be1fc8560e33fc3c815cfecb/library/core/src/option.rs:1552:21
+  32: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::refresh_memo
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:52:33
+  33: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:18:20
+  34: red_knot_python_semantic::types::infer::infer_scope_types::{{closure}}
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/components/salsa-macro-rules/src/setup_tracked_fn.rs:341:25
+  35: salsa::attach::Attached::attach
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/attach.rs:72:9
+  36: salsa::attach::attach::{{closure}}
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/attach.rs:92:23
+  37: std::thread::local::LocalKey<T>::try_with
+             at /rustc/05f9846f893b09a1be1fc8560e33fc3c815cfecb/library/std/src/thread/local.rs:310:12
+  38: std::thread::local::LocalKey<T>::with
+             at /rustc/05f9846f893b09a1be1fc8560e33fc3c815cfecb/library/std/src/thread/local.rs:274:15
+  39: salsa::attach::attach
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/attach.rs:92:5
+  40: red_knot_python_semantic::types::infer::infer_scope_types
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/components/salsa-macro-rules/src/setup_tracked_fn.rs:333:13
+  41: <red_knot_python_semantic::types::check_types::Configuration_ as salsa::function::Configuration>::execute::inner_
+             at /tmp/mypy_primer/knot_old/ruff/crates/red_knot_python_semantic/src/types.rs:89:22
+  42: <red_knot_python_semantic::types::check_types::Configuration_ as salsa::function::Configuration>::execute
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/components/salsa-macro-rules/src/setup_tracked_fn.rs:204:21
+  43: salsa::function::execute::<impl salsa::function::IngredientImpl<C>>::execute
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/execute.rs:59:33
+  44: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch_cold
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:195:20
+  45: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::refresh_memo::{{closure}}
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:54:29
+  46: core::option::Option<T>::or_else
+             at /rustc/05f9846f893b09a1be1fc8560e33fc3c815cfecb/library/core/src/option.rs:1552:21
+  47: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::refresh_memo
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:52:33
+  48: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:18:20
+  49: red_knot_python_semantic::types::check_types::{{closure}}
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/components/salsa-macro-rules/src/setup_tracked_fn.rs:341:25
+  50: salsa::attach::Attached::attach
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/attach.rs:72:9
+  51: salsa::attach::attach::{{closure}}
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/attach.rs:92:23
+  52: std::thread::local::LocalKey<T>::try_with
+             at /rustc/05f9846f893b09a1be1fc8560e33fc3c815cfecb/library/std/src/thread/local.rs:310:12
+  53: std::thread::local::LocalKey<T>::with
+             at /rustc/05f9846f893b09a1be1fc8560e33fc3c815cfecb/library/std/src/thread/local.rs:274:15
+  54: salsa::attach::attach
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/attach.rs:92:5
+  55: red_knot_python_semantic::types::check_types
+             at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/components/salsa-macro-rules/src/setup_tracked_fn.rs:333:13
+  56: red_knot_project::check_file_impl
+             at /tmp/mypy_primer/knot_old/ruff/crates/red_knot_project/src/lib.rs:435:24
+  57: red_knot_project::Project::check::{{closure}}::{{closure}}
+             at /tmp/mypy_primer/knot_old/ruff/crates/red_knot_project/src/lib.rs:207:44
+  58: rayon_core::scope::Scope::spawn::{{closure}}::{{closure}}
+             at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-core-1.12.1/src/scope/mod.rs:526:57
+  59: <core::panic::unwind_safe::AssertUnwindSafe<F> as core::ops::function::FnOnce<()>>::call_once
+             at /rustc/05f9846f893b09a1be1fc8560e33fc3c815cfecb/library/core/src/panic/unwind_safe.rs:272:9
+  60: std::panicking::try::do_call
+             at /rustc/05f9846f893b09a1be1fc8560e33fc3c815cfecb/library/std/src/panicking.rs:587:40
+  61: __rust_try
+  62: std::panicking::try
+             at /rustc/05f9846f893b09a1be1fc8560e33fc3c815cfecb/library/std/src/panicking.rs:550:19
+  63: std::panic::catch_unwind
+             at /rustc/05f9846f893b09a1be1fc8560e33fc3c815cfecb/library/std/src/panic.rs:358:14
+  64: rayon_core::unwind::halt_unwinding
+             at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-core-1.12.1/src/unwind.rs:17:5
+  65: rayon_core::scope::ScopeBase::execute_job_closure
+             at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-core-1.12.1/src/scope/mod.rs:689:28
+  66: rayon_core::scope::ScopeBase::execute_job
+             at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-core-1.12.1/src/scope/mod.rs:679:29
+  67: rayon_core::scope::Scope::spawn::{{closure}}
+             at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-core-1.12.1/src/scope/mod.rs:526:13
+  68: <rayon_core::job::HeapJob<BODY> as rayon_core::job::Job>::execute
+             at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-core-1.12.1/src/job.rs:169:9
+  69: rayon_core::job::JobRef::execute
+             at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-core-1.12.1/src/job.rs:64:9
+  70: rayon_core::registry::WorkerThread::execute
+             at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-core-1.12.1/src/registry.rs:860:9
+  71: rayon_core::registry::WorkerThread::wait_until_cold
+             at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-core-1.12.1/src/registry.rs:794:21
+  72: rayon_core::registry::WorkerThread::wait_until
+             at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-core-1.12.1/src/registry.rs:769:13
+  73: rayon_core::registry::WorkerThread::wait_until_out_of_work
+             at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-core-1.12.1/src/registry.rs:818:9
+  74: rayon_core::registry::main_loop
+             at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-core-1.12.1/src/registry.rs:923:5
+  75: rayon_core::registry::ThreadBuilder::run
+             at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-core-1.12.1/src/registry.rs:53:18
+  76: <rayon_core::registry::DefaultSpawn as rayon_core::registry::ThreadSpawn>::spawn::{{closure}}
+             at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-core-1.12.1/src/registry.rs:98:20
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+Rayon: detected unexpected panic; aborting
+Aborted (core dumped)
+```
+
+</details>
+
+---
+
+_Label `bug` added by @sharkdp on 2025-04-22 18:08_
+
+---
+
+_Comment by @AlexWaygood on 2025-04-22 19:52_
+
+another example just now: https://github.com/astral-sh/ruff/actions/runs/14603291759/job/40966403946
+
+---
+
+_Comment by @MichaReiser on 2025-04-23 05:57_
+
+I plan to look into this. It seems more important than the LSP work 
+
+---
+
+_Assigned to @MichaReiser by @MichaReiser on 2025-04-23 05:57_
+
+---
+
+_Comment by @MichaReiser on 2025-04-24 08:23_
+
+Hmm, I can now reproduce multiple panics locally (but not consisstently)
+
+```
+thread '<unnamed>' panicked at crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs:39:13:
+Could not find expression ID for ExpressionNodeKey(NodeKey(105553193679880))
+stack backtrace:
+   0: rust_begin_unwind
+             at /rustc/05f9846f893b09a1be1fc8560e33fc3c815cfecb/library/std/src/panicking.rs:695:5
+   1: core::panicking::panic_fmt
+             at /rustc/05f9846f893b09a1be1fc8560e33fc3c815cfecb/library/core/src/panicking.rs:75:14
+   2: red_knot_python_semantic::semantic_index::ast_ids::AstIds::expression_id::{{closure}}
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs:39:13
+   3: core::option::Option<T>::unwrap_or_else
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/option.rs:1023:21
+   4: red_knot_python_semantic::semantic_index::ast_ids::AstIds::expression_id
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs:38:10
+   5: <ruff_python_ast::generated::ExprRef as red_knot_python_semantic::semantic_index::ast_ids::HasScopedExpressionId>::scoped_expression_id
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs:146:9
+   6: <ruff_python_ast::generated::Expr as red_knot_python_semantic::semantic_index::ast_ids::HasScopedExpressionId>::scoped_expression_id
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs:103:17
+   7: red_knot_python_semantic::types::infer::TypeInferenceBuilder::expression_type
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:635:30
+   8: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_tuple_type_expression::element_could_alter_type_of_whole_tuple
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:7165:25
+   9: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_tuple_type_expression
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:7187:25
+  10: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_subscript_type_expression_no_store
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:7119:44
+  11: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_type_expression_no_store
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:6863:17
+  12: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_type_expression
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:6769:18
+  13: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_type_expression_with_state
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:6794:29
+  14: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_string_type_expression
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:7132:17
+  15: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_type_expression_no_store
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:6851:49
+  16: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_type_expression
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:6769:18
+  17: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_argument_type
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:3672:42
+  18: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_argument_types::{{closure}}
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:3656:26
+  19: red_knot_python_semantic::types::call::arguments::CallArgumentTypes::new::{{closure}}
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/call/arguments.rs:88:36
+  20: core::iter::adapters::map::map_fold::{{closure}}
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/iter/adapters/map.rs:88:28
+  21: <core::iter::adapters::enumerate::Enumerate<I> as core::iter::traits::iterator::Iterator>::fold::enumerate::{{closure}}
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/iter/adapters/enumerate.rs:107:27
+  22: core::iter::adapters::copied::copy_fold::{{closure}}
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/iter/adapters/copied.rs:30:22
+  23: core::ops::function::impls::<impl core::ops::function::FnMut<A> for &mut F>::call_mut
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/ops/function.rs:294:13
+  24: <core::slice::iter::Iter<T> as core::iter::traits::iterator::Iterator>::fold
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:232:27
+  25: <alloc::collections::vec_deque::iter::Iter<T> as core::iter::traits::iterator::Iterator>::fold
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/collections/vec_deque/iter.rs:128:21
+  26: <core::iter::adapters::copied::Copied<I> as core::iter::traits::iterator::Iterator>::fold
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/iter/adapters/copied.rs:75:9
+  27: <core::iter::adapters::enumerate::Enumerate<I> as core::iter::traits::iterator::Iterator>::fold
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/iter/adapters/enumerate.rs:113:9
+  28: <core::iter::adapters::map::Map<I,F> as core::iter::traits::iterator::Iterator>::fold
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/iter/adapters/map.rs:128:9
+  29: core::iter::traits::iterator::Iterator::for_each
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/iter/traits/iterator.rs:800:9
+  30: alloc::vec::Vec<T,A>::extend_trusted
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/vec/mod.rs:3565:17
+  31: <alloc::vec::Vec<T,A> as alloc::vec::spec_extend::SpecExtend<T,I>>::spec_extend
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/vec/spec_extend.rs:29:9
+  32: <alloc::vec::Vec<T> as alloc::vec::spec_from_iter_nested::SpecFromIterNested<T,I>>::from_iter
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/vec/spec_from_iter_nested.rs:62:9
+  33: <alloc::vec::Vec<T> as alloc::vec::spec_from_iter::SpecFromIter<T,I>>::from_iter
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/vec/spec_from_iter.rs:34:9
+  34: <alloc::vec::Vec<T> as core::iter::traits::collect::FromIterator<T>>::from_iter
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/vec/mod.rs:3424:9
+  35: <alloc::collections::vec_deque::VecDeque<T> as alloc::collections::vec_deque::spec_from_iter::SpecFromIter<T,I>>::spec_from_iter
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/collections/vec_deque/spec_from_iter.rs:18:9
+  36: <alloc::collections::vec_deque::VecDeque<T> as core::iter::traits::collect::FromIterator<T>>::from_iter
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/collections/vec_deque/mod.rs:2941:9
+  37: core::iter::traits::iterator::Iterator::collect
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/iter/traits/iterator.rs:1971:9
+  38: red_knot_python_semantic::types::call::arguments::CallArgumentTypes::new
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/call/arguments.rs:85:21
+  39: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_argument_types
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:3645:9
+  40: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_call_expression
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:4331:13
+  41: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_expression_impl
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:3728:49
+  42: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_region_expression
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:1048:17
+  43: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_region
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:668:56
+  44: red_knot_python_semantic::types::infer::TypeInferenceBuilder::finish
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:6568:9
+  45: <red_knot_python_semantic::types::infer::infer_expression_types::Configuration_ as salsa::function::Configuration>::execute::inner_
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:233:5
+  46: <red_knot_python_semantic::types::infer::infer_expression_types::Configuration_ as salsa::function::Configuration>::execute
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/components/salsa-macro-rules/src/setup_tracked_fn.rs:204:21
+  47: salsa::function::execute::<impl salsa::function::IngredientImpl<C>>::execute
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/execute.rs:59:33
+  48: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch_cold
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:195:20
+  49: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::refresh_memo::{{closure}}
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:54:29
+  50: core::option::Option<T>::or_else
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/option.rs:1552:21
+  51: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::refresh_memo
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:52:33
+  52: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:18:20
+  53: red_knot_python_semantic::types::infer::infer_expression_types::{{closure}}
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/components/salsa-macro-rules/src/setup_tracked_fn.rs:341:25
+  54: salsa::attach::Attached::attach
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/attach.rs:72:9
+  55: salsa::attach::attach::{{closure}}
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/attach.rs:92:23
+  56: std::thread::local::LocalKey<T>::try_with
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/std/src/thread/local.rs:310:12
+  57: std::thread::local::LocalKey<T>::with
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/std/src/thread/local.rs:274:15
+  58: salsa::attach::attach
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/attach.rs:92:5
+  59: red_knot_python_semantic::types::infer::infer_expression_types
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/components/salsa-macro-rules/src/setup_tracked_fn.rs:333:13
+  60: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_standalone_expression
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:3693:21
+  61: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_assignment_statement::{{closure}}
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:2407:17
+  62: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_target
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:2427:23
+  63: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_assignment_statement
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:2406:13
+  64: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_statement
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:1426:42
+  65: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_body
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:1411:13
+  66: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_if_statement
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:1924:9
+  67: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_statement
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:1422:44
+  68: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_body
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:1411:13
+  69: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_for_statement
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:3201:9
+  70: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_statement
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:1432:46
+  71: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_body
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:1411:13
+  72: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_function_body
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:1337:9
+  73: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_region_scope
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:679:54
+  74: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_region
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:665:46
+  75: red_knot_python_semantic::types::infer::TypeInferenceBuilder::finish
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:6568:9
+  76: <red_knot_python_semantic::types::infer::infer_scope_types::Configuration_ as salsa::function::Configuration>::execute::inner_
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:125:5
+  77: <red_knot_python_semantic::types::infer::infer_scope_types::Configuration_ as salsa::function::Configuration>::execute
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/components/salsa-macro-rules/src/setup_tracked_fn.rs:204:21
+  78: salsa::function::execute::<impl salsa::function::IngredientImpl<C>>::execute
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/execute.rs:59:33
+  79: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch_cold
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:195:20
+  80: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::refresh_memo::{{closure}}
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:54:29
+  81: core::option::Option<T>::or_else
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/option.rs:1552:21
+  82: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::refresh_memo
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:52:33
+  83: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:18:20
+  84: red_knot_python_semantic::types::infer::infer_scope_types::{{closure}}
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/components/salsa-macro-rules/src/setup_tracked_fn.rs:341:25
+  85: salsa::attach::Attached::attach
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/attach.rs:72:9
+  86: salsa::attach::attach::{{closure}}
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/attach.rs:92:23
+  87: std::thread::local::LocalKey<T>::try_with
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/std/src/thread/local.rs:310:12
+  88: std::thread::local::LocalKey<T>::with
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/std/src/thread/local.rs:274:15
+  89: salsa::attach::attach
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/attach.rs:92:5
+  90: red_knot_python_semantic::types::infer::infer_scope_types
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/components/salsa-macro-rules/src/setup_tracked_fn.rs:333:13
+  91: <red_knot_python_semantic::types::check_types::Configuration_ as salsa::function::Configuration>::execute::inner_
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types.rs:89:22
+  92: <red_knot_python_semantic::types::check_types::Configuration_ as salsa::function::Configuration>::execute
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/components/salsa-macro-rules/src/setup_tracked_fn.rs:204:21
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+Rayon: detected unexpected panic; aborting
+```
+
+```
+thread '<unnamed>' panicked at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/tracked_struct.rs:832:21:
+access to field whilst the value is being initialized
+stack backtrace:
+   0: rust_begin_unwind
+             at /rustc/05f9846f893b09a1be1fc8560e33fc3c815cfecb/library/std/src/panicking.rs:695:5
+   1: core::panicking::panic_fmt
+             at /rustc/05f9846f893b09a1be1fc8560e33fc3c815cfecb/library/core/src/panicking.rs:75:14
+   2: salsa::tracked_struct::Value<C>::read_lock
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/tracked_struct.rs:832:21
+   3: salsa::tracked_struct::IngredientImpl<C>::untracked_field
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/tracked_struct.rs:711:9
+   4: red_knot_python_semantic::types::_::<impl red_knot_python_semantic::types::TypeVarInstance>::default_ty
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/components/salsa-macro-rules/src/setup_tracked_struct.rs:281:38
+   5: red_knot_python_semantic::types::generics::GenericContext::default_specialization::{{closure}}
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/generics.rs:87:28
+   6: core::iter::adapters::map::map_fold::{{closure}}
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/iter/adapters/map.rs:88:28
+   7: <core::slice::iter::Iter<T> as core::iter::traits::iterator::Iterator>::fold
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:232:27
+   8: <core::iter::adapters::map::Map<I,F> as core::iter::traits::iterator::Iterator>::fold
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/iter/adapters/map.rs:128:9
+   9: core::iter::traits::iterator::Iterator::for_each
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/iter/traits/iterator.rs:800:9
+  10: alloc::vec::Vec<T,A>::extend_trusted
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/vec/mod.rs:3565:17
+  11: <alloc::vec::Vec<T,A> as alloc::vec::spec_extend::SpecExtend<T,I>>::spec_extend
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/vec/spec_extend.rs:29:9
+  12: <alloc::vec::Vec<T> as alloc::vec::spec_from_iter_nested::SpecFromIterNested<T,I>>::from_iter
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/vec/spec_from_iter_nested.rs:62:9
+  13: <alloc::vec::Vec<T> as alloc::vec::spec_from_iter::SpecFromIter<T,I>>::from_iter
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/vec/spec_from_iter.rs:34:9
+  14: <alloc::vec::Vec<T> as core::iter::traits::collect::FromIterator<T>>::from_iter
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/vec/mod.rs:3424:9
+  15: core::iter::traits::iterator::Iterator::collect
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/iter/traits/iterator.rs:1971:9
+  16: alloc::boxed::iter::<impl core::iter::traits::collect::FromIterator<I> for alloc::boxed::Box<[I]>>::from_iter
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/boxed/iter.rs:144:9
+  17: core::iter::traits::iterator::Iterator::collect
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/iter/traits/iterator.rs:1971:9
+  18: red_knot_python_semantic::types::generics::GenericContext::default_specialization
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/generics.rs:84:21
+  19: red_knot_python_semantic::types::class::ClassLiteralType::default_specialization
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/class.rs:536:38
+  20: red_knot_python_semantic::types::Type::in_type_expression
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types.rs:4373:41
+  21: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_type_expression_no_store
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:6815:43
+  22: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_type_expression
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:6769:18
+  23: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_typevar_definition::{{closure}}
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:2173:41
+  24: core::iter::adapters::map::map_fold::{{closure}}
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/iter/adapters/map.rs:88:28
+  25: <core::slice::iter::Iter<T> as core::iter::traits::iterator::Iterator>::fold
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:232:27
+  26: <core::iter::adapters::map::Map<I,F> as core::iter::traits::iterator::Iterator>::fold
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/iter/adapters/map.rs:128:9
+  27: core::iter::traits::iterator::Iterator::for_each
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/iter/traits/iterator.rs:800:9
+  28: alloc::vec::Vec<T,A>::extend_trusted
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/vec/mod.rs:3565:17
+  29: <alloc::vec::Vec<T,A> as alloc::vec::spec_extend::SpecExtend<T,I>>::spec_extend
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/vec/spec_extend.rs:29:9
+  30: <alloc::vec::Vec<T> as alloc::vec::spec_from_iter_nested::SpecFromIterNested<T,I>>::from_iter
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/vec/spec_from_iter_nested.rs:62:9
+  31: <alloc::vec::Vec<T> as alloc::vec::spec_from_iter::SpecFromIter<T,I>>::from_iter
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/vec/spec_from_iter.rs:34:9
+  32: <alloc::vec::Vec<T> as core::iter::traits::collect::FromIterator<T>>::from_iter
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/vec/mod.rs:3424:9
+  33: core::iter::traits::iterator::Iterator::collect
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/iter/traits/iterator.rs:1971:9
+  34: alloc::boxed::iter::<impl core::iter::traits::collect::FromIterator<I> for alloc::boxed::Box<[I]>>::from_iter
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/boxed/iter.rs:144:9
+  35: core::iter::traits::iterator::Iterator::collect
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/iter/traits/iterator.rs:1971:9
+  36: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_typevar_definition
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:2172:25
+  37: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_region_definition
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:1017:17
+  38: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_region
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:666:56
+  39: red_knot_python_semantic::types::infer::TypeInferenceBuilder::finish
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:6568:9
+  40: <red_knot_python_semantic::types::infer::infer_definition_types::Configuration_ as salsa::function::Configuration>::execute::inner_
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:158:5
+  41: <red_knot_python_semantic::types::infer::infer_definition_types::Configuration_ as salsa::function::Configuration>::execute
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/components/salsa-macro-rules/src/setup_tracked_fn.rs:204:21
+  42: salsa::function::execute::<impl salsa::function::IngredientImpl<C>>::execute
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/execute.rs:59:33
+  43: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch_cold
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:195:20
+  44: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::refresh_memo::{{closure}}
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:54:29
+  45: core::option::Option<T>::or_else
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/option.rs:1552:21
+  46: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::refresh_memo
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:52:33
+  47: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:18:20
+  48: red_knot_python_semantic::types::infer::infer_definition_types::{{closure}}
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/components/salsa-macro-rules/src/setup_tracked_fn.rs:341:25
+  49: salsa::attach::Attached::attach
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/attach.rs:72:9
+  50: salsa::attach::attach::{{closure}}
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/attach.rs:92:23
+  51: std::thread::local::LocalKey<T>::try_with
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/std/src/thread/local.rs:310:12
+  52: std::thread::local::LocalKey<T>::with
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/std/src/thread/local.rs:274:15
+  53: salsa::attach::attach
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/attach.rs:92:5
+  54: red_knot_python_semantic::types::infer::infer_definition_types
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/components/salsa-macro-rules/src/setup_tracked_fn.rs:333:13
+  55: red_knot_python_semantic::types::declaration_type
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types.rs:109:21
+  56: red_knot_python_semantic::types::generics::GenericContext::variable_from_type_param
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/generics.rs:44:21
+  57: red_knot_python_semantic::types::generics::GenericContext::from_type_params::{{closure}}
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/generics.rs:30:38
+  58: core::ops::function::impls::<impl core::ops::function::FnMut<A> for &mut F>::call_mut
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/ops/function.rs:294:13
+  59: <core::slice::iter::Iter<T> as core::iter::traits::iterator::Iterator>::find_map
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:319:38
+  60: <core::iter::adapters::filter_map::FilterMap<I,F> as core::iter::traits::iterator::Iterator>::next
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/iter/adapters/filter_map.rs:64:9
+  61: alloc::vec::Vec<T,A>::extend_desugared
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/vec/mod.rs:3532:35
+  62: <alloc::vec::Vec<T,A> as alloc::vec::spec_extend::SpecExtend<T,I>>::spec_extend
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/vec/spec_extend.rs:19:9
+  63: <alloc::vec::Vec<T> as alloc::vec::spec_from_iter_nested::SpecFromIterNested<T,I>>::from_iter
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/vec/spec_from_iter_nested.rs:42:9
+  64: <alloc::vec::Vec<T> as alloc::vec::spec_from_iter::SpecFromIter<T,I>>::from_iter
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/vec/spec_from_iter.rs:34:9
+  65: <alloc::vec::Vec<T> as core::iter::traits::collect::FromIterator<T>>::from_iter
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/vec/mod.rs:3424:9
+  66: core::iter::traits::iterator::Iterator::collect
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/iter/traits/iterator.rs:1971:9
+  67: alloc::boxed::iter::<impl core::iter::traits::collect::FromIterator<I> for alloc::boxed::Box<[I]>>::from_iter
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/boxed/iter.rs:144:9
+  68: core::iter::traits::iterator::Iterator::collect
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/iter/traits/iterator.rs:1971:9
+  69: red_knot_python_semantic::types::generics::GenericContext::from_type_params
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/generics.rs:28:35
+  70: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_class_definition::{{closure}}
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:1818:13
+  71: core::option::Option<T>::map
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/option.rs:1119:29
+  72: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_class_definition
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:1817:31
+  73: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_region_definition
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:959:45
+  74: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_region
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:666:56
+  75: red_knot_python_semantic::types::infer::TypeInferenceBuilder::finish
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:6568:9
+  76: <red_knot_python_semantic::types::infer::infer_definition_types::Configuration_ as salsa::function::Configuration>::execute::inner_
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:158:5
+  77: <red_knot_python_semantic::types::infer::infer_definition_types::Configuration_ as salsa::function::Configuration>::execute
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/components/salsa-macro-rules/src/setup_tracked_fn.rs:204:21
+  78: salsa::function::execute::<impl salsa::function::IngredientImpl<C>>::execute
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/execute.rs:59:33
+  79: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch_cold
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:195:20
+  80: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::refresh_memo::{{closure}}
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:54:29
+  81: core::option::Option<T>::or_else
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/option.rs:1552:21
+  82: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::refresh_memo
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:52:33
+  83: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:18:20
+  84: red_knot_python_semantic::types::infer::infer_definition_types::{{closure}}
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/components/salsa-macro-rules/src/setup_tracked_fn.rs:341:25
+  85: salsa::attach::Attached::attach
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/attach.rs:72:9
+  86: salsa::attach::attach::{{closure}}
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/attach.rs:92:23
+  87: std::thread::local::LocalKey<T>::try_with
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/std/src/thread/local.rs:310:12
+  88: std::thread::local::LocalKey<T>::with
+             at /Users/micha/.rustup/toolchains/1.86-aarch64-apple-darwin/lib/rustlib/src/rust/library/std/src/thread/local.rs:274:15
+  89: salsa::attach::attach
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/attach.rs:92:5
+  90: red_knot_python_semantic::types::infer::infer_definition_types
+             at /Users/micha/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/components/salsa-macro-rules/src/setup_tracked_fn.rs:333:13
+  91: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_definition
+             at /private/tmp/mypy_primer/knot_new/ruff/crates/red_knot_python_semantic/src/types/infer.rs:1453:22
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+```
+
+(I thought I fixed that one, ugh)
+
+But I haven't been able to reproduce the issue reported in the issue itself. Wonderful.
+
+Oh, I see these are known issues: e.g. cpython `cpython  # missing expression ID, access to field whilst being initialized, too many cycle iterations`
+
+
+---
+
+_Unassigned @MichaReiser by @MichaReiser on 2025-05-05 09:07_
+
+---
+
+_Renamed from "[red-knot] salsa-related panic: "should have the ingredient index available"" to "salsa-related panic: "should have the ingredient index available"" by @MichaReiser on 2025-05-07 15:25_
+
+---
+
+_Label `fatal` added by @AlexWaygood on 2025-05-10 18:05_
+
+---
+
+_Comment by @carljm on 2025-06-10 23:51_
+
+I think (along with #108 ) we aren't seeing this anymore after the various Salsa fixes? Closing for now, unless it crops up again.
+
+---
+
+_Closed by @carljm on 2025-06-10 23:51_
+
+---
+
+_Reopened by @MichaReiser on 2025-06-11 06:11_
+
+---
+
+_Comment by @MichaReiser on 2025-06-11 06:12_
+
+You jinxed it!
+
+```
+ fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/views.rs:114:9 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/Event.py`: `No downcaster registered for type `dyn ty_python_semantic::db::Db` in `Views``
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/StructuredModel.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/test/Binding_test.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/Validator.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/Recorder.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/test/Selection_test.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/Promise.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/Color.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/test/ListModel_test.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/Platform.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/test/Recorder_test.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/test/Registry_test.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/test/Color_test.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/Converter.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/setup.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/test/Converter_test.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/ReferenceCounting.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/Process.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/Registry.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/Binding.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/ListModel.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/Model.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/test/Observable_test.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/test/Stream_test.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/test/Geometry_test.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/DateTime.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/__init__.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/test/Model_test.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/Selection.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/test/__init__.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/Geometry.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/Observable.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/Stream.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/ThreadPool.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/test/StructuredModel_test.py`: `index `23` is uninitialized`
+fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-ef8eba5d25c15f8b/0f6d406/src/zalsa.rs:225:32 when checking `/tmp/mypy_primer/projects/nionutils/nion/utils/test/Process_test.py`: `index `23` is uninitialized`
+```
+
+https://github.com/astral-sh/ruff/actions/runs/15577270181/job/43864469928
+
+CC: @ibraheemdev I know you already have a lot on your plate. But if you happen to have time.
+
+---
+
+_Closed by @MichaReiser on 2025-06-12 05:17_
+
+---

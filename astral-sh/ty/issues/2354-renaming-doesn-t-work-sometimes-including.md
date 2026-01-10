@@ -8,9 +8,9 @@ labels:
   - server
 assignees: []
 created_at: 2026-01-06T07:32:06Z
-updated_at: 2026-01-09T19:38:53Z
+updated_at: 2026-01-10T02:02:36Z
 url: https://github.com/astral-sh/ty/issues/2354
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-10T02:07:38Z
 ```
 
 # Renaming doesn't work sometimes (including ignoring used line ending style)
@@ -4877,5 +4877,12 @@ That suggests that it's a Python LSP bug and not an issue with ty or some bad in
 _Comment by @MeGaGiGaGon on 2026-01-09 19:38_
 
 On doing a clean install of basedpyright to test if this was unique to ty, when I got to checking `Python: Language Server` I noticed it was already `None`. On further investigation I think I found how basedpyright does it, so I just opened astral-sh/ty-vscode#283 which should hopefully fix the problem.
+
+---
+
+_Comment by @michaelfortunato on 2026-01-10 02:02_
+
+The rename code action is broken in my neovim as well.
+I find the buffer only updates on file save, whwereas id expect the buffer to update immediately after the rename change completed. Also im not oositive if the rename happens reliably on file save. Ill share a video and some steps to reproduce. 
 
 ---

@@ -1,0 +1,128 @@
+```yaml
+number: 380
+title: "[panic] Panic when inferring definition types using generics"
+type: issue
+state: closed
+author: sarimak
+labels:
+  - fatal
+  - generics
+assignees: []
+created_at: 2025-05-14T10:26:00Z
+updated_at: 2025-06-27T14:33:15Z
+url: https://github.com/astral-sh/ty/issues/380
+synced_at: 2026-01-10T02:07:35Z
+```
+
+# [panic] Panic when inferring definition types using generics
+
+---
+
+_Issue opened by @sarimak on 2025-05-14 10:26_
+
+```
+$ ty --version
+ty 0.0.1-alpha.1
+
+$ RUST_BACKTRACE=1 uvx ty check test.py
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+error[panic]: Panicked at /root/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/7edce6e/src/function/execute.rs:209:25 when checking `.../test.py`: `infer_definition_types(Id(a655)): execute: too many cycle iterations`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: linux x86_64
+info: Args: ["ty", "check", "test.py"]
+info: Backtrace:
+   0: <unknown>
+   1: <unknown>
+...
+ 115: <unknown>
+ 116: <unknown>
+ 117: start_thread
+             at ./nptl/pthread_create.c:448:8
+ 118: __GI___clone3
+             at ./misc/../sysdeps/unix/sysv/linux/x86_64/clone3.S:78:0
+
+info: query stacktrace:
+   0: infer_definition_types(Id(a72e))
+             at crates/ty_python_semantic/src/types/infer.rs:148
+   1: infer_definition_types(Id(a7e3))
+             at crates/ty_python_semantic/src/types/infer.rs:148
+   2: symbol_by_id(Id(3028))
+             at crates/ty_python_semantic/src/symbol.rs:576
+   3: member_lookup_with_policy_(Id(2818))
+             at crates/ty_python_semantic/src/types.rs:536
+   4: infer_definition_types(Id(6b8f))
+             at crates/ty_python_semantic/src/types/infer.rs:148
+   5: symbol_by_id(Id(3027))
+             at crates/ty_python_semantic/src/symbol.rs:576
+   6: member_lookup_with_policy_(Id(2817))
+             at crates/ty_python_semantic/src/types.rs:536
+   7: infer_expression_types(Id(1802))
+             at crates/ty_python_semantic/src/types/infer.rs:222
+   8: infer_scope_types(Id(1004))
+             at crates/ty_python_semantic/src/types/infer.rs:121
+   9: check_types(Id(c00))
+             at crates/ty_python_semantic/src/types.rs:84
+
+
+Found 1 diagnostic
+WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+```
+
+```
+$ cat test.py
+from collections.abc import Callable, Coroutine
+from typing import Any, ParamSpec, TypeVar
+
+import asyncssh
+
+P = ParamSpec("P")
+T = TypeVar("T")
+
+
+def _handle_exceptions(
+    func: Callable[P, Coroutine[Any, Any, T]],
+) -> Callable[P, Coroutine[Any, Any, T]]:
+    async def inner(*args: Any, **kwargs: Any) -> T:
+        return await func(*args, **kwargs)
+
+    return inner
+
+
+class SFTPClient:
+    @_handle_exceptions
+    async def _connect(self) -> None:
+        self._conn = await asyncssh.connect()
+```
+
+---
+
+_Renamed from "[panic]" to "[panic] Panic when inferring definition types using generics" by @sarimak on 2025-05-14 10:27_
+
+---
+
+_Label `fatal` added by @AlexWaygood on 2025-05-14 11:42_
+
+---
+
+_Label `generics` added by @AlexWaygood on 2025-05-14 11:42_
+
+---
+
+_Comment by @AlexWaygood on 2025-05-14 11:44_
+
+Thanks so much for the MRE, it's really helpful!
+
+This is the same panic message as #256 and it also involves generics, so it seems likely that it has a similar underlying cause. I don't see any obviously self-referential types here, though, which is interesting.
+
+---
+
+_Comment by @carljm on 2025-06-27 14:33_
+
+I'm going to close this as a duplicate of #256 -- it seems likely the self-reference is in asyncssh.
+
+---
+
+_Closed by @carljm on 2025-06-27 14:33_
+
+---
